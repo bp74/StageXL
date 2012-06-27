@@ -4,7 +4,7 @@ What we try to achieve with dartflash:
 * The library should be compatible with the Flash API.
 * The programming language should be similar to ActionScript 3.
 
-## Samples
+## Demo
 
 This little game was developed with Flash and ported to HTML5 within 6 hours. The new version runs with smooth 60 fps!
 <http://www.dartflash.com/games/escape/escape.html>
