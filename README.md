@@ -6,12 +6,14 @@ What we try to achieve with dartflash:
 
 ## Samples
 
-Escape: This little game was developed with Flash and ported to HTML5 within 6 hours. The new version runs with smooth 60 fps!
+This little game was developed with Flash and ported to HTML5 within 6 hours. The new version runs with smooth 60 fps!
 <http://www.dartflash.com/games/escape/escape.html>
 
-## Dart
+## Dart programming language
 
-[The Dart programming language](http://www.dartlang.org)
+Javascript is the lingua franca of the Web. The problem with JavaScript is that it sucks. You may disagree but if you come from the ActionScript world (or C# and Java) you scratch your head and wonder. Maybe Google thought the same and started the Dart programming language project. This language fixes all the flaws of JavaScript and at the same time compiles to JavaScript to run it on all modern browers.
+
+Check out the projects web site: [The Dart programming language](http://www.dartlang.org)
 
 ## Roadmap
 
