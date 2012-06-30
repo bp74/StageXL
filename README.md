@@ -1,12 +1,13 @@
-This library provides the Flash API build on open web standards (HTML5). Developers who build applications with Flash may have noticed that Flash isn't a popular choice anymore. Some of you probably think about a migration strategy from Flash to HTML5. 
+This library provides the Flash API build on top of open web standards (HTML5). Developers who build applications with Flash may have noticed that Flash isn't a popular choice anymore. Some of you probably think about a migration strategy from Flash to HTML5. 
 
 What we try to achieve with dartflash:
-* The library should be compatible with the Flash API.
+* The library should be highly compatible with the Flash API.
 * The programming language should be similar to ActionScript 3.
 
 ## Demo
 
-This little game was developed with Flash and ported to HTML5 within 6 hours. The new version runs with smooth 60 fps!
+This little game was developed with Flash and later ported to HTML5 in only 6 hours. The new HTML5 version runs with smooth 60fps, which is almost impossible to achieve with the Flash plugin!
+
 <http://www.dartflash.com/games/escape/escape.html>
 
 ## Dart programming language
@@ -17,7 +18,7 @@ Check out the projects web site: [The Dart programming language](http://www.dart
 
 ## Roadmap
 
-dartflash is not finished and new features are added on a regular basis. Here are some topics we think about, but let us know if you have other ideas or feature requests.
+dartflash is not finished and new features are added on a regular basis. Here are some topics we think about. Let us know of your ideas and feature requests.
 
 * Support for WebGL.
 * Additional BitmapFilters like DropShadowFilter
