@@ -4526,9 +4526,6 @@ $$.SpecialWobble = {"":
       return true;
   }
  },
- get$isComplete: function() {
-  return false;
- },
  SpecialWobble$1: function(special) {
   this.mouseEnabled = false;
   this._lib2_currentTime = 0.0;
@@ -11627,7 +11624,7 @@ $$.Closure54 = {"":
  ["this_1"],
  super: "Closure83",
  $call$0: function() {
-  return this.this_1.get$parent().removeChild$1(this.this_1);
+  return this.this_1.removeFromParent$0();
  }
 };
 

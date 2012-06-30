@@ -12,8 +12,8 @@ class SpecialJokerChain extends Sprite implements IAnimatable
     _jokerBitmapDatas = Grafix.getJokerChain(direction);
 
     _bitmap = new Bitmap(_jokerBitmapDatas[0]);
-     _bitmap.x = -25;
-     _bitmap.y = -25;
+    _bitmap.x = -25;
+    _bitmap.y = -25;
     addChild(_bitmap);
 
     addEventListener(Event.ADDED_TO_STAGE, (e) => Juggler.instance.add(this));

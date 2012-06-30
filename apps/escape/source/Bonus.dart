@@ -36,7 +36,7 @@ class Bonus extends Sprite
       _textFieldContainer.scaleY = 1.0 + 0.1 * Math.cos(value * 10);
     }, 0.0, 1.0);
 
-    tween.onComplete = () => this.parent.removeChild(this);
+    tween.onComplete = () => this.removeFromParent();
 
     Juggler.instance.add(tween);
   }

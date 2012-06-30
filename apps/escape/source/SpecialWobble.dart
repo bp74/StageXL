@@ -18,8 +18,6 @@ class SpecialWobble extends Sprite implements IAnimatable
 
   //------------------------------------------------
 
-  bool get isComplete() => false;
-
   bool advanceTime(num time)
   {
     _currentTime += time;
