@@ -4,6 +4,7 @@
 
 *.pydevproject
 .project
+.children
 .metadata
 bin/
 tmp/
