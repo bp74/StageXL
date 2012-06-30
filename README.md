@@ -8,7 +8,7 @@ What we try to achieve with dartflash:
 
 This little game was developed with Flash and later ported to HTML5 in only 6 hours. The new HTML5 version runs with smooth 60fps, which is almost impossible to achieve with the Flash plugin!
 
-<http://www.dartflash.com/games/escape/escape.html>
+<http://www.dartflash.com/apps/escape/escape.html>
 
 ## Dart programming language
 
