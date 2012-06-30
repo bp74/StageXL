@@ -1,4 +1,4 @@
-class Sounds 
+class Sounds
 {
   static Resource resource;
 }
