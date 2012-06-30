@@ -1,0 +1,68 @@
+{"frames": [
+
+{
+	"filename": "LevelUp0.png",
+	"frame": {"x":2,"y":2,"w":52,"h":78},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":0,"w":52,"h":78},
+	"sourceSize": {"w":54,"h":80}
+},
+{
+	"filename": "LevelUp1.png",
+	"frame": {"x":56,"y":2,"w":56,"h":64},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":15,"w":56,"h":64},
+	"sourceSize": {"w":60,"h":80}
+},
+{
+	"filename": "LevelUp2.png",
+	"frame": {"x":114,"y":2,"w":72,"h":64},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":15,"w":72,"h":64},
+	"sourceSize": {"w":76,"h":80}
+},
+{
+	"filename": "LevelUp3.png",
+	"frame": {"x":56,"y":2,"w":56,"h":64},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":15,"w":56,"h":64},
+	"sourceSize": {"w":60,"h":80}
+},
+{
+	"filename": "LevelUp4.png",
+	"frame": {"x":188,"y":2,"w":29,"h":74},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":5,"w":29,"h":74},
+	"sourceSize": {"w":31,"h":80}
+},
+{
+	"filename": "LevelUp5.png",
+	"frame": {"x":2,"y":82,"w":66,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":7,"w":66,"h":72},
+	"sourceSize": {"w":66,"h":80}
+},
+{
+	"filename": "LevelUp6.png",
+	"frame": {"x":70,"y":82,"w":59,"h":80},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":0,"w":59,"h":80},
+	"sourceSize": {"w":61,"h":80}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "LevelupTextureAtlas.png",
+	"format": "RGBA8888",
+	"size": {"w":219,"h":164},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:5b892c7aae9a31dcc1ea4639431f00bf$"
+}
+}

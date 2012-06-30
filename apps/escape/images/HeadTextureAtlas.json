@@ -1,0 +1,36 @@
+{"frames": [
+
+{
+	"filename": "Head1.png",
+	"frame": {"x":170,"y":2,"w":81,"h":84},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":8,"w":81,"h":84},
+	"sourceSize": {"w":95,"h":100}
+},
+{
+	"filename": "Head2.png",
+	"frame": {"x":2,"y":2,"w":83,"h":84},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":8,"w":83,"h":84},
+	"sourceSize": {"w":95,"h":100}
+},
+{
+	"filename": "Head3.png",
+	"frame": {"x":87,"y":2,"w":81,"h":84},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":8,"w":81,"h":84},
+	"sourceSize": {"w":95,"h":100}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "HeadTextureAtlas.png",
+	"format": "RGBA8888",
+	"size": {"w":256,"h":128},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:4000a794e3cbffd1f67426a35a923124$"
+}
+}

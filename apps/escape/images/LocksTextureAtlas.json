@@ -1,0 +1,212 @@
+{"frames": [
+
+{
+	"filename": "Lock00.png",
+	"frame": {"x":2,"y":2,"w":56,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":7,"w":56,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock01.png",
+	"frame": {"x":60,"y":2,"w":64,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":8,"w":64,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock02.png",
+	"frame": {"x":126,"y":2,"w":68,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":8,"w":68,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock03.png",
+	"frame": {"x":196,"y":2,"w":68,"h":76},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":4,"w":68,"h":76},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock04.png",
+	"frame": {"x":266,"y":2,"w":68,"h":80},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":0,"w":68,"h":80},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock10.png",
+	"frame": {"x":336,"y":2,"w":54,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":7,"w":54,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock11.png",
+	"frame": {"x":392,"y":2,"w":64,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":8,"w":64,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock12.png",
+	"frame": {"x":2,"y":84,"w":68,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":7,"w":68,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock13.png",
+	"frame": {"x":72,"y":84,"w":68,"h":74},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":5,"w":68,"h":74},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock14.png",
+	"frame": {"x":142,"y":84,"w":68,"h":80},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":0,"w":68,"h":80},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock20.png",
+	"frame": {"x":212,"y":84,"w":56,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":7,"w":56,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock21.png",
+	"frame": {"x":270,"y":84,"w":64,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":8,"w":64,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock22.png",
+	"frame": {"x":336,"y":84,"w":68,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":7,"w":68,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock23.png",
+	"frame": {"x":406,"y":84,"w":68,"h":74},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":5,"w":68,"h":74},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock24.png",
+	"frame": {"x":2,"y":166,"w":68,"h":80},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":0,"w":68,"h":80},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock30.png",
+	"frame": {"x":72,"y":166,"w":56,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":7,"w":56,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock31.png",
+	"frame": {"x":130,"y":166,"w":64,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":8,"w":64,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock32.png",
+	"frame": {"x":196,"y":166,"w":68,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":7,"w":68,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock33.png",
+	"frame": {"x":266,"y":166,"w":68,"h":74},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":5,"w":68,"h":74},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock34.png",
+	"frame": {"x":336,"y":166,"w":68,"h":80},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":0,"w":68,"h":80},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock40.png",
+	"frame": {"x":406,"y":166,"w":54,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":7,"w":54,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock41.png",
+	"frame": {"x":2,"y":248,"w":64,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":8,"w":64,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock42.png",
+	"frame": {"x":68,"y":248,"w":68,"h":72},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":7,"w":68,"h":72},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock43.png",
+	"frame": {"x":138,"y":248,"w":68,"h":74},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":5,"w":68,"h":74},
+	"sourceSize": {"w":80,"h":80}
+},
+{
+	"filename": "Lock44.png",
+	"frame": {"x":208,"y":248,"w":68,"h":80},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":0,"w":68,"h":80},
+	"sourceSize": {"w":80,"h":80}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "LocksTextureAtlas.png",
+	"format": "RGBA8888",
+	"size": {"w":476,"h":330},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:d4ad70feb53d256b2c1097d6b5d060a4$"
+}
+}

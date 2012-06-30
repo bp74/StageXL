@@ -1,0 +1,60 @@
+{"frames": [
+
+{
+	"filename": "Alarm0.png",
+	"frame": {"x":2,"y":2,"w":72,"h":130},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":69,"y":29,"w":72,"h":130},
+	"sourceSize": {"w":194,"h":194}
+},
+{
+	"filename": "Alarm1.png",
+	"frame": {"x":76,"y":2,"w":194,"h":194},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":194,"h":194},
+	"sourceSize": {"w":194,"h":194}
+},
+{
+	"filename": "Alarm2.png",
+	"frame": {"x":272,"y":2,"w":164,"h":164},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":15,"y":17,"w":164,"h":164},
+	"sourceSize": {"w":194,"h":194}
+},
+{
+	"filename": "Alarm3.png",
+	"frame": {"x":438,"y":2,"w":194,"h":194},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":194,"h":194},
+	"sourceSize": {"w":194,"h":194}
+},
+{
+	"filename": "Alarm4.png",
+	"frame": {"x":634,"y":2,"w":164,"h":164},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":15,"y":17,"w":164,"h":164},
+	"sourceSize": {"w":194,"h":194}
+},
+{
+	"filename": "Alarm5.png",
+	"frame": {"x":800,"y":2,"w":194,"h":194},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":194,"h":194},
+	"sourceSize": {"w":194,"h":194}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "AlarmTextureAtlas.png",
+	"format": "RGBA8888",
+	"size": {"w":996,"h":198},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:39ffb8129c614f502ca55726a813a4d1$"
+}
+}
