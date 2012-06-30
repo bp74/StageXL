@@ -14,7 +14,6 @@ class BitmapData implements IBitmapDrawable
   double _frameY;
   double _frameWidth;
   double _frameHeight;
-  bool _frameRotated;
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
@@ -64,7 +63,6 @@ class BitmapData implements IBitmapDrawable
     _frameY = textureAtlasFrame.frameY.toDouble();
     _frameWidth = textureAtlasFrame.frameWidth.toDouble();
     _frameHeight = textureAtlasFrame.frameHeight.toDouble();
-    _frameRotated = textureAtlasFrame.rotated;
   }
 
   //-------------------------------------------------------------------------------------------------
