@@ -1,5 +1,5 @@
 #import('dart:html', prefix:'html');
-#import('../../library/flash.dart');
+#import('../../library/dartflash.dart');
 
 void main() {
 

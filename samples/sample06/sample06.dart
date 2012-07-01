@@ -1,17 +1,17 @@
 #import('dart:html', prefix:"html");
-#import('../../library/flash.dart');
+#import('../../library/dartflash.dart');
 
-void main() 
+void main()
 {
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
- 
+
   Stage stage = new Stage("myStage", html.document.query('#stage'));
 
   RenderLoop renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
-  
+
   //------------------------------------------------------------------
   // Draw a cloud with vectors
   //------------------------------------------------------------------
@@ -26,7 +26,7 @@ void main()
   shape.x = 400;
   shape.y = 300;
   stage.addChild(shape);
-  
+
   shape.graphics.beginPath();
   shape.graphics.moveTo(170, 80);
   shape.graphics.bezierCurveTo(130, 100, 130, 150, 230, 150);
@@ -39,7 +39,7 @@ void main()
 
   shape.graphics.fillGradient(gradient);
   shape.graphics.strokeColor(Color.Blue, 5);
-  
+
   //------------------------------------------------------------------
   // Add some animation
   //------------------------------------------------------------------
@@ -53,7 +53,7 @@ void main()
   tween2.animate("scaleX", 1);
   tween2.animate("scaleY", 1);
   tween2.delay = 5.0;
-    
+
   Juggler.instance.add(tween1);
-  Juggler.instance.add(tween2);  
+  Juggler.instance.add(tween2);
 }
