@@ -1,18 +1,18 @@
 class DisplayObjectContainer extends InteractiveObject
 {
-  List<DisplayObject> _childrens;
+  List<DisplayObject> _children;
   bool _mouseChildren = true;
   bool _tabChildren = true;
 
   DisplayObjectContainer()
   {
-    _childrens = new List<DisplayObject>();
+    _children = new List<DisplayObject>();
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  int get numChildren() => _childrens.length;
+  int get numChildren() => _children.length;
 
   bool get mouseChildren() => _mouseChildren;
   bool get tabChildren() => _tabChildren;
@@ -27,13 +27,13 @@ class DisplayObjectContainer extends InteractiveObject
   {
     if (child.parent == this)
     {
-      int index = _childrens.indexOf(child);
-      _childrens.removeRange(index, 1);
-      _childrens.add(child);
+      int index = _children.indexOf(child);
+      _children.removeRange(index, 1);
+      _children.add(child);
     }
     else
     {
-      addChildAt(child, _childrens.length);
+      addChildAt(child, _children.length);
     }
 
     return child;
@@ -43,7 +43,7 @@ class DisplayObjectContainer extends InteractiveObject
 
   DisplayObject addChildAt(DisplayObject child, int index)
   {
-    if (index < 0 && index > _childrens.length)
+    if (index < 0 && index > _children.length)
       throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
 
     if (child == this)
@@ -51,20 +51,20 @@ class DisplayObjectContainer extends InteractiveObject
 
     if (child.parent == this)
     {
-      int currentIndex = _childrens.indexOf(child);
-      _childrens.removeRange(currentIndex, 1);
+      int currentIndex = _children.indexOf(child);
+      _children.removeRange(currentIndex, 1);
 
-      if (index > _childrens.length)
+      if (index > _children.length)
         index --;
 
-      _childrens.insertRange(index, 1, child);
+      _children.insertRange(index, 1, child);
     }
     else
     {
       child.removeFromParent();
 
       child._setParent(this);
-      _childrens.insertRange(index, 1, child);
+      _children.insertRange(index, 1, child);
 
       child.dispatchEvent(new Event(Event.ADDED, true));
 
@@ -79,7 +79,7 @@ class DisplayObjectContainer extends InteractiveObject
 
   DisplayObject removeChild(DisplayObject child)
   {
-    int childIndex = _childrens.indexOf(child);
+    int childIndex = _children.indexOf(child);
 
     if (childIndex == -1)
       throw new IllegalArgumentException("Error #2025: The supplied DisplayObject must be a child of the caller.");
@@ -91,10 +91,10 @@ class DisplayObjectContainer extends InteractiveObject
 
   DisplayObject removeChildAt(int index)
   {
-    if (index < 0 && index >= _childrens.length)
+    if (index < 0 && index >= _children.length)
       throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
 
-    DisplayObject child = _childrens[index];
+    DisplayObject child = _children[index];
 
     child.dispatchEvent(new Event(Event.REMOVED, true));
 
@@ -102,7 +102,7 @@ class DisplayObjectContainer extends InteractiveObject
       _dispatchEventOnChildren(child, new Event(Event.REMOVED_FROM_STAGE));
 
     child._setParent(null);
-    _childrens.removeRange(index, 1);
+    _children.removeRange(index, 1);
 
     return child;
   }
@@ -111,21 +111,21 @@ class DisplayObjectContainer extends InteractiveObject
 
   DisplayObject getChildAt(int index)
   {
-    if (index < 0 && index >= _childrens.length)
+    if (index < 0 && index >= _children.length)
       throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
 
-    return _childrens[index];
+    return _children[index];
   }
 
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject getChildByName(String name)
   {
-    var childrensLength = _childrens.length;
+    var childrenLength = _children.length;
 
-    for(int i = 0; i < childrensLength; i++)
-      if (_childrens[i].name == name)
-        return _childrens[i];
+    for(int i = 0; i < childrenLength; i++)
+      if (_children[i].name == name)
+        return _children[i];
 
       return null;
   }
@@ -134,14 +134,14 @@ class DisplayObjectContainer extends InteractiveObject
 
   int getChildIndex(DisplayObject child)
   {
-      return _childrens.indexOf(child);
+      return _children.indexOf(child);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void setChildIndex(DisplayObject child, int index)
   {
-    if (index < 0 && index >= _childrens.length)
+    if (index < 0 && index >= _children.length)
       throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
 
     int oldIndex = getChildIndex(child);
@@ -149,8 +149,8 @@ class DisplayObjectContainer extends InteractiveObject
     if (oldIndex == -1)
       throw new IllegalArgumentException("Error #2025: The supplied DisplayObject must be a child of the caller.");
 
-    _childrens.removeRange(oldIndex, 1);
-    _childrens.insertRange(index, 1, child);
+    _children.removeRange(oldIndex, 1);
+    _children.insertRange(index, 1, child);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -172,15 +172,15 @@ class DisplayObjectContainer extends InteractiveObject
   {
     DisplayObject child1 = getChildAt(index1);
     DisplayObject child2 = getChildAt(index2);
-    _childrens[index1] = child2;
-    _childrens[index2] = child1;
+    _children[index1] = child2;
+    _children[index2] = child1;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void sortChildren(Function compareFunction)
   {
-    _childrens.sort(compareFunction);
+    _children.sort(compareFunction);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ class DisplayObjectContainer extends InteractiveObject
     if (returnRectangle == null)
       returnRectangle = new Rectangle.zero();
 
-    if (_childrens.length == 0)
+    if (_children.length == 0)
       return super.getBoundsTransformed(matrix, returnRectangle);
 
     num left = double.INFINITY;
@@ -210,13 +210,13 @@ class DisplayObjectContainer extends InteractiveObject
     num right = double.NEGATIVE_INFINITY;
     num bottom = double.NEGATIVE_INFINITY;
 
-    int childrensLength = _childrens.length;
+    int childrenLength = _children.length;
 
-    for (int i = 0; i < childrensLength; i++)
+    for (int i = 0; i < childrenLength; i++)
     {
-      _tmpMatrix.copyFromAndConcat(_childrens[i]._transformationMatrix, matrix);
+      _tmpMatrix.copyFromAndConcat(_children[i]._transformationMatrix, matrix);
 
-      Rectangle rectangle = _childrens[i].getBoundsTransformed(_tmpMatrix, returnRectangle);
+      Rectangle rectangle = _children[i].getBoundsTransformed(_tmpMatrix, returnRectangle);
 
       if (rectangle.left < left) left = rectangle.left;
       if (rectangle.top < top ) top = rectangle.top;
@@ -238,20 +238,20 @@ class DisplayObjectContainer extends InteractiveObject
   {
     DisplayObject hit = null;
 
-    for (int i = _childrens.length - 1; i >= 0; i--)
+    for (int i = _children.length - 1; i >= 0; i--)
     {
-      DisplayObject children = _childrens[i];
+      DisplayObject child = _children[i];
 
-      if (children.visible)
+      if (child.visible)
       {
-        Matrix matrix = children._transformationMatrix;
+        Matrix matrix = child._transformationMatrix;
 
         double deltaX = localX - matrix.tx;
         double deltaY = localY - matrix.ty;
         double childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
         double childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
 
-        var displayObject = children.hitTestInput(childX, childY);
+        var displayObject = child.hitTestInput(childX, childY);
 
         if (displayObject != null)
         {
@@ -271,11 +271,11 @@ class DisplayObjectContainer extends InteractiveObject
 
   void render(RenderState renderState)
   {
-    var childrensLength = _childrens.length;
+    var childrenLength = _children.length;
 
-    for(int i = 0; i < childrensLength; i++)
+    for(int i = 0; i < childrenLength; i++)
     {
-      DisplayObject child = _childrens[i];
+      DisplayObject child = _children[i];
 
       if (child.visible)
         renderState.renderDisplayObject(child);
@@ -291,17 +291,13 @@ class DisplayObjectContainer extends InteractiveObject
 
     if (displayObject is DisplayObjectContainer)
     {
-      DisplayObjectContainer displayObjectContainer = displayObject;
+      List<DisplayObject> children = new List<DisplayObject>.from(displayObject._children);
+      int childrenLength = children.length;
 
-      List<DisplayObject> childrens = new List<DisplayObject>.from(displayObjectContainer._childrens);
-      int childrenLength = childrens.length;
-
-      for(int i =0; i < childrenLength; i++)
-        _dispatchEventOnChildren(childrens[i], event);
+      for(int i = 0; i < childrenLength; i++)
+        _dispatchEventOnChildren(children[i], event);
     }
   }
-
-
 
 
 }
