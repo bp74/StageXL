@@ -1,6 +1,7 @@
 This library provides the Flash API build on top of open web standards (HTML5). Developers who build applications with Flash may have noticed that Flash isn't a popular choice anymore. Some of you probably think about a migration strategy from Flash to HTML5. 
 
 What we try to achieve with dartflash:
+
 * The library should be highly compatible with the Flash API.
 * The programming language should be similar to ActionScript 3.
 
