@@ -36,21 +36,22 @@ class BlurFilter extends BitmapFilter
 
   void _applyFilterLow(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
   {
-    var sourceImageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+    var sourceContext = sourceBitmapData._getContext();
+    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
     var sourceData = sourceImageData.data;
     
-    var destinationImageData = destinationBitmapData._getContext().createImageData(sourceImageData.width, sourceImageData.height);
+    var destinationContext = destinationBitmapData._getContext();
+    var destinationImageData = destinationContext.createImageData(sourceImageData.width, sourceImageData.height);
     var destinationData = destinationImageData.data;
     
     int width = sourceImageData.width;
     int height = sourceImageData.height;
     
-    int radiusX = Math.sqrt(6 * blurX * blurX + 1).toInt();  
+    int radiusX = Math.sqrt(5 * blurX * blurX + 1).toInt();  
+    int radiusY = Math.sqrt(5 * blurY * blurY + 1).toInt();
     int weightX = radiusX * radiusX;
-    
-    int radiusY = Math.sqrt(6 * blurY * blurY + 1).toInt();  
-    int weightY = radiusY * radiusY;   
-    
+    int weightY = radiusY * radiusY;
+
     int width4 = width * 4;
     int rx1 = radiusX;
     int rx2 = radiusX * 2; 
@@ -108,7 +109,7 @@ class BlurFilter extends BitmapFilter
       }
     }
     
-    destinationBitmapData._getContext().putImageData(destinationImageData, destinationPoint.x, destinationPoint.y);   
+    destinationContext.putImageData(destinationImageData, destinationPoint.x, destinationPoint.y);   
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -124,19 +125,20 @@ class BlurFilter extends BitmapFilter
 
   void _applyFilterHigh(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
   {
-    var sourceImageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+    var sourceContext = sourceBitmapData._getContext();
+    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
     var sourceData = sourceImageData.data;
     
-    var destinationImageData = destinationBitmapData._getContext().createImageData(sourceImageData.width, sourceImageData.height);
+    var destinationContext = destinationBitmapData._getContext();
+    var destinationImageData = destinationContext.createImageData(sourceImageData.width, sourceImageData.height);
     var destinationData = destinationImageData.data;
     
     int width = sourceImageData.width;
     int height = sourceImageData.height;
     
     int radiusX = Math.sqrt(3 * blurX * blurX + 1).toInt();  
+    int radiusY = Math.sqrt(3 * blurY * blurY + 1).toInt();
     int weightX = radiusX * radiusX * radiusX * radiusX;
-    
-    int radiusY = Math.sqrt(3 * blurY * blurY + 1).toInt();  
     int weightY = radiusY * radiusY * radiusY * radiusY;    
     
     int width4 = width * 4;
@@ -205,7 +207,7 @@ class BlurFilter extends BitmapFilter
       }
     }
     
-    destinationBitmapData._getContext().putImageData(destinationImageData, destinationPoint.x, destinationPoint.y);   
+    destinationContext.putImageData(destinationImageData, destinationPoint.x, destinationPoint.y);   
   }
   
 }
