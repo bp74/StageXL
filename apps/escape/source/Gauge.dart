@@ -26,34 +26,37 @@ class Gauge extends Sprite
 
   _updateMask()
   {
+    int bdWidth = _bitmap.bitmapData.width;
+    int bdHeight = _bitmap.bitmapData.height;
+    
     switch (_direction)
     {
       case DIRECTION_LEFT:
-        _bitmap.clipRectangle.left = ((1.0 - _ratio) * width).toInt();
+        _bitmap.clipRectangle.left = ((1.0 - _ratio) * bdWidth).toInt();
         _bitmap.clipRectangle.top = 0;
-        _bitmap.clipRectangle.right = width;
-        _bitmap.clipRectangle.bottom = height;
+        _bitmap.clipRectangle.right = bdWidth;
+        _bitmap.clipRectangle.bottom = bdHeight;
         break;
 
       case DIRECTION_UP:
         _bitmap.clipRectangle.left = 0;
-        _bitmap.clipRectangle.top = ((1.0 - _ratio) * height).toInt();
-        _bitmap.clipRectangle.right = width;
-        _bitmap.clipRectangle.bottom = height;
+        _bitmap.clipRectangle.top = ((1.0 - _ratio) * bdHeight).toInt();
+        _bitmap.clipRectangle.right = bdWidth;
+        _bitmap.clipRectangle.bottom = bdHeight;
         break;
 
       case DIRECTION_RIGHT:
         _bitmap.clipRectangle.left = 0;
         _bitmap.clipRectangle.top = 0;
-        _bitmap.clipRectangle.right = (_ratio * width).toInt();
-        _bitmap.clipRectangle.bottom = height;
+        _bitmap.clipRectangle.right = (_ratio * bdWidth).toInt();
+        _bitmap.clipRectangle.bottom = bdHeight;
         break;
 
       case DIRECTION_DOWN:
         _bitmap.clipRectangle.left = 0;
         _bitmap.clipRectangle.top = 0;
-        _bitmap.clipRectangle.right = width;
-        _bitmap.clipRectangle.bottom = (_ratio * height).toInt();
+        _bitmap.clipRectangle.right = bdWidth;
+        _bitmap.clipRectangle.bottom = (_ratio * bdHeight).toInt();
         break;
 
       default:
