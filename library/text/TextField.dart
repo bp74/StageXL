@@ -88,52 +88,7 @@ class TextField extends InteractiveObject
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle = null])
   {
-    int width = _canvasWidth;
-    int height = _canvasHeight;
-
-    // tranformedX = X * matrix.a + Y * matrix.c + matrix.tx;
-    // tranformedY = X * matrix.b + Y * matrix.d + matrix.ty;
-
-    num x1 = matrix.tx;
-    num y1 = matrix.ty;
-    num x2 = width * matrix.a + matrix.tx;
-    num y2 = width * matrix.b + matrix.ty;
-    num x3 = width * matrix.a + height * matrix.c + matrix.tx;
-    num y3 = width * matrix.b + height * matrix.d + matrix.ty;
-    num x4 = height * matrix.c + matrix.tx;
-    num y4 = height * matrix.d + matrix.ty;
-
-    num left = x1;
-    if (left > x2) left = x2;
-    if (left > x3) left = x3;
-    if (left > x4) left = x4;
-
-    num top = y1;
-    if (top > y2 ) top = y2;
-    if (top > y3 ) top = y3;
-    if (top > y4 ) top = y4;
-
-    num right = x1;
-    if (right < x2) right = x2;
-    if (right < x3) right = x3;
-    if (right < x4) right = x4;
-
-    num bottom = y1;
-    if (bottom < y2 ) bottom = y2;
-    if (bottom < y3 ) bottom = y3;
-    if (bottom < y4 ) bottom = y4;
-
-    //---------------------------------------------
-
-    if (returnRectangle == null)
-      returnRectangle = new Rectangle.zero();
-
-    returnRectangle.x = left;
-    returnRectangle.y = top;
-    returnRectangle.width = right - left;
-    returnRectangle.height = bottom - top;
-
-    return returnRectangle;
+    return _getBoundsTransformedHelper(matrix, _canvasWidth, _canvasHeight, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------
