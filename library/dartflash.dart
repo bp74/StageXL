@@ -61,9 +61,7 @@
 #source("display/Mask.dart");
 
 #source("displayEx/GlassPlate.dart");
-#source("displayEx/Particle.dart");
 #source("displayEx/ParticleSystem.dart");
-#source("displayEx/ParticleColor.dart");
 #source("displayEx/Warp.dart");
 
 #source("media/Sound.dart");

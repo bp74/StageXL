@@ -1,13 +1,37 @@
+//-------------------------------------------------------------------------------------------------
+// Credits to www.gamua.com
+// Particle System Extension for the Starling framework
+// The original code was release under the Simplified BSD License
+// http://wiki.starling-framework.org/extensions/particlesystem
+//-------------------------------------------------------------------------------------------------
+
+class _ParticleColor 
+{
+  num red, green, blue, alpha;
+  
+  _ParticleColor([this.red = 0.0, this.green = 0.0, this.blue = 0.0, this.alpha = 0.0]);
+  _ParticleColor.fromJSON(Map json) : red = json["red"], green = json["green"], blue = json["blue"], alpha = json["alpha"];
+}
+
+class _Particle 
+{
+  num currentTime;
+  num totalTime;
+  num x, y;
+  num size, sizeDelta;
+  num rotation, rotationDelta;
+  num startX, startY;
+  num velocityX, velocityY;
+  num radialAcceleration;
+  num tangentialAcceleration;
+  num emitRadius, emitRadiusDelta;
+  num emitRotation, emitRotationDelta;
+  //_ParticleColor color, colorDelta;
+}
+
 class ParticleSystem extends DisplayObject implements IAnimatable
 {
-  //-------------------------------------------------------------------------------------------------
-  // Credits to www.gamua.com
-  // Particle System Extension for the Starling framework
-  // The original code was release under the Simplified BSD License
-  // http://wiki.starling-framework.org/extensions/particlesystem
-  //-------------------------------------------------------------------------------------------------
-  
-  List<Particle> _particles;
+  List<_Particle> _particles;
   int _particleCount;
   html.CanvasElement _particleCanvas;
   num _frameTime;
@@ -40,8 +64,8 @@ class ParticleSystem extends DisplayObject implements IAnimatable
   num rotatePerSecond, rotatePerSecondVariance;
   
   // color configuration
-  ParticleColor startColor;
-  ParticleColor endColor;
+  _ParticleColor startColor;
+  _ParticleColor endColor;
   
   //-------------------------------------------------------------------------------------------------
   
@@ -50,13 +74,10 @@ class ParticleSystem extends DisplayObject implements IAnimatable
     _emissionTime = 0.0;
     _frameTime = 0.0;
     
-    _particles = new List<Particle>();
+    _particles = new List<_Particle>();
     _particleCount = 0;
     
     var pex = json.JSON.parse(jsonConfig);
-    
-    // _blendFactorSource = pex["blendFuncSource"];
-    // _blendFactorDestination = pex["blendFuncDestination"];
     
     emitterType = pex["emitterType"];
     emitterX = pex["sourcePosition"]["x"];
@@ -89,8 +110,8 @@ class ParticleSystem extends DisplayObject implements IAnimatable
     rotatePerSecond = pex["rotatePerSecond"] * Math.PI / 180.0;
     rotatePerSecondVariance = pex["rotatePerSecondVariance"] * Math.PI / 180.0;
     
-    startColor = new ParticleColor.fromJSON(pex["startColor"]);
-    endColor = new ParticleColor.fromJSON(pex["finishColor"]);
+    startColor = new _ParticleColor.fromJSON(pex["startColor"]);
+    endColor = new _ParticleColor.fromJSON(pex["finishColor"]);
     
     _drawParticleCanvas();
   }  
@@ -139,7 +160,7 @@ class ParticleSystem extends DisplayObject implements IAnimatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
   
-  void initParticle(Particle particle)
+  void _initParticle(_Particle particle)
   {
     particle.currentTime = 0.0;
     particle.totalTime = lifespan + lifespanVariance * (Math.random() * 2.0 - 1.0);
@@ -189,7 +210,7 @@ class ParticleSystem extends DisplayObject implements IAnimatable
   
   //-------------------------------------------------------------------------------------------------
   
-  void advanceParticle(Particle particle, num passedTime)
+  void _advanceParticle(_Particle particle, num passedTime)
   {
     num restTime = particle.totalTime - particle.currentTime;
     passedTime = (restTime > passedTime) ? passedTime : restTime;
@@ -254,23 +275,22 @@ class ParticleSystem extends DisplayObject implements IAnimatable
   bool advanceTime(num passedTime)
   {
     int particleIndex = 0;
-    Particle particle;
       
     //--------------------------------------------------------
     // advance existing particles
       
     while (particleIndex < _particleCount)
     {
-      particle = _particles[particleIndex];
+      _Particle particle = _particles[particleIndex];
           
       if (particle.currentTime < particle.totalTime)  
       {
-        advanceParticle(particle, passedTime);
+        _advanceParticle(particle, passedTime);
         particleIndex++;
       }
       else 
       {
-        Particle swapParticle = _particles[_particleCount - 1];
+        var swapParticle = _particles[_particleCount - 1];
         _particles[_particleCount - 1] = particle;
         _particles[particleIndex] = swapParticle;
         _particleCount--;
@@ -288,11 +308,11 @@ class ParticleSystem extends DisplayObject implements IAnimatable
       while (_frameTime > 0.0)
       {
         if (_particleCount >= _particles.length)
-          _particles.add(new Particle());
+          _particles.add(new _Particle());
         
-        particle = _particles[_particleCount++];  
-        this.initParticle(particle);
-        this.advanceParticle(particle, _frameTime);
+        var particle = _particles[_particleCount++];  
+        _initParticle(particle);
+        _advanceParticle(particle, _frameTime);
 
         _frameTime -= timeBetweenParticles;
       }
@@ -317,7 +337,7 @@ class ParticleSystem extends DisplayObject implements IAnimatable
     
     for(int i = 0; i < _particleCount; i++)
     {
-      Particle particle = _particles[i];
+      var particle = _particles[i];
 
       int time = ((particle.currentTime / particle.totalTime) * 63).toInt();
       int sourceX = (time % 8).toInt() * 32;
@@ -332,5 +352,5 @@ class ParticleSystem extends DisplayObject implements IAnimatable
     
     context.restore();
   }
-  
+ 
 }
