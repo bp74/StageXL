@@ -296,19 +296,13 @@ class ParticleSystem extends DisplayObject implements IAnimatable
 
         _frameTime -= timeBetweenParticles;
       }
+      
+      _emissionTime = Math.max(0.0, _emissionTime - passedTime);
     }
     
     //--------------------------------------------------------
 
-    if (_emissionTime == double.INFINITY) 
-    {
-      return (_particleCount > 0);
-    }  
-    else  
-    {
-      _emissionTime = Math.max(0.0, _emissionTime - passedTime);
-      return (_emissionTime > 0.0);
-    }
+    return (_particleCount > 0);
   }
 
   //-------------------------------------------------------------------------------------------------

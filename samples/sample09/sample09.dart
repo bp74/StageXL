@@ -87,13 +87,15 @@ void main()
     List<Sprite> buttons = [
       getButton("Jelly", () => startParticleSystem(jsonJelly)),
       getButton("Fire", () => startParticleSystem(jsonFire)),
-      getButton("Sun", () => startParticleSystem(jsonSun))
+      getButton("Sun", () => startParticleSystem(jsonSun)),
+      getButton("Stop", () => particleSystem.stop(false))
     ];
 
     for(int b = 0; b < buttons.length; b++) {
       Sprite button = buttons[b];
       stageForeground.addChild(button);
-      button.x = 10 + b * 130;
+      
+      button.x = (b < 3) ? 10 + b * 130 : 645;
       button.y = 10;
       button.scaleX = 0.5;
       button.scaleY = 0.5;
