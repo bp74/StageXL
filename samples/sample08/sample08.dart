@@ -15,17 +15,9 @@ void main()
   renderLoop.addStage(stage);
 
   //------------------------------------------------------------------
-  // Use the Resource class to load some Bitmaps
+  // prepare different Masks for later use
   //------------------------------------------------------------------
-
-  resource = new Resource();
-  resource.addImage("buttonUp", "../images/ButtonUp.png");
-  resource.addImage("buttonOver", "../images/ButtonOver.png");
-  resource.addImage("buttonDown", "../images/ButtonDown.png");
-  resource.addImage("flower1", "../images/Flower1.png");
-  resource.addImage("flower2", "../images/Flower2.png");
-  resource.addImage("flower3", "../images/Flower3.png");
-
+  
   List<Point> starPath = new List<Point>();
 
   for(int i = 0; i < 6; i++) {
@@ -39,13 +31,23 @@ void main()
   Mask circleMask = new Mask.circle(400.0, 350.0, 200.0);
   Mask customMask = new Mask.custom(starPath);
 
-  Future resourceLoader = resource.load();
+  //------------------------------------------------------------------
+  // Use the Resource class to load some Bitmaps
+  //------------------------------------------------------------------
 
+  resource = new Resource();
+  resource.addImage("buttonUp", "../images/ButtonUp.png");
+  resource.addImage("buttonOver", "../images/ButtonOver.png");
+  resource.addImage("buttonDown", "../images/ButtonDown.png");
+  resource.addImage("flower1", "../images/Flower1.png");
+  resource.addImage("flower2", "../images/Flower2.png");
+  resource.addImage("flower3", "../images/Flower3.png");
+  
   //------------------------------------------------------------------
   // Draw buttons for different masks and start animation
   //------------------------------------------------------------------
 
-  resourceLoader.then((result)
+  resource.load().then((result)
   {
     Sprite animation = getAnimation();
     animation.pivotX = 400;

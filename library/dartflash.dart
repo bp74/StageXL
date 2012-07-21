@@ -58,8 +58,13 @@
 #source("display/GraphicsCommand.dart");
 #source("display/CapsStyle.dart");
 #source("display/JointStyle.dart");
-#source("display/Warp.dart");
 #source("display/Mask.dart");
+
+#source("displayEx/GlassPlate.dart");
+#source("displayEx/Particle.dart");
+#source("displayEx/ParticleSystem.dart");
+#source("displayEx/ParticleColor.dart");
+#source("displayEx/Warp.dart");
 
 #source("media/Sound.dart");
 #source("media/SoundChannel.dart");
@@ -82,7 +87,7 @@
 #source("ui/Mouse.dart");
 #source("ui/MouseCursor.dart");
 #source("ui/Color.dart");
-
+ 
 #source("util/Resource.dart");
 #source("util/TextureAtlas.dart");
 #source("util/TextureAtlasFormat.dart");

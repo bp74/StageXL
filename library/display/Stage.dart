@@ -123,6 +123,8 @@ class Stage extends DisplayObjectContainer
 
   void _onMouseEvent(html.MouseEvent event)
   {
+    event.preventDefault();
+    
     int time = new Date.now().millisecondsSinceEpoch;
     int button = event.button;
     InteractiveObject target = null;
@@ -303,6 +305,8 @@ class Stage extends DisplayObjectContainer
 
   void _onKeyEvent(html.KeyboardEvent event)
   {
+    event.preventDefault();
+    
     String keyboardEventType = null;
 
     if (event.type == "keyup") keyboardEventType = KeyboardEvent.KEY_UP;
