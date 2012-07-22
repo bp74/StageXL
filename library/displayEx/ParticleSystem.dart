@@ -10,7 +10,14 @@ class _ParticleColor
   num red, green, blue, alpha;
   
   _ParticleColor([this.red = 0.0, this.green = 0.0, this.blue = 0.0, this.alpha = 0.0]);
-  _ParticleColor.fromJSON(Map json) : red = json["red"], green = json["green"], blue = json["blue"], alpha = json["alpha"];
+  
+  _ParticleColor.fromJSON(Map json) 
+  {
+    this.red = json["red"] as num; 
+    this.green = json["green"] as num; 
+    this.blue = json["blue"] as num; 
+    this.alpha = json["alpha"] as num;
+  }
 }
 
 class _Particle 
@@ -79,36 +86,36 @@ class ParticleSystem extends DisplayObject implements IAnimatable
     
     var pex = json.JSON.parse(jsonConfig);
     
-    emitterType = pex["emitterType"];
-    emitterX = pex["sourcePosition"]["x"];
-    emitterY = pex["sourcePosition"]["y"];
-    emitterXVariance = pex["sourcePositionVariance"]["x"];
-    emitterYVariance = pex["sourcePositionVariance"]["y"];
+    emitterType = pex["emitterType"].toInt();
+    emitterX = pex["sourcePosition"]["x"] as num;
+    emitterY = pex["sourcePosition"]["y"] as num;
+    emitterXVariance = pex["sourcePositionVariance"]["x"] as num;
+    emitterYVariance = pex["sourcePositionVariance"]["y"] as num;
     
-    maxNumParticles = pex["maxParticles"];
-    lifespan = Math.max(0.01, pex["particleLifeSpan"]);
-    lifespanVariance = pex["particleLifespanVariance"];
-    startSize = pex["startParticleSize"];
-    startSizeVariance = pex["startParticleSizeVariance"];
-    endSize = pex["finishParticleSize"];
-    endSizeVariance = pex["FinishParticleSizeVariance"];
-    emitAngle = pex["angle"] * Math.PI / 180.0;
-    emitAngleVariance = pex["angleVariance"] * Math.PI / 180.0;
+    maxNumParticles = pex["maxParticles"].toInt();
+    lifespan = Math.max(0.01, pex["particleLifeSpan"] as num);
+    lifespanVariance = pex["particleLifespanVariance"] as num;
+    startSize = pex["startParticleSize"] as num;
+    startSizeVariance = pex["startParticleSizeVariance"] as num;
+    endSize = pex["finishParticleSize"] as num;
+    endSizeVariance = pex["FinishParticleSizeVariance"] as num;
+    emitAngle = (pex["angle"] as num) * Math.PI / 180.0;
+    emitAngleVariance = (pex["angleVariance"] as num) * Math.PI / 180.0;
     
-    gravityX = pex["gravity"]["x"];
-    gravityY = pex["gravity"]["y"];
-    speed = pex["speed"];
-    speedVariance = pex["speedVariance"];    
-    radialAcceleration = pex["radialAcceleration"];
-    radialAccelerationVariance = pex["radialAccelVariance"];
-    tangentialAcceleration = pex["tangentialAcceleration"];
-    tangentialAccelerationVariance = pex["tangentialAccelVariance"];
+    gravityX = pex["gravity"]["x"] as num;
+    gravityY = pex["gravity"]["y"] as num;
+    speed = pex["speed"] as num;
+    speedVariance = pex["speedVariance"] as num;    
+    radialAcceleration = pex["radialAcceleration"] as num;
+    radialAccelerationVariance = pex["radialAccelVariance"] as num;
+    tangentialAcceleration = pex["tangentialAcceleration"] as num;
+    tangentialAccelerationVariance = pex["tangentialAccelVariance"] as num;
 
-    minRadius = pex["minRadius"];    
-    maxRadius = pex["maxRadius"];
-    maxRadiusVariance = pex["maxRadiusVariance"];
-    rotatePerSecond = pex["rotatePerSecond"] * Math.PI / 180.0;
-    rotatePerSecondVariance = pex["rotatePerSecondVariance"] * Math.PI / 180.0;
+    minRadius = pex["minRadius"] as num;    
+    maxRadius = pex["maxRadius"] as num;
+    maxRadiusVariance = pex["maxRadiusVariance"] as num;
+    rotatePerSecond = (pex["rotatePerSecond"] as num) * Math.PI / 180.0;
+    rotatePerSecondVariance = (pex["rotatePerSecondVariance"] as num) * Math.PI / 180.0;
     
     startColor = new _ParticleColor.fromJSON(pex["startColor"]);
     endColor = new _ParticleColor.fromJSON(pex["finishColor"]);

@@ -37,7 +37,7 @@ class TextureAtlas
             taf._offsetY = frame["spriteSourceSize"]["y"].toInt();
             taf._originalWidth = frame["sourceSize"]["w"].toInt();
             taf._originalHeight = frame["sourceSize"]["h"].toInt();
-            taf._rotated = frame["rotated"];
+            taf._rotated = frame["rotated"] as bool;
             textureAtlas._frames.add(taf);
           }
 
