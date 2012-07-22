@@ -35,7 +35,7 @@ void main()
     if (particleSystem != null) {
       particleSystem.stop(true);
       stageForeground.removeChild(particleSystem);
-      Juggler.instance.add(particleSystem);
+      Juggler.instance.remove(particleSystem);
     }
     
     particleSystem = new ParticleSystem(config);
