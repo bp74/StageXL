@@ -314,13 +314,16 @@ class ParticleSystem extends DisplayObject implements IAnimatable
 
       while (_frameTime > 0.0)
       {
-        if (_particleCount >= _particles.length)
-          _particles.add(new _Particle());
+        if (_particleCount < maxNumParticles)
+        {
+          if (_particleCount >= _particles.length)
+            _particles.add(new _Particle());
+          
+          var particle = _particles[_particleCount++];  
+          _initParticle(particle);
+          _advanceParticle(particle, _frameTime);
+        }
         
-        var particle = _particles[_particleCount++];  
-        _initParticle(particle);
-        _advanceParticle(particle, _frameTime);
-
         _frameTime -= timeBetweenParticles;
       }
       

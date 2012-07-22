@@ -33,6 +33,7 @@ void main()
   var startParticleSystem = (String config)
   {
     if (particleSystem != null) {
+      particleSystem.stop(true);
       stageForeground.removeChild(particleSystem);
       Juggler.instance.add(particleSystem);
     }
