@@ -145,13 +145,13 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable
       }
       else
       {
-        double cos = Math.cos(_rotation);
-        double sin = Math.sin(_rotation);
+        double cosR = cos(_rotation);
+        double sinR = sin(_rotation);
 
-        double a =   _scaleX * cos;
-        double b =   _scaleX * sin;
-        double c = - _scaleY * sin;
-        double d =   _scaleY * cos;
+        double a =   _scaleX * cosR;
+        double b =   _scaleX * sinR;
+        double c = - _scaleY * sinR;
+        double d =   _scaleY * cosR;
         double tx =  _x - _pivotX * a - _pivotY * c;
         double ty =  _y - _pivotX * b - _pivotY * d;
 

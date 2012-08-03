@@ -3,22 +3,27 @@ typedef num TransitionFunction(num ratio);
 class Transitions
 {
   // Standard
+ 
+  static Random _random;
   
   static num linear(num ratio) {
     return ratio;
   }
   
   static num sine(num ratio) {
-    return 0.5 - 0.5 * Math.cos(ratio * 2.0 * Math.PI) ;
+    return 0.5 - 0.5 * cos(ratio * 2.0 * PI) ;
   }
 
   static num cosine(num ratio) {
-    return 0.5 + 0.5 * Math.cos(ratio * 2.0 * Math.PI);
+    return 0.5 + 0.5 * cos(ratio * 2.0 * PI);
   }
   
   static num random(num ratio) {
+    if (_random == null) 
+      _random = new Random();
+    
     if (ratio == 0.0 || ratio == 1.0) return ratio;
-    return Math.random();
+    return _random.nextDouble();
   }
   
   // Quadratic
@@ -108,12 +113,12 @@ class Transitions
   // Circular
   
   static num easeInCircular(num ratio) {
-    return 1.0 - Math.sqrt(1.0 - ratio * ratio);
+    return 1.0 - sqrt(1.0 - ratio * ratio);
   }
   
   static num easeOutCircular(num ratio) {
     ratio = 1.0 - ratio;
-    return Math.sqrt(1.0 - ratio * ratio);
+    return sqrt(1.0 - ratio * ratio);
   }
   
   static num easeInOutCircular(num ratio) {
@@ -129,11 +134,11 @@ class Transitions
   // Sine
   
   static num easeInSine(num ratio) {
-    return 1.0 - Math.cos(ratio * (Math.PI / 2.0));
+    return 1.0 - cos(ratio * (PI / 2.0));
   }
   
   static num easeOutSine(num ratio) {
-    return Math.sin(ratio * (Math.PI / 2.0));
+    return sin(ratio * (PI / 2.0));
   }
   
   static num easeInOutSine(num ratio) {
@@ -150,12 +155,12 @@ class Transitions
   
   static num easeInExponential(num ratio) {
     if (ratio == 0.0) return 0.0;
-    return Math.pow(2.0, 10.0 * (ratio - 1.0));
+    return pow(2.0, 10.0 * (ratio - 1.0));
   }
   
   static num easeOutExponential(num ratio) {
     if (ratio == 1.0) return 1.0;
-    return 1.0 - Math.pow(2.0, - 10.0 * ratio);
+    return 1.0 - pow(2.0, - 10.0 * ratio);
   }
   
   static num easeInOutExponential(num ratio) {
@@ -196,12 +201,12 @@ class Transitions
   static num easeInElastic(num ratio) {
     if (ratio == 0.0 || ratio == 1.0) return ratio;
     ratio = ratio - 1.0;
-    return - Math.pow(2.0, 10.0 * ratio) * Math.sin((ratio - 0.3 / 4.0) * (2.0 * Math.PI) / 0.3) ;
+    return - pow(2.0, 10.0 * ratio) * sin((ratio - 0.3 / 4.0) * (2.0 * PI) / 0.3) ;
   }
   
   static num easeOutElastic(num ratio) {
     if (ratio == 0.0 || ratio == 1.0) return ratio; 
-    return Math.pow(2.0, - 10.0 * ratio) * Math.sin((ratio - 0.3 / 4.0) * (2.0 * Math.PI) / 0.3) + 1;
+    return pow(2.0, - 10.0 * ratio) * sin((ratio - 0.3 / 4.0) * (2.0 * PI) / 0.3) + 1;
   }
   
   static num easeInOutElastic(num ratio) {

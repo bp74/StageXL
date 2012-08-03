@@ -42,7 +42,7 @@ class Mask
         break;
       
       case 1: 
-        context.arc(_circle.x, _circle.y, _circle.radius, 0, Math.PI * 2.0, false); 
+        context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false); 
         break;
         
       case 2:

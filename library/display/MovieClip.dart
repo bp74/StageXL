@@ -38,14 +38,14 @@ class MovieClip extends InteractiveObject implements IAnimatable
 
   void gotoAndPlay(int frame)
   {
-    _currentFrame = Math.min(Math.max(frame, 0), totalFrames - 1);
+    _currentFrame = min(max(frame, 0), totalFrames - 1);
     _play = true;
     _frameTime = null;
   }
 
   void gotoAndStop(int frame)
   {
-    _currentFrame = Math.min(Math.max(frame, 0), totalFrames - 1);
+    _currentFrame = min(max(frame, 0), totalFrames - 1);
     _play = false;
     _frameTime = null;
   }
@@ -66,14 +66,14 @@ class MovieClip extends InteractiveObject implements IAnimatable
 
   void nextFrame()
   {
-    _currentFrame = _loop ? (_currentFrame + 1) % totalFrames : Math.max(_currentFrame + 1, totalFrames - 1);
+    _currentFrame = _loop ? (_currentFrame + 1) % totalFrames : max(_currentFrame + 1, totalFrames - 1);
     _play = false;
     _frameTime = null;
   }
 
   void prevFrame()
   {
-    _currentFrame = _loop ? (_currentFrame - 1) % totalFrames : Math.min(_currentFrame - 1, 0);
+    _currentFrame = _loop ? (_currentFrame - 1) % totalFrames : min(_currentFrame - 1, 0);
     _play = false;
     _frameTime = null;
   }
@@ -95,7 +95,7 @@ class MovieClip extends InteractiveObject implements IAnimatable
 
       while (_play && _frameTime >= frameDuration)
       {
-        _currentFrame = _loop ? (_currentFrame + 1) % totalFrames : Math.max(_currentFrame + 1, totalFrames - 1);
+        _currentFrame = _loop ? (_currentFrame + 1) % totalFrames : max(_currentFrame + 1, totalFrames - 1);
         _frameTime -= frameDuration;
 
         // ToDo: we should add an event to notify frame progress

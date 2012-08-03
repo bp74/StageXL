@@ -51,7 +51,7 @@ class TimeGauge extends Gauge implements IAnimatable
   {
     pause();
 
-    time = Math.max(time, 0.0);
+    time = max(time, 0.0);
 
     if (time != 0.0) {
       _totalTime = time;

@@ -1,3 +1,4 @@
+#import('dart:math');
 #import('dart:html', prefix:"html");
 #import('../../library/dartflash.dart');
 
@@ -21,10 +22,10 @@ void main()
   List<Point> starPath = new List<Point>();
 
   for(int i = 0; i < 6; i++) {
-    num a1 = Math.PI * (i * 60.0) / 180.0;
-    num a2 = Math.PI * (i * 60.0 + 30.0) / 180.0;
-    starPath.add(new Point(400.0 + 200.0 * Math.cos(a1), 350.0 + 200.0 * Math.sin(a1)));
-    starPath.add(new Point(400.0 + 100.0 * Math.cos(a2), 350.0 + 100.0 * Math.sin(a2)));
+    num a1 = PI * (i * 60.0) / 180.0;
+    num a2 = PI * (i * 60.0 + 30.0) / 180.0;
+    starPath.add(new Point(400.0 + 200.0 * cos(a1), 350.0 + 200.0 * sin(a1)));
+    starPath.add(new Point(400.0 + 100.0 * cos(a2), 350.0 + 100.0 * sin(a2)));
   }
 
   Mask rectangleMask = new Mask.rectangle(100.0, 200.0, 600.0, 300.0);
@@ -63,7 +64,7 @@ void main()
       getButton("Custom", () => animation.mask = customMask),
       getButton("spin", () {
         Tween rotate = new Tween(animation, 2.0, Transitions.easeInOutBack);
-        rotate.animate("rotation", Math.PI * 4);
+        rotate.animate("rotation", PI * 4.0);
         rotate.onComplete = () => animation.rotation = 0.0;
         Juggler.instance.add(rotate);
       })
@@ -85,19 +86,20 @@ void main()
 Sprite getAnimation()
 {
   Sprite sprite = new Sprite();
-
+  Random random = new Random();
+  
   for(int i = 0; i < 150; i++) {
-    int f = 1 + (Math.random() * 3.0).toInt();
+    int f = 1 + random.nextInt(3);
     BitmapData bitmapData = resource.getBitmapData("flower$f");
     Bitmap bitmap = new Bitmap(bitmapData);
     bitmap.pivotX = 64;
     bitmap.pivotY = 64;
-    bitmap.x = 64.0 + Math.random() * 672.0;
-    bitmap.y = 164.0 + Math.random() * 372.0;
+    bitmap.x = 64.0 + random.nextDouble() * 672.0;
+    bitmap.y = 164.0 + random.nextDouble() * 372.0;
     sprite.addChild(bitmap);
 
     Tween tween = new Tween(bitmap, 180.0, Transitions.linear);
-    tween.animate("rotation", Math.PI * 20);
+    tween.animate("rotation", PI * 20.0);
     Juggler.instance.add(tween);
   }
 

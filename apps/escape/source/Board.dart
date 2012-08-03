@@ -12,6 +12,7 @@ class Board extends Sprite
 
   //-------------------------------------------------------------------------------------------------
 
+  Random _random;
   int _status;
 
   List<int>_colors;
@@ -32,6 +33,7 @@ class Board extends Sprite
 
   Board(int chains, int locks, int jokers, int blocks, int doubles, int quints, List<int> colors)
   {
+    _random = new Random();
     _status = BoardStatus.Playing;
     _colors = colors;
 
@@ -164,8 +166,8 @@ class Board extends Sprite
     for(int l = 0; l < _levelLocks; l++)
     {
       Lock lock = new Lock(l);
-      lock.rotation = (Math.random() * 30 - 15) * Math.PI / 180;
-      lock.x = 300 - (90 * _levelLocks) / 2 + l * 90 + (Math.random() * 20 - 10);
+      lock.rotation = (_random.nextInt(30) - 15) * PI / 180;
+      lock.x = 300 - (90 * _levelLocks) / 2 + l * 90 + _random.nextInt(20) - 10;
       lock.y = 550;
 
       _locks.add(lock);
@@ -269,12 +271,12 @@ class Board extends Sprite
 
   //-------------------------------------------------------------------------------------------------
 
-  void _initQueuePlaceSpecial(String special, int current, int max)
+  void _initQueuePlaceSpecial(String special, int current, int maximum)
   {
     for(int retry = 0; retry < 20; retry++)
     {
-      int range = (_levelChains / max).toInt();
-      int index = current * range + (Math.random() * range).toInt();
+      int range = (_levelChains / maximum).toInt();
+      int index = current * range + _random.nextInt(range);
 
       if (_queue[index].special == Special.None)
       {
@@ -290,8 +292,8 @@ class Board extends Sprite
 
     for(int i = 0; i < _levelChains; i++)
     {
-      int color = _colors[(Math.random() * _colors.length).toInt()];
-      int direction = (Math.random() * 2).toInt();
+      int color = _colors[_random.nextInt(_colors.length)];
+      int direction = _random.nextInt(2);
 
       _queue.add(new Field(color, direction));
     }
@@ -326,8 +328,8 @@ class Board extends Sprite
 
       for(int f = 0; f < 100; f++)
       {
-       int color = _colors[(Math.random() * _colors.length).toInt()];
-       int direction = (Math.random() * 2).toInt();
+       int color = _colors[_random.nextInt(_colors.length)];
+       int direction = _random.nextInt(2);
 
         _fields.add(new Field(color, direction));
       }
@@ -356,8 +358,8 @@ class Board extends Sprite
         field.linkedJoker = false;
         field.updateDisplayObjects(_chainLayer, _linkLayer, _specialLayer);
 
-        field.color =  _colors[(Math.random() * _colors.length).toInt()];
-        field.direction = (Math.random() * 2).toInt();
+        field.color =  _colors[_random.nextInt(_colors.length)];
+        field.direction = _random.nextInt(2);
       }
 
       rebuild = clearCombinations() || (possibleCombinations() == false);
@@ -553,7 +555,7 @@ class Board extends Sprite
   {
     if (field.special.indexOf("Lock") == 0)
     {
-      int lockNumber = Math.parseInt(field.special.substring(4, 5)) - 1;
+      int lockNumber = parseInt(field.special.substring(4, 5)) - 1;
       Lock lock = _locks[lockNumber];
 
       Bitmap special = Grafix.getSpecial(field.special);
@@ -669,7 +671,7 @@ class Board extends Sprite
             }
             else
             {
-              fieldSource = new Field(_colors[(Math.random() *  _colors.length).toInt()], (Math.random() * 2).toInt());
+              fieldSource = new Field(_colors[_random.nextInt(_colors.length)], _random.nextInt(2));
             }
           }
 
@@ -710,8 +712,8 @@ class Board extends Sprite
   {
     if (me.target == _chainLayer && this.mouseEnabled)
     {
-      int x = Math.min(me.localX / 50, 9).toInt();
-      int y = Math.min(me.localY / 50, 9).toInt();
+      int x = min(me.localX / 50, 9).toInt();
+      int y = min(me.localY / 50, 9).toInt();
 
       Point p = new Point(x, y);
 

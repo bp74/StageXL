@@ -16,11 +16,11 @@ class Point
   
   static Point interpolate(Point p1, Point p2) => new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
 
-  static Point polar(num len, num angle) => new Point(len * Math.cos(angle), - len * Math.sin(angle));
+  static Point polar(num len, num angle) => new Point(len * cos(angle), - len * sin(angle));
   
   //-------------------------------------------------------------------------------------------------
 
-  num get length() => Math.sqrt(this.x * this.x + this.y * this.y);
+  num get length() => sqrt(this.x * this.x + this.y * this.y);
   
   //-------------------------------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ class Point
   {
       num dx = x - other.x;
       num dy = y - other.y;
-      return Math.sqrt(dx * dx + dy * dy);
+      return sqrt(dx * dx + dy * dy);
   }
   
 }

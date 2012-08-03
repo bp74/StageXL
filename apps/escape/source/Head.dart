@@ -30,7 +30,7 @@ class Head extends Sprite
 
     _nodTween.animateValue((value) {
       _headBitmap.bitmapData = _headBitmapDatas[((value * _headBitmapDatas.length) % _headBitmapDatas.length).toInt()];
-      _headBitmap.y = Math.sin(value * 2 * Math.PI) * 3 - _headBitmap.height / 2;
+      _headBitmap.y = sin(value * 2 * PI) * 3 - _headBitmap.height / 2;
     }, 0, count);
 
     Juggler.instance.add(_nodTween);

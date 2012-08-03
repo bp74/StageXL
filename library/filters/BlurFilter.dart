@@ -47,8 +47,8 @@ class BlurFilter extends BitmapFilter
     int width = sourceImageData.width;
     int height = sourceImageData.height;
     
-    int radiusX = Math.sqrt(5 * blurX * blurX + 1).toInt();  
-    int radiusY = Math.sqrt(5 * blurY * blurY + 1).toInt();
+    int radiusX = sqrt(5 * blurX * blurX + 1).toInt();  
+    int radiusY = sqrt(5 * blurY * blurY + 1).toInt();
     int weightX = radiusX * radiusX;
     int weightY = radiusY * radiusY;
 
@@ -136,8 +136,8 @@ class BlurFilter extends BitmapFilter
     int width = sourceImageData.width;
     int height = sourceImageData.height;
     
-    int radiusX = Math.sqrt(3 * blurX * blurX + 1).toInt();  
-    int radiusY = Math.sqrt(3 * blurY * blurY + 1).toInt();
+    int radiusX = sqrt(3 * blurX * blurX + 1).toInt();  
+    int radiusY = sqrt(3 * blurY * blurY + 1).toInt();
     int weightX = radiusX * radiusX * radiusX * radiusX;
     int weightY = radiusY * radiusY * radiusY * radiusY;    
     

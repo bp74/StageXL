@@ -13,7 +13,7 @@ class DropShadowFilter
   bool knockout;
   bool hideObject;
   
-  DropShadowFilter([this.distance = 4.0, this.angle = Math.PI / 4, this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4, this.strength = 1.0, this.quality = 1, this.inner = false, this.knockout = false, this.hideObject = false]);
+  DropShadowFilter([this.distance = 4.0, this.angle = PI / 4, this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4, this.strength = 1.0, this.quality = 1, this.inner = false, this.knockout = false, this.hideObject = false]);
   
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

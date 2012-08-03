@@ -1,3 +1,4 @@
+#import('dart:math');
 #import('dart:html', prefix:"html");
 #import('../../library/dartflash.dart');
 
@@ -31,7 +32,7 @@ void main()
   Bitmap bitmap = new Bitmap(bitmapData);
   bitmap.x = 100;
   bitmap.y = 100;
-  bitmap.rotation = Math.PI / 8;
+  bitmap.rotation = PI / 8.0;
 
   // Add the Bitmap to the Stage
 

@@ -33,7 +33,7 @@ class Lock extends Sprite
   void showHappy()
   {
     Tween tween1 = new Tween(this, 2.0, Transitions.easeOutCubic);
-    tween1.animateValue((value) => scaleX = scaleY = 1.0 + 0.2 * Math.sin(value * 4 * Math.PI), 0.0, 1.0);
+    tween1.animateValue((value) => scaleX = scaleY = 1.0 + 0.2 * sin(value * 4 * PI), 0.0, 1.0);
 
     Tween tween2 = new Tween(this, 0.2, Transitions.easeOutCubic);
     tween2.animate("alpha", 0.0);

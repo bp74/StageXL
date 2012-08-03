@@ -49,8 +49,8 @@ class Sound
     
     //---------------------------------------
     
-    RegExp exp = const RegExp(@"\.(ogg|mp3|wav)$", false, true); 
-    Match match = exp.firstMatch(url);
+    RegExp regex = const RegExp(@"\.(ogg|mp3|wav)$", false, true); 
+    Match match = regex.firstMatch(url);
     
     if (match == null)
       throw "Unsupported file extension";

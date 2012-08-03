@@ -130,8 +130,8 @@ class Matrix
 
   void rotate(num rotation)
   {
-    num cos = Math.cos(rotation);
-    num sin = Math.sin(rotation);
+    num cosR = cos(rotation);
+    num sinR = sin(rotation);
 
     num a =  _a;
     num b =  _b;
@@ -140,20 +140,20 @@ class Matrix
     num tx = _tx;
     num ty = _ty;
     
-    _a =  (a * cos - b * sin); 
-    _b =  (a * sin + b * cos); 
-    _c =  (c * cos - d * sin); 
-    _d =  (c * sin + d * cos);
-    _tx = (tx * cos - ty * sin);
-    _ty = (tx * sin + ty * cos);
+    _a =  (a * cosR - b * sinR); 
+    _b =  (a * sinR + b * cosR); 
+    _c =  (c * cosR - d * sinR); 
+    _d =  (c * sinR + d * cosR);
+    _tx = (tx * cosR - ty * sinR);
+    _ty = (tx * sinR + ty * cosR);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void skew(num skewX, num skewY)
   {
-    num tanX = Math.tan(skewX);
-    num tanY = Math.tan(skewY);
+    num tanX = tan(skewX);
+    num tanY = tan(skewY);
     
     num a =  _a;
     num b =  _b;

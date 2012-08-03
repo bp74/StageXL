@@ -8,7 +8,7 @@ class DelayedCall implements IAnimatable
   DelayedCall(Function action, num delay)
   {
     _action = action;
-    _totalTime = Math.max(delay, 0.0001);
+    _totalTime = max(delay, 0.0001);
   }
 
   //-------------------------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ class WebAudioApiSoundChannel extends SoundChannel
   void set soundTransform(SoundTransform value)
   {
     _soundTransform = value;
-    _gainNode.gain.value =  (_soundTransform != null) ? Math.pow(_soundTransform.volume , 2) : 1;
+    _gainNode.gain.value =  (_soundTransform != null) ? pow(_soundTransform.volume , 2) : 1;
   }
  
   //-------------------------------------------------------------------------------------------------

@@ -1,3 +1,4 @@
+#import('dart:math');
 #import('dart:html', prefix:"html");
 #import('../../library/dartflash.dart');
 
@@ -50,7 +51,7 @@ void main()
     tweenUp.delay = 4.0;
 
     Tween tweenRotation = new Tween(world, 6.0, Transitions.easeInOutElastic);
-    tweenRotation.animate("rotation", Math.PI * 4);
+    tweenRotation.animate("rotation", PI * 4.0);
     tweenRotation.delay = 7.0;
 
     Juggler.instance.add(tweenDown);

@@ -172,7 +172,7 @@ class TextField extends InteractiveObject
       TextLineMetrics textLineMetrics = new TextLineMetrics(offsetX, metrics.width, _defaultTextFormat.size, 0, 0, 0);
 
       _linesMetrics.add(textLineMetrics);
-      _textWidth = Math.max(_textWidth, textLineMetrics.width);
+      _textWidth = max(_textWidth, textLineMetrics.width);
       _textHeight = _textHeight + textLineMetrics.height;
     }
   }

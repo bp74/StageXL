@@ -22,7 +22,7 @@ class SpecialWobble extends Sprite implements IAnimatable
   {
     _currentTime += time;
 
-    this.rotation = Math.sin(_currentTime * 7) * 10 * Math.PI / 180;
+    this.rotation = sin(_currentTime * 7) * 10 * PI / 180;
 
     return true;
   }

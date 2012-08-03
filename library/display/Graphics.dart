@@ -78,7 +78,7 @@ class Graphics
   circle(num x, num y, num radius)
   {
     _commands.add(new _GraphicsCommand("moveTo", [x + radius, y]));
-    _commands.add(new _GraphicsCommand("arc", [x, y, radius, 0, Math.PI * 2, false]));
+    _commands.add(new _GraphicsCommand("arc", [x, y, radius, 0, PI * 2, false]));
   }
 
   //-------------------------------------------------------------------------------------------------

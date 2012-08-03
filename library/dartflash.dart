@@ -3,6 +3,7 @@
 //------------------------------------------------------
 
 #import("dart:core");
+#import("dart:math");
 #import("dart:html", prefix: "html");
 #import("dart:json", prefix: "json");
 

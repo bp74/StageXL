@@ -38,6 +38,7 @@ class _Particle
 
 class ParticleSystem extends DisplayObject implements IAnimatable
 {
+  Random _random;
   List<_Particle> _particles;
   int _particleCount;
   html.CanvasElement _particleCanvas;
@@ -78,6 +79,7 @@ class ParticleSystem extends DisplayObject implements IAnimatable
   
   ParticleSystem(String jsonConfig)
   {
+    _random = new Random();
     _emissionTime = 0.0;
     _frameTime = 0.0;
     
@@ -93,14 +95,14 @@ class ParticleSystem extends DisplayObject implements IAnimatable
     emitterYVariance = pex["sourcePositionVariance"]["y"] as num;
     
     maxNumParticles = pex["maxParticles"].toInt();
-    lifespan = Math.max(0.01, pex["particleLifeSpan"] as num);
+    lifespan = max(0.01, pex["particleLifeSpan"] as num);
     lifespanVariance = pex["particleLifespanVariance"] as num;
     startSize = pex["startParticleSize"] as num;
     startSizeVariance = pex["startParticleSizeVariance"] as num;
     endSize = pex["finishParticleSize"] as num;
     endSizeVariance = pex["FinishParticleSizeVariance"] as num;
-    emitAngle = (pex["angle"] as num) * Math.PI / 180.0;
-    emitAngleVariance = (pex["angleVariance"] as num) * Math.PI / 180.0;
+    emitAngle = (pex["angle"] as num) * PI / 180.0;
+    emitAngleVariance = (pex["angleVariance"] as num) * PI / 180.0;
     
     gravityX = pex["gravity"]["x"] as num;
     gravityY = pex["gravity"]["y"] as num;
@@ -114,8 +116,8 @@ class ParticleSystem extends DisplayObject implements IAnimatable
     minRadius = pex["minRadius"] as num;    
     maxRadius = pex["maxRadius"] as num;
     maxRadiusVariance = pex["maxRadiusVariance"] as num;
-    rotatePerSecond = (pex["rotatePerSecond"] as num) * Math.PI / 180.0;
-    rotatePerSecondVariance = (pex["rotatePerSecondVariance"] as num) * Math.PI / 180.0;
+    rotatePerSecond = (pex["rotatePerSecond"] as num) * PI / 180.0;
+    rotatePerSecondVariance = (pex["rotatePerSecondVariance"] as num) * PI / 180.0;
     
     startColor = new _ParticleColor.fromJSON(pex["startColor"]);
     endColor = new _ParticleColor.fromJSON(pex["finishColor"]);
@@ -158,7 +160,7 @@ class ParticleSystem extends DisplayObject implements IAnimatable
       
       context.beginPath();
       context.moveTo(targetX + radius, targetY);
-      context.arc(targetX, targetY, radius, 0, Math.PI * 2, false);
+      context.arc(targetX, targetY, radius, 0, PI * 2.0, false);
       context.fillStyle = gradient;
       context.fill();
     }
@@ -170,29 +172,29 @@ class ParticleSystem extends DisplayObject implements IAnimatable
   void _initParticle(_Particle particle)
   {
     particle.currentTime = 0.0;
-    particle.totalTime = lifespan + lifespanVariance * (Math.random() * 2.0 - 1.0);
+    particle.totalTime = lifespan + lifespanVariance * (_random.nextDouble() * 2.0 - 1.0);
 
     if (particle.totalTime <= 0.0) return;
       
-    particle.x = emitterX + emitterXVariance * (Math.random() * 2.0 - 1.0);
-    particle.y = emitterY + emitterYVariance * (Math.random() * 2.0 - 1.0);
+    particle.x = emitterX + emitterXVariance * (_random.nextDouble() * 2.0 - 1.0);
+    particle.y = emitterY + emitterYVariance * (_random.nextDouble() * 2.0 - 1.0);
     particle.startX = emitterX;
     particle.startY = emitterY;
       
-    num angle = emitAngle + emitAngleVariance * (Math.random() * 2.0 - 1.0);
-    num velocity = speed + speedVariance * (Math.random() * 2.0 - 1.0);
-    particle.velocityX = velocity * Math.cos(angle);
-    particle.velocityY = velocity * Math.sin(angle);
+    num angle = emitAngle + emitAngleVariance * (_random.nextDouble() * 2.0 - 1.0);
+    num velocity = speed + speedVariance * (_random.nextDouble() * 2.0 - 1.0);
+    particle.velocityX = velocity * cos(angle);
+    particle.velocityY = velocity * sin(angle);
     
-    particle.emitRadius = maxRadius + maxRadiusVariance * (Math.random() * 2.0 - 1.0);
+    particle.emitRadius = maxRadius + maxRadiusVariance * (_random.nextDouble() * 2.0 - 1.0);
     particle.emitRadiusDelta = maxRadius / particle.totalTime;
-    particle.emitRotation = emitAngle + emitAngleVariance * (Math.random() * 2.0 - 1.0); 
-    particle.emitRotationDelta = rotatePerSecond + rotatePerSecondVariance * (Math.random() * 2.0 - 1.0); 
-    particle.radialAcceleration = radialAcceleration + radialAccelerationVariance * (Math.random() * 2.0 - 1.0);
-    particle.tangentialAcceleration = tangentialAcceleration + tangentialAccelerationVariance * (Math.random() * 2.0 - 1.0);
+    particle.emitRotation = emitAngle + emitAngleVariance * (_random.nextDouble() * 2.0 - 1.0); 
+    particle.emitRotationDelta = rotatePerSecond + rotatePerSecondVariance * (_random.nextDouble() * 2.0 - 1.0); 
+    particle.radialAcceleration = radialAcceleration + radialAccelerationVariance * (_random.nextDouble() * 2.0 - 1.0);
+    particle.tangentialAcceleration = tangentialAcceleration + tangentialAccelerationVariance * (_random.nextDouble() * 2.0 - 1.0);
     
-    num size1 = startSize + startSizeVariance * (Math.random() * 2.0 - 1.0); 
-    num size2 = endSize + endSizeVariance * (Math.random() * 2.0 - 1.0);
+    num size1 = startSize + startSizeVariance * (_random.nextDouble() * 2.0 - 1.0); 
+    num size2 = endSize + endSizeVariance * (_random.nextDouble() * 2.0 - 1.0);
     if (size1 < 0.1) size1 = 0.1;
     if (size2 < 0.1) size2 = 0.1;
     particle.size = size1;
@@ -227,8 +229,8 @@ class ParticleSystem extends DisplayObject implements IAnimatable
     {
       particle.emitRotation += particle.emitRotationDelta * passedTime;
       particle.emitRadius   -= particle.emitRadiusDelta   * passedTime;
-      particle.x = emitterX - Math.cos(particle.emitRotation) * particle.emitRadius;
-      particle.y = emitterY - Math.sin(particle.emitRotation) * particle.emitRadius;
+      particle.x = emitterX - cos(particle.emitRotation) * particle.emitRadius;
+      particle.y = emitterY - sin(particle.emitRotation) * particle.emitRadius;
           
       if (particle.emitRadius < minRadius)
         particle.currentTime = particle.totalTime;
@@ -237,7 +239,7 @@ class ParticleSystem extends DisplayObject implements IAnimatable
     {
       num distanceX = particle.x - particle.startX;
       num distanceY = particle.y - particle.startY;
-      num distanceScalar = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+      num distanceScalar = sqrt(distanceX * distanceX + distanceY * distanceY);
       if (distanceScalar < 0.01) distanceScalar = 0.01;
       distanceX = distanceX / distanceScalar;
       distanceY = distanceY / distanceScalar;
@@ -327,7 +329,7 @@ class ParticleSystem extends DisplayObject implements IAnimatable
         _frameTime -= timeBetweenParticles;
       }
       
-      _emissionTime = Math.max(0.0, _emissionTime - passedTime);
+      _emissionTime = max(0.0, _emissionTime - passedTime);
     }
     
     //--------------------------------------------------------

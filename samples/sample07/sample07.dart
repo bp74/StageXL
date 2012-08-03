@@ -1,3 +1,4 @@
+#import('dart:math');
 #import('dart:html', prefix:"html");
 #import('../../library/dartflash.dart');
 
@@ -32,7 +33,7 @@ void main()
 
 void startAnimation()
 {
-  num random = Math.random();
+  Random random = new Random();
 
   //------------------------------------------------------------------
   // Get all the "walk" bitmapDatas in the texture atlas.
@@ -45,10 +46,12 @@ void startAnimation()
   // Create a movie clip with the list of bitmapDatas.
   //------------------------------------------------------------------
 
+  num rnd = random.nextDouble();
+  
   MovieClip movieClip = new MovieClip(bitmapDatas, 30);
   movieClip.x = -128;
-  movieClip.y = 100.0 + 200.0 * random;
-  movieClip.scaleX = movieClip.scaleY = 0.5 + 0.5 * random;
+  movieClip.y = 100.0 + 200.0 * rnd;
+  movieClip.scaleX = movieClip.scaleY = 0.5 + 0.5 * rnd;
   movieClip.play();
 
   stage.addChild(movieClip);
@@ -58,7 +61,7 @@ void startAnimation()
   // Let's add a tween so the man walks from the left to the right.
   //------------------------------------------------------------------
 
-  Tween tween = new Tween(movieClip, 5.0 + (1 - random) * 5, Transitions.linear);
+  Tween tween = new Tween(movieClip, 5.0 + (1.0 - rnd) * 5.0, Transitions.linear);
   tween.animate("x", 800.0);
   tween.onComplete = ()
   {

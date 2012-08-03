@@ -91,20 +91,20 @@ class Rectangle
     if (this.intersects (rect) == false)
       return new Rectangle(0.0, 0.0, 0.0, 0.0);
 
-    num rLeft = Math.max (this.left, rect.left);
-    num rTop = Math.max (this.top, rect.top);
-    num rRight = Math.min (this.right, rect.right);
-    num rBottom = Math.min (this.bottom, rect.bottom);
+    num rLeft = max (this.left, rect.left);
+    num rTop = max (this.top, rect.top);
+    num rRight = min (this.right, rect.right);
+    num rBottom = min (this.bottom, rect.bottom);
      
     return new Rectangle(rLeft, rRight, rRight - rLeft, rBottom - rTop);
   }
   
   Rectangle union(Rectangle rect)
   {
-    num rLeft = Math.min (this.left, rect.left);
-    num rTop = Math.min (this.top, rect.top);
-    num rRight = Math.max (this.right, rect.right);
-    num rBottom = Math.max (this.bottom, rect.bottom);
+    num rLeft = min (this.left, rect.left);
+    num rTop = min (this.top, rect.top);
+    num rRight = max (this.right, rect.right);
+    num rBottom = max (this.bottom, rect.bottom);
      
     return new Rectangle(rLeft, rRight, rRight - rLeft, rBottom - rTop);    
   }

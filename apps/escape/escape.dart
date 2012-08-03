@@ -1,4 +1,5 @@
 #import('dart:html', prefix:'html');
+#import('dart:math');
 #import('../../library/dartflash.dart');
 
 #source("source/Alarm.dart");
@@ -57,7 +58,7 @@ void main()
     stageForeground.addChild(loadingBitmap);
 
     loadingBitmapTween = new Tween(loadingBitmap, 100, Transitions.linear);
-    loadingBitmapTween.animate("rotation", 100 * 2 * Math.PI);
+    loadingBitmapTween.animate("rotation", 100.0 * 2.0 * PI);
     Juggler.instance.add(loadingBitmapTween);
 
     loadingTextField = new TextField();

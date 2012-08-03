@@ -106,15 +106,15 @@ class TextureAtlas
 
   static String _getFilenameWithoutExtension(String filename)
   {
-    RegExp exp = const RegExp(@"(.+?)(\.[^.]*$|$)", false, true);
-    Match match = exp.firstMatch(filename);
+    RegExp regex = const RegExp(@"(.+?)(\.[^.]*$|$)", false, true);
+    Match match = regex.firstMatch(filename);
     return match.group(1);
   }
 
   static String _replaceFilename(String url, String filename)
   {
-    RegExp exp = const RegExp(@"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))", false, true);
-    Match match = exp.firstMatch(url);
+    RegExp regex = const RegExp(@"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))", false, true);
+    Match match = regex.firstMatch(url);
     String path = match.group(1);
     return (path == null) ? filename : "$path$filename";
   }

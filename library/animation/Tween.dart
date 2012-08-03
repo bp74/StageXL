@@ -45,7 +45,7 @@ class Tween implements IAnimatable
     _transitionFunction = (transitionFunction != null) ? transitionFunction : Transitions.linear;
 
     _currentTime = 0.0;
-    _totalTime = Math.max(0.0001, time);
+    _totalTime = max(0.0001, time);
     _delay = 0.0;
     _roundToInt = false;
     _started = false;

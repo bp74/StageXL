@@ -121,7 +121,7 @@ class Field
   {
     if (_chainDisplayObject != null)
     {
-      num s = 1 + 0.3 * Math.sin(n * Math.PI);
+      num s = 1 + 0.3 * sin(n * PI);
 
       _chainDisplayObject.scaleX = s;
       _chainDisplayObject.scaleY = s;

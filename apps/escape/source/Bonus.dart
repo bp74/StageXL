@@ -32,8 +32,8 @@ class Bonus extends Sprite
     {
       _textFieldContainer.alpha = 1 - value;
       _textFieldContainer.y = - value * 50;
-      _textFieldContainer.scaleX = 1.0 + 0.1 * Math.sin(value * 10);
-      _textFieldContainer.scaleY = 1.0 + 0.1 * Math.cos(value * 10);
+      _textFieldContainer.scaleX = 1.0 + 0.1 * sin(value * 10);
+      _textFieldContainer.scaleY = 1.0 + 0.1 * cos(value * 10);
     }, 0.0, 1.0);
 
     tween.onComplete = () => this.removeFromParent();
