@@ -35,6 +35,10 @@ dartflash is not finished and new features are added on a regular basis. Here ar
 * ~~The Sound and SoundChannel classes.~~ (done)
 * ~~Mouse Cursors support, show Hand Cursor etc.~~ (done)
 
+## Wiki and Blog
+
+Check out the Wiki here on github for instructions how to use some of the classes i've added to extend the standard Flash API. Those additional classes will help you to work with dartflash in a HTML5 environment. There is also a [dartflash blog](http://blog.dartflash.com), i hope i can add some useful posts in the future..
+
 ## Remarks
 
 _As the Dart language is evolving very quickly, please be sure to use the latest version of the Dart Editor. We recommend that you use the latest supported version of Dart Editor and not one of the continuous builds._
