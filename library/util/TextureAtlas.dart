@@ -41,7 +41,7 @@ class TextureAtlas
             textureAtlas._frames.add(taf);
           }
 
-          Dynamic data = json.JSON.parse(request.responseText);
+          Dynamic data = JSON.parse(request.responseText);
           Dynamic frames = data["frames"];
           Dynamic meta = data["meta"];
 
