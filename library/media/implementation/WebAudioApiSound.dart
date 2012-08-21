@@ -15,11 +15,21 @@ class WebAudioApiSound extends Sound
     
     _loadCompleter = new Completer<Sound>();
 
-    html.XMLHttpRequest request = new html.XMLHttpRequest();
+    //var request = new html.HttpRequest();  
+    var request = new html.XMLHttpRequest();  
+    
     request.open('GET', Sound.adaptAudioUrl(url), true);
     request.responseType = 'arraybuffer';
-    request.on.load.add(_onRequestLoad);
-    request.on.error.add(_onRequestError);
+    
+    request.on.load.add((html.Event event) {
+      _audioContext.decodeAudioData(request.response, _audioBufferLoaded, _audioBufferError);
+    });
+
+    request.on.error.add((html.Event event) {
+      if (_loadCompleter.future.isComplete == false)
+        _loadCompleter.completeException("Failed to load audio.");
+    });
+    
     request.send();
     
     return _loadCompleter.future;
@@ -41,19 +51,6 @@ class WebAudioApiSound extends Sound
   }
     
   //-------------------------------------------------------------------------------------------------
-  
-  _onRequestLoad(html.Event event)
-  {
-    html.XMLHttpRequest request = event.target;
-
-    _audioContext.decodeAudioData(request.response, _audioBufferLoaded, _audioBufferError);
-  }
-  
-  _onRequestError(html.Event event)
-  {
-    if (_loadCompleter.future.isComplete == false)
-      _loadCompleter.completeException("Failed to load audio.");
-  }
   
   bool _audioBufferLoaded(html.AudioBuffer buffer)
   {

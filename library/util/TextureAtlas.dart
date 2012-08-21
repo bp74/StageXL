@@ -21,9 +21,11 @@ class TextureAtlas
       case TextureAtlasFormat.JSON:
       case TextureAtlasFormat.JSONARRAY:
 
-        html.XMLHttpRequest request = new html.XMLHttpRequest();
+        //var request = new html.HttpRequest();  
+        var request = new html.XMLHttpRequest();  
+        
         request.open('GET', url, true);
-
+        
         request.on.load.add((event)
         {
           void parseFrame(String filename, Dynamic frame) {
