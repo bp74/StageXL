@@ -40,14 +40,14 @@ class Event
     _stopsImmediatePropagation = true;
   }
   
-  bool get stopsPropagation() => _stopsPropagation;
-  bool get stopsImmediatePropagation() => _stopsImmediatePropagation; 
+  bool get stopsPropagation => _stopsPropagation;
+  bool get stopsImmediatePropagation => _stopsImmediatePropagation; 
   
-  String get type() => _type;
-  int get eventPhase() => _eventPhase; 
-  bool get bubbles() => _bubbles; 
-  bool get captures() => true;
+  String get type => _type;
+  int get eventPhase => _eventPhase; 
+  bool get bubbles => _bubbles; 
+  bool get captures => true;
            
-  EventDispatcher get target() => _target; 
-  EventDispatcher get currentTarget() => _currentTarget; 
+  EventDispatcher get target => _target; 
+  EventDispatcher get currentTarget => _currentTarget; 
 }

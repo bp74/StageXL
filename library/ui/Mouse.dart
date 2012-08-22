@@ -7,7 +7,7 @@ class Mouse
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
  
-  static String get cursor() => _customCursor;
+  static String get cursor => _customCursor;
   
   static void set cursor(String value)
   {
@@ -31,7 +31,7 @@ class Mouse
 
   //-------------------------------------------------------------------------------------------------
    
-  static EventDispatcher get _eventDispatcher()
+  static EventDispatcher get _eventDispatcher
   {
     if (__eventDispatcher == null)
       __eventDispatcher = new EventDispatcher();

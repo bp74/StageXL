@@ -39,25 +39,25 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get x() => _x;
-  num get y() => _y;
-  num get pivotX() => _pivotX;
-  num get pivotY() => _pivotY;
+  num get x => _x;
+  num get y => _y;
+  num get pivotX => _pivotX;
+  num get pivotY => _pivotY;
 
-  num get scaleX() => _scaleX;
-  num get scaleY() => _scaleY;
-  num get rotation() => _rotation;
-  num get alpha() => _alpha;
+  num get scaleX => _scaleX;
+  num get scaleY => _scaleY;
+  num get rotation => _rotation;
+  num get alpha => _alpha;
 
-  bool get visible() => _visible;
+  bool get visible => _visible;
 
-  String get name() => _name;
+  String get name => _name;
 
-  DisplayObjectContainer get parent() => _parent;
+  DisplayObjectContainer get parent => _parent;
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject get root()
+  DisplayObject get root
   {
     DisplayObject currentObject = this;
 
@@ -69,7 +69,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  Stage get stage()
+  Stage get stage
   {
     DisplayObject root = this.root;
 
@@ -97,8 +97,8 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  num get width() => getBoundsTransformed(_transformationMatrix).width;
-  num get height() => getBoundsTransformed(_transformationMatrix).height;
+  num get width => getBoundsTransformed(_transformationMatrix).width;
+  num get height => getBoundsTransformed(_transformationMatrix).height;
 
   void set width(num value)
   {
@@ -125,7 +125,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  Matrix get _transformationMatrix()
+  Matrix get _transformationMatrix
   {
     /*
     _transformationMatrixPrivate.identity();
@@ -164,7 +164,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  Matrix get transformationMatrix()
+  Matrix get transformationMatrix
   {
     return _transformationMatrix.clone();
   }

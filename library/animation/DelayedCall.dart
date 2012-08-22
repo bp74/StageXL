@@ -36,9 +36,9 @@ class DelayedCall implements IAnimatable
 
   //-------------------------------------------------------------------------------------------------
   
-  num get totalTime() => _totalTime;
-  num get currentTime() => _currentTime; 
-  int get repeatCount() => _repeatCount;
+  num get totalTime => _totalTime;
+  num get currentTime => _currentTime; 
+  int get repeatCount => _repeatCount;
     
   void set repeatCount(int value) { _repeatCount = value; }
   

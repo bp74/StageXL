@@ -24,14 +24,14 @@ class KeyboardEvent extends Event
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
   
-  bool get altKey() => _altKey;
-  bool get ctrlKey() => _ctrlKey;
-  bool get shiftKey() => _shiftKey;
-  bool get commandKey() => _commandKey;     
-  bool get controlKey() => _controlKey;     
+  bool get altKey => _altKey;
+  bool get ctrlKey => _ctrlKey;
+  bool get shiftKey => _shiftKey;
+  bool get commandKey => _commandKey;     
+  bool get controlKey => _controlKey;     
   
-  int get charCode() => _charCode;
-  int get keyCode() => _keyCode;
-  int get keyLocation() => _keyLocation;
+  int get charCode => _charCode;
+  int get keyCode => _keyCode;
+  int get keyLocation => _keyLocation;
   
 }

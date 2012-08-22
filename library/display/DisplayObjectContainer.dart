@@ -12,10 +12,10 @@ class DisplayObjectContainer extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  int get numChildren() => _children.length;
+  int get numChildren => _children.length;
 
-  bool get mouseChildren() => _mouseChildren;
-  bool get tabChildren() => _tabChildren;
+  bool get mouseChildren => _mouseChildren;
+  bool get tabChildren => _tabChildren;
 
   void set mouseChildren(bool value) { _mouseChildren = value; }
   void set tabChildren(bool value) { _tabChildren = value; }

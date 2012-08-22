@@ -2,7 +2,7 @@ class SoundMixer
 {
   static SoundTransform _soundTransform;
   
-  static SoundTransform get soundTransform() => _soundTransform;
+  static SoundTransform get soundTransform => _soundTransform;
   
   static void set soundTransform(SoundTransform value) 
   {
@@ -13,7 +13,7 @@ class SoundMixer
   
   static html.AudioContext _audioContextPrivate;
 
-  static html.AudioContext get _audioContext()
+  static html.AudioContext get _audioContext
   {
     if (_audioContextPrivate == null)
     {
@@ -34,7 +34,7 @@ class SoundMixer
   
   static String _engine;
   
-  static String get engine()
+  static String get engine
   {
     if (_engine == null)
       _engine = (_audioContext != null) ? "WebAudioApi" : "AudioElement";

@@ -26,13 +26,13 @@ class MovieClip extends InteractiveObject implements IAnimatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  int get currentFrame() => _currentFrame;
-  int get totalFrames() => _bitmapDatas.length;
+  int get currentFrame => _currentFrame;
+  int get totalFrames => _bitmapDatas.length;
 
-  bool get loop() => _loop;
+  bool get loop => _loop;
   void set loop(bool value) { _loop = value; }
 
-  bool get playing() => _play;
+  bool get playing => _play;
 
   //-------------------------------------------------------------------------------------------------
 

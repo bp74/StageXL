@@ -10,7 +10,7 @@ class EnterFrameEvent extends Event
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
  
-  num get passedTime() => _passedTime;
-  bool get captures() => false;
+  num get passedTime => _passedTime;
+  bool get captures => false;
   
 }

@@ -66,7 +66,7 @@ class Gauge extends Sprite
 
   //-----------------------------------------------------------------------
 
-  num get ratio() => _ratio;
+  num get ratio => _ratio;
 
   void set ratio(num value)
   {

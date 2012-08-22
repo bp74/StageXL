@@ -75,10 +75,10 @@ class Stage extends DisplayObjectContainer
   int stageWidth() => _canvas.width;
   int stageHeight() => _canvas.height;
 
-  InteractiveObject get focus() => _focus;
+  InteractiveObject get focus => _focus;
   void set focus(InteractiveObject value) { _focus = value; }
 
-  String get renderMode() => _renderMode;
+  String get renderMode => _renderMode;
   void set renderMode(String value) { _renderMode = value; }
 
   //-------------------------------------------------------------------------------------------------

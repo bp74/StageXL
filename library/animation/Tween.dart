@@ -160,12 +160,12 @@ class Tween implements IAnimatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Dynamic get target() => _target;
-  num get totalTime() => _totalTime;
-  num get currentTime() => _currentTime;
-  num get delay() => _delay;
-  bool get roundToInt() => _roundToInt;
-  bool get isComplete() => _currentTime >= _totalTime;
+  Dynamic get target => _target;
+  num get totalTime => _totalTime;
+  num get currentTime => _currentTime;
+  num get delay => _delay;
+  bool get roundToInt => _roundToInt;
+  bool get isComplete => _currentTime >= _totalTime;
 
   void set delay(num value)
   {
@@ -182,9 +182,9 @@ class Tween implements IAnimatable
 
   //-------------------------------------------------------------------------------------------------
 
-  Function get onStart() => _onStart;
-  Function get onUpdate() => _onUpdate;
-  Function get onComplete() => _onComplete;
+  Function get onStart => _onStart;
+  Function get onUpdate => _onUpdate;
+  Function get onComplete => _onComplete;
 
   void set onStart(Function value) { _onStart = value; }
   void set onUpdate(Function value) { _onUpdate = value; }

@@ -49,21 +49,21 @@ class MouseEvent extends Event
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
   
-  num get localX() => _localX; 
-  num get localY() => _localY;
-  num get stageX() => _stageX;
-  num get stageY() => _stageY;
-  bool get buttonDown() => _buttonDown;
+  num get localX => _localX; 
+  num get localY => _localY;
+  num get stageX => _stageX;
+  num get stageY => _stageY;
+  bool get buttonDown => _buttonDown;
   
-  bool get altKey() => _altKey;
-  bool get controlKey() => _controlKey;
-  bool get ctrlKey() => _ctrlKey;
-  bool get shiftKey() => _shiftKey;
+  bool get altKey => _altKey;
+  bool get controlKey => _controlKey;
+  bool get ctrlKey => _ctrlKey;
+  bool get shiftKey => _shiftKey;
   
-  int get clickCount() => _clickCount;
-  int get delta() => _delta;
+  int get clickCount => _clickCount;
+  int get delta => _delta;
    
-  bool get isRelatedObjectInaccessible() => _isRelatedObjectInaccessible;
-  InteractiveObject get relatedObject() => _relatedObject;
+  bool get isRelatedObjectInaccessible => _isRelatedObjectInaccessible;
+  InteractiveObject get relatedObject => _relatedObject;
   
 }

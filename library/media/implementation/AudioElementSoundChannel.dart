@@ -23,7 +23,7 @@ class AudioElementSoundChannel extends SoundChannel
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  SoundTransform get soundTransform() => _soundTransform;
+  SoundTransform get soundTransform => _soundTransform;
   
   void set soundTransform(SoundTransform value) 
   { 

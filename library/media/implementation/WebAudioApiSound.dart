@@ -15,8 +15,7 @@ class WebAudioApiSound extends Sound
     
     _loadCompleter = new Completer<Sound>();
 
-    //var request = new html.HttpRequest();  
-    var request = new html.XMLHttpRequest();  
+    var request = new html.HttpRequest();  
     
     request.open('GET', Sound.adaptAudioUrl(url), true);
     request.responseType = 'arraybuffer';
@@ -37,7 +36,7 @@ class WebAudioApiSound extends Sound
   
   //-------------------------------------------------------------------------------------------------
   
-  num get length()
+  num get length
   {
     return _buffer.duration;
   }

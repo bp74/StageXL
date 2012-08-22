@@ -14,15 +14,15 @@ class Rectangle
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
   
-  num get left() => this.x;
-  num get top() => this.y;
-  num get right() => this.x + this.width;
-  num get bottom() => this.y + this.height;
+  num get left => this.x;
+  num get top => this.y;
+  num get right => this.x + this.width;
+  num get bottom => this.y + this.height;
   
-  Point get topLeft() => new Point(this.x, this.y);
-  Point get bottomRight() => new Point(this.x + this.width, this.y + this.height);
+  Point get topLeft => new Point(this.x, this.y);
+  Point get bottomRight => new Point(this.x + this.width, this.y + this.height);
   
-  Point get size() => new Point(this.width, this.height);
+  Point get size => new Point(this.width, this.height);
   
   //-------------------------------------------------------------------------------------------------
   
@@ -76,7 +76,7 @@ class Rectangle
   bool equals(Rectangle r) => (this.x == r.x && this.y == r.y && this.width == r.width && this.height == r.height);
   bool intersects(Rectangle r) => (this.left < r.right && this.right > r.left && this.top < r.bottom && this.bottom > r.top);
 
-  bool get isEmpty() => (this.width == 0 && this.height == 0);
+  bool get isEmpty => (this.width == 0 && this.height == 0);
 
   void copyFrom(Rectangle r) { this.x = r.x; this.y = r.y; this.width = r.width; this.height = r.height; }
   void inflate(num dx, num dy) { this.width = this.width + dx; this.height = this.height + dy; }

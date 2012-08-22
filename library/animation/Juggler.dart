@@ -15,7 +15,7 @@ class Juggler implements IAnimatable
     _animatablesCount = 0;
   }
   
-  static get instance()
+  static get instance
   {
     if (_instance == null) 
       _instance = new Juggler();
@@ -26,7 +26,7 @@ class Juggler implements IAnimatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get elapsedTime() => _elapsedTime; 
+  num get elapsedTime => _elapsedTime; 
   
   //-------------------------------------------------------------------------------------------------
   

@@ -44,7 +44,7 @@ class AudioElementSound extends Sound
 
   //-------------------------------------------------------------------------------------------------
 
-  num get length()
+  num get length
   {
     return _audio.duration;
   }

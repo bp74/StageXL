@@ -1,8 +1,5 @@
 #library("dartflash");
 
-//------------------------------------------------------
-
-#import("dart:core");
 #import("dart:math");
 #import("dart:json");
 #import("dart:html", prefix: "html");

@@ -39,21 +39,21 @@ class TextField extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  String get text() => _text;
-  int get textColor() => _textColor;
-  TextFormat get defaultTextFormat() => _defaultTextFormat;
+  String get text => _text;
+  int get textColor => _textColor;
+  TextFormat get defaultTextFormat => _defaultTextFormat;
 
-  String get autoSize() => _autoSize;
-  String get gridFitType() => _gridFitType;
-  String get type() => _type;
-  bool get wordWrap() => _wordWrap;
+  String get autoSize => _autoSize;
+  String get gridFitType => _gridFitType;
+  String get type => _type;
+  bool get wordWrap => _wordWrap;
 
-  bool get background() => _background;
-  int get backgroundColor() => _backgroundColor;
-  bool get border() => _border;
-  int get borderColor() => _borderColor;
-  num get width() => _canvasWidth;
-  num get height() => _canvasHeight;
+  bool get background => _background;
+  int get backgroundColor => _backgroundColor;
+  bool get border => _border;
+  int get borderColor => _borderColor;
+  num get width => _canvasWidth;
+  num get height => _canvasHeight;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -75,9 +75,9 @@ class TextField extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  num get textWidth() { _canvasRefresh(); return _textWidth; }
-  num get textHeight() { _canvasRefresh(); return _textHeight; }
-  int get numLines() { _canvasRefresh(); return _linesText.length; }
+  num get textWidth { _canvasRefresh(); return _textWidth; }
+  num get textHeight { _canvasRefresh(); return _textHeight; }
+  int get numLines { _canvasRefresh(); return _linesText.length; }
 
   int getLineLength(int lineIndex) { _canvasRefresh(); return _linesText[lineIndex].length; }
   TextLineMetrics getLineMetrics(int lineIndex) { _canvasRefresh(); return _linesMetrics[lineIndex]; }

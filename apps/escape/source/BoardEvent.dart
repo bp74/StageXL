@@ -12,7 +12,7 @@ class BoardEvent extends Event
     _info = info;
   }
 
-  Map<String, Dynamic> get info()
+  Map<String, Dynamic> get info
   {
     return _info;
   }

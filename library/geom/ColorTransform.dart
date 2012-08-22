@@ -15,7 +15,7 @@ class ColorTransform
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  int get color() => (redOffset << 16) + (greenOffset << 16) + (blueOffset << 0);
+  int get color => (redOffset << 16) + (greenOffset << 16) + (blueOffset << 0);
   
   void set color(int value)
   {

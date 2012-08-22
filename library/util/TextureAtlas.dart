@@ -21,8 +21,7 @@ class TextureAtlas
       case TextureAtlasFormat.JSON:
       case TextureAtlasFormat.JSONARRAY:
 
-        //var request = new html.HttpRequest();  
-        var request = new html.XMLHttpRequest();  
+        var request = new html.HttpRequest();  
         
         request.open('GET', url, true);
         
@@ -72,7 +71,7 @@ class TextureAtlas
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  html.ImageElement get imageElement() => _imageElement;
+  html.ImageElement get imageElement => _imageElement;
 
   //-------------------------------------------------------------------------------------------------
 

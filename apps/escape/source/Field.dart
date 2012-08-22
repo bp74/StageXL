@@ -35,22 +35,22 @@ class Field
 
   //---------------------------------------------------------------------------------
 
-  int get color() => _color;
+  int get color => _color;
   void set color(int value)  { _color = value; }
 
-  int get direction() => _direction;
+  int get direction => _direction;
   void set direction(int value) { _direction = value; }
 
-  String get special() => _special;
+  String get special => _special;
   void set special(String value) { _special = value; }
 
-  bool get linked() => _linked;
+  bool get linked => _linked;
   void set linked(bool value) { _linked = value; }
 
-  bool get linkedJoker() => _linkedJoker;
+  bool get linkedJoker => _linkedJoker;
   void set linkedJoker(bool value) { _linkedJoker = value; }
 
-  bool get empty() => _empty;
+  bool get empty => _empty;
   void set empty(bool value) { _empty = value; }
 
   //---------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ class Field
 
   //---------------------------------------------------------------------------------
 
-  num get x() => _x;
+  num get x => _x;
 
   void set x(num value)
   {
@@ -102,7 +102,7 @@ class Field
 
   //---------------------------------------------------------------------------------
 
-  num get y() => _y;
+  num get y => _y;
 
   void set y(num value)
   {
@@ -115,7 +115,7 @@ class Field
 
   //---------------------------------------------------------------------------------
 
-  num get sinScale() => 0;
+  num get sinScale => 0;
 
   void set sinScale(num n)
   {
