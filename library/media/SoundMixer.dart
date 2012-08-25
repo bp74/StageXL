@@ -15,14 +15,11 @@ class SoundMixer
 
   static html.AudioContext get _audioContext
   {
-    if (_audioContextPrivate == null)
-    {
-      try 
-      { 
+    if (_audioContextPrivate == null) {
+      try { 
         _audioContextPrivate = new html.AudioContext(); 
       }
-      catch(final error) 
-      { 
+      catch(ex) { 
          // AudioContext is not available, fallback to HtmlAudio
       }
     }

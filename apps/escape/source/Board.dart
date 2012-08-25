@@ -650,14 +650,18 @@ class Board extends Sprite
           if (source >= 0)
           {
             fieldSource = _fields[x + source * 10];
-            fieldSourceWest = (x > 0) ?  _fields[x - 1 + source * 10] : null;
-
-            if (fieldSource.canLinkHorizontal(fieldSourceWest))
+            
+            if (x > 0)
             {
-              fieldSourceWest.linked = false;
-              fieldSourceWest.updateDisplayObjects(_chainLayer, _linkLayer, _specialLayer);
-            }
+              fieldSourceWest = _fields[x - 1 + source * 10];
 
+              if (fieldSource.canLinkHorizontal(fieldSourceWest))
+              {
+                fieldSourceWest.linked = false;
+                fieldSourceWest.updateDisplayObjects(_chainLayer, _linkLayer, _specialLayer);
+              }
+            }
+            
             fieldSource.linked = false;
             fieldSource.empty = true;
             fieldSource.updateDisplayObjects(_chainLayer, _linkLayer, _specialLayer);

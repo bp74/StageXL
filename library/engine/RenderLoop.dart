@@ -9,29 +9,15 @@ class RenderLoop
     _juggler = Juggler.instance;
     _stages = new List<Stage>();
 
-    _requestAnimationFrame();
+    html.window.requestAnimationFrame(_onAnimationFrame);
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  void _requestAnimationFrame()
-  {
-    try
-    {
-      html.window.requestAnimationFrame(_onAnimationFrame);
-    }
-    catch(Exception ex)
-    {
-      html.window.setTimeout(function() { _onAnimationFrame(null); }, 16);
-    }
-  }
-
   //-------------------------------------------------------------------------------------------------
 
   bool _onAnimationFrame(num currentTime)
   {
-    _requestAnimationFrame();
+    html.window.requestAnimationFrame(_onAnimationFrame);
 
     if (currentTime == null)
       currentTime = new Date.now().millisecondsSinceEpoch;

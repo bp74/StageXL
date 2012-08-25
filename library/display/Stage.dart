@@ -145,7 +145,7 @@ class Stage extends DisplayObjectContainer
     Point localPoint = null;
 
     if (event.type != "mouseout")
-      target = hitTestInput(stagePoint.x, stagePoint.y);
+      target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
     //------------------------------------------------------
 
