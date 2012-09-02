@@ -7,7 +7,6 @@ class Stage extends DisplayObjectContainer
   RenderState _renderState;
   String _renderMode;
   String _mouseCursor;
-  Point _canvasLocation;
 
   List<bool> _buttonState;
   List<DisplayObject> _clickTarget;
@@ -30,9 +29,6 @@ class Stage extends DisplayObjectContainer
     _canvas.focus();
 
     _context = canvas.context2d;
-
-    _canvasLocation = null;
-    _calculateElementLocation(_canvas).then((point) => _canvasLocation = point);
 
     _renderState = new RenderState.fromCanvasRenderingContext2D(_context);
     _renderMode = StageRenderMode.AUTO;
@@ -130,18 +126,10 @@ class Stage extends DisplayObjectContainer
     InteractiveObject target = null;
     MouseEvent mouseEvent = null;
 
-    if (_canvasLocation == null || button < 0 || button > 2)
+    if (button < 0 || button > 2)
       return;
 
-    var mouseX = event.offsetX;
-    var mouseY = event.offsetY;
-
-    if (mouseX == null || mouseY == null) {  
-      mouseX = event.pageX - _canvasLocation.x;
-      mouseY = event.pageY - _canvasLocation.y;
-    }
-
-    Point stagePoint = new Point(mouseX, mouseY);
+    Point stagePoint = new Point(event.offsetX, event.offsetY);
     Point localPoint = null;
 
     if (event.type != "mouseout")
@@ -274,16 +262,7 @@ class Stage extends DisplayObjectContainer
 
   void _onMouseWheel(html.WheelEvent event)
   {
-    var mouseX = event.offsetX;
-    var mouseY = event.offsetY;
-
-    if ((mouseX == null || mouseY == null) && _canvasLocation != null)  // firefox workaround
-    {
-      mouseX = event.pageX - _canvasLocation.x;
-      mouseY = event.pageY - _canvasLocation.y;
-    }
-
-    InteractiveObject target = hitTestInput(mouseX, mouseY);
+    InteractiveObject target = hitTestInput(event.offsetX, event.offsetY);
 
     if (target != null)
     {
@@ -342,23 +321,5 @@ class Stage extends DisplayObjectContainer
     if (_focus != null)
       _focus.dispatchEvent(textEvent);
   }
-
-  //-------------------------------------------------------------------------------------------------
-
-  Future<Point> _calculateElementLocation(html.Element element)
-  {
-    Completer<Point> completer = new Completer<Point>();
-
-    element.rect.then((rect)
-    {
-      Point point = new Point(rect.offset.left, rect.offset.top);
-
-      if (element.offsetParent != null)
-        _calculateElementLocation(element.offsetParent).then((p) => completer.complete(point.add(p)));
-      else
-        completer.complete(point);
-    });
-
-    return completer.future;
-  }
+ 
 }

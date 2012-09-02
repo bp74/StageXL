@@ -29,11 +29,11 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable
 
   DisplayObject()
   {
-    _transformationMatrixPrivate = new Matrix.identity();
+    _transformationMatrixPrivate = new Matrix.fromIdentity();
     _transformationMatrixRefresh = true;
 
-    _tmpMatrix = new Matrix.identity();
-    _tmpMatrixIdentity = new Matrix.identity();
+    _tmpMatrix = new Matrix.fromIdentity();
+    _tmpMatrixIdentity = new Matrix.fromIdentity();
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable
 
     //------------------------------------------------
 
-    Matrix resultMatrix = new Matrix.identity();
+    Matrix resultMatrix = new Matrix.fromIdentity();
     DisplayObject resultObject = this;
 
     while(resultObject != targetSpace && resultObject._parent != null) {
@@ -199,7 +199,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable
 
     //------------------------------------------------
 
-    Matrix targetMatrix = new Matrix.identity();
+    Matrix targetMatrix = new Matrix.fromIdentity();
     DisplayObject targetObject = targetSpace;
 
     while(targetObject != this && targetObject._parent != null) {

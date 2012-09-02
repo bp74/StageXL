@@ -4,7 +4,7 @@ class Warp extends DisplayObjectContainer
 
   Warp()
   {
-    _matrix = new Matrix.identity();
+    _matrix = new Matrix.fromIdentity();
   }
 
   //-------------------------------------------------------------------------------------------------

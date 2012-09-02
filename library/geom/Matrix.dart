@@ -6,7 +6,7 @@ class Matrix
   Matrix(num a, num b, num c, num d, num tx, num ty) : 
     _a = a, _b = b, _c = c, _d = d, _tx = tx, _ty = ty, _det = a * d - b * c;
   
-  Matrix.identity() :  
+  Matrix.fromIdentity() :  
     _a = 1.0, _b = 0.0, _c = 0.0, _d = 1.0, _tx = 0.0, _ty = 0.0, _det = 1.0;
 
   //-------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ class Matrix
 
   Matrix createBox(num scaleX, num scaleY, [num rotation = 0.0, num translationX = 0.0, num translationY = 0.0])
   {
-    Matrix matrix = new Matrix.identity();
+    Matrix matrix = new Matrix.fromIdentity();
     matrix.scale(scaleX, scaleY);
     matrix.rotate(rotation);
     matrix.translate(translationX, translationY);

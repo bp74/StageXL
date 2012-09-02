@@ -16,7 +16,7 @@ class RenderState
     _depth = 0;
 
     for(int i = 0; i < 100; i++) {
-      _matrices.add(new Matrix.identity());
+      _matrices.add(new Matrix.fromIdentity());
       _alphas.add(1.0);
     }
   }
