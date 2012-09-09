@@ -1,6 +1,6 @@
-class Juggler implements IAnimatable 
+class Juggler implements Animatable 
 {
-  List<IAnimatable> _animatables;
+  List<Animatable> _animatables;
   int _animatablesCount;
   
   num _elapsedTime;
@@ -11,7 +11,7 @@ class Juggler implements IAnimatable
   { 
     _elapsedTime = 0.0;
       
-    _animatables = new List<IAnimatable>();
+    _animatables = new List<Animatable>();
     _animatablesCount = 0;
   }
   
@@ -30,7 +30,7 @@ class Juggler implements IAnimatable
   
   //-------------------------------------------------------------------------------------------------
   
-  void add(IAnimatable animatable)
+  void add(Animatable animatable)
   {
     if (animatable == null)
       return;
@@ -45,7 +45,7 @@ class Juggler implements IAnimatable
 
   //-------------------------------------------------------------------------------------------------
   
-  void remove(IAnimatable animatable)
+  void remove(Animatable animatable)
   {
     if (animatable == null)
       return;
@@ -111,7 +111,7 @@ class Juggler implements IAnimatable
     
     for(int i = 0; i < animatablesCount; i++) 
     {
-      IAnimatable animatable = _animatables[i];
+      Animatable animatable = _animatables[i];
       
       if (animatable != null && animatable.advanceTime(time)) 
       {

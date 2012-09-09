@@ -1,4 +1,4 @@
-class SpecialJokerLink extends Sprite implements IAnimatable
+class SpecialJokerLink extends Sprite implements Animatable
 {
   Bitmap _bitmap;
   List<BitmapData> _jokerBitmapDatas;

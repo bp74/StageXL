@@ -8,7 +8,7 @@ class ExplosionParticle
   num rotation;
 }
 
-class Explosion extends Sprite implements IAnimatable
+class Explosion extends Sprite implements Animatable
 {
   List<ExplosionParticle> _particles;
   num _currentTime;

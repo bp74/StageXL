@@ -1,4 +1,4 @@
-class BitmapData implements IBitmapDrawable
+class BitmapData implements BitmapDrawable
 {
   int _width;
   int _height;
@@ -143,7 +143,7 @@ class BitmapData implements IBitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  void draw(IBitmapDrawable source)
+  void draw(BitmapDrawable source)
   {
     var renderState = new RenderState.fromCanvasRenderingContext2D(_getContext());
 

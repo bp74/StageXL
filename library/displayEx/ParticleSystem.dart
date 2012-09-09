@@ -36,7 +36,7 @@ class _Particle
   //_ParticleColor color, colorDelta;
 }
 
-class ParticleSystem extends DisplayObject implements IAnimatable
+class ParticleSystem extends DisplayObject implements Animatable
 {
   Random _random;
   List<_Particle> _particles;

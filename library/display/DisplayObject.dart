@@ -1,4 +1,4 @@
-class DisplayObject extends EventDispatcher implements IBitmapDrawable
+class DisplayObject extends EventDispatcher implements BitmapDrawable
 {
   num _x = 0.0;
   num _y = 0.0;

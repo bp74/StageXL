@@ -1,4 +1,4 @@
-class SpecialJokerChain extends Sprite implements IAnimatable
+class SpecialJokerChain extends Sprite implements Animatable
 {
   Bitmap _bitmap;
   List<BitmapData> _jokerBitmapDatas;

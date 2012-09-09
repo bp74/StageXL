@@ -1,4 +1,4 @@
-class DelayedCall implements IAnimatable
+class DelayedCall implements Animatable
 {
   num _currentTime = 0.0;
   num _totalTime = 0.0;

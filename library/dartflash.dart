@@ -7,7 +7,7 @@
 //------------------------------------------------------
 
 #source("animation/DelayedCall.dart");
-#source("animation/IAnimatable.dart");
+#source("animation/Animatable.dart");
 #source("animation/Juggler.dart");
 #source("animation/Transitions.dart");
 #source("animation/Tween.dart");
@@ -45,9 +45,9 @@
 #source("display/Sprite.dart");
 #source("display/Bitmap.dart");
 #source("display/BitmapData.dart");
+#source("display/BitmapDrawable.dart");
 #source("display/MovieClip.dart");
 #source("display/Shape.dart");
-#source("display/IBitmapDrawable.dart");
 #source("display/PixelSnapping.dart");
 #source("display/SimpleButton.dart");
 #source("display/Graphics.dart");

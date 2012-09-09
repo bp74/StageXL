@@ -1,4 +1,4 @@
-class TimeGauge extends Gauge implements IAnimatable
+class TimeGauge extends Gauge implements Animatable
 {
   static final String TIME_OUT = "TIME_OUT";
 

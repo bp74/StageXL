@@ -1,4 +1,4 @@
-class SpecialWobble extends Sprite implements IAnimatable
+class SpecialWobble extends Sprite implements Animatable
 {
   Bitmap _bitmap;
   num _currentTime;

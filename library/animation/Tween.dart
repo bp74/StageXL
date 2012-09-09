@@ -21,7 +21,7 @@ class _AnimateValue
 
 //-----------------------------------------------------------------------------------
 
-class Tween implements IAnimatable
+class Tween implements Animatable
 {
   Dynamic _target;
   TransitionFunction _transitionFunction;

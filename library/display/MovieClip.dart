@@ -1,4 +1,4 @@
-class MovieClip extends InteractiveObject implements IAnimatable
+class MovieClip extends InteractiveObject implements Animatable
 {
   List<BitmapData> _bitmapDatas;
 
