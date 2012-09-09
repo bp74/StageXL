@@ -1,8 +1,8 @@
 class TextureAtlasFormat 
 {
-  static final String JSON = "json";
-  static final String JSONARRAY = "jsonarray";
-  //static final String STARLING = "starling";      
-  //static final String COCOS2D = "cocos2d";                      
-  //static final String TEXTUREPACKERXML = "texturepackerxml";
+  static const String JSON = "json";
+  static const String JSONARRAY = "jsonarray";
+  //static const String STARLING = "starling";      
+  //static const String COCOS2D = "cocos2d";                      
+  //static const String TEXTUREPACKERXML = "texturepackerxml";
 }

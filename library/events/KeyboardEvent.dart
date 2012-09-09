@@ -1,7 +1,7 @@
 class KeyboardEvent extends Event
 {
-  static final String KEY_DOWN = "keyDown";
-  static final String KEY_UP = "keyUp";
+  static const String KEY_DOWN = "keyDown";
+  static const String KEY_UP = "keyUp";
   
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

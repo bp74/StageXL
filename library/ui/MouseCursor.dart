@@ -1,9 +1,9 @@
 class MouseCursor 
 {
-  static final String AUTO = "auto";
-  static final String ARROW = "arrow";
-  static final String BUTTON = "button";
-  static final String HAND = "hand";
-  static final String IBEAM = "ibeam";
-  static final String WAIT = "wait";
+  static const String AUTO = "auto";
+  static const String ARROW = "arrow";
+  static const String BUTTON = "button";
+  static const String HAND = "hand";
+  static const String IBEAM = "ibeam";
+  static const String WAIT = "wait";
 }

@@ -1,5 +1,5 @@
 class TextFieldType 
 {
-  static final String DYNAMIC = "dynamic";
-  static final String INPUT = "input";  
+  static const String DYNAMIC = "dynamic";
+  static const String INPUT = "input";  
 }

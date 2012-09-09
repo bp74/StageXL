@@ -1,6 +1,6 @@
 class PixelSnapping 
 {
-  static final String NEVER = "never";
-  static final String ALWAYS = "always";
-  static final String AUTO = "auto";
+  static const String NEVER = "never";
+  static const String ALWAYS = "always";
+  static const String AUTO = "auto";
 }

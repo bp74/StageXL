@@ -1,7 +1,7 @@
 class TextEvent extends Event
 {
-  static final String LINK = "link";
-  static final String TEXT_INPUT = "textInput";
+  static const String LINK = "link";
+  static const String TEXT_INPUT = "textInput";
   
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

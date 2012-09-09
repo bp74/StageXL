@@ -1,6 +1,6 @@
 class StageRenderMode 
 {
-  static final String AUTO = "auto";
-  static final String STOP = "stop";
-  static final String ONCE = "once";
+  static const String AUTO = "auto";
+  static const String STOP = "stop";
+  static const String ONCE = "once";
 }

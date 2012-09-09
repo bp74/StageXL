@@ -1,9 +1,9 @@
 class Gauge extends Sprite
 {
-  static final String DIRECTION_UP = "DIRECTION_UP";
-  static final String DIRECTION_RIGHT = "DIRECTION_RIGHT";
-  static final String DIRECTION_DOWN = "DIRECTION_DOWN";
-  static final String DIRECTION_LEFT = "DIRECTION_LEFT";
+  static const String DIRECTION_UP = "DIRECTION_UP";
+  static const String DIRECTION_RIGHT = "DIRECTION_RIGHT";
+  static const String DIRECTION_DOWN = "DIRECTION_DOWN";
+  static const String DIRECTION_LEFT = "DIRECTION_LEFT";
 
   String _direction;
   num _ratio;

@@ -1,25 +1,25 @@
 class MouseEvent extends Event
 {
-  static final String CLICK = "click";
-  static final String DOUBLE_CLICK = "doubleClick";
+  static const String CLICK = "click";
+  static const String DOUBLE_CLICK = "doubleClick";
   
-  static final String MOUSE_DOWN = "mouseDown";
-  static final String MOUSE_UP = "mouseUp";
-  static final String MOUSE_MOVE = "mouseMove";
-  static final String MOUSE_OUT = "mouseOut";       
-  static final String MOUSE_OVER = "mouseOver";     
-  static final String MOUSE_WHEEL = "mouseWheel";
+  static const String MOUSE_DOWN = "mouseDown";
+  static const String MOUSE_UP = "mouseUp";
+  static const String MOUSE_MOVE = "mouseMove";
+  static const String MOUSE_OUT = "mouseOut";       
+  static const String MOUSE_OVER = "mouseOver";     
+  static const String MOUSE_WHEEL = "mouseWheel";
 
-  static final String MIDDLE_CLICK = "middleClick";
-  static final String MIDDLE_MOUSE_DOWN = "middleMouseDown";
-  static final String MIDDLE_MOUSE_UP = "middleMouseUp";
-  static final String RIGHT_CLICK = "rightClick";
-  static final String RIGHT_MOUSE_DOWN = "rightMouseDown";
-  static final String RIGHT_MOUSE_UP = "rightMouseUp";
+  static const String MIDDLE_CLICK = "middleClick";
+  static const String MIDDLE_MOUSE_DOWN = "middleMouseDown";
+  static const String MIDDLE_MOUSE_UP = "middleMouseUp";
+  static const String RIGHT_CLICK = "rightClick";
+  static const String RIGHT_MOUSE_DOWN = "rightMouseDown";
+  static const String RIGHT_MOUSE_UP = "rightMouseUp";
 
-  static final String CONTEXT_MENU = "contextMenu"; // ToDo
-  static final String ROLL_OUT = "rollOut";         // ToDo
-  static final String ROLL_OVER = "rollOver";       // ToDo
+  static const String CONTEXT_MENU = "contextMenu"; // ToDo
+  static const String ROLL_OUT = "rollOut";         // ToDo
+  static const String ROLL_OVER = "rollOver";       // ToDo
   
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 class TimeGauge extends Gauge implements Animatable
 {
-  static final String TIME_OUT = "TIME_OUT";
+  static const String TIME_OUT = "TIME_OUT";
 
   bool _isStarted = false;
   num _currentTime = 0.0;

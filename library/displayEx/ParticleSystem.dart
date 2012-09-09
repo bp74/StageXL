@@ -45,8 +45,8 @@ class ParticleSystem extends DisplayObject implements Animatable
   num _frameTime;
   num _emissionTime;
   
-  static final int EMITTER_TYPE_GRAVITY = 0;
-  static final int EMITTER_TYPE_RADIAL = 1;
+  static const int EMITTER_TYPE_GRAVITY = 0;
+  static const int EMITTER_TYPE_RADIAL = 1;
   
   // emitter configuration
   int emitterType;

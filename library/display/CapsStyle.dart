@@ -1,6 +1,6 @@
 class CapsStyle 
 {
-  static final String BUTT = "butt";
-  static final String ROUND = "round";
-  static final String SQUARE = "square";  
+  static const String BUTT = "butt";
+  static const String ROUND = "round";
+  static const String SQUARE = "square";  
 }

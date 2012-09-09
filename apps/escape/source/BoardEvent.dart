@@ -1,9 +1,9 @@
 class BoardEvent extends Event
 {
-  static final String Explosion = "Explosion";
-  static final String Unlocked = "Unlocked";
-  static final String Finalized = "Finalized";
-  static final String Timeouted = "Timeouted";
+  static const String Explosion = "Explosion";
+  static const String Unlocked = "Unlocked";
+  static const String Finalized = "Finalized";
+  static const String Timeouted = "Timeouted";
 
   Map<String, Dynamic> _info;
 

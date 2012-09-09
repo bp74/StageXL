@@ -1,6 +1,6 @@
 class GridFitType 
 {
-  static final String NONE = "none";
-  static final String PIXEL = "pixel";
-  static final String SUBPIXEL = "subpixel";
+  static const String NONE = "none";
+  static const String PIXEL = "pixel";
+  static const String SUBPIXEL = "subpixel";
 }

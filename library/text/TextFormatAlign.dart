@@ -1,9 +1,9 @@
 class TextFormatAlign 
 {
-  static final String CENTER = "center";
-  static final String END = "end";
-  static final String JUSTIFY = "justify";
-  static final String LEFT = "left";
-  static final String RIGHT = "right";
-  static final String START = "start";
+  static const String CENTER = "center";
+  static const String END = "end";
+  static const String JUSTIFY = "justify";
+  static const String LEFT = "left";
+  static const String RIGHT = "right";
+  static const String START = "start";
 }

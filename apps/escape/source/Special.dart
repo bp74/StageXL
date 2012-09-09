@@ -1,13 +1,13 @@
 class Special
 {
-  static final String None = "None";
-  static final String Lock1 = "Lock1";
-  static final String Lock2 = "Lock2";
-  static final String Lock3 = "Lock3";
-  static final String Lock4 = "Lock4";
-  static final String Lock5 = "Lock5";
-  static final String Joker = "Joker";
-  static final String Block = "Block";
-  static final String Double = "Double";
-  static final String Quint = "Quint";
+  static const String None = "None";
+  static const String Lock1 = "Lock1";
+  static const String Lock2 = "Lock2";
+  static const String Lock3 = "Lock3";
+  static const String Lock4 = "Lock4";
+  static const String Lock5 = "Lock5";
+  static const String Joker = "Joker";
+  static const String Block = "Block";
+  static const String Double = "Double";
+  static const String Quint = "Quint";
 }
