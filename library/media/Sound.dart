@@ -1,7 +1,5 @@
-class Sound 
+abstract class Sound 
 {
-  //abstract Sound();
-  
   static Future<Sound> loadAudio(String url)
   {
     Sound sound = null;
@@ -17,16 +15,10 @@ class Sound
   //-------------------------------------------------------------------------------------------------
 
   abstract num get length();
-  
-  //-------------------------------------------------------------------------------------------------
 
   abstract Future<Sound> load(String url);
   
-  SoundChannel play([bool loop = false, SoundTransform soundTransform = null])
-  {
-    // ToDo: should be abstract, but right now we can't define default values
-    // for the optional parameters. This should be fixed by Dart in the future.
-  }
+  abstract SoundChannel play([bool loop = false, SoundTransform soundTransform = null]);
   
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

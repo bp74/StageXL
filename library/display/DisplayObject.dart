@@ -1,4 +1,4 @@
-class DisplayObject extends EventDispatcher implements BitmapDrawable
+abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 {
   num _x = 0.0;
   num _y = 0.0;
@@ -350,11 +350,7 @@ class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  void render(RenderState renderState)
-  {
-
-  }
-
+  abstract void render(RenderState renderState);
 
 }
 

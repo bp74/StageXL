@@ -1,4 +1,4 @@
-class DisplayObjectContainer extends InteractiveObject
+abstract class DisplayObjectContainer extends InteractiveObject
 {
   List<DisplayObject> _children;
   bool _mouseChildren = true;
