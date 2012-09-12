@@ -1,0 +1,7 @@
+name: dartflash
+version: 0.3.0
+description: >
+ You are an Adobe Flash developer? Check out this package and see how easy 
+ it is to bring your Flash skills to DART and HTML5. The dartflash library 
+ provides the familiar Flash API - work with Sprites, Bitmaps, TextFields and
+ even Sounds like you did with Flash before.  
