@@ -1,6 +1,6 @@
 #import('dart:html', prefix:'html');
 #import('dart:math');
-#import('../../library/dartflash.dart');
+#import('../../lib/dartflash.dart');
 
 #source("source/Alarm.dart");
 #source("source/Board.dart");
