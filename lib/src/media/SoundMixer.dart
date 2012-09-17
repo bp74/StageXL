@@ -18,9 +18,8 @@ class SoundMixer
     if (_audioContextPrivate == null) {
       try { 
         _audioContextPrivate = new html.AudioContext(); 
-      }
-      catch(ex) { 
-         // AudioContext is not available, fallback to HtmlAudio
+      } catch(e) {
+        _audioContextPrivate = null; 
       }
     }
     
@@ -33,8 +32,15 @@ class SoundMixer
   
   static String get engine
   {
-    if (_engine == null)
+    if (_engine == null) 
+    {
       _engine = (_audioContext != null) ? "WebAudioApi" : "AudioElement";
+
+      var ua = html.document.window.navigator.userAgent;
+      
+      if (ua.contains("IEMobile/9.0") || ua.contains("iPhone OS 4") || ua.contains("iPhone OS 5")) 
+        _engine = "Mock";
+    }
     
     return _engine;
   }

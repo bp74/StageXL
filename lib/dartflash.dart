@@ -70,6 +70,8 @@
 #source("src/media/implementation/AudioElementSoundChannel.dart");
 #source("src/media/implementation/WebAudioApiSound.dart");
 #source("src/media/implementation/WebAudioApiSoundChannel.dart");
+#source("src/media/implementation/MockSound.dart");
+#source("src/media/implementation/MockSoundChannel.dart");
 
 #source("src/text/GridFitType.dart");
 #source("src/text/TextField.dart");

@@ -4,7 +4,6 @@ class WebAudioApiSoundChannel extends SoundChannel
   html.AudioGainNode _gainNode;
   html.AudioBufferSourceNode _sourceNode;
   
-  num _position;  
   bool _loop;
   SoundTransform _soundTransform;
   
