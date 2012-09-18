@@ -30,8 +30,8 @@ void main()
  
   ParticleSystem particleSystem = null;
   
-  var startParticleSystem = (String config)
-  {
+  void startParticleSystem(String config) {
+    
     if (particleSystem != null) {
       particleSystem.stop(true);
       stageForeground.removeChild(particleSystem);
@@ -45,7 +45,7 @@ void main()
 
     stageForeground.addChild(particleSystem);
     Juggler.instance.add(particleSystem);
-  };
+  }
 
   startParticleSystem(jsonJelly);
   
@@ -64,12 +64,12 @@ void main()
   GlassPlate glassPlate = new GlassPlate(800, 600);
   stageForeground.addChild(glassPlate);
 
-  var mouseAction = (MouseEvent me) {
+  void mouseAction(MouseEvent me) {
     if (me.buttonDown) {
       particleSystem.emitterX = me.localX;
       particleSystem.emitterY = me.localY;  
     }
-  };
+  }
   
   glassPlate.addEventListener(MouseEvent.MOUSE_DOWN, mouseAction);
   glassPlate.addEventListener(MouseEvent.MOUSE_MOVE, mouseAction);
