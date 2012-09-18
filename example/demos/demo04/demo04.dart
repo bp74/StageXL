@@ -19,13 +19,13 @@ void main()
   //------------------------------------------------------------------
 
   Resource resource = new Resource();
-  resource.addImage("house", "../images/House.png");
-  resource.addImage("sun", "../images/Sun.png");
-  resource.addImage("tree", "../images/Tree.png");
-  resource.addImage("buttonUp", "../images/ButtonUp.png");
-  resource.addImage("buttonOver", "../images/ButtonOver.png");
-  resource.addImage("buttonDown", "../images/ButtonDown.png");
-  resource.addSound("plop", "../sounds/Plop.mp3");
+  resource.addImage("house", "../common/images/House.png");
+  resource.addImage("sun", "../common/images/Sun.png");
+  resource.addImage("tree", "../common/images/Tree.png");
+  resource.addImage("buttonUp", "../common/images/ButtonUp.png");
+  resource.addImage("buttonOver", "../common/images/ButtonOver.png");
+  resource.addImage("buttonDown", "../common/images/ButtonDown.png");
+  resource.addSound("plop", "../common/sounds/Plop.mp3");
 
   Future resourceLoader = resource.load();
 

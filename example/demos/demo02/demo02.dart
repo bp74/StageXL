@@ -20,9 +20,9 @@ void main()
   // but the library provides an easy way to load resources.
 
   Resource resource = new Resource();
-  resource.addImage("house", "../images/House.png");
-  resource.addImage("sun", "../images/Sun.png");
-  resource.addImage("tree", "../images/Tree.png");
+  resource.addImage("house", "../common/images/House.png");
+  resource.addImage("sun", "../common/images/Sun.png");
+  resource.addImage("tree", "../common/images/Tree.png");
 
   Future resourceLoader = resource.load();
 

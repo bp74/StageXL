@@ -79,9 +79,9 @@ void main()
   //------------------------------------------------------------------
 
   resource = new Resource();
-  resource.addImage("buttonUp", "../images/ButtonUp.png");
-  resource.addImage("buttonOver", "../images/ButtonOver.png");
-  resource.addImage("buttonDown", "../images/ButtonDown.png");
+  resource.addImage("buttonUp", "../common/images/ButtonUp.png");
+  resource.addImage("buttonOver", "../common/images/ButtonOver.png");
+  resource.addImage("buttonDown", "../common/images/ButtonDown.png");
   
   resource.load().then((result)
   {

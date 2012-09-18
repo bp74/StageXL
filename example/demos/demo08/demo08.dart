@@ -37,12 +37,12 @@ void main()
   //------------------------------------------------------------------
 
   resource = new Resource();
-  resource.addImage("buttonUp", "../images/ButtonUp.png");
-  resource.addImage("buttonOver", "../images/ButtonOver.png");
-  resource.addImage("buttonDown", "../images/ButtonDown.png");
-  resource.addImage("flower1", "../images/Flower1.png");
-  resource.addImage("flower2", "../images/Flower2.png");
-  resource.addImage("flower3", "../images/Flower3.png");
+  resource.addImage("buttonUp", "../common/images/ButtonUp.png");
+  resource.addImage("buttonOver", "../common/images/ButtonOver.png");
+  resource.addImage("buttonDown", "../common/images/ButtonDown.png");
+  resource.addImage("flower1", "../common/images/Flower1.png");
+  resource.addImage("flower2", "../common/images/Flower2.png");
+  resource.addImage("flower3", "../common/images/Flower3.png");
   
   //------------------------------------------------------------------
   // Draw buttons for different masks and start animation
