@@ -71,7 +71,7 @@ class Game extends Sprite
     //-------------------------------
 
     _pointsTextField = new TextField();
-    _pointsTextField.defaultTextFormat = new TextFormat("Arial", 30, 0xD0D0D0, true, align:TextFormatAlign.CENTER);
+    _pointsTextField.defaultTextFormat = new TextFormat("Arial", 30, 0xD0D0D0, bold:true, align:TextFormatAlign.CENTER);
     _pointsTextField.width = 140;
     _pointsTextField.height = 36;
     _pointsTextField.wordWrap = false;
@@ -87,7 +87,7 @@ class Game extends Sprite
     //-------------------------------
 
     _shufflesTextField = new TextField();
-    _shufflesTextField.defaultTextFormat = new TextFormat("Arial", 20, 0xFFFFFF, true, align:TextFormatAlign.CENTER);
+    _shufflesTextField.defaultTextFormat = new TextFormat("Arial", 20, 0xFFFFFF, bold:true, align:TextFormatAlign.CENTER);
     _shufflesTextField.width = 44;
     _shufflesTextField.height = 30;
     _shufflesTextField.wordWrap = false;
@@ -466,11 +466,8 @@ class Game extends Sprite
     Bitmap background = new Bitmap(Grafix.resource.getBitmapData("ExitBox"));
     gameOverBox.addChild(background);
 
-    TextFormat textFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
-    textFormat.align = TextFormatAlign.CENTER;
-
     TextField textField = new TextField();
-    textField.defaultTextFormat = textFormat;
+    textField.defaultTextFormat = new TextFormat("Arial", 30, 0xFFFFFF, bold:true, align:TextFormatAlign.CENTER);
     textField.width = 240;
     textField.height = 200;
     textField.wordWrap = true;

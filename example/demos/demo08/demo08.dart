@@ -18,7 +18,7 @@ void main()
   //------------------------------------------------------------------
   // prepare different Masks for later use
   //------------------------------------------------------------------
-  
+
   List<Point> starPath = new List<Point>();
 
   for(int i = 0; i < 6; i++) {
@@ -43,7 +43,7 @@ void main()
   resource.addImage("flower1", "../common/images/Flower1.png");
   resource.addImage("flower2", "../common/images/Flower2.png");
   resource.addImage("flower3", "../common/images/Flower3.png");
-  
+
   //------------------------------------------------------------------
   // Draw buttons for different masks and start animation
   //------------------------------------------------------------------
@@ -87,7 +87,7 @@ Sprite getAnimation()
 {
   Sprite sprite = new Sprite();
   Random random = new Random();
-  
+
   for(int i = 0; i < 150; i++) {
     int f = 1 + random.nextInt(3);
     BitmapData bitmapData = resource.getBitmapData("flower$f");
@@ -119,11 +119,8 @@ Sprite getButton(String text, Function clickHandler)
   simpleButton.x = 20;
   simpleButton.y = 20;
 
-  TextFormat textFormat = new TextFormat("Verdana", 30, Color.White, false);
-  textFormat.align = TextFormatAlign.CENTER;
-
   TextField textField = new TextField();
-  textField.defaultTextFormat = textFormat;
+  textField.defaultTextFormat = new TextFormat("Verdana", 30, 0xFFFFFF, align:TextFormatAlign.CENTER);
   textField.width = simpleButton.width;
   textField.height = 40;
   textField.text = text;

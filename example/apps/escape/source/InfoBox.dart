@@ -11,11 +11,8 @@ class InfoBox extends Sprite
   {
     addChild(new Bitmap(Grafix.resource.getBitmapData("InfoBox")));
 
-    TextFormat levelTextFormat = new TextFormat("Arial", 35, 0xFFFFFF, true);
-    levelTextFormat.align = TextFormatAlign.CENTER;
-
     _levelText = new TextField();
-    _levelText.defaultTextFormat = levelTextFormat;
+    _levelText.defaultTextFormat = new TextFormat("Arial", 35, 0xFFFFFF, bold:true, align:TextFormatAlign.CENTER);
     _levelText.width = 220;
     _levelText.height = 40;
     _levelText.wordWrap = false;
@@ -27,11 +24,8 @@ class InfoBox extends Sprite
     _levelText.rotation = -2 * PI / 180;
     addChild(_levelText);
 
-    TextFormat chainTextFormat = new TextFormat("Arial", 25, 0xFFFFFF, true);
-    chainTextFormat.align = TextFormatAlign.CENTER;
-
     _chainsText = new TextField();
-    _chainsText.defaultTextFormat = chainTextFormat;
+    _chainsText.defaultTextFormat = new TextFormat("Arial", 25, 0xFFFFFF, bold:true, align:TextFormatAlign.CENTER);
     _chainsText.width = 220;
     _chainsText.height = 30;
     _chainsText.wordWrap = false;

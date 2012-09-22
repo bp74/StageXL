@@ -4,11 +4,8 @@ class Bonus extends Sprite
 
   Bonus(int points)
   {
-    TextFormat textFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
-    textFormat.align = TextFormatAlign.CENTER;
-
     TextField textField = new TextField();
-    textField.defaultTextFormat = textFormat;
+    textField.defaultTextFormat = new TextFormat("Arial", 30, 0xFFFFFF, bold:true, align:TextFormatAlign.CENTER);
     textField.width = 110;
     textField.height = 36;
     textField.wordWrap = false;

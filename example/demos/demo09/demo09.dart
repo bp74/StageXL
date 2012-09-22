@@ -27,17 +27,17 @@ void main()
   Bitmap background = new Bitmap(new BitmapData(800, 600, false, 0x000000));
   stageBackground.addChild(background);
   stageBackground.renderMode = StageRenderMode.ONCE;
- 
+
   ParticleSystem particleSystem = null;
-  
+
   void startParticleSystem(String config) {
-    
+
     if (particleSystem != null) {
       particleSystem.stop(true);
       stageForeground.removeChild(particleSystem);
       Juggler.instance.remove(particleSystem);
     }
-    
+
     particleSystem = new ParticleSystem(config);
     particleSystem.emitterX = 400;
     particleSystem.emitterY = 400;
@@ -48,7 +48,7 @@ void main()
   }
 
   startParticleSystem(jsonJelly);
-  
+
   //------------------------------------------------------------------
   // control the emitter of the particle system with the mouse
   //------------------------------------------------------------------
@@ -60,20 +60,20 @@ void main()
   textField.y = 570;
   textField.text = "Use the mouse to control the particle emitter position.";
   stageBackground.addChild(textField);
-  
+
   GlassPlate glassPlate = new GlassPlate(800, 600);
   stageForeground.addChild(glassPlate);
 
   void mouseAction(MouseEvent me) {
     if (me.buttonDown) {
       particleSystem.emitterX = me.localX;
-      particleSystem.emitterY = me.localY;  
+      particleSystem.emitterY = me.localY;
     }
   }
-  
+
   glassPlate.addEventListener(MouseEvent.MOUSE_DOWN, mouseAction);
   glassPlate.addEventListener(MouseEvent.MOUSE_MOVE, mouseAction);
-  
+
   //------------------------------------------------------------------
   // Draw some buttons to show different particle systems.
   //------------------------------------------------------------------
@@ -82,7 +82,7 @@ void main()
   resource.addImage("buttonUp", "../common/images/ButtonUp.png");
   resource.addImage("buttonOver", "../common/images/ButtonOver.png");
   resource.addImage("buttonDown", "../common/images/ButtonDown.png");
-  
+
   resource.load().then((result)
   {
     List<Sprite> buttons = [
@@ -95,13 +95,13 @@ void main()
     for(int b = 0; b < buttons.length; b++) {
       Sprite button = buttons[b];
       stageForeground.addChild(button);
-      
+
       button.x = (b < 3) ? 10 + b * 130 : 645;
       button.y = 10;
       button.scaleX = 0.5;
       button.scaleY = 0.5;
     }
-  });  
+  });
 }
 
 
@@ -118,11 +118,8 @@ Sprite getButton(String text, Function clickHandler)
   simpleButton.x = 20;
   simpleButton.y = 20;
 
-  TextFormat textFormat = new TextFormat("Verdana", 30, Color.White, false);
-  textFormat.align = TextFormatAlign.CENTER;
-
   TextField textField = new TextField();
-  textField.defaultTextFormat = textFormat;
+  textField.defaultTextFormat = new TextFormat("Verdana", 30, 0xFFFFFF, align:TextFormatAlign.CENTER);
   textField.width = simpleButton.width;
   textField.height = 40;
   textField.text = text;

@@ -8,11 +8,8 @@ class MessageBox extends Sprite
     Bitmap background = new Bitmap(Grafix.resource.getBitmapData("MessageBox"));
     addChild(background);
 
-    TextFormat textFormat = new TextFormat("Arial", 24, 0xFFFFFF, true);
-    textFormat.align = TextFormatAlign.CENTER;
-
     TextField textField = new TextField();
-    textField.defaultTextFormat = textFormat;
+    textField.defaultTextFormat = new TextFormat("Arial", 24, 0xFFFFFF, bold:true, align:TextFormatAlign.CENTER);
     textField.width = 240;
     textField.height = 200;
     textField.wordWrap = true;
@@ -23,7 +20,6 @@ class MessageBox extends Sprite
     //textField.filters = [new GlowFilter(0x000000, 0.7, 3, 3)];   // ToDo
     textField.mouseEnabled = false;
     addChild(textField);
-
 
     _showTimeout = null;
 

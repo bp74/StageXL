@@ -30,7 +30,7 @@ class TextField extends InteractiveObject
 
   TextField()
   {
-    _defaultTextFormat = new TextFormat();
+    _defaultTextFormat = new TextFormat("Arial", 12, 0x000000);
 
     _linesText = new List<String>();
     _linesMetrics = new List<TextLineMetrics>();

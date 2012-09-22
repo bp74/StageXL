@@ -62,7 +62,7 @@ void main()
     Juggler.instance.add(loadingBitmapTween);
 
     loadingTextField = new TextField();
-    loadingTextField.defaultTextFormat = new TextFormat("Arial", 20, 0xA0A0A0, true);;
+    loadingTextField.defaultTextFormat = new TextFormat("Arial", 20, 0xA0A0A0, bold:true);;
     loadingTextField.width = 240;
     loadingTextField.height = 40;
     loadingTextField.text = "... loading ...";

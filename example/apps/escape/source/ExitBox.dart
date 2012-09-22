@@ -11,11 +11,8 @@ class ExitBox extends Sprite
     Bitmap background = new Bitmap(Grafix.resource.getBitmapData("ExitBox"));
     addChild(background);
 
-    TextFormat textFormat = new TextFormat("Arial", 24, 0xFFFFFF, true);
-    textFormat.align = TextFormatAlign.CENTER;
-
     TextField textField = new TextField();
-    textField.defaultTextFormat = textFormat;
+    textField.defaultTextFormat = new TextFormat("Arial", 24, 0xFFFFFF, bold:true, align:TextFormatAlign.CENTER);
     textField.width = 240;
     textField.height = 100;
     textField.wordWrap = true;

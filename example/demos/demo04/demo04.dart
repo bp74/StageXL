@@ -45,11 +45,8 @@ void main()
 
     // Overlay the button with a TextField
 
-    TextFormat textFormat = new TextFormat("Verdana", 30, Color.White, true);
-    textFormat.align = TextFormatAlign.CENTER;
-
     TextField textField = new TextField();
-    textField.defaultTextFormat = textFormat;
+    textField.defaultTextFormat = new TextFormat("Verdana", 30, 0xFFFFFF, bold:true, align:TextFormatAlign.CENTER);
     textField.width = simpleButton.width;
     textField.height = 40;
     textField.text = "Click me";
