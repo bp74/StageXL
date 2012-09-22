@@ -21,10 +21,10 @@ class TextureAtlas
       case TextureAtlasFormat.JSON:
       case TextureAtlasFormat.JSONARRAY:
 
-        var request = new html.HttpRequest();  
-        
+        var request = new html.HttpRequest();
+
         request.open('GET', url, true);
-        
+
         request.on.load.add((event)
         {
           void parseFrame(String filename, Dynamic frame) {
@@ -100,6 +100,18 @@ class TextureAtlas
         bitmapDataList.add(new BitmapData.fromTextureAtlasFrame(_frames[i]));
 
     return bitmapDataList;
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  List<String> get frameNames
+  {
+    List<String> names = new List<String>();
+
+    for(int i = 0; i < _frames.length; i++)
+      names.add(_frames[i].name);
+
+    return names;
   }
 
   //-------------------------------------------------------------------------------------------------
