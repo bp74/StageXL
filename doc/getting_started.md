@@ -50,12 +50,14 @@ Add the dartflash depedency to your pubspec.yaml ...
 
 ## Resources
 
-Visit our main website [www.dartflash.com](http://www.dartflash.com) to get more information about dartflash.
+Visit our main website [www.dartflash.com](http://www.dartflash.com) to get more information about dartflash. 
 
-* [API Reference](http://www.dartflash.com)
-* [Articles and Tutorials](http://www.dartflash.com)
-* [Demos](http://www.dartflash.com)
-* [FAQ](http://www.dartflash.com)
+* [API Reference](http://www.dartflash.com/docs/api/dartflash.html)
+* [Wiki Articles](http://www.dartflash.com/docs/wiki-articles.html)
+* [Demo Performance](http://www.dartflash.com/demos/performance/performance.html)
+* [Demo Masking](http://www.dartflash.com/demos/masking/masking.html)
+* [Demo MovieClip](http://www.dartflash.com/demos/movieclip/movieclip.html)
+* [FAQ](http://www.dartflash.com/docs/faq.html)
 
 Other related websites:
 
