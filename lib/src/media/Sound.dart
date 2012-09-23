@@ -2,29 +2,20 @@ abstract class Sound
 {
   static Future<Sound> loadAudio(String url)
   {
-    Sound sound;
+    var engine = SoundMixer.engine;
     
-    switch(SoundMixer.engine)
-    {
-      case "WebAudioApi":
-        sound = new WebAudioApiSound();
-        break;
-      case "AudioElement":
-        sound = new AudioElementSound();
-        break;
-      default:
-        sound = new MockSound();
-        break;
-    }
+    if (engine == "WebAudioApi")
+      return WebAudioApiSound.loadAudio(url);
+
+    if (engine == "AudioElement")
+      return AudioElementSound.loadAudio(url);
     
-    return sound.load(url);
+    return MockSound.loadAudio(url);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   abstract num get length();
-
-  abstract Future<Sound> load(String url);
   
   abstract SoundChannel play([bool loop = false, SoundTransform soundTransform = null]);
   

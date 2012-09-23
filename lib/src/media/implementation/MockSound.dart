@@ -8,14 +8,18 @@ class MockSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
   
-  Future<Sound> load(String url)
+  static Future<Sound> loadAudio(String url)
   {
+    var sound = new MockSound();
     var loadCompleter = new Completer<Sound>();
     
-    html.window.setTimeout(() => loadCompleter.complete(this), 1);
+    html.window.setTimeout(() => loadCompleter.complete(sound), 1);
     
     return  loadCompleter.future;
   }
+  
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
   
   num get length() 
   {

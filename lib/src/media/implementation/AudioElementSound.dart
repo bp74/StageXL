@@ -2,46 +2,50 @@ class AudioElementSound extends Sound
 {
   html.AudioElement _audio;
   List<html.AudioElement> _audioPool;
-  Completer<Sound> _loadCompleter;
   List<AudioElementSoundChannel> _soundChannels;
-  
-  html.EventListener _audioCanPlayThroughHandler;
-  html.EventListener _audioErrorHandler;
-  html.EventListener _audioEndedHandler;
-  
+
   AudioElementSound()
   {
     _soundChannels = new List<AudioElementSoundChannel>();
-
-    // ToDo: In Dart method closures aren't canonicalized yet.
-    // So we use a little workaround meanwhile.
     
-    _audioCanPlayThroughHandler = _onAudioCanPlayThrough;
-    _audioErrorHandler = _onAudioError;
-    _audioEndedHandler = _onAudioEnded;
-  }
-  
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-  
-  Future<Sound> load(String url)
-  {
-    _loadCompleter = new Completer<Sound>();
-
-    _audio = new html.AudioElement(Sound.adaptAudioUrl(url));
-    _audio.on.canPlayThrough.add(_audioCanPlayThroughHandler);
-    _audio.on.error.add(_audioErrorHandler);
-    _audio.on.ended.add(_audioEndedHandler);
-    _audio.load();
-
-    html.document.body.elements.add(_audio);
-
+    _audio = new html.AudioElement();
+    _audio.on.ended.add(_onAudioEnded);
+    
     _audioPool = new List<html.AudioElement>();
     _audioPool.add(_audio);
     
-    return _loadCompleter.future;
+    html.document.body.elements.add(_audio);
   }
 
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  static Future<Sound> loadAudio(String url)
+  {
+    var sound = new AudioElementSound();
+    var loadCompleter = new Completer<Sound>();
+
+    void onAudioCanPlayThrough(event)
+    {
+      if (loadCompleter.future.isComplete == false)
+        loadCompleter.complete(sound);
+    }
+
+    void onAudioError(event)
+    {
+      if (loadCompleter.future.isComplete == false)
+        loadCompleter.completeException("Failed to load audio.");        
+    }
+
+    sound._audio.src = Sound.adaptAudioUrl(url);
+    sound._audio.on.canPlayThrough.add(onAudioCanPlayThrough);
+    sound._audio.on.error.add(onAudioError);
+    sound._audio.load();
+
+    return loadCompleter.future;
+  }
+
+  //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   num get length
@@ -92,9 +96,7 @@ class AudioElementSound extends Sound
       _audio.currentTime = 0;
   }
   
-  //-------------------------------------------------------------------------------------------------
-  
-  _onAudioEnded(event)
+  void _onAudioEnded(event)
   {
     html.AudioElement audio = event.target;
     AudioElementSoundChannel soundChannel = null;
@@ -106,23 +108,4 @@ class AudioElementSound extends Sound
     if (soundChannel != null)
       soundChannel.stop();
   } 
-  
-  _onAudioCanPlayThrough(event)
-  {
-    _audio.on.canPlayThrough.remove(_audioCanPlayThroughHandler);
-    _audio.on.error.remove(_audioErrorHandler);
-    
-    if (_loadCompleter.future.isComplete == false)
-      _loadCompleter.complete(this);      
-  }
-  
-  _onAudioError(event)
-  {
-    _audio.on.canPlayThrough.remove(_audioCanPlayThroughHandler);
-    _audio.on.error.remove(_audioErrorHandler);
-    
-    if (_loadCompleter.future.isComplete == false)
-      _loadCompleter.completeException("Failed to load audio.");        
-  }
-  
 }

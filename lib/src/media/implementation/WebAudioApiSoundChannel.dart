@@ -11,13 +11,13 @@ class WebAudioApiSoundChannel extends SoundChannel
   {
     _webAudioApiSound = webAudioApiSound;
     _loop = loop;
+    _soundTransform = soundTransform;
     
-    html.AudioContext context = _webAudioApiSound._audioContext;
-
+    var context = SoundMixer._audioContext;
+    
     _gainNode = context.createGainNode();
     _gainNode.connect(context.destination, 0, 0);
-    
-    this.soundTransform = soundTransform;
+    _gainNode.gain.value =  (_soundTransform != null) ? pow(_soundTransform.volume , 2) : 1;
     
     _sourceNode = context.createBufferSource();
     _sourceNode.buffer = _webAudioApiSound._buffer;
