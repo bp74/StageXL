@@ -40,7 +40,7 @@ abstract class Sound
     
     //---------------------------------------
     
-    RegExp regex = const RegExp(@"\.(ogg|mp3|wav)$", multiLine:false, ignoreCase:true); 
+    RegExp regex = const RegExp(r"\.(ogg|mp3|wav)$", multiLine:false, ignoreCase:true); 
     Match match = regex.firstMatch(url);
     
     if (match == null)
