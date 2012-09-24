@@ -6,3 +6,6 @@ description: >
  provides the familiar Flash API - work with Sprites, Bitmaps, TextFields and
  even Sounds like you did with Flash before. Please visit www.dartflash.com
  for more information and demos.
+author: Bernhard Pichler <support@dartflash.com>
+homepage: http://www.dartflash.com
+
