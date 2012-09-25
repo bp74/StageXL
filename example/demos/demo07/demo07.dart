@@ -1,6 +1,6 @@
 #import('dart:math');
-#import('dart:html', prefix:"html");
-#import('../../../lib/dartflash.dart');
+#import('dart:html', prefix:'html');
+#import('package:dartflash/dartflash.dart');
 
 //###########################################################################
 //  Credits for "TheZakMan" on http://opengameart.org for the walking man.
@@ -47,7 +47,7 @@ void startAnimation()
   //------------------------------------------------------------------
 
   num rnd = random.nextDouble();
-  
+
   MovieClip movieClip = new MovieClip(bitmapDatas, 30);
   movieClip.x = -128;
   movieClip.y = 100.0 + 200.0 * rnd;
