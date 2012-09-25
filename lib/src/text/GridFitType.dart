@@ -1,4 +1,4 @@
-class GridFitType 
+class GridFitType
 {
   static const String NONE = "none";
   static const String PIXEL = "pixel";

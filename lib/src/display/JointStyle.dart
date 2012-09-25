@@ -1,4 +1,4 @@
-class JointStyle 
+class JointStyle
 {
   static const String MITER = "miter";
   static const String ROUND = "round";

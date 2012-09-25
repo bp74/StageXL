@@ -1,4 +1,4 @@
-class EventPhase 
+class EventPhase
 {
   static const int CAPTURING_PHASE = 1;
   static const int AT_TARGET = 2;

@@ -1,4 +1,4 @@
-class TextLineMetrics 
+class TextLineMetrics
 {
   num ascent;
   num descent;
@@ -6,6 +6,6 @@ class TextLineMetrics
   num leading;
   num width;
   num x;
-  
+
   TextLineMetrics(this.x, this.width, this.height, this.ascent, this.descent, this.leading);
 }

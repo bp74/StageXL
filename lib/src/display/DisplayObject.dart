@@ -18,7 +18,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   DisplayObjectContainer _parent = null;
 
   Mask mask;
-  
+
   //-------------------------------------------------------------------------------------------------
   // for internal use only to minimize memory allocations.
 

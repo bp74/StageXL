@@ -4,7 +4,7 @@ class DelayedCall implements Animatable
   num _totalTime = 0.0;
   int _repeatCount = 1;
   Function _action;
-  
+
   DelayedCall(Function action, num delay)
   {
     _action = action;
@@ -23,23 +23,23 @@ class DelayedCall implements Animatable
       _currentTime = _totalTime;
       _repeatCount--;
       _action();
-      
+
       newTime -= _totalTime;
     }
 
     if (_repeatCount == 0)
       return false;
-    
+
     _currentTime = newTime;
     return true;
   }
 
   //-------------------------------------------------------------------------------------------------
-  
+
   num get totalTime => _totalTime;
-  num get currentTime => _currentTime; 
+  num get currentTime => _currentTime;
   int get repeatCount => _repeatCount;
-    
+
   void set repeatCount(int value) { _repeatCount = value; }
-  
+
 }

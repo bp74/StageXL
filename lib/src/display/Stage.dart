@@ -120,7 +120,7 @@ class Stage extends DisplayObjectContainer
   void _onMouseEvent(html.MouseEvent event)
   {
     event.preventDefault();
-    
+
     int time = new Date.now().millisecondsSinceEpoch;
     int button = event.button;
     InteractiveObject target = null;
@@ -194,7 +194,7 @@ class Stage extends DisplayObjectContainer
     bool isClick = false;
     bool isDoubleClick = false;
 
-    if (event.type == "mousedown") 
+    if (event.type == "mousedown")
     {
         mouseEventType = _mouseDownEventTypes[button];
 
@@ -285,7 +285,7 @@ class Stage extends DisplayObjectContainer
   void _onKeyEvent(html.KeyboardEvent event)
   {
     event.preventDefault();
-    
+
     String keyboardEventType = null;
 
     if (event.type == "keyup") keyboardEventType = KeyboardEvent.KEY_UP;
@@ -321,5 +321,5 @@ class Stage extends DisplayObjectContainer
     if (_focus != null)
       _focus.dispatchEvent(textEvent);
   }
- 
+
 }

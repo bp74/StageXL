@@ -1,3 +1,3 @@
 abstract class Animatable {
-  abstract bool advanceTime(num time); 
+  abstract bool advanceTime(num time);
 }

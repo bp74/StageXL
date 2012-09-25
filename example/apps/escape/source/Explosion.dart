@@ -21,11 +21,11 @@ class Explosion extends Sprite implements Animatable
     this.mouseEnabled = false;
 
     Bitmap chain = Grafix.getChain(color, direction);
-    Random random = new Random(); 
-    
+    Random random = new Random();
+
     num angle;
     num velocity;
-    num rotation;
+    num rotatation;
 
     for(int y = 0; y <= 1; y++)
     {

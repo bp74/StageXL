@@ -45,15 +45,15 @@ class RenderState
 
     Matrix matrix = _matrices[_depth];
     matrix.copyFromAndConcat(displayObject._transformationMatrix, _matrices[_depth - 1]);
-    
+
     _context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     _context.globalAlpha = _alphas[_depth] = _alphas[_depth - 1] * displayObject._alpha;
 
-    if (displayObject.mask == null) 
+    if (displayObject.mask == null)
     {
       displayObject.render(this);
-    } 
-    else 
+    }
+    else
     {
       _context.save();
       displayObject.mask.render(this);
@@ -64,8 +64,8 @@ class RenderState
     _depth--;
   }
 
-  
-  
+
+
 
 
 

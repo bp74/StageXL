@@ -1,14 +1,14 @@
 class EventDispatcher
 {
   Map<String, List<_EventListener>> _eventListenersMap;
-  
+
   EventDispatcher();
-  
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
-  
+
   bool hasEventListener(String type)
-  { 
+  {
     return _eventListenersMap != null && _eventListenersMap.containsKey(type);
   }
 
@@ -17,21 +17,21 @@ class EventDispatcher
   void addEventListener(String type, Function listener, [bool useCapture = false])
   {
     _EventListener eventListener = new _EventListener(listener, useCapture);
-    
+
     if (_eventListenersMap == null)
       _eventListenersMap = new Map<String, List<_EventListener>>();
 
     List<_EventListener> eventListeners = _eventListenersMap[type];
 
-    if (eventListeners == null) 
+    if (eventListeners == null)
       eventListeners = new List<_EventListener>();
     else
       eventListeners = new List<_EventListener>.from(eventListeners);
-      
+
     eventListeners.add(eventListener);
-    
+
     _eventListenersMap[type] = eventListeners;
-    
+
     _EventDispatcherCatalog.addEventDispatcher(type, this);
   }
 
@@ -45,13 +45,13 @@ class EventDispatcher
 
       if (eventListeners != null)
       {
-        eventListeners = eventListeners.filter((el) => el.listener == listener && el.useCapture == useCapture); 
+        eventListeners = eventListeners.filter((el) => el.listener == listener && el.useCapture == useCapture);
 
         if (eventListeners.length == 0)
           _eventListenersMap.remove(type);
         else
           _eventListenersMap[type] = eventListeners;
-        
+
         _EventDispatcherCatalog.removeEventDispatcher(type, this);
       }
     }
@@ -63,10 +63,10 @@ class EventDispatcher
   {
     _invokeEventListeners(event, this, this, EventPhase.AT_TARGET);
   }
-  
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
-  
+
   void _invokeEventListeners(Event event, EventDispatcher target, EventDispatcher currentTarget, int eventPhase)
   {
     if (_eventListenersMap != null)
@@ -79,19 +79,19 @@ class EventDispatcher
         {
           if (eventPhase == EventPhase.CAPTURING_PHASE && eventListener.useCapture == false)
             continue;
-          
+
           event._target = target;
           event._currentTarget = currentTarget;
           event._eventPhase = eventPhase;
-          
+
           eventListener.listener(event);
-           
-          if (event.stopsImmediatePropagation) 
+
+          if (event.stopsImmediatePropagation)
             break;
         }
       }
     }
   }
 
-  
+
 }

@@ -1,4 +1,4 @@
-class TextFieldAutoSize 
+class TextFieldAutoSize
 {
   static const String CENTER = "center";
   static const String LEFT = "left";

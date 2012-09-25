@@ -1,4 +1,4 @@
-class MouseCursor 
+class MouseCursor
 {
   static const String AUTO = "auto";
   static const String ARROW = "arrow";

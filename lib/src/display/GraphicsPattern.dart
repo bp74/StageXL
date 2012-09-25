@@ -1,9 +1,9 @@
-class GraphicsPattern 
+class GraphicsPattern
 {
   BitmapData _bitmapData;
   Matrix _matrix;
   String _repeatOption;
-  
+
   GraphicsPattern.repeat(BitmapData bitmapData, [Matrix matrix = null])
   {
     _bitmapData = bitmapData;
@@ -17,21 +17,21 @@ class GraphicsPattern
     _matrix = matrix;
     _repeatOption = "repeat-x";
   }
-  
+
   GraphicsPattern.repeatY(BitmapData bitmapData, [Matrix matrix = null])
   {
     _bitmapData = bitmapData;
     _matrix = matrix;
     _repeatOption = "repeat-y";
   }
-  
+
   GraphicsPattern.noRepeat(BitmapData bitmapData, [Matrix matrix = null])
   {
     _bitmapData = bitmapData;
     _matrix = matrix;
     _repeatOption = "no-repeat";
   }
-  
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
@@ -39,5 +39,5 @@ class GraphicsPattern
   {
     return context.createPattern(_bitmapData._htmlElement, _repeatOption);
   }
-  
+
 }

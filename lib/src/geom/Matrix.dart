@@ -1,22 +1,22 @@
-class Matrix 
+class Matrix
 {
   num _a, _b, _c, _d, _tx, _ty;
   num _det;
-  
-  Matrix(num a, num b, num c, num d, num tx, num ty) : 
+
+  Matrix(num a, num b, num c, num d, num tx, num ty) :
     _a = a, _b = b, _c = c, _d = d, _tx = tx, _ty = ty, _det = a * d - b * c;
-  
-  Matrix.fromIdentity() :  
+
+  Matrix.fromIdentity() :
     _a = 1.0, _b = 0.0, _c = 0.0, _d = 1.0, _tx = 0.0, _ty = 0.0, _det = 1.0;
 
   //-------------------------------------------------------------------------------------------------
-  
-  Matrix clone() 
+
+  Matrix clone()
   {
     return new Matrix(_a, _b, _c, _d, _tx, _ty);
   }
 
-  Matrix cloneInvert() 
+  Matrix cloneInvert()
   {
     num a =    (_d / _det);
     num b =  - (_b / _det);
@@ -24,7 +24,7 @@ class Matrix
     num d =    (_a / _det);
     num tx = - (a * _tx + c * _ty);
     num ty = - (b * _tx + d * _ty);
-    
+
     return new Matrix(a, b, c, d, tx, ty);
   }
 
@@ -45,15 +45,15 @@ class Matrix
   {
     return new Point(p.x * _a + p.y * _c + _tx, p.x * _b + p.y * _d + _ty);
   }
-  
+
   Point deltaTransformPoint(Point p)
   {
     return new Point(p.x * _a + p.y * _c, p.x * _b + p.y * _d);
   }
-  
+
   //-------------------------------------------------------------------------------------------------
-  
-  void concat(Matrix matrix) 
+
+  void concat(Matrix matrix)
   {
     num a1 =   _a;
     num b1 =   _b;
@@ -62,7 +62,7 @@ class Matrix
     num tx1 =  _tx;
     num ty1 =  _ty;
     num det1 = _det;
-    
+
     num a2 =   matrix.a;
     num b2 =   matrix.b;
     num c2 =   matrix.c;
@@ -70,7 +70,7 @@ class Matrix
     num tx2 =  matrix.tx;
     num ty2 =  matrix.ty;
     num det2 = matrix.det;
-    
+
     _a =   (a1 * a2 + b1 * c2);
     _b =   (a1 * b2 + b1 * d2);
     _c =   (c1 * a2 + d1 * c2);
@@ -88,7 +88,7 @@ class Matrix
     matrix.scale(scaleX, scaleY);
     matrix.rotate(rotation);
     matrix.translate(translationX, translationY);
-    
+
     return matrix;
   }
 
@@ -116,14 +116,14 @@ class Matrix
     num tx =  _tx;
     num ty =  _ty;
     num det = _det;
-    
+
     _a =    (d / det);
     _b =  - (b / det);
     _c =  - (c / det);
     _d =    (a / det);
     _tx = - (_a * tx + _c * ty);
     _ty = - (_b * tx + _d * ty);
-    _det =  (1.0 / det);    
+    _det =  (1.0 / det);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -139,10 +139,10 @@ class Matrix
     num d =  _d;
     num tx = _tx;
     num ty = _ty;
-    
-    _a =  (a * cosR - b * sinR); 
-    _b =  (a * sinR + b * cosR); 
-    _c =  (c * cosR - d * sinR); 
+
+    _a =  (a * cosR - b * sinR);
+    _b =  (a * sinR + b * cosR);
+    _c =  (c * cosR - d * sinR);
     _d =  (c * sinR + d * cosR);
     _tx = (tx * cosR - ty * sinR);
     _ty = (tx * sinR + ty * cosR);
@@ -154,14 +154,14 @@ class Matrix
   {
     num tanX = tan(skewX);
     num tanY = tan(skewY);
-    
+
     num a =  _a;
     num b =  _b;
     num c =  _c;
     num d =  _d;
     num tx = _tx;
     num ty = _ty;
-    
+
     _a =   (a - b * tanX);
     _b =   (b + a * tanY);
     _c =   (c - d * tanX);
@@ -170,7 +170,7 @@ class Matrix
     _ty =  (ty + tx * tanY);
     _det = _a * _d - _b * _c;
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   void scale(num scaleX, num scaleY)
@@ -179,7 +179,7 @@ class Matrix
     _b   *= scaleY;
     _c   *= scaleX;
     _d   *= scaleY;
-    _tx  *= scaleX;    
+    _tx  *= scaleX;
     _ty  *= scaleY;
     _det *= scaleX * scaleY;
   }
@@ -196,11 +196,11 @@ class Matrix
 
   void setTo(num a, num b, num c, num d, num tx, num ty)
   {
-    _a =   a; 
-    _b =   b; 
-    _c =   c; 
-    _d =   d; 
-    _tx =  tx; 
+    _a =   a;
+    _b =   b;
+    _c =   c;
+    _d =   d;
+    _tx =  tx;
     _ty =  ty;
     _det = (a * d - b * c);
   }
@@ -229,7 +229,7 @@ class Matrix
     num tx1 =  copyMatrix.tx;
     num ty1 =  copyMatrix.ty;
     num det1 = copyMatrix.det;
-    
+
     num a2 =   concatMatrix.a;
     num b2 =   concatMatrix.b;
     num c2 =   concatMatrix.c;
@@ -237,7 +237,7 @@ class Matrix
     num tx2 =  concatMatrix.tx;
     num ty2 =  concatMatrix.ty;
     num det2 = concatMatrix.det;
-    
+
     _a =   (a1 * a2 + b1 * c2);
     _b =   (a1 * b2 + b1 * d2);
     _c =   (c1 * a2 + d1 * c2);
@@ -246,7 +246,7 @@ class Matrix
     _ty =  (tx1 * b2 + ty1 * d2 + ty2);
     _det = (det1 * det2);
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   void copyFromAndInvert(Matrix matrix)
@@ -258,7 +258,7 @@ class Matrix
     num tx =  matrix.tx;
     num ty =  matrix.ty;
     num det = matrix.det;
-    
+
     _a =    (d / det);
     _b =  - (b / det);
     _c =  - (c / det);
@@ -267,5 +267,5 @@ class Matrix
     _ty = - (_b * tx + _d * ty);
     _det =  (1.0 / det);
   }
-  
+
 }

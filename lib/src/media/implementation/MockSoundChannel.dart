@@ -2,24 +2,24 @@ class MockSoundChannel extends SoundChannel
 {
   bool _loop;
   SoundTransform _soundTransform;
-  
+
   MockSoundChannel(MockSound mockSound, bool loop, SoundTransform soundTransform)
   {
     _loop = loop;
     _soundTransform = soundTransform;
   }
-  
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
-  
+
   SoundTransform get soundTransform() => _soundTransform;
 
-  void set soundTransform(SoundTransform value) 
+  void set soundTransform(SoundTransform value)
   {
     _soundTransform = value;
   }
-  
-  void stop() 
+
+  void stop()
   {
     // nothing to do
   }

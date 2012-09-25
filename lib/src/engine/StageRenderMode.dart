@@ -1,4 +1,4 @@
-class StageRenderMode 
+class StageRenderMode
 {
   static const String AUTO = "auto";
   static const String STOP = "stop";

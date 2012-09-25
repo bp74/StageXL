@@ -28,7 +28,7 @@ class Gauge extends Sprite
   {
     int bdWidth = _bitmap.bitmapData.width;
     int bdHeight = _bitmap.bitmapData.height;
-    
+
     switch (_direction)
     {
       case DIRECTION_LEFT:

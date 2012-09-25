@@ -1,4 +1,4 @@
-class TextFormatAlign 
+class TextFormatAlign
 {
   static const String CENTER = "center";
   static const String END = "end";

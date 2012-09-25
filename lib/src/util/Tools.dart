@@ -6,18 +6,18 @@ String _color2rgb(int color)
   int g = (color >>  8) & 0xFF;
   int b = (color >>  0) & 0xFF;
 
-  return "rgb($r,$g,$b)";  
+  return "rgb($r,$g,$b)";
 }
 
 //-------------------------------------------------------------------------------------------------
 
 String _color2rgba(int color)
 {
-  int a = (color >> 24) & 0xFF;    
+  int a = (color >> 24) & 0xFF;
   int r = (color >> 16) & 0xFF;
   int g = (color >>  8) & 0xFF;
   int b = (color >>  0) & 0xFF;
-  
+
   return "rgba($r,$g,$b,${a / 255.0})";
 }
 
@@ -27,7 +27,7 @@ Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rect
 {
   // tranformedX = X * matrix.a + Y * matrix.c + matrix.tx;
   // tranformedY = X * matrix.b + Y * matrix.d + matrix.ty;
-  
+
   double x1 = 0.0;
   double y1 = 0.0;
   double x2 = width * matrix.a;
@@ -65,5 +65,5 @@ Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rect
   returnRectangle.width = right - left;
   returnRectangle.height = bottom - top;
 
-  return returnRectangle;  
+  return returnRectangle;
 }

@@ -1,4 +1,4 @@
-class KeyLocation 
+class KeyLocation
 {
   static const int STANDARD = 0;
   static const int LEFT = 1;

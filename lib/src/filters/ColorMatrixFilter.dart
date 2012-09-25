@@ -1,13 +1,13 @@
 class ColorMatrixFilter extends BitmapFilter
 {
   List<num> matrix;
-  
+
   ColorMatrixFilter(this.matrix)
   {
     if (this.matrix.length != 20)
       throw new Exception("The supplied matrix needs to be a 4 x 5 matrix.");
   }
- 
+
   ColorMatrixFilter.grayscale(): matrix = [0.212671, 0.715160, 0.072169, 0, 0,
                                            0.212671, 0.715160, 0.072169, 0, 0,
                                            0.212671, 0.715160, 0.072169, 0, 0,
@@ -17,13 +17,13 @@ class ColorMatrixFilter extends BitmapFilter
                                         0, -1,  0, 0, 255,
                                         0,  0, -1, 0, 255,
                                         0,  0,  0, 1, 0];
-  
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
-  
+
   BitmapFilter clone()
   {
-    return new ColorMatrixFilter(new List<num>.from(this.matrix));    
+    return new ColorMatrixFilter(new List<num>.from(this.matrix));
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -34,10 +34,10 @@ class ColorMatrixFilter extends BitmapFilter
     //greenResult = (a[5]  * srcR) + (a[6]  * srcG) + (a[7]  * srcB) + (a[8]  * srcA) + a[9]
     //blueResult  = (a[10] * srcR) + (a[11] * srcG) + (a[12] * srcB) + (a[13] * srcA) + a[14]
     //alphaResult = (a[15] * srcR) + (a[16] * srcG) + (a[17] * srcB) + (a[18] * srcA) + a[19]
-    
+
     html.ImageData imageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
     html.Uint8ClampedArray data = imageData.data;
-        
+
     int a00 = (this.matrix[00] * 65536).toInt();
     int a01 = (this.matrix[01] * 65536).toInt();
     int a02 = (this.matrix[02] * 65536).toInt();
@@ -60,7 +60,7 @@ class ColorMatrixFilter extends BitmapFilter
     int a19 = (this.matrix[19] * 65536).toInt();
 
     int pixels = data.length >> 2;
-    
+
     for(int i = 0 ; i < pixels; i++)
     {
       int indexR = i << 2 ;
@@ -78,8 +78,8 @@ class ColorMatrixFilter extends BitmapFilter
       data[indexB] = ((a10 * srcR) + (a11 * srcG) + (a12 * srcB) + (a13 * srcA) + a14) >> 16;
       data[indexA] = ((a15 * srcR) + (a16 * srcG) + (a17 * srcB) + (a18 * srcA) + a19) >> 16;
     }
-    
+
     destinationBitmapData._getContext().putImageData(imageData, destinationPoint.x, destinationPoint.y);
   }
-  
+
 }

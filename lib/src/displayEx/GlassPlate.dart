@@ -1,8 +1,8 @@
-class GlassPlate extends InteractiveObject 
+class GlassPlate extends InteractiveObject
 {
   num width;
   num height;
-  
+
   GlassPlate(this.width, this.height);
 
   //-------------------------------------------------------------------------------------------------
@@ -14,17 +14,17 @@ class GlassPlate extends InteractiveObject
   }
 
   //-------------------------------------------------------------------------------------------------
-  
-  DisplayObject hitTestInput(num localX, num localY) 
+
+  DisplayObject hitTestInput(num localX, num localY)
   {
-    if (localX >= 0.0 && localY >= 0.0  && localX < width && localY < height) 
+    if (localX >= 0.0 && localY >= 0.0  && localX < width && localY < height)
       return this;
-    
+
     return null;
   }
 
   //-------------------------------------------------------------------------------------------------
-  
+
   void render(RenderState renderState)
   {
 

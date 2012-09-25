@@ -650,7 +650,7 @@ class Board extends Sprite
           if (source >= 0)
           {
             fieldSource = _fields[x + source * 10];
-            
+
             if (x > 0)
             {
               fieldSourceWest = _fields[x - 1 + source * 10];
@@ -661,7 +661,7 @@ class Board extends Sprite
                 fieldSourceWest.updateDisplayObjects(_chainLayer, _linkLayer, _specialLayer);
               }
             }
-            
+
             fieldSource.linked = false;
             fieldSource.empty = true;
             fieldSource.updateDisplayObjects(_chainLayer, _linkLayer, _specialLayer);
