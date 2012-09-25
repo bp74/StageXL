@@ -1,9 +1,9 @@
-This library provides the Flash API build on top of open web standards (HTML5). Developers who build applications with Flash may have noticed that Flash isn't a popular choice for web development anymore. Some of you probably think about a migration strategy from Flash to HTML5.
+The dartflash library is intended for Flash developers who want to migrate their projects as well as their skills to HTML5. Therefore the library provides the familiar Flash API built on open web standards. For an easy transition the library fulfills the following requirements:
 
-What we try to achieve with dartflash:
+* The library is highly compatible with the Flash API.
+* The programming language is similar to ActionScript 3.
 
-* The library should be highly compatible with the Flash API.
-* The programming language should be similar to ActionScript 3.
+To meet those requirements the library is built with Googles new programming language called Dart. Dart is a class-based, single inheritance, object-oriented language and compiles to efficient JavaScript.
 
 ## Demo
 
@@ -11,7 +11,7 @@ This little game was developed with Flash and later ported to HTML5 in only 6 ho
 
 <http://www.dartflash.com/games/escape/escape.html>
 
-For more demos visit the main website for the dartflash project:
+The dartflash website contains more demos and documentation. If you are not familiar with the Dart programming language, please take a look at the ActionScript-Dart comparison.
 
 <http://www.dartflash.com/>
 
