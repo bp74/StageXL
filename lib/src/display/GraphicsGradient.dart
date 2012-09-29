@@ -27,7 +27,7 @@ class GraphicsGradient
     _startRadius = startRadius;
     _endX = endX;
     _endY = endY;
-    _endRadius;
+    _endRadius = endRadius;
     _colorStops = new List();
   }
 
