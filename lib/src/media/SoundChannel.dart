@@ -1,8 +1,6 @@
 abstract class SoundChannel extends EventDispatcher
 {
-  abstract SoundTransform get soundTransform();
-
-  abstract void set soundTransform(SoundTransform value);
-
-  abstract void stop();
+  SoundTransform get soundTransform();
+  void set soundTransform(SoundTransform value);
+  void stop();
 }

@@ -70,7 +70,7 @@ class BlurFilter extends BitmapFilter
         {
           if (y >= 0)
           {
-            destinationData[offsetY] = (sum / weightY).toInt();
+            destinationData[offsetY] = sum ~/ weightY;
             offsetY += width4;
             dif += buffer[(y - ry1) & 1023] - 2 * buffer[y & 1023];
           }
@@ -93,7 +93,7 @@ class BlurFilter extends BitmapFilter
         {
           if (x >= 0)
           {
-            destinationData[offsetX] = (sum / weightX).toInt();
+            destinationData[offsetX] = sum ~/ weightX;
             offsetX += 4;
             dif += buffer[(x - rx1) & 1023] - 2 * buffer[x & 1023];
           }
@@ -163,7 +163,7 @@ class BlurFilter extends BitmapFilter
         {
           if (y >= 0)
           {
-            destinationData[offsetY] = (sum / weightY).toInt();
+            destinationData[offsetY] = sum ~/ weightY;
             offsetY += width4;
             dif += 6 * buffer[y & 1023] + buffer[(y - ry2) & 1023] - 4 * (buffer[(y - ry1) & 1023] + buffer[(y + ry1) & 1023]);
           }
@@ -189,7 +189,7 @@ class BlurFilter extends BitmapFilter
         {
           if (x >= 0)
           {
-            destinationData[offsetX] = (sum / weightX).toInt();
+            destinationData[offsetX] = sum ~/ weightX;
             offsetX += 4;
             dif += 6 * buffer[x & 1023] + buffer[(x - rx2) & 1023] - 4 * (buffer[(x - rx1) & 1023] + buffer[(x + rx1) & 1023]);
           }

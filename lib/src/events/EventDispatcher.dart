@@ -39,21 +39,18 @@ class EventDispatcher
 
   void removeEventListener(String type, Function listener, [bool useCapture = false])
   {
-    if (_eventListenersMap != null)
+    List<_EventListener> eventListeners = _eventListenersMap != null ? _eventListenersMap[type] : null;
+
+    if (eventListeners != null)
     {
-      List<_EventListener> eventListeners = _eventListenersMap[type];
+      eventListeners = eventListeners.filter((el) => el.listener == listener && el.useCapture == useCapture);
 
-      if (eventListeners != null)
-      {
-        eventListeners = eventListeners.filter((el) => el.listener == listener && el.useCapture == useCapture);
+      if (eventListeners.length == 0)
+        _eventListenersMap.remove(type);
+      else
+        _eventListenersMap[type] = eventListeners;
 
-        if (eventListeners.length == 0)
-          _eventListenersMap.remove(type);
-        else
-          _eventListenersMap[type] = eventListeners;
-
-        _EventDispatcherCatalog.removeEventDispatcher(type, this);
-      }
+      _EventDispatcherCatalog.removeEventDispatcher(type, this);
     }
   }
 
@@ -69,26 +66,23 @@ class EventDispatcher
 
   void _invokeEventListeners(Event event, EventDispatcher target, EventDispatcher currentTarget, int eventPhase)
   {
-    if (_eventListenersMap != null)
+    List<_EventListener> eventListeners = _eventListenersMap != null ? _eventListenersMap[event.type] : null;
+
+    if (eventListeners != null)
     {
-      List<_EventListener> eventListeners = _eventListenersMap[event.type];
-
-      if (eventListeners != null)
+      for(var eventListener in eventListeners)
       {
-        for(var eventListener in eventListeners)
-        {
-          if (eventPhase == EventPhase.CAPTURING_PHASE && eventListener.useCapture == false)
-            continue;
+        if (eventPhase == EventPhase.CAPTURING_PHASE && eventListener.useCapture == false)
+          continue;
 
-          event._target = target;
-          event._currentTarget = currentTarget;
-          event._eventPhase = eventPhase;
+        event._target = target;
+        event._currentTarget = currentTarget;
+        event._eventPhase = eventPhase;
 
-          eventListener.listener(event);
+        eventListener.listener(event);
 
-          if (event.stopsImmediatePropagation)
-            break;
-        }
+        if (event.stopsImmediatePropagation)
+          break;
       }
     }
   }

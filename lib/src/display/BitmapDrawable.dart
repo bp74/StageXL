@@ -1,3 +1,3 @@
 abstract class BitmapDrawable {
-  abstract  void render(RenderState renderState);
+  void render(RenderState renderState);
 }
