@@ -6,19 +6,37 @@ class KeyboardEvent extends Event
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  bool _altKey = false;
-  bool _ctrlKey = false;
-  bool _shiftKey = false;
-  bool _commandKey = false;     // Not supported
-  bool _controlKey = false;     // Not supported
+  bool _altKey;
+  bool _ctrlKey;
+  bool _shiftKey;
+  bool _commandKey;     // Not supported
+  bool _controlKey;     // Not supported
 
-  int _charCode = 0;
-  int _keyCode = 0;
-  int _keyLocation = 0;
+  int _charCode;
+  int _keyCode;
+  int _keyLocation;
 
   KeyboardEvent(String type, [bool bubbles = false]):super(type, bubbles)
   {
+    _reset(type, bubbles);
+  }
 
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  void _reset(String type, [bool bubbles = false])
+  {
+    super._reset(type, bubbles);
+
+    _altKey = false;
+    _ctrlKey = false;
+    _shiftKey = false;
+    _commandKey = false;
+    _controlKey = false;
+
+    _charCode = 0;
+    _keyCode = 0;
+    _keyLocation = 0;
   }
 
   //-------------------------------------------------------------------------------------------------

@@ -20,6 +20,8 @@ abstract class DisplayObjectContainer extends InteractiveObject
   void set mouseChildren(bool value) { _mouseChildren = value; }
   void set tabChildren(bool value) { _tabChildren = value; }
 
+  DisplayObjectContainerEvents get on => new DisplayObjectContainerEvents(this);
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
@@ -28,7 +30,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
     if (child.parent == this)
     {
       int index = _children.indexOf(child);
-      _children.removeRange(index, 1);
+      _children.removeAt(index);
       _children.add(child);
     }
     else
@@ -51,8 +53,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
     if (child.parent == this)
     {
-      int currentIndex = _children.indexOf(child);
-      _children.removeRange(currentIndex, 1);
+      _children.removeAt(_children.indexOf(child));
 
       if (index > _children.length)
         index --;
@@ -102,7 +103,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
       _dispatchEventOnChildren(child, new Event(Event.REMOVED_FROM_STAGE));
 
     child._setParent(null);
-    _children.removeRange(index, 1);
+    _children.removeAt(index);
 
     return child;
   }
@@ -149,7 +150,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
     if (oldIndex == -1)
       throw new IllegalArgumentException("Error #2025: The supplied DisplayObject must be a child of the caller.");
 
-    _children.removeRange(oldIndex, 1);
+    _children.removeAt(oldIndex);
     _children.insertRange(index, 1, child);
   }
 

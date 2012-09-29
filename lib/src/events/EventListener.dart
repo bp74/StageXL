@@ -1,7 +1,2 @@
-class _EventListener
-{
-  Function listener;
-  bool useCapture;
+typedef void EventListener(Event event);
 
-  _EventListener(this.listener, this.useCapture);
-}

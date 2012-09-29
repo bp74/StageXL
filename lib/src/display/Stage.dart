@@ -18,6 +18,9 @@ class Stage extends DisplayObjectContainer
   List<String> _mouseDoubleClickEventTypes;
   InteractiveObject _mouseOverTarget;
 
+  MouseEvent _mouseEvent;
+  KeyboardEvent _keyboardEvent;
+
   //-------------------------------------------------------------------------------------------------
 
   Stage(String name, html.CanvasElement canvas)
@@ -61,6 +64,9 @@ class Stage extends DisplayObjectContainer
     _canvas.on.keyPress.add(_onTextEvent);
 
     //-----------
+
+    _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
+    _keyboardEvent = new KeyboardEvent(KeyboardEvent.KEY_DOWN, true);
 
     Mouse._eventDispatcher.addEventListener("mouseCursorChanged", _onMouseCursorChanged);
   }
@@ -124,7 +130,6 @@ class Stage extends DisplayObjectContainer
     int time = new Date.now().millisecondsSinceEpoch;
     int button = event.button;
     InteractiveObject target = null;
-    MouseEvent mouseEvent = null;
 
     if (button < 0 || button > 2)
       return;
@@ -161,14 +166,14 @@ class Stage extends DisplayObjectContainer
       else
         localPoint = new Point.zero();
 
-      mouseEvent = new MouseEvent(MouseEvent.MOUSE_OUT, true);
-      mouseEvent._localX = localPoint.x;
-      mouseEvent._localY = localPoint.y;
-      mouseEvent._stageX = stagePoint.x;
-      mouseEvent._stageY = stagePoint.y;
-      mouseEvent._buttonDown = _buttonState[button];
+      _mouseEvent._reset(MouseEvent.MOUSE_OUT, true);
+      _mouseEvent._localX = localPoint.x;
+      _mouseEvent._localY = localPoint.y;
+      _mouseEvent._stageX = stagePoint.x;
+      _mouseEvent._stageY = stagePoint.y;
+      _mouseEvent._buttonDown = _buttonState[button];
 
-      _mouseOverTarget.dispatchEvent(mouseEvent);
+      _mouseOverTarget.dispatchEvent(_mouseEvent);
       _mouseOverTarget = null;
     }
 
@@ -176,15 +181,15 @@ class Stage extends DisplayObjectContainer
     {
       localPoint = target.globalToLocal(stagePoint);
 
-      mouseEvent = new MouseEvent(MouseEvent.MOUSE_OVER, true);
-      mouseEvent._localX = localPoint.x;
-      mouseEvent._localY = localPoint.y;
-      mouseEvent._stageX = stagePoint.x;
-      mouseEvent._stageY = stagePoint.y;
-      mouseEvent._buttonDown = _buttonState[button];
+      _mouseEvent._reset(MouseEvent.MOUSE_OVER, true);
+      _mouseEvent._localX = localPoint.x;
+      _mouseEvent._localY = localPoint.y;
+      _mouseEvent._stageX = stagePoint.x;
+      _mouseEvent._stageY = stagePoint.y;
+      _mouseEvent._buttonDown = _buttonState[button];
 
       _mouseOverTarget = target;
-      _mouseOverTarget.dispatchEvent(mouseEvent);
+      _mouseOverTarget.dispatchEvent(_mouseEvent);
     }
 
     //------------------------------------------------------
@@ -229,15 +234,15 @@ class Stage extends DisplayObjectContainer
     {
       localPoint = target.globalToLocal(stagePoint);
 
-      mouseEvent = new MouseEvent(mouseEventType, true);
-      mouseEvent._localX = localPoint.x;
-      mouseEvent._localY = localPoint.y;
-      mouseEvent._stageX = stagePoint.x;
-      mouseEvent._stageY = stagePoint.y;
-      mouseEvent._buttonDown = _buttonState[button];
-      mouseEvent._clickCount = clickCount;
+      _mouseEvent._reset(mouseEventType, true);
+      _mouseEvent._localX = localPoint.x;
+      _mouseEvent._localY = localPoint.y;
+      _mouseEvent._stageX = stagePoint.x;
+      _mouseEvent._stageY = stagePoint.y;
+      _mouseEvent._buttonDown = _buttonState[button];
+      _mouseEvent._clickCount = clickCount;
 
-      target.dispatchEvent(mouseEvent);
+      target.dispatchEvent(_mouseEvent);
 
       //----------------------------------------------
 
@@ -246,14 +251,14 @@ class Stage extends DisplayObjectContainer
         isDoubleClick = isDoubleClick && target.doubleClickEnabled;
         mouseEventType = isDoubleClick ? _mouseDoubleClickEventTypes[button] : _mouseClickEventTypes[button];
 
-        mouseEvent = new MouseEvent(mouseEventType, true);
-        mouseEvent._localX = localPoint.x;
-        mouseEvent._localY = localPoint.y;
-        mouseEvent._stageX = stagePoint.x;
-        mouseEvent._stageY = stagePoint.y;
-        mouseEvent._buttonDown = _buttonState[button];
+        _mouseEvent._reset(mouseEventType, true);
+        _mouseEvent._localX = localPoint.x;
+        _mouseEvent._localY = localPoint.y;
+        _mouseEvent._stageX = stagePoint.x;
+        _mouseEvent._stageY = stagePoint.y;
+        _mouseEvent._buttonDown = _buttonState[button];
 
-        target.dispatchEvent(mouseEvent);
+        target.dispatchEvent(_mouseEvent);
       }
     }
   }
@@ -269,14 +274,14 @@ class Stage extends DisplayObjectContainer
       Point stagePoint = new Point(event.offsetX, event.offsetY);
       Point localPoint = target.globalToLocal(stagePoint);
 
-      MouseEvent mouseEvent = new MouseEvent(MouseEvent.MOUSE_WHEEL, true);
-      mouseEvent._localX = localPoint.x;
-      mouseEvent._localY = localPoint.y;
-      mouseEvent._stageX = stagePoint.x;
-      mouseEvent._stageY = stagePoint.y;
-      mouseEvent._delta = event.wheelDelta;
+      _mouseEvent._reset(MouseEvent.MOUSE_WHEEL, true);
+      _mouseEvent._localX = localPoint.x;
+      _mouseEvent._localY = localPoint.y;
+      _mouseEvent._stageX = stagePoint.x;
+      _mouseEvent._stageY = stagePoint.y;
+      _mouseEvent._delta = event.wheelDelta;
 
-      target.dispatchEvent(mouseEvent);
+      target.dispatchEvent(_mouseEvent);
     }
   }
 
@@ -291,22 +296,22 @@ class Stage extends DisplayObjectContainer
     if (event.type == "keyup") keyboardEventType = KeyboardEvent.KEY_UP;
     if (event.type == "keydown") keyboardEventType = KeyboardEvent.KEY_DOWN;
 
-    KeyboardEvent keyboardEvent = new KeyboardEvent(keyboardEventType, true);
-    keyboardEvent._altKey = event.altKey;
-    keyboardEvent._ctrlKey = event.ctrlKey;
-    keyboardEvent._shiftKey = event.shiftKey;
-    keyboardEvent._charCode = event.charCode;
-    keyboardEvent._keyCode = event.keyCode;
-    keyboardEvent._keyLocation = KeyLocation.STANDARD;
+    _keyboardEvent._reset(keyboardEventType, true);
+    _keyboardEvent._altKey = event.altKey;
+    _keyboardEvent._ctrlKey = event.ctrlKey;
+    _keyboardEvent._shiftKey = event.shiftKey;
+    _keyboardEvent._charCode = event.charCode;
+    _keyboardEvent._keyCode = event.keyCode;
+    _keyboardEvent._keyLocation = KeyLocation.STANDARD;
 
-    if (event.keyLocation == html.KeyLocation.LEFT) keyboardEvent._keyLocation = KeyLocation.LEFT;
-    if (event.keyLocation == html.KeyLocation.RIGHT) keyboardEvent._keyLocation = KeyLocation.RIGHT;
-    if (event.keyLocation == html.KeyLocation.NUMPAD) keyboardEvent._keyLocation = KeyLocation.NUM_PAD;
-    if (event.keyLocation == html.KeyLocation.JOYSTICK) keyboardEvent._keyLocation = KeyLocation.D_PAD;
-    if (event.keyLocation == html.KeyLocation.MOBILE) keyboardEvent._keyLocation = KeyLocation.D_PAD;
+    if (event.keyLocation == html.KeyLocation.LEFT) _keyboardEvent._keyLocation = KeyLocation.LEFT;
+    if (event.keyLocation == html.KeyLocation.RIGHT) _keyboardEvent._keyLocation = KeyLocation.RIGHT;
+    if (event.keyLocation == html.KeyLocation.NUMPAD) _keyboardEvent._keyLocation = KeyLocation.NUM_PAD;
+    if (event.keyLocation == html.KeyLocation.JOYSTICK) _keyboardEvent._keyLocation = KeyLocation.D_PAD;
+    if (event.keyLocation == html.KeyLocation.MOBILE) _keyboardEvent._keyLocation = KeyLocation.D_PAD;
 
     if (_focus != null)
-      _focus.dispatchEvent(keyboardEvent);
+      _focus.dispatchEvent(_keyboardEvent);
   }
 
   //-------------------------------------------------------------------------------------------------

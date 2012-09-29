@@ -55,6 +55,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   DisplayObjectContainer get parent => _parent;
 
+  DisplayObjectEvents get on => new DisplayObjectEvents(this);
+
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject get root
@@ -325,15 +327,15 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
     if (event.captures && ancestors != null)
       for(int i = ancestors.length - 1 ; i >= 0; i--)
         if (event.stopsPropagation == false)
-          ancestors[i]._invokeEventListeners(event, this, ancestors[i], EventPhase.CAPTURING_PHASE);
+          ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.CAPTURING_PHASE);
 
     if (event.stopsPropagation == false)
-      _invokeEventListeners(event, this, this, EventPhase.AT_TARGET);
+      _dispatchEventInternal(event, this, this, EventPhase.AT_TARGET);
 
     if (event.bubbles && ancestors != null)
       for(int i = 0; i < ancestors.length; i++)
         if (event.stopsPropagation == false)
-          ancestors[i]._invokeEventListeners(event, this, ancestors[i], EventPhase.BUBBLING_PHASE);
+          ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.BUBBLING_PHASE);
   }
 
   //-------------------------------------------------------------------------------------------------

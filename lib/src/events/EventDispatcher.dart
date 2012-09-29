@@ -1,91 +1,63 @@
 class EventDispatcher
 {
-  Map<String, List<_EventListener>> _eventListenersMap;
-
-  EventDispatcher();
+  Map<String, EventListenerList> _eventListenerLists;
 
   //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  EventListenerList getEventListenerList(String type)
+  {
+    if (_eventListenerLists == null)
+      _eventListenerLists = new Map<String, EventListenerList>();
+
+    EventListenerList eventListenerList = _eventListenerLists[type];
+
+    if (eventListenerList == null)
+      eventListenerList = _eventListenerLists[type] = new EventListenerList(this, type);
+
+    return eventListenerList;
+  }
+
   //-------------------------------------------------------------------------------------------------
 
   bool hasEventListener(String type)
   {
-    return _eventListenersMap != null && _eventListenersMap.containsKey(type);
+    return _eventListenerLists != null && _eventListenerLists.containsKey(type);
   }
 
-  //-------------------------------------------------------------------------------------------------
-
-  void addEventListener(String type, Function listener, [bool useCapture = false])
+  void addEventListener(String type, Function eventListener, [bool useCapture = false])
   {
-    _EventListener eventListener = new _EventListener(listener, useCapture);
-
-    if (_eventListenersMap == null)
-      _eventListenersMap = new Map<String, List<_EventListener>>();
-
-    List<_EventListener> eventListeners = _eventListenersMap[type];
-
-    if (eventListeners == null)
-      eventListeners = new List<_EventListener>();
-    else
-      eventListeners = new List<_EventListener>.from(eventListeners);
-
-    eventListeners.add(eventListener);
-
-    _eventListenersMap[type] = eventListeners;
-
-    _EventDispatcherCatalog.addEventDispatcher(type, this);
+    this.getEventListenerList(type).add(eventListener, useCapture);
   }
 
-  //-------------------------------------------------------------------------------------------------
-
-  void removeEventListener(String type, Function listener, [bool useCapture = false])
+  void removeEventListener(String type, Function eventListener, [bool useCapture = false])
   {
-    List<_EventListener> eventListeners = _eventListenersMap != null ? _eventListenersMap[type] : null;
-
-    if (eventListeners != null)
-    {
-      eventListeners = eventListeners.filter((el) => el.listener == listener && el.useCapture == useCapture);
-
-      if (eventListeners.length == 0)
-        _eventListenersMap.remove(type);
-      else
-        _eventListenersMap[type] = eventListeners;
-
-      _EventDispatcherCatalog.removeEventDispatcher(type, this);
-    }
+    this.getEventListenerList(type).remove(eventListener, useCapture);
   }
-
-  //-------------------------------------------------------------------------------------------------
 
   void dispatchEvent(Event event)
   {
-    _invokeEventListeners(event, this, this, EventPhase.AT_TARGET);
+    _dispatchEventInternal(event, this, this, EventPhase.AT_TARGET);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _invokeEventListeners(Event event, EventDispatcher target, EventDispatcher currentTarget, int eventPhase)
+  void _dispatchEventInternal(Event event, EventDispatcher target, EventDispatcher currentTarget, int eventPhase)
   {
-    List<_EventListener> eventListeners = _eventListenersMap != null ? _eventListenersMap[event.type] : null;
-
-    if (eventListeners != null)
+    if (_eventListenerLists != null)
     {
-      for(var eventListener in eventListeners)
-      {
-        if (eventPhase == EventPhase.CAPTURING_PHASE && eventListener.useCapture == false)
-          continue;
+      EventListenerList eventListenerList = _eventListenerLists[event.type];
 
+      if (eventListenerList != null)
+      {
         event._target = target;
         event._currentTarget = currentTarget;
         event._eventPhase = eventPhase;
 
-        eventListener.listener(event);
-
-        if (event.stopsImmediatePropagation)
-          break;
+        eventListenerList.dispatchEvent(event);
       }
     }
   }
-
 
 }

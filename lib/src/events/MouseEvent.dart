@@ -24,26 +24,47 @@ class MouseEvent extends Event
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num _localX = 0;
-  num _localY = 0;
-  num _stageX = 0;
-  num _stageY = 0;
-  bool _buttonDown = false;
+  num _localX, _localY;
+  num _stageX, _stageY;
+  bool _buttonDown;
 
-  bool _altKey = false;
-  bool _controlKey = false;
-  bool _ctrlKey = false;
-  bool _shiftKey = false;
+  bool _altKey;
+  bool _controlKey;
+  bool _ctrlKey;
+  bool _shiftKey;
 
-  int _clickCount = 0;
-  int _delta = 0;
+  int _clickCount;
+  int _delta;
 
-  bool _isRelatedObjectInaccessible = false;
-  InteractiveObject _relatedObject = null;
+  bool _isRelatedObjectInaccessible;
+  InteractiveObject _relatedObject;
 
   MouseEvent(String type, [bool bubbles = false]):super(type, bubbles)
   {
+    _reset(type, bubbles);
+  }
 
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  void _reset(String type, [bool bubbles = false])
+  {
+    super._reset(type, bubbles);
+
+    _localX = _localY = 0;
+    _stageX = _stageY = 0;
+    _buttonDown = false;
+
+    _altKey = false;
+    _controlKey = false;
+    _ctrlKey = false;
+    _shiftKey = false;
+
+    _clickCount = 0;
+    _delta = 0;
+
+    _isRelatedObjectInaccessible = false;
+    _relatedObject = null;
   }
 
   //-------------------------------------------------------------------------------------------------

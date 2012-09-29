@@ -76,7 +76,7 @@ class AudioElementSound extends Sound
     else
     {
       audio = _audioPool[0];
-      _audioPool.removeRange(0, 1);
+      _audioPool.removeAt(0);
     }
 
     _soundChannels.add(soundChannel);
@@ -89,7 +89,7 @@ class AudioElementSound extends Sound
     html.AudioElement audio = soundChannel._audio;
     int index = _soundChannels.indexOf(soundChannel);
 
-    _soundChannels.removeRange(index, 1);
+    _soundChannels.removeAt(index);
     _audioPool.add(audio);
 
     if (_audio.currentTime > 0 && _audio.ended == false)

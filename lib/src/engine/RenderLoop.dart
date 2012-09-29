@@ -2,12 +2,19 @@ class RenderLoop
 {
   Juggler _juggler;
   List<Stage> _stages;
-  num _renderTime = double.NAN;
+  num _renderTime;
+
+  _EventListenerListIndex _enterFrameIndex;
+  EnterFrameEvent _enterFrameEvent;
 
   RenderLoop()
   {
     _juggler = Juggler.instance;
     _stages = new List<Stage>();
+    _renderTime = double.NAN;
+
+    _enterFrameIndex = _EventListenerListIndex.enterFrame;
+    _enterFrameEvent = new EnterFrameEvent(0);
 
     html.window.requestAnimationFrame(_onAnimationFrame);
   }
@@ -31,15 +38,16 @@ class RenderLoop
     num deltaTime = currentTime - _renderTime;
     num deltaTimeSec = deltaTime / 1000.0;
 
-    if (deltaTime >= 1)
-    {
+    if (deltaTime >= 1) {
       _renderTime = currentTime;
-
-      _EventDispatcherCatalog.dispatchEvent(new EnterFrameEvent(deltaTimeSec));
+      _enterFrameEvent._passedTime = deltaTimeSec;
+      _enterFrameIndex.dispatchEvent(_enterFrameEvent);
       _juggler.advanceTime(deltaTimeSec);
 
-      for(int i = 0; i < _stages.length; i++)
-        _stages[i].materialize();
+      for(int i = 0; i < _stages.length; i++) {
+        var stage = _stages[i];
+        stage.materialize();
+      }
     }
 
     return true;

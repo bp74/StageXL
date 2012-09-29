@@ -25,8 +25,9 @@
 #source('src/events/Event.dart');
 #source('src/events/EventPhase.dart');
 #source('src/events/EventDispatcher.dart');
-#source('src/events/EventDispatcherCatalog.dart');
 #source('src/events/EventListener.dart');
+#source('src/events/EventListenerList.dart');
+#source('src/events/EventListenerListIndex.dart');
 #source('src/events/EnterFrameEvent.dart');
 #source('src/events/MouseEvent.dart');
 #source('src/events/KeyboardEvent.dart');
@@ -57,6 +58,9 @@
 #source('src/display/CapsStyle.dart');
 #source('src/display/JointStyle.dart');
 #source('src/display/Mask.dart');
+
+#source('src/display/events/DisplayObjectEvents.dart');
+#source('src/display/events/DisplayObjectContainerEvents.dart');
 
 #source('src/displayEx/GlassPlate.dart');
 #source('src/displayEx/ParticleSystem.dart');
