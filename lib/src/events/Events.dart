@@ -1,7 +1,14 @@
 class Events
 {
-  EventDispatcher target;
-  Events(EventDispatcher target) : this.target = target;
+  EventDispatcher _eventDispatcher;
 
-  EventListenerList operator [](String eventType) => target.getEventListenerList(eventType);
+  Events(EventDispatcher eventDispatcher)
+  {
+    _eventDispatcher = eventDispatcher;
+  }
+
+  EventListenerList operator [](String eventType)
+  {
+    return _eventDispatcher._getEventListenerList(eventType);
+  }
 }

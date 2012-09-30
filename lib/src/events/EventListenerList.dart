@@ -70,11 +70,13 @@ class EventListenerList
 
   //-------------------------------------------------------------------------------------------------
 
-  void operator +(Function eventListener) {
+  void operator +(Function eventListener)
+  {
     this.add(eventListener, false);
   }
 
-  void operator -(Function eventListener) {
+  void operator -(Function eventListener)
+  {
     this.remove(eventListener, false);
   }
 

@@ -5,21 +5,6 @@ class EventDispatcher
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  EventListenerList getEventListenerList(String type)
-  {
-    if (_eventListenerLists == null)
-      _eventListenerLists = new Map<String, EventListenerList>();
-
-    EventListenerList eventListenerList = _eventListenerLists[type];
-
-    if (eventListenerList == null)
-      eventListenerList = _eventListenerLists[type] = new EventListenerList(this, type);
-
-    return eventListenerList;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
   bool hasEventListener(String type)
   {
     return _eventListenerLists != null && _eventListenerLists.containsKey(type);
@@ -27,12 +12,12 @@ class EventDispatcher
 
   void addEventListener(String type, Function eventListener, [bool useCapture = false])
   {
-    this.getEventListenerList(type).add(eventListener, useCapture);
+    _getEventListenerList(type).add(eventListener, useCapture);
   }
 
   void removeEventListener(String type, Function eventListener, [bool useCapture = false])
   {
-    this.getEventListenerList(type).remove(eventListener, useCapture);
+    _getEventListenerList(type).remove(eventListener, useCapture);
   }
 
   void dispatchEvent(Event event)
@@ -62,6 +47,21 @@ class EventDispatcher
         eventListenerList.dispatchEvent(event);
       }
     }
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  EventListenerList _getEventListenerList(String type)
+  {
+    if (_eventListenerLists == null)
+      _eventListenerLists = new Map<String, EventListenerList>();
+
+    EventListenerList eventListenerList = _eventListenerLists[type];
+
+    if (eventListenerList == null)
+      eventListenerList = _eventListenerLists[type] = new EventListenerList(this, type);
+
+    return eventListenerList;
   }
 
 }
