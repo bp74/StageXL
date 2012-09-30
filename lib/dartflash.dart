@@ -23,6 +23,7 @@
 #source('src/engine/StageRenderMode.dart');
 
 #source('src/events/Event.dart');
+#source('src/events/Events.dart');
 #source('src/events/EventPhase.dart');
 #source('src/events/EventDispatcher.dart');
 #source('src/events/EventListener.dart');

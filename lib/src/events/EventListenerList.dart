@@ -45,11 +45,7 @@ class EventListenerList
     list.add(new _EventListenerUseCapture(eventListener, useCapture));
   }
 
-  void operator +(Function eventListener) 
-  {
-    this.add(eventListener, false);  
-  }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   void remove(Function eventListener, [bool useCapture = false])
@@ -72,11 +68,16 @@ class EventListenerList
     }
   }
 
-  void operator -(Function eventListener) 
-  {
-    this.remove(eventListener, false);  
+  //-------------------------------------------------------------------------------------------------
+
+  void operator +(Function eventListener) {
+    this.add(eventListener, false);
   }
-  
+
+  void operator -(Function eventListener) {
+    this.remove(eventListener, false);
+  }
+
   //-------------------------------------------------------------------------------------------------
 
   void dispatchEvent(Event event)
