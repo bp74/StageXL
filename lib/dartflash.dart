@@ -61,6 +61,7 @@
 
 #source('src/display/events/DisplayObjectEvents.dart');
 #source('src/display/events/DisplayObjectContainerEvents.dart');
+#source('src/display/events/InteractiveObjectEvents.dart');
 
 #source('src/displayEx/GlassPlate.dart');
 #source('src/displayEx/ParticleSystem.dart');
