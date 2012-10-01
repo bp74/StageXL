@@ -23,7 +23,7 @@ class WebAudioApiSoundChannel extends SoundChannel
     _sourceNode.buffer = _webAudioApiSound._buffer;
     _sourceNode.loop = loop;
     _sourceNode.connect(_gainNode, 0, 0);
-    _sourceNode.noteOn(0);
+    _sourceNode.start(0);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -40,6 +40,6 @@ class WebAudioApiSoundChannel extends SoundChannel
 
   void stop()
   {
-    _sourceNode.noteOff(0);
+    _sourceNode.stop(0);
   }
 }

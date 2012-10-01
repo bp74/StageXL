@@ -279,7 +279,8 @@ class Stage extends DisplayObjectContainer
       _mouseEvent._localY = localPoint.y;
       _mouseEvent._stageX = stagePoint.x;
       _mouseEvent._stageY = stagePoint.y;
-      _mouseEvent._delta = event.wheelDelta;
+      _mouseEvent._deltaX = event.deltaX;
+      _mouseEvent._deltaY = event.deltaY;
 
       target.dispatchEvent(_mouseEvent);
     }

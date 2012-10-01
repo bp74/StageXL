@@ -34,7 +34,8 @@ class MouseEvent extends Event
   bool _shiftKey;
 
   int _clickCount;
-  int _delta;
+  int _deltaX;
+  int _deltaY;
 
   bool _isRelatedObjectInaccessible;
   InteractiveObject _relatedObject;
@@ -61,7 +62,8 @@ class MouseEvent extends Event
     _shiftKey = false;
 
     _clickCount = 0;
-    _delta = 0;
+    _deltaX = 0;
+    _deltaY = 0;
 
     _isRelatedObjectInaccessible = false;
     _relatedObject = null;
@@ -82,7 +84,8 @@ class MouseEvent extends Event
   bool get shiftKey => _shiftKey;
 
   int get clickCount => _clickCount;
-  int get delta => _delta;
+  int get deltaX => _deltaX;
+  int get deltaY => _deltaY;
 
   bool get isRelatedObjectInaccessible => _isRelatedObjectInaccessible;
   InteractiveObject get relatedObject => _relatedObject;
