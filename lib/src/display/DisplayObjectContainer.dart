@@ -25,7 +25,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject addChild(DisplayObject child)
+  dynamic addChild(DisplayObject child)
   {
     if (child.parent == this)
     {
@@ -43,7 +43,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject addChildAt(DisplayObject child, int index)
+  dynamic addChildAt(DisplayObject child, int index)
   {
     if (index < 0 && index > _children.length)
       throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
@@ -78,7 +78,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject removeChild(DisplayObject child)
+  dynamic removeChild(DisplayObject child)
   {
     int childIndex = _children.indexOf(child);
 
@@ -90,7 +90,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject removeChildAt(int index)
+  dynamic removeChildAt(int index)
   {
     if (index < 0 && index >= _children.length)
       throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
@@ -110,7 +110,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject getChildAt(int index)
+  dynamic getChildAt(int index)
   {
     if (index < 0 && index >= _children.length)
       throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
@@ -120,7 +120,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject getChildByName(String name)
+  dynamic getChildByName(String name)
   {
     var childrenLength = _children.length;
 
