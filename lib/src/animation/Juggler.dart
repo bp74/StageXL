@@ -2,10 +2,7 @@ class Juggler implements Animatable
 {
   List<Animatable> _animatables;
   int _animatablesCount;
-
   num _elapsedTime;
-
-  static Juggler _instance;
 
   Juggler()
   {
@@ -13,14 +10,6 @@ class Juggler implements Animatable
 
     _animatables = new List<Animatable>();
     _animatablesCount = 0;
-  }
-
-  static get instance
-  {
-    if (_instance == null)
-      _instance = new Juggler();
-
-    return _instance;
   }
 
   //-------------------------------------------------------------------------------------------------

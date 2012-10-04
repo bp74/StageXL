@@ -9,7 +9,7 @@ class RenderLoop
 
   RenderLoop()
   {
-    _juggler = Juggler.instance;
+    _juggler = new Juggler();
     _stages = new List<Stage>();
     _renderTime = double.NAN;
 
@@ -19,15 +19,14 @@ class RenderLoop
     html.window.requestAnimationFrame(_onAnimationFrame);
   }
 
+  Juggler get juggler => _juggler;
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  bool _onAnimationFrame(num currentTime)
+  void _onAnimationFrame(num currentTime)
   {
     html.window.requestAnimationFrame(_onAnimationFrame);
-
-    if (currentTime == null)
-      currentTime = new Date.now().millisecondsSinceEpoch;
 
     if (_renderTime.isNaN())
       _renderTime = currentTime;
@@ -49,8 +48,6 @@ class RenderLoop
         stage.materialize();
       }
     }
-
-    return true;
   }
 
   //-------------------------------------------------------------------------------------------------

@@ -54,6 +54,6 @@ void main()
   tween2.animate("scaleY", 1);
   tween2.delay = 5.0;
 
-  Juggler.instance.add(tween1);
-  Juggler.instance.add(tween2);
+  renderLoop.juggler.add(tween1);
+  renderLoop.juggler.add(tween2);
 }

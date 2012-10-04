@@ -5,6 +5,9 @@ String jsonJelly = '{"sourcePosition" : { "x" : 160.00, "y" : 370.00 }, "sourceP
 String jsonFire = '{"sourcePosition" : { "x" : 160.00, "y" : 430.00 }, "sourcePositionVariance": { "x" : 40.00, "y" : 0.00 }, "speed" : 190.00, "speedVariance" : 30.00, "particleLifeSpan" : 1.00, "particleLifespanVariance" : 0.70, "angle" : 270.00, "angleVariance" : 15.00, "gravity" : { "x" : 0.00, "y" : 0.00 }, "radialAcceleration" : 0.00, "tangentialAcceleration" : 0.00, "radialAccelVariance" : 0.00, "tangentialAccelVariance" : 0.00, "startColor" : { "red" : 1.00, "green" : 0.31 , "blue" : 0.00 , "alpha" : 0.62 }, "finishColor" : { "red" : 1.00 , "green" :  0.31 , "blue" : 0.00 , "alpha" : 0.00 }, "maxParticles" : 200, "startParticleSize" : 50.00, "startParticleSizeVariance" : 30.00, "finishParticleSize" : 10.00, "FinishParticleSizeVariance" : 0.00, "duration" : -1.00, "emitterType" : 0, "maxRadius" : 100.00, "maxRadiusVariance" : 0.00, "minRadius" : 0.00, "rotatePerSecond" : 0.00, "rotatePerSecondVariance" : 0.00 }';
 String jsonSun = '{"sourcePosition" : { "x" : 160.00, "y" : 230.00 }, "sourcePositionVariance": { "x" : 7.00, "y" : 7.00 }, "speed" : 260.00, "speedVariance" : 10.00, "particleLifeSpan" : 1.00, "particleLifespanVariance" : 0.70, "angle" : 0.00, "angleVariance" : 360.00, "gravity" : { "x" : 0.00, "y" : 0.00 }, "radialAcceleration" : -600.00, "tangentialAcceleration" : -100.00, "radialAccelVariance" : 0.00, "tangentialAccelVariance" : 0.00, "startColor" : { "red" : 1.00, "green" : 0.0 , "blue" : 0.0 , "alpha" : 1.0 }, "finishColor" : { "red" : 1.00 , "green" : 1.00 , "blue" : 0.00 , "alpha" : 1.00 }, "maxParticles" : 200, "startParticleSize" : 30.00, "startParticleSizeVariance" : 20.00, "finishParticleSize" : 5.00, "FinishParticleSizeVariance" : 5.00, "duration" : -1.00, "emitterType" : 0, "maxRadius" : 40.00, "maxRadiusVariance" : 0.00, "minRadius" : 0.00, "rotatePerSecond" : 0.00, "rotatePerSecondVariance" : 0.00 }';
 
+Stage stageBackground;
+Stage stageForeground;
+RenderLoop renderLoop;
 Resource resource;
 
 void main()
@@ -13,10 +16,10 @@ void main()
   // Initialize the Display List
   //------------------------------------------------------------------
 
-  Stage stageBackground = new Stage("stageBackground", html.document.query('#stageBackground'));
-  Stage stageForeground = new Stage("stageForeground", html.document.query('#stageForeground'));
+  stageBackground = new Stage("stageBackground", html.document.query('#stageBackground'));
+  stageForeground = new Stage("stageForeground", html.document.query('#stageForeground'));
 
-  RenderLoop renderLoop = new RenderLoop();
+  renderLoop = new RenderLoop();
   renderLoop.addStage(stageBackground);
   renderLoop.addStage(stageForeground);
 
@@ -35,7 +38,7 @@ void main()
     if (particleSystem != null) {
       particleSystem.stop(true);
       stageForeground.removeChild(particleSystem);
-      Juggler.instance.remove(particleSystem);
+      renderLoop.juggler.remove(particleSystem);
     }
 
     particleSystem = new ParticleSystem(config);
@@ -44,7 +47,7 @@ void main()
     particleSystem.start();
 
     stageForeground.addChild(particleSystem);
-    Juggler.instance.add(particleSystem);
+    renderLoop.juggler.add(particleSystem);
   }
 
   startParticleSystem(jsonJelly);

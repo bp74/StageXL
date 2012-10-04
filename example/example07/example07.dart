@@ -7,6 +7,7 @@
 //###########################################################################
 
 Stage stage;
+RenderLoop renderLoop;
 Resource resource;
 
 void main()
@@ -17,7 +18,7 @@ void main()
 
   stage = new Stage("myStage", html.document.query('#stage'));
 
-  RenderLoop renderLoop = new RenderLoop();
+  renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
   //------------------------------------------------------------------
@@ -65,18 +66,18 @@ void startAnimation()
   tween.animate("x", 800.0);
   tween.onComplete = ()
   {
-    Juggler.instance.remove(movieClip);
+    renderLoop.juggler.remove(movieClip);
     stage.removeChild(movieClip);
   };
 
-  Juggler.instance.add(movieClip);
-  Juggler.instance.add(tween);
+  renderLoop.juggler.add(movieClip);
+  renderLoop.juggler.add(tween);
 
   //------------------------------------------------------------------
   // after 0.3 seconds the next animation should start
   //------------------------------------------------------------------
 
-  Juggler.instance.delayCall(startAnimation, 0.3);
+  renderLoop.juggler.delayCall(startAnimation, 0.3);
 
 }
 

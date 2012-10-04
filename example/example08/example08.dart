@@ -2,6 +2,8 @@
 #import('dart:html', prefix:'html');
 #import('package:dartflash/dartflash.dart');
 
+Stage stage;
+RenderLoop renderLoop;
 Resource resource;
 
 void main()
@@ -10,9 +12,9 @@ void main()
   // Initialize the Display List
   //------------------------------------------------------------------
 
-  Stage stage = new Stage("myStage", html.document.query('#stage'));
+  stage = new Stage("myStage", html.document.query('#stage'));
 
-  RenderLoop renderLoop = new RenderLoop();
+  renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
   //------------------------------------------------------------------
@@ -66,7 +68,7 @@ void main()
         Tween rotate = new Tween(animation, 2.0, Transitions.easeInOutBack);
         rotate.animate("rotation", PI * 4.0);
         rotate.onComplete = () => animation.rotation = 0.0;
-        Juggler.instance.add(rotate);
+        renderLoop.juggler.add(rotate);
       })
     ];
 
@@ -100,7 +102,7 @@ Sprite getAnimation()
 
     Tween tween = new Tween(bitmap, 180.0, Transitions.linear);
     tween.animate("rotation", PI * 20.0);
-    Juggler.instance.add(tween);
+    renderLoop.juggler.add(tween);
   }
 
   return sprite;

@@ -54,9 +54,9 @@ void main()
     tweenRotation.animate("rotation", PI * 4.0);
     tweenRotation.delay = 7.0;
 
-    Juggler.instance.add(tweenDown);
-    Juggler.instance.add(tweenUp);
-    Juggler.instance.add(tweenRotation);
+    renderLoop.juggler.add(tweenDown);
+    renderLoop.juggler.add(tweenUp);
+    renderLoop.juggler.add(tweenRotation);
   });
 
   // ToDo: handle the exception correctly
