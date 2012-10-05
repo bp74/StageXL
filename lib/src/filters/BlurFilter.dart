@@ -24,17 +24,17 @@ class BlurFilter extends BitmapFilter
 
   //-------------------------------------------------------------------------------------------------
 
-  void _applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
+  void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
   {
-    if (quality <= 1) _applyFilterLow(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
-    if (quality == 2) _applyFilterMedium(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
-    if (quality >= 3) _applyFilterHigh(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
+    if (quality <= 1) _applyLow(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
+    if (quality == 2) _applyMedium(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
+    if (quality >= 3) _applyHigh(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _applyFilterLow(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
+  void _applyLow(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
   {
     var sourceContext = sourceBitmapData._getContext();
     var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
@@ -60,51 +60,59 @@ class BlurFilter extends BitmapFilter
 
     List<int> buffer = new List<int>(1024);
 
-    for (int z = 0; z < 4; z++)
-    {
-      for (int x = 0, offsetX = z; x < width; x++)
-      {
-        int dif = 0, sum = weightY >> 1;
+    for (int z = 0; z < 4; z++) {
 
-        for (int y = 0 - ry2, offsetY = x * 4 + z; y < height; y++)
-        {
-          if (y >= 0)
-          {
+      // blur vertical
+      for (int x = 0, offsetX = z; x < width; x++) {
+        int dif = 0, sum = weightY >> 1;
+        int offsetY = x * 4 + z;
+
+        for (int y = 0 - ry2; y < height; y++) {
+          if (y >= 0) {
             destinationData[offsetY] = sum ~/ weightY;
             offsetY += width4;
-            dif += buffer[(y - ry1) & 1023] - 2 * buffer[y & 1023];
+            dif -= 2 * buffer[y & 1023] - buffer[(y - ry1) & 1023];
+          } else if (y + ry1 >= 0) {
+            dif -= 2 * buffer[y & 1023];
           }
-          else if (y + ry1 >= 0) dif -= 2 * buffer[y & 1023];
 
           int ty = y + ry1;
-          if (ty < 0) ty = 0; else if (ty >= height) ty = height - 1;
+
+          if (ty < 0) {
+            ty = 0;
+          } else if (ty >= height) {
+            ty = height - 1;
+          }
 
           sum += dif += (buffer[(y + ry1) & 1023] = sourceData[offsetX + ty * width4]);
         }
-
         offsetX += 4;
       }
 
-      for (int y = 0, offsetY = z; y < height; y++)
-      {
+      // blur horizontal
+      for (int y = 0, offsetY = z; y < height; y++) {
         int dif = 0, sum = weightX >> 1;
+        int offsetX = y * width4 + z;
 
-        for (int x = 0 - rx2, offsetX = y * width4 + z; x < width; x++)
-        {
-          if (x >= 0)
-          {
+        for (int x = 0 - rx2; x < width; x++) {
+          if (x >= 0) {
             destinationData[offsetX] = sum ~/ weightX;
             offsetX += 4;
-            dif += buffer[(x - rx1) & 1023] - 2 * buffer[x & 1023];
+            dif -= 2 * buffer[x & 1023] - buffer[(x - rx1) & 1023];
+          } else if (x + rx1 >= 0) {
+            dif -= 2 * buffer[x & 1023];
           }
-          else if (x + rx1 >= 0) dif -= 2 * buffer[x & 1023];
 
           int tx = x + rx1;
-          if (tx < 0) tx = 0; else if (tx >= width) tx = width - 1;
+
+          if (tx < 0) {
+            tx = 0;
+          } else if (tx >= width) {
+            tx = width - 1;
+          }
 
           sum += dif += (buffer[(x + rx1) & 1023] = destinationData[offsetY + (tx << 2)]);
         }
-
         offsetY += width4;
       }
     }
@@ -115,15 +123,17 @@ class BlurFilter extends BitmapFilter
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _applyFilterMedium(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
+  void _applyMedium(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
   {
     // ToDo: implement second degree approximation
 
-    _applyFilterHigh(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
+    _applyHigh(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
   }
 
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
 
-  void _applyFilterHigh(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
+  void _applyHigh(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
   {
     var sourceContext = sourceBitmapData._getContext();
     var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
@@ -153,56 +163,67 @@ class BlurFilter extends BitmapFilter
 
     List<int> buffer = new List<int>(1024);
 
-    for (int z = 0; z < 4; z++)
-    {
-      for (int x = 0, offsetX = z; x < width; x++)
-      {
-        int dif = 0, der1 = 0, der2 = 0, sum = 0;
+    for (int z = 0; z < 4; z++) {
 
-        for (int y = 0 - ry4, offsetY = x * 4 + z; y < height; y++)
-        {
-          if (y >= 0)
-          {
+      // blur vertical
+      for (int x = 0, offsetX = z; x < width; x++) {
+        int dif = 0, der1 = 0, der2 = 0, sum = 0;
+        int offsetY = x * 4 + z;
+
+        for (int y = 0 - ry4; y < height; y++) {
+          if (y >= 0) {
             destinationData[offsetY] = sum ~/ weightY;
             offsetY += width4;
-            dif += 6 * buffer[y & 1023] + buffer[(y - ry2) & 1023] - 4 * (buffer[(y - ry1) & 1023] + buffer[(y + ry1) & 1023]);
+            dif -= 4 * buffer[(y + ry1) & 1023] - 6 * buffer[y & 1023] + 4 * buffer[(y - ry1) & 1023] - buffer[(y - ry2) & 1023];
+          } else if (y + ry1 >= 0) {
+            dif -= 4 * buffer[(y + ry1) & 1023] - 6 * buffer[y & 1023] + 4 * buffer[(y - ry1) & 1023];
+          } else if (y + ry2 >= 0) {
+            dif -= 4 * buffer[(y + ry1) & 1023] - 6 * buffer[y & 1023];
+          } else if (y + ry3 >= 0) {
+            dif -= 4 * buffer[(y + ry1) & 1023];
           }
-          else if (y + ry1 >= 0) dif += 6 * buffer[y & 1023] - 4 * (buffer[(y - ry1) & 1023] + buffer[(y + ry1) & 1023]);
-          else if (y + ry2 >= 0) dif += 6 * buffer[y & 1023] - 4 * (buffer[(y + ry1) & 1023]);
-          else if (y + ry3 >= 0) dif -= 4 * buffer[(y + ry1) & 1023];
 
           int ty = y + ry2 - 1;
-          if (ty < 0) ty = 0; else if (ty >= height) ty = height - 1;
+
+          if (ty < 0) {
+            ty = 0;
+          } else if (ty >= height) {
+            ty = height - 1;
+          }
 
           sum += der1 += der2 += dif += (buffer[(y + ry2) & 1023] = sourceData[offsetX + ty * width4]);
         }
-
         offsetX += 4;
       }
 
-
-      for (int y = 0, offsetY = z; y < height; y++)
-      {
+      // blur horizontal
+      for (int y = 0, offsetY = z; y < height; y++) {
         int dif = 0, der1 = 0, der2 = 0, sum = 0;
+        int offsetX = y * width4 + z;
 
-        for (int x = 0 - rx4, offsetX = y * width4 + z; x < width; x++)
-        {
-          if (x >= 0)
-          {
+        for (int x = 0 - rx4; x < width; x++) {
+          if (x >= 0) {
             destinationData[offsetX] = sum ~/ weightX;
             offsetX += 4;
-            dif += 6 * buffer[x & 1023] + buffer[(x - rx2) & 1023] - 4 * (buffer[(x - rx1) & 1023] + buffer[(x + rx1) & 1023]);
+            dif -= 4 * buffer[(x + rx1) & 1023] - 6 * buffer[x & 1023] + 4 * buffer[(x - rx1) & 1023] - buffer[(x - rx2) & 1023];
+          } else if (x + rx1 >= 0) {
+            dif -= 4 * buffer[(x + rx1) & 1023] - 6 * buffer[x & 1023] + 4 * buffer[(x - rx1) & 1023];
+          } else if (x + rx2 >= 0) {
+            dif -= 4 * buffer[(x + rx1) & 1023] - 6 * buffer[x & 1023];
+          } else if (x + rx3 >= 0) {
+            dif -= 4 * buffer[(x + rx1) & 1023];
           }
-          else if (x + rx1 >= 0) dif += 6 * buffer[x & 1023] - 4 * (buffer[(x - rx1) & 1023] + buffer[(x + rx1) & 1023]);
-          else if (x + rx2 >= 0) dif += 6 * buffer[x & 1023] - 4 * (buffer[(x + rx1) & 1023]);
-          else if (x + rx3 >= 0) dif -= 4 * buffer[(x + rx1) & 1023];
 
           int tx = x + rx2 - 1;
-          if (tx < 0) tx = 0; else if (tx >= width) tx = width - 1;
+
+          if (tx < 0) {
+            tx = 0;
+          } else if (tx >= width) {
+            tx = width - 1;
+          }
 
           sum += der1 += der2 += dif += (buffer[(x + rx2) & 1023] = destinationData[offsetY + (tx << 2)]);
         }
-
         offsetY += width4;
       }
     }

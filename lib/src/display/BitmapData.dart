@@ -99,7 +99,7 @@ class BitmapData implements BitmapDrawable
 
   void applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, BitmapFilter filter)
   {
-    filter._applyFilter(sourceBitmapData, sourceRect, this, destPoint);
+    filter.apply(sourceBitmapData, sourceRect, this, destPoint);
   }
 
   //-------------------------------------------------------------------------------------------------

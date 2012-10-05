@@ -38,3 +38,6 @@ Use masks to show only some parts of the display object.
 
 With particle systems you can do cool effects. This is an experimental feature and not ready for production code.
 
+##example10 - Filters
+
+With filters you can change the appearance of Bitmaps.
