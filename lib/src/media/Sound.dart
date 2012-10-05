@@ -15,7 +15,7 @@ abstract class Sound
 
   //-------------------------------------------------------------------------------------------------
 
-  num get length();
+  num get length;
 
   SoundChannel play([bool loop = false, SoundTransform soundTransform = null]);
 

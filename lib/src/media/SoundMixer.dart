@@ -36,7 +36,7 @@ class SoundMixer
     {
       _engine = (_audioContext != null) ? "WebAudioApi" : "AudioElement";
 
-      var ua = html.document.window.navigator.userAgent;
+      var ua = html.window.navigator.userAgent;
 
       if (ua.contains("IEMobile") && ua.contains("9.0"))
         _engine = "Mock";
