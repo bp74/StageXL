@@ -50,15 +50,14 @@ class DropShadowFilter extends BitmapFilter
     var destinationData = destinationImageData.data;
 
     List<int> buffer = new List<int>(1024);
-    int alphaChannel = 3;
 
     //--------------------------------------------------
-
     // blur vertical
+
     for (int x = 0; x < sourceWidth; x++) {
       int dif = 0, sum = weightY >> 1;
-      int offsetSource = x * 4 + alphaChannel;
-      int offsetDestination = (x + rx1) * 4 + alphaChannel;
+      int offsetSource = x * 4 + 3;
+      int offsetDestination = (x + rx1) * 4 + 3;
 
       for (int y = 0; y < destinationHeight; y++) {
         destinationData[offsetDestination] = sum ~/ weightY;
@@ -77,14 +76,24 @@ class DropShadowFilter extends BitmapFilter
       }
     }
 
+    //--------------------------------------------------
     // blur horizontal
+
+    int rColor = (color >> 16) & 0xFF;
+    int gColor = (color >>  8) & 0xFF;
+    int bColor = (color >>  0) & 0xFF;
+    int weightXAlpha = (weightX / (this.alpha + 0.0001)).round().toInt();
+
     for (int y = 0; y < destinationHeight; y++) {
       int dif = 0, sum = weightX >> 1;
-      int offsetSource = y * destinationWidth4 + alphaChannel + rx1 * 4;
-      int offsetDestination = y * destinationWidth4 + alphaChannel;
+      int offsetSource = y * destinationWidth4 + rx1 * 4 + 3;
+      int offsetDestination = y * destinationWidth4;
 
       for (int x = 0; x < destinationWidth; x++) {
-        destinationData[offsetDestination] = sum ~/ weightX;
+        destinationData[offsetDestination + 0] = rColor;
+        destinationData[offsetDestination + 1] = gColor;
+        destinationData[offsetDestination + 2] = bColor;
+        destinationData[offsetDestination + 3] = sum ~/ weightXAlpha;
         offsetDestination += 4;
 
         if (x >= rx2) {
@@ -101,20 +110,6 @@ class DropShadowFilter extends BitmapFilter
     }
 
     //--------------------------------------------------
-
-    var destinationPixels = destinationWidth * destinationHeight;
-    var rColor = (color >> 16) & 0xFF;
-    var gColor = (color >>  8) & 0xFF;
-    var bColor = (color >>  0) & 0xFF;
-    var aColor = (256 * this.alpha).round().toInt();
-
-    for(var i = 0, offset = 0; i < destinationPixels; i++) {
-      destinationData[offset + 0] = rColor;
-      destinationData[offset + 1] = gColor;
-      destinationData[offset + 2] = bColor;
-      destinationData[offset + 3] = (destinationData[offset + 3] * aColor) >> 8;
-      offset += 4;
-    }
 
     var sx = destinationPoint.x;
     var sy = destinationPoint.y;
