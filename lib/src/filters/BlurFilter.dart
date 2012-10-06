@@ -2,7 +2,6 @@ class BlurFilter extends BitmapFilter
 {
   int blurX;
   int blurY;
-  int quality;
 
   //-------------------------------------------------------------------------------------------------
   // Credits to Alois Zingl, Vienna, Austria.
@@ -11,29 +10,110 @@ class BlurFilter extends BitmapFilter
   // http://free.pages.at/easyfilter/gauss.pdf
   //-------------------------------------------------------------------------------------------------
 
-  BlurFilter([this.blurX = 4, this.blurY = 4, this.quality = 1])
+  BlurFilter([this.blurX = 4, this.blurY = 4])
   {
+    if (blurX < 1 || blurY < 1)
+      throw new ArgumentError("Error #9004: The minimum blur size is 1.");
+
     if (blurX > 128 || blurY > 128)
       throw new ArgumentError("Error #9004: The maximum blur size is 128.");
   }
 
   BitmapFilter clone()
   {
-    return new BlurFilter(blurX, blurY, quality);
+    return new BlurFilter(blurX, blurY);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
   {
-    if (quality <= 1) _applyLow(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
-    if (quality == 2) _applyMedium(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
-    if (quality >= 3) _applyHigh(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
+    var sourceContext = sourceBitmapData._getContext();
+    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+    var sourceData = sourceImageData.data;
+
+    int sourceWidth = sourceImageData.width;
+    int sourceHeight = sourceImageData.height;
+    int weightX = blurX * blurX;
+    int weightY = blurY * blurY;
+    int rx1 = blurX;
+    int rx2 = blurX * 2;
+    int ry1 = blurY;
+    int ry2 = blurY * 2;
+    int destinationWidth = sourceWidth + rx2;
+    int destinationHeight = sourceHeight + ry2;
+    int sourceWidth4 = sourceWidth * 4;
+    int destinationWidth4 = destinationWidth * 4;
+
+    var destinationContext = destinationBitmapData._getContext();
+    var destinationImageData = destinationContext.createImageData(destinationWidth, destinationHeight);
+    var destinationData = destinationImageData.data;
+
+    List<int> buffer = new List<int>(1024);
+
+    //--------------------------------------------------
+    // blur vertical
+
+    for (int z = 0; z < 4; z++) {
+      for (int x = 0; x < sourceWidth; x++) {
+        int dif = 0, sum = weightY >> 1;
+        int offsetSource = x * 4 + z;
+        int offsetDestination = (x + rx1) * 4 + z;
+
+        for (int y = 0; y < destinationHeight; y++) {
+          destinationData[offsetDestination] = sum ~/ weightY;
+          offsetDestination += destinationWidth4;
+
+          if (y >= ry2) {
+            dif -= 2 * buffer[y & 1023] - buffer[(y - ry1) & 1023];
+          } else if (y >= ry1) {
+            dif -= 2 * buffer[y & 1023];
+          }
+
+          int alpha = (y < sourceHeight) ? sourceData[offsetSource] : 0;
+          buffer[(y + ry1) & 1023] = alpha;
+          sum += dif += alpha;
+          offsetSource += sourceWidth4;
+        }
+      }
+    }
+
+    //--------------------------------------------------
+    // blur horizontal
+
+    for (int z = 0; z < 4; z++) {
+      for (int y = 0; y < destinationHeight; y++) {
+        int dif = 0, sum = weightX >> 1;
+        int offsetSource = y * destinationWidth4 + rx1 * 4 + z;
+        int offsetDestination = y * destinationWidth4 + z;
+
+        for (int x = 0; x < destinationWidth; x++) {
+          destinationData[offsetDestination] = sum ~/ weightX;
+          offsetDestination += 4;
+
+          if (x >= rx2) {
+            dif -= 2 * buffer[x & 1023] - buffer[(x - rx1) & 1023];
+          } else if (x >= rx1) {
+            dif -= 2 * buffer[x & 1023];
+          }
+
+          int alpha = (x < sourceWidth) ? destinationData[offsetSource] : 0;
+          buffer[(x + rx1) & 1023] = alpha;
+          sum += dif += alpha;
+          offsetSource += 4;
+        }
+      }
+    }
+
+    //--------------------------------------------------
+
+    destinationContext.putImageData(destinationImageData, destinationPoint.x - rx1, destinationPoint.y - ry1);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  /*
   void _applyLow(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
   {
     var sourceContext = sourceBitmapData._getContext();
@@ -317,6 +397,6 @@ class BlurFilter extends BitmapFilter
 
     destinationContext.putImageData(destinationImageData, destinationPoint.x, destinationPoint.y);
   }
-
+  */
 }
 

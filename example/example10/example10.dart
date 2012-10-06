@@ -44,7 +44,7 @@ void main()
     //-------------------------------------------
     // use a blur filter for the astronaut
 
-    var blurFilter = new BlurFilter(4, 4, BitmapFilterQuality.LOW);
+    var blurFilter = new BlurFilter(4, 4);
 
     var blurBitmapData = new BitmapData(astronautRectangle.width, astronautRectangle.height, true);
     blurBitmapData.applyFilter(astronautBitmapData, astronautRectangle, new Point.zero(), blurFilter);
@@ -85,7 +85,7 @@ void main()
     //-------------------------------------------
     // use drop-shadow filter
 
-    var dropShadowFilter = new DropShadowFilter(10, PI / 4, Color.Black, 0.6, 4, 4);
+    var dropShadowFilter = new DropShadowFilter(10, PI / 4, Color.Black, 0.6, 8, 8);
 
     var dropShadowBitmapData = new BitmapData(160, 160, true);
     dropShadowBitmapData.applyFilter(flowerBitmapData, flowerRectangle, new Point(16, 16), dropShadowFilter);
@@ -98,7 +98,7 @@ void main()
     //-------------------------------------------
     // use glow filter
 
-    var glowFilter = new GlowFilter(Color.Red, 0.6, 10, 10);
+    var glowFilter = new GlowFilter(Color.Red, 0.6, 16, 16);
 
     var glowBitmapData= new BitmapData(160, 160, true);
     glowBitmapData.applyFilter(flowerBitmapData, flowerRectangle, new Point(16, 16), glowFilter);

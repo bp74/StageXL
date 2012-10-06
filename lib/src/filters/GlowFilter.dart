@@ -5,19 +5,25 @@ class GlowFilter extends BitmapFilter
   int blurX;
   int blurY;
   num strength;
-  int quality;
   bool inner;
   bool knockout;
   bool hideObject;
 
-  GlowFilter([this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4, this.strength = 2.0, this.quality = 1, this.inner = false, this.knockout = false, this.hideObject = false]);
+  GlowFilter([this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4, this.strength = 2.0, this.inner = false, this.knockout = false, this.hideObject = false])
+  {
+    if (blurX < 1 || blurY < 1)
+      throw new ArgumentError("Error #9004: The minimum blur size is 1.");
+
+    if (blurX > 128 || blurY > 128)
+      throw new ArgumentError("Error #9004: The maximum blur size is 128.");
+  }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   BitmapFilter clone()
   {
-    return new GlowFilter(color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject);
+    return new GlowFilter(color, alpha, blurX, blurY, strength, inner, knockout, hideObject);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -30,14 +36,12 @@ class GlowFilter extends BitmapFilter
 
     int sourceWidth = sourceRect.width;
     int sourceHeight = sourceRect.height;
-    int radiusX = sqrt(5 * blurX * blurX + 1).toInt();
-    int radiusY = sqrt(5 * blurY * blurY + 1).toInt();
-    int weightX = radiusX * radiusX;
-    int weightY = radiusY * radiusY;
-    int rx1 = radiusX;
-    int rx2 = radiusX * 2;
-    int ry1 = radiusY;
-    int ry2 = radiusY * 2;
+    int weightX = blurX * blurX;
+    int weightY = blurY * blurY;
+    int rx1 = blurX;
+    int rx2 = blurX * 2;
+    int ry1 = blurY;
+    int ry2 = blurY * 2;
     int destinationWidth = sourceWidth + rx2;
     int destinationHeight = sourceHeight + ry2;
     int sourceWidth4 = sourceWidth * 4;

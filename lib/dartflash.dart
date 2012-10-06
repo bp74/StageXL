@@ -35,7 +35,6 @@
 #source('src/events/TextEvent.dart');
 
 #source('src/filters/BitmapFilter.dart');
-#source('src/filters/BitmapFilterQuality.dart');
 #source('src/filters/BlurFilter.dart');
 #source('src/filters/ColorMatrixFilter.dart');
 #source('src/filters/DropShadowFilter.dart');
