@@ -63,14 +63,15 @@ class BlurFilter extends BitmapFilter
     for (int z = 0; z < 4; z++) {
 
       // blur vertical
-      for (int x = 0, offsetX = z; x < width; x++) {
+      for (int x = 0; x < width; x++) {
         int dif = 0, sum = weightY >> 1;
-        int offsetY = x * 4 + z;
+        int offsetBase = x * 4 + z;
+        int offsetLoop = offsetBase;
 
         for (int y = 0 - ry2; y < height; y++) {
           if (y >= 0) {
-            destinationData[offsetY] = sum ~/ weightY;
-            offsetY += width4;
+            destinationData[offsetLoop] = sum ~/ weightY;
+            offsetLoop += width4;
             dif -= 2 * buffer[y & 1023] - buffer[(y - ry1) & 1023];
           } else if (y + ry1 >= 0) {
             dif -= 2 * buffer[y & 1023];
@@ -84,20 +85,20 @@ class BlurFilter extends BitmapFilter
             ty = height - 1;
           }
 
-          sum += dif += (buffer[(y + ry1) & 1023] = sourceData[offsetX + ty * width4]);
+          sum += dif += (buffer[(y + ry1) & 1023] = sourceData[offsetBase + ty * width4]);
         }
-        offsetX += 4;
       }
 
       // blur horizontal
-      for (int y = 0, offsetY = z; y < height; y++) {
+      for (int y = 0; y < height; y++) {
         int dif = 0, sum = weightX >> 1;
-        int offsetX = y * width4 + z;
+        int offsetBase = y * width4 + z;
+        int offsetLoop = offsetBase;
 
         for (int x = 0 - rx2; x < width; x++) {
           if (x >= 0) {
-            destinationData[offsetX] = sum ~/ weightX;
-            offsetX += 4;
+            destinationData[offsetLoop] = sum ~/ weightX;
+            offsetLoop += 4;
             dif -= 2 * buffer[x & 1023] - buffer[(x - rx1) & 1023];
           } else if (x + rx1 >= 0) {
             dif -= 2 * buffer[x & 1023];
@@ -111,9 +112,8 @@ class BlurFilter extends BitmapFilter
             tx = width - 1;
           }
 
-          sum += dif += (buffer[(x + rx1) & 1023] = destinationData[offsetY + (tx << 2)]);
+          sum += dif += (buffer[(x + rx1) & 1023] = destinationData[offsetBase + (tx << 2)]);
         }
-        offsetY += width4;
       }
     }
 
@@ -125,9 +125,96 @@ class BlurFilter extends BitmapFilter
 
   void _applyMedium(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
   {
-    // ToDo: implement second degree approximation
+    var sourceContext = sourceBitmapData._getContext();
+    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+    var sourceData = sourceImageData.data;
 
-    _applyHigh(sourceBitmapData, sourceRect, destinationBitmapData, destinationPoint);
+    var destinationContext = destinationBitmapData._getContext();
+    var destinationImageData = destinationContext.createImageData(sourceImageData.width, sourceImageData.height);
+    var destinationData = destinationImageData.data;
+
+    int width = sourceImageData.width;
+    int height = sourceImageData.height;
+
+    int radiusX = sqrt(4 * blurX * blurX + 1).toInt();
+    int radiusY = sqrt(4 * blurY * blurY + 1).toInt();
+    int weightX = radiusX * radiusX * radiusX;
+    int weightY = radiusY * radiusY * radiusY;
+
+    int width4 = width * 4;
+    int rx1 = radiusX;
+    int rx2 = radiusX * 2;
+    int rx3 = radiusX * 3;
+    int ry1 = radiusY;
+    int ry2 = radiusY * 2;
+    int ry3 = radiusY * 3;
+    int rx3h = (rx3 / 2).round().toInt();
+    int ry3h = (ry3 / 2).round().toInt();
+
+    List<int> buffer = new List<int>(1024);
+
+    for (int z = 0; z < 4; z++) {
+
+      // blur vertical
+      for (int x = 0; x < width; x++) {
+        int dif = 0, der = 0, sum = 0;
+        int offsetBase = x * 4 + z;
+        int offsetLoop = offsetBase;
+
+        for (int y = 0 - ry3; y < height; y++) {
+          if (y >= 0) {
+            destinationData[offsetLoop] = sum ~/ weightY;
+            offsetLoop += width4;
+            dif -= 3 * buffer[(y + ry1) & 1023] - 3 * buffer[y & 1023] + buffer[(y - ry1) & 1023];
+          } else if (y + ry1 >= 0) {
+            dif -= 3 * buffer[(y + ry1) & 1023] - 3 * buffer[y & 1023];
+          } else if (y + ry2 >= 0) {
+            dif -= 3 * buffer[(y + ry1) & 1023];
+          }
+
+          int ty = y + ry3h;
+
+          if (ty < 0) {
+            ty = 0;
+          } else if (ty >= height) {
+            ty = height - 1;
+          }
+
+          sum += der += dif += (buffer[(y + ry2) & 1023] = sourceData[offsetBase + ty * width4]);
+        }
+      }
+
+      // blur horizontal
+      for (int y = 0; y < height; y++) {
+        int dif = 0, der = 0, sum = 0;
+        int offsetBase = y * width4 + z;
+        int offsetLoop = offsetBase;
+
+        for (int x = 0 - rx3; x < width; x++) {
+          if (x >= 0) {
+            destinationData[offsetLoop] = sum ~/ weightX;
+            offsetLoop += 4;
+            dif -= 3 * buffer[(x + rx1) & 1023] - 3 * buffer[x & 1023] + buffer[(x - rx1) & 1023];
+          } else if (x + rx1 >= 0) {
+            dif -= 3 * buffer[(x + rx1) & 1023] - 3 * buffer[x & 1023];
+          } else if (x + rx2 >= 0) {
+            dif -= 3 * buffer[(x + rx1) & 1023];
+          }
+
+          int tx = x + rx3h;
+
+          if (tx < 0) {
+            tx = 0;
+          } else if (tx >= width) {
+            tx = width - 1;
+          }
+
+          sum += der += dif += (buffer[(x + rx2) & 1023] = destinationData[offsetBase + (tx << 2)]);
+        }
+      }
+    }
+
+    destinationContext.putImageData(destinationImageData, destinationPoint.x, destinationPoint.y);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -166,14 +253,15 @@ class BlurFilter extends BitmapFilter
     for (int z = 0; z < 4; z++) {
 
       // blur vertical
-      for (int x = 0, offsetX = z; x < width; x++) {
+      for (int x = 0; x < width; x++) {
         int dif = 0, der1 = 0, der2 = 0, sum = 0;
-        int offsetY = x * 4 + z;
+        int offsetBase = x * 4 + z;
+        int offsetLoop = offsetBase;
 
         for (int y = 0 - ry4; y < height; y++) {
           if (y >= 0) {
-            destinationData[offsetY] = sum ~/ weightY;
-            offsetY += width4;
+            destinationData[offsetLoop] = sum ~/ weightY;
+            offsetLoop += width4;
             dif -= 4 * buffer[(y + ry1) & 1023] - 6 * buffer[y & 1023] + 4 * buffer[(y - ry1) & 1023] - buffer[(y - ry2) & 1023];
           } else if (y + ry1 >= 0) {
             dif -= 4 * buffer[(y + ry1) & 1023] - 6 * buffer[y & 1023] + 4 * buffer[(y - ry1) & 1023];
@@ -191,20 +279,20 @@ class BlurFilter extends BitmapFilter
             ty = height - 1;
           }
 
-          sum += der1 += der2 += dif += (buffer[(y + ry2) & 1023] = sourceData[offsetX + ty * width4]);
+          sum += der1 += der2 += dif += (buffer[(y + ry2) & 1023] = sourceData[offsetBase + ty * width4]);
         }
-        offsetX += 4;
       }
 
       // blur horizontal
-      for (int y = 0, offsetY = z; y < height; y++) {
+      for (int y = 0; y < height; y++) {
         int dif = 0, der1 = 0, der2 = 0, sum = 0;
-        int offsetX = y * width4 + z;
+        int offsetBase = y * width4 + z;
+        int offsetLoop = offsetBase;
 
         for (int x = 0 - rx4; x < width; x++) {
           if (x >= 0) {
-            destinationData[offsetX] = sum ~/ weightX;
-            offsetX += 4;
+            destinationData[offsetLoop] = sum ~/ weightX;
+            offsetLoop += 4;
             dif -= 4 * buffer[(x + rx1) & 1023] - 6 * buffer[x & 1023] + 4 * buffer[(x - rx1) & 1023] - buffer[(x - rx2) & 1023];
           } else if (x + rx1 >= 0) {
             dif -= 4 * buffer[(x + rx1) & 1023] - 6 * buffer[x & 1023] + 4 * buffer[(x - rx1) & 1023];
@@ -222,9 +310,8 @@ class BlurFilter extends BitmapFilter
             tx = width - 1;
           }
 
-          sum += der1 += der2 += dif += (buffer[(x + rx2) & 1023] = destinationData[offsetY + (tx << 2)]);
+          sum += der1 += der2 += dif += (buffer[(x + rx2) & 1023] = destinationData[offsetBase + (tx << 2)]);
         }
-        offsetY += width4;
       }
     }
 
