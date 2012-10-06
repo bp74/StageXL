@@ -46,10 +46,10 @@ abstract class DisplayObjectContainer extends InteractiveObject
   Dynamic addChildAt(DisplayObject child, int index)
   {
     if (index < 0 && index > _children.length)
-      throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
+      throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
     if (child == this)
-      throw new IllegalArgumentException("Error #2024: An object cannot be added as a child of itself.");
+      throw new ArgumentError("Error #2024: An object cannot be added as a child of itself.");
 
     if (child.parent == this)
     {
@@ -83,7 +83,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
     int childIndex = _children.indexOf(child);
 
     if (childIndex == -1)
-      throw new IllegalArgumentException("Error #2025: The supplied DisplayObject must be a child of the caller.");
+      throw new ArgumentError("Error #2025: The supplied DisplayObject must be a child of the caller.");
 
     return removeChildAt(childIndex);
   }
@@ -93,7 +93,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
   Dynamic removeChildAt(int index)
   {
     if (index < 0 && index >= _children.length)
-      throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
+      throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
     DisplayObject child = _children[index];
 
@@ -113,7 +113,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
   Dynamic getChildAt(int index)
   {
     if (index < 0 && index >= _children.length)
-      throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
+      throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
     return _children[index];
   }
@@ -143,12 +143,12 @@ abstract class DisplayObjectContainer extends InteractiveObject
   void setChildIndex(DisplayObject child, int index)
   {
     if (index < 0 && index >= _children.length)
-      throw new IllegalArgumentException("Error #2006: The supplied index is out of bounds.");
+      throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
     int oldIndex = getChildIndex(child);
 
     if (oldIndex == -1)
-      throw new IllegalArgumentException("Error #2025: The supplied DisplayObject must be a child of the caller.");
+      throw new ArgumentError("Error #2025: The supplied DisplayObject must be a child of the caller.");
 
     _children.removeAt(oldIndex);
     _children.insertRange(index, 1, child);
@@ -162,7 +162,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
       int index2 = getChildIndex(child2);
 
       if (index1 == -1 || index2 == -1)
-        throw new IllegalArgumentException("Error #2025: The supplied DisplayObject must be a child of the caller.");
+        throw new ArgumentError("Error #2025: The supplied DisplayObject must be a child of the caller.");
 
       swapChildrenAt(index1, index2);
   }

@@ -24,7 +24,7 @@ class Mask
     _points = points;
 
     if (_points.length < 3)
-      throw new IllegalArgumentException("A custom mask needs at least 3 points.");
+      throw new ArgumentError("A custom mask needs at least 3 points.");
   }
 
   //-------------------------------------------------------------------------------------------------

@@ -14,7 +14,7 @@ class BlurFilter extends BitmapFilter
   BlurFilter([this.blurX = 4, this.blurY = 4, this.quality = 1])
   {
     if (blurX > 128 || blurY > 128)
-      throw new IllegalArgumentException("Error #9004: The maximum blur size is 128.");
+      throw new ArgumentError("Error #9004: The maximum blur size is 128.");
   }
 
   BitmapFilter clone()

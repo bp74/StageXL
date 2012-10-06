@@ -215,7 +215,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
       return targetMatrix;
 
     if (targetObject != resultObject)
-      throw new IllegalArgumentException("Error #9001: The supplied DisplayObject has no relationship to the caller.");
+      throw new ArgumentError("Error #9001: The supplied DisplayObject has no relationship to the caller.");
 
     resultMatrix.concat(targetMatrix);
 
@@ -345,7 +345,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   {
     for(var ancestor = value; ancestor != null; ancestor = ancestor._parent)
       if (ancestor == this)
-        throw new IllegalArgumentException("Error #2150: An object cannot be added as a child to one of it's children (or children's children, etc.).");
+        throw new ArgumentError("Error #2150: An object cannot be added as a child to one of it's children (or children's children, etc.).");
 
     _parent = value;
   }
