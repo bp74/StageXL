@@ -143,11 +143,18 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  void draw(BitmapDrawable source)
+  void draw(BitmapDrawable source, [Matrix matrix = null])
   {
     var renderState = new RenderState.fromCanvasRenderingContext2D(_getContext());
 
-    source.render(renderState);
+    if (matrix != null) {
+      var warp = new Warp();
+      warp.matrix = matrix;
+      warp.addChild(source);
+      warp.render(renderState);
+    } else {
+      source.render(renderState);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
