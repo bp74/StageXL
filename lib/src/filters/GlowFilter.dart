@@ -1,7 +1,5 @@
-class DropShadowFilter extends BitmapFilter
+class GlowFilter extends BitmapFilter
 {
-  num distance;
-  num angle;
   int color;
   num alpha;
   int blurX;
@@ -12,14 +10,14 @@ class DropShadowFilter extends BitmapFilter
   bool knockout;
   bool hideObject;
 
-  DropShadowFilter([this.distance = 4.0, this.angle = PI / 4, this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4, this.strength = 1.0, this.quality = 1, this.inner = false, this.knockout = false, this.hideObject = false]);
+  GlowFilter([this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4, this.strength = 2.0, this.quality = 1, this.inner = false, this.knockout = false, this.hideObject = false]);
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   BitmapFilter clone()
   {
-    return new DropShadowFilter(distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject);
+    return new GlowFilter(color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -117,8 +115,8 @@ class DropShadowFilter extends BitmapFilter
 
     var sx = destinationPoint.x;
     var sy = destinationPoint.y;
-    var dx = destinationPoint.x - rx1 + (this.distance * cos(this.angle)).round().toInt();
-    var dy = destinationPoint.y - ry1 + (this.distance * sin(this.angle)).round().toInt();
+    var dx = destinationPoint.x - rx1;
+    var dy = destinationPoint.y - ry1;
     var sRect = new Rectangle(sx, sy, sourceWidth, sourceHeight);
     var dRect = new Rectangle(dx, dy, destinationWidth, destinationHeight);
     var uRect = sRect.union(dRect);

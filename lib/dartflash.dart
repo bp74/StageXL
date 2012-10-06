@@ -38,7 +38,8 @@
 #source('src/filters/BitmapFilterQuality.dart');
 #source('src/filters/BlurFilter.dart');
 #source('src/filters/ColorMatrixFilter.dart');
-//#source('src/filters/DropShadowFilter.dart');
+#source('src/filters/DropShadowFilter.dart');
+#source('src/filters/GlowFilter.dart');
 
 #source('src/display/DisplayObject.dart');
 #source('src/display/InteractiveObject.dart');
