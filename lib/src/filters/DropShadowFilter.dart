@@ -123,6 +123,7 @@ class DropShadowFilter extends BitmapFilter
     var dRect = new Rectangle(dx, dy, destinationWidth, destinationHeight);
     var uRect = sRect.union(dRect);
 
+    destinationContext.setTransform(1, 0, 0, 1, 0, 0);
     destinationContext.clearRect(uRect.x, uRect.y, uRect.width, uRect.height);
     destinationContext.putImageData(destinationImageData, dx, dy);
 
