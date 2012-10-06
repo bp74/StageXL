@@ -58,42 +58,43 @@ class GlowFilter extends BitmapFilter
       int offsetSource = x * 4 + alphaChannel;
       int offsetDestination = (x + rx1) * 4 + alphaChannel;
 
-      for (int y = 0 - ry2; y < sourceHeight; y++) {
+      for (int y = 0; y < destinationHeight; y++) {
         destinationData[offsetDestination] = sum ~/ weightY;
         offsetDestination += destinationWidth4;
 
-        if (y >= 0) {
+        if (y >= ry2) {
           dif -= 2 * buffer[y & 1023] - buffer[(y - ry1) & 1023];
-        } else if (y + ry1 >= 0) {
+        } else if (y >= ry1) {
           dif -= 2 * buffer[y & 1023];
         }
 
-        var ty = y + ry2;
-        int alpha = (ty >= 0 && ty < sourceHeight) ? sourceData[offsetSource + ty * sourceWidth4] : 0;
+        int alpha = (y < sourceHeight) ? sourceData[offsetSource] : 0;
         buffer[(y + ry1) & 1023] = alpha;
         sum += dif += alpha;
+        offsetSource += sourceWidth4;
       }
     }
 
     // blur horizontal
     for (int y = 0; y < destinationHeight; y++) {
       int dif = 0, sum = weightX >> 1;
-      int offsetSource = y * destinationWidth4 + alphaChannel;
-      int offsetDestination = offsetSource;
+      int offsetSource = y * destinationWidth4 + alphaChannel + rx1 * 4;
+      int offsetDestination = y * destinationWidth4 + alphaChannel;
 
-      for (int x = 0 - rx2; x < destinationWidth; x++) {
-        if (x >= 0) {
-          destinationData[offsetDestination] = sum ~/ weightX;
-          offsetDestination += 4;
+      for (int x = 0; x < destinationWidth; x++) {
+        destinationData[offsetDestination] = sum ~/ weightX;
+        offsetDestination += 4;
+
+        if (x >= rx2) {
           dif -= 2 * buffer[x & 1023] - buffer[(x - rx1) & 1023];
-        } else if (x + rx1 >= 0) {
+        } else if (x >= rx1) {
           dif -= 2 * buffer[x & 1023];
         }
 
-        int tx = x + rx1;
-        int alpha = (tx >= 0 && tx < sourceWidth + rx1) ? destinationData[offsetSource + (tx << 2)] : 0;
+        int alpha = (x < sourceWidth) ? destinationData[offsetSource] : 0;
         buffer[(x + rx1) & 1023] = alpha;
         sum += dif += alpha;
+        offsetSource += 4;
       }
     }
 
