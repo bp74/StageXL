@@ -5,7 +5,7 @@ class ColorMatrixFilter extends BitmapFilter
   ColorMatrixFilter(this.matrix)
   {
     if (this.matrix.length != 20)
-      throw new Exception("The supplied matrix needs to be a 4 x 5 matrix.");
+      throw new ArgumentError("The supplied matrix needs to be a 4 x 5 matrix.");
   }
 
   ColorMatrixFilter.grayscale(): matrix = [0.212671, 0.715160, 0.072169, 0, 0,

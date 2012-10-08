@@ -84,7 +84,7 @@ class TextureAtlas
         bitmapData = new BitmapData.fromTextureAtlasFrame(_frames[i]);
 
     if (bitmapData == null)
-      throw "TextureAtlasFrame not found: '$name'";
+      throw new ArgumentError("TextureAtlasFrame not found: '$name'");
 
     return bitmapData;
   }

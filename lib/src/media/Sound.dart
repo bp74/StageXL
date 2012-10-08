@@ -44,7 +44,7 @@ abstract class Sound
     Match match = regex.firstMatch(url);
 
     if (match == null)
-      throw "Unsupported file extension";
+      throw new ArgumentError("Unsupported file extension.");
 
     String fileType = match.group(1).toLowerCase();
 

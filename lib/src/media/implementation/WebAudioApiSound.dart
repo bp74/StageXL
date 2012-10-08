@@ -5,7 +5,7 @@ class WebAudioApiSound extends Sound
   WebAudioApiSound()
   {
     if (SoundMixer._audioContext == null)
-      throw new Exception("This browser does not support Web Audio API.");
+      throw new UnsupportedOperationException("This browser does not support Web Audio API.");
   }
 
   //-------------------------------------------------------------------------------------------------

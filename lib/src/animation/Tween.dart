@@ -206,7 +206,7 @@ class Tween implements Animatable
       case "alpha": object.alpha = value; break;
 
       default:
-        throw new Exception("Error #9003: The supplied property name ('$name') is not supported at this time.");
+        throw new ArgumentError("Error #9003: The supplied property name ('$name') is not supported at this time.");
     }
   }
 
@@ -224,7 +224,7 @@ class Tween implements Animatable
       case "alpha": return object.alpha;
 
       default:
-        throw new Exception("Error #9003: The supplied property name ('$name') is not supported at this time.");
+        throw new ArgumentError("Error #9003: The supplied property name ('$name') is not supported at this time.");
     }
   }
 

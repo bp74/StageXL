@@ -103,7 +103,7 @@ class Resource
   BitmapData getBitmapData(String name)
   {
     if (_images.containsKey(name) == false)
-      throw "Resource not found: '$name'";
+      throw new ArgumentError("Resource not found: '$name'");
 
     return _images[name];
   }
@@ -111,7 +111,7 @@ class Resource
   Sound getSound(String name)
   {
     if (_sounds.containsKey(name) == false)
-      throw "Resource not found: '$name'";
+      throw new ArgumentError("Resource not found: '$name'");
 
     return _sounds[name];
   }
@@ -119,7 +119,7 @@ class Resource
   TextureAtlas getTextureAtlas(String name)
   {
     if (_textureAtlases.containsKey(name) == false)
-      throw "Resource not found: '$name'";
+      throw new ArgumentError("Resource not found: '$name'");
 
     return _textureAtlases[name];
   }
