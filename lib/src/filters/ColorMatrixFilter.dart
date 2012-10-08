@@ -59,24 +59,17 @@ class ColorMatrixFilter extends BitmapFilter
     int a18 = (this.matrix[18] * 65536).toInt();
     int a19 = (this.matrix[19] * 65536).toInt();
 
-    int pixels = data.length >> 2;
-
-    for(int i = 0 ; i < pixels; i++)
+    for(int index = 0 ; index <= data.length - 4; index += 4)
     {
-      int indexR = i << 2 ;
-      int indexG = indexR + 1;
-      int indexB = indexR + 2;
-      int indexA = indexR + 3;
+      int srcR = data[index + 0];
+      int srcG = data[index + 1];
+      int srcB = data[index + 2];
+      int srcA = data[index + 3];
 
-      int srcR = data[indexR];
-      int srcG = data[indexG];
-      int srcB = data[indexB];
-      int srcA = data[indexA];
-
-      data[indexR] = ((a00 * srcR) + (a01 * srcG) + (a02 * srcB) + (a03 * srcA) + a04) >> 16;
-      data[indexG] = ((a05 * srcR) + (a06 * srcG) + (a07 * srcB) + (a08 * srcA) + a09) >> 16;
-      data[indexB] = ((a10 * srcR) + (a11 * srcG) + (a12 * srcB) + (a13 * srcA) + a14) >> 16;
-      data[indexA] = ((a15 * srcR) + (a16 * srcG) + (a17 * srcB) + (a18 * srcA) + a19) >> 16;
+      data[index + 0] = ((a00 * srcR) + (a01 * srcG) + (a02 * srcB) + (a03 * srcA) + a04) >> 16;
+      data[index + 1] = ((a05 * srcR) + (a06 * srcG) + (a07 * srcB) + (a08 * srcA) + a09) >> 16;
+      data[index + 2] = ((a10 * srcR) + (a11 * srcG) + (a12 * srcB) + (a13 * srcA) + a14) >> 16;
+      data[index + 3] = ((a15 * srcR) + (a16 * srcG) + (a17 * srcB) + (a18 * srcA) + a19) >> 16;
     }
 
     destinationBitmapData._getContext().putImageData(imageData, destinationPoint.x, destinationPoint.y);

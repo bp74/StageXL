@@ -272,9 +272,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
   void render(RenderState renderState)
   {
-    var childrenLength = _children.length;
-
-    for(int i = 0; i < childrenLength; i++)
+    for(int i = 0; i < _children.length; i++)
     {
       DisplayObject child = _children[i];
 
