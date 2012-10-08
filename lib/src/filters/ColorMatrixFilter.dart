@@ -35,8 +35,8 @@ class ColorMatrixFilter extends BitmapFilter
     //blueResult  = (a[10] * srcR) + (a[11] * srcG) + (a[12] * srcB) + (a[13] * srcA) + a[14]
     //alphaResult = (a[15] * srcR) + (a[16] * srcG) + (a[17] * srcB) + (a[18] * srcA) + a[19]
 
-    html.ImageData imageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-    html.Uint8ClampedArray data = imageData.data;
+    var imageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+    var data = imageData.data;
 
     int a00 = (this.matrix[00] * 65536).toInt();
     int a01 = (this.matrix[01] * 65536).toInt();
@@ -66,10 +66,14 @@ class ColorMatrixFilter extends BitmapFilter
       int srcB = data[index + 2];
       int srcA = data[index + 3];
 
-      data[index + 0] = ((a00 * srcR) + (a01 * srcG) + (a02 * srcB) + (a03 * srcA) + a04) >> 16;
-      data[index + 1] = ((a05 * srcR) + (a06 * srcG) + (a07 * srcB) + (a08 * srcA) + a09) >> 16;
-      data[index + 2] = ((a10 * srcR) + (a11 * srcG) + (a12 * srcB) + (a13 * srcA) + a14) >> 16;
-      data[index + 3] = ((a15 * srcR) + (a16 * srcG) + (a17 * srcB) + (a18 * srcA) + a19) >> 16;
+      // ToDo: Check again for other optimizations in the future.
+      // Maybe floating point calculations with .toInt() is faster?
+      // This is the fastest solution now, still pretty slow.
+
+      data[index + 0] = ((a00 * srcR) + (a01 * srcG) + (a02 * srcB) + (a03 * srcA) + a04) ~/ 65536;
+      data[index + 1] = ((a05 * srcR) + (a06 * srcG) + (a07 * srcB) + (a08 * srcA) + a09) ~/ 65536;
+      data[index + 2] = ((a10 * srcR) + (a11 * srcG) + (a12 * srcB) + (a13 * srcA) + a14) ~/ 65536;
+      data[index + 3] = ((a15 * srcR) + (a16 * srcG) + (a17 * srcB) + (a18 * srcA) + a19) ~/ 65536;
     }
 
     destinationBitmapData._getContext().putImageData(imageData, destinationPoint.x, destinationPoint.y);

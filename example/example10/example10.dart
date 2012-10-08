@@ -44,69 +44,65 @@ void main()
     //-------------------------------------------
     // use a blur filter for the astronaut
 
-    var blurFilter = new BlurFilter(4, 4);
-
     var blurBitmapData = new BitmapData(astronautRectangle.width, astronautRectangle.height, true);
-    blurBitmapData.applyFilter(astronautBitmapData, astronautRectangle, new Point.zero(), blurFilter);
-
     var blurBitmap = new Bitmap(blurBitmapData);
     blurBitmap.x = 420;
     blurBitmap.y = 40;
     stage.addChild(blurBitmap);
 
+    var blurFilter = new BlurFilter(4, 4);
+    blurBitmapData.applyFilter(astronautBitmapData, astronautRectangle, new Point.zero(), blurFilter);
+
     //-------------------------------------------
     // use a grayscale color matrix filter
 
-    var grayscaleFilter = new ColorMatrixFilter.grayscale();
-
     var grayscaleBitmapData = new BitmapData(astronautRectangle.width, astronautRectangle.height, true);
-    grayscaleBitmapData.applyFilter(astronautBitmapData, astronautRectangle, new Point.zero(), grayscaleFilter);
-
     var grayscaleBitmap = new Bitmap(grayscaleBitmapData);
     grayscaleBitmap.x = 60;
     grayscaleBitmap.y = 390;
     grayscaleBitmap.scaleX = grayscaleBitmap.scaleY = 0.5;
     stage.addChild(grayscaleBitmap);
 
+    var grayscaleFilter = new ColorMatrixFilter.grayscale();
+    grayscaleBitmapData.applyFilter(astronautBitmapData, astronautRectangle, new Point.zero(), grayscaleFilter);
+
+
     //-------------------------------------------
     // use a inverse color matrix filter
 
-    var inverseFilter = new ColorMatrixFilter.invert();
-
     var invertBitmapData = new BitmapData(astronautRectangle.width, astronautRectangle.height, true);
-    invertBitmapData.applyFilter(astronautBitmapData, astronautRectangle, new Point.zero(), inverseFilter);
-
     var invertBitmap = new Bitmap(invertBitmapData);
     invertBitmap.x = 220;
     invertBitmap.y = 390;
     invertBitmap.scaleX = invertBitmap.scaleY = 0.5;
     stage.addChild(invertBitmap);
 
+    var inverseFilter = new ColorMatrixFilter.invert();
+    invertBitmapData.applyFilter(astronautBitmapData, astronautRectangle, new Point.zero(), inverseFilter);
+
     //-------------------------------------------
     // use drop-shadow filter
 
-    var dropShadowFilter = new DropShadowFilter(10, PI / 4, Color.Black, 0.6, 8, 8);
-
     var dropShadowBitmapData = new BitmapData(160, 160, true);
-    dropShadowBitmapData.applyFilter(flowerBitmapData, flowerRectangle, new Point(16, 16), dropShadowFilter);
-
     var dropShadowBitmap = new Bitmap(dropShadowBitmapData);
     dropShadowBitmap.x = 420;
     dropShadowBitmap.y = 390;
     stage.addChild(dropShadowBitmap);
 
+    var dropShadowFilter = new DropShadowFilter(10, PI / 4, Color.Black, 0.6, 8, 8);
+    dropShadowBitmapData.applyFilter(flowerBitmapData, flowerRectangle, new Point(16, 16), dropShadowFilter);
+
     //-------------------------------------------
     // use glow filter
 
-    var glowFilter = new GlowFilter(Color.Red, 0.6, 16, 16);
-
     var glowBitmapData= new BitmapData(160, 160, true);
-    glowBitmapData.applyFilter(flowerBitmapData, flowerRectangle, new Point(16, 16), glowFilter);
-
     var glowBitmap = new Bitmap(glowBitmapData);
     glowBitmap.x = 580;
     glowBitmap.y = 390;
     stage.addChild(glowBitmap);
+
+    var glowFilter = new GlowFilter(Color.Red, 0.6, 16, 16);
+    glowBitmapData.applyFilter(flowerBitmapData, flowerRectangle, new Point(16, 16), glowFilter);
 
   });
 
