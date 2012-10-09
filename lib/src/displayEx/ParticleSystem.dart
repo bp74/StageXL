@@ -136,8 +136,8 @@ class ParticleSystem extends DisplayObject implements Animatable
     for(int i = 0; i< 64; i++)
     {
       var radius = 15;
-      num targetX = (i % 8).toInt() * 32 + 15.5;
-      num targetY = (i / 8).toInt() * 32 + 15.5;
+      num targetX = (i  % 8) * 32 + 15.5;
+      num targetY = (i ~/ 8) * 32 + 15.5;
 
       num colorRed   = startColor.red   + i * (endColor.red    - startColor.red ) / 63;
       num colorGreen = startColor.green + i * (endColor.green - startColor.green) / 63;
@@ -352,8 +352,8 @@ class ParticleSystem extends DisplayObject implements Animatable
       var particle = _particles[i];
 
       int time = ((particle.currentTime / particle.totalTime) * 63).toInt();
-      int sourceX = (time % 8).toInt() * 32;
-      int sourceY = (time / 8).toInt() * 32;
+      int sourceX = (time  % 8) * 32;
+      int sourceY = (time ~/ 8) * 32;
 
       int targetSize = particle.size.toInt();
       int targetX = (particle.x - targetSize / 2.0).toInt();
