@@ -1,3 +1,5 @@
+part of dartflash;
+
 class RenderState
 {
   html.CanvasRenderingContext2D _context;

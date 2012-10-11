@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Shape extends DisplayObject
 {
   Graphics _graphics;

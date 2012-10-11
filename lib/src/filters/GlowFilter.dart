@@ -1,3 +1,5 @@
+part of dartflash;
+
 class GlowFilter extends BitmapFilter
 {
   int color;

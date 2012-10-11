@@ -1,3 +1,5 @@
+part of dartflash;
+
 class WebAudioApiSound extends Sound
 {
   html.AudioBuffer _buffer;

@@ -1,3 +1,5 @@
+part of dartflash;
+
 class CapsStyle
 {
   static const String BUTT = "butt";

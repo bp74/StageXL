@@ -1,3 +1,5 @@
+part of dartflash;
+
 class MouseCursor
 {
   static const String AUTO = "auto";

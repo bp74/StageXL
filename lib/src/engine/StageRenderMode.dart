@@ -1,3 +1,5 @@
+part of dartflash;
+
 class StageRenderMode
 {
   static const String AUTO = "auto";

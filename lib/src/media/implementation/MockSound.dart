@@ -1,3 +1,5 @@
+part of dartflash;
+
 class MockSound extends Sound
 {
   MockSound()

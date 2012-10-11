@@ -1,3 +1,5 @@
+part of dartflash;
+
 abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 {
   num _x = 0.0;

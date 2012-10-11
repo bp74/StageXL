@@ -1,6 +1,6 @@
-#import('dart:math');
-#import('dart:html', prefix:'html');
-#import('package:dartflash/dartflash.dart');
+import 'dart:math';
+import 'dart:html' as html;
+import 'package:dartflash/dartflash.dart';
 
 //###########################################################################
 //  Credits for "TheZakMan" on http://opengameart.org for the walking man.

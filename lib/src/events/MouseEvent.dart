@@ -1,3 +1,5 @@
+part of dartflash;
+
 class MouseEvent extends Event
 {
   static const String CLICK = "click";

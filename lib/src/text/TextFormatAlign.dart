@@ -1,3 +1,5 @@
+part of dartflash;
+
 class TextFormatAlign
 {
   static const String CENTER = "center";

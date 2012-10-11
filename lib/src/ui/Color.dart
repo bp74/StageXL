@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Color
 {
   static const int AliceBlue = 0xFFF0F8FF;

@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Matrix
 {
   num _a, _b, _c, _d, _tx, _ty;

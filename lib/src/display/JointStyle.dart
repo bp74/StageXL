@@ -1,3 +1,5 @@
+part of dartflash;
+
 class JointStyle
 {
   static const String MITER = "miter";

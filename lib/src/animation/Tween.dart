@@ -1,3 +1,5 @@
+part of dartflash;
+
 
 typedef TweenFunction(num value);
 

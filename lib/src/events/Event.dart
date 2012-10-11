@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Event
 {
   static const String ADDED = "added";

@@ -1,3 +1,5 @@
+part of dartflash;
+
 class TextureAtlas
 {
   html.ImageElement _imageElement;

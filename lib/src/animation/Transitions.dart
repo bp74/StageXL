@@ -1,3 +1,5 @@
+part of dartflash;
+
 typedef num TransitionFunction(num ratio);
 
 class Transitions

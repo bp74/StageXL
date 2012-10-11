@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Bitmap extends DisplayObject
 {
   BitmapData bitmapData;

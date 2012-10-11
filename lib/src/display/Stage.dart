@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Stage extends DisplayObjectContainer
 {
   html.CanvasElement _canvas;

@@ -1,3 +1,5 @@
+part of dartflash;
+
 class BlurFilter extends BitmapFilter
 {
   int blurX;

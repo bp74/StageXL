@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Mouse
 {
   static String _customCursor = MouseCursor.AUTO;

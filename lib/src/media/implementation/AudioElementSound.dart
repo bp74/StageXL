@@ -1,3 +1,5 @@
+part of dartflash;
+
 class AudioElementSound extends Sound
 {
   html.AudioElement _audio;

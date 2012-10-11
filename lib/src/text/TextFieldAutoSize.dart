@@ -1,3 +1,5 @@
+part of dartflash;
+
 class TextFieldAutoSize
 {
   static const String CENTER = "center";

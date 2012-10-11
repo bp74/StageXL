@@ -1,3 +1,5 @@
+part of dartflash;
+
 class TextEvent extends Event
 {
   static const String LINK = "link";

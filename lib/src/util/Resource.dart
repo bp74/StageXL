@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Resource
 {
   Map<String, BitmapData> _images;

@@ -1,3 +1,5 @@
+part of dartflash;
+
 class MovieClip extends InteractiveObject implements Animatable
 {
   List<BitmapData> _bitmapDatas;

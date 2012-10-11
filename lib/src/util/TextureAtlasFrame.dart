@@ -1,3 +1,5 @@
+part of dartflash;
+
 class TextureAtlasFrame
 {
   String _name;

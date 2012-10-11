@@ -1,3 +1,5 @@
+part of dartflash;
+
 class PixelSnapping
 {
   static const String NEVER = "never";

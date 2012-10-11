@@ -1,3 +1,5 @@
+part of dartflash;
+
 class BitmapData implements BitmapDrawable
 {
   int _width;

@@ -1,3 +1,5 @@
+part of dartflash;
+
 abstract class DisplayObjectContainer extends InteractiveObject
 {
   List<DisplayObject> _children;

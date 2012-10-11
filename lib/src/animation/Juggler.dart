@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Juggler implements Animatable
 {
   List<Animatable> _animatables;

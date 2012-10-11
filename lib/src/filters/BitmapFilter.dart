@@ -1,3 +1,5 @@
+part of dartflash;
+
 abstract class BitmapFilter
 {
   BitmapFilter clone();

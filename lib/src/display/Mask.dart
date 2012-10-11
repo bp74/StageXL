@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Mask
 {
   int _type;

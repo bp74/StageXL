@@ -1,3 +1,5 @@
+part of dartflash;
+
 class WebAudioApiSoundChannel extends SoundChannel
 {
   WebAudioApiSound _webAudioApiSound;

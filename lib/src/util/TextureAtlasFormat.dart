@@ -1,3 +1,5 @@
+part of dartflash;
+
 class TextureAtlasFormat
 {
   static const String JSON = "json";

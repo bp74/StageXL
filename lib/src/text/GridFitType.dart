@@ -1,3 +1,5 @@
+part of dartflash;
+
 class GridFitType
 {
   static const String NONE = "none";

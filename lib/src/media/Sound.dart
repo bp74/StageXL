@@ -1,3 +1,5 @@
+part of dartflash;
+
 abstract class Sound
 {
   static Future<Sound> loadAudio(String url)

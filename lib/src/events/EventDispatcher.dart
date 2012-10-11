@@ -1,3 +1,5 @@
+part of dartflash;
+
 class EventDispatcher
 {
   Map<String, EventListenerList> _eventListenerLists;

@@ -1,3 +1,5 @@
+part of dartflash;
+
 class KeyboardEvent extends Event
 {
   static const String KEY_DOWN = "keyDown";

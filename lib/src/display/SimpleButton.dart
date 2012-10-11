@@ -1,3 +1,5 @@
+part of dartflash;
+
 class SimpleButton extends InteractiveObject
 {
   DisplayObject upState;

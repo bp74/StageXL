@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Circle
 {
   num x;

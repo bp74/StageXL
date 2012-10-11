@@ -1,3 +1,5 @@
+part of dartflash;
+
 class GraphicsPattern
 {
   BitmapData _bitmapData;

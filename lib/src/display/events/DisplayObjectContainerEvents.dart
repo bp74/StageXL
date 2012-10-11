@@ -1,3 +1,5 @@
+part of dartflash;
+
 
 class DisplayObjectContainerEvents extends InteractiveObjectEvents
 {

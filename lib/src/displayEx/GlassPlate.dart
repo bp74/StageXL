@@ -1,3 +1,5 @@
+part of dartflash;
+
 class GlassPlate extends InteractiveObject
 {
   num width;

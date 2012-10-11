@@ -1,3 +1,5 @@
+part of dartflash;
+
 class DelayedCall implements Animatable
 {
   num _currentTime = 0.0;

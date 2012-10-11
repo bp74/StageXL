@@ -1,3 +1,5 @@
+part of dartflash;
+
 class EventPhase
 {
   static const int CAPTURING_PHASE = 1;

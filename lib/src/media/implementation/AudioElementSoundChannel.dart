@@ -1,3 +1,5 @@
+part of dartflash;
+
 class AudioElementSoundChannel extends SoundChannel
 {
   AudioElementSound _audioElementSound;

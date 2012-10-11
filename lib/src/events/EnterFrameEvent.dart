@@ -1,3 +1,5 @@
+part of dartflash;
+
 class EnterFrameEvent extends Event
 {
   num _passedTime;

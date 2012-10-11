@@ -1,7 +1,7 @@
-#import('dart:html', prefix:'html');
-#import('package:dartflash/dartflash.dart');
+import 'dart:html' as html;
+import 'package:dartflash/dartflash.dart';
 
-#source('world.dart');
+part 'world.dart';
 
 void main()
 {

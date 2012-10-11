@@ -1,3 +1,5 @@
+part of dartflash;
+
 abstract class SoundChannel extends EventDispatcher
 {
   SoundTransform get soundTransform;

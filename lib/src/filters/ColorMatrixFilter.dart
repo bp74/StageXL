@@ -1,3 +1,5 @@
+part of dartflash;
+
 class ColorMatrixFilter extends BitmapFilter
 {
   List<num> matrix;

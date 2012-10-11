@@ -1,3 +1,5 @@
+part of dartflash;
+
 class SoundMixer
 {
   static SoundTransform _soundTransform;

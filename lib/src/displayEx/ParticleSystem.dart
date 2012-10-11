@@ -1,3 +1,5 @@
+part of dartflash;
+
 //-------------------------------------------------------------------------------------------------
 // Credits to www.gamua.com
 // Particle System Extension for the Starling framework

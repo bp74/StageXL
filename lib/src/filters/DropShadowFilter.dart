@@ -1,3 +1,5 @@
+part of dartflash;
+
 class DropShadowFilter extends BitmapFilter
 {
   num distance;

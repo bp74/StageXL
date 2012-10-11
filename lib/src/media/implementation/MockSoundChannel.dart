@@ -1,3 +1,5 @@
+part of dartflash;
+
 class MockSoundChannel extends SoundChannel
 {
   bool _loop;

@@ -1,3 +1,5 @@
+part of dartflash;
+
 class KeyLocation
 {
   static const int STANDARD = 0;

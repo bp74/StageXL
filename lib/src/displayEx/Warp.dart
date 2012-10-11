@@ -1,3 +1,5 @@
+part of dartflash;
+
 class Warp extends DisplayObjectContainer
 {
   Matrix _matrix;

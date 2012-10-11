@@ -1,3 +1,5 @@
+part of dartflash;
+
 abstract class InteractiveObject extends DisplayObject
 {
   bool doubleClickEnabled = false;

@@ -1,3 +1,5 @@
+part of dartflash;
+
 class TextField extends InteractiveObject
 {
   String _text = "";
