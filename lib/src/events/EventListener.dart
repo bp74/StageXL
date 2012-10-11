@@ -1,2 +1,2 @@
-typedef void EventListener(Event);
+typedef void EventListener(event);
 
