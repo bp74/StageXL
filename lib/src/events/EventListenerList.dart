@@ -30,7 +30,7 @@ class EventListenerList
 
   //-------------------------------------------------------------------------------------------------
 
-  void add(Function eventListener, [bool useCapture = false])
+  void add(EventListener eventListener, [bool useCapture = false])
   {
     for(int i = 0; i < _list.length; i++)
       if (_list[i].eventListener == eventListener && _list[i].useCapture == useCapture)
@@ -45,7 +45,7 @@ class EventListenerList
 
   //-------------------------------------------------------------------------------------------------
 
-  void remove(Function eventListener, [bool useCapture = false])
+  void remove(EventListener eventListener, [bool useCapture = false])
   {
     for(int i = 0; i < _list.length; i++)
     {
@@ -64,12 +64,12 @@ class EventListenerList
 
   //-------------------------------------------------------------------------------------------------
 
-  void operator +(Function eventListener)
+  void operator +(EventListener eventListener)
   {
     this.add(eventListener, false);
   }
 
-  void operator -(Function eventListener)
+  void operator -(EventListener eventListener)
   {
     this.remove(eventListener, false);
   }

@@ -1,5 +1,5 @@
 
-typedef TweenFunction(num value);
+typedef TweenFunction(num);
 
 class _AnimateProperty
 {

@@ -1,4 +1,4 @@
-typedef num TransitionFunction(num ratio);
+typedef num TransitionFunction(num);
 
 class Transitions
 {

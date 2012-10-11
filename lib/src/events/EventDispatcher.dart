@@ -10,12 +10,12 @@ class EventDispatcher
     return _eventListenerLists != null && _eventListenerLists.containsKey(type);
   }
 
-  void addEventListener(String type, Function eventListener, [bool useCapture = false])
+  void addEventListener(String type, EventListener eventListener, [bool useCapture = false])
   {
     _getEventListenerList(type).add(eventListener, useCapture);
   }
 
-  void removeEventListener(String type, Function eventListener, [bool useCapture = false])
+  void removeEventListener(String type, EventListener eventListener, [bool useCapture = false])
   {
     _getEventListenerList(type).remove(eventListener, useCapture);
   }
