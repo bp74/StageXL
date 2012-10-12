@@ -1,6 +1,5 @@
 part of dartflash;
 
-
 class InteractiveObjectEvents extends DisplayObjectEvents
 {
   InteractiveObjectEvents(EventDispatcher target) : super(target);

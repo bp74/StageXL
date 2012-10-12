@@ -1,6 +1,5 @@
 part of dartflash;
 
-
 class Graphics
 {
   List<_GraphicsCommand> _commands;

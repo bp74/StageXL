@@ -1,6 +1,5 @@
 part of dartflash;
 
-
 class _EventListenerUseCapture
 {
   Function eventListener;

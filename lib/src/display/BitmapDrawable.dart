@@ -1,5 +1,6 @@
 part of dartflash;
 
-abstract class BitmapDrawable {
+abstract class BitmapDrawable
+{
   void render(RenderState renderState);
 }

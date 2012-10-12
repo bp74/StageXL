@@ -1,6 +1,5 @@
 part of dartflash;
 
-
 typedef TweenFunction(num value);
 
 class _AnimateProperty
