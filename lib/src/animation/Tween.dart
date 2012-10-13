@@ -1,34 +1,22 @@
 part of dartflash;
 
-typedef TweenFunction(num value);
-
-class _AnimateProperty
+class _TweenProperty
 {
   String name;
   num startValue;
   num targetValue;
 
-  _AnimateProperty(this.name, this.startValue, this.targetValue);
-}
-
-class _AnimateValue
-{
-  TweenFunction tweenFunction;
-  num startValue;
-  num targetValue;
-
-  _AnimateValue(this.tweenFunction, this.startValue, this.targetValue);
+  _TweenProperty(this.name, this.startValue, this.targetValue);
 }
 
 //-----------------------------------------------------------------------------------
 
 class Tween implements Animatable
 {
-  Dynamic _target;
+  DisplayObject _displayObject;
   TransitionFunction _transitionFunction;
 
-  List<_AnimateProperty> _animateProperties;
-  List<_AnimateValue> _animateValues;
+  List<_TweenProperty> _tweenProperties;
 
   Function _onStart;
   Function _onUpdate;
@@ -40,9 +28,9 @@ class Tween implements Animatable
   bool _roundToInt;
   bool _started;
 
-  Tween(Dynamic target, num time, [TransitionFunction transitionFunction = null])
+  Tween(DisplayObject displayObject, num time, [TransitionFunction transitionFunction = null])
   {
-    _target = target;
+    _displayObject = displayObject;
     _transitionFunction = (transitionFunction != null) ? transitionFunction : Transitions.linear;
 
     _currentTime = 0.0;
@@ -51,8 +39,7 @@ class Tween implements Animatable
     _roundToInt = false;
     _started = false;
 
-    _animateProperties = new List<_AnimateProperty>();
-    _animateValues = new List<_AnimateValue>();
+    _tweenProperties = new List<_TweenProperty>();
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -65,14 +52,8 @@ class Tween implements Animatable
     if (properties.indexOf(property) == -1)
       throw new ArgumentError("Error #9003: The supplied property ('$property') is not supported at this time.");
 
-    if (_target != null && _started == false)
-      _animateProperties.add(new _AnimateProperty(property, 0.0, targetValue));
-  }
-
-  void animateValue(TweenFunction tweenFunction, num startValue, num targetValue)
-  {
-    if (_started == false)
-      _animateValues.add(new _AnimateValue(tweenFunction, startValue, targetValue));
+    if (_displayObject != null && _started == false)
+      _tweenProperties.add(new _TweenProperty(property, 0.0, targetValue));
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -124,18 +105,19 @@ class Tween implements Animatable
         {
           _started = true;
 
-          for(int i = 0; i < _animateProperties.length; i++)  {
-            var ap = _animateProperties[i];
+          for(int i = 0; i < _tweenProperties.length; i++)
+          {
+            var tp = _tweenProperties[i];
 
-            switch(ap.name) {
-              case 'x':        ap.startValue = _target.x; break;
-              case 'y':        ap.startValue = _target.y; break;
-              case 'pivotX':   ap.startValue = _target.pivotX; break;
-              case 'pivotY':   ap.startValue = _target.pivotY; break;
-              case 'scaleX':   ap.startValue = _target.scaleX; break;
-              case 'scaleY':   ap.startValue = _target.scaleY; break;
-              case 'rotation': ap.startValue = _target.rotation; break;
-              case 'alpha':    ap.startValue = _target.alpha; break;
+            switch(tp.name) {
+              case 'x':        tp.startValue = _displayObject.x; break;
+              case 'y':        tp.startValue = _displayObject.y; break;
+              case 'pivotX':   tp.startValue = _displayObject.pivotX; break;
+              case 'pivotY':   tp.startValue = _displayObject.pivotY; break;
+              case 'scaleX':   tp.startValue = _displayObject.scaleX; break;
+              case 'scaleY':   tp.startValue = _displayObject.scaleY; break;
+              case 'rotation': tp.startValue = _displayObject.rotation; break;
+              case 'alpha':    tp.startValue = _displayObject.alpha; break;
             }
           }
 
@@ -148,29 +130,22 @@ class Tween implements Animatable
         num ratio = _currentTime / _totalTime;
         num transition = _transitionFunction(ratio);
 
-        for(int i = 0; i < _animateProperties.length; i++) {
-          var ap = _animateProperties[i];
-          var value = ap.startValue + transition * (ap.targetValue - ap.startValue);
+        for(int i = 0; i < _tweenProperties.length; i++)
+        {
+          var tp = _tweenProperties[i];
+          var value = tp.startValue + transition * (tp.targetValue - tp.startValue);
           value = _roundToInt ? value.round() : value;
 
-          switch(ap.name) {
-            case 'x':        _target.x = value; break;
-            case 'y':        _target.y = value; break;
-            case 'pivotX':   _target.pivotX = value; break;
-            case 'pivotY':   _target.pivotY = value; break;
-            case 'scaleX':   _target.scaleX = value; break;
-            case 'scaleY':   _target.scaleY = value; break;
-            case 'rotation': _target.rotation = value; break;
-            case 'alpha':    _target.alpha = value; break;
+          switch(tp.name) {
+            case 'x':        _displayObject.x = value; break;
+            case 'y':        _displayObject.y = value; break;
+            case 'pivotX':   _displayObject.pivotX = value; break;
+            case 'pivotY':   _displayObject.pivotY = value; break;
+            case 'scaleX':   _displayObject.scaleX = value; break;
+            case 'scaleY':   _displayObject.scaleY = value; break;
+            case 'rotation': _displayObject.rotation = value; break;
+            case 'alpha':    _displayObject.alpha = value; break;
           }
-        }
-
-        for(int i = 0; i < _animateValues.length; i++) {
-          var av = _animateValues[i];
-          var value = av.startValue + transition * (av.targetValue - av.startValue);
-          value = _roundToInt ? value.round() : value;
-
-          av.tweenFunction(value);
         }
 
         if (_onUpdate != null)
@@ -189,14 +164,14 @@ class Tween implements Animatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Dynamic get target => _target;
+  DisplayObject get displayObject => _displayObject;
   num get totalTime => _totalTime;
   num get currentTime => _currentTime;
   num get delay => _delay;
   bool get roundToInt => _roundToInt;
   bool get isComplete => _currentTime >= _totalTime;
 
-  void set delay(num value)
+  set delay(num value)
   {
     if (_started == false)
       _currentTime = _currentTime + _delay - value;
@@ -204,7 +179,7 @@ class Tween implements Animatable
     _delay = value;
   }
 
-  void set roundToInt(bool value)
+  set roundToInt(bool value)
   {
     _roundToInt = value;
   }
@@ -218,5 +193,4 @@ class Tween implements Animatable
   void set onStart(Function value) { _onStart = value; }
   void set onUpdate(Function value) { _onUpdate = value; }
   void set onComplete(Function value) { _onComplete = value; }
-
 }
