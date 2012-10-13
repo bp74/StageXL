@@ -1,5 +1,9 @@
 part of dartflash;
 
+typedef void TweenStart();
+typedef void TweenUpdate();
+typedef void TweenComplete();
+
 class _TweenProperty
 {
   String name;
@@ -18,9 +22,9 @@ class Tween implements Animatable
 
   List<_TweenProperty> _tweenProperties;
 
-  Function _onStart;
-  Function _onUpdate;
-  Function _onComplete;
+  TweenStart _onStart;
+  TweenUpdate _onUpdate;
+  TweenComplete _onComplete;
 
   num _totalTime;
   num _currentTime;
@@ -186,11 +190,11 @@ class Tween implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  Function get onStart => _onStart;
-  Function get onUpdate => _onUpdate;
-  Function get onComplete => _onComplete;
+  TweenStart get onStart => _onStart;
+  TweenUpdate get onUpdate => _onUpdate;
+  TweenComplete get onComplete => _onComplete;
 
-  void set onStart(Function value) { _onStart = value; }
-  void set onUpdate(Function value) { _onUpdate = value; }
-  void set onComplete(Function value) { _onComplete = value; }
+  void set onStart(TweenStart value) { _onStart = value; }
+  void set onUpdate(TweenUpdate value) { _onUpdate = value; }
+  void set onComplete(TweenComplete value) { _onComplete = value; }
 }
