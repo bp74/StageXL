@@ -60,6 +60,11 @@ class Tween implements Animatable
 
   void animate(String property, num targetValue)
   {
+    var properties = ['x', 'y', 'pivotX', 'pivotY', 'scaleX', 'scaleY', 'rotation', 'alpha'];
+
+    if (properties.indexOf(property) == -1)
+      throw new ArgumentError("Error #9003: The supplied property ('$property') is not supported at this time.");
+
     if (_target != null && _started == false)
       _animateProperties.add(new _AnimateProperty(property, 0.0, targetValue));
   }
@@ -74,23 +79,23 @@ class Tween implements Animatable
 
   void scaleTo(num factor)
   {
-    animate("scaleX", factor);
-    animate("scaleY", factor);
+    animate('scaleX', factor);
+    animate('scaleY', factor);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void moveTo(num x, num y)
   {
-    animate("x", x);
-    animate("y", y);
+    animate('x', x);
+    animate('y', y);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void fadeTo(num alpha)
   {
-    animate("alpha", alpha);
+    animate('alpha', alpha);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -119,9 +124,19 @@ class Tween implements Animatable
         {
           _started = true;
 
-          for(int i = 0; i < _animateProperties.length; i++) {
+          for(int i = 0; i < _animateProperties.length; i++)  {
             var ap = _animateProperties[i];
-            ap.startValue = _getPropertyValue(_target, ap.name);
+
+            switch(ap.name) {
+              case 'x':        ap.startValue = _target.x; break;
+              case 'y':        ap.startValue = _target.y; break;
+              case 'pivotX':   ap.startValue = _target.pivotX; break;
+              case 'pivotY':   ap.startValue = _target.pivotY; break;
+              case 'scaleX':   ap.startValue = _target.scaleX; break;
+              case 'scaleY':   ap.startValue = _target.scaleY; break;
+              case 'rotation': ap.startValue = _target.rotation; break;
+              case 'alpha':    ap.startValue = _target.alpha; break;
+            }
           }
 
           if (_onStart != null)
@@ -136,13 +151,26 @@ class Tween implements Animatable
         for(int i = 0; i < _animateProperties.length; i++) {
           var ap = _animateProperties[i];
           var value = ap.startValue + transition * (ap.targetValue - ap.startValue);
-          _setPropertyValue(_target, ap.name, _roundToInt ? value.round() : value);
+          value = _roundToInt ? value.round() : value;
+
+          switch(ap.name) {
+            case 'x':        _target.x = value; break;
+            case 'y':        _target.y = value; break;
+            case 'pivotX':   _target.pivotX = value; break;
+            case 'pivotY':   _target.pivotY = value; break;
+            case 'scaleX':   _target.scaleX = value; break;
+            case 'scaleY':   _target.scaleY = value; break;
+            case 'rotation': _target.rotation = value; break;
+            case 'alpha':    _target.alpha = value; break;
+          }
         }
 
         for(int i = 0; i < _animateValues.length; i++) {
           var av = _animateValues[i];
           var value = av.startValue + transition * (av.targetValue - av.startValue);
-          av.tweenFunction(_roundToInt ? value.round() : value);
+          value = _roundToInt ? value.round() : value;
+
+          av.tweenFunction(value);
         }
 
         if (_onUpdate != null)
@@ -190,43 +218,5 @@ class Tween implements Animatable
   void set onStart(Function value) { _onStart = value; }
   void set onUpdate(Function value) { _onUpdate = value; }
   void set onComplete(Function value) { _onComplete = value; }
-
-  //-------------------------------------------------------------------------------------------------
-
-  _setPropertyValue(Dynamic object, String name, num value)
-  {
-    switch(name)
-    {
-      case "x": object.x = value; break;
-      case "y": object.y = value; break;
-      case "pivotX": object.pivotX = value; break;
-      case "pivotY": object.pivotY = value; break;
-      case "scaleX": object.scaleX = value; break;
-      case "scaleY": object.scaleY = value; break;
-      case "rotation": object.rotation = value; break;
-      case "alpha": object.alpha = value; break;
-
-      default:
-        throw new ArgumentError("Error #9003: The supplied property name ('$name') is not supported at this time.");
-    }
-  }
-
-  num _getPropertyValue(Dynamic object, String name)
-  {
-    switch(name)
-    {
-      case "x": return object.x;
-      case "y": return object.y;
-      case "pivotX": return object.pivotX;
-      case "pivotY": return object.pivotY;
-      case "scaleX": return object.scaleX;
-      case "scaleY": return object.scaleY;
-      case "rotation": return object.rotation;
-      case "alpha": return object.alpha;
-
-      default:
-        throw new ArgumentError("Error #9003: The supplied property name ('$name') is not supported at this time.");
-    }
-  }
 
 }
