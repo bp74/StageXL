@@ -10,7 +10,6 @@ part 'src/animation/DelayedCall.dart';
 part 'src/animation/Animatable.dart';
 part 'src/animation/Juggler.dart';
 part 'src/animation/Transitions.dart';
-part 'src/animation/Transition.dart';
 part 'src/animation/Tween.dart';
 
 part 'src/geom/Point.dart';
