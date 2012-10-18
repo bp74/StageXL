@@ -13,7 +13,7 @@ This little game was developed with Flash and later ported to HTML5 in only 6 ho
 
 The dartflash website contains more demos and documentation. If you are not familiar with the Dart programming language, please take a look at the ActionScript-Dart comparison.
 
-<http://www.dartflash.com/>
+<http://www.dartflash.com/docs/actionscript-dart.html>
 
 ## Remarks
 
