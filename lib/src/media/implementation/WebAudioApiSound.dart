@@ -19,22 +19,18 @@ class WebAudioApiSound extends Sound
     var loadCompleter = new Completer<Sound>();
     var request = new html.HttpRequest();
 
-    bool audioBufferLoaded(html.AudioBuffer buffer)
+    void audioBufferLoaded(html.AudioBuffer buffer)
     {
       sound._buffer = buffer;
 
       if (loadCompleter.future.isComplete == false)
         loadCompleter.complete(sound);
-
-      return true;
     }
 
-    bool audioBufferError(error)
+    void audioBufferError(error)
     {
       if (loadCompleter.future.isComplete == false)
         loadCompleter.completeException("Failed to decode audio.");
-
-      return true;
     }
 
     void onRequestLoad(event)
