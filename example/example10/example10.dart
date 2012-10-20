@@ -44,14 +44,14 @@ void main()
     //-------------------------------------------
     // use a blur filter for the astronaut
 
-    var blurBitmapData = new BitmapData(astronautRectangle.width, astronautRectangle.height, true);
+    var blurBitmapData = new BitmapData(astronautRectangle.width + 40, astronautRectangle.height + 40, true);
     var blurBitmap = new Bitmap(blurBitmapData);
-    blurBitmap.x = 420;
-    blurBitmap.y = 40;
+    blurBitmap.x = 420 - 20;
+    blurBitmap.y = 40 - 20;
     stage.addChild(blurBitmap);
 
-    var blurFilter = new BlurFilter(4, 4);
-    blurBitmapData.applyFilter(astronautBitmapData, astronautRectangle, new Point.zero(), blurFilter);
+    var blurFilter = new BlurFilter(10, 10);
+    blurBitmapData.applyFilter(astronautBitmapData, astronautRectangle, new Point(20, 20), blurFilter);
 
     //-------------------------------------------
     // use a grayscale color matrix filter

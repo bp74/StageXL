@@ -54,6 +54,16 @@ class BlurFilter extends BitmapFilter
     List<int> buffer = new List<int>(1024);
 
     //--------------------------------------------------
+    // premultiply alpha
+
+    for(var i = 0; i <= sourceData.length - 4; i += 4) {
+      var alpha = sourceData[i + 3];
+      sourceData[i + 0] = (sourceData[i + 0] * alpha) ~/ 255;
+      sourceData[i + 1] = (sourceData[i + 1] * alpha) ~/ 255;
+      sourceData[i + 2] = (sourceData[i + 2] * alpha) ~/ 255;
+    }
+
+    //--------------------------------------------------
     // blur vertical
 
     for (int z = 0; z < 4; z++) {
@@ -105,6 +115,16 @@ class BlurFilter extends BitmapFilter
           offsetSource += 4;
         }
       }
+    }
+
+    //--------------------------------------------------
+    // unpremultiply alpha
+
+    for(var i = 0; i <= destinationData.length - 4; i += 4) {
+      var alpha = destinationData[i + 3];
+      destinationData[i + 0] = (destinationData[i + 0] * 255) ~/ alpha;
+      destinationData[i + 1] = (destinationData[i + 1] * 255) ~/ alpha;
+      destinationData[i + 2] = (destinationData[i + 2] * 255) ~/ alpha;
     }
 
     //--------------------------------------------------
