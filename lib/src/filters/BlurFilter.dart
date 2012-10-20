@@ -122,9 +122,11 @@ class BlurFilter extends BitmapFilter
 
     for(var i = 0; i <= destinationData.length - 4; i += 4) {
       var alpha = destinationData[i + 3];
-      destinationData[i + 0] = (destinationData[i + 0] * 255) ~/ alpha;
-      destinationData[i + 1] = (destinationData[i + 1] * 255) ~/ alpha;
-      destinationData[i + 2] = (destinationData[i + 2] * 255) ~/ alpha;
+      if (alpha > 0) {
+        destinationData[i + 0] = (destinationData[i + 0] * 255) ~/ alpha;
+        destinationData[i + 1] = (destinationData[i + 1] * 255) ~/ alpha;
+        destinationData[i + 2] = (destinationData[i + 2] * 255) ~/ alpha;
+      }
     }
 
     //--------------------------------------------------
