@@ -29,7 +29,7 @@ class TextureAtlas
 
         request.on.load.add((event)
         {
-          void parseFrame(String filename, Dynamic frame) {
+          void parseFrame(String filename, Map frame) {
             var frameName = _getFilenameWithoutExtension(filename);
             var taf = new TextureAtlasFrame(frameName, textureAtlas);
             taf._frameX = frame["frame"]["x"].toInt();
@@ -44,12 +44,12 @@ class TextureAtlas
             textureAtlas._frames.add(taf);
           }
 
-          Dynamic data = JSON.parse(request.responseText);
-          Dynamic frames = data["frames"];
-          Dynamic meta = data["meta"];
+          var data = JSON.parse(request.responseText);
+          var frames = data["frames"];
+          var meta = data["meta"];
 
           if (frames is List)
-            for(Dynamic frame in frames)
+            for(var frame in frames)
               parseFrame(frame["filename"], frame);
 
           if (frames is Map)
