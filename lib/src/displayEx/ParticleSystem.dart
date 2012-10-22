@@ -132,7 +132,7 @@ class ParticleSystem extends DisplayObject implements Animatable
 
   void _drawParticleCanvas()
   {
-    _particleCanvas = new html.CanvasElement(256, 256);
+    _particleCanvas = new html.CanvasElement(width: 256, height: 256);
     var context = _particleCanvas.context2d;
 
     for(int i = 0; i< 64; i++)

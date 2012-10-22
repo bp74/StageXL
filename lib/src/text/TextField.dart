@@ -192,7 +192,7 @@ class TextField extends InteractiveObject
 
       if (_canvas == null)
       {
-        _canvas = new html.CanvasElement(canvasWidthInt, canvasHeightInt);
+        _canvas = new html.CanvasElement(width: canvasWidthInt, height: canvasHeightInt);
         _context = _canvas.context2d;
       }
 

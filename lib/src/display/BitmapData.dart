@@ -26,7 +26,7 @@ class BitmapData implements BitmapDrawable
     _height = height;
     _transparent = transparent;
 
-    var canvas = new html.CanvasElement(_width, _height);
+    var canvas = new html.CanvasElement(width: _width, height: _height);
 
     _context = canvas.context2d;
     _context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
@@ -74,9 +74,10 @@ class BitmapData implements BitmapDrawable
   {
     Completer<BitmapData> completer = new Completer<BitmapData>();
 
-    var image = new html.ImageElement(url);
+    var image = new html.ImageElement();
     image.on.load.add((event) => completer.complete(new BitmapData.fromImageElement(image)));
     image.on.error.add((event) => completer.completeException("Failed to load image."));
+    image.src = url;
 
     return completer.future;
   }
@@ -321,7 +322,7 @@ class BitmapData implements BitmapDrawable
   {
     if (_context == null)
     {
-      var canvas = new html.CanvasElement(_width, _height);
+      var canvas = new html.CanvasElement(width: _width, height: _height);
 
       _context = canvas.context2d;
 
