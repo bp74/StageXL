@@ -132,4 +132,13 @@ class DropShadowFilter extends BitmapFilter
     if (this.hideObject == false)
       destinationContext.drawImage(sourceContext.canvas, sx, sy);
   }
+
+  //-------------------------------------------------------------------------------------------------
+
+  Rectangle getBounds()
+  {
+    var dx = (this.distance * cos(this.angle)).round();
+    var dy = (this.distance * sin(this.angle)).round();
+    return new Rectangle(dx - blurX, dx - blurY, dx + 2 * blurX, dy + 2 * blurY);
+  }
 }
