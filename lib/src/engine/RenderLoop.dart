@@ -30,7 +30,7 @@ class RenderLoop
   {
     html.window.requestAnimationFrame(_onAnimationFrame);
 
-    if (_renderTime.isNaN())
+    if (_renderTime.isNaN)
       _renderTime = currentTime;
 
     if (_renderTime > currentTime)

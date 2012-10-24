@@ -88,7 +88,7 @@ class Stage extends DisplayObjectContainer
   //-------------------------------------------------------------------------------------------------
 
   void _throwStageException() {
-    throw new UnsupportedOperationException("Error #2071: The Stage class does not implement this property or method.");
+    throw new UnsupportedError("Error #2071: The Stage class does not implement this property or method.");
   }
 
   void set x(num value) { _throwStageException(); }
@@ -223,7 +223,7 @@ class Stage extends DisplayObjectContainer
         _buttonState[button] = false;
 
         isClick = (_clickTarget[button] == target);
-        isDoubleClick = isClick && _clickCount[button].isEven() && (time < _clickTime[button] + 500);
+        isDoubleClick = isClick && _clickCount[button].isEven && (time < _clickTime[button] + 500);
     }
 
     if (event.type == "mousemove")
