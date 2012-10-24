@@ -4,10 +4,9 @@ class Bitmap extends DisplayObject
 {
   BitmapData bitmapData;
   String pixelSnapping;
-  bool smoothing;
   Rectangle clipRectangle;
 
-  Bitmap([this.bitmapData = null, this.pixelSnapping = "auto", this.smoothing = false])
+  Bitmap([this.bitmapData = null, this.pixelSnapping = "auto"])
   {
     clipRectangle = null;
   }
