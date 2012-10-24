@@ -27,7 +27,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  dynamic addChild(DisplayObject child)
+  void addChild(DisplayObject child)
   {
     if (child.parent == this)
     {
@@ -39,13 +39,11 @@ abstract class DisplayObjectContainer extends InteractiveObject
     {
       addChildAt(child, _children.length);
     }
-
-    return child;
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  dynamic addChildAt(DisplayObject child, int index)
+  void addChildAt(DisplayObject child, int index)
   {
     if (index < 0 && index > _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
@@ -74,25 +72,23 @@ abstract class DisplayObjectContainer extends InteractiveObject
       if (this.stage != null)
         _dispatchEventOnChildren(child, new Event(Event.ADDED_TO_STAGE));
     }
-
-    return child;
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  dynamic removeChild(DisplayObject child)
+  void removeChild(DisplayObject child)
   {
     int childIndex = _children.indexOf(child);
 
     if (childIndex == -1)
       throw new ArgumentError("Error #2025: The supplied DisplayObject must be a child of the caller.");
 
-    return removeChildAt(childIndex);
+    removeChildAt(childIndex);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  dynamic removeChildAt(int index)
+  void removeChildAt(int index)
   {
     if (index < 0 && index >= _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
@@ -106,8 +102,6 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
     child._setParent(null);
     _children.removeAt(index);
-
-    return child;
   }
 
   //-------------------------------------------------------------------------------------------------
