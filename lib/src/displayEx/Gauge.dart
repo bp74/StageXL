@@ -15,8 +15,8 @@ class Gauge extends DisplayObject
 
   Gauge(BitmapData bitmapData, [String direction = DIRECTION_LEFT])
   {
-    if (direction != DIRECTION_UP || direction != DIRECTION_DOWN ||
-        direction != DIRECTION_RIGHT || direction != DIRECTION_LEFT) {
+    if (direction != DIRECTION_UP && direction != DIRECTION_DOWN &&
+        direction != DIRECTION_LEFT && direction != DIRECTION_RIGHT) {
       throw new ArgumentError('Invalid Gauge direction!');
     }
 
