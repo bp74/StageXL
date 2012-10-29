@@ -64,6 +64,8 @@ part 'src/display/events/DisplayObjectEvents.dart';
 part 'src/display/events/DisplayObjectContainerEvents.dart';
 part 'src/display/events/InteractiveObjectEvents.dart';
 
+part 'src/displayEx/Gauge.dart';
+part 'src/displayEx/TimeGauge.dart';
 part 'src/displayEx/GlassPlate.dart';
 part 'src/displayEx/ParticleSystem.dart';
 part 'src/displayEx/Warp.dart';

@@ -81,4 +81,11 @@ class ColorMatrixFilter extends BitmapFilter
     destinationBitmapData._getContext().putImageData(imageData, destinationPoint.x, destinationPoint.y);
   }
 
+  //-------------------------------------------------------------------------------------------------
+
+  Rectangle getBounds()
+  {
+    return new Rectangle(0, 0, 0, 0);
+  }
+
 }

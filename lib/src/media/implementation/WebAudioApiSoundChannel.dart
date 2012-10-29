@@ -3,11 +3,12 @@ part of dartflash;
 class WebAudioApiSoundChannel extends SoundChannel
 {
   WebAudioApiSound _webAudioApiSound;
-  html.AudioGainNode _gainNode;
-  html.AudioBufferSourceNode _sourceNode;
-
   bool _loop;
   SoundTransform _soundTransform;
+  
+  // ToDo: specify type when AudioGainNode was renamed to GainNode.
+  var _gainNode;
+  var _sourceNode;
 
   WebAudioApiSoundChannel(WebAudioApiSound webAudioApiSound, bool loop, SoundTransform soundTransform)
   {

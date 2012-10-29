@@ -8,6 +8,15 @@ class Event
   static const String REMOVED = "removed";
   static const String REMOVED_FROM_STAGE = "removedFromStage";
 
+  static const String OKAY = "okay";
+  static const String CANCEL = "cancel";
+  static const String CHANGE = "change";
+  static const String CONFIRM = "confirm";
+  static const String SCROLL = "scroll";
+  static const String OPEN = "open";
+  static const String CLOSE = "close";
+  static const String SELECT= "select";
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 

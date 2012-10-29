@@ -121,6 +121,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  void addTo(DisplayObjectContainer parent)
+  {
+    parent.addChild(this);
+  }
+
   void removeFromParent()
   {
     if (_parent != null)

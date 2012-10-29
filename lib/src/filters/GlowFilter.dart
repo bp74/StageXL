@@ -130,4 +130,9 @@ class GlowFilter extends BitmapFilter
     if (this.hideObject == false)
       destinationContext.drawImage(sourceContext.canvas, sx, sy);
   }
+
+  Rectangle getBounds()
+  {
+    return new Rectangle(-blurX, -blurY, 2 * blurX, 2 * blurY);
+  }
 }

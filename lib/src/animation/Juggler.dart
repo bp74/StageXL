@@ -48,9 +48,9 @@ class Juggler implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  void removeTweens(Object target)
+  void removeTweens(DisplayObject displayObject)
   {
-    if (target == null)
+    if (displayObject == null)
       return;
 
     for(int i = 0; i < _animatablesCount; i++)
@@ -58,7 +58,7 @@ class Juggler implements Animatable
       var animatable = _animatables[i];
 
       if (animatable != null && animatable is Tween)
-        if (animatable.target == target)
+        if (animatable.displayObject == displayObject)
           _animatables[i] = null;
     }
   }
