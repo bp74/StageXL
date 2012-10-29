@@ -359,7 +359,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  abstract void render(RenderState renderState);
+  void render(RenderState renderState);
 
 }
 
