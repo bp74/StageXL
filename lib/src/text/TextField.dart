@@ -151,7 +151,7 @@ class TextField extends InteractiveObject
         }
       }
 
-      if (lineBuffer.isEmpty() == false)
+      if (lineBuffer.isEmpty == false)
         _linesText.add(lineBuffer.toString());
     }
 
