@@ -1,3 +1,5 @@
+library example05;
+
 import 'dart:math';
 import 'dart:html' as html;
 import 'package:dartflash/dartflash.dart';

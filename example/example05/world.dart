@@ -1,3 +1,5 @@
+part of example05;
+
 class World extends Sprite
 {
   World(Resource resource)

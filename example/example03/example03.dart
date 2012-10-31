@@ -1,3 +1,5 @@
+library example03;
+
 import 'dart:html' as html;
 import 'package:dartflash/dartflash.dart';
 
