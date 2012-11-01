@@ -17,7 +17,7 @@ class WebAudioApiSoundChannel extends SoundChannel
 
     var context = SoundMixer._audioContext;
 
-    _gainNode = context.createGainNode();
+    _gainNode = context.createGain();
     _gainNode.connect(context.destination, 0, 0);
     _gainNode.gain.value =  (_soundTransform != null) ? pow(_soundTransform.volume , 2) : 1;
 
