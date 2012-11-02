@@ -36,7 +36,7 @@ class ColorTransform
   {
     // ToDo
 
-    throw new NotImplementedException("Error #2014: Feature is not available at this time.");
+    throw new UnimplementedError("Error #2014: Feature is not available at this time.");
   }
 
 }
