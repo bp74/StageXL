@@ -51,13 +51,11 @@ void startAnimation()
 
   num rnd = random.nextDouble();
 
-  MovieClip movieClip = new MovieClip(bitmapDatas, 30, false);
+  MovieClip movieClip = new MovieClip(bitmapDatas, 30);
   movieClip.x = -128;
   movieClip.y = 100.0 + 200.0 * rnd;
   movieClip.scaleX = movieClip.scaleY = 0.5 + 0.5 * rnd;
   movieClip.play();
-  movieClip.on.progress.add((e) => print(movieClip.currentFrame));
-  movieClip.on.complete.add((e) => print('completed'));
 
   stage.addChild(movieClip);
   stage.sortChildren((c1, c2) => (c1.y < c2.y) ? -1 : ((c1.y > c2.y) ? 1 : 0));
@@ -81,8 +79,7 @@ void startAnimation()
   // after 0.3 seconds the next animation should start
   //------------------------------------------------------------------
 
-  //renderLoop.juggler.delayCall(startAnimation, 0.3);
-
+  renderLoop.juggler.delayCall(startAnimation, 0.3);
 }
 
 
