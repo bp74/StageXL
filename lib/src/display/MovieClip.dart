@@ -91,13 +91,13 @@ class MovieClip extends InteractiveObject implements Animatable
 
   bool advanceTime(num time)
   {
-    if (_play == false || _frameTime == null)
-    {
-      if (_play) {
-        _dispatchEventInternal(_progressEvent, this, this, EventPhase.AT_TARGET);
-      }
+    if (_play == false)
+      return true;
 
+    if (_frameTime == null)
+    {
       _frameTime = 0.0;
+      _dispatchEventInternal(_progressEvent, this, this, EventPhase.AT_TARGET);
     }
     else
     {
@@ -115,7 +115,8 @@ class MovieClip extends InteractiveObject implements Animatable
 
         // dispatch progress event on every new frame
 
-        if (lastFrame != nextFrame) {
+        if (lastFrame != nextFrame)
+        {
           _dispatchEventInternal(_progressEvent, this, this, EventPhase.AT_TARGET);
 
           if (_currentFrame != nextFrame)
@@ -124,7 +125,8 @@ class MovieClip extends InteractiveObject implements Animatable
 
         // dispatch complete event only on last frame
 
-        if (lastFrame != nextFrame && nextFrame == totalFrames - 1 && _loop == false) {
+        if (lastFrame != nextFrame && nextFrame == totalFrames - 1 && _loop == false)
+        {
           _dispatchEventInternal(_completeEvent, this, this, EventPhase.AT_TARGET);
 
           if (_currentFrame != nextFrame)
