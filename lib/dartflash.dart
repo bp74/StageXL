@@ -63,6 +63,7 @@ part 'src/display/Mask.dart';
 part 'src/display/events/DisplayObjectEvents.dart';
 part 'src/display/events/DisplayObjectContainerEvents.dart';
 part 'src/display/events/InteractiveObjectEvents.dart';
+part 'src/display/events/MovieClipEvents.dart';
 
 part 'src/displayEx/Gauge.dart';
 part 'src/displayEx/TimeGauge.dart';

@@ -10,6 +10,8 @@ class MovieClip extends InteractiveObject implements Animatable
 
   bool _play;
   bool _loop;
+  Event _progressEvent;
+  Event _completeEvent;
 
   Rectangle clipRectangle;
 
@@ -18,9 +20,11 @@ class MovieClip extends InteractiveObject implements Animatable
     _bitmapDatas = bitmapDatas;
     _frameRate = frameRate;
     _currentFrame = 0;
-    _frameTime = 0.0;
+    _frameTime = null;
     _play = false;
     _loop = loop;
+    _progressEvent = new Event(Event.PROGRESS);
+    _completeEvent = new Event(Event.COMPLETE);
 
     clipRectangle = null;
   }
@@ -35,6 +39,8 @@ class MovieClip extends InteractiveObject implements Animatable
   void set loop(bool value) { _loop = value; }
 
   bool get playing => _play;
+
+  MovieClipEvents get on => new MovieClipEvents(this);
 
   //-------------------------------------------------------------------------------------------------
 
@@ -87,6 +93,10 @@ class MovieClip extends InteractiveObject implements Animatable
   {
     if (_play == false || _frameTime == null)
     {
+      if (_play) {
+        _dispatchEventInternal(_progressEvent, this, this, EventPhase.AT_TARGET);
+      }
+
       _frameTime = 0.0;
     }
     else
@@ -97,10 +107,29 @@ class MovieClip extends InteractiveObject implements Animatable
 
       while (_play && _frameTime >= frameDuration)
       {
-        _currentFrame = _loop ? (_currentFrame + 1) % totalFrames : max(_currentFrame + 1, totalFrames - 1);
+        var lastFrame = _currentFrame;
+        var nextFrame = _loop ? (lastFrame + 1) % totalFrames : min(lastFrame + 1, totalFrames - 1);
+
+        _currentFrame = nextFrame;
         _frameTime -= frameDuration;
 
-        // ToDo: we should add an event to notify frame progress
+        // dispatch progress event on every new frame
+
+        if (lastFrame != nextFrame) {
+          _dispatchEventInternal(_progressEvent, this, this, EventPhase.AT_TARGET);
+
+          if (_currentFrame != nextFrame)
+            return true;
+        }
+
+        // dispatch complete event only on last frame
+
+        if (lastFrame != nextFrame && nextFrame == totalFrames - 1 && _loop == false) {
+          _dispatchEventInternal(_completeEvent, this, this, EventPhase.AT_TARGET);
+
+          if (_currentFrame != nextFrame)
+            return true;
+        }
       }
     }
 

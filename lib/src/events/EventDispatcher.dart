@@ -45,6 +45,8 @@ class EventDispatcher
         event._target = target;
         event._currentTarget = currentTarget;
         event._eventPhase = eventPhase;
+        event._stopsPropagation = false;
+        event._stopsImmediatePropagation = false;
 
         eventListenerList.dispatchEvent(event);
       }
