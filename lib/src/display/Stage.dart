@@ -2,8 +2,8 @@ part of dartflash;
 
 class _MouseButton
 {
+  InteractiveObject target = null;
   bool buttonDown = false;
-  DisplayObject clickTarget = null;
   int clickTime = 0;
   int clickCount = 0;
   String mouseDownEventType, mouseUpEventType;
@@ -14,7 +14,10 @@ class _MouseButton
 
 class _Touch
 {
-  _Touch();
+  static int _globalTouchPointID = 0;
+
+  int touchPointID = _globalTouchPointID++;
+  InteractiveObject target = null;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -28,11 +31,12 @@ class Stage extends DisplayObjectContainer
   InteractiveObject _focus;
   RenderState _renderState;
   String _renderMode;
-  String _mouseCursor;
 
-  List<_MouseButton> _mouseButtons;
-  InteractiveObject _mouseOverTarget;
+  String _mouseCursor;
   Point _mousePosition;
+  InteractiveObject _mouseTarget;
+  List<_MouseButton> _mouseButtons;
+  Map<int, _Touch> _touches;
 
   MouseEvent _mouseEvent;
   KeyboardEvent _keyboardEvent;
@@ -65,7 +69,7 @@ class Stage extends DisplayObjectContainer
       new _MouseButton(MouseEvent.RIGHT_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_UP, MouseEvent.RIGHT_CLICK, MouseEvent.RIGHT_CLICK)
     ];
 
-    _mouseOverTarget = null;
+    _mouseTarget = null;
     _mousePosition = new Point(0, 0);
     _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
 
@@ -78,13 +82,16 @@ class Stage extends DisplayObjectContainer
     //---------------------------
     // prepare touch events
 
+    _touches = new Map<int, _Touch>();
     _touchEvent = new TouchEvent(TouchEvent.TOUCH_BEGIN, true);
 
-    _canvas.on.touchStart.add(_onTouchEvent);
-    _canvas.on.touchEnd.add(_onTouchEvent);
-    _canvas.on.touchMove.add(_onTouchEvent);
-    _canvas.on.touchEnter.add(_onTouchEvent);
-    _canvas.on.touchLeave.add(_onTouchEvent);
+    // ToDo: still under heavy construction!
+
+    //_canvas.on.touchStart.add(_onTouchEvent);
+    //_canvas.on.touchEnd.add(_onTouchEvent);
+    //_canvas.on.touchMove.add(_onTouchEvent);
+    //_canvas.on.touchEnter.add(_onTouchEvent);
+    //_canvas.on.touchLeave.add(_onTouchEvent);
 
     //---------------------------
     // prepare keyboard events
@@ -154,10 +161,12 @@ class Stage extends DisplayObjectContainer
   {
     event.preventDefault();
 
-    int time = new Date.now().millisecondsSinceEpoch;
-    int button = event.button;
+    var clientRect = _canvas.getBoundingClientRect();
+    var time = new Date.now().millisecondsSinceEpoch;
+    var button = event.button;
+
     InteractiveObject target = null;
-    Point stagePoint = new Point(event.offsetX, event.offsetY);
+    Point stagePoint = new Point(event.clientX - clientRect.left, event.clientY - clientRect.top);
     Point localPoint = null;
 
     if (button < 0 || button > 2) return;
@@ -188,10 +197,10 @@ class Stage extends DisplayObjectContainer
 
     //------------------------------------------------------
 
-    if (_mouseOverTarget != null && _mouseOverTarget != target)
+    if (_mouseTarget != null && _mouseTarget != target)
     {
-      if (_mouseOverTarget.stage != null)
-        localPoint = _mouseOverTarget.globalToLocal(stagePoint);
+      if (_mouseTarget.stage != null)
+        localPoint = _mouseTarget.globalToLocal(stagePoint);
       else
         localPoint = new Point.zero();
 
@@ -202,11 +211,11 @@ class Stage extends DisplayObjectContainer
       _mouseEvent._stageY = stagePoint.y;
       _mouseEvent._buttonDown = mouseButton.buttonDown;
 
-      _mouseOverTarget.dispatchEvent(_mouseEvent);
-      _mouseOverTarget = null;
+      _mouseTarget.dispatchEvent(_mouseEvent);
+      _mouseTarget = null;
     }
 
-    if (target != null && target != _mouseOverTarget)
+    if (target != null && target != _mouseTarget)
     {
       localPoint = target.globalToLocal(stagePoint);
 
@@ -217,8 +226,8 @@ class Stage extends DisplayObjectContainer
       _mouseEvent._stageY = stagePoint.y;
       _mouseEvent._buttonDown = mouseButton.buttonDown;
 
-      _mouseOverTarget = target;
-      _mouseOverTarget.dispatchEvent(_mouseEvent);
+      _mouseTarget = target;
+      _mouseTarget.dispatchEvent(_mouseEvent);
     }
 
     //------------------------------------------------------
@@ -230,12 +239,12 @@ class Stage extends DisplayObjectContainer
     if (event.type == "mousedown")
     {
         mouseEventType = mouseButton.mouseDownEventType;
-        mouseButton.buttonDown = true;
 
-        if (target != mouseButton.clickTarget || time > mouseButton.clickTime + 500)
+        if (target != mouseButton.target || time > mouseButton.clickTime + 500)
           mouseButton.clickCount = 0;
 
-        mouseButton.clickTarget = target;
+        mouseButton.buttonDown = true;
+        mouseButton.target = target;
         mouseButton.clickTime = time;
         mouseButton.clickCount++;
     }
@@ -245,7 +254,7 @@ class Stage extends DisplayObjectContainer
         mouseEventType = mouseButton.mouseUpEventType;
         mouseButton.buttonDown = false;
 
-        isClick = (mouseButton.clickTarget == target);
+        isClick = (mouseButton.target == target);
         isDoubleClick = isClick && mouseButton.clickCount.isEven && (time < mouseButton.clickTime + 500);
     }
 
@@ -255,7 +264,7 @@ class Stage extends DisplayObjectContainer
 
         for(int i = 0; i < _mouseButtons.length; i++) {
           _mouseButtons[i].clickCount = 0;
-          _mouseButtons[i].clickTarget = null;
+          _mouseButtons[i].target = null;
         }
     }
 
@@ -324,9 +333,26 @@ class Stage extends DisplayObjectContainer
 
   void _onTouchEvent(html.TouchEvent event)
   {
-    // ToDo: This is currently under development
+    event.preventDefault();
 
-    var x = 1;
+    print("event.type -> ${event.type}");
+
+    var clientRect = _canvas.getBoundingClientRect();
+
+    for(var changedTouch in event.changedTouches)
+    {
+      int identifier = changedTouch.identifier;
+      InteractiveObject target = null;
+      Point stagePoint = new Point(changedTouch.clientX - clientRect.left, changedTouch.clientY - clientRect.top);
+      Point localPoint = null;
+
+      if (_touches.containsKey(identifier) == false)
+        _touches[identifier] = new _Touch();
+
+      _Touch touch = _touches[identifier];
+
+      print("  identifier:$identifier, touchPointID:${touch.touchPointID} - x:${stagePoint.x}, y:${stagePoint.y}");
+    }
   }
 
   //-------------------------------------------------------------------------------------------------

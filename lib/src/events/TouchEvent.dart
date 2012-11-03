@@ -6,8 +6,8 @@ class TouchEvent extends Event
   static const String TOUCH_END = "touchEnd";
   static const String TOUCH_MOVE = "touchMove";
 
-  static const String TOUCH_OUT = "touchOut";
   static const String TOUCH_OVER = "touchOver";
+  static const String TOUCH_OUT = "touchOut";
 
   static const String TOUCH_ROLL_OUT = "touchRollOut";      // ToDo
   static const String TOUCH_ROLL_OVER  = "touchRollOver";   // ToDo
