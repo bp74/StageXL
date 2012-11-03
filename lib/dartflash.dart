@@ -34,6 +34,7 @@ part 'src/events/EnterFrameEvent.dart';
 part 'src/events/MouseEvent.dart';
 part 'src/events/KeyboardEvent.dart';
 part 'src/events/TextEvent.dart';
+part 'src/events/TouchEvent.dart';
 
 part 'src/filters/BitmapFilter.dart';
 part 'src/filters/BlurFilter.dart';

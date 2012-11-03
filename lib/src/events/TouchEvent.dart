@@ -1,45 +1,37 @@
 part of dartflash;
 
-class MouseEvent extends Event
+class TouchEvent extends Event
 {
-  static const String CLICK = "click";
-  static const String DOUBLE_CLICK = "doubleClick";
+  static const String TOUCH_BEGIN = "touchBegin";
+  static const String TOUCH_END = "touchEnd";
+  static const String TOUCH_MOVE = "touchMove";
 
-  static const String MOUSE_DOWN = "mouseDown";
-  static const String MOUSE_UP = "mouseUp";
-  static const String MOUSE_MOVE = "mouseMove";
-  static const String MOUSE_OUT = "mouseOut";
-  static const String MOUSE_OVER = "mouseOver";
-  static const String MOUSE_WHEEL = "mouseWheel";
+  static const String TOUCH_OUT = "touchOut";
+  static const String TOUCH_OVER = "touchOver";
 
-  static const String MIDDLE_CLICK = "middleClick";
-  static const String MIDDLE_MOUSE_DOWN = "middleMouseDown";
-  static const String MIDDLE_MOUSE_UP = "middleMouseUp";
-  static const String RIGHT_CLICK = "rightClick";
-  static const String RIGHT_MOUSE_DOWN = "rightMouseDown";
-  static const String RIGHT_MOUSE_UP = "rightMouseUp";
-
-  static const String CONTEXT_MENU = "contextMenu"; // ToDo
-  static const String ROLL_OUT = "rollOut";         // ToDo
-  static const String ROLL_OVER = "rollOver";       // ToDo
+  static const String TOUCH_ROLL_OUT = "touchRollOut";      // ToDo
+  static const String TOUCH_ROLL_OVER  = "touchRollOver";   // ToDo
+  static const String TOUCH_TAP  = "touchTap";              // ToDo
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
+
+  int _touchPointID;
+  bool _isPrimaryTouchPoint;
 
   num _localX, _localY;
   num _stageX, _stageY;
-  bool _buttonDown;
 
   bool _altKey;
   bool _controlKey;
   bool _ctrlKey;
   bool _shiftKey;
 
-  int _clickCount;
-  int _deltaX;
-  int _deltaY;
+  num _pressure;
+  int _sizeX;
+  int _sizeY;
 
-  MouseEvent(String type, [bool bubbles = false]):super(type, bubbles)
+  TouchEvent(String type, [bool bubbles = false]):super(type, bubbles)
   {
     _reset(type, bubbles);
   }
@@ -51,35 +43,39 @@ class MouseEvent extends Event
   {
     super._reset(type, bubbles);
 
+    _touchPointID = 0;
+    _isPrimaryTouchPoint = false;
+
     _localX = _localY = 0;
     _stageX = _stageY = 0;
-    _buttonDown = false;
 
     _altKey = false;
     _controlKey = false;
     _ctrlKey = false;
     _shiftKey = false;
 
-    _clickCount = 0;
-    _deltaX = 0;
-    _deltaY = 0;
+    _pressure = 1.00;
+    _sizeX = 0;
+    _sizeY = 0;
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  int get touchPointID => _touchPointID;
+  bool get isPrimaryTouchPoint => _isPrimaryTouchPoint;
+
   num get localX => _localX;
   num get localY => _localY;
   num get stageX => _stageX;
   num get stageY => _stageY;
-  bool get buttonDown => _buttonDown;
 
   bool get altKey => _altKey;
   bool get controlKey => _controlKey;
   bool get ctrlKey => _ctrlKey;
   bool get shiftKey => _shiftKey;
 
-  int get clickCount => _clickCount;
-  int get deltaX => _deltaX;
-  int get deltaY => _deltaY;
+  int get pressure => _pressure;
+  int get sizeX => _sizeX;
+  int get sizeY => _sizeY;
 }

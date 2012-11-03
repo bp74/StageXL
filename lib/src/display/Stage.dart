@@ -1,5 +1,25 @@
 part of dartflash;
 
+class _MouseButton
+{
+  bool buttonDown = false;
+  DisplayObject clickTarget = null;
+  int clickTime = 0;
+  int clickCount = 0;
+  String mouseDownEventType, mouseUpEventType;
+  String mouseClickEventType, mouseDoubleClickEventType;
+
+  _MouseButton(this.mouseDownEventType, this.mouseUpEventType, this.mouseClickEventType, this.mouseDoubleClickEventType);
+}
+
+class _Touch
+{
+  _Touch();
+}
+
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
 class Stage extends DisplayObjectContainer
 {
   html.CanvasElement _canvas;
@@ -10,18 +30,13 @@ class Stage extends DisplayObjectContainer
   String _renderMode;
   String _mouseCursor;
 
-  List<bool> _buttonState;
-  List<DisplayObject> _clickTarget;
-  List<int> _clickTime;
-  List<int> _clickCount;
-  List<String> _mouseDownEventTypes;
-  List<String> _mouseUpEventTypes;
-  List<String> _mouseClickEventTypes;
-  List<String> _mouseDoubleClickEventTypes;
+  List<_MouseButton> _mouseButtons;
   InteractiveObject _mouseOverTarget;
+  Point _mousePosition;
 
   MouseEvent _mouseEvent;
   KeyboardEvent _keyboardEvent;
+  TouchEvent _touchEvent;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -39,38 +54,46 @@ class Stage extends DisplayObjectContainer
     _renderMode = StageRenderMode.AUTO;
     _mouseCursor = MouseCursor.ARROW;
 
-    //-----------
+    //---------------------------
+    // prepare mouse events
 
-    _buttonState = [false, false, false];
+    Mouse._eventDispatcher.addEventListener("mouseCursorChanged", _onMouseCursorChanged);
 
-    _clickTarget = [null, null, null];
-    _clickTime = [0, 0, 0];
-    _clickCount = [0, 0, 0];
-
-    _mouseDownEventTypes = [MouseEvent.MOUSE_DOWN, MouseEvent.MIDDLE_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_DOWN];
-    _mouseUpEventTypes =  [MouseEvent.MOUSE_UP, MouseEvent.MIDDLE_MOUSE_UP, MouseEvent.RIGHT_MOUSE_UP];
-    _mouseClickEventTypes = [MouseEvent.CLICK, MouseEvent.MIDDLE_CLICK, MouseEvent.RIGHT_CLICK];
-    _mouseDoubleClickEventTypes = [MouseEvent.DOUBLE_CLICK, MouseEvent.MIDDLE_CLICK, MouseEvent.RIGHT_CLICK];
+    _mouseButtons = [
+      new _MouseButton(MouseEvent.MOUSE_DOWN, MouseEvent.MOUSE_UP, MouseEvent.CLICK, MouseEvent.DOUBLE_CLICK),
+      new _MouseButton(MouseEvent.MIDDLE_MOUSE_DOWN, MouseEvent.MIDDLE_MOUSE_UP, MouseEvent.MIDDLE_CLICK, MouseEvent.MIDDLE_CLICK),
+      new _MouseButton(MouseEvent.RIGHT_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_UP, MouseEvent.RIGHT_CLICK, MouseEvent.RIGHT_CLICK)
+    ];
 
     _mouseOverTarget = null;
+    _mousePosition = new Point(0, 0);
+    _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
 
     _canvas.on.mouseDown.add(_onMouseEvent);
     _canvas.on.mouseUp.add(_onMouseEvent);
     _canvas.on.mouseMove.add(_onMouseEvent);
     _canvas.on.mouseOut.add(_onMouseEvent);
-
     _canvas.on.mouseWheel.add(_onMouseWheel);
+
+    //---------------------------
+    // prepare touch events
+
+    _touchEvent = new TouchEvent(TouchEvent.TOUCH_BEGIN, true);
+
+    _canvas.on.touchStart.add(_onTouchEvent);
+    _canvas.on.touchEnd.add(_onTouchEvent);
+    _canvas.on.touchMove.add(_onTouchEvent);
+    _canvas.on.touchEnter.add(_onTouchEvent);
+    _canvas.on.touchLeave.add(_onTouchEvent);
+
+    //---------------------------
+    // prepare keyboard events
+
+    _keyboardEvent = new KeyboardEvent(KeyboardEvent.KEY_DOWN, true);
 
     _canvas.on.keyDown.add(_onKeyEvent);
     _canvas.on.keyUp.add(_onKeyEvent);
     _canvas.on.keyPress.add(_onTextEvent);
-
-    //-----------
-
-    _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
-    _keyboardEvent = new KeyboardEvent(KeyboardEvent.KEY_DOWN, true);
-
-    Mouse._eventDispatcher.addEventListener("mouseCursorChanged", _onMouseCursorChanged);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -134,19 +157,21 @@ class Stage extends DisplayObjectContainer
     int time = new Date.now().millisecondsSinceEpoch;
     int button = event.button;
     InteractiveObject target = null;
-
-    if (button < 0 || button > 2)
-      return;
-
     Point stagePoint = new Point(event.offsetX, event.offsetY);
     Point localPoint = null;
+
+    if (button < 0 || button > 2) return;
+    if (event.type == "mousemove" && _mousePosition.equals(stagePoint)) return;
+
+    _MouseButton mouseButton = _mouseButtons[button];
+    _mousePosition = stagePoint;
 
     if (event.type != "mouseout")
       target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
     //------------------------------------------------------
 
-    String mouseCursor = MouseCursor.ARROW;
+    var mouseCursor = MouseCursor.ARROW;
 
     if (target is Sprite)
       if (target.useHandCursor)
@@ -175,7 +200,7 @@ class Stage extends DisplayObjectContainer
       _mouseEvent._localY = localPoint.y;
       _mouseEvent._stageX = stagePoint.x;
       _mouseEvent._stageY = stagePoint.y;
-      _mouseEvent._buttonDown = _buttonState[button];
+      _mouseEvent._buttonDown = mouseButton.buttonDown;
 
       _mouseOverTarget.dispatchEvent(_mouseEvent);
       _mouseOverTarget = null;
@@ -190,7 +215,7 @@ class Stage extends DisplayObjectContainer
       _mouseEvent._localY = localPoint.y;
       _mouseEvent._stageX = stagePoint.x;
       _mouseEvent._stageY = stagePoint.y;
-      _mouseEvent._buttonDown = _buttonState[button];
+      _mouseEvent._buttonDown = mouseButton.buttonDown;
 
       _mouseOverTarget = target;
       _mouseOverTarget.dispatchEvent(_mouseEvent);
@@ -199,37 +224,39 @@ class Stage extends DisplayObjectContainer
     //------------------------------------------------------
 
     String mouseEventType = null;
-    int clickCount = _clickCount[button];
     bool isClick = false;
     bool isDoubleClick = false;
 
     if (event.type == "mousedown")
     {
-        mouseEventType = _mouseDownEventTypes[button];
+        mouseEventType = mouseButton.mouseDownEventType;
+        mouseButton.buttonDown = true;
 
-        _buttonState[button] = true;
+        if (target != mouseButton.clickTarget || time > mouseButton.clickTime + 500)
+          mouseButton.clickCount = 0;
 
-        if (target != _clickTarget[button] || time > _clickTime[button] + 500) clickCount = 0;
-
-        _clickTarget[button] = target;
-        _clickTime[button] = time;
-        _clickCount[button] = ++clickCount;
+        mouseButton.clickTarget = target;
+        mouseButton.clickTime = time;
+        mouseButton.clickCount++;
     }
 
     if (event.type == "mouseup")
     {
-        mouseEventType = _mouseUpEventTypes[button];
+        mouseEventType = mouseButton.mouseUpEventType;
+        mouseButton.buttonDown = false;
 
-        _buttonState[button] = false;
-
-        isClick = (_clickTarget[button] == target);
-        isDoubleClick = isClick && _clickCount[button].isEven && (time < _clickTime[button] + 500);
+        isClick = (mouseButton.clickTarget == target);
+        isDoubleClick = isClick && mouseButton.clickCount.isEven && (time < mouseButton.clickTime + 500);
     }
 
     if (event.type == "mousemove")
     {
         mouseEventType = MouseEvent.MOUSE_MOVE;
-        clickCount = 0;
+
+        for(int i = 0; i < _mouseButtons.length; i++) {
+          _mouseButtons[i].clickCount = 0;
+          _mouseButtons[i].clickTarget = null;
+        }
     }
 
     //-----------------------------------------------------------------
@@ -243,8 +270,8 @@ class Stage extends DisplayObjectContainer
       _mouseEvent._localY = localPoint.y;
       _mouseEvent._stageX = stagePoint.x;
       _mouseEvent._stageY = stagePoint.y;
-      _mouseEvent._buttonDown = _buttonState[button];
-      _mouseEvent._clickCount = clickCount;
+      _mouseEvent._buttonDown = mouseButton.buttonDown;
+      _mouseEvent._clickCount = mouseButton.clickCount;
 
       target.dispatchEvent(_mouseEvent);
 
@@ -252,15 +279,17 @@ class Stage extends DisplayObjectContainer
 
       if (isClick)
       {
-        isDoubleClick = isDoubleClick && target.doubleClickEnabled;
-        mouseEventType = isDoubleClick ? _mouseDoubleClickEventTypes[button] : _mouseClickEventTypes[button];
+        mouseEventType = mouseButton.mouseClickEventType;
+
+        if (isDoubleClick && target.doubleClickEnabled)
+          mouseEventType = mouseButton.mouseDoubleClickEventType;
 
         _mouseEvent._reset(mouseEventType, true);
         _mouseEvent._localX = localPoint.x;
         _mouseEvent._localY = localPoint.y;
         _mouseEvent._stageX = stagePoint.x;
         _mouseEvent._stageY = stagePoint.y;
-        _mouseEvent._buttonDown = _buttonState[button];
+        _mouseEvent._buttonDown = mouseButton.buttonDown;
 
         target.dispatchEvent(_mouseEvent);
       }
@@ -290,6 +319,17 @@ class Stage extends DisplayObjectContainer
     }
   }
 
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  void _onTouchEvent(html.TouchEvent event)
+  {
+    // ToDo: This is currently under development
+
+    var x = 1;
+  }
+
+  //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   void _onKeyEvent(html.KeyboardEvent event)
