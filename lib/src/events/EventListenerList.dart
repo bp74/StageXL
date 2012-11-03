@@ -2,7 +2,7 @@ part of dartflash;
 
 class _EventListenerUseCapture
 {
-  Function eventListener;
+  EventListener eventListener;
   bool useCapture;
 
   _EventListenerUseCapture(this.eventListener, this.useCapture);

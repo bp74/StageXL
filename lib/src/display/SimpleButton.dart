@@ -70,13 +70,11 @@ class SimpleButton extends InteractiveObject
 
   void _onMouseEvent(MouseEvent mouseEvent)
   {
-    bool over = (this.hitTestInput(mouseEvent.localX, mouseEvent.localY) == this) && (mouseEvent.type != MouseEvent.MOUSE_OUT);
-    bool down = mouseEvent.buttonDown;
-
-    _currentState = upState;
-
-    if (over && down) _currentState = downState;
-    if (over && !down) _currentState = overState;
+    if (mouseEvent.type == MouseEvent.MOUSE_OUT) {
+      _currentState = upState;
+    } else {
+      _currentState = mouseEvent.buttonDown ? downState : overState;
+    }
   }
 
 }
