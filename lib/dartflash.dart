@@ -96,6 +96,7 @@ part 'src/ui/KeyLocation.dart';
 part 'src/ui/Mouse.dart';
 part 'src/ui/MouseCursor.dart';
 part 'src/ui/Color.dart';
+part 'src/ui/Multitouch.dart';
 
 part 'src/util/Resource.dart';
 part 'src/util/TextureAtlas.dart';
