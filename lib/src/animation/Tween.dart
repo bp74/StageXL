@@ -1,5 +1,12 @@
 part of dartflash;
 
+/// The function that is called when a [Tween] starts. This happens after the specified delay.
+typedef void TweenStart();
+/// The function that is called every time a [Tween] updates the properties of the [DisplayObject].
+typedef void TweenUpdate();
+/// The function that is called when a [Tween] is completed.
+typedef void TweenComplete();
+
 class _TweenProperty
 {
   String name;
@@ -11,6 +18,18 @@ class _TweenProperty
 
 //-----------------------------------------------------------------------------------
 
+/**
+ * The [Tween] class animates the properties of a [DisplayObject].
+ * Use one of the predefined [Transitions] or create your own.
+ * Add the instance to the [Juggler] to start the animation.
+ *
+ *     var tween = new Tween(mySprite, 1.0, Transitions.easeInCubic);
+ *     tween.delay = 0.5;
+ *     tween.animate("alpha", 0.0);
+ *     tween.onComplete = () => print('completed');
+ *     renderLoop.juggler.add(tween);
+ **/
+
 class Tween implements Animatable
 {
   DisplayObject _displayObject;
@@ -18,9 +37,9 @@ class Tween implements Animatable
 
   List<_TweenProperty> _tweenProperties;
 
-  Function _onStart;
-  Function _onUpdate;
-  Function _onComplete;
+  TweenStart _onStart;
+  TweenUpdate _onUpdate;
+  TweenComplete _onComplete;
 
   num _totalTime;
   num _currentTime;
@@ -83,7 +102,7 @@ class Tween implements Animatable
 
   void complete()
   {
-    if (this.isComplete == false)
+    if (_totalTime >= _currentTime)
       advanceTime(_totalTime - _currentTime);
   }
 
@@ -186,11 +205,11 @@ class Tween implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  Function get onStart => _onStart;
-  Function get onUpdate => _onUpdate;
-  Function get onComplete => _onComplete;
+  TweenStart get onStart => _onStart;
+  TweenUpdate get onUpdate => _onUpdate;
+  TweenComplete get onComplete => _onComplete;
 
-  void set onStart(Function value) { _onStart = value; }
-  void set onUpdate(Function value) { _onUpdate = value; }
-  void set onComplete(Function value) { _onComplete = value; }
+  void set onStart(TweenStart value) { _onStart = value; }
+  void set onUpdate(TweenUpdate value) { _onUpdate = value; }
+  void set onComplete(TweenComplete value) { _onComplete = value; }
 }
