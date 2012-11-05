@@ -85,13 +85,14 @@ class Stage extends DisplayObjectContainer
     _touches = new Map<int, _Touch>();
     _touchEvent = new TouchEvent(TouchEvent.TOUCH_BEGIN, true);
 
-    // ToDo: still under heavy construction!
-
-    //_canvas.on.touchStart.add(_onTouchEvent);
-    //_canvas.on.touchEnd.add(_onTouchEvent);
-    //_canvas.on.touchMove.add(_onTouchEvent);
-    //_canvas.on.touchEnter.add(_onTouchEvent);
-    //_canvas.on.touchLeave.add(_onTouchEvent);
+    if (Multitouch.supportsTouchEvents)
+    {
+      _canvas.on.touchStart.add(_onTouchEvent);
+      _canvas.on.touchEnd.add(_onTouchEvent);
+      _canvas.on.touchMove.add(_onTouchEvent);
+      _canvas.on.touchEnter.add(_onTouchEvent);
+      _canvas.on.touchLeave.add(_onTouchEvent);
+    }
 
     //---------------------------
     // prepare keyboard events
