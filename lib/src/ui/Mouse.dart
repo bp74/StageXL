@@ -4,7 +4,7 @@ class Mouse
 {
   static String _customCursor = MouseCursor.AUTO;
   static bool _isCursorHidden = false;
-  static EventDispatcher __eventDispatcher;
+  static EventDispatcher _eventDispatcher = new EventDispatcher();
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
@@ -32,14 +32,6 @@ class Mouse
   }
 
   //-------------------------------------------------------------------------------------------------
-
-  static EventDispatcher get _eventDispatcher
-  {
-    if (__eventDispatcher == null)
-      __eventDispatcher = new EventDispatcher();
-
-    return __eventDispatcher;
-  }
 
   static String _getCssStyle(String mouseCursor)
   {
