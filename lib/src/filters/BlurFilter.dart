@@ -51,17 +51,9 @@ class BlurFilter extends BitmapFilter
     var destinationImageData = destinationContext.createImageData(destinationWidth, destinationHeight);
     var destinationData = destinationImageData.data;
 
+    _premultiplyAlpha(sourceData);
+
     List<int> buffer = new List<int>(1024);
-
-    //--------------------------------------------------
-    // premultiply alpha
-
-    for(var i = 0; i <= sourceData.length - 4; i += 4) {
-      var alpha = sourceData[i + 3];
-      sourceData[i + 0] = (sourceData[i + 0] * alpha) ~/ 255;
-      sourceData[i + 1] = (sourceData[i + 1] * alpha) ~/ 255;
-      sourceData[i + 2] = (sourceData[i + 2] * alpha) ~/ 255;
-    }
 
     //--------------------------------------------------
     // blur vertical
@@ -82,9 +74,9 @@ class BlurFilter extends BitmapFilter
             dif -= 2 * buffer[y & 1023];
           }
 
-          int alpha = (y < sourceHeight) ? sourceData[offsetSource] : 0;
-          buffer[(y + ry1) & 1023] = alpha;
-          sum += dif += alpha;
+          int color = (y < sourceHeight) ? sourceData[offsetSource] : 0;
+          buffer[(y + ry1) & 1023] = color;
+          sum += dif += color;
           offsetSource += sourceWidth4;
         }
       }
@@ -109,27 +101,17 @@ class BlurFilter extends BitmapFilter
             dif -= 2 * buffer[x & 1023];
           }
 
-          int alpha = (x < sourceWidth) ? destinationData[offsetSource] : 0;
-          buffer[(x + rx1) & 1023] = alpha;
-          sum += dif += alpha;
+          int color = (x < sourceWidth) ? destinationData[offsetSource] : 0;
+          buffer[(x + rx1) & 1023] = color;
+          sum += dif += color;
           offsetSource += 4;
         }
       }
     }
 
     //--------------------------------------------------
-    // unpremultiply alpha
 
-    for(var i = 0; i <= destinationData.length - 4; i += 4) {
-      var alpha = destinationData[i + 3];
-      if (alpha > 0) {
-        destinationData[i + 0] = (destinationData[i + 0] * 255) ~/ alpha;
-        destinationData[i + 1] = (destinationData[i + 1] * 255) ~/ alpha;
-        destinationData[i + 2] = (destinationData[i + 2] * 255) ~/ alpha;
-      }
-    }
-
-    //--------------------------------------------------
+    _unpremultiplyAlpha(destinationData);
 
     destinationContext.putImageData(destinationImageData, destinationPoint.x - rx1, destinationPoint.y - ry1);
   }

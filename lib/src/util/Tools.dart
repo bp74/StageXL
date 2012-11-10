@@ -25,6 +25,79 @@ String _color2rgba(int color)
 
 //-------------------------------------------------------------------------------------------------
 
+bool _checkLittleEndianSystem()
+{
+  return true;
+
+  // ToDo: the DartVM needs a bug fix first!
+  // www.dartbug.com/6644
+
+  /*
+  try {
+    var buffer = new html.ArrayBuffer(4);
+    var array8 = new html.Uint8ClampedArray.fromBuffer(buffer);
+    var array32 = new html.Uint32Array.fromBuffer(buffer);
+
+    array32[0] = 0xAABBCCDD;
+    return array8[0] == 0xDD;
+
+  } catch(e) {
+    // pretty sure this is IE9.
+    // let's assume it's little endian.
+
+    return true;
+  }
+  */
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void _premultiplyAlpha(html.Uint8ClampedArray data)
+{
+  if (_isLittleEndianSystem) {
+    for(var i = 0; i <= data.length - 4; i += 4) {
+      var value = data[i + 3];
+      data[i + 0] = (data[i + 0] * value) ~/ 255;
+      data[i + 1] = (data[i + 1] * value) ~/ 255;
+      data[i + 2] = (data[i + 2] * value) ~/ 255;
+    }
+  } else {
+    for(var i = 0; i <= data.length - 4; i += 4) {
+      var value = data[i + 0];
+      data[i + 1] = (data[i + 1] * value) ~/ 255;
+      data[i + 2] = (data[i + 2] * value) ~/ 255;
+      data[i + 3] = (data[i + 3] * value) ~/ 255;
+    }
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void _unpremultiplyAlpha(html.Uint8ClampedArray data)
+{
+  if (_isLittleEndianSystem) {
+    for(var i = 0; i <= data.length - 4; i += 4) {
+      var alpha = data[i + 3];
+      if (alpha > 0) {
+        data[i + 0] = (data[i + 0] * 255) ~/ alpha;
+        data[i + 1] = (data[i + 1] * 255) ~/ alpha;
+        data[i + 2] = (data[i + 2] * 255) ~/ alpha;
+      }
+    }
+  } else {
+    for(var i = 0; i <= data.length - 4; i += 4) {
+      var alpha = data[i + 0];
+      if (alpha > 0) {
+        data[i + 1] = (data[i + 1] * 255) ~/ alpha;
+        data[i + 2] = (data[i + 2] * 255) ~/ alpha;
+        data[i + 3] = (data[i + 3] * 255) ~/ alpha;
+      }
+    }
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rectangle returnRectangle)
 {
   // tranformedX = X * matrix.a + Y * matrix.c + matrix.tx;

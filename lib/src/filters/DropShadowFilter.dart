@@ -50,6 +50,7 @@ class DropShadowFilter extends BitmapFilter
     int destinationHeight = sourceHeight + ry2;
     int sourceWidth4 = sourceWidth * 4;
     int destinationWidth4 = destinationWidth * 4;
+    int alphaChannel = _isLittleEndianSystem ? 3 : 0;
 
     var destinationContext = destinationBitmapData._getContext();
     var destinationImageData = destinationContext.createImageData(destinationWidth, destinationHeight);
@@ -62,8 +63,8 @@ class DropShadowFilter extends BitmapFilter
 
     for (int x = 0; x < sourceWidth; x++) {
       int dif = 0, sum = weightY >> 1;
-      int offsetSource = x * 4 + 3;
-      int offsetDestination = (x + rx1) * 4 + 3;
+      int offsetSource = x * 4 + alphaChannel;
+      int offsetDestination = (x + rx1) * 4 + alphaChannel;
 
       for (int y = 0; y < destinationHeight; y++) {
         destinationData[offsetDestination] = sum ~/ weightY;
@@ -85,21 +86,13 @@ class DropShadowFilter extends BitmapFilter
     //--------------------------------------------------
     // blur horizontal
 
-    int rColor = (color >> 16) & 0xFF;
-    int gColor = (color >>  8) & 0xFF;
-    int bColor = (color >>  0) & 0xFF;
-    int weightXAlpha = (weightX / (this.alpha + 0.0001)).round().toInt();
-
     for (int y = 0; y < destinationHeight; y++) {
       int dif = 0, sum = weightX >> 1;
-      int offsetSource = y * destinationWidth4 + rx1 * 4 + 3;
-      int offsetDestination = y * destinationWidth4;
+      int offsetSource = y * destinationWidth4 + rx1 * 4 + alphaChannel;
+      int offsetDestination = y * destinationWidth4 + alphaChannel;
 
       for (int x = 0; x < destinationWidth; x++) {
-        destinationData[offsetDestination + 0] = rColor;
-        destinationData[offsetDestination + 1] = gColor;
-        destinationData[offsetDestination + 2] = bColor;
-        destinationData[offsetDestination + 3] = sum ~/ weightXAlpha;
+        destinationData[offsetDestination] = sum ~/ weightX;
         offsetDestination += 4;
 
         if (x >= rx2) {
@@ -112,6 +105,39 @@ class DropShadowFilter extends BitmapFilter
         buffer[(x + rx1) & 1023] = alpha;
         sum += dif += alpha;
         offsetSource += 4;
+      }
+    }
+
+    //--------------------------------------------------
+    // set color
+
+    // ToDo: We can optimize this code if we can use Uint32Arrays.
+    // With a 32 bit array we can set all channels at once.
+
+    int aColor = (alpha * 256).toInt();
+    int rColor = (color >> 16) & 0xFF;
+    int gColor = (color >>  8) & 0xFF;
+    int bColor = (color >>  0) & 0xFF;
+
+    if (_isLittleEndianSystem) {
+      for(var i = 0; i <= destinationData.length - 4; i += 4) {
+        var alpha = destinationData[i + 3];
+        if (alpha > 0) {
+          destinationData[i + 0] = rColor;
+          destinationData[i + 1] = gColor;
+          destinationData[i + 2] = bColor;
+          destinationData[i + 3] = (destinationData[i + 3] * aColor) ~/ 256;
+        }
+      }
+    } else {
+      for(var i = 0; i <= destinationData.length - 4; i += 4) {
+        var alpha = destinationData[i + 3];
+        if (alpha > 0) {
+          destinationData[i + 0] = (destinationData[i + 0] * aColor) ~/ 256;
+          destinationData[i + 1] = bColor;
+          destinationData[i + 2] = gColor;
+          destinationData[i + 3] = rColor;
+        }
       }
     }
 

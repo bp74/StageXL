@@ -104,4 +104,8 @@ part 'src/util/TextureAtlasFormat.dart';
 part 'src/util/TextureAtlasFrame.dart';
 part 'src/util/Tools.dart';
 
+//-------------------------------------------------------------------------------------------------
+
+bool _isLittleEndianSystem = _checkLittleEndianSystem();
+
 
