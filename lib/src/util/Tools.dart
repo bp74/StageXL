@@ -27,27 +27,14 @@ String _color2rgba(int color)
 
 bool _checkLittleEndianSystem()
 {
-  return true;
+  var canvas = new CanvasElement(width: 1, height: 1);
+  canvas.context2d.fillStyle = "#000000";
+  canvas.context2d.fillRect(0, 0, 1, 1);
 
-  // ToDo: the DartVM needs a bug fix first!
-  // www.dartbug.com/6644
+  var data = canvas.context2d.getImageData(0, 0, 1, 1).data;
+  var littleEndian = (data[0] == 0);
 
-  /*
-  try {
-    var buffer = new html.ArrayBuffer(4);
-    var array8 = new html.Uint8ClampedArray.fromBuffer(buffer);
-    var array32 = new html.Uint32Array.fromBuffer(buffer);
-
-    array32[0] = 0xAABBCCDD;
-    return array8[0] == 0xDD;
-
-  } catch(e) {
-    // pretty sure this is IE9.
-    // let's assume it's little endian.
-
-    return true;
-  }
-  */
+  return littleEndian;
 }
 
 //-------------------------------------------------------------------------------------------------
