@@ -13,13 +13,13 @@ class SoundMixer
 
   //-------------------------------------------------------------------------------------------------
 
-  static html.AudioContext _audioContextPrivate;
+  static AudioContext _audioContextPrivate;
 
-  static html.AudioContext get _audioContext
+  static AudioContext get _audioContext
   {
     if (_audioContextPrivate == null) {
       try {
-        _audioContextPrivate = new html.AudioContext();
+        _audioContextPrivate = new AudioContext();
       } catch(e) {
         _audioContextPrivate = null;
       }

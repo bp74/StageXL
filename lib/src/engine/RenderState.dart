@@ -2,14 +2,14 @@ part of dartflash;
 
 class RenderState
 {
-  html.CanvasRenderingContext2D _context;
+  CanvasRenderingContext2D _context;
 
   List<Matrix> _matrices;
   List<double> _alphas;
 
   int _depth;
 
-  RenderState.fromCanvasRenderingContext2D(html.CanvasRenderingContext2D context)
+  RenderState.fromCanvasRenderingContext2D(CanvasRenderingContext2D context)
   {
     _context = context;
 
@@ -26,7 +26,7 @@ class RenderState
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  html.CanvasRenderingContext2D get context => _context;
+  CanvasRenderingContext2D get context => _context;
 
   //-------------------------------------------------------------------------------------------------
 

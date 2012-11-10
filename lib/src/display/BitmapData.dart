@@ -6,8 +6,8 @@ class BitmapData implements BitmapDrawable
   int _height;
   bool _transparent;
 
-  html.Element _htmlElement;
-  html.CanvasRenderingContext2D _context;
+  Element _htmlElement;
+  CanvasRenderingContext2D _context;
 
   int _frameMode;
   double _frameOffsetX;
@@ -26,7 +26,7 @@ class BitmapData implements BitmapDrawable
     _height = height;
     _transparent = transparent;
 
-    var canvas = new html.CanvasElement(width: _width, height: _height);
+    var canvas = new CanvasElement(width: _width, height: _height);
 
     _context = canvas.context2d;
     _context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
@@ -38,7 +38,7 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData.fromImageElement(html.ImageElement imageElement)
+  BitmapData.fromImageElement(ImageElement imageElement)
   {
     _width = imageElement.naturalWidth;
     _height = imageElement.naturalHeight;
@@ -74,7 +74,7 @@ class BitmapData implements BitmapDrawable
   {
     Completer<BitmapData> completer = new Completer<BitmapData>();
 
-    var image = new html.ImageElement();
+    var image = new ImageElement();
     image.on.load.add((event) => completer.complete(new BitmapData.fromImageElement(image)));
     image.on.error.add((event) => completer.completeException("Failed to load image."));
     image.src = url;
@@ -109,10 +109,10 @@ class BitmapData implements BitmapDrawable
 
   void colorTransform(Rectangle rect, ColorTransform transform)
   {
-    html.CanvasRenderingContext2D context = _getContext();
-    html.ImageData image = context.getImageData(rect.x, rect.y, rect.width, rect.height);
-    html.Uint8ClampedArray data = image.data;
-    int length = data.length;
+    var context = _getContext();
+    var image = context.getImageData(rect.x, rect.y, rect.width, rect.height);
+    var data = image.data;
+    var length = data.length;
 
     int r = transform.redOffset;
     int g = transform.greenOffset;
@@ -124,12 +124,20 @@ class BitmapData implements BitmapDrawable
     num bm = transform.blueMultiplier;
     num am = transform.alphaMultiplier;
 
-    for (int i = 0; i < length;)
-    {
-      data[i] = data[i++] * (1 - rm) + (r * rm);
-      data[i] = data[i++] * (1 - gm) + (g * gm);
-      data[i] = data[i++] * (1 - bm) + (b * bm);
-      data[i] = data[i++] * (1 - am) + (a * am);
+    if (_isLittleEndianSystem) {
+      for (int i = 0; i <= length - 4; i += 4) {
+        data[i + 0] = data[i + 0] * (1 - rm) + (r * rm);
+        data[i + 1] = data[i + 1] * (1 - gm) + (g * gm);
+        data[i + 2] = data[i + 2] * (1 - bm) + (b * bm);
+        data[i + 3] = data[i + 3] * (1 - am) + (a * am);
+      }
+    } else {
+      for (int i = 0; i <= length - 4; i += 4) {
+        data[i + 0] = data[i + 0] * (1 - am) + (a * am);
+        data[i + 1] = data[i + 1] * (1 - bm) + (b * bm);
+        data[i + 2] = data[i + 2] * (1 - gm) + (g * gm);
+        data[i + 3] = data[i + 3] * (1 - rm) + (r * rm);
+      }
     }
 
     context.putImageData(image, rect.x, rect.y);
@@ -139,7 +147,7 @@ class BitmapData implements BitmapDrawable
 
   void copyPixels(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, [BitmapData alphaBitmapData = null, Point alphaPoint = null, bool mergeAlpha = false])
   {
-    html.ImageData imageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+    var imageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
 
     _getContext().putImageData(imageData, destPoint.x, destPoint.y);
   }
@@ -164,7 +172,7 @@ class BitmapData implements BitmapDrawable
 
   void fillRect(Rectangle rect, int color)
   {
-    html.CanvasRenderingContext2D context = _getContext();
+    CanvasRenderingContext2D context = _getContext();
 
     context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
     context.fillStyle = _color2rgba(color);
@@ -175,32 +183,46 @@ class BitmapData implements BitmapDrawable
 
   int getPixel(int x, int y)
   {
-    html.Uint8ClampedArray data = _getContext().getImageData(x, y, 1, 1).data;
+    Uint8ClampedArray data = _getContext().getImageData(x, y, 1, 1).data;
 
-    return (data[0] << 16) + (data[1] << 8) + (data[2] << 0);
+    if (_isLittleEndianSystem) {
+      return (data[0] << 16) + (data[1] << 8) + (data[2] << 0);
+    } else {
+      return (data[3] << 16) + (data[2] << 8) + (data[1] << 0);
+    }
+
   }
 
   //-------------------------------------------------------------------------------------------------
 
   int getPixel32(int x, int y)
   {
-    html.Uint8ClampedArray data = _getContext().getImageData(x, y, 1, 1).data;
+    Uint8ClampedArray data = _getContext().getImageData(x, y, 1, 1).data;
 
-    return (data[0] << 16) + (data[1] << 8) + (data[2] << 0) + (data[3] << 24);
+    if (_isLittleEndianSystem) {
+      return (data[0] << 16) + (data[1] << 8) + (data[2] << 0) + (data[3] << 24);
+    } else {
+      return (data[3] << 16) + (data[2] << 8) + (data[1] << 0) + (data[0] << 24);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void setPixel(int x, int y, int color)
   {
-    html.CanvasRenderingContext2D context = _getContext();
-    html.ImageData imageData = context.getImageData(x, y, 1, 1);
-    html.Uint8ClampedArray data = imageData.data;
+    var context = _getContext();
+    var imageData = context.getImageData(x, y, 1, 1);
+    var data = imageData.data;
 
-    data[0] = (color >> 16) & 0xFF;
-    data[1] = (color >>  8) & 0xFF;
-    data[2] = (color >>  0) & 0xFF;
-    data[3] = data[3];
+    if (_isLittleEndianSystem) {
+      data[0] = (color >> 16) & 0xFF;
+      data[1] = (color >>  8) & 0xFF;
+      data[2] = (color >>  0) & 0xFF;
+    } else {
+      data[1] = (color >>  0) & 0xFF;
+      data[2] = (color >>  8) & 0xFF;
+      data[3] = (color >> 16) & 0xFF;
+    }
 
     context.putImageData(imageData, x, y);
   }
@@ -209,14 +231,21 @@ class BitmapData implements BitmapDrawable
 
   void setPixel32(int x, int y, int color)
   {
-    html.CanvasRenderingContext2D context = _getContext();
-    html.ImageData imageData = context.getImageData(x, y, 1, 1);
-    html.Uint8ClampedArray data = imageData.data;
+    var context = _getContext();
+    var imageData = context.getImageData(x, y, 1, 1);
+    var data = imageData.data;
 
-    data[0] = (color >> 16) & 0xFF;
-    data[1] = (color >>  8) & 0xFF;
-    data[2] = (color >>  0) & 0xFF;
-    data[3] = (color >> 24) & 0xFF;
+    if (_isLittleEndianSystem) {
+      data[0] = (color >> 16) & 0xFF;
+      data[1] = (color >>  8) & 0xFF;
+      data[2] = (color >>  0) & 0xFF;
+      data[3] = (color >> 24) & 0xFF;
+    } else {
+      data[0] = (color >> 24) & 0xFF;
+      data[1] = (color >>  0) & 0xFF;
+      data[2] = (color >>  8) & 0xFF;
+      data[3] = (color >> 16) & 0xFF;
+    }
 
     context.putImageData(imageData, x, y);
   }
@@ -318,11 +347,11 @@ class BitmapData implements BitmapDrawable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  html.CanvasRenderingContext2D _getContext()
+  CanvasRenderingContext2D _getContext()
   {
     if (_context == null)
     {
-      var canvas = new html.CanvasElement(width: _width, height: _height);
+      var canvas = new CanvasElement(width: _width, height: _height);
 
       _context = canvas.context2d;
 

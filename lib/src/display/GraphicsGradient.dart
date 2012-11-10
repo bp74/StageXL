@@ -44,12 +44,12 @@ class GraphicsGradient
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  html.CanvasGradient getCanvasGradient(html.CanvasRenderingContext2D context)
+  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context)
   {
     // ToDo: Maybe we should cache the CanvasGradient for a given context.
     // This could improve performance!
 
-    html.CanvasGradient canvasGradient;
+    CanvasGradient canvasGradient;
 
     if (_kind == "linear")
       canvasGradient = context.createLinearGradient(_startX, _startY, _endX, _endY);

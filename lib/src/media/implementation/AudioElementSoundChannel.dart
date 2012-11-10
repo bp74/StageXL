@@ -3,7 +3,7 @@ part of dartflash;
 class AudioElementSoundChannel extends SoundChannel
 {
   AudioElementSound _audioElementSound;
-  html.AudioElement _audio;
+  AudioElement _audio;
 
   bool _loop;
   SoundTransform _soundTransform;

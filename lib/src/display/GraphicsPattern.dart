@@ -37,7 +37,7 @@ class GraphicsPattern
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  html.CanvasPattern getCanvasPattern(html.CanvasRenderingContext2D context)
+  CanvasPattern getCanvasPattern(CanvasRenderingContext2D context)
   {
     return context.createPattern(_bitmapData._htmlElement, _repeatOption);
   }

@@ -2,21 +2,21 @@ part of dartflash;
 
 class AudioElementSound extends Sound
 {
-  html.AudioElement _audio;
-  List<html.AudioElement> _audioPool;
+  AudioElement _audio;
+  List<AudioElement> _audioPool;
   List<AudioElementSoundChannel> _soundChannels;
 
   AudioElementSound()
   {
     _soundChannels = new List<AudioElementSoundChannel>();
 
-    _audio = new html.AudioElement();
+    _audio = new AudioElement();
     _audio.on.ended.add(_onAudioEnded);
 
-    _audioPool = new List<html.AudioElement>();
+    _audioPool = new List<AudioElement>();
     _audioPool.add(_audio);
 
-    html.document.body.elements.add(_audio);
+    html.window.document.body.elements.add(_audio);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -66,9 +66,9 @@ class AudioElementSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  html.AudioElement _getAudioElement(AudioElementSoundChannel soundChannel)
+  AudioElement _getAudioElement(AudioElementSoundChannel soundChannel)
   {
-    html.AudioElement audio;
+    AudioElement audio;
 
     if (_audioPool.length == 0)
     {
@@ -88,7 +88,7 @@ class AudioElementSound extends Sound
 
   void _releaseAudioElement(AudioElementSoundChannel soundChannel)
   {
-    html.AudioElement audio = soundChannel._audio;
+    AudioElement audio = soundChannel._audio;
     int index = _soundChannels.indexOf(soundChannel);
 
     _soundChannels.removeAt(index);
@@ -100,7 +100,7 @@ class AudioElementSound extends Sound
 
   void _onAudioEnded(event)
   {
-    html.AudioElement audio = event.target;
+    AudioElement audio = event.target;
     AudioElementSoundChannel soundChannel = null;
 
     for(int i = 0; i < _soundChannels.length && soundChannel == null; i++)

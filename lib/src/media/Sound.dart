@@ -32,7 +32,7 @@ abstract class Sound
     {
       _supportedTypes = new List<String>();
 
-      html.AudioElement audio = new html.AudioElement();
+      AudioElement audio = new AudioElement();
       List valid = ["maybe", "probably"];
 
       if (valid.indexOf(audio.canPlayType("audio/ogg", "")) != -1) _supportedTypes.add("ogg");

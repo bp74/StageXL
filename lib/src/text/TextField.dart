@@ -25,8 +25,8 @@ class TextField extends InteractiveObject
   bool _canvasRefreshPending = true;
   num _canvasWidth = 100;
   num _canvasHeight = 100;
-  html.CanvasElement _canvas = null;
-  html.CanvasRenderingContext2D _context = null;
+  CanvasElement _canvas = null;
+  CanvasRenderingContext2D _context = null;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -162,8 +162,8 @@ class TextField extends InteractiveObject
 
     for(String line in _linesText)
     {
-      html.TextMetrics metrics = _context.measureText(line);
-      num offsetX = 0;
+      var metrics = _context.measureText(line);
+      var offsetX = 0;
 
       if (_defaultTextFormat.align == TextFormatAlign.CENTER || _defaultTextFormat.align == TextFormatAlign.JUSTIFY)
         offsetX = (_canvasWidth - metrics.width) / 2;
@@ -192,7 +192,7 @@ class TextField extends InteractiveObject
 
       if (_canvas == null)
       {
-        _canvas = new html.CanvasElement(width: canvasWidthInt, height: canvasHeightInt);
+        _canvas = new CanvasElement(width: canvasWidthInt, height: canvasHeightInt);
         _context = _canvas.context2d;
       }
 

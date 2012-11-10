@@ -25,8 +25,8 @@ class _Touch
 
 class Stage extends DisplayObjectContainer
 {
-  html.CanvasElement _canvas;
-  html.CanvasRenderingContext2D _context;
+  CanvasElement _canvas;
+  CanvasRenderingContext2D _context;
 
   InteractiveObject _focus;
   RenderState _renderState;
@@ -44,7 +44,7 @@ class Stage extends DisplayObjectContainer
 
   //-------------------------------------------------------------------------------------------------
 
-  Stage(String name, html.CanvasElement canvas)
+  Stage(String name, CanvasElement canvas)
   {
     _name = name;
 

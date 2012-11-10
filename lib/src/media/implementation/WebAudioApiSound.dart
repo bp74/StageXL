@@ -2,7 +2,7 @@ part of dartflash;
 
 class WebAudioApiSound extends Sound
 {
-  html.AudioBuffer _buffer;
+  AudioBuffer _buffer;
 
   WebAudioApiSound()
   {
@@ -17,9 +17,9 @@ class WebAudioApiSound extends Sound
   {
     var sound = new WebAudioApiSound();
     var loadCompleter = new Completer<Sound>();
-    var request = new html.HttpRequest();
+    var request = new HttpRequest();
 
-    void audioBufferLoaded(html.AudioBuffer buffer)
+    void audioBufferLoaded(AudioBuffer buffer)
     {
       sound._buffer = buffer;
 

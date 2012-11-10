@@ -2,12 +2,12 @@ part of dartflash;
 
 class TextureAtlas
 {
-  html.ImageElement _imageElement;
+  ImageElement _imageElement;
   List<TextureAtlasFrame> _frames;
 
   TextureAtlas()
   {
-    _imageElement = new html.ImageElement();
+    _imageElement = new ImageElement();
     _frames = new List<TextureAtlasFrame>();
   }
 
@@ -23,7 +23,7 @@ class TextureAtlas
       case TextureAtlasFormat.JSON:
       case TextureAtlasFormat.JSONARRAY:
 
-        var request = new html.HttpRequest();
+        var request = new HttpRequest();
 
         request.open('GET', url, true);
 
@@ -73,7 +73,7 @@ class TextureAtlas
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  html.ImageElement get imageElement => _imageElement;
+  ImageElement get imageElement => _imageElement;
 
   //-------------------------------------------------------------------------------------------------
 

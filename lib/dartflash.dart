@@ -4,6 +4,13 @@ import 'dart:math';
 import 'dart:json';
 import 'dart:html' as html;
 
+import 'dart:html' show
+  CanvasElement, CanvasRenderingContext2D, CanvasPattern, CanvasGradient,
+  Element, ImageElement,
+  ArrayBuffer, Uint8ClampedArray, Uint32Array,
+  AudioElement, AudioContext, AudioBuffer, AudioBufferSourceNode, GainNode,
+  HttpRequest;
+
 //------------------------------------------------------
 
 part 'src/animation/DelayedCall.dart';
