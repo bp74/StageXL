@@ -6,7 +6,7 @@ class BitmapData implements BitmapDrawable
   int _height;
   bool _transparent;
 
-  Element _htmlElement;
+  Element _element;
   CanvasRenderingContext2D _context;
 
   int _frameMode;
@@ -32,7 +32,7 @@ class BitmapData implements BitmapDrawable
     _context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
     _context.fillRect(0, 0, width, height);
 
-    _htmlElement = canvas;
+    _element = canvas;
     _frameMode = 0;
   }
 
@@ -44,7 +44,7 @@ class BitmapData implements BitmapDrawable
     _height = imageElement.naturalHeight;
     _transparent = true;
 
-    _htmlElement = imageElement;
+    _element = imageElement;
     _frameMode = 0;
   }
 
@@ -56,7 +56,7 @@ class BitmapData implements BitmapDrawable
     _height = textureAtlasFrame.originalHeight;
     _transparent = true;
 
-    _htmlElement = textureAtlasFrame.textureAtlas.imageElement;
+    _element = textureAtlasFrame.textureAtlas.imageElement;
 
     _frameMode = textureAtlasFrame.rotated ? 2 : 1;
     _frameOffsetX = textureAtlasFrame.offsetX.toDouble();
@@ -258,16 +258,16 @@ class BitmapData implements BitmapDrawable
     switch(_frameMode)
     {
       case 0:
-        renderState.context.drawImage(_htmlElement, 0.0, 0.0);
+        renderState.context.drawImage(_element, 0.0, 0.0);
         break;
 
       case 1:
-        renderState.context.drawImage(_htmlElement, _frameX, _frameY, _frameWidth, _frameHeight, _frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
+        renderState.context.drawImage(_element, _frameX, _frameY, _frameWidth, _frameHeight, _frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
         break;
 
       case 2:
         renderState.context.transform(0.0, -1.0, 1.0, 0.0, _frameOffsetX, _frameOffsetY + _frameHeight);
-        renderState.context.drawImage(_htmlElement, _frameX, _frameY, _frameHeight, _frameWidth, 0.0, 0.0, _frameHeight, _frameWidth);
+        renderState.context.drawImage(_element, _frameX, _frameY, _frameHeight, _frameWidth, 0.0, 0.0, _frameHeight, _frameWidth);
         break;
     }
   }
@@ -282,7 +282,7 @@ class BitmapData implements BitmapDrawable
     switch(_frameMode)
     {
       case 0:
-        renderState.context.drawImage(_htmlElement,
+        renderState.context.drawImage(_element,
           clipRectangle.x, clipRectangle.y, clipRectangle.width, clipRectangle.height,
           clipRectangle.x, clipRectangle.y, clipRectangle.width, clipRectangle.height);
         break;
@@ -309,7 +309,7 @@ class BitmapData implements BitmapDrawable
         double iHeight = iBottom - iTop;
 
         if (iWidth > 0.0 && iHeight > 0.0) {
-          renderState.context.drawImage(_htmlElement, iLeft, iTop, iWidth, iHeight, iOffsetX, iOffsetY, iWidth, iHeight);
+          renderState.context.drawImage(_element, iLeft, iTop, iWidth, iHeight, iOffsetX, iOffsetY, iWidth, iHeight);
         }
 
         break;
@@ -337,7 +337,7 @@ class BitmapData implements BitmapDrawable
 
         if (iWidth > 0.0 && iHeight > 0.0) {
           renderState.context.transform(0.0, -1.0, 1.0, 0.0, iOffsetX, iOffsetY + iHeight);
-          renderState.context.drawImage(_htmlElement, iLeft, iTop, iHeight, iWidth, 0.0, 0.0, iHeight, iWidth);
+          renderState.context.drawImage(_element, iLeft, iTop, iHeight, iWidth, 0.0, 0.0, iHeight, iWidth);
         }
 
         break;
@@ -358,21 +358,21 @@ class BitmapData implements BitmapDrawable
       switch(_frameMode)
       {
         case 0:
-          _context.drawImage(_htmlElement, 0, 0);
+          _context.drawImage(_element, 0, 0);
           break;
 
         case 1:
-          _context.drawImage(_htmlElement, _frameX, _frameY, _frameWidth, _frameHeight, _frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
+          _context.drawImage(_element, _frameX, _frameY, _frameWidth, _frameHeight, _frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
           break;
 
         case 2:
           _context.setTransform(0.0, -1.0, 1.0, 0.0, _frameOffsetX, _frameOffsetY + _frameHeight);
-          _context.drawImage(_htmlElement, _frameX, _frameY, _frameHeight, _frameWidth, 0.0, 0.0, _frameHeight, _frameWidth);
+          _context.drawImage(_element, _frameX, _frameY, _frameHeight, _frameWidth, 0.0, 0.0, _frameHeight, _frameWidth);
           _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
           break;
       }
 
-      _htmlElement = canvas;
+      _element = canvas;
       _frameMode = 0;
     }
 

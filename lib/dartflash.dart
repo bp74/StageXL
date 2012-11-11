@@ -5,13 +5,12 @@ import 'dart:json';
 import 'dart:html' as html;
 
 import 'dart:html' show
+  Element, ImageElement, AudioElement, HttpRequest,
   CanvasElement, CanvasRenderingContext2D, CanvasPattern, CanvasGradient,
-  Element, ImageElement,
   ArrayBuffer, Uint8ClampedArray, Uint32Array,
-  AudioElement, AudioContext, AudioBuffer, AudioBufferSourceNode, GainNode,
-  HttpRequest;
+  AudioContext, AudioBuffer, AudioBufferSourceNode, GainNode;
 
-//------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 part 'src/animation/DelayedCall.dart';
 part 'src/animation/Animatable.dart';
@@ -111,7 +110,7 @@ part 'src/util/TextureAtlasFormat.dart';
 part 'src/util/TextureAtlasFrame.dart';
 part 'src/util/Tools.dart';
 
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 bool _isLittleEndianSystem = _checkLittleEndianSystem();
 
