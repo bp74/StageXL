@@ -12,7 +12,7 @@ class SimpleButton extends InteractiveObject
 
   DisplayObject _currentState;
 
-  SimpleButton([this.upState = null, this.overState = null, this.downState = null, this.hitTestState])
+  SimpleButton([this.upState, this.overState, this.downState, this.hitTestState])
   {
     addEventListener(MouseEvent.MOUSE_OVER, _onMouseEvent);
     addEventListener(MouseEvent.MOUSE_OUT, _onMouseEvent);
