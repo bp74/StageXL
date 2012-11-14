@@ -40,10 +40,10 @@ class Tween implements Animatable
   bool _roundToInt;
   bool _started;
 
-  Tween(DisplayObject displayObject, num time, [num transitionType(num ratio) = null])
+  Tween(DisplayObject displayObject, num time, [num transitionType(num ratio)])
   {
     _displayObject = displayObject;
-    _transitionType = (transitionType != null) ? transitionType : TransitionType.linear;
+    _transitionType = (?transitionType) ? transitionType : TransitionType.linear;
 
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);

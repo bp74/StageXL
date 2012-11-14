@@ -26,13 +26,13 @@ class Transition extends Animatable
   bool _roundToInt;
   bool _started;
 
-  Transition(num startValue, num targetValue, num time, [num transitionType(num ratio) = null])
+  Transition(num startValue, num targetValue, num time, [num transitionType(num ratio)])
   {
     _startValue = startValue;
     _targetValue = targetValue;
     _currentValue = startValue;
 
-    _transitionType = (transitionType != null) ? transitionType : TransitionType.linear;
+    _transitionType = (?transitionType) ? transitionType : TransitionType.linear;
 
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
