@@ -12,7 +12,7 @@ class SimpleButton extends InteractiveObject
 
   DisplayObject _currentState;
 
-  SimpleButton([this.upState = null, this.overState = null, this.downState = null, this.hitTestState = null])
+  SimpleButton([this.upState = null, this.overState = null, this.downState = null, this.hitTestState])
   {
     addEventListener(MouseEvent.MOUSE_OVER, _onMouseEvent);
     addEventListener(MouseEvent.MOUSE_OUT, _onMouseEvent);
@@ -25,7 +25,7 @@ class SimpleButton extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle = null])
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle])
   {
     if (_currentState != null)
     {

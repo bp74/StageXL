@@ -194,7 +194,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle = null])
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle])
   {
     if (returnRectangle == null)
       returnRectangle = new Rectangle.zero();

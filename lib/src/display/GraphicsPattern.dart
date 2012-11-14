@@ -6,28 +6,28 @@ class GraphicsPattern
   Matrix _matrix;
   String _repeatOption;
 
-  GraphicsPattern.repeat(BitmapData bitmapData, [Matrix matrix = null])
+  GraphicsPattern.repeat(BitmapData bitmapData, [Matrix matrix])
   {
     _bitmapData = bitmapData;
     _matrix = matrix;
     _repeatOption = "repeat";
   }
 
-  GraphicsPattern.repeatX(BitmapData bitmapData, [Matrix matrix = null])
+  GraphicsPattern.repeatX(BitmapData bitmapData, [Matrix matrix])
   {
     _bitmapData = bitmapData;
     _matrix = matrix;
     _repeatOption = "repeat-x";
   }
 
-  GraphicsPattern.repeatY(BitmapData bitmapData, [Matrix matrix = null])
+  GraphicsPattern.repeatY(BitmapData bitmapData, [Matrix matrix])
   {
     _bitmapData = bitmapData;
     _matrix = matrix;
     _repeatOption = "repeat-y";
   }
 
-  GraphicsPattern.noRepeat(BitmapData bitmapData, [Matrix matrix = null])
+  GraphicsPattern.noRepeat(BitmapData bitmapData, [Matrix matrix])
   {
     _bitmapData = bitmapData;
     _matrix = matrix;

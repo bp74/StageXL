@@ -142,7 +142,7 @@ class MovieClip extends InteractiveObject implements Animatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle = null])
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle])
   {
     BitmapData bitmapData = _bitmapDatas[_currentFrame];
 

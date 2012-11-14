@@ -30,7 +30,7 @@ class MockSound extends Sound
   }
 
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform = null])
+  SoundChannel play([bool loop = false, SoundTransform soundTransform])
   {
     if (soundTransform == null)
       soundTransform = new SoundTransform();

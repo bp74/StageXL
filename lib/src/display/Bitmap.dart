@@ -14,7 +14,7 @@ class Bitmap extends DisplayObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle = null])
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle])
   {
     int width = (bitmapData != null) ? bitmapData.width : 0;
     int height = (bitmapData != null) ? bitmapData.height : 0;

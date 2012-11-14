@@ -88,7 +88,7 @@ class TextField extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle = null])
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle])
   {
     return _getBoundsTransformedHelper(matrix, _canvasWidth, _canvasHeight, returnRectangle);
   }

@@ -55,7 +55,7 @@ class AudioElementSound extends Sound
     return _audio.duration;
   }
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform = null])
+  SoundChannel play([bool loop = false, SoundTransform soundTransform])
   {
     if (soundTransform == null)
       soundTransform = new SoundTransform();

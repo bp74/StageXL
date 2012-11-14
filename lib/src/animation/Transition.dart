@@ -32,7 +32,7 @@ class Transition extends Animatable
     _targetValue = targetValue;
     _currentValue = startValue;
 
-    _transitionType = (?transitionType) ? transitionType : TransitionType.linear;
+    _transitionType = (transitionType != null) ? transitionType : TransitionType.linear;
 
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
