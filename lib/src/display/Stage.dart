@@ -262,11 +262,6 @@ class Stage extends DisplayObjectContainer
     if (event.type == "mousemove")
     {
         mouseEventType = MouseEvent.MOUSE_MOVE;
-
-        for(int i = 0; i < _mouseButtons.length; i++) {
-          _mouseButtons[i].clickCount = 0;
-          _mouseButtons[i].target = null;
-        }
     }
 
     //-----------------------------------------------------------------
