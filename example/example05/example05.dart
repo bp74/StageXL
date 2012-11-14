@@ -42,17 +42,17 @@ void main()
     // Flash does not support programmable animations out of the box.
     // So we create our own :) Let's move the world ...
 
-    Tween tweenDown = new Tween(world, 2.0, Transitions.easeOutBounce);
+    Tween tweenDown = new Tween(world, 2.0, TransitionType.easeOutBounce);
     tweenDown.animate("x", 700);
     tweenDown.animate("y", 500);
     tweenDown.delay = 1.0;
 
-    Tween tweenUp = new Tween(world, 2.0, Transitions.easeOutBounce);
+    Tween tweenUp = new Tween(world, 2.0, TransitionType.easeOutBounce);
     tweenUp.animate("x", 100);
     tweenUp.animate("y", 100);
     tweenUp.delay = 4.0;
 
-    Tween tweenRotation = new Tween(world, 6.0, Transitions.easeInOutElastic);
+    Tween tweenRotation = new Tween(world, 6.0, TransitionType.easeInOutElastic);
     tweenRotation.animate("rotation", PI * 4.0);
     tweenRotation.delay = 7.0;
 

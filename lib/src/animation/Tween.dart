@@ -1,12 +1,5 @@
 part of dartflash;
 
-/// The function that is called when a [Tween] starts. This happens after the specified delay.
-typedef void TweenStart();
-/// The function that is called every time a [Tween] updates the properties of the [DisplayObject].
-typedef void TweenUpdate();
-/// The function that is called when a [Tween] is completed.
-typedef void TweenComplete();
-
 class _TweenProperty
 {
   String name;
@@ -20,10 +13,10 @@ class _TweenProperty
 
 /**
  * The [Tween] class animates the properties of a [DisplayObject].
- * Use one of the predefined [Transitions] or create your own.
+ * Use one of the [TransitionType] functions or create your own.
  * Add the instance to the [Juggler] to start the animation.
  *
- *     var tween = new Tween(mySprite, 1.0, Transitions.easeInCubic);
+ *     var tween = new Tween(mySprite, 1.0, TransitionType.easeInCubic);
  *     tween.delay = 0.5;
  *     tween.animate("alpha", 0.0);
  *     tween.onComplete = () => print('completed');
@@ -33,13 +26,13 @@ class _TweenProperty
 class Tween implements Animatable
 {
   DisplayObject _displayObject;
-  TransitionFunction _transitionFunction;
+  Function _transitionType;
 
   List<_TweenProperty> _tweenProperties;
 
-  TweenStart _onStart;
-  TweenUpdate _onUpdate;
-  TweenComplete _onComplete;
+  Function _onStart;
+  Function _onUpdate;
+  Function _onComplete;
 
   num _totalTime;
   num _currentTime;
@@ -47,10 +40,10 @@ class Tween implements Animatable
   bool _roundToInt;
   bool _started;
 
-  Tween(DisplayObject displayObject, num time, [TransitionFunction transitionFunction = null])
+  Tween(DisplayObject displayObject, num time, [num transitionType(num ratio) = null])
   {
     _displayObject = displayObject;
-    _transitionFunction = (transitionFunction != null) ? transitionFunction : Transitions.linear;
+    _transitionType = (transitionType != null) ? transitionType : TransitionType.linear;
 
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
@@ -147,7 +140,7 @@ class Tween implements Animatable
         //-------------
 
         num ratio = _currentTime / _totalTime;
-        num transition = _transitionFunction(ratio);
+        num transition = _transitionType(ratio);
 
         for(int i = 0; i < _tweenProperties.length; i++)
         {
@@ -205,11 +198,18 @@ class Tween implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  TweenStart get onStart => _onStart;
-  TweenUpdate get onUpdate => _onUpdate;
-  TweenComplete get onComplete => _onComplete;
+  /**
+   * The function that is called when a [Tween] starts. This happens after the specified delay.
+   **/
+  void set onStart(void function()) { _onStart = function; }
 
-  void set onStart(TweenStart value) { _onStart = value; }
-  void set onUpdate(TweenUpdate value) { _onUpdate = value; }
-  void set onComplete(TweenComplete value) { _onComplete = value; }
+  /**
+   * The function that is called every time a [Tween] updates the properties of the [DisplayObject].
+   **/
+  void set onUpdate(void function()) { _onUpdate = function; }
+
+  /**
+   * The function that is called when a [Tween] is completed.
+   **/
+  void set onComplete(void function()) { _onComplete = function; }
 }

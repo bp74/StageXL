@@ -85,10 +85,10 @@ class Juggler implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  Transition startTransition(num startValue, num targetValue, num time, TransitionFunction transitionFunction, TransitionUpdate transitionUpdate)
+  Transition startTransition(num startValue, num targetValue, num time, num transitionType(num ratio), void onUpdate(num value))
   {
-    Transition transition = new Transition(startValue, targetValue, time, transitionFunction);
-    transition.onUpdate = transitionUpdate;
+    Transition transition = new Transition(startValue, targetValue, time, transitionType);
+    transition.onUpdate = onUpdate;
     add(transition);
 
     return transition;

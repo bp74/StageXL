@@ -1,25 +1,20 @@
 part of dartflash;
 
 /**
- * A [TransitionFunction] is used for [Transition] and [Tween] animations.
- * The function takes the [:ratio:] which is in the range from 0.0 to 1.0 and
- * calculates the progress of the transitions.
- *
- * The most simple transition is the linear transition:
- *     var linear = (ratio) => ratio;
- **/
-
-typedef num TransitionFunction(num ratio);
-
-/**
- * The [Transitions] class offers predefined transitions used for
+ * The [TransitionType] class provides common transition functions used for
  * [Transition] and [Tween] animations.
  *
- * Overview of all available transitions:
+ * A transition function takes the [ratio] which is in the range from 0.0 to 1.0
+ * and calculates the progress of the transitions.
+ *
+ * The most simple transition function is a linear transition:
+ *     var linear = (ratio) => ratio;
+ *
+ * Overview of all available transition types:
  * <http://www.dartflash.com/docs/juggler/transitions.html>
  **/
 
-class Transitions
+class TransitionType
 {
   // Standard
 

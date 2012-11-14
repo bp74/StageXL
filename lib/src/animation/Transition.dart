@@ -1,16 +1,9 @@
 part of dartflash;
 
-/// The function that is called when a [Transition] starts. This happens after the specified delay.
-typedef void TransitionStart();
-/// The function that is called every time a [Transition] updates the value.
-typedef void TransitionUpdate(num value);
-/// The function that is called when a [Transition] is completed.
-typedef void TransitionComplete();
-
 /**
  * The [Transition] class animates a value by calling the [onUpdate] function continuously.
  *
- *     var transition = new Transition(0.0, 100.0, 1.0, Transitions.linear);
+ *     var transition = new Transition(0.0, 100.0, 1.0, TransitionType.linear);
  *     transition.onUpdate = (value) => print('the value changed to $value');
  *     renderLoop.juggler.add(transition);
  **/
@@ -21,11 +14,11 @@ class Transition extends Animatable
   num _targetValue;
   num _currentValue;
 
-  TransitionFunction _transitionFunction;
+  Function _transitionType;
 
-  TransitionStart _onStart;
-  TransitionUpdate _onUpdate;
-  TransitionComplete _onComplete;
+  Function _onStart;
+  Function _onUpdate;
+  Function _onComplete;
 
   num _totalTime;
   num _currentTime;
@@ -33,13 +26,13 @@ class Transition extends Animatable
   bool _roundToInt;
   bool _started;
 
-  Transition(num startValue, num targetValue, num time, [TransitionFunction transitionFunction = null])
+  Transition(num startValue, num targetValue, num time, [num transitionType(num ratio) = null])
   {
     _startValue = startValue;
     _targetValue = targetValue;
     _currentValue = startValue;
 
-    _transitionFunction = (transitionFunction != null) ? transitionFunction : Transitions.linear;
+    _transitionType = (transitionType != null) ? transitionType : TransitionType.linear;
 
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
@@ -72,7 +65,7 @@ class Transition extends Animatable
         //-------------
 
         num ratio = _currentTime / _totalTime;
-        num transition = _transitionFunction(ratio);
+        num transition = _transitionType(ratio);
 
         _currentValue = _startValue + transition * (_targetValue - _startValue);
 
@@ -118,11 +111,18 @@ class Transition extends Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  TransitionStart get onStart => _onStart;
-  TransitionUpdate get onUpdate => _onUpdate;
-  TransitionComplete get onComplete => _onComplete;
+  /**
+   * The function that is called when a [Transition] starts. This happens after the specified delay.
+   **/
+  void set onStart(void function()) { _onStart = function; }
 
-  void set onStart(TransitionStart value) { _onStart = value; }
-  void set onUpdate(TransitionUpdate value) { _onUpdate = value; }
-  void set onComplete(TransitionComplete value) { _onComplete = value; }
+  /**
+   * The function that is called every time a [Transition] updates the value.
+   **/
+  void set onUpdate(void function(num value)) { _onUpdate = function; }
+
+  /**
+   * The function that is called when a [Transition] is completed.
+   **/
+  void set onComplete(void function()) { _onComplete = function; }
 }
