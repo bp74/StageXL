@@ -16,7 +16,7 @@ class AudioElementSound extends Sound
     _audioPool = new List<AudioElement>();
     _audioPool.add(_audio);
 
-    html.window.document.body.elements.add(_audio);
+    html.document.body.elements.add(_audio);
   }
 
   //-------------------------------------------------------------------------------------------------
