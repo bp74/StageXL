@@ -45,8 +45,8 @@ class Stage extends DisplayObjectContainer
   KeyboardEvent _keyboardEvent;
   TouchEvent _touchEvent;
 
-  EventListener _mouseEventListener;
-  EventListener _touchEventListener;
+  html.EventListener _onMouseEventHandler;
+  html.EventListener _onTouchEventHandler;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -78,21 +78,23 @@ class Stage extends DisplayObjectContainer
     _mouseTarget = null;
     _mousePosition = new Point(0, 0);
     _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
-    _mouseEventListener = _onMouseEvent;
+
+    _onMouseEventHandler = _onMouseEvent;
 
     _canvas.on
-      ..mouseDown.add(_mouseEventListener)
-      ..mouseUp.add(_mouseEventListener)
-      ..mouseMove.add(_mouseEventListener)
-      ..mouseOut.add(_mouseEventListener)
-      ..mouseWheel.add(_mouseEventListener);
+      ..mouseDown.add(_onMouseEventHandler)
+      ..mouseUp.add(_onMouseEventHandler)
+      ..mouseMove.add(_onMouseEventHandler)
+      ..mouseOut.add(_onMouseEventHandler)
+      ..mouseWheel.add(_onMouseEventHandler);
 
     //---------------------------
     // prepare touch events
 
     _touches = new Map<int, _Touch>();
     _touchEvent = new TouchEvent(TouchEvent.TOUCH_BEGIN, true);
-    _touchEventListener = _onTouchEvent;
+
+    _onTouchEventHandler = _onTouchEvent;
 
     Multitouch._eventDispatcher.addEventListener("inputModeChanged", _onMultitouchInputModeChanged);
     _onMultitouchInputModeChanged(null);
@@ -314,19 +316,19 @@ class Stage extends DisplayObjectContainer
   void _onMultitouchInputModeChanged(Event event)
   {
     _canvas.on
-      ..touchStart.remove(_touchEventListener)
-      ..touchEnd.remove(_touchEventListener)
-      ..touchMove.remove(_touchEventListener)
-      ..touchEnter.remove(_touchEventListener)
-      ..touchLeave.remove(_touchEventListener);
+      ..touchStart.remove(_onTouchEventHandler)
+      ..touchEnd.remove(_onTouchEventHandler)
+      ..touchMove.remove(_onTouchEventHandler)
+      ..touchEnter.remove(_onTouchEventHandler)
+      ..touchLeave.remove(_onTouchEventHandler);
 
     if (Multitouch.inputMode == MultitouchInputMode.TOUCH_POINT) {
       _canvas.on
-        ..touchStart.add(_touchEventListener)
-        ..touchEnd.add(_touchEventListener)
-        ..touchMove.add(_touchEventListener)
-        ..touchEnter.add(_touchEventListener)
-        ..touchLeave.add(_touchEventListener);
+        ..touchStart.add(_onTouchEventHandler)
+        ..touchEnd.add(_onTouchEventHandler)
+        ..touchMove.add(_onTouchEventHandler)
+        ..touchEnter.add(_onTouchEventHandler)
+        ..touchLeave.add(_onTouchEventHandler);
     }
   }
 
