@@ -21,6 +21,14 @@ class InteractiveObjectEvents extends DisplayObjectEvents
   EventListenerList get mouseRightClick => this[MouseEvent.RIGHT_CLICK];
   EventListenerList get mouseWheel => this[MouseEvent.MOUSE_WHEEL];
 
+  // touch events
+
+  EventListenerList get touchOut => this[TouchEvent.TOUCH_OUT];
+  EventListenerList get touchOver => this[TouchEvent.TOUCH_OVER];
+  EventListenerList get touchMove => this[TouchEvent.TOUCH_MOVE];
+  EventListenerList get touchBegin => this[TouchEvent.TOUCH_BEGIN];
+  EventListenerList get touchEnd => this[TouchEvent.TOUCH_END];
+
   // keyboard events
 
   EventListenerList get keyUp => this[KeyboardEvent.KEY_UP];
