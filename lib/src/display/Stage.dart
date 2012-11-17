@@ -45,8 +45,8 @@ class Stage extends DisplayObjectContainer
   KeyboardEvent _keyboardEvent;
   TouchEvent _touchEvent;
 
-  final EventListener _mouseEventListener = _onMouseEvent;
-  final EventListener _touchEventListener = _onTouchEvent;
+  EventListener _mouseEventListener;
+  EventListener _touchEventListener;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -78,6 +78,7 @@ class Stage extends DisplayObjectContainer
     _mouseTarget = null;
     _mousePosition = new Point(0, 0);
     _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
+    _mouseEventListener = _onMouseEvent;
 
     _canvas.on
       ..mouseDown.add(_mouseEventListener)
@@ -91,6 +92,7 @@ class Stage extends DisplayObjectContainer
 
     _touches = new Map<int, _Touch>();
     _touchEvent = new TouchEvent(TouchEvent.TOUCH_BEGIN, true);
+    _touchEventListener = _onTouchEvent;
 
     Multitouch._eventDispatcher.addEventListener("inputModeChanged", _onMultitouchInputModeChanged);
     _onMultitouchInputModeChanged(null);
