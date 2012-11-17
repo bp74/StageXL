@@ -16,6 +16,8 @@ class Multitouch
   static List<String> _supportedGestures = [];
   static String _inputMode =  MultitouchInputMode.NONE;
 
+  static EventDispatcher _eventDispatcher = new EventDispatcher();
+
   static _initialize()
   {
     if (_initialized == false)
@@ -43,11 +45,6 @@ class Multitouch
         _maxTouchPoints = 10;
       }
     }
-
-    // ToDo: TouchEvents are still under development.
-
-    _supportsTouchEvents = false;
-    _maxTouchPoints = 0;
   }
 
   //------------------------------------------------------------------
@@ -82,6 +79,7 @@ class Multitouch
   static set inputMode(String value) {
     _initialize();
     _inputMode = value;
+    _eventDispatcher.dispatchEvent(new Event("inputModeChanged", false));
   }
 
 }

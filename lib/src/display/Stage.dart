@@ -18,6 +18,9 @@ class _Touch
 
   int touchPointID = _globalTouchPointID++;
   InteractiveObject target = null;
+  bool primaryTouchPoint = false;
+
+  _Touch(this.target, this.primaryTouchPoint);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -73,11 +76,12 @@ class Stage extends DisplayObjectContainer
     _mousePosition = new Point(0, 0);
     _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
 
-    _canvas.on.mouseDown.add(_onMouseEvent);
-    _canvas.on.mouseUp.add(_onMouseEvent);
-    _canvas.on.mouseMove.add(_onMouseEvent);
-    _canvas.on.mouseOut.add(_onMouseEvent);
-    _canvas.on.mouseWheel.add(_onMouseWheel);
+    _canvas.on
+      ..mouseDown.add(_onMouseEvent)
+      ..mouseUp.add(_onMouseEvent)
+      ..mouseMove.add(_onMouseEvent)
+      ..mouseOut.add(_onMouseEvent)
+      ..mouseWheel.add(_onMouseWheel);
 
     //---------------------------
     // prepare touch events
@@ -85,14 +89,8 @@ class Stage extends DisplayObjectContainer
     _touches = new Map<int, _Touch>();
     _touchEvent = new TouchEvent(TouchEvent.TOUCH_BEGIN, true);
 
-    if (Multitouch.supportsTouchEvents)
-    {
-      _canvas.on.touchStart.add(_onTouchEvent);
-      _canvas.on.touchEnd.add(_onTouchEvent);
-      _canvas.on.touchMove.add(_onTouchEvent);
-      _canvas.on.touchEnter.add(_onTouchEvent);
-      _canvas.on.touchLeave.add(_onTouchEvent);
-    }
+    Multitouch._eventDispatcher.addEventListener("inputModeChanged", _onMultitouchInputModeChanged);
+    _onMultitouchInputModeChanged(null);
 
     //---------------------------
     // prepare keyboard events
@@ -179,7 +177,7 @@ class Stage extends DisplayObjectContainer
     if (event.type != "mouseout")
       target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
-    //------------------------------------------------------
+    //-----------------------------------------------------------------
 
     var mouseCursor = MouseCursor.ARROW;
 
@@ -196,107 +194,90 @@ class Stage extends DisplayObjectContainer
       _canvas.style.cursor = Mouse._getCssStyle(mouseCursor);
     }
 
-    //------------------------------------------------------
+    //-----------------------------------------------------------------
 
-    if (_mouseTarget != null && _mouseTarget != target)
-    {
-      if (_mouseTarget.stage != null)
-        localPoint = _mouseTarget.globalToLocal(stagePoint);
-      else
-        localPoint = new Point.zero();
+    if (_mouseTarget != null && _mouseTarget != target) {
 
-      _mouseEvent._reset(MouseEvent.MOUSE_OUT, true);
-      _mouseEvent._localX = localPoint.x;
-      _mouseEvent._localY = localPoint.y;
-      _mouseEvent._stageX = stagePoint.x;
-      _mouseEvent._stageY = stagePoint.y;
-      _mouseEvent._buttonDown = mouseButton.buttonDown;
+      _mouseTarget.dispatchEvent(_mouseEvent
+        .._reset(MouseEvent.MOUSE_OUT, true)
+        .._localPoint = (_mouseTarget.stage != null) ? _mouseTarget.globalToLocal(stagePoint) : new Point.zero()
+        .._stagePoint = stagePoint
+        .._buttonDown = mouseButton.buttonDown);
 
-      _mouseTarget.dispatchEvent(_mouseEvent);
       _mouseTarget = null;
     }
 
-    if (target != null && target != _mouseTarget)
-    {
-      localPoint = target.globalToLocal(stagePoint);
+    if (target != null && target != _mouseTarget) {
 
-      _mouseEvent._reset(MouseEvent.MOUSE_OVER, true);
-      _mouseEvent._localX = localPoint.x;
-      _mouseEvent._localY = localPoint.y;
-      _mouseEvent._stageX = stagePoint.x;
-      _mouseEvent._stageY = stagePoint.y;
-      _mouseEvent._buttonDown = mouseButton.buttonDown;
+      target.dispatchEvent(_mouseEvent
+        .._reset(MouseEvent.MOUSE_OVER, true)
+        .._localPoint = target.globalToLocal(stagePoint)
+        .._stagePoint = stagePoint
+        .._buttonDown = mouseButton.buttonDown);
 
       _mouseTarget = target;
-      _mouseTarget.dispatchEvent(_mouseEvent);
     }
 
-    //------------------------------------------------------
+    //-----------------------------------------------------------------
 
     String mouseEventType = null;
     bool isClick = false;
     bool isDoubleClick = false;
 
-    if (event.type == "mousedown")
-    {
-        mouseEventType = mouseButton.mouseDownEventType;
+    if (event.type == "mousedown") {
+      mouseEventType = mouseButton.mouseDownEventType;
 
-        if (target != mouseButton.target || time > mouseButton.clickTime + 500)
-          mouseButton.clickCount = 0;
+      if (target != mouseButton.target || time > mouseButton.clickTime + 500)
+        mouseButton.clickCount = 0;
 
-        mouseButton.buttonDown = true;
-        mouseButton.target = target;
-        mouseButton.clickTime = time;
-        mouseButton.clickCount++;
+      mouseButton.buttonDown = true;
+      mouseButton.target = target;
+      mouseButton.clickTime = time;
+      mouseButton.clickCount++;
     }
 
-    if (event.type == "mouseup")
-    {
-        mouseEventType = mouseButton.mouseUpEventType;
-        mouseButton.buttonDown = false;
-
-        isClick = (mouseButton.target == target);
-        isDoubleClick = isClick && mouseButton.clickCount.isEven && (time < mouseButton.clickTime + 500);
+    if (event.type == "mouseup") {
+      mouseEventType = mouseButton.mouseUpEventType;
+      mouseButton.buttonDown = false;
+      isClick = (mouseButton.target == target);
+      isDoubleClick = isClick && mouseButton.clickCount.isEven && (time < mouseButton.clickTime + 500);
     }
 
-    if (event.type == "mousemove")
-    {
-        mouseEventType = MouseEvent.MOUSE_MOVE;
+    if (event.type == "mousemove") {
+      mouseEventType = MouseEvent.MOUSE_MOVE;
     }
 
     //-----------------------------------------------------------------
 
-    if (mouseEventType != null && target != null)
-    {
+    if (mouseEventType != null && target != null) {
+
       localPoint = target.globalToLocal(stagePoint);
 
-      _mouseEvent._reset(mouseEventType, true);
-      _mouseEvent._localX = localPoint.x;
-      _mouseEvent._localY = localPoint.y;
-      _mouseEvent._stageX = stagePoint.x;
-      _mouseEvent._stageY = stagePoint.y;
-      _mouseEvent._buttonDown = mouseButton.buttonDown;
-      _mouseEvent._clickCount = mouseButton.clickCount;
+      target.dispatchEvent(_mouseEvent
+        .._reset(mouseEventType, true)
+        .._localPoint = localPoint
+        .._stagePoint = stagePoint
+        .._buttonDown = mouseButton.buttonDown
+        .._clickCount = mouseButton.clickCount);
 
-      target.dispatchEvent(_mouseEvent);
+      if (isClick) {
 
-      //----------------------------------------------
+        if (isDoubleClick && target.doubleClickEnabled) {
 
-      if (isClick)
-      {
-        mouseEventType = mouseButton.mouseClickEventType;
+          target.dispatchEvent(_mouseEvent
+            .._reset(mouseButton.mouseDoubleClickEventType, true)
+            .._localPoint = localPoint
+            .._stagePoint = stagePoint
+            .._buttonDown = mouseButton.buttonDown);
 
-        if (isDoubleClick && target.doubleClickEnabled)
-          mouseEventType = mouseButton.mouseDoubleClickEventType;
+        } else {
 
-        _mouseEvent._reset(mouseEventType, true);
-        _mouseEvent._localX = localPoint.x;
-        _mouseEvent._localY = localPoint.y;
-        _mouseEvent._stageX = stagePoint.x;
-        _mouseEvent._stageY = stagePoint.y;
-        _mouseEvent._buttonDown = mouseButton.buttonDown;
-
-        target.dispatchEvent(_mouseEvent);
+          target.dispatchEvent(_mouseEvent
+            .._reset(mouseButton.mouseClickEventType, true)
+            .._localPoint = localPoint
+            .._stagePoint = stagePoint
+            .._buttonDown = mouseButton.buttonDown);
+        }
       }
     }
   }
@@ -309,45 +290,113 @@ class Stage extends DisplayObjectContainer
 
     if (target != null)
     {
-      Point stagePoint = new Point(event.offsetX, event.offsetY);
-      Point localPoint = target.globalToLocal(stagePoint);
+      var clientRect = _canvas.getBoundingClientRect();
+      var stagePoint = new Point(event.clientX - clientRect.left, event.clientY - clientRect.top);
+      var localPoint = target.globalToLocal(stagePoint);
 
-      _mouseEvent._reset(MouseEvent.MOUSE_WHEEL, true);
-      _mouseEvent._localX = localPoint.x;
-      _mouseEvent._localY = localPoint.y;
-      _mouseEvent._stageX = stagePoint.x;
-      _mouseEvent._stageY = stagePoint.y;
-      _mouseEvent._deltaX = event.deltaX;
-      _mouseEvent._deltaY = event.deltaY;
-
-      target.dispatchEvent(_mouseEvent);
+      target.dispatchEvent(_mouseEvent
+        .._reset(MouseEvent.MOUSE_WHEEL, true)
+        .._localPoint = localPoint
+        .._stagePoint = stagePoint
+        .._deltaX = event.deltaX
+        .._deltaY = event.deltaY);
     }
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  void _onMultitouchInputModeChanged(Event event)
+  {
+    _canvas.on
+      ..touchStart.remove(_onTouchEvent)
+      ..touchEnd.remove(_onTouchEvent)
+      ..touchMove.remove(_onTouchEvent)
+      ..touchEnter.remove(_onTouchEvent)
+      ..touchLeave.remove(_onTouchEvent);
+
+    if (Multitouch.inputMode == MultitouchInputMode.TOUCH_POINT) {
+      _canvas.on
+        ..touchStart.add(_onTouchEvent)
+        ..touchEnd.add(_onTouchEvent)
+        ..touchMove.add(_onTouchEvent)
+        ..touchEnter.add(_onTouchEvent)
+        ..touchLeave.add(_onTouchEvent);
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
   void _onTouchEvent(html.TouchEvent event)
   {
     event.preventDefault();
 
-    print("event.type -> ${event.type}");
-
     var clientRect = _canvas.getBoundingClientRect();
 
-    for(var changedTouch in event.changedTouches)
-    {
+    for(var changedTouch in event.changedTouches) {
+
       int identifier = changedTouch.identifier;
       InteractiveObject target = null;
       Point stagePoint = new Point(changedTouch.clientX - clientRect.left, changedTouch.clientY - clientRect.top);
       Point localPoint = null;
 
-      if (_touches.containsKey(identifier) == false)
-        _touches[identifier] = new _Touch();
+      target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
-      _Touch touch = _touches[identifier];
+      _Touch touch = _touches.containsKey(identifier) ? _touches[identifier] : new _Touch(target, _touches.length == 0);
 
-      print("  identifier:$identifier, touchPointID:${touch.touchPointID} - x:${stagePoint.x}, y:${stagePoint.y}");
+      //-----------------------------------------------------------------
+
+      if (touch.target != null && touch.target != target) {
+
+        touch.target.dispatchEvent(_touchEvent
+          .._reset(TouchEvent.TOUCH_OUT, true)
+          .._localPoint = (touch.target.stage != null) ? touch.target.globalToLocal(stagePoint): new Point.zero()
+          .._stagePoint = stagePoint
+          .._touchPointID = touch.touchPointID
+          .._isPrimaryTouchPoint = touch.primaryTouchPoint);
+
+        touch.target = null;
+      }
+
+      if (target != null && target != touch.target) {
+
+        target.dispatchEvent(_touchEvent
+          .._reset(TouchEvent.TOUCH_OVER, true)
+          .._localPoint = target.globalToLocal(stagePoint)
+          .._stagePoint = stagePoint
+          .._touchPointID = touch.touchPointID
+          .._isPrimaryTouchPoint = touch.primaryTouchPoint);
+
+        touch.target = target;
+      }
+
+      //-----------------------------------------------------------------
+
+      String touchEventType = null;
+
+      if (event.type == "touchstart") {
+        _touches[identifier] = touch;
+        touchEventType = TouchEvent.TOUCH_BEGIN;
+      }
+
+      if (event.type == "touchend") {
+        _touches.remove(identifier);
+        touchEventType = TouchEvent.TOUCH_END;
+      }
+
+      if (event.type == "touchmove") {
+        touchEventType = TouchEvent.TOUCH_MOVE;
+      }
+
+      if (touchEventType != null && target != null) {
+
+        target.dispatchEvent(_touchEvent
+          .._reset(touchEventType, true)
+          .._localPoint = target.globalToLocal(stagePoint)
+          .._stagePoint = stagePoint
+          .._touchPointID = touch.touchPointID
+          .._isPrimaryTouchPoint = touch.primaryTouchPoint);
+      }
     }
   }
 
@@ -363,13 +412,14 @@ class Stage extends DisplayObjectContainer
     if (event.type == "keyup") keyboardEventType = KeyboardEvent.KEY_UP;
     if (event.type == "keydown") keyboardEventType = KeyboardEvent.KEY_DOWN;
 
-    _keyboardEvent._reset(keyboardEventType, true);
-    _keyboardEvent._altKey = event.altKey;
-    _keyboardEvent._ctrlKey = event.ctrlKey;
-    _keyboardEvent._shiftKey = event.shiftKey;
-    _keyboardEvent._charCode = event.charCode;
-    _keyboardEvent._keyCode = event.keyCode;
-    _keyboardEvent._keyLocation = KeyLocation.STANDARD;
+    _keyboardEvent
+      .._reset(keyboardEventType, true)
+      .._altKey = event.altKey
+      .._ctrlKey = event.ctrlKey
+      .._shiftKey = event.shiftKey
+      .._charCode = event.charCode
+      .._keyCode = event.keyCode
+      .._keyLocation = KeyLocation.STANDARD;
 
     if (event.keyLocation == html.KeyLocation.LEFT) _keyboardEvent._keyLocation = KeyLocation.LEFT;
     if (event.keyLocation == html.KeyLocation.RIGHT) _keyboardEvent._keyLocation = KeyLocation.RIGHT;

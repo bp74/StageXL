@@ -65,6 +65,16 @@ class MouseEvent extends Event
     _deltaY = 0;
   }
 
+  set _localPoint(Point point) {
+    _localX = point.x;
+    _localY = point.y;
+  }
+
+  set _stagePoint(Point point) {
+    _stageX = point.x;
+    _stageY = point.y;
+  }
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
