@@ -45,6 +45,9 @@ class Stage extends DisplayObjectContainer
   KeyboardEvent _keyboardEvent;
   TouchEvent _touchEvent;
 
+  final EventListener _mouseEventListener = _onMouseEvent;
+  final EventListener _touchEventListener = _onTouchEvent;
+
   //-------------------------------------------------------------------------------------------------
 
   Stage(String name, CanvasElement canvas)
@@ -77,11 +80,11 @@ class Stage extends DisplayObjectContainer
     _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
 
     _canvas.on
-      ..mouseDown.add(_onMouseEvent)
-      ..mouseUp.add(_onMouseEvent)
-      ..mouseMove.add(_onMouseEvent)
-      ..mouseOut.add(_onMouseEvent)
-      ..mouseWheel.add(_onMouseWheel);
+      ..mouseDown.add(_mouseEventListener)
+      ..mouseUp.add(_mouseEventListener)
+      ..mouseMove.add(_mouseEventListener)
+      ..mouseOut.add(_mouseEventListener)
+      ..mouseWheel.add(_mouseEventListener);
 
     //---------------------------
     // prepare touch events
@@ -309,19 +312,19 @@ class Stage extends DisplayObjectContainer
   void _onMultitouchInputModeChanged(Event event)
   {
     _canvas.on
-      ..touchStart.remove(_onTouchEvent)
-      ..touchEnd.remove(_onTouchEvent)
-      ..touchMove.remove(_onTouchEvent)
-      ..touchEnter.remove(_onTouchEvent)
-      ..touchLeave.remove(_onTouchEvent);
+      ..touchStart.remove(_touchEventListener)
+      ..touchEnd.remove(_touchEventListener)
+      ..touchMove.remove(_touchEventListener)
+      ..touchEnter.remove(_touchEventListener)
+      ..touchLeave.remove(_touchEventListener);
 
     if (Multitouch.inputMode == MultitouchInputMode.TOUCH_POINT) {
       _canvas.on
-        ..touchStart.add(_onTouchEvent)
-        ..touchEnd.add(_onTouchEvent)
-        ..touchMove.add(_onTouchEvent)
-        ..touchEnter.add(_onTouchEvent)
-        ..touchLeave.add(_onTouchEvent);
+        ..touchStart.add(_touchEventListener)
+        ..touchEnd.add(_touchEventListener)
+        ..touchMove.add(_touchEventListener)
+        ..touchEnter.add(_touchEventListener)
+        ..touchLeave.add(_touchEventListener);
     }
   }
 
