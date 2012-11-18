@@ -28,6 +28,7 @@ class InteractiveObjectEvents extends DisplayObjectEvents
   EventListenerList get touchMove => this[TouchEvent.TOUCH_MOVE];
   EventListenerList get touchBegin => this[TouchEvent.TOUCH_BEGIN];
   EventListenerList get touchEnd => this[TouchEvent.TOUCH_END];
+  EventListenerList get touchCancel => this[TouchEvent.TOUCH_CANCEL];
 
   // keyboard events
 

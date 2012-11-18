@@ -4,6 +4,7 @@ class TouchEvent extends Event
 {
   static const String TOUCH_BEGIN = "touchBegin";
   static const String TOUCH_END = "touchEnd";
+  static const String TOUCH_CANCEL = "touchCancel";
   static const String TOUCH_MOVE = "touchMove";
 
   static const String TOUCH_OVER = "touchOver";

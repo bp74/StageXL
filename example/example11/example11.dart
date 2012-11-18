@@ -49,6 +49,12 @@ void main()
     dots.remove(touchEvent.touchPointID);
   }
 
+  void onTouchCancel(TouchEvent touchEvent) {
+    var dot =  dots[touchEvent.touchPointID];
+    dot.removeFromParent();
+    dots.remove(touchEvent.touchPointID);
+  }
+
   void onTouchMove(TouchEvent touchEvent) {
     var dot =  dots[touchEvent.touchPointID];
     dot.x = touchEvent.stageX;
@@ -69,6 +75,7 @@ void main()
   glass.addTo(stage);
   glass.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
   glass.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
+  glass.addEventListener(TouchEvent.TOUCH_CANCEL, onTouchCancel);
   glass.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
   glass.addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
   glass.addEventListener(TouchEvent.TOUCH_OVER, onTouchOver);

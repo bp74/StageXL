@@ -320,7 +320,8 @@ class Stage extends DisplayObjectContainer
       ..touchEnd.remove(_onTouchEventHandler)
       ..touchMove.remove(_onTouchEventHandler)
       ..touchEnter.remove(_onTouchEventHandler)
-      ..touchLeave.remove(_onTouchEventHandler);
+      ..touchLeave.remove(_onTouchEventHandler)
+      ..touchCancel.remove(_onTouchEventHandler);
 
     if (Multitouch.inputMode == MultitouchInputMode.TOUCH_POINT) {
       _canvas.on
@@ -328,7 +329,8 @@ class Stage extends DisplayObjectContainer
         ..touchEnd.add(_onTouchEventHandler)
         ..touchMove.add(_onTouchEventHandler)
         ..touchEnter.add(_onTouchEventHandler)
-        ..touchLeave.add(_onTouchEventHandler);
+        ..touchLeave.add(_onTouchEventHandler)
+        ..touchCancel.add(_onTouchEventHandler);
     }
   }
 
@@ -389,6 +391,11 @@ class Stage extends DisplayObjectContainer
       if (event.type == "touchend") {
         _touches.remove(identifier);
         touchEventType = TouchEvent.TOUCH_END;
+      }
+
+      if (event.type == "touchcancel") {
+        _touches.remove(identifier);
+        touchEventType = TouchEvent.TOUCH_CANCEL;
       }
 
       if (event.type == "touchmove") {
