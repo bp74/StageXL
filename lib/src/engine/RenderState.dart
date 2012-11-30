@@ -13,13 +13,13 @@ class RenderState
   {
     _context = context;
 
-    _matrices = new List<Matrix>();
-    _alphas = new List<double>();
+    _matrices = new List<Matrix>(100);
+    _alphas = new List<double>(100);
     _depth = 0;
 
     for(int i = 0; i < 100; i++) {
-      _matrices.add(new Matrix.fromIdentity());
-      _alphas.add(1.0);
+      _matrices[i] = new Matrix.fromIdentity();
+      _alphas[i] = 1.0;
     }
   }
 
@@ -43,33 +43,30 @@ class RenderState
 
   void renderDisplayObject(DisplayObject displayObject)
   {
-    _depth++;
+    var d1 = _depth;
+    var d2 = _depth + 1;
 
-    Matrix matrix = _matrices[_depth];
-    matrix.copyFromAndConcat(displayObject._transformationMatrix, _matrices[_depth - 1]);
+    Matrix m1 = _matrices[d1];
+    Matrix m2 = _matrices[d2];
 
-    _context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-    _context.globalAlpha = _alphas[_depth] = _alphas[_depth - 1] * displayObject._alpha;
+    m2.copyFromAndConcat(displayObject._transformationMatrix, m1);
 
-    if (displayObject.mask == null)
-    {
+    _context.setTransform(m2.a, m2.b, m2.c, m2.d, m2.tx, m2.ty);
+    _context.globalAlpha = _alphas[d2] = _alphas[d1] * displayObject._alpha;
+
+    _depth = d2;
+
+    if (displayObject.mask == null) {
       displayObject.render(this);
-    }
-    else
-    {
+    } else {
       _context.save();
       displayObject.mask.render(this);
       displayObject.render(this);
       _context.restore();
     }
 
-    _depth--;
+    _depth = d1;
   }
-
-
-
-
-
 
 }
 
