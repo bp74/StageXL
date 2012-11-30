@@ -5,10 +5,12 @@ import 'dart:json';
 import 'dart:html' as html;
 
 import 'dart:html' show
-  Element, ImageElement, AudioElement, HttpRequest,
+  Element, ImageElement, HttpRequest,
   CanvasElement, CanvasRenderingContext2D, CanvasPattern, CanvasGradient,
-  ArrayBuffer, Uint8ClampedArray, Uint32Array,
-  AudioContext, AudioBuffer, AudioBufferSourceNode, GainNode;
+  ArrayBuffer, Uint8ClampedArray, Uint32Array;
+
+import 'dart:web_audio' show
+  AudioElement, AudioContext, AudioBuffer, AudioBufferSourceNode, GainNode;
 
 //-----------------------------------------------------------------------------
 
