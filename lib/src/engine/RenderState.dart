@@ -45,14 +45,15 @@ class RenderState
   {
     var d1 = _depth;
     var d2 = _depth + 1;
-
-    Matrix m1 = _matrices[d1];
-    Matrix m2 = _matrices[d2];
+    var m1 = _matrices[d1];
+    var m2 = _matrices[d2];
+    var a1 = _alphas[d1];
+    var a2 = _alphas[d2] = displayObject._alpha * a1;
 
     m2.copyFromAndConcat(displayObject._transformationMatrix, m1);
 
     _context.setTransform(m2.a, m2.b, m2.c, m2.d, m2.tx, m2.ty);
-    _context.globalAlpha = _alphas[d2] = _alphas[d1] * displayObject._alpha;
+    _context.globalAlpha = a2;
 
     _depth = d2;
 
