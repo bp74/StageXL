@@ -27,21 +27,24 @@ class AudioElementSound extends Sound
     var sound = new AudioElementSound();
     var loadCompleter = new Completer<Sound>();
 
-    void onAudioCanPlayThrough(event)
-    {
-      if (loadCompleter.future.isComplete == false)
-        loadCompleter.complete(sound);
-    }
+    html.EventListener onAudioCanPlayThroughHandler;
+    html.EventListener onAudioErrorHandler;
 
-    void onAudioError(event)
-    {
-      if (loadCompleter.future.isComplete == false)
-        loadCompleter.completeException("Failed to load audio.");
-    }
+    onAudioCanPlayThroughHandler = onAudioCanPlayThrough(event) {
+      sound._audio.on.canPlayThrough.remove(onAudioCanPlayThroughHandler);
+      sound._audio.on.error.remove(onAudioErrorHandler);
+      loadCompleter.complete(sound);
+    };
+
+    onAudioErrorHandler = onAudioError(event) {
+      sound._audio.on.canPlayThrough.remove(onAudioCanPlayThroughHandler);
+      sound._audio.on.error.remove(onAudioErrorHandler);
+      loadCompleter.completeException("Failed to load audio.");
+    };
 
     sound._audio.src = Sound.adaptAudioUrl(url);
-    sound._audio.on.canPlayThrough.add(onAudioCanPlayThrough);
-    sound._audio.on.error.add(onAudioError);
+    sound._audio.on.canPlayThrough.add(onAudioCanPlayThroughHandler);
+    sound._audio.on.error.add(onAudioErrorHandler);
     sound._audio.load();
 
     return loadCompleter.future;
@@ -70,15 +73,11 @@ class AudioElementSound extends Sound
   {
     AudioElement audio;
 
-    if (_audioPool.length == 0)
-    {
+    if (_audioPool.length == 0) {
       audio = _audio.clone(true);
       audio.on.ended.add(_onAudioEnded);
-    }
-    else
-    {
-      audio = _audioPool[0];
-      _audioPool.removeAt(0);
+    } else {
+      audio = _audioPool.removeAt(0);
     }
 
     _soundChannels.add(soundChannel);
