@@ -16,7 +16,7 @@ class AudioElementSound extends Sound
     _audioPool = new List<AudioElement>();
     _audioPool.add(_audio);
 
-    html.document.body.elements.add(_audio);
+    html.document.body.children.add(_audio);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -30,13 +30,13 @@ class AudioElementSound extends Sound
     html.EventListener onAudioCanPlayThroughHandler;
     html.EventListener onAudioErrorHandler;
 
-    onAudioCanPlayThroughHandler = onAudioCanPlayThrough(event) {
+    onAudioCanPlayThroughHandler = (event) {
       sound._audio.on.canPlayThrough.remove(onAudioCanPlayThroughHandler);
       sound._audio.on.error.remove(onAudioErrorHandler);
       loadCompleter.complete(sound);
     };
 
-    onAudioErrorHandler = onAudioError(event) {
+    onAudioErrorHandler = (event) {
       sound._audio.on.canPlayThrough.remove(onAudioCanPlayThroughHandler);
       sound._audio.on.error.remove(onAudioErrorHandler);
       loadCompleter.completeException("Failed to load audio.");
