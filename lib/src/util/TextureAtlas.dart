@@ -53,7 +53,7 @@ class TextureAtlas
               parseFrame(frame["filename"], frame);
 
           if (frames is Map)
-            for(String filename in frames.getKeys())
+            for(String filename in frames.keys)
                parseFrame(filename, frames[filename]);
 
           textureAtlas._imageElement.on.load.add((e) => completer.complete(textureAtlas));
