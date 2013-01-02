@@ -161,8 +161,8 @@ class BitmapData implements BitmapDrawable
     if (matrix != null) {
       var warp = new Warp();
       warp.matrix = matrix;
-      warp.addChild(source);
-      warp.render(renderState);
+      warp.addChild(source); 
+      renderState.renderDisplayObject(warp);
     } else {
       source.render(renderState);
     }
