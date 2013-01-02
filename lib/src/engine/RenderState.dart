@@ -9,18 +9,27 @@ class RenderState
 
   int _depth;
 
-  RenderState.fromCanvasRenderingContext2D(CanvasRenderingContext2D context)
+  RenderState.fromCanvasRenderingContext2D(CanvasRenderingContext2D context, [Matrix matrix])
   {
     _context = context;
-
     _matrices = new List<Matrix>(100);
     _alphas = new List<double>(100);
-    _depth = 0;
 
     for(int i = 0; i < 100; i++) {
       _matrices[i] = new Matrix.fromIdentity();
       _alphas[i] = 1.0;
     }
+
+    _depth = 1;
+    
+    if (matrix != null)
+      _matrices[0].copyFrom(matrix);
+    
+    var m = _matrices[0];
+    var a = _alphas[0];
+    
+    _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
+    _context.globalAlpha = a;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -32,11 +41,14 @@ class RenderState
 
   void reset()
   {
-    _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    _context.globalAlpha = 1;
-
+    _depth = 1;
+    
+    var m = _matrices[0];
+    var a = _alphas[0];
+    
+    _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
+    _context.globalAlpha = a;
     _context.clearRect(0, 0, _context.canvas.width, _context.canvas.height);
-    _depth = 0;
   }
 
   //-------------------------------------------------------------------------------------------------
