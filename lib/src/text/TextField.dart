@@ -133,26 +133,35 @@ class TextField extends InteractiveObject
       String line;
 
       // ToDo: very simple implementation, we can do better ...
-
-      for(String word in _text.split(" "))
+      
+      for(String paragraph in _text.replaceAll('\r', '').split('\n')) 
       {
-        previousLength = lineBuffer.length;
-        lineBuffer.add((previousLength > 0) ? " $word": word);
-        line = lineBuffer.toString();
-
-        if (_context.measureText(line).width > _canvasWidth)
+        for(String word in paragraph.split(' ')) 
         {
-          if (previousLength > 0) line = line.substring(0, previousLength); else word = "";
-
-          _linesText.add(line);
-
+          previousLength = lineBuffer.length;
+          lineBuffer.add((previousLength > 0) ? " $word": word);
+          line = lineBuffer.toString();
+  
+          if (_context.measureText(line).width > _canvasWidth)
+          {
+            if (previousLength > 0) 
+              line = line.substring(0, previousLength); 
+            else 
+              word = "";
+  
+            _linesText.add(line);
+  
+            lineBuffer.clear();
+            lineBuffer.add(word);
+          }
+        }
+  
+        if (lineBuffer.isEmpty == false)
+        {
+          _linesText.add(lineBuffer.toString());
           lineBuffer.clear();
-          lineBuffer.add(word);
         }
       }
-
-      if (lineBuffer.isEmpty == false)
-        _linesText.add(lineBuffer.toString());
     }
 
     //---------------------------
