@@ -20,7 +20,7 @@ class RenderState
       _alphas[i] = 1.0;
     }
 
-    _depth = 1;
+    _depth = 0;
     
     if (matrix != null)
       _matrices[0].copyFrom(matrix);
@@ -41,7 +41,7 @@ class RenderState
 
   void reset()
   {
-    _depth = 1;
+    _depth = 0;
     
     var m = _matrices[0];
     var a = _alphas[0];
