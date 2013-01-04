@@ -13,10 +13,10 @@ class _TweenProperty
 
 /**
  * The [Tween] class animates the properties of a [DisplayObject].
- * Use one of the [TransitionType] functions or create your own.
+ * Use one of the [TransitionFunction] functions or create your own.
  * Add the instance to the [Juggler] to start the animation.
  *
- *     var tween = new Tween(mySprite, 1.0, TransitionType.easeInCubic);
+ *     var tween = new Tween(mySprite, 1.0, TransitionFunction.easeInCubic);
  *     tween.delay = 0.5;
  *     tween.animate("alpha", 0.0);
  *     tween.onComplete = () => print('completed');
@@ -26,7 +26,7 @@ class _TweenProperty
 class Tween implements Animatable
 {
   DisplayObject _displayObject;
-  Function _transitionType;
+  Function _transitionFunction;
 
   List<_TweenProperty> _tweenProperties;
 
@@ -40,10 +40,10 @@ class Tween implements Animatable
   bool _roundToInt;
   bool _started;
 
-  Tween(DisplayObject displayObject, num time, [num transitionType(num ratio)])
+  Tween(DisplayObject displayObject, num time, [num transitionFunction(num ratio)])
   {
     _displayObject = displayObject;
-    _transitionType = (transitionType != null) ? transitionType : TransitionType.linear;
+    _transitionFunction = (transitionFunction != null) ? transitionFunction : TransitionFunction.linear;
 
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
@@ -140,7 +140,7 @@ class Tween implements Animatable
         //-------------
 
         num ratio = _currentTime / _totalTime;
-        num transition = _transitionType(ratio);
+        num transition = _transitionFunction(ratio);
 
         for(int i = 0; i < _tweenProperties.length; i++)
         {

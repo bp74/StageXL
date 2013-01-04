@@ -1,7 +1,7 @@
 part of dartflash;
 
 /**
- * The [TransitionType] class provides common transition functions used for
+ * The [TransitionFunction] class provides common transition functions used for
  * [Transition] and [Tween] animations.
  *
  * A transition function takes the [ratio] which is in the range from 0.0 to 1.0
@@ -14,7 +14,7 @@ part of dartflash;
  * <http://www.dartflash.com/docs/juggler/transitions.html>
  **/
 
-class TransitionType
+class TransitionFunction
 {
   // Standard
 

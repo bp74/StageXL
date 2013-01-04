@@ -17,7 +17,7 @@ import 'dart:web_audio' show
 part 'src/animation/DelayedCall.dart';
 part 'src/animation/Animatable.dart';
 part 'src/animation/Juggler.dart';
-part 'src/animation/TransitionType.dart';
+part 'src/animation/TransitionFunction.dart';
 part 'src/animation/Tween.dart';
 part 'src/animation/Transition.dart';
 

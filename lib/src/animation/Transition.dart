@@ -3,7 +3,7 @@ part of dartflash;
 /**
  * The [Transition] class animates a value by calling the [onUpdate] function continuously.
  *
- *     var transition = new Transition(0.0, 100.0, 1.0, TransitionType.linear);
+ *     var transition = new Transition(0.0, 100.0, 1.0, TransitionFunction.linear);
  *     transition.onUpdate = (value) => print('the value changed to $value');
  *     renderLoop.juggler.add(transition);
  **/
@@ -14,7 +14,7 @@ class Transition extends Animatable
   num _targetValue;
   num _currentValue;
 
-  Function _transitionType;
+  Function _transitionFunction;
 
   Function _onStart;
   Function _onUpdate;
@@ -26,13 +26,13 @@ class Transition extends Animatable
   bool _roundToInt;
   bool _started;
 
-  Transition(num startValue, num targetValue, num time, [num transitionType(num ratio)])
+  Transition(num startValue, num targetValue, num time, [num transitionFunction(num ratio)])
   {
     _startValue = startValue;
     _targetValue = targetValue;
     _currentValue = startValue;
 
-    _transitionType = (transitionType != null) ? transitionType : TransitionType.linear;
+    _transitionFunction = (transitionFunction != null) ? transitionFunction : TransitionFunction.linear;
 
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
@@ -65,7 +65,7 @@ class Transition extends Animatable
         //-------------
 
         num ratio = _currentTime / _totalTime;
-        num transition = _transitionType(ratio);
+        num transition = _transitionFunction(ratio);
 
         _currentValue = _startValue + transition * (_targetValue - _startValue);
 

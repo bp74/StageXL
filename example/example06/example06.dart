@@ -46,12 +46,12 @@ void main()
   // Add some animation
   //------------------------------------------------------------------
 
-  Tween tween1 = new Tween(shape, 3.0, TransitionType.easeInOutBack);
+  Tween tween1 = new Tween(shape, 3.0, TransitionFunction.easeInOutBack);
   tween1.animate("scaleX", 2.5);
   tween1.animate("scaleY", 2.5);
   tween1.delay = 1.0;
 
-  Tween tween2 = new Tween(shape, 3.0, TransitionType.easeInOutBack);
+  Tween tween2 = new Tween(shape, 3.0, TransitionFunction.easeInOutBack);
   tween2.animate("scaleX", 1);
   tween2.animate("scaleY", 1);
   tween2.delay = 5.0;
