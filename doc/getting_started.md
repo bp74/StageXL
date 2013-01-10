@@ -35,7 +35,7 @@ The following code will show you how to initialize the main drawing area (Stage)
 
 Please take a look at the example directory for more advanced examples. Those examples will show you the basic building blocks of dartflash. If you have some experience with the Adobe Flash API you will be pleasantly surprised :) 
 
-There is another github repository which contains a game which was ported from Adobe Flash to HTML5 using the dartflash library. Because of the similarity between Dart and ActionScript and by using the dartflash library the port was finished in only 6 hours. The full source code is available here: <https://github.com/bp74/dartflash-escape>.
+There is another github repository which contains a game which was ported from Adobe Flash to HTML5 using the dartflash library. Because of the similarity between Dart and ActionScript and by using the dartflash library the port was finished in only 6 hours. The full source code is available here: <https://github.com/bp74/dartflash_escape>.
 
 
 ## Package Import
