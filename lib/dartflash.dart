@@ -1,7 +1,8 @@
 library dartflash;
 
+import 'dart:async';
 import 'dart:math';
-import 'dart:json';
+import 'dart:json' as json;
 import 'dart:html' as html;
 
 import 'dart:html' show

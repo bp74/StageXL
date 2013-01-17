@@ -30,16 +30,14 @@ class Resource
   {
     Future<BitmapData> future = BitmapData.loadImage(url);
     _loaderPendingCount++;
-
-    future.then((BitmapData bitmapData)
-    {
+    
+    future.then((BitmapData bitmapData) {
       _images[name] = bitmapData;
       _loaderPendingCount--;
       _loaderCheck();
     });
-
-    future.handleException((e)
-    {
+    
+    future.catchError((AsyncError error) {
       _loaderErrorCount++;
       _loaderPendingCount--;
       _loaderCheck();
@@ -58,7 +56,7 @@ class Resource
       _loaderCheck();
     });
 
-    future.handleException((e)
+    future.catchError((AsyncError error)
     {
       _loaderErrorCount++;
       _loaderPendingCount--;
@@ -78,7 +76,7 @@ class Resource
       _loaderCheck();
     });
 
-    future.handleException((e)
+    future.catchError((AsyncError error)
     {
       _loaderErrorCount++;
       _loaderPendingCount--;
@@ -144,7 +142,7 @@ class Resource
       if (_loaderErrorCount == 0)
         _loader.complete(this);
       else
-        _loader.completeException(this);
+        _loader.completeError(new StateError("Error loading resources."));
     }
   }
 

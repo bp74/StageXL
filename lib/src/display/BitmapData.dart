@@ -76,7 +76,7 @@ class BitmapData implements BitmapDrawable
 
     var image = new ImageElement();
     image.on.load.add((event) => completer.complete(new BitmapData.fromImageElement(image)));
-    image.on.error.add((event) => completer.completeException("Failed to load image."));
+    image.on.error.add((event) => completer.completeError(new StateError("Error loading image.")));
     image.src = url;
 
     return completer.future;

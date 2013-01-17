@@ -42,7 +42,7 @@ abstract class Sound
 
     //---------------------------------------
 
-    RegExp regex = new RegExp(r"\.(ogg|mp3|wav)$", multiLine:false, ignoreCase:true);
+    RegExp regex = new RegExp(r"\.(ogg|mp3|wav)$", multiLine:false, caseSensitive:false);
     Match match = regex.firstMatch(url);
 
     if (match == null)

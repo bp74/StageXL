@@ -1,5 +1,7 @@
 library example04;
 
+import 'dart:async';
+import 'dart:math';
 import 'dart:html' as html;
 import 'package:dartflash/dartflash.dart';
 
@@ -80,8 +82,5 @@ void main()
       clickCount++;
     });
   });
-
-  // ToDo: handle the exception correctly
-  resourceLoader.handleException((exception) => true);
 
 }

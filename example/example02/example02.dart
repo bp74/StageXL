@@ -1,5 +1,7 @@
 library example02;
 
+import 'dart:async';
+import 'dart:math';
 import 'dart:html' as html;
 import 'package:dartflash/dartflash.dart';
 
@@ -45,8 +47,4 @@ void main()
     sun.y = 50;
     stage.addChild(sun);
   });
-
-  // ToDo: handle the exception correctly
-  resourceLoader.handleException((exception) => true);
-
 }
