@@ -53,7 +53,7 @@ class BlurFilter extends BitmapFilter
 
     _premultiplyAlpha(sourceData);
 
-    List<int> buffer = new List<int>(1024);
+    List<int> buffer = new List<int>.fixedLength(1024);
 
     //--------------------------------------------------
     // blur vertical
