@@ -1,5 +1,7 @@
 library example03;
 
+import 'dart:async';
+import 'dart:math';
 import 'dart:html' as html;
 import 'package:dartflash/dartflash.dart';
 
@@ -53,8 +55,5 @@ void main()
     }
 
   });
-
-  // ToDo: handle the exception correctly
-  resourceLoader.handleException((exception) => true);
 
 }

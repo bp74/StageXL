@@ -88,8 +88,8 @@ class ParticleSystem extends DisplayObject implements Animatable
     _particles = new List<_Particle>();
     _particleCount = 0;
 
-    var pex = JSON.parse(jsonConfig);
-
+    var pex = json.parse(jsonConfig);
+    
     emitterType = pex["emitterType"].toInt();
     emitterX = pex["sourcePosition"]["x"] as num;
     emitterY = pex["sourcePosition"]["y"] as num;

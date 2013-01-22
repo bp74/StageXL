@@ -12,8 +12,8 @@ class RenderState
   RenderState.fromCanvasRenderingContext2D(CanvasRenderingContext2D context, [Matrix matrix])
   {
     _context = context;
-    _matrices = new List<Matrix>(100);
-    _alphas = new List<double>(100);
+    _matrices = new List<Matrix>.fixedLength(100);
+    _alphas = new List<double>.fixedLength(100);
 
     for(int i = 0; i < 100; i++) {
       _matrices[i] = new Matrix.fromIdentity();

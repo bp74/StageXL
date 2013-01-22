@@ -1,5 +1,6 @@
 library example05;
 
+import 'dart:async';
 import 'dart:math';
 import 'dart:html' as html;
 import 'package:dartflash/dartflash.dart';
@@ -60,8 +61,5 @@ void main()
     renderLoop.juggler.add(tweenUp);
     renderLoop.juggler.add(tweenRotation);
   });
-
-  // ToDo: handle the exception correctly
-  resourceLoader.handleException((exception) => true);
 
 }

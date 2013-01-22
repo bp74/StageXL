@@ -44,7 +44,7 @@ class TextureAtlas
             textureAtlas._frames.add(taf);
           }
 
-          var data = JSON.parse(request.responseText);
+          var data = json.parse(request.responseText);
           var frames = data["frames"];
           var meta = data["meta"];
 
@@ -57,11 +57,11 @@ class TextureAtlas
                parseFrame(filename, frames[filename]);
 
           textureAtlas._imageElement.on.load.add((e) => completer.complete(textureAtlas));
-          textureAtlas._imageElement.on.error.add((e) => completer.completeException("Failed to load image."));
+          textureAtlas._imageElement.on.error.add((e) => completer.completeError(new StateError("Failed to load image.")));
           textureAtlas._imageElement.src = _replaceFilename(url, meta["image"]);
         });
 
-        request.on.error.add((event) => completer.completeException("Failed to load json file."));
+        request.on.error.add((event) => completer.completeError(new StateError("Failed to load json file.")));
         request.send();
 
         break;
@@ -121,14 +121,14 @@ class TextureAtlas
 
   static String _getFilenameWithoutExtension(String filename)
   {
-    RegExp regex = new RegExp(r"(.+?)(\.[^.]*$|$)", multiLine:false, ignoreCase:true);
+    RegExp regex = new RegExp(r"(.+?)(\.[^.]*$|$)", multiLine:false, caseSensitive:false);
     Match match = regex.firstMatch(filename);
     return match.group(1);
   }
 
   static String _replaceFilename(String url, String filename)
   {
-    RegExp regex = new RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))", multiLine:false, ignoreCase:true);
+    RegExp regex = new RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))", multiLine:false, caseSensitive:false);
     Match match = regex.firstMatch(url);
     String path = match.group(1);
     return (path == null) ? filename : "$path$filename";
