@@ -28,16 +28,13 @@ class Resource
 
   void addImage(String name, String url)
   {
-    Future<BitmapData> future = BitmapData.loadImage(url);
     _loaderPendingCount++;
     
-    future.then((BitmapData bitmapData) {
+    BitmapData.loadImage(url).then((BitmapData bitmapData) {
       _images[name] = bitmapData;
       _loaderPendingCount--;
       _loaderCheck();
-    });
-    
-    future.catchError((AsyncError error) {
+    }).catchError((AsyncError error) {
       _loaderErrorCount++;
       _loaderPendingCount--;
       _loaderCheck();
@@ -46,18 +43,13 @@ class Resource
 
   void addSound(String name, String url)
   {
-    Future<Sound> future = Sound.loadAudio(url);
     _loaderPendingCount++;
 
-    future.then((Sound sound)
-    {
+    Sound.loadAudio(url).then((Sound sound) {
       _sounds[name] = sound;
       _loaderPendingCount--;
       _loaderCheck();
-    });
-
-    future.catchError((AsyncError error)
-    {
+    }).catchError((AsyncError error) {
       _loaderErrorCount++;
       _loaderPendingCount--;
       _loaderCheck();
@@ -66,18 +58,13 @@ class Resource
 
   void addTextureAtlas(String name, String url, String textureAtlasFormat)
   {
-    Future<TextureAtlas> future = TextureAtlas.load(url, textureAtlasFormat);
     _loaderPendingCount++;
 
-    future.then((TextureAtlas textureAtlas)
-    {
+    TextureAtlas.load(url, textureAtlasFormat).then((TextureAtlas textureAtlas) {
       _textureAtlases[name] = textureAtlas;
       _loaderPendingCount--;
       _loaderCheck();
-    });
-
-    future.catchError((AsyncError error)
-    {
+    }).catchError((AsyncError error) {
       _loaderErrorCount++;
       _loaderPendingCount--;
       _loaderCheck();
