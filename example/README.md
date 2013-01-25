@@ -46,3 +46,8 @@ With filters you can change the appearance of Bitmaps.
 
 Work with Touch Events.
 
+##example12 - Flump
+
+Flash timeline animations converted with &apos;Flump&apos;
+http://threerings.github.com/flump/
+

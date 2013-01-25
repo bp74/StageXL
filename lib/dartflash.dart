@@ -80,6 +80,7 @@ part 'src/displayEx/TimeGauge.dart';
 part 'src/displayEx/GlassPlate.dart';
 part 'src/displayEx/ParticleSystem.dart';
 part 'src/displayEx/Warp.dart';
+part 'src/displayEx/Flump.dart';
 
 part 'src/media/Sound.dart';
 part 'src/media/SoundChannel.dart';

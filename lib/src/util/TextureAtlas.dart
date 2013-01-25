@@ -119,23 +119,4 @@ class TextureAtlas
     return names;
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  static String _getFilenameWithoutExtension(String filename)
-  {
-    RegExp regex = new RegExp(r"(.+?)(\.[^.]*$|$)", multiLine:false, caseSensitive:false);
-    Match match = regex.firstMatch(filename);
-    return match.group(1);
-  }
-
-  static String _replaceFilename(String url, String filename)
-  {
-    RegExp regex = new RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))", multiLine:false, caseSensitive:false);
-    Match match = regex.firstMatch(url);
-    String path = match.group(1);
-    return (path == null) ? filename : "$path$filename";
-  }
-
-
 }

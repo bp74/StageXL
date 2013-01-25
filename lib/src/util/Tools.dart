@@ -25,6 +25,25 @@ String _color2rgba(int color)
 
 //-------------------------------------------------------------------------------------------------
 
+String _getFilenameWithoutExtension(String filename)
+{
+  RegExp regex = new RegExp(r"(.+?)(\.[^.]*$|$)", multiLine:false, caseSensitive:false);
+  Match match = regex.firstMatch(filename);
+  return match.group(1);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+String _replaceFilename(String url, String filename)
+{
+  RegExp regex = new RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))", multiLine:false, caseSensitive:false);
+  Match match = regex.firstMatch(url);
+  String path = match.group(1);
+  return (path == null) ? filename : "$path$filename";
+}  
+
+//-------------------------------------------------------------------------------------------------
+
 bool _checkLittleEndianSystem()
 {
   var canvas = new CanvasElement(width: 1, height: 1);
