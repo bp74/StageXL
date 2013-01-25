@@ -80,12 +80,11 @@ class Stage extends DisplayObjectContainer
 
     _onMouseEventHandler = _onMouseEvent;
 
-    _canvas.on
-      ..mouseDown.add(_onMouseEventHandler)
-      ..mouseUp.add(_onMouseEventHandler)
-      ..mouseMove.add(_onMouseEventHandler)
-      ..mouseOut.add(_onMouseEventHandler)
-      ..mouseWheel.add(_onMouseEventHandler);
+    _canvas.onMouseDown.listen(_onMouseEventHandler);
+    _canvas.onMouseUp.listen(_onMouseEventHandler);
+    _canvas.onMouseMove.listen(_onMouseEventHandler);
+    _canvas.onMouseOut.listen(_onMouseEventHandler);
+    _canvas.onMouseWheel.listen(_onMouseEventHandler);
 
     //---------------------------
     // prepare touch events
@@ -103,9 +102,9 @@ class Stage extends DisplayObjectContainer
 
     _keyboardEvent = new KeyboardEvent(KeyboardEvent.KEY_DOWN, true);
 
-    _canvas.on.keyDown.add(_onKeyEvent);
-    _canvas.on.keyUp.add(_onKeyEvent);
-    _canvas.on.keyPress.add(_onTextEvent);
+    _canvas.onKeyDown.listen(_onKeyEvent);
+    _canvas.onKeyUp.listen(_onKeyEvent);
+    _canvas.onKeyPress.listen(_onTextEvent);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -312,24 +311,21 @@ class Stage extends DisplayObjectContainer
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  List<StreamSubscription<TouchEvent>> _touchEventSubscriptions = [];
+  
   void _onMultitouchInputModeChanged(Event event)
   {
-    _canvas.on
-      ..touchStart.remove(_onTouchEventHandler)
-      ..touchEnd.remove(_onTouchEventHandler)
-      ..touchMove.remove(_onTouchEventHandler)
-      ..touchEnter.remove(_onTouchEventHandler)
-      ..touchLeave.remove(_onTouchEventHandler)
-      ..touchCancel.remove(_onTouchEventHandler);
-
+    _touchEventSubscriptions.forEach((s) => s.cancel());
+        
     if (Multitouch.inputMode == MultitouchInputMode.TOUCH_POINT) {
-      _canvas.on
-        ..touchStart.add(_onTouchEventHandler)
-        ..touchEnd.add(_onTouchEventHandler)
-        ..touchMove.add(_onTouchEventHandler)
-        ..touchEnter.add(_onTouchEventHandler)
-        ..touchLeave.add(_onTouchEventHandler)
-        ..touchCancel.add(_onTouchEventHandler);
+      _touchEventSubscriptions = [
+        _canvas.onTouchStart.listen(_onTouchEventHandler),
+        _canvas.onTouchEnd.listen(_onTouchEventHandler),
+        _canvas.onTouchMove.listen(_onTouchEventHandler),
+        _canvas.onTouchEnter.listen(_onTouchEventHandler),
+        _canvas.onTouchLeave.listen(_onTouchEventHandler),
+        _canvas.onTouchCancel.listen(_onTouchEventHandler)
+      ];
     }
   }
 
