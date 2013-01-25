@@ -111,9 +111,6 @@ class DropShadowFilter extends BitmapFilter
     //--------------------------------------------------
     // set color
 
-    // ToDo: We can optimize this code if we can use Uint32Arrays.
-    // With a 32 bit array we can set all channels at once.
-
     int aColor = (alpha * 256).toInt();
     int rColor = (color >> 16) & 0xFF;
     int gColor = (color >>  8) & 0xFF;

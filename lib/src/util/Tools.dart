@@ -39,7 +39,7 @@ bool _checkLittleEndianSystem()
 
 //-------------------------------------------------------------------------------------------------
 
-void _premultiplyAlpha(Uint8ClampedArray data)
+void _premultiplyAlpha(List<int> data)
 {
   if (_isLittleEndianSystem) {
     for(var i = 0; i <= data.length - 4; i += 4) {
@@ -60,7 +60,7 @@ void _premultiplyAlpha(Uint8ClampedArray data)
 
 //-------------------------------------------------------------------------------------------------
 
-void _unpremultiplyAlpha(Uint8ClampedArray data)
+void _unpremultiplyAlpha(List<int> data)
 {
   if (_isLittleEndianSystem) {
     for(var i = 0; i <= data.length - 4; i += 4) {

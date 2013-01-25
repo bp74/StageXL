@@ -18,22 +18,21 @@ class WebAudioApiSound extends Sound
     var sound = new WebAudioApiSound();
     var loadCompleter = new Completer<Sound>();
     var request = new HttpRequest();
-    var onRequestLoad = null;
-    var onRequestError = null;
+    
+    StreamSubscription onLoadSubscription = null;
+    StreamSubscription onErrorSubscription = null; 
 
-    onRequestLoad = (event) { 
+    void onRequestLoad(event) { 
       
-      request.on.load.remove(onRequestLoad);
-      request.on.error.remove(onRequestError);
+      onLoadSubscription.cancel();
+      onErrorSubscription.cancel();
       
-      void audioBufferLoaded(AudioBuffer buffer)
-      {
+      void audioBufferLoaded(AudioBuffer buffer) {
         sound._buffer = buffer;
         loadCompleter.complete(sound);
       }
 
-      void audioBufferError(error)
-      {
+      void audioBufferError(error) {
         loadCompleter.completeError(new StateError("Failed to decode audio."));
       }
             
@@ -41,18 +40,19 @@ class WebAudioApiSound extends Sound
       audioContext.decodeAudioData(request.response, audioBufferLoaded, audioBufferError);
     };
     
-    onRequestError = (event) {
+    void onRequestError (event) {
       
-      request.on.load.remove(onRequestLoad);
-      request.on.error.remove(onRequestError);
+      onLoadSubscription.cancel();
+      onErrorSubscription.cancel();
       
       loadCompleter.completeError(new StateError("Failed to load audio."));
     };
 
+    onLoadSubscription = request.onLoad.listen(onRequestLoad);
+    onErrorSubscription = request.onError.listen(onRequestError);
+    
     request.open('GET', Sound.adaptAudioUrl(url), true);
     request.responseType = 'arraybuffer';
-    request.on.load.add(onRequestLoad);
-    request.on.error.add(onRequestError);
     request.send();
   
     return loadCompleter.future;

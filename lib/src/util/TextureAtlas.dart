@@ -23,28 +23,23 @@ class TextureAtlas
       case TextureAtlasFormat.JSON:
       case TextureAtlasFormat.JSONARRAY:
 
-        var request = new HttpRequest();
-
-        request.open('GET', url, true);
-
-        request.on.load.add((event)
-        {
-          void parseFrame(String filename, Map frame) {
-            var frameName = _getFilenameWithoutExtension(filename);
-            var taf = new TextureAtlasFrame(frameName, textureAtlas);
-            taf._frameX = frame["frame"]["x"].toInt();
-            taf._frameY = frame["frame"]["y"].toInt();
-            taf._frameWidth = frame["frame"]["w"].toInt();
-            taf._frameHeight = frame["frame"]["h"].toInt();
-            taf._offsetX = frame["spriteSourceSize"]["x"].toInt();
-            taf._offsetY = frame["spriteSourceSize"]["y"].toInt();
-            taf._originalWidth = frame["sourceSize"]["w"].toInt();
-            taf._originalHeight = frame["sourceSize"]["h"].toInt();
-            taf._rotated = frame["rotated"] as bool;
-            textureAtlas._frames.add(taf);
-          }
-
-          var data = json.parse(request.responseText);
+        void parseFrame(String filename, Map frame) {
+          var frameName = _getFilenameWithoutExtension(filename);
+          var taf = new TextureAtlasFrame(frameName, textureAtlas);
+          taf._frameX = frame["frame"]["x"].toInt();
+          taf._frameY = frame["frame"]["y"].toInt();
+          taf._frameWidth = frame["frame"]["w"].toInt();
+          taf._frameHeight = frame["frame"]["h"].toInt();
+          taf._offsetX = frame["spriteSourceSize"]["x"].toInt();
+          taf._offsetY = frame["spriteSourceSize"]["y"].toInt();
+          taf._originalWidth = frame["sourceSize"]["w"].toInt();
+          taf._originalHeight = frame["sourceSize"]["h"].toInt();
+          taf._rotated = frame["rotated"] as bool;
+          textureAtlas._frames.add(taf);
+        }
+        
+        void onLoad(event) {
+          var data = json.parse(event.target.responseText);
           var frames = data["frames"];
           var meta = data["meta"];
 
@@ -56,13 +51,21 @@ class TextureAtlas
             for(String filename in frames.keys)
                parseFrame(filename, frames[filename]);
 
-          textureAtlas._imageElement.on.load.add((e) => completer.complete(textureAtlas));
-          textureAtlas._imageElement.on.error.add((e) => completer.completeError(new StateError("Failed to load image.")));
-          textureAtlas._imageElement.src = _replaceFilename(url, meta["image"]);
-        });
+          textureAtlas._imageElement
+            ..onLoad.listen((e) => completer.complete(textureAtlas))
+            ..onError.listen((e) => completer.completeError(new StateError("Failed to load image.")))
+            ..src = _replaceFilename(url, meta["image"]);
+        }
+        
+        void onError(event) {
+          completer.completeError(new StateError("Failed to load json file."));
+        }
 
-        request.on.error.add((event) => completer.completeError(new StateError("Failed to load json file.")));
-        request.send();
+        var request = new HttpRequest()
+          ..onLoad.listen(onLoad)
+          ..onError.listen(onError)
+          ..open('GET', url, true)          
+          ..send();
 
         break;
     }

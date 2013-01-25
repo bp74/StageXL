@@ -75,8 +75,8 @@ class BitmapData implements BitmapDrawable
     Completer<BitmapData> completer = new Completer<BitmapData>();
 
     var image = new ImageElement();
-    image.on.load.add((event) => completer.complete(new BitmapData.fromImageElement(image)));
-    image.on.error.add((event) => completer.completeError(new StateError("Error loading image.")));
+    image.onLoad.listen((event) => completer.complete(new BitmapData.fromImageElement(image)));
+    image.onError.listen((event) => completer.completeError(new StateError("Error loading image.")));
     image.src = url;
 
     return completer.future;
@@ -178,7 +178,9 @@ class BitmapData implements BitmapDrawable
 
   int getPixel(int x, int y)
   {
-    Uint8ClampedArray data = _getContext().getImageData(x, y, 1, 1).data;
+    var context = _getContext();
+    var imageData = context.getImageData(x, y, 1, 1);
+    var data = imageData.data;
 
     if (_isLittleEndianSystem) {
       return (data[0] << 16) + (data[1] << 8) + (data[2] << 0);
@@ -192,7 +194,9 @@ class BitmapData implements BitmapDrawable
 
   int getPixel32(int x, int y)
   {
-    Uint8ClampedArray data = _getContext().getImageData(x, y, 1, 1).data;
+    var context = _getContext();
+    var imageData = context.getImageData(x, y, 1, 1);
+    var data = imageData.data;
 
     if (_isLittleEndianSystem) {
       return (data[0] << 16) + (data[1] << 8) + (data[2] << 0) + (data[3] << 24);

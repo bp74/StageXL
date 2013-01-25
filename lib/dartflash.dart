@@ -7,8 +7,7 @@ import 'dart:html' as html;
 
 import 'dart:html' show
   Element, ImageElement, AudioElement, HttpRequest,
-  CanvasElement, CanvasRenderingContext2D, CanvasPattern, CanvasGradient,
-  ArrayBuffer, Uint8ClampedArray, Uint32Array;
+  CanvasElement, CanvasRenderingContext2D, CanvasPattern, CanvasGradient;
 
 import 'dart:web_audio' show
   AudioContext, AudioBuffer, AudioBufferSourceNode, GainNode;

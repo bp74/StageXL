@@ -11,7 +11,7 @@ class AudioElementSound extends Sound
     _soundChannels = new List<AudioElementSoundChannel>();
 
     _audio = new AudioElement();
-    _audio.on.ended.add(_onAudioEnded);
+    _audio.onEnded.listen(_onAudioEnded);
 
     _audioPool = new List<AudioElement>();
     _audioPool.add(_audio);
@@ -25,27 +25,29 @@ class AudioElementSound extends Sound
   static Future<Sound> loadAudio(String url)
   {
     var sound = new AudioElementSound();
+    var audio = sound._audio;
     var loadCompleter = new Completer<Sound>();
 
-    html.EventListener onAudioCanPlayThroughHandler;
-    html.EventListener onAudioErrorHandler;
+    StreamSubscription onCanPlayThroughSubscription;
+    StreamSubscription onErrorSubscription;
 
-    onAudioCanPlayThroughHandler = (event) {
-      sound._audio.on.canPlayThrough.remove(onAudioCanPlayThroughHandler);
-      sound._audio.on.error.remove(onAudioErrorHandler);
+    onCanPlayThrough(event) {
+      onCanPlayThroughSubscription.cancel();
+      onErrorSubscription.cancel();
       loadCompleter.complete(sound);
     };
 
-    onAudioErrorHandler = (event) {
-      sound._audio.on.canPlayThrough.remove(onAudioCanPlayThroughHandler);
-      sound._audio.on.error.remove(onAudioErrorHandler);
-      loadCompleter.completeException("Failed to load audio.");
+    onError(event) {
+      onCanPlayThroughSubscription.cancel();
+      onErrorSubscription.cancel();
+      loadCompleter.completeError(new StateError("Failed to load audio."));
     };
 
-    sound._audio.src = Sound.adaptAudioUrl(url);
-    sound._audio.on.canPlayThrough.add(onAudioCanPlayThroughHandler);
-    sound._audio.on.error.add(onAudioErrorHandler);
-    sound._audio.load();
+    onCanPlayThroughSubscription = audio.onCanPlayThrough.listen(onCanPlayThrough);
+    onErrorSubscription = audio.onError.listen(onError);
+    
+    audio.src = Sound.adaptAudioUrl(url);
+    audio.load();
 
     return loadCompleter.future;
   }
@@ -75,7 +77,7 @@ class AudioElementSound extends Sound
 
     if (_audioPool.length == 0) {
       audio = _audio.clone(true);
-      audio.on.ended.add(_onAudioEnded);
+      audio.onEnded.listen(_onAudioEnded);
     } else {
       audio = _audioPool.removeAt(0);
     }
