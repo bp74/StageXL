@@ -209,15 +209,10 @@ class _FlumpMovieLayer extends DisplayObject implements Animatable
     _transformationMatrixPrivate.translate(x, y);
     */
     
-    num sinX = sin(skewX);
-    num cosX = cos(skewX);
-    num sinY = sin(skewY);
-    num cosY = cos(skewY);
-    
-    num a =   scaleX * cosY;
-    num b =   scaleX * sinY;
-    num c = - scaleY * sinX;
-    num d =   scaleY * cosX;
+    num a =   scaleX * cos(skewY);
+    num b =   scaleX * sin(skewY);
+    num c = - scaleY * sin(skewX);
+    num d =   scaleY * cos(skewX);
     num tx =  x - (pivotX * a + pivotY * c);
     num ty =  y - (pivotX * b + pivotY * d);
 
@@ -263,10 +258,6 @@ class _FlumpMovieData
         
     return frames;
   }  
-  
-  bool get flipbook {
-    return (flumpLayerDatas.length == 1 && flumpLayerDatas[0].flipbook); 
-  }
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 name: dartflash
-version: 0.6.5
+version: 0.6.6
 author: Bernhard Pichler <support@dartflash.com>
 description: A library for graphically rich content like games, based on the Flash API.
 homepage: http://www.dartflash.com
