@@ -1,8 +1,6 @@
 part of dartflash;
 
-// Flump converts Flash keyframe animations into texture atlases and JSON that 
-// can be easily integrated into any scene graph-based 2D game engine.
-// 
+// Flump converts Flash keyframe animations into texture atlases and JSON.
 // http://threerings.github.com/flump/
 
 class FlumpLibrary 
@@ -10,7 +8,7 @@ class FlumpLibrary
   String _url;
   String _md5;
   int _frameRate;
-  List<_FlumpMovie> _movies;
+  List<_FlumpMovieData> _movieDatas;
   List<_FlumpTextureGroup> _textureGroups;
   
   static Future<FlumpLibrary> load(String url)
@@ -25,12 +23,12 @@ class FlumpLibrary
       flumpLibrary._url = url;
       flumpLibrary._md5 = data["md5"];
       flumpLibrary._frameRate = data["frameRate"].toInt();
-      flumpLibrary._movies = new List<_FlumpMovie>();
+      flumpLibrary._movieDatas = new List<_FlumpMovieData>();
       flumpLibrary._textureGroups = new List<_FlumpTextureGroup>();
 
       for(var movieJson in data["movies"] as List) {
-        var flumpMovie = new _FlumpMovie(movieJson, flumpLibrary);
-        flumpLibrary._movies.add(flumpMovie);
+        var flumpMovie = new _FlumpMovieData(movieJson, flumpLibrary);
+        flumpLibrary._movieDatas.add(flumpMovie);
       }
       
       for(var textureGroupJson in data["textureGroups"] as List) {
@@ -39,9 +37,11 @@ class FlumpLibrary
         textureGroupLoaders.add(flumpTextureGroup.completer.future);
       }
       
-      Future.wait(textureGroupLoaders)
-        .then((value) => completer.complete(flumpLibrary))
-        .catchError((error) => completer.completeError(new StateError("Failed to load image.")));
+      Future.wait(textureGroupLoaders).then((value) {
+        completer.complete(flumpLibrary);
+      }).catchError((error) {
+        completer.completeError(new StateError("Failed to load image."));
+      });
     }
     
     void onError(event) {
@@ -57,8 +57,28 @@ class FlumpLibrary
     return completer.future;
   }
   
-  FlumpMovie CreateFlumpMovie(String name) {
-    return new FlumpMovie(this, name);
+  _FlumpMovieData _getFlumpMovieData(String name) {
+    for(var movie in _movieDatas)
+      if (movie.id == name)
+        return movie;
+        
+    throw new ArgumentError("The movie '$name' is not available.");
+  }
+  
+  BitmapDrawable _createSymbol(String name) {
+    for(var textureGroup in _textureGroups) {
+      if (textureGroup.flumpTextures.containsKey(name)) {
+        return textureGroup.flumpTextures[name];        
+      }
+    }
+    
+    for(var movieData in _movieDatas) {
+      if (movieData.id == name) {
+        return new FlumpMovie(this, name);
+      }
+    }
+    
+    throw new ArgumentError("The symbol '$name' is not available.");
   }
 }
 
@@ -67,61 +87,220 @@ class FlumpLibrary
 
 class FlumpMovie extends DisplayObject implements Animatable
 {
+  FlumpLibrary _flumpLibrary;
+  _FlumpMovieData _flumpMovieData;
+  List<_FlumpMovieLayer> _flumpMovieLayers;
+  
+  num _time = 0.0;
+  num _duration = 0.0;
+  int _frame = 0;
+  int _frames = 0;
+  
+  // ToDo: add features like playOnce, playTo, goTo, loop, stop, isPlaying, label events, ...
+
   FlumpMovie(FlumpLibrary flumpLibrary, String name) {
+    _flumpLibrary = flumpLibrary;
+    _flumpMovieData = flumpLibrary._getFlumpMovieData(name);
+    _flumpMovieLayers = new List<_FlumpMovieLayer>();
     
+    for(var flumpLayerData in _flumpMovieData.flumpLayerDatas) {
+      var flashMovieLayer = new _FlumpMovieLayer(_flumpLibrary, flumpLayerData);
+      _flumpMovieLayers.add(flashMovieLayer);
+    }
+    
+    _frames = _flumpMovieData.frames;
+    _duration = _frames / _flumpLibrary._frameRate;
   }
   
   bool advanceTime(num time) {
+    _time += time;
+
+    var frameTime = _time % _duration;
+    _frame = min((_frames * frameTime / _duration).toInt(), _frames - 1);
+    
+    for(var flumpMovieLayer in _flumpMovieLayers) {
+      flumpMovieLayer.advanceTime(time);
+      flumpMovieLayer.setFrame(_frame);
+    }
     
     return true;   
   }
-  
+ 
   void render(RenderState renderState) {
-    
+    for(var flumpMovieLayer in _flumpMovieLayers) {
+      if (flumpMovieLayer.visible) {
+        renderState.renderDisplayObject(flumpMovieLayer);
+      }
+    }
   }
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _FlumpMovie
+class _FlumpMovieLayer extends DisplayObject implements Animatable
 {
-  FlumpLibrary flumpLibrary;
-  String id; 
-  List<_FlumpLayer> layers;
+  Map<String, BitmapDrawable> symbols;
+  BitmapDrawable symbol;
+  _FlumpLayerData flumpLayerData;
   
-  _FlumpMovie(Map json, this.flumpLibrary) {
+  _FlumpMovieLayer(FlumpLibrary flumpLibrary, this.flumpLayerData) {
+    
+    symbols = new Map<String, BitmapDrawable>();
+    for(var keyframe in flumpLayerData.flumpKeyframeDatas) {
+      if (keyframe.ref != null && symbols.containsKey(keyframe.ref) == false) {
+        symbols[keyframe.ref] = flumpLibrary._createSymbol(keyframe.ref);
+      }
+    }
+    
+    setFrame(0);
+  }
+  
+  bool advanceTime(num time) {
+    if (symbol is Animatable) {
+      var animatable = symbol as Animatable;
+      animatable.advanceTime(time);
+    }
+  }
+  
+  void setFrame(int frame) {
+    var keyframe = flumpLayerData.getKeyframeForFrame(frame);
+    
+    num x = keyframe.x, y = keyframe.y;
+    num scaleX = keyframe.scaleX, scaleY = keyframe.scaleY;
+    num skewX = keyframe.skewX, skewY = keyframe.skewY;
+    num pivotX = keyframe.pivotX, pivotY = keyframe.pivotY;
+    num alpha = keyframe.alpha;
+    
+    if (keyframe.index != frame && keyframe.tweened) {
+      var nextKeyframe = flumpLayerData.getKeyframeAfter(keyframe);
+      
+      if (nextKeyframe != null) {
+        var interped = (frame - keyframe.index) / keyframe.duration;
+        var ease = keyframe.ease;
+        
+        if (ease != 0) {
+          var t = 0.0;
+          if (ease < 0) {
+            var inv = 1 - interped;
+            t = 1 - inv * inv;
+            ease = 0 - ease;
+          } else {
+            t = interped * interped;
+          }
+          interped = ease * t + (1 - ease) * interped;
+        }
+        
+        x = x + (nextKeyframe.x - x) * interped;
+        y = y + (nextKeyframe.y - y) * interped;
+        scaleX = scaleX + (nextKeyframe.scaleX - scaleX) * interped;
+        scaleY = scaleY + (nextKeyframe.scaleY - scaleY) * interped;
+        skewX = skewX + (nextKeyframe.skewX - skewX) * interped;
+        skewY = skewY + (nextKeyframe.skewY - skewY) * interped;
+        alpha = alpha + (nextKeyframe.alpha - alpha) * interped;
+      }
+    }
+    
+    _transformationMatrixPrivate.identity();
+    _transformationMatrixPrivate.translate(-pivotX, -pivotY);
+    
+    _transformationMatrixPrivate.scale(scaleX, scaleY);
+    _transformationMatrixPrivate.skew(skewX, skewY);
+    _transformationMatrixPrivate.translate(x, y);
+    
+    _alpha = alpha;
+    _visible = keyframe.visible;
+    
+    symbol = (keyframe.ref != null) ? symbols[keyframe.ref] : null;
+  }
+  
+  Matrix get _transformationMatrix {
+    return _transformationMatrixPrivate;
+  }
+
+  void render(RenderState renderState) {
+    if (symbol != null) {
+      symbol.render(renderState);
+    }
+  }
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+class _FlumpMovieData
+{
+  String id;
+  FlumpLibrary flumpLibrary;
+  List<_FlumpLayerData> flumpLayerDatas;
+  
+  _FlumpMovieData(Map json, this.flumpLibrary) {
     this.id = json["id"];
-    this.layers = new List<_FlumpLayer>();
+    this.flumpLayerDatas = new List<_FlumpLayerData>();
     
     for(var layer in json["layers"]) {
-      this.layers.add(new _FlumpLayer(layer));
+      var flumpLayerData = new _FlumpLayerData(layer);
+      this.flumpLayerDatas.add(flumpLayerData);
     }
+  }
+  
+  int get frames {
+    var frames = 0;
+    for(var flumpLayerData in flumpLayerDatas) 
+      frames = max(frames, flumpLayerData.frames);
+        
+    return frames;
+  }  
+  
+  bool get flipbook {
+    return (flumpLayerDatas.length == 1 && flumpLayerDatas[0].flipbook); 
   }
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _FlumpLayer 
+class _FlumpLayerData
 {
   String name;
-  List<_FlumpKeyframe> keyframes;
+  List<_FlumpKeyframeData> flumpKeyframeDatas;
+  bool flipbook;
   
-  _FlumpLayer(Map json) {
+  _FlumpLayerData(Map json) {
     this.name = json["name"];
-    this.keyframes = new List<_FlumpKeyframe>();
+    this.flumpKeyframeDatas = new List<_FlumpKeyframeData>();
+    this.flipbook = json.containsKey("flipbook") ? json["flipbook"] : false;
     
     for(var keyframe in json["keyframes"]) {
-      this.keyframes.add(new _FlumpKeyframe(keyframe));
+      var flumpKeyframeData = new _FlumpKeyframeData(keyframe);
+      this.flumpKeyframeDatas.add(flumpKeyframeData);
     }
+  }
+  
+  int get frames {
+    var flumpKeyframeData = flumpKeyframeDatas[flumpKeyframeDatas.length - 1];
+    return flumpKeyframeData.index + flumpKeyframeData.duration;
+  }  
+  
+  _FlumpKeyframeData getKeyframeForFrame(int frame) {
+    var i  = 1;
+    while(i < flumpKeyframeDatas.length && flumpKeyframeDatas[i].index <= frame) i++;
+    return flumpKeyframeDatas[i - 1];
+  }
+  
+  _FlumpKeyframeData getKeyframeAfter(_FlumpKeyframeData flumpKeyframeData) {
+    for(int i = 0; i < flumpKeyframeDatas.length - 1; i++)
+      if (identical(flumpKeyframeDatas[i], flumpKeyframeData))
+        return flumpKeyframeDatas[i + 1];
+    
+    return null;
   }
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _FlumpKeyframe
+class _FlumpKeyframeData
 {
   int index;
   int duration;
@@ -139,7 +318,7 @@ class _FlumpKeyframe
   bool tweened;
   num ease;
   
-  _FlumpKeyframe(Map json) {
+  _FlumpKeyframeData(Map json) {
     this.index = json["index"];
     this.duration = json["duration"];
     
@@ -204,7 +383,7 @@ class _FlumpTextureGroup
         var origin = texture["origin"] as List;
           
         var flumpTexture = new _FlumpTexture(
-          rect[0], rect[1],rect[2], rect[3], 
+          rect[0], rect[1], rect[2], rect[3], 
           origin[0], origin[1],
           imageElement);
           
@@ -217,11 +396,15 @@ class _FlumpTextureGroup
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _FlumpTexture {
+class _FlumpTexture implements BitmapDrawable {
   num x, y, width, height;
   num originX, originY;
   ImageElement imageElement;
   
   _FlumpTexture(this.x, this.y, this.width, this.height, this.originX, this.originY, this.imageElement);
+  
+  void render(RenderState renderState) {
+    renderState.context.drawImage(imageElement, x, y, width, height, 0, 0, width, height);    
+  }
 }
 

@@ -154,23 +154,25 @@ class Matrix
 
   void skew(num skewX, num skewY)
   {
-    num tanX = tan(skewX);
-    num tanY = tan(skewY);
-
+    num sinX = sin(skewX);
+    num cosX = cos(skewX);
+    num sinY = sin(skewY);
+    num cosY = cos(skewY);
+    
     num a =  _a;
     num b =  _b;
     num c =  _c;
     num d =  _d;
     num tx = _tx;
     num ty = _ty;
-
-    _a =   (a - b * tanX);
-    _b =   (b + a * tanY);
-    _c =   (c - d * tanX);
-    _d =   (d + c * tanY);
-    _tx =  (tx - ty * tanX);
-    _ty =  (ty + tx * tanY);
-    _det = _a * _d - _b * _c;
+    
+    _a =   (a * cosY - b * sinX);
+    _b =   (a * sinY + b * cosX);
+    _c =   (c * cosY - d * sinX);
+    _d =   (c * sinY + d * cosX);
+    _tx =  (tx * cosY - ty * sinX);
+    _ty =  (tx * sinY + ty * cosX);
+    _det = (_a * _d - _b * _c);
   }
 
   //-------------------------------------------------------------------------------------------------
