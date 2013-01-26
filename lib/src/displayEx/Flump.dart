@@ -201,12 +201,28 @@ class _FlumpMovieLayer extends DisplayObject implements Animatable
       }
     }
     
+    /*
     _transformationMatrixPrivate.identity();
     _transformationMatrixPrivate.translate(-pivotX, -pivotY);
-    
     _transformationMatrixPrivate.scale(scaleX, scaleY);
     _transformationMatrixPrivate.skew(skewX, skewY);
     _transformationMatrixPrivate.translate(x, y);
+    */
+    
+    num sinX = sin(skewX);
+    num cosX = cos(skewX);
+    num sinY = sin(skewY);
+    num cosY = cos(skewY);
+    
+    num a =   scaleX * cosY;
+    num b =   scaleX * sinY;
+    num c = - scaleY * sinX;
+    num d =   scaleY * cosX;
+    num tx =  x - (pivotX * a + pivotY * c);
+    num ty =  y - (pivotX * b + pivotY * d);
+
+    _transformationMatrixRefresh = false;
+    _transformationMatrixPrivate.setTo(a, b, c, d, tx, ty);
     
     _alpha = alpha;
     _visible = keyframe.visible;
@@ -214,10 +230,6 @@ class _FlumpMovieLayer extends DisplayObject implements Animatable
     symbol = (keyframe.ref != null) ? symbols[keyframe.ref] : null;
   }
   
-  Matrix get _transformationMatrix {
-    return _transformationMatrixPrivate;
-  }
-
   void render(RenderState renderState) {
     if (symbol != null) {
       symbol.render(renderState);

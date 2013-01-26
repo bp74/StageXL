@@ -28,23 +28,30 @@ void main()
 
 void onFlumpLibraryLoaded(FlumpLibrary flumpLibrary) 
 {
+  BitmapData.loadImage("images/atlas0.png").then((bitmapData) {
+    Bitmap bitmap = new Bitmap(bitmapData);
+    bitmap.x = 40;
+    bitmap.y = 40;
+    stage.addChild(bitmap);
+  });
+  
   FlumpMovie idle = new FlumpMovie(flumpLibrary, "idle");
-  idle.x = 220;
-  idle.y = 250;
+  idle.x = 550;
+  idle.y = 200;
   idle.addTo(stage);   
   
   FlumpMovie walk = new FlumpMovie(flumpLibrary, "walk");
-  walk.x = 580;
-  walk.y = 250;
+  walk.x = 160;
+  walk.y = 520;
   walk.addTo(stage);   
     
   FlumpMovie attack = new FlumpMovie(flumpLibrary, "attack");
-  attack.x = 220;
+  attack.x = 420;
   attack.y = 520;
   attack.addTo(stage);
 
   FlumpMovie defeat = new FlumpMovie(flumpLibrary, "defeat");
-  defeat.x = 580;
+  defeat.x = 640;
   defeat.y = 520;
   defeat.addTo(stage);
    
