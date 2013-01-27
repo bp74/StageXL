@@ -27,8 +27,8 @@ class FlumpLibrary
       flumpLibrary._textureGroups = new List<_FlumpTextureGroup>();
 
       for(var movieJson in data["movies"] as List) {
-        var flumpMovie = new _FlumpMovieData(movieJson, flumpLibrary);
-        flumpLibrary._movieDatas.add(flumpMovie);
+        var flumpMovieData = new _FlumpMovieData(movieJson, flumpLibrary);
+        flumpLibrary._movieDatas.add(flumpMovieData);
       }
       
       for(var textureGroupJson in data["textureGroups"] as List) {
