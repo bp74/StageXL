@@ -15,8 +15,9 @@ class FlumpLibrary
   {
     var completer = new Completer<FlumpLibrary>();
   
-    void onLoad(event) {
-      var data = json.parse(event.target.responseText) as Map;
+    HttpRequest.getString(url).then((flumpJson) {
+      
+      var data = json.parse(flumpJson) as Map;
       var textureGroupLoaders = new List();
       var flumpLibrary = new FlumpLibrary();
       
@@ -42,17 +43,12 @@ class FlumpLibrary
       }).catchError((error) {
         completer.completeError(new StateError("Failed to load image."));
       });
-    }
-    
-    void onError(event) {
-      completer.completeError(new StateError("Failed to load json file."));
-    }
+      
+    }).catchError((error) {
 
-    var request = new HttpRequest()
-      ..onLoad.listen(onLoad)
-      ..onError.listen(onError)
-      ..open('GET', url, true)          
-      ..send();
+      completer.completeError(new StateError("Failed to load json file."));
+      
+    });
 
     return completer.future;
   }

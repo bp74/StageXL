@@ -166,7 +166,7 @@ class Stage extends DisplayObjectContainer
     event.preventDefault();
 
     var clientRect = _canvas.getBoundingClientRect();
-    var time = new Date.now().millisecondsSinceEpoch;
+    var time = new DateTime.now().millisecondsSinceEpoch;
     var button = event.button;
 
     InteractiveObject target = null;

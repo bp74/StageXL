@@ -38,8 +38,9 @@ class TextureAtlas
           textureAtlas._frames.add(taf);
         }
         
-        void onLoad(event) {
-          var data = json.parse(event.target.responseText);
+        HttpRequest.getString(url).then((textureAtlasJson) {
+        
+          var data = json.parse(textureAtlasJson);
           var frames = data["frames"];
           var meta = data["meta"];
 
@@ -55,18 +56,13 @@ class TextureAtlas
             ..onLoad.listen((e) => completer.complete(textureAtlas))
             ..onError.listen((e) => completer.completeError(new StateError("Failed to load image.")))
             ..src = _replaceFilename(url, meta["image"]);
-        }
         
-        void onError(event) {
+        }).catchError((error) {
+          
           completer.completeError(new StateError("Failed to load json file."));
-        }
-
-        var request = new HttpRequest()
-          ..onLoad.listen(onLoad)
-          ..onError.listen(onError)
-          ..open('GET', url, true)          
-          ..send();
-
+          
+        });
+        
         break;
     }
 
