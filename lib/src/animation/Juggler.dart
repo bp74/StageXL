@@ -2,11 +2,12 @@ part of dartflash;
 
 class Juggler implements Animatable
 {
+  num _elapsedTime;
+  
   List<Animatable> _animatables;
   int _animatablesCount;
-  num _elapsedTime;
 
-  Juggler()
+  Juggler() 
   {
     _elapsedTime = 0.0;
 
@@ -26,7 +27,7 @@ class Juggler implements Animatable
     if (animatable == null)
       return;
 
-    if (_animatablesCount >= _animatables.length)
+    if (_animatablesCount == _animatables.length)
       _animatables.add(animatable);
     else
       _animatables[_animatablesCount] = animatable;
@@ -41,9 +42,12 @@ class Juggler implements Animatable
     if (animatable == null)
       return;
 
-    for(int i = 0; i < _animatablesCount; i++)
-      if (_animatables[i] == animatable)
+    for(int i = 0; i < _animatablesCount; i++) {
+      if (_animatables[i] == animatable) {
         _animatables[i] = null;
+        break;
+      }
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -109,16 +113,14 @@ class Juggler implements Animatable
     // 2) remove completed animatables or null values from the list.
 
     int animatablesCount = _animatablesCount;
-    int c = 0;
+    int tail = 0;
 
-    for(int i = 0; i < animatablesCount; i++)
-    {
-      Animatable animatable = _animatables[i];
+    for(int head = 0; head < animatablesCount; head++) {
+      Animatable animatable = _animatables[head];
 
-      if (animatable != null && animatable.advanceTime(time))
-      {
-        if (c != i) _animatables[c] = animatable;
-        c++;
+      if (animatable != null && animatable.advanceTime(time)) {
+        if (tail != head) _animatables[tail] = animatable;
+        tail++;
       }
     }
 
@@ -126,12 +128,12 @@ class Juggler implements Animatable
     // 3) move newly added animatables to the left and clear rest
 
     for(int i = animatablesCount; i < _animatablesCount; i++)
-      _animatables[c++] = _animatables[i];
+      _animatables[tail++] = _animatables[i];
 
-    for(int i = c; i < _animatablesCount; i++)
+    for(int i = tail; i < _animatablesCount; i++)
       _animatables[i] = null;
 
-    _animatablesCount = c;
+    _animatablesCount = tail;
 
     return true;
   }

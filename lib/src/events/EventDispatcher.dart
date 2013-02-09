@@ -19,17 +19,7 @@ class EventDispatcher
   {
     var eventStream = _getEventStream(eventType, useCapture);
     var eventStreamSubscription = eventStream.listen(eventListener);
-   
     return eventStreamSubscription;
-  }
-
-  void removeEventListener(String eventType, void eventListener(event), {bool useCapture: false})
-  {
-    var eventStream = _getEventStream(eventType, useCapture);
-    var eventStreamSubscription = eventStream._getSubscription(eventListener);
-    
-    if (eventStreamSubscription != null)
-      eventStreamSubscription.cancel();
   }
 
   void dispatchEvent(Event event)
@@ -41,7 +31,8 @@ class EventDispatcher
   
   Stream<Event> on(String eventType, {bool useCapture: false}) 
   {
-    return new _EventStream(this, eventType, useCapture);
+    var eventStream = _getEventStream(eventType, useCapture);
+    return eventStream;
   }
   
   //-------------------------------------------------------------------------------------------------
@@ -49,13 +40,12 @@ class EventDispatcher
 
   void _dispatchEventInternal(Event event, EventDispatcher target, EventDispatcher currentTarget, int eventPhase)
   {
-    if (_eventStreams != null) 
-    {
+    if (_eventStreams != null) {
+      
       var eventStreamKey = (eventPhase == EventPhase.CAPTURING_PHASE) ? "${event.type}_CAPTURE" : event.type;
       var eventStream = _eventStreams[eventStreamKey];
     
-      if (eventStream != null)
-      {
+      if (eventStream != null) {
         event._target = target;
         event._currentTarget = currentTarget;
         event._eventPhase = eventPhase;
