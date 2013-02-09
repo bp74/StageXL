@@ -49,22 +49,25 @@ class EventDispatcher
 
   void _dispatchEventInternal(Event event, EventDispatcher target, EventDispatcher currentTarget, int eventPhase)
   {
-    if (_eventStreams != null)
-    {
-      var eventStreamKey = (event.eventPhase == EventPhase.CAPTURING_PHASE) ? "${event.type}_CAPTURE" : event.type;
-      var eventStream = _eventStreams[eventStreamKey];
+    if (_eventStreams == null) 
+      return;
 
-      if (eventStream != null)
-      {
-        event._target = target;
-        event._currentTarget = currentTarget;
-        event._eventPhase = eventPhase;
-        event._stopsPropagation = false;
-        event._stopsImmediatePropagation = false;
+    if (event.bubbles == false && eventPhase == EventPhase.BUBBLING_PHASE)
+      return;
+    
+    var eventStreamKey = (event.eventPhase == EventPhase.CAPTURING_PHASE) ? "${event.type}_CAPTURE" : event.type;
+    var eventStream = _eventStreams[eventStreamKey];
 
-        eventStream._dispatchEvent(event);
-      }
-    }
+    if (eventStream = null)
+      return;
+    
+    event._target = target;
+    event._currentTarget = currentTarget;
+    event._eventPhase = eventPhase;
+    event._stopsPropagation = false;
+    event._stopsImmediatePropagation = false;
+
+    eventStream._dispatchEvent(event);
   }
 
   //-------------------------------------------------------------------------------------------------

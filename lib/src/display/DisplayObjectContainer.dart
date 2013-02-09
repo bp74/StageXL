@@ -207,11 +207,12 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
     int childrenLength = _children.length;
 
-    for (int i = 0; i < childrenLength; i++)
+    for (int i = 0; i < _children.length; i++)
     {
-      _tmpMatrix.copyFromAndConcat(_children[i]._transformationMatrix, matrix);
+      DisplayObject child = _children[i];
 
-      Rectangle rectangle = _children[i].getBoundsTransformed(_tmpMatrix, returnRectangle);
+      _tmpMatrix.copyFromAndConcat(child._transformationMatrix, matrix);
+      Rectangle rectangle = child.getBoundsTransformed(_tmpMatrix, returnRectangle);
 
       if (rectangle.left < left) left = rectangle.left;
       if (rectangle.top < top ) top = rectangle.top;
@@ -285,9 +286,8 @@ abstract class DisplayObjectContainer extends InteractiveObject
     if (displayObject is DisplayObjectContainer)
     {
       List<DisplayObject> children = new List<DisplayObject>.from(displayObject._children);
-      int childrenLength = children.length;
 
-      for(int i = 0; i < childrenLength; i++)
+      for(int i = 0; i < children.length; i++)
         _dispatchEventOnChildren(children[i], event);
     }
   }
