@@ -21,6 +21,15 @@ class EventDispatcher
     var eventStreamSubscription = eventStream.listen(eventListener);
     return eventStreamSubscription;
   }
+  
+  void removeEventListeners(String eventType, {bool useCapture: false})
+  {
+    var eventStreamKey = useCapture ? "${eventType}_CAPTURE": eventType;
+    var eventStream = _eventStreams[eventStreamKey];
+    
+    if (eventStream != null)
+      eventStream._cancelSubscriptions();
+  }
 
   void dispatchEvent(Event event)
   {

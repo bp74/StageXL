@@ -41,7 +41,7 @@ class _EventStream<T extends Event> extends Stream<T>
   
   //-----------------------------------------------------------------------------------------------
   
-  void _cancelSubscription(StreamSubscription subscription)
+  void _onSubscriptionCancel(StreamSubscription subscription)
   {
     for(int i = 0; i < _subscriptionsCount; i++) {
       if (_subscriptions[i] == subscription) {
@@ -51,7 +51,16 @@ class _EventStream<T extends Event> extends Stream<T>
     }
   }
   
-//-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  
+  void _cancelSubscriptions()
+  {
+    for(int i = 0; i < _subscriptionsCount; i++) 
+      if (_subscriptions[i] != null)
+        _subscriptions[i].cancel();
+  }
+  
+  //-----------------------------------------------------------------------------------------------
   
   void _dispatchEvent(T event) 
   {

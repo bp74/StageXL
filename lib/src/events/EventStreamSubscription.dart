@@ -21,7 +21,7 @@ class _EventStreamSubscription<T extends Event> extends StreamSubscription<T>
   {
     if (_canceled == false) 
     {
-      _eventStream._cancelSubscription(this);
+      _eventStream._onSubscriptionCancel(this);
       _canceled = true;
       _onData = null;
     }
