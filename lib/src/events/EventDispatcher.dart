@@ -58,7 +58,7 @@ class EventDispatcher
     var eventStreamKey = (event.eventPhase == EventPhase.CAPTURING_PHASE) ? "${event.type}_CAPTURE" : event.type;
     var eventStream = _eventStreams[eventStreamKey];
 
-    if (eventStream = null)
+    if (eventStream == null)
       return;
     
     event._target = target;
