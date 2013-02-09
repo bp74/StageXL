@@ -2,35 +2,34 @@ part of dartflash;
 
 class EventDispatcher
 {
-  Map<String, EventListenerList> _eventListenerLists;
+  Map<String, _EventStream> _eventStreams;
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   bool hasEventListener(String type)
   {
-    if (_eventListenerLists != null )
-      return _eventListenerLists.containsKey(type) || _eventListenerLists.containsKey("${type}_CAPTURE");
+    if (_eventStreams != null )
+      return _eventStreams.containsKey(type) || _eventStreams.containsKey("${type}_CAPTURE");
     else
       return false;
   }
 
-  void addEventListener(String type, EventListener eventListener, {bool useCapture: false})
+  StreamSubscription<Event> addEventListener(String eventType, void eventListener(event), {bool useCapture: false})
   {
-    var eventListenerList = _getEventListenerList(type, useCapture);
-    eventListenerList.add(eventListener);
-    
-    if (type == Event.ENTER_FRAME && useCapture == false)
-      _EventDispatcherIndex.enterFrame.update(this, eventListenerList);
+    var eventStream = _getEventStream(eventType, useCapture);
+    var eventStreamSubscription = eventStream.listen(eventListener);
+   
+    return eventStreamSubscription;
   }
 
-  void removeEventListener(String type, EventListener eventListener, {bool useCapture: false})
+  void removeEventListener(String eventType, void eventListener(event), {bool useCapture: false})
   {
-    var eventListenerList = _getEventListenerList(type, useCapture);
-    eventListenerList.remove(eventListener);
+    var eventStream = _getEventStream(eventType, useCapture);
+    var eventStreamSubscription = eventStream._getSubscription(eventListener);
     
-    if (type == Event.ENTER_FRAME && useCapture == false)
-      _EventDispatcherIndex.enterFrame.update(this, eventListenerList);    
+    if (eventStreamSubscription != null)
+      eventStreamSubscription.cancel();
   }
 
   void dispatchEvent(Event event)
@@ -50,12 +49,12 @@ class EventDispatcher
 
   void _dispatchEventInternal(Event event, EventDispatcher target, EventDispatcher currentTarget, int eventPhase)
   {
-    if (_eventListenerLists != null)
+    if (_eventStreams != null)
     {
-      var eventListenerListKey = (event.eventPhase == EventPhase.CAPTURING_PHASE) ? "${event.type}_CAPTURE" : event.type;
-      var eventListenerList = _eventListenerLists[eventListenerListKey];
+      var eventStreamKey = (event.eventPhase == EventPhase.CAPTURING_PHASE) ? "${event.type}_CAPTURE" : event.type;
+      var eventStream = _eventStreams[eventStreamKey];
 
-      if (eventListenerList != null)
+      if (eventStream != null)
       {
         event._target = target;
         event._currentTarget = currentTarget;
@@ -63,25 +62,25 @@ class EventDispatcher
         event._stopsPropagation = false;
         event._stopsImmediatePropagation = false;
 
-        eventListenerList.dispatchEvent(event);
+        eventStream._dispatchEvent(event);
       }
     }
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  EventListenerList _getEventListenerList(String type, bool useCapture)
+  _EventStream _getEventStream(String eventType, bool useCapture)
   {
-    if (_eventListenerLists == null)
-      _eventListenerLists = new Map<String, EventListenerList>();
+    if (_eventStreams == null)
+      _eventStreams = new Map<String, _EventStream>();
 
-    var eventListenerListKey = useCapture ? "${type}_CAPTURE": type;
-    var eventListenerList = _eventListenerLists[eventListenerListKey];
+    var eventStreamKey = useCapture ? "${eventType}_CAPTURE": eventType;
+    var eventStream = _eventStreams[eventStreamKey];
 
-    if (eventListenerList == null)
-      eventListenerList = _eventListenerLists[eventListenerListKey] = new EventListenerList(type, useCapture);
+    if (eventStream == null)
+      eventStream = _eventStreams[eventStreamKey] = new _EventStream(this, eventType, useCapture);
 
-    return eventListenerList;
+    return eventStream;
   }
 
 }

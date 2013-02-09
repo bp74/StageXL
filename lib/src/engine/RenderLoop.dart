@@ -6,7 +6,7 @@ class RenderLoop
   List<Stage> _stages;
   num _renderTime;
 
-  _EventDispatcherIndex _enterFrameIndex;
+  _EventStreamIndex _enterFrameIndex;
   EnterFrameEvent _enterFrameEvent;
 
   RenderLoop()
@@ -15,7 +15,7 @@ class RenderLoop
     _stages = new List<Stage>();
     _renderTime = double.NAN;
 
-    _enterFrameIndex = _EventDispatcherIndex.enterFrame;
+    _enterFrameIndex = _EventStreamIndex.enterFrame;
     _enterFrameEvent = new EnterFrameEvent(0);
 
     html.window.requestAnimationFrame(_onAnimationFrame);
@@ -42,7 +42,7 @@ class RenderLoop
     if (deltaTime >= 1) {
       _renderTime = currentTime;
       _enterFrameEvent._passedTime = deltaTimeSec;
-      _enterFrameIndex.dispatchEvent(_enterFrameEvent);
+      _enterFrameIndex._dispatchEvent(_enterFrameEvent);
       _juggler.advanceTime(deltaTimeSec);
 
       for(int i = 0; i < _stages.length; i++) {
