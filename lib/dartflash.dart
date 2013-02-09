@@ -32,12 +32,12 @@ part 'src/engine/RenderState.dart';
 part 'src/engine/StageRenderMode.dart';
 
 part 'src/events/Event.dart';
-part 'src/events/Events.dart';
 part 'src/events/EventPhase.dart';
 part 'src/events/EventDispatcher.dart';
+part 'src/events/EventDispatcherIndex.dart';
 part 'src/events/EventListener.dart';
 part 'src/events/EventListenerList.dart';
-part 'src/events/EventListenerListIndex.dart';
+part 'src/events/EventStreamProvider.dart';
 part 'src/events/EnterFrameEvent.dart';
 part 'src/events/MouseEvent.dart';
 part 'src/events/KeyboardEvent.dart';
@@ -69,11 +69,6 @@ part 'src/display/GraphicsCommand.dart';
 part 'src/display/CapsStyle.dart';
 part 'src/display/JointStyle.dart';
 part 'src/display/Mask.dart';
-
-part 'src/display/events/DisplayObjectEvents.dart';
-part 'src/display/events/DisplayObjectContainerEvents.dart';
-part 'src/display/events/InteractiveObjectEvents.dart';
-part 'src/display/events/MovieClipEvents.dart';
 
 part 'src/displayEx/Gauge.dart';
 part 'src/displayEx/TimeGauge.dart';

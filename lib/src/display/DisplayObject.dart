@@ -15,18 +15,15 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   num _alpha = 1.0;
   bool _visible = true;
-
+  Mask _mask = null;
+  
   String _name = "";
   DisplayObjectContainer _parent = null;
 
-  Mask mask;
-
-  //-------------------------------------------------------------------------------------------------
   // for internal use only to minimize memory allocations.
-
   Matrix _tmpMatrix;
   Matrix _tmpMatrixIdentity;
-
+  
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject()
@@ -38,6 +35,22 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
     _tmpMatrixIdentity = new Matrix.fromIdentity();
   }
 
+  //-------------------------------------------------------------------------------------------------
+
+  static const EventStreamProvider<Event> addedEvent = const EventStreamProvider<Event>(Event.ADDED);
+  static const EventStreamProvider<Event> removedEvent = const EventStreamProvider<Event>(Event.REMOVED);
+  static const EventStreamProvider<Event> addedToStageEvent = const EventStreamProvider<Event>(Event.ADDED_TO_STAGE);
+  static const EventStreamProvider<Event> removedFromStageEvent = const EventStreamProvider<Event>(Event.REMOVED_FROM_STAGE);
+   
+  Stream<Event> get onAdded => DisplayObject.addedEvent.forTarget(this);  
+  Stream<Event> get onRemoved => DisplayObject.removedEvent.forTarget(this);  
+  Stream<Event> get onAddedToStage => DisplayObject.addedToStageEvent.forTarget(this);  
+  Stream<Event> get onRemovedFromStage => DisplayObject.removedFromStageEvent.forTarget(this);  
+
+  static const EventStreamProvider<EnterFrameEvent> enterFrameEvent = const EventStreamProvider<EnterFrameEvent>(Event.ENTER_FRAME);
+  
+  Stream<EnterFrameEvent> get onEnterFrame => DisplayObject.enterFrameEvent.forTarget(this);
+  
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
@@ -52,12 +65,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   num get alpha => _alpha;
 
   bool get visible => _visible;
-
+  Mask get mask => _mask;
   String get name => _name;
 
   DisplayObjectContainer get parent => _parent;
-
-  DisplayObjectEvents get on => new DisplayObjectEvents(this);
 
   //-------------------------------------------------------------------------------------------------
 
@@ -85,19 +96,20 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  void set x(num value) { _x = value; _transformationMatrixRefresh = true; }
-  void set y(num value) { _y = value; _transformationMatrixRefresh = true; }
-  void set pivotX(num value) { _pivotX = value; _transformationMatrixRefresh = true; }
-  void set pivotY(num value) { _pivotY = value; _transformationMatrixRefresh = true; }
+  set x(num value) { _x = value; _transformationMatrixRefresh = true; }
+  set y(num value) { _y = value; _transformationMatrixRefresh = true; }
+  set pivotX(num value) { _pivotX = value; _transformationMatrixRefresh = true; }
+  set pivotY(num value) { _pivotY = value; _transformationMatrixRefresh = true; }
+  
+  set scaleX(num value) { _scaleX = value; _transformationMatrixRefresh = true; }
+  set scaleY(num value) { _scaleY = value; _transformationMatrixRefresh = true; }
+  set rotation(num value) { _rotation = value; _transformationMatrixRefresh = true; }
+  set alpha(num value) { _alpha = value; _transformationMatrixRefresh = true; }
 
-  void set scaleX(num value) { _scaleX = value; _transformationMatrixRefresh = true; }
-  void set scaleY(num value) { _scaleY = value; _transformationMatrixRefresh = true; }
-  void set rotation(num value) { _rotation = value; _transformationMatrixRefresh = true; }
-  void set alpha(num value) { _alpha = value; _transformationMatrixRefresh = true; }
+  set visible(bool value) { _visible = value; _transformationMatrixRefresh = true; }
 
-  void set visible(bool value) { _visible = value; _transformationMatrixRefresh = true; }
-
-  void set name(String value) { _name = value; _transformationMatrixRefresh = true; }
+  set mask(Mask value) { _mask = value; }
+  set name(String value) { _name = value; }
 
   //-------------------------------------------------------------------------------------------------
 

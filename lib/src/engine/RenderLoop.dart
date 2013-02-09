@@ -6,7 +6,7 @@ class RenderLoop
   List<Stage> _stages;
   num _renderTime;
 
-  _EventListenerListIndex _enterFrameIndex;
+  _EventDispatcherIndex _enterFrameIndex;
   EnterFrameEvent _enterFrameEvent;
 
   RenderLoop()
@@ -15,7 +15,7 @@ class RenderLoop
     _stages = new List<Stage>();
     _renderTime = double.NAN;
 
-    _enterFrameIndex = _EventListenerListIndex.enterFrame;
+    _enterFrameIndex = _EventDispatcherIndex.enterFrame;
     _enterFrameEvent = new EnterFrameEvent(0);
 
     html.window.requestAnimationFrame(_onAnimationFrame);

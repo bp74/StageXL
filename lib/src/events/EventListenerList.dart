@@ -1,63 +1,44 @@
 part of dartflash;
 
-class _EventListenerUseCapture
-{
-  EventListener eventListener;
-  bool useCapture;
-
-  _EventListenerUseCapture(this.eventListener, this.useCapture);
-}
-
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
-
 class EventListenerList
 {
-  EventDispatcher _eventDispatcher;
   String _eventType;
-  List<_EventListenerUseCapture> _list;
+  bool _useCapture;
+  List<EventListener> _eventListeners;
 
-  EventListenerList(EventDispatcher eventDispatcher, String eventType)
+  EventListenerList(String eventType, bool useCapture)
   {
-    _eventDispatcher = eventDispatcher;
     _eventType = eventType;
-    _list = new List<_EventListenerUseCapture>();
+    _useCapture = useCapture;
+    _eventListeners = new List<EventListener>();
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  EventDispatcher get eventDispatcher => _eventDispatcher;
   String get eventType => _eventType;
-
+  bool get useCapture => _useCapture;
+  int get length => _eventListeners.length;
+  
   //-------------------------------------------------------------------------------------------------
 
-  void add(EventListener eventListener, [bool useCapture = false])
+  void add(EventListener eventListener)
   {
-    for(int i = 0; i < _list.length; i++)
-      if (_list[i].eventListener == eventListener && _list[i].useCapture == useCapture)
-        return;
-
-    if (_eventType == Event.ENTER_FRAME && _list.length == 0)
-      _EventListenerListIndex.enterFrame.add(this);
-
-    _list.add(new _EventListenerUseCapture(eventListener, useCapture));
+    if (_eventListeners.contains(eventListener))
+      return;
+    
+    _eventListeners.add(eventListener);
   }
 
-
   //-------------------------------------------------------------------------------------------------
 
-  void remove(EventListener eventListener, [bool useCapture = false])
+  void remove(EventListener eventListener)
   {
-    for(int i = 0; i < _list.length; i++)
+    for(int i = 0; i < _eventListeners.length; i++)
     {
-      if (_list[i].eventListener == eventListener && _list[i].useCapture == useCapture)
+      if (_eventListeners[i] == eventListener)
       {
-        _list = new List<_EventListenerUseCapture>.from(_list);
-        _list.removeAt(i);
-
-        if (_eventType == Event.ENTER_FRAME && _list.length == 0)
-          _EventListenerListIndex.enterFrame.remove(this);
-
+        _eventListeners = new List<EventListener>.from(_eventListeners);
+        _eventListeners.removeAt(i);
         break;
       }
     }
@@ -65,24 +46,17 @@ class EventListenerList
 
   //-------------------------------------------------------------------------------------------------
 
-  void operator +(EventListener eventListener)
-  {
-    this.add(eventListener, false);
-  }
-
-  void operator -(EventListener eventListener)
-  {
-    this.remove(eventListener, false);
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
   void dispatchEvent(Event event)
   {
-    for(int i = 0; i < _list.length; i++)
-      if (event.eventPhase != EventPhase.CAPTURING_PHASE || _list[i].useCapture)
-        if (event.stopsImmediatePropagation == false)
-          _list[i].eventListener(event);
+    var eventListenersLength = _eventListeners.length;
+    
+    for(int i = 0; i < eventListenersLength; i++)
+    {
+      _eventListeners[i](event);
+      
+      if (event.stopsImmediatePropagation)
+        break;
+    }
   }
 }
 

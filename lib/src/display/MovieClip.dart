@@ -15,6 +15,8 @@ class MovieClip extends InteractiveObject implements Animatable
 
   Rectangle clipRectangle;
 
+  //-------------------------------------------------------------------------------------------------
+  
   MovieClip(List<BitmapData> bitmapDatas, [int frameRate = 30, bool loop = true])
   {
     _bitmapDatas = bitmapDatas;
@@ -30,6 +32,14 @@ class MovieClip extends InteractiveObject implements Animatable
   }
 
   //-------------------------------------------------------------------------------------------------
+  
+  static const EventStreamProvider<Event> progressEvent = const EventStreamProvider<Event>(Event.PROGRESS);
+  static const EventStreamProvider<Event> completeEvent = const EventStreamProvider<Event>(Event.COMPLETE);
+  
+  Stream<Event> get onProgress => MovieClip.progressEvent.forTarget(this);  
+  Stream<Event> get onComplete => MovieClip.completeEvent.forTarget(this);  
+  
+  //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   int get currentFrame => _currentFrame;
@@ -39,8 +49,6 @@ class MovieClip extends InteractiveObject implements Animatable
   void set loop(bool value) { _loop = value; }
 
   bool get playing => _play;
-
-  MovieClipEvents get on => new MovieClipEvents(this);
 
   //-------------------------------------------------------------------------------------------------
 

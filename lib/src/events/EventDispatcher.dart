@@ -9,17 +9,28 @@ class EventDispatcher
 
   bool hasEventListener(String type)
   {
-    return _eventListenerLists != null && _eventListenerLists.containsKey(type);
+    if (_eventListenerLists != null )
+      return _eventListenerLists.containsKey(type) || _eventListenerLists.containsKey("${type}_CAPTURE");
+    else
+      return false;
   }
 
-  void addEventListener(String type, EventListener eventListener, [bool useCapture = false])
+  void addEventListener(String type, EventListener eventListener, {bool useCapture: false})
   {
-    _getEventListenerList(type).add(eventListener, useCapture);
+    var eventListenerList = _getEventListenerList(type, useCapture);
+    eventListenerList.add(eventListener);
+    
+    if (type == Event.ENTER_FRAME && useCapture == false)
+      _EventDispatcherIndex.enterFrame.update(this, eventListenerList);
   }
 
-  void removeEventListener(String type, EventListener eventListener, [bool useCapture = false])
+  void removeEventListener(String type, EventListener eventListener, {bool useCapture: false})
   {
-    _getEventListenerList(type).remove(eventListener, useCapture);
+    var eventListenerList = _getEventListenerList(type, useCapture);
+    eventListenerList.remove(eventListener);
+    
+    if (type == Event.ENTER_FRAME && useCapture == false)
+      _EventDispatcherIndex.enterFrame.update(this, eventListenerList);    
   }
 
   void dispatchEvent(Event event)
@@ -28,9 +39,12 @@ class EventDispatcher
   }
 
   //-------------------------------------------------------------------------------------------------
-
-  Events get on => new Events(this);
-
+  
+  Stream<Event> on(String eventType, {bool useCapture: false}) 
+  {
+    return new _EventStream(this, eventType, useCapture);
+  }
+  
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
@@ -38,7 +52,8 @@ class EventDispatcher
   {
     if (_eventListenerLists != null)
     {
-      EventListenerList eventListenerList = _eventListenerLists[event.type];
+      var eventListenerListKey = (event.eventPhase == EventPhase.CAPTURING_PHASE) ? "${event.type}_CAPTURE" : event.type;
+      var eventListenerList = _eventListenerLists[eventListenerListKey];
 
       if (eventListenerList != null)
       {
@@ -55,15 +70,16 @@ class EventDispatcher
 
   //-------------------------------------------------------------------------------------------------
 
-  EventListenerList _getEventListenerList(String type)
+  EventListenerList _getEventListenerList(String type, bool useCapture)
   {
     if (_eventListenerLists == null)
       _eventListenerLists = new Map<String, EventListenerList>();
 
-    EventListenerList eventListenerList = _eventListenerLists[type];
+    var eventListenerListKey = useCapture ? "${type}_CAPTURE": type;
+    var eventListenerList = _eventListenerLists[eventListenerListKey];
 
     if (eventListenerList == null)
-      eventListenerList = _eventListenerLists[type] = new EventListenerList(this, type);
+      eventListenerList = _eventListenerLists[eventListenerListKey] = new EventListenerList(type, useCapture);
 
     return eventListenerList;
   }

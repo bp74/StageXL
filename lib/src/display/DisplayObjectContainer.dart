@@ -22,8 +22,6 @@ abstract class DisplayObjectContainer extends InteractiveObject
   void set mouseChildren(bool value) { _mouseChildren = value; }
   void set tabChildren(bool value) { _tabChildren = value; }
 
-  DisplayObjectContainerEvents get on => new DisplayObjectContainerEvents(this);
-
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
