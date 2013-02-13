@@ -16,7 +16,7 @@ class ResourceManager
   int _loaderPendingCount;
   int _loaderErrorCount;
 
-  Resource()
+  ResourceManager()
   {
     _images = new Map<String, BitmapData>();
     _sounds = new Map<String, Sound>();
