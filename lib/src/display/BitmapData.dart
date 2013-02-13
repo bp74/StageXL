@@ -70,7 +70,7 @@ class BitmapData implements BitmapDrawable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<BitmapData> loadImage(String url)
+  static Future<BitmapData> load(String url)
   {
     Completer<BitmapData> completer = new Completer<BitmapData>();
 
@@ -82,6 +82,12 @@ class BitmapData implements BitmapDrawable
     return completer.future;
   }
 
+  @deprecated
+  static Future<BitmapData> loadImage(String url) 
+  {
+    return BitmapData.load(url);
+  }
+    
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 

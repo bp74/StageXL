@@ -10,7 +10,7 @@ class MockSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> loadAudio(String url)
+  static Future<Sound> load(String url)
   {
     var sound = new MockSound();
     var loadCompleter = new Completer<Sound>();

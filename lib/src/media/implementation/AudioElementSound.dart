@@ -22,7 +22,7 @@ class AudioElementSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> loadAudio(String url)
+  static Future<Sound> load(String url)
   {
     var sound = new AudioElementSound();
     var audio = sound._audio;

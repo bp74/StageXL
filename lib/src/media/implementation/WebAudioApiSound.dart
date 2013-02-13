@@ -13,7 +13,7 @@ class WebAudioApiSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> loadAudio(String url)
+  static Future<Sound> load(String url)
   {
     var sound = new WebAudioApiSound();
     var soundUrl = Sound.adaptAudioUrl(url);

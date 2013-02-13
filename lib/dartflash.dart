@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:json' as json;
 import 'dart:html' as html;
+import 'package:meta/meta.dart';
 
 import 'dart:html' show
   Element, ImageElement, AudioElement, HttpRequest,

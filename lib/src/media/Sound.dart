@@ -2,19 +2,25 @@ part of dartflash;
 
 abstract class Sound
 {
-  static Future<Sound> loadAudio(String url)
+  static Future<Sound> load(String url)
   {
     var engine = SoundMixer.engine;
 
     if (engine == "WebAudioApi")
-      return WebAudioApiSound.loadAudio(url);
+      return WebAudioApiSound.load(url);
 
     if (engine == "AudioElement")
-      return AudioElementSound.loadAudio(url);
+      return AudioElementSound.load(url);
 
-    return MockSound.loadAudio(url);
+    return MockSound.load(url);
   }
 
+  @deprecated
+  static Future<Sound> loadAudio(String url) 
+  {
+    return Sound.load(url);
+  }
+  
   //-------------------------------------------------------------------------------------------------
 
   num get length;

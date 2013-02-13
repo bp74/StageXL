@@ -28,7 +28,7 @@ void main()
 
 void onFlumpLibraryLoaded(FlumpLibrary flumpLibrary) 
 {
-  BitmapData.loadImage("images/atlas0.png").then((bitmapData) {
+  BitmapData.load("images/atlas0.png").then((bitmapData) {
     Bitmap bitmap = new Bitmap(bitmapData);
     bitmap.x = 40;
     bitmap.y = 40;

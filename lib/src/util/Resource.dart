@@ -30,7 +30,7 @@ class Resource
   {
     _loaderPendingCount++;
     
-    BitmapData.loadImage(url).then((BitmapData bitmapData) {
+    BitmapData.load(url).then((BitmapData bitmapData) {
       _images[name] = bitmapData;
       _loaderPendingCount--;
       _loaderCheck();
@@ -45,7 +45,7 @@ class Resource
   {
     _loaderPendingCount++;
 
-    Sound.loadAudio(url).then((Sound sound) {
+    Sound.load(url).then((Sound sound) {
       _sounds[name] = sound;
       _loaderPendingCount--;
       _loaderCheck();

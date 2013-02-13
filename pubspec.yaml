@@ -5,3 +5,4 @@ description: A library for graphically rich content like games, based on the Fla
 homepage: http://www.dartflash.com
 dependencies:
   browser: any
+  meta: any
