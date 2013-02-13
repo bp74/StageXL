@@ -29,9 +29,14 @@ class ResourceManagerResource {
   //-----------------------------------------------------------------------------------------------
   
   _load(Future loader) {
-    _loader = loader.then(
-        (value) => _resource = value, 
-        onError: (AsyncError error) => _error = error.error);
+    
+    _loader = loader.then((value) {
+      _resource = value;
+      _error = null;
+    }, onError: (AsyncError error) {
+      _resource = null;
+     _error = error.error;
+    });
   }
 }
 

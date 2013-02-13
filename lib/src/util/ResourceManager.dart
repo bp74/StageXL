@@ -88,7 +88,7 @@ class ResourceManager {
 
   Future<ResourceManager> load() {
     
-    var loaders = _resources.values.map((r) => r._loader);
+    var loaders = _resources.values.where((r) => r.resource == null).map((r) => r._loader);
     
     return Future.wait(loaders).then((value) {
       
