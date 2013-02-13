@@ -22,24 +22,22 @@ void main()
   // Use the Resource class to load some Bitmaps and Sounds
   //------------------------------------------------------------------
 
-  Resource resource = new Resource();
-  resource.addImage("house", "../common/images/House.png");
-  resource.addImage("sun", "../common/images/Sun.png");
-  resource.addImage("tree", "../common/images/Tree.png");
-  resource.addImage("buttonUp", "../common/images/ButtonUp.png");
-  resource.addImage("buttonOver", "../common/images/ButtonOver.png");
-  resource.addImage("buttonDown", "../common/images/ButtonDown.png");
-  resource.addSound("plop", "../common/sounds/Plop.mp3");
+  var resourceManager = new ResourceManager()
+    ..addImage("house", "../common/images/House.png")
+    ..addImage("sun", "../common/images/Sun.png")
+    ..addImage("tree", "../common/images/Tree.png")
+    ..addImage("buttonUp", "../common/images/ButtonUp.png")
+    ..addImage("buttonOver", "../common/images/ButtonOver.png")
+    ..addImage("buttonDown", "../common/images/ButtonDown.png")
+    ..addSound("plop", "../common/sounds/Plop.mp3");
 
-  Future resourceLoader = resource.load();
-
-  resourceLoader.then((result)
+  resourceManager.load().then((result)
   {
     // Create a SimpleButton
 
-    Bitmap buttonUp = new Bitmap(resource.getBitmapData("buttonUp"));
-    Bitmap buttonOver = new Bitmap(resource.getBitmapData("buttonOver"));
-    Bitmap buttonDown = new Bitmap(resource.getBitmapData("buttonDown"));
+    Bitmap buttonUp = new Bitmap(resourceManager.getBitmapData("buttonUp"));
+    Bitmap buttonOver = new Bitmap(resourceManager.getBitmapData("buttonOver"));
+    Bitmap buttonDown = new Bitmap(resourceManager.getBitmapData("buttonDown"));
 
     SimpleButton simpleButton = new SimpleButton(buttonUp, buttonOver, buttonDown, buttonOver);
     simpleButton.x = 20;
@@ -69,12 +67,12 @@ void main()
       // play plop sound
 
       SoundTransform soundTransform = new SoundTransform(1);
-      Sound sound = resource.getSound("plop");
+      Sound sound = resourceManager.getSound("plop");
       SoundChannel soundChannel = sound.play(false, soundTransform);
 
       // add a new world to the stage
 
-      World world = new World(resource);
+      World world = new World(resourceManager);
       world.x = 20 + clickCount * 40;
       world.y = 100 + clickCount * 20;
       stage.addChild(world);

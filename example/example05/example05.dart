@@ -22,18 +22,16 @@ void main()
   // Use the Resource class to load some Bitmaps
   //------------------------------------------------------------------
 
-  Resource resource = new Resource();
-  resource.addImage("house", "../common/images/House.png");
-  resource.addImage("sun", "../common/images/Sun.png");
-  resource.addImage("tree", "../common/images/Tree.png");
+  var resourceManager = new ResourceManager()
+    ..addImage("house", "../common/images/House.png")
+    ..addImage("sun", "../common/images/Sun.png")
+    ..addImage("tree", "../common/images/Tree.png");
 
-  Future resourceLoader = resource.load();
-
-  resourceLoader.then((result)
+  resourceManager.load().then((result)
   {
     // Let's create a new World
 
-    World world = new World(resource);
+    World world = new World(resourceManager);
     world.pivotX = world.width / 2;
     world.pivotY = world.height / 2;
     world.x = 100;

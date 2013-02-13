@@ -23,26 +23,24 @@ void main()
   // we cannot use embedded Bitmaps like we do it in a SWF file.
   // but the library provides an easy way to load resources.
 
-  Resource resource = new Resource();
-  resource.addImage("house", "../common/images/House.png");
-  resource.addImage("sun", "../common/images/Sun.png");
-  resource.addImage("tree", "../common/images/Tree.png");
+  var resourceManager = new ResourceManager()
+    ..addImage("house", "../common/images/House.png")
+    ..addImage("sun", "../common/images/Sun.png")
+    ..addImage("tree", "../common/images/Tree.png");
 
-  Future resourceLoader = resource.load();
-
-  resourceLoader.then((result)
+  resourceManager.load().then((result)
   {
-    Bitmap house = new Bitmap(resource.getBitmapData("house"));
+    Bitmap house = new Bitmap(resourceManager.getBitmapData("house"));
     house.x = 200;
     house.y = 200;
     stage.addChild(house);
 
-    Bitmap tree = new Bitmap(resource.getBitmapData("tree"));
+    Bitmap tree = new Bitmap(resourceManager.getBitmapData("tree"));
     tree.x = 330;
     tree.y = 200;
     stage.addChild(tree);
 
-    Bitmap sun = new Bitmap(resource.getBitmapData("sun"));
+    Bitmap sun = new Bitmap(resourceManager.getBitmapData("sun"));
     sun.x = 250;
     sun.y = 50;
     stage.addChild(sun);

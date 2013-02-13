@@ -1,13 +1,18 @@
 part of dartflash;
 
-class Resource
+@deprecated
+class Resource extends ResourceManager {
+
+}
+
+class ResourceManager
 {
   Map<String, BitmapData> _images;
   Map<String, Sound> _sounds;
   Map<String, TextureAtlas> _textureAtlases;
   Map<String, String> _texts;
 
-  Completer<Resource> _loader;
+  Completer<ResourceManager> _loader;
   int _loaderPendingCount;
   int _loaderErrorCount;
 
@@ -79,9 +84,9 @@ class Resource
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Future<Resource> load()
+  Future<ResourceManager> load()
   {
-    _loader = new Completer<Resource>();
+    _loader = new Completer<ResourceManager>();
     _loaderCheck();
 
     return _loader.future;

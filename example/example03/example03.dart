@@ -22,18 +22,16 @@ void main()
   // Use the Resource class to load some Bitmaps
   //------------------------------------------------------------------
 
-  Resource resource = new Resource();
-  resource.addImage("house", "../common/images/House.png");
-  resource.addImage("sun", "../common/images/Sun.png");
-  resource.addImage("tree", "../common/images/Tree.png");
+  var resourceManager = new ResourceManager()
+    ..addImage("house", "../common/images/House.png")
+    ..addImage("sun", "../common/images/Sun.png")
+    ..addImage("tree", "../common/images/Tree.png");
 
-  Future resourceLoader = resource.load();
-
-  resourceLoader.then((result)
+  resourceManager.load().then((result)
   {
     // Place the World on the stage
 
-    World world = new World(resource);
+    World world = new World(resourceManager);
     world.x = 10;
     world.y = 20;
     stage.addChild(world);
@@ -44,7 +42,7 @@ void main()
 
     for(int i = 0; i < 5; i++)
     {
-      World otherWorld = new World(resource);
+      World otherWorld = new World(resourceManager);
       otherWorld.scaleX = 1.0 - i * 0.1;
       otherWorld.scaleY = 1.0 - i * 0.1;
       otherWorld.x = posX;

@@ -7,7 +7,7 @@ import 'package:dartflash/dartflash.dart';
 
 Stage stage;
 RenderLoop renderLoop;
-Resource resource;
+ResourceManager resourceManager;
 
 void main()
 {
@@ -24,16 +24,16 @@ void main()
   // Use the Resource class to load some Bitmaps and Sounds
   //------------------------------------------------------------------
 
-  resource = new Resource();
-  resource.addImage("astronaut", "../common/images/Astronaut.jpg");
-  resource.addImage("flower", "../common/images/Flower3.png");
+  resourceManager = new ResourceManager()
+    ..addImage("astronaut", "../common/images/Astronaut.jpg")
+    ..addImage("flower", "../common/images/Flower3.png");
 
-  resource.load().then((result) {
+  resourceManager.load().then((result) {
 
-    var flowerBitmapData = resource.getBitmapData("flower");
+    var flowerBitmapData = resourceManager.getBitmapData("flower");
     var flowerRectangle = new Rectangle(0, 0, flowerBitmapData.width, flowerBitmapData.height);
 
-    var astronautBitmapData = resource.getBitmapData("astronaut");
+    var astronautBitmapData = resourceManager.getBitmapData("astronaut");
     var astronautRectangle = new Rectangle(0, 0, astronautBitmapData.width, astronautBitmapData.height);
 
     //-------------------------------------------

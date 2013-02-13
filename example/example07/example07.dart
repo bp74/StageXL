@@ -11,7 +11,7 @@ import 'package:dartflash/dartflash.dart';
 
 Stage stage;
 RenderLoop renderLoop;
-Resource resource;
+ResourceManager resourceManager;
 
 void main()
 {
@@ -28,9 +28,9 @@ void main()
   // Load a TextureAtlas
   //------------------------------------------------------------------
 
-  resource = new Resource();
-  resource.addTextureAtlas("ta1", "images/walk.json", TextureAtlasFormat.JSONARRAY);
-  resource.load().then((result) => startAnimation());
+  resourceManager = new ResourceManager();
+  resourceManager.addTextureAtlas("ta1", "images/walk.json", TextureAtlasFormat.JSONARRAY);
+  resourceManager.load().then((result) => startAnimation());
 }
 
 //---------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ void startAnimation()
   // Get all the "walk" bitmapDatas in the texture atlas.
   //------------------------------------------------------------------
 
-  TextureAtlas textureAtlas = resource.getTextureAtlas("ta1");
+  TextureAtlas textureAtlas = resourceManager.getTextureAtlas("ta1");
   List<BitmapData> bitmapDatas = textureAtlas.getBitmapDatas("walk");
 
   //------------------------------------------------------------------

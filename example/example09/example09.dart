@@ -12,7 +12,7 @@ String jsonSun = '{"sourcePosition" : { "x" : 160.00, "y" : 230.00 }, "sourcePos
 Stage stageBackground;
 Stage stageForeground;
 RenderLoop renderLoop;
-Resource resource;
+ResourceManager resourceManager;
 
 void main()
 {
@@ -85,13 +85,13 @@ void main()
   // Draw some buttons to show different particle systems.
   //------------------------------------------------------------------
 
-  resource = new Resource();
-  resource.addImage("buttonUp", "../common/images/ButtonUp.png");
-  resource.addImage("buttonOver", "../common/images/ButtonOver.png");
-  resource.addImage("buttonDown", "../common/images/ButtonDown.png");
+  resourceManager = new ResourceManager()
+    ..addImage("buttonUp", "../common/images/ButtonUp.png")
+    ..addImage("buttonOver", "../common/images/ButtonOver.png")
+    ..addImage("buttonDown", "../common/images/ButtonDown.png");
 
-  resource.load().then((result)
-  {
+  resourceManager.load().then((result) {
+  
     List<Sprite> buttons = [
       getButton("Jelly", () => startParticleSystem(jsonJelly)),
       getButton("Fire", () => startParticleSystem(jsonFire)),
@@ -117,9 +117,9 @@ Sprite getButton(String text, Function clickHandler)
 {
   Sprite button = new Sprite();
 
-  Bitmap buttonUp = new Bitmap(resource.getBitmapData("buttonUp"));
-  Bitmap buttonOver = new Bitmap(resource.getBitmapData("buttonOver"));
-  Bitmap buttonDown = new Bitmap(resource.getBitmapData("buttonDown"));
+  Bitmap buttonUp = new Bitmap(resourceManager.getBitmapData("buttonUp"));
+  Bitmap buttonOver = new Bitmap(resourceManager.getBitmapData("buttonOver"));
+  Bitmap buttonDown = new Bitmap(resourceManager.getBitmapData("buttonDown"));
 
   SimpleButton simpleButton = new SimpleButton(buttonUp, buttonOver, buttonDown, buttonOver);
   simpleButton.x = 20;

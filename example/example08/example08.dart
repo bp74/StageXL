@@ -7,7 +7,7 @@ import 'package:dartflash/dartflash.dart';
 
 Stage stage;
 RenderLoop renderLoop;
-Resource resource;
+ResourceManager resourceManager;
 
 void main()
 {
@@ -41,19 +41,19 @@ void main()
   // Use the Resource class to load some Bitmaps
   //------------------------------------------------------------------
 
-  resource = new Resource();
-  resource.addImage("buttonUp", "../common/images/ButtonUp.png");
-  resource.addImage("buttonOver", "../common/images/ButtonOver.png");
-  resource.addImage("buttonDown", "../common/images/ButtonDown.png");
-  resource.addImage("flower1", "../common/images/Flower1.png");
-  resource.addImage("flower2", "../common/images/Flower2.png");
-  resource.addImage("flower3", "../common/images/Flower3.png");
+  resourceManager = new ResourceManager()
+    ..addImage("buttonUp", "../common/images/ButtonUp.png")
+    ..addImage("buttonOver", "../common/images/ButtonOver.png")
+    ..addImage("buttonDown", "../common/images/ButtonDown.png")
+    ..addImage("flower1", "../common/images/Flower1.png")
+    ..addImage("flower2", "../common/images/Flower2.png")
+    ..addImage("flower3", "../common/images/Flower3.png");
 
   //------------------------------------------------------------------
   // Draw buttons for different masks and start animation
   //------------------------------------------------------------------
 
-  resource.load().then((result)
+  resourceManager.load().then((result)
   {
     Sprite animation = getAnimation();
     animation.pivotX = 400;
@@ -95,7 +95,7 @@ Sprite getAnimation()
 
   for(int i = 0; i < 150; i++) {
     int f = 1 + random.nextInt(3);
-    BitmapData bitmapData = resource.getBitmapData("flower$f");
+    BitmapData bitmapData = resourceManager.getBitmapData("flower$f");
     Bitmap bitmap = new Bitmap(bitmapData);
     bitmap.pivotX = 64;
     bitmap.pivotY = 64;
@@ -116,9 +116,9 @@ Sprite getButton(String text, Function clickHandler)
 {
   Sprite button = new Sprite();
 
-  Bitmap buttonUp = new Bitmap(resource.getBitmapData("buttonUp"));
-  Bitmap buttonOver = new Bitmap(resource.getBitmapData("buttonOver"));
-  Bitmap buttonDown = new Bitmap(resource.getBitmapData("buttonDown"));
+  Bitmap buttonUp = new Bitmap(resourceManager.getBitmapData("buttonUp"));
+  Bitmap buttonOver = new Bitmap(resourceManager.getBitmapData("buttonOver"));
+  Bitmap buttonDown = new Bitmap(resourceManager.getBitmapData("buttonDown"));
 
   SimpleButton simpleButton = new SimpleButton(buttonUp, buttonOver, buttonDown, buttonOver);
   simpleButton.x = 20;

@@ -103,7 +103,7 @@ part 'src/ui/MouseCursor.dart';
 part 'src/ui/Color.dart';
 part 'src/ui/Multitouch.dart';
 
-part 'src/util/Resource.dart';
+part 'src/util/ResourceManager.dart';
 part 'src/util/TextureAtlas.dart';
 part 'src/util/TextureAtlasFormat.dart';
 part 'src/util/TextureAtlasFrame.dart';
