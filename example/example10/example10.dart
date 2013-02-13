@@ -25,8 +25,8 @@ void main()
   //------------------------------------------------------------------
 
   resourceManager = new ResourceManager()
-    ..addImage("astronaut", "../common/images/Astronaut.jpg")
-    ..addImage("flower", "../common/images/Flower3.png");
+    ..addBitmapData("astronaut", "../common/images/Astronaut.jpg")
+    ..addBitmapData("flower", "../common/images/Flower3.png");
 
   resourceManager.load().then((result) {
 

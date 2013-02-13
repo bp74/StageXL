@@ -104,6 +104,7 @@ part 'src/ui/Color.dart';
 part 'src/ui/Multitouch.dart';
 
 part 'src/util/ResourceManager.dart';
+part 'src/util/ResourceManagerResource.dart';
 part 'src/util/TextureAtlas.dart';
 part 'src/util/TextureAtlasFormat.dart';
 part 'src/util/TextureAtlasFrame.dart';

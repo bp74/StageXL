@@ -42,12 +42,12 @@ void main()
   //------------------------------------------------------------------
 
   resourceManager = new ResourceManager()
-    ..addImage("buttonUp", "../common/images/ButtonUp.png")
-    ..addImage("buttonOver", "../common/images/ButtonOver.png")
-    ..addImage("buttonDown", "../common/images/ButtonDown.png")
-    ..addImage("flower1", "../common/images/Flower1.png")
-    ..addImage("flower2", "../common/images/Flower2.png")
-    ..addImage("flower3", "../common/images/Flower3.png");
+    ..addBitmapData("buttonUp", "../common/images/ButtonUp.png")
+    ..addBitmapData("buttonOver", "../common/images/ButtonOver.png")
+    ..addBitmapData("buttonDown", "../common/images/ButtonDown.png")
+    ..addBitmapData("flower1", "../common/images/Flower1.png")
+    ..addBitmapData("flower2", "../common/images/Flower2.png")
+    ..addBitmapData("flower3", "../common/images/Flower3.png");
 
   //------------------------------------------------------------------
   // Draw buttons for different masks and start animation

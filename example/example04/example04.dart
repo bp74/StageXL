@@ -23,12 +23,12 @@ void main()
   //------------------------------------------------------------------
 
   var resourceManager = new ResourceManager()
-    ..addImage("house", "../common/images/House.png")
-    ..addImage("sun", "../common/images/Sun.png")
-    ..addImage("tree", "../common/images/Tree.png")
-    ..addImage("buttonUp", "../common/images/ButtonUp.png")
-    ..addImage("buttonOver", "../common/images/ButtonOver.png")
-    ..addImage("buttonDown", "../common/images/ButtonDown.png")
+    ..addBitmapData("house", "../common/images/House.png")
+    ..addBitmapData("sun", "../common/images/Sun.png")
+    ..addBitmapData("tree", "../common/images/Tree.png")
+    ..addBitmapData("buttonUp", "../common/images/ButtonUp.png")
+    ..addBitmapData("buttonOver", "../common/images/ButtonOver.png")
+    ..addBitmapData("buttonDown", "../common/images/ButtonDown.png")
     ..addSound("plop", "../common/sounds/Plop.mp3");
 
   resourceManager.load().then((result)

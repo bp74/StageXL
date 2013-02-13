@@ -86,9 +86,9 @@ void main()
   //------------------------------------------------------------------
 
   resourceManager = new ResourceManager()
-    ..addImage("buttonUp", "../common/images/ButtonUp.png")
-    ..addImage("buttonOver", "../common/images/ButtonOver.png")
-    ..addImage("buttonDown", "../common/images/ButtonDown.png");
+    ..addBitmapData("buttonUp", "../common/images/ButtonUp.png")
+    ..addBitmapData("buttonOver", "../common/images/ButtonOver.png")
+    ..addBitmapData("buttonDown", "../common/images/ButtonDown.png");
 
   resourceManager.load().then((result) {
   

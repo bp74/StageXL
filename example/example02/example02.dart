@@ -24,9 +24,9 @@ void main()
   // but the library provides an easy way to load resources.
 
   var resourceManager = new ResourceManager()
-    ..addImage("house", "../common/images/House.png")
-    ..addImage("sun", "../common/images/Sun.png")
-    ..addImage("tree", "../common/images/Tree.png");
+    ..addBitmapData("house", "../common/images/House.png")
+    ..addBitmapData("sun", "../common/images/Sun.png")
+    ..addBitmapData("tree", "../common/images/Tree.png");
 
   resourceManager.load().then((result)
   {

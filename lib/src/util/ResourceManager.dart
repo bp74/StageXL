@@ -5,137 +5,125 @@ class Resource extends ResourceManager {
 
 }
 
-class ResourceManager
-{
-  Map<String, BitmapData> _images;
-  Map<String, Sound> _sounds;
-  Map<String, TextureAtlas> _textureAtlases;
-  Map<String, String> _texts;
-
-  Completer<ResourceManager> _loader;
-  int _loaderPendingCount;
-  int _loaderErrorCount;
-
-  ResourceManager()
-  {
-    _images = new Map<String, BitmapData>();
-    _sounds = new Map<String, Sound>();
-    _textureAtlases = new Map<String, TextureAtlas>();
-    _texts = new Map<String, String>();
-
-    _loader = null;
-    _loaderPendingCount = 0;
-    _loaderErrorCount = 0;
+class ResourceManager {
+  
+  Map<String, ResourceManagerResource> _resources;
+  
+  ResourceManager() {
+    _resources = new Map<String, ResourceManagerResource>();
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
 
-  void addImage(String name, String url)
-  {
-    _loaderPendingCount++;
+  void _addResourceManagerResource(ResourceManagerResource resource) {
     
-    BitmapData.load(url).then((BitmapData bitmapData) {
-      _images[name] = bitmapData;
-      _loaderPendingCount--;
-      _loaderCheck();
-    }).catchError((AsyncError error) {
-      _loaderErrorCount++;
-      _loaderPendingCount--;
-      _loaderCheck();
+    var kind = resource.kind;
+    var name = resource.name;
+    var key = "$kind.$name";
+    
+    if (_resources.containsKey(key))
+      throw new StateError("ResourceManager already contains a resource called '$name'");
+    
+    _resources[key] = resource;    
+  }
+  
+  dynamic _getResourceManagerResource(String kind, String name) {
+    
+    var key = "$kind.$name";
+    
+    if (_resources.containsKey(key) == false)
+      throw new StateError("ResourceManager does not contains a resource called '$name'");
+    
+    return _resources[key];
+  }
+  
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  @deprecated
+  void addImage(String name, String url) {
+    addBitmapData(name, url); 
+  }
+  
+  void addBitmapData(String name, String url) {
+    
+    var resource = new ResourceManagerResource("BitmapData", name, url);
+    resource._load(BitmapData.load(url));
+    
+    _addResourceManagerResource(resource);
+  }
+
+  void addSound(String name, String url) {
+    
+    var resource = new ResourceManagerResource("Sound", name, url);
+    resource._load(Sound.load(url));
+    
+    _addResourceManagerResource(resource);
+  }
+
+  void addTextureAtlas(String name, String url, String textureAtlasFormat) {
+    
+    var resource = new ResourceManagerResource("TextureAtlas", name, url);
+    resource._load(TextureAtlas.load(url, textureAtlasFormat));
+    
+    _addResourceManagerResource(resource);
+  }
+  
+  void addFlumpLibrary(String name, String url) {
+    
+    var resource = new ResourceManagerResource("FlumpLibrary", name, url);
+    resource._load(FlumpLibrary.load(url));
+    
+    _addResourceManagerResource(resource);
+  }
+
+  void addText(String name, String text) {
+    var resource = new ResourceManagerResource("Text", name, "");
+    resource._load(new Future.immediate(text));
+    
+    _addResourceManagerResource(resource);
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  Future<ResourceManager> load() {
+    
+    var loaders = _resources.values.map((r) => r._loader);
+    
+    return Future.wait(loaders).then((value) {
+      
+      var resources = this.failedResources;
+      if (resources.length > 0)
+        throw new StateError("Failed to load ${resources.length} resource(s).");
+      
+      return this;
     });
   }
-
-  void addSound(String name, String url)
-  {
-    _loaderPendingCount++;
-
-    Sound.load(url).then((Sound sound) {
-      _sounds[name] = sound;
-      _loaderPendingCount--;
-      _loaderCheck();
-    }).catchError((AsyncError error) {
-      _loaderErrorCount++;
-      _loaderPendingCount--;
-      _loaderCheck();
-    });
-  }
-
-  void addTextureAtlas(String name, String url, String textureAtlasFormat)
-  {
-    _loaderPendingCount++;
-
-    TextureAtlas.load(url, textureAtlasFormat).then((TextureAtlas textureAtlas) {
-      _textureAtlases[name] = textureAtlas;
-      _loaderPendingCount--;
-      _loaderCheck();
-    }).catchError((AsyncError error) {
-      _loaderErrorCount++;
-      _loaderPendingCount--;
-      _loaderCheck();
-    });
-  }
-
-  void addText(String name, String text)
-  {
-    _texts[name] = text;
+  
+  List<ResourceManagerResource> get failedResources {
+    return _resources.values.where((r) => r.error != null).toList();
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  Future<ResourceManager> load()
-  {
-    _loader = new Completer<ResourceManager>();
-    _loaderCheck();
-
-    return _loader.future;
+  
+  BitmapData getBitmapData(String name) {
+    return _getResourceManagerResource("BitmapData", name).resource;
   }
 
-  BitmapData getBitmapData(String name)
-  {
-    if (_images.containsKey(name) == false)
-      throw new ArgumentError("Resource not found: '$name'");
-
-    return _images[name];
+  Sound getSound(String name) {
+    return _getResourceManagerResource("Sound", name).resource;
   }
 
-  Sound getSound(String name)
-  {
-    if (_sounds.containsKey(name) == false)
-      throw new ArgumentError("Resource not found: '$name'");
-
-    return _sounds[name];
+  TextureAtlas getTextureAtlas(String name) {
+    return _getResourceManagerResource("TextureAtlas", name).resource;
   }
 
-  TextureAtlas getTextureAtlas(String name)
-  {
-    if (_textureAtlases.containsKey(name) == false)
-      throw new ArgumentError("Resource not found: '$name'");
-
-    return _textureAtlases[name];
+  FlumpLibrary getFlumpLibrary(String name) {
+    return _getResourceManagerResource("FlumpLibrary", name).resource;
   }
-
-  String getText(String name)
-  {
-    if (_texts.containsKey(name) == false)
-      return "[[$name]]";
-
-    return _texts[name];
-  }
-
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  _loaderCheck()
-  {
-    if (_loader != null && _loaderPendingCount == 0)
-    {
-      if (_loaderErrorCount == 0)
-        _loader.complete(this);
-      else
-        _loader.completeError(new StateError("Error loading resources."));
-    }
+  
+  String getText(String name) {
+    return _getResourceManagerResource("Text", name).resource;
   }
 
 }
