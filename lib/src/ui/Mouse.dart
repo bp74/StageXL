@@ -4,7 +4,9 @@ class Mouse
 {
   static String _customCursor = MouseCursor.AUTO;
   static bool _isCursorHidden = false;
-  static EventDispatcher _eventDispatcher = new EventDispatcher();
+  
+  static StreamController<String> _mouseCursorChangedEvent = new StreamController<String>();
+  static Stream<String> get _onMouseCursorChanged => _mouseCursorChangedEvent.stream; 
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
@@ -14,7 +16,7 @@ class Mouse
   static void set cursor(String value)
   {
     _customCursor = value;
-    _eventDispatcher.dispatchEvent(new Event("mouseCursorChanged", false));
+    _mouseCursorChangedEvent.add("cursor");
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -22,13 +24,13 @@ class Mouse
   static void hide()
   {
     _isCursorHidden = true;
-    _eventDispatcher.dispatchEvent(new Event("mouseCursorChanged", false));
+    _mouseCursorChangedEvent.add("hide");
   }
 
   static void show()
   {
     _isCursorHidden = false;
-    _eventDispatcher.dispatchEvent(new Event("mouseCursorChanged", false));
+    _mouseCursorChangedEvent.add("show");
   }
 
   //-------------------------------------------------------------------------------------------------

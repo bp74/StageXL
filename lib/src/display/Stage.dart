@@ -45,9 +45,6 @@ class Stage extends DisplayObjectContainer
   KeyboardEvent _keyboardEvent;
   TouchEvent _touchEvent;
 
-  html.EventListener _onMouseEventHandler;
-  html.EventListener _onTouchEventHandler;
-
   //-------------------------------------------------------------------------------------------------
 
   Stage(String name, CanvasElement canvas)
@@ -66,7 +63,7 @@ class Stage extends DisplayObjectContainer
     //---------------------------
     // prepare mouse events
 
-    Mouse._eventDispatcher.addEventListener("mouseCursorChanged", _onMouseCursorChanged);
+    Mouse._onMouseCursorChanged.listen(_onMouseCursorChanged);
 
     _mouseButtons = [
       new _MouseButton(MouseEvent.MOUSE_DOWN, MouseEvent.MOUSE_UP, MouseEvent.CLICK, MouseEvent.DOUBLE_CLICK),
@@ -78,13 +75,11 @@ class Stage extends DisplayObjectContainer
     _mousePosition = new Point(0, 0);
     _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
 
-    _onMouseEventHandler = _onMouseEvent;
-
-    _canvas.onMouseDown.listen(_onMouseEventHandler);
-    _canvas.onMouseUp.listen(_onMouseEventHandler);
-    _canvas.onMouseMove.listen(_onMouseEventHandler);
-    _canvas.onMouseOut.listen(_onMouseEventHandler);
-    _canvas.onMouseWheel.listen(_onMouseEventHandler);
+    _canvas.onMouseDown.listen(_onMouseEvent);
+    _canvas.onMouseUp.listen(_onMouseEvent);
+    _canvas.onMouseMove.listen(_onMouseEvent);
+    _canvas.onMouseOut.listen(_onMouseEvent);
+    _canvas.onMouseWheel.listen(_onMouseEvent);
 
     //---------------------------
     // prepare touch events
@@ -92,9 +87,7 @@ class Stage extends DisplayObjectContainer
     _touches = new Map<int, _Touch>();
     _touchEvent = new TouchEvent(TouchEvent.TOUCH_BEGIN, true);
 
-    _onTouchEventHandler = _onTouchEvent;
-
-    Multitouch._eventDispatcher.addEventListener("inputModeChanged", _onMultitouchInputModeChanged);
+    Multitouch._onInputModeChanged.listen(_onMultitouchInputModeChanged);
     _onMultitouchInputModeChanged(null);
 
     //---------------------------
@@ -154,7 +147,7 @@ class Stage extends DisplayObjectContainer
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _onMouseCursorChanged(Event event)
+  void _onMouseCursorChanged(String action)
   {
     _canvas.style.cursor = Mouse._getCssStyle(_mouseCursor);
   }
@@ -310,18 +303,18 @@ class Stage extends DisplayObjectContainer
 
   List<StreamSubscription<TouchEvent>> _touchEventSubscriptions = [];
   
-  void _onMultitouchInputModeChanged(Event event)
+  void _onMultitouchInputModeChanged(String inputMode)
   {
     _touchEventSubscriptions.forEach((s) => s.cancel());
         
     if (Multitouch.inputMode == MultitouchInputMode.TOUCH_POINT) {
       _touchEventSubscriptions = [
-        _canvas.onTouchStart.listen(_onTouchEventHandler),
-        _canvas.onTouchEnd.listen(_onTouchEventHandler),
-        _canvas.onTouchMove.listen(_onTouchEventHandler),
-        _canvas.onTouchEnter.listen(_onTouchEventHandler),
-        _canvas.onTouchLeave.listen(_onTouchEventHandler),
-        _canvas.onTouchCancel.listen(_onTouchEventHandler)
+        _canvas.onTouchStart.listen(_onTouchEvent),
+        _canvas.onTouchEnd.listen(_onTouchEvent),
+        _canvas.onTouchMove.listen(_onTouchEvent),
+        _canvas.onTouchEnter.listen(_onTouchEvent),
+        _canvas.onTouchLeave.listen(_onTouchEvent),
+        _canvas.onTouchCancel.listen(_onTouchEvent)
       ];
     }
   }

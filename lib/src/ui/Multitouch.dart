@@ -16,7 +16,8 @@ class Multitouch
   static List<String> _supportedGestures = [];
   static String _inputMode =  MultitouchInputMode.NONE;
 
-  static EventDispatcher _eventDispatcher = new EventDispatcher();
+  static StreamController<String> _inputModeChangedEvent = new StreamController<String>();
+  static Stream<String> get _onInputModeChanged => _inputModeChangedEvent.stream; 
 
   static _initialize()
   {
@@ -79,7 +80,7 @@ class Multitouch
   static set inputMode(String value) {
     _initialize();
     _inputMode = value;
-    _eventDispatcher.dispatchEvent(new Event("inputModeChanged", false));
+    _inputModeChangedEvent.add(_inputMode);
   }
 
 }
