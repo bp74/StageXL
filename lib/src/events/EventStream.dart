@@ -9,8 +9,7 @@ class _EventStream<T extends Event> extends Stream<T>
   List<_EventStreamSubscription> _subscriptions; 
   int _subscriptionsCount;
   
-  _EventStream(this._target, this._eventType, this._useCapture)
-  {
+  _EventStream(this._target, this._eventType, this._useCapture) {
     _subscriptions = new List<_EventStreamSubscription>(5); 
     _subscriptionsCount = 0;
   }
@@ -22,8 +21,8 @@ class _EventStream<T extends Event> extends Stream<T>
 
   //-----------------------------------------------------------------------------------------------
   
-  StreamSubscription<T> listen(void onData(T event), {void onError(AsyncError error), void onDone(), bool unsubscribeOnError}) 
-  {
+  StreamSubscription<T> listen(void onData(T event), {void onError(AsyncError error), void onDone(), bool unsubscribeOnError}) {
+
     var subscription = new _EventStreamSubscription<T>(this, onData);
     
     if (_subscriptionsCount == _subscriptions.length)
@@ -41,8 +40,8 @@ class _EventStream<T extends Event> extends Stream<T>
   
   //-----------------------------------------------------------------------------------------------
   
-  void _onSubscriptionCancel(StreamSubscription subscription)
-  {
+  void _onSubscriptionCancel(StreamSubscription subscription) {
+    
     for(int i = 0; i < _subscriptionsCount; i++) {
       if (_subscriptions[i] == subscription) {
         _subscriptions[i] = null;
@@ -53,8 +52,8 @@ class _EventStream<T extends Event> extends Stream<T>
   
   //-----------------------------------------------------------------------------------------------
   
-  void _cancelSubscriptions()
-  {
+  void _cancelSubscriptions() {
+    
     for(int i = 0; i < _subscriptionsCount; i++) 
       if (_subscriptions[i] != null)
         _subscriptions[i].cancel();
@@ -62,30 +61,39 @@ class _EventStream<T extends Event> extends Stream<T>
   
   //-----------------------------------------------------------------------------------------------
   
-  void _dispatchEvent(T event) 
-  {
+  void _dispatchEvent(T event)  {
+    
+    // Dispatch event to current subscriptions.
+    // Do not dispatch events to newly added subscriptions.
+    // Adjust _subscriptions List.
+    
     int subscriptionsCount = _subscriptionsCount;
     int tail = 0;
-
+    
     for(int head = 0; head < subscriptionsCount; head++) {
-
+      
       var subscription = _subscriptions[head];
-      if (subscription != null) {
-
-        subscription._onData(event);
+      if (subscription == null) continue;
+      
+      subscription._onData(event);
         
-        if (tail != head) _subscriptions[tail] = subscription;
-        tail++;
+      if (tail != head) {
+        _subscriptions[tail] = subscription;
+        _subscriptions[head] = null;
       }
+      
+      tail++;
     }
 
-    for(int i = subscriptionsCount; i < _subscriptionsCount; i++)
-      _subscriptions[tail++] = _subscriptions[i];
+    if (tail != subscriptionsCount) {
 
-    for(int i = tail; i < _subscriptionsCount; i++)
-      _subscriptions[i] = null;
-
-    _subscriptionsCount = tail;
+      for(int head = subscriptionsCount; head < _subscriptionsCount; head++) {
+        _subscriptions[tail++] = _subscriptions[head];
+        _subscriptions[head] = null;
+      }
+      
+      _subscriptionsCount = tail;
+    }
   }
 
 }

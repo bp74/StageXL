@@ -7,8 +7,7 @@ class _EventStreamIndex<T extends Event>
   List<_EventStream> _eventStreams;
   int _eventStreamsCount;
   
-  _EventStreamIndex()
-  {
+  _EventStreamIndex() {
     _eventStreams = new List<_EventStream>(50);
     _eventStreamsCount = 0;
   }
@@ -33,34 +32,48 @@ class _EventStreamIndex<T extends Event>
   
   void _dispatchEvent(Event event) {
    
-    int eventStreamsCount = _eventStreamsCount;
-    int tail = 0;
-
     event._eventPhase = EventPhase.AT_TARGET;
     event._stopsPropagation = false;
     event._stopsImmediatePropagation = false;
+
+    // Dispatch event to current event streams.
+    // Do not dispatch events to newly added streams.
+    // Adjust _eventStreams List.
+    
+    int eventStreamsCount = _eventStreamsCount;
+    int tail = 0;
     
     for(int head = 0; head < eventStreamsCount; head++) {
 
       var eventStream = _eventStreams[head];
-      if (eventStream != null && eventStream._subscriptionsCount > 0) {
-        
-        event._target = eventStream._target;
-        event._currentTarget = eventStream._target;
-        eventStream._dispatchEvent(event);
-        
-        if (tail != head) _eventStreams[tail] = eventStream;
-        tail++;
+      if (eventStream == null) continue;
+
+      if (eventStream._subscriptionsCount == 0) {
+        _eventStreams[head] = null;
+        continue;
       }
+
+      event._target = eventStream._target;
+      event._currentTarget = eventStream._target;
+      eventStream._dispatchEvent(event);
+        
+      if (tail != head) {
+        _eventStreams[tail] = eventStream;
+        _eventStreams[head] = null;
+      }
+      
+      tail++;
     }
 
-    for(int i = eventStreamsCount; i < _eventStreamsCount; i++)
-      _eventStreams[tail++] = _eventStreams[i];
-
-    for(int i = tail; i < _eventStreamsCount; i++)
-      _eventStreams[i] = null;
-
-    _eventStreamsCount = tail;
+    if (tail != eventStreamsCount) {
+      
+      for(int head = eventStreamsCount; head < _eventStreamsCount; head++) {
+        _eventStreams[tail++] = _eventStreams[head];
+        _eventStreams[head] = null;
+      }
+    
+      _eventStreamsCount = tail;
+    }
   }
   
 }

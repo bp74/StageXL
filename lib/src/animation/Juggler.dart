@@ -104,36 +104,40 @@ class Juggler implements Animatable
   {
     _elapsedTime += time;
 
-    // There is a high probability that the "advanceTime" function adds new animatables to
-    // the Juggler, but we don't want to process those animatables in the current frame.
-    // The new animatables should be processed in the next frame!
-
-    //-----------------------------------------------------------------------
-    // 1) process all animatables from start to current "_animatablesCount".
-    // 2) remove completed animatables or null values from the list.
-
+    // Call advanceTime of current animatables.
+    // Do not call advanceTime of newly added animatables.
+    // Adjust _animatables List.
+    
     int animatablesCount = _animatablesCount;
     int tail = 0;
-
+    
     for(int head = 0; head < animatablesCount; head++) {
-      Animatable animatable = _animatables[head];
-
-      if (animatable != null && animatable.advanceTime(time)) {
-        if (tail != head) _animatables[tail] = animatable;
-        tail++;
+      
+      var animatable = _animatables[head];
+      if (animatable == null) continue;
+      
+      if (animatable.advanceTime(time) == false) {
+        _animatables[head] = null;
+        continue;
       }
+
+      if (tail != head) {
+        _animatables[tail] = animatable;
+        _animatables[head] = null;
+      }
+        
+      tail++;
     }
 
-    //-----------------------------------------------------------------------
-    // 3) move newly added animatables to the left and clear rest
-
-    for(int i = animatablesCount; i < _animatablesCount; i++)
-      _animatables[tail++] = _animatables[i];
-
-    for(int i = tail; i < _animatablesCount; i++)
-      _animatables[i] = null;
-
-    _animatablesCount = tail;
+    if (tail != animatablesCount) {
+      
+      for(int head = animatablesCount; head < _animatablesCount; head++) {
+        _animatables[tail++] = _animatables[head];
+        _animatables[head] = null;
+      }
+      
+      _animatablesCount = tail;
+    }
 
     return true;
   }
