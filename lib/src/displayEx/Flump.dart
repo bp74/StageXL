@@ -8,8 +8,8 @@ class FlumpLibrary
   String _url;
   String _md5;
   int _frameRate;
-  List<_FlumpMovieData> _movieDatas;
-  List<_FlumpTextureGroup> _textureGroups;
+  final List<_FlumpMovieData> _movieDatas = new List<_FlumpMovieData>();
+  final List<_FlumpTextureGroup> _textureGroups = new List<_FlumpTextureGroup>();
   
   static Future<FlumpLibrary> load(String url)
   {
@@ -24,8 +24,6 @@ class FlumpLibrary
       flumpLibrary._url = url;
       flumpLibrary._md5 = data["md5"];
       flumpLibrary._frameRate = data["frameRate"].toInt();
-      flumpLibrary._movieDatas = new List<_FlumpMovieData>();
-      flumpLibrary._textureGroups = new List<_FlumpTextureGroup>();
 
       for(var movieJson in data["movies"] as List) {
         var flumpMovieData = new _FlumpMovieData(movieJson, flumpLibrary);
@@ -83,9 +81,9 @@ class FlumpLibrary
 
 class FlumpMovie extends DisplayObject implements Animatable
 {
-  FlumpLibrary _flumpLibrary;
-  _FlumpMovieData _flumpMovieData;
-  List<_FlumpMovieLayer> _flumpMovieLayers;
+  final FlumpLibrary _flumpLibrary;
+  final _FlumpMovieData _flumpMovieData;
+  final List<_FlumpMovieLayer> _flumpMovieLayers = new List<_FlumpMovieLayer>();
   
   num _time = 0.0;
   num _duration = 0.0;
@@ -94,10 +92,9 @@ class FlumpMovie extends DisplayObject implements Animatable
   
   // ToDo: add features like playOnce, playTo, goTo, loop, stop, isPlaying, label events, ...
 
-  FlumpMovie(FlumpLibrary flumpLibrary, String name) {
-    _flumpLibrary = flumpLibrary;
-    _flumpMovieData = flumpLibrary._getFlumpMovieData(name);
-    _flumpMovieLayers = new List<_FlumpMovieLayer>();
+  FlumpMovie(FlumpLibrary flumpLibrary, String name) :
+    _flumpLibrary = flumpLibrary,
+    _flumpMovieData = flumpLibrary._getFlumpMovieData(name) {
     
     for(var flumpLayerData in _flumpMovieData.flumpLayerDatas) {
       var flashMovieLayer = new _FlumpMovieLayer(_flumpLibrary, flumpLayerData);
@@ -136,13 +133,15 @@ class FlumpMovie extends DisplayObject implements Animatable
 
 class _FlumpMovieLayer extends DisplayObject implements Animatable
 {
-  Map<String, BitmapDrawable> symbols;
+  final FlumpLibrary flumpLibrary;
+  final _FlumpLayerData flumpLayerData;
+  final Map<String, BitmapDrawable> symbols = new Map<String, BitmapDrawable>();
   BitmapDrawable symbol;
-  _FlumpLayerData flumpLayerData;
   
-  _FlumpMovieLayer(FlumpLibrary flumpLibrary, this.flumpLayerData) {
+  _FlumpMovieLayer(FlumpLibrary flumpLibrary, _FlumpLayerData flumpLayerData) :
+    this.flumpLibrary = flumpLibrary,
+    this.flumpLayerData = flumpLayerData {
     
-    symbols = new Map<String, BitmapDrawable>();
     for(var keyframe in flumpLayerData.flumpKeyframeDatas) {
       if (keyframe.ref != null && symbols.containsKey(keyframe.ref) == false) {
         symbols[keyframe.ref] = flumpLibrary._createSymbol(keyframe.ref);
@@ -231,16 +230,16 @@ class _FlumpMovieLayer extends DisplayObject implements Animatable
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _FlumpMovieData
-{
-  String id;
-  FlumpLibrary flumpLibrary;
-  List<_FlumpLayerData> flumpLayerDatas;
+class _FlumpMovieData {
   
-  _FlumpMovieData(Map json, this.flumpLibrary) {
-    this.id = json["id"];
-    this.flumpLayerDatas = new List<_FlumpLayerData>();
-    
+  final String id;
+  final FlumpLibrary flumpLibrary;
+  final List<_FlumpLayerData> flumpLayerDatas = new List<_FlumpLayerData>();
+  
+  _FlumpMovieData(Map json, FlumpLibrary flumpLibrary) :
+    flumpLibrary = flumpLibrary,
+    id = json["id"] {
+                                                                  
     for(var layer in json["layers"]) {
       var flumpLayerData = new _FlumpLayerData(layer);
       this.flumpLayerDatas.add(flumpLayerData);
@@ -259,17 +258,16 @@ class _FlumpMovieData
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _FlumpLayerData
-{
-  String name;
-  List<_FlumpKeyframeData> flumpKeyframeDatas;
-  bool flipbook;
+class _FlumpLayerData {
   
-  _FlumpLayerData(Map json) {
-    this.name = json["name"];
-    this.flumpKeyframeDatas = new List<_FlumpKeyframeData>();
-    this.flipbook = json.containsKey("flipbook") ? json["flipbook"] : false;
-    
+  final String name;
+  final bool flipbook;
+  final List<_FlumpKeyframeData> flumpKeyframeDatas = new List<_FlumpKeyframeData>();
+  
+  _FlumpLayerData(Map json) : 
+    this.name = json["name"],
+    this.flipbook = json.containsKey("flipbook") ? json["flipbook"] : false {
+      
     for(var keyframe in json["keyframes"]) {
       var flumpKeyframeData = new _FlumpKeyframeData(keyframe);
       this.flumpKeyframeDatas.add(flumpKeyframeData);

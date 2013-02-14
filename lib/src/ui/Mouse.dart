@@ -6,7 +6,7 @@ class Mouse
   static bool _isCursorHidden = false;
   
   static StreamController<String> _mouseCursorChangedEvent = new StreamController<String>();
-  static Stream<String> get _onMouseCursorChanged => _mouseCursorChangedEvent.stream; 
+  static Stream<String> _onMouseCursorChanged = _mouseCursorChangedEvent.stream.asBroadcastStream();
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

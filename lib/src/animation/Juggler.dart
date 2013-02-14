@@ -2,17 +2,12 @@ part of dartflash;
 
 class Juggler implements Animatable
 {
-  num _elapsedTime;
+  final List<Animatable> _animatables = new List<Animatable>();
+  int _animatablesCount = 0;
+  num _elapsedTime = 0.0;
   
-  List<Animatable> _animatables;
-  int _animatablesCount;
-
-  Juggler() 
-  {
-    _elapsedTime = 0.0;
-
-    _animatables = new List<Animatable>();
-    _animatablesCount = 0;
+  Juggler() {
+    
   }
 
   //-------------------------------------------------------------------------------------------------

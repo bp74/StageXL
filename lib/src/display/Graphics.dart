@@ -2,12 +2,7 @@ part of dartflash;
 
 class Graphics
 {
-  List<_GraphicsCommand> _commands;
-
-  Graphics()
-  {
-    _commands = new List<_GraphicsCommand>();
-  }
+  final List<_GraphicsCommand> _commands = new List<_GraphicsCommand>();
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

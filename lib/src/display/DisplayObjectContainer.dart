@@ -2,14 +2,9 @@ part of dartflash;
 
 abstract class DisplayObjectContainer extends InteractiveObject
 {
-  List<DisplayObject> _children;
+  final List<DisplayObject> _children = new List<DisplayObject>();
   bool _mouseChildren = true;
   bool _tabChildren = true;
-
-  DisplayObjectContainer()
-  {
-    _children = new List<DisplayObject>();
-  }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

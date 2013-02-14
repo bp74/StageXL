@@ -17,7 +17,7 @@ class Multitouch
   static String _inputMode =  MultitouchInputMode.NONE;
 
   static StreamController<String> _inputModeChangedEvent = new StreamController<String>();
-  static Stream<String> get _onInputModeChanged => _inputModeChangedEvent.stream; 
+  static Stream<String> _onInputModeChanged = _inputModeChangedEvent.stream.asBroadcastStream();
 
   static _initialize()
   {
