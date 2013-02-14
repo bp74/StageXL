@@ -291,17 +291,14 @@ class Stage extends DisplayObjectContainer
 
   void _onMouseWheel(html.WheelEvent event)
   {
-    InteractiveObject target = hitTestInput(event.offsetX, event.offsetY);
+    var clientRect = _canvas.getBoundingClientRect();
+    var stagePoint = new Point(event.clientX - clientRect.left, event.clientY - clientRect.top);
+    var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
-    if (target != null)
-    {
-      var clientRect = _canvas.getBoundingClientRect();
-      var stagePoint = new Point(event.clientX - clientRect.left, event.clientY - clientRect.top);
-      var localPoint = target.globalToLocal(stagePoint);
-
+    if (target != null) {
       target.dispatchEvent(_mouseEvent
         .._reset(MouseEvent.MOUSE_WHEEL, true)
-        .._localPoint = localPoint
+        .._localPoint = target.globalToLocal(stagePoint)
         .._stagePoint = stagePoint
         .._deltaX = event.deltaX
         .._deltaY = event.deltaY);
@@ -339,14 +336,10 @@ class Stage extends DisplayObjectContainer
 
     for(var changedTouch in event.changedTouches) {
 
-      int identifier = changedTouch.identifier;
-      InteractiveObject target = null;
-      Point stagePoint = new Point(changedTouch.clientX - clientRect.left, changedTouch.clientY - clientRect.top);
-      Point localPoint = null;
-
-      target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
-
-      _Touch touch = _touches.containsKey(identifier) ? _touches[identifier] : new _Touch(target, _touches.length == 0);
+      var identifier = changedTouch.identifier;
+      var stagePoint = new Point(changedTouch.clientX - clientRect.left, changedTouch.clientY - clientRect.top);
+      var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
+      var touch = _touches.containsKey(identifier) ? _touches[identifier] : new _Touch(target, _touches.length == 0);
 
       //-----------------------------------------------------------------
 

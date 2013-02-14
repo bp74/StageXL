@@ -6,8 +6,7 @@ class EventStreamProvider<T extends Event>
 
   const EventStreamProvider(this._eventType);
 
-  Stream<T> forTarget(EventDispatcher target, {bool useCapture: false}) 
-  {
+  Stream<T> forTarget(EventDispatcher target, {bool useCapture: false}) {
     return target._getEventStream(_eventType, useCapture);
   }
 

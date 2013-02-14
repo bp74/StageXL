@@ -9,16 +9,15 @@ class _EventStreamSubscription<T extends Event> extends StreamSubscription<T>
   int _pauseCount;
   bool _canceled;
 
-  _EventStreamSubscription(this._eventStream, this._onData) 
-  {
+  _EventStreamSubscription(this._eventStream, this._onData)  {
     _pauseCount = 0;
     _canceled = false;
   }
 
   //-----------------------------------------------------------------------------------------------
   
-  void cancel() 
-  {
+  void cancel() {
+    
     if (_canceled == false) 
     {
       _eventStream._onSubscriptionCancel(this);
@@ -29,33 +28,30 @@ class _EventStreamSubscription<T extends Event> extends StreamSubscription<T>
 
   //-----------------------------------------------------------------------------------------------
   
-  void onData(void handleData(T event)) 
-  {
+  void onData(void handleData(T event)) {
     _onData = handleData;
   }
 
-  void onError(void handleError(AsyncError error)) 
-  {
+  void onError(void handleError(AsyncError error)) {
   }
 
-  void onDone(void handleDone()) 
-  {
+  void onDone(void handleDone()) {
   }
 
   //-----------------------------------------------------------------------------------------------
   
   bool get _paused => _pauseCount > 0;
 
-  void pause([Future resumeSignal]) 
-  {
+  void pause([Future resumeSignal]) {
+    
     _pauseCount++;
 
     if (resumeSignal != null)
       resumeSignal.whenComplete(resume);
   }
 
-  void resume() 
-  {
+  void resume()  {
+    
     if (_paused == false)
       throw new StateError("Subscription is not paused.");
     
