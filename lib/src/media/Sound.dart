@@ -2,8 +2,8 @@ part of dartflash;
 
 abstract class Sound
 {
-  static Future<Sound> load(String url)
-  {
+  static Future<Sound> load(String url) {
+    
     var engine = SoundMixer.engine;
 
     if (engine == "WebAudioApi")
@@ -16,8 +16,7 @@ abstract class Sound
   }
 
   @deprecated
-  static Future<Sound> loadAudio(String url) 
-  {
+  static Future<Sound> loadAudio(String url) {
     return Sound.load(url);
   }
   
@@ -29,36 +28,27 @@ abstract class Sound
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
-
-  static List<String> _supportedTypes;
-
-  static String adaptAudioUrl(String url)
-  {
-    if (_supportedTypes == null)
-    {
-      _supportedTypes = new List<String>();
-
-      AudioElement audio = new AudioElement();
-      List valid = ["maybe", "probably"];
-
-      if (valid.indexOf(audio.canPlayType("audio/ogg", "")) != -1) _supportedTypes.add("ogg");
-      if (valid.indexOf(audio.canPlayType("audio/mp3", "")) != -1) _supportedTypes.add("mp3");
-      if (valid.indexOf(audio.canPlayType("audio/wav", "")) != -1) _supportedTypes.add("wav");
-    }
-
-    //---------------------------------------
-
-    RegExp regex = new RegExp(r"\.(ogg|mp3|wav)$", multiLine:false, caseSensitive:false);
-    Match match = regex.firstMatch(url);
+  
+  static String adaptAudioUrl(String url) {
+    
+    var regex = new RegExp(r"\.(ogg|mp3|wav)$", multiLine:false, caseSensitive:false);
+    var match = regex.firstMatch(url);
+    var supportedTypes = SoundMixer._supportedTypes;
 
     if (match == null)
       throw new ArgumentError("Unsupported file extension.");
+    
+    if (supportedTypes.length == 0)
+      throw new UnsupportedError("This browser supports no known audio codec.");
 
-    String fileType = match.group(1).toLowerCase();
+    var fileType = match.group(1).toLowerCase();
 
-    if (_supportedTypes.indexOf(fileType) == -1 && _supportedTypes.length > 0)
-      url = "${url.substring(0, url.length - 3)}${_supportedTypes[0]}";
-
+    if (supportedTypes.indexOf(fileType) == -1) {
+      var filename = url.substring(0, url.length - fileType.length);
+      var extension = supportedTypes[0];
+      url = "$filename$extension";
+    }
+    
     return url;
   }
 
