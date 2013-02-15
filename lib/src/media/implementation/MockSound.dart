@@ -1,40 +1,33 @@
 part of dartflash;
 
-class MockSound extends Sound
-{
-  MockSound()
-  {
+class MockSound extends Sound {
+  
+  MockSound() {
     // nothing to do
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> load(String url)
-  {
-    var sound = new MockSound();
-    var loadCompleter = new Completer<Sound>();
-
-    html.window.setTimeout(() => loadCompleter.complete(sound), 1);
-
-    return  loadCompleter.future;
+  static Future<Sound> load(String url) {
+    return new Future<Sound>.of(() => new MockSound());
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get length
-  {
+  num get length {
     // ToDo: We could load the WAV-file, parse the header and get the correct length!
     return double.NAN;
   }
 
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform])
-  {
-    if (soundTransform == null)
+  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
+    
+    if (soundTransform == null) {
       soundTransform = new SoundTransform();
-
+    }
+    
     return new MockSoundChannel(this, loop, soundTransform);
   }
 }
