@@ -14,8 +14,8 @@ part of dartflash;
  * <http://www.dartflash.com/docs/juggler/transitions.html>
  **/
 
-class TransitionFunction
-{
+class TransitionFunction {
+  
   // Standard
 
   static Random _random;

@@ -1,14 +1,10 @@
 part of dartflash;
 
-class Juggler implements Animatable
-{
+class Juggler implements Animatable {
+  
   final List<Animatable> _animatables = new List<Animatable>();
   int _animatablesCount = 0;
   num _elapsedTime = 0.0;
-  
-  Juggler() {
-    
-  }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
@@ -17,23 +13,24 @@ class Juggler implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  void add(Animatable animatable)
-  {
+  void add(Animatable animatable) {
+    
     if (animatable == null)
       return;
 
-    if (_animatablesCount == _animatables.length)
+    if (_animatablesCount == _animatables.length) {
       _animatables.add(animatable);
-    else
+    } else {
       _animatables[_animatablesCount] = animatable;
-
+    }
+    
     _animatablesCount++;
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void remove(Animatable animatable)
-  {
+  void remove(Animatable animatable) {
+    
     if (animatable == null)
       return;
 
@@ -47,35 +44,37 @@ class Juggler implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  void removeTweens(DisplayObject displayObject)
-  {
+  void removeTweens(DisplayObject displayObject) {
+    
     if (displayObject == null)
       return;
 
-    for(int i = 0; i < _animatablesCount; i++)
-    {
+    for(int i = 0; i < _animatablesCount; i++) {
       var animatable = _animatables[i];
 
-      if (animatable != null && animatable is Tween)
-        if (animatable.displayObject == displayObject)
+      if (animatable != null && animatable is Tween){
+        if (animatable.displayObject == displayObject) {
           _animatables[i] = null;
+        }
+      }
     }
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void purge()
-  {
-    for(int i = 0; i < _animatablesCount; i++)
+  void purge() {
+    
+    for(int i = 0; i < _animatablesCount; i++) {
       _animatables[i] = null;
-
+    }
+    
     _animatablesCount = 0;
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  DelayedCall delayCall(Function action, num delay)
-  {
+  DelayedCall delayCall(Function action, num delay) {
+    
     DelayedCall delayedCall = new DelayedCall(action, delay);
     add(delayedCall);
 
@@ -84,8 +83,8 @@ class Juggler implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  Transition startTransition(num startValue, num targetValue, num time, num transitionFunction(num ratio), void onUpdate(num value))
-  {
+  Transition startTransition(num startValue, num targetValue, num time, num transitionFunction(num ratio), void onUpdate(num value)) {
+    
     Transition transition = new Transition(startValue, targetValue, time, transitionFunction);
     transition.onUpdate = onUpdate;
     add(transition);
@@ -95,8 +94,8 @@ class Juggler implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  bool advanceTime(num time)
-  {
+  bool advanceTime(num time) {
+    
     _elapsedTime += time;
 
     // Call advanceTime of current animatables.

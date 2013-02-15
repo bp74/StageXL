@@ -23,12 +23,11 @@ class _TweenProperty
  *     renderLoop.juggler.add(tween);
  **/
 
-class Tween implements Animatable
-{
-  DisplayObject _displayObject;
-  Function _transitionFunction;
-
-  List<_TweenProperty> _tweenProperties;
+class Tween implements Animatable {
+  
+  final DisplayObject _displayObject;
+  final Function _transitionFunction;
+  final List<_TweenProperty> _tweenProperties = new List<_TweenProperty>();
 
   Function _onStart;
   Function _onUpdate;
@@ -40,25 +39,23 @@ class Tween implements Animatable
   bool _roundToInt;
   bool _started;
 
-  Tween(DisplayObject displayObject, num time, [num transitionFunction(num ratio)])
-  {
-    _displayObject = displayObject;
-    _transitionFunction = (transitionFunction != null) ? transitionFunction : TransitionFunction.linear;
+  Tween(DisplayObject displayObject, num time, [num transitionFunction(num ratio)]) : 
+  
+    _displayObject = displayObject,
+    _transitionFunction = (transitionFunction != null) ? transitionFunction : TransitionFunction.linear {
 
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
     _delay = 0.0;
     _roundToInt = false;
     _started = false;
-
-    _tweenProperties = new List<_TweenProperty>();
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void animate(String property, num targetValue)
-  {
+  void animate(String property, num targetValue) {
+    
     var properties = ['x', 'y', 'pivotX', 'pivotY', 'scaleX', 'scaleY', 'rotation', 'alpha'];
 
     if (properties.indexOf(property) == -1)
@@ -70,31 +67,27 @@ class Tween implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  void scaleTo(num factor)
-  {
+  void scaleTo(num factor) {
     animate('scaleX', factor);
     animate('scaleY', factor);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void moveTo(num x, num y)
-  {
+  void moveTo(num x, num y) {
     animate('x', x);
     animate('y', y);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void fadeTo(num alpha)
-  {
+  void fadeTo(num alpha) {
     animate('alpha', alpha);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void complete()
-  {
+  void complete() {
     if (_totalTime >= _currentTime)
       advanceTime(_totalTime - _currentTime);
   }
@@ -102,23 +95,20 @@ class Tween implements Animatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  bool advanceTime(num time)
-  {
-    if (_currentTime < _totalTime || _started == false)
-    {
+  bool advanceTime(num time) {
+    
+    if (_currentTime < _totalTime || _started == false) {
+      
       _currentTime = _currentTime + time;
 
-      if (_currentTime > _totalTime)
-        _currentTime = _totalTime;
+      if (_currentTime > _totalTime) _currentTime = _totalTime;
 
-      if (_currentTime >= 0.0)
-      {
-        if (_started == false)
-        {
+      if (_currentTime >= 0.0) {
+       
+        if (_started == false) {
           _started = true;
 
-          for(int i = 0; i < _tweenProperties.length; i++)
-          {
+          for(int i = 0; i < _tweenProperties.length; i++) {
             var tp = _tweenProperties[i];
 
             switch(tp.name) {
@@ -133,8 +123,7 @@ class Tween implements Animatable
             }
           }
 
-          if (_onStart != null)
-            _onStart();
+          if (_onStart != null) _onStart();
         }
 
         //-------------
@@ -142,8 +131,8 @@ class Tween implements Animatable
         num ratio = _currentTime / _totalTime;
         num transition = _transitionFunction(ratio);
 
-        for(int i = 0; i < _tweenProperties.length; i++)
-        {
+        for(int i = 0; i < _tweenProperties.length; i++) {
+          
           var tp = _tweenProperties[i];
           var value = tp.startValue + transition * (tp.targetValue - tp.startValue);
           value = _roundToInt ? value.round() : value;
@@ -160,13 +149,8 @@ class Tween implements Animatable
           }
         }
 
-        if (_onUpdate != null)
-          _onUpdate();
-
-        //-------------
-
-        if (_onComplete != null && _currentTime == _totalTime)
-          _onComplete();
+        if (_onUpdate != null) _onUpdate();
+        if (_onComplete != null && _currentTime == _totalTime) _onComplete();
       }
     }
 
@@ -183,16 +167,15 @@ class Tween implements Animatable
   bool get roundToInt => _roundToInt;
   bool get isComplete => _currentTime >= _totalTime;
 
-  set delay(num value)
-  {
+  set delay(num value) {
+    
     if (_started == false)
       _currentTime = _currentTime + _delay - value;
 
     _delay = value;
   }
 
-  set roundToInt(bool value)
-  {
+  set roundToInt(bool value) {
     _roundToInt = value;
   }
 

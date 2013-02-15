@@ -1,6 +1,7 @@
 part of dartflash;
 
-abstract class Animatable
-{
+abstract class Animatable {
+  
   bool advanceTime(num time);
+  
 }

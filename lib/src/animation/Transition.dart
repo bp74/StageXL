@@ -8,14 +8,13 @@ part of dartflash;
  *     renderLoop.juggler.add(transition);
  **/
 
-class Transition extends Animatable
-{
-  num _startValue;
-  num _targetValue;
+class Transition extends Animatable {
+  
+  final num _startValue;
+  final num _targetValue;
+  final Function _transitionFunction;
+  
   num _currentValue;
-
-  Function _transitionFunction;
-
   Function _onStart;
   Function _onUpdate;
   Function _onComplete;
@@ -26,14 +25,13 @@ class Transition extends Animatable
   bool _roundToInt;
   bool _started;
 
-  Transition(num startValue, num targetValue, num time, [num transitionFunction(num ratio)])
-  {
-    _startValue = startValue;
-    _targetValue = targetValue;
-    _currentValue = startValue;
-
-    _transitionFunction = (transitionFunction != null) ? transitionFunction : TransitionFunction.linear;
-
+  Transition(num startValue, num targetValue, num time, [num transitionFunction(num ratio)]) :
+    
+    _startValue = startValue,
+    _targetValue = targetValue,
+    _transitionFunction = (transitionFunction != null) ? transitionFunction : TransitionFunction.linear {
+    
+    _currentValue = startValue;  
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
     _delay = 0.0;
@@ -44,38 +42,28 @@ class Transition extends Animatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  bool advanceTime(num time)
-  {
-    if (_currentTime < _totalTime || _started == false)
-    {
+  bool advanceTime(num time) {
+    
+    if (_currentTime < _totalTime || _started == false) {
+      
       _currentTime = _currentTime + time;
 
-      if (_currentTime > _totalTime)
-        _currentTime = _totalTime;
+      if (_currentTime > _totalTime) _currentTime = _totalTime;
 
-      if (_currentTime >= 0.0)
-      {
+      if (_currentTime >= 0.0) {
+        
         if (_started == false) {
           _started = true;
-
-          if (_onStart != null)
-            _onStart();
+          if (_onStart != null) _onStart();
         }
-
-        //-------------
 
         num ratio = _currentTime / _totalTime;
         num transition = _transitionFunction(ratio);
 
         _currentValue = _startValue + transition * (_targetValue - _startValue);
 
-        if (_onUpdate != null)
-          _onUpdate(_roundToInt ? _currentValue.round() : _currentValue);
-
-        //-------------
-
-        if (_onComplete != null && _currentTime == _totalTime)
-          _onComplete();
+        if (_onUpdate != null) _onUpdate(_roundToInt ? _currentValue.round() : _currentValue);
+        if (_onComplete != null && _currentTime == _totalTime) _onComplete();
       }
     }
 
@@ -96,16 +84,16 @@ class Transition extends Animatable
   bool get roundToInt => _roundToInt;
   bool get isComplete => _currentTime >= _totalTime;
 
-  set delay(num value)
-  {
+  set delay(num value) {
+    
     if (_started == false)
       _currentTime = _currentTime + _delay - value;
 
     _delay = value;
   }
 
-  set roundToInt(bool value)
-  {
+  set roundToInt(bool value) {
+    
     _roundToInt = value;
   }
 
