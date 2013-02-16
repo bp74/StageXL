@@ -88,22 +88,30 @@ class ResourceManager {
 
   Future<ResourceManager> load() {
     
-    var loaders = _resources.values.where((r) => r.resource == null).map((r) => r._loader);
+    var loaders = this.pendingResources.map((r) => r._loader);
     
     return Future.wait(loaders).then((value) {
       
-      var resources = this.failedResources;
-      if (resources.length > 0)
-        throw new StateError("Failed to load ${resources.length} resource(s).");
+      var errors = this.failedResources;
+      if (errors.length > 0)
+        throw new StateError("Failed to load ${errors.length} resource(s).");
       
       return this;
     });
   }
   
+  List<ResourceManagerResource> get pendingResources {
+    return _resources.values.where((r) => r.resource == null).toList();
+  }
+
   List<ResourceManagerResource> get failedResources {
     return _resources.values.where((r) => r.error != null).toList();
   }
-
+  
+  List<ResourceManagerResource> get resources {
+    return _resources.values.toList();
+  }
+  
   //-------------------------------------------------------------------------------------------------
   
   BitmapData getBitmapData(String name) {
