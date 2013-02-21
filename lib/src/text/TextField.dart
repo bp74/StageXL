@@ -1,7 +1,7 @@
 part of dartflash;
 
-class TextField extends InteractiveObject
-{
+class TextField extends InteractiveObject {
+  
   String _text = "";
   int _textColor = 0x000000;
   TextFormat _defaultTextFormat = null;
@@ -30,8 +30,8 @@ class TextField extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  TextField()
-  {
+  TextField() {
+    
     _defaultTextFormat = new TextFormat("Arial", 12, 0x000000);
 
     _linesText = new List<String>();
@@ -88,15 +88,14 @@ class TextField extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle])
-  {
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
     return _getBoundsTransformedHelper(matrix, _canvasWidth, _canvasHeight, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject hitTestInput(num localX, num localY)
-  {
+  DisplayObject hitTestInput(num localX, num localY) {
+    
     if (localX >= 0 && localY >= 0 && localX < _canvasWidth && localY < _canvasHeight)
       return this;
 
@@ -105,8 +104,8 @@ class TextField extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  void render(RenderState renderState)
-  {
+  void render(RenderState renderState) {
+    
     _canvasRefresh();
 
     renderState._context.drawImage(_canvas, 0.0, 0.0);
@@ -115,51 +114,52 @@ class TextField extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _processTextLines()
-  {
+  void _processTextLines() {
+    
     _linesText.clear();
     _linesMetrics.clear();
 
     //---------------------------
 
-    if (_wordWrap == false)
-    {
-      _linesText.add(_text);
-    }
-    else
-    {
-      StringBuffer lineBuffer = new StringBuffer();
-      int previousLength;
-      String line;
-
-      // ToDo: very simple implementation, we can do better ...
+    if (_wordWrap == false) {
       
-      for(String paragraph in _text.replaceAll('\r', '').split('\n')) 
-      {
-        for(String word in paragraph.split(' ')) 
-        {
+      _linesText.add(_text);
+      
+    } else {
+      
+      // Split text into paragraphs
+      
+      for(String paragraph in _text.replaceAll('\r', '').split('\n')) {
+        
+        var lineBuffer = new StringBuffer();
+        var previousLength = 0;
+        var line = "";
+
+        // Split paragraphs into lines
+        
+        for(String word in paragraph.split(' ')) {
+          
           previousLength = lineBuffer.length;
-          lineBuffer.add((previousLength > 0) ? " $word": word);
+          lineBuffer.write((previousLength > 0) ? " $word": word);
           line = lineBuffer.toString();
   
-          if (_context.measureText(line).width > _canvasWidth)
-          {
-            if (previousLength > 0) 
-              line = line.substring(0, previousLength); 
-            else 
+          if (_context.measureText(line).width > _canvasWidth) {
+            
+            if (previousLength > 0) { 
+              line = line.substring(0, previousLength);
+            } else { 
               word = "";
-  
+            }
+            
             _linesText.add(line);
-  
-            lineBuffer.clear();
-            lineBuffer.add(word);
+
+            lineBuffer = new StringBuffer();
+            lineBuffer.write(word);
           }
         }
   
-        if (lineBuffer.isEmpty == false)
-        {
+        if (lineBuffer.isEmpty == false) {
           _linesText.add(lineBuffer.toString());
-          lineBuffer.clear();
         }
       }
     }
@@ -169,8 +169,8 @@ class TextField extends InteractiveObject
     _textWidth = 0;
     _textHeight = 0;
 
-    for(String line in _linesText)
-    {
+    for(String line in _linesText) {
+      
       var metrics = _context.measureText(line);
       var offsetX = 0;
 
@@ -190,17 +190,16 @@ class TextField extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  void _canvasRefresh()
-  {
-    if (_canvasRefreshPending)
-    {
+  void _canvasRefresh() {
+    
+    if (_canvasRefreshPending) {
+      
       _canvasRefreshPending = false;
 
       int canvasWidthInt = _canvasWidth.ceil().toInt();
       int canvasHeightInt =  _canvasHeight.ceil().toInt();
 
-      if (_canvas == null)
-      {
+      if (_canvas == null) {
         _canvas = new CanvasElement(width: canvasWidthInt, height: canvasHeightInt);
         _context = _canvas.context2d;
       }
@@ -213,11 +212,11 @@ class TextField extends InteractiveObject
 
       StringBuffer fontStyle = new StringBuffer();
 
-      fontStyle.add(_defaultTextFormat.italic ? "italic " : "normal ");
-      fontStyle.add("normal ");
-      fontStyle.add(_defaultTextFormat.bold ? "bold " : "normal ");
-      fontStyle.add("${_defaultTextFormat.size}px ");
-      fontStyle.add("${_defaultTextFormat.font},sans-serif");
+      fontStyle.write(_defaultTextFormat.italic ? "italic " : "normal ");
+      fontStyle.write("normal ");
+      fontStyle.write(_defaultTextFormat.bold ? "bold " : "normal ");
+      fontStyle.write("${_defaultTextFormat.size}px ");
+      fontStyle.write("${_defaultTextFormat.font},sans-serif");
 
       _context.font = fontStyle.toString();
       _context.textAlign = "start";
@@ -232,13 +231,10 @@ class TextField extends InteractiveObject
       //-----------------------------
       // draw background
 
-      if (_background)
-      {
+      if (_background) {
         _context.fillStyle = _color2rgb(_backgroundColor);
         _context.fillRect(0, 0, _canvasWidth, _canvasHeight);
-      }
-      else
-      {
+      } else {
         _context.clearRect(0, 0, _canvasWidth, _canvasHeight);
       }
 
@@ -247,10 +243,8 @@ class TextField extends InteractiveObject
 
       int offsetY = 0;
 
-      for(int i = 0; i < _linesText.length; i++)
-      {
-        TextLineMetrics metrics = _linesMetrics[i];
-
+      for(int i = 0; i < _linesText.length; i++) {
+        var metrics = _linesMetrics[i];
         _context.fillStyle = _color2rgb(_textColor);
         _context.fillText(_linesText[i], metrics.x, offsetY);
 
@@ -260,15 +254,12 @@ class TextField extends InteractiveObject
       //-----------------------------
       // draw border
 
-      if (_border)
-      {
+      if (_border) {
         _context.strokeStyle = _color2rgb(_borderColor);
         _context.lineWidth = 1;
         _context.strokeRect(0, 0, _canvasWidth, _canvasHeight);
       }
     }
   }
-
-
 
 }
