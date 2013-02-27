@@ -40,8 +40,9 @@ class _Particle
 
 class ParticleSystem extends DisplayObject implements Animatable
 {
-  Random _random;
-  List<_Particle> _particles;
+  final Random _random = new Random();
+  final List<_Particle> _particles = new List<_Particle>();
+  
   int _particleCount;
   CanvasElement _particleCanvas;
   num _frameTime;
@@ -81,11 +82,8 @@ class ParticleSystem extends DisplayObject implements Animatable
 
   ParticleSystem(String jsonConfig)
   {
-    _random = new Random();
     _emissionTime = 0.0;
     _frameTime = 0.0;
-
-    _particles = new List<_Particle>();
     _particleCount = 0;
 
     var pex = json.parse(jsonConfig);

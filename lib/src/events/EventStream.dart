@@ -5,7 +5,7 @@ class _EventStream<T extends Event> extends Stream<T>
   final EventDispatcher _target;
   final String _eventType;
   final bool _useCapture;
-  final List<_EventStreamSubscription> _subscriptions = new List<_EventStreamSubscription>(5);
+  final List<_EventStreamSubscription> _subscriptions = new List<_EventStreamSubscription>();
   
   int _subscriptionsCount = 0;
   

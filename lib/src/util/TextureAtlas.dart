@@ -1,25 +1,19 @@
 part of dartflash;
 
-class TextureAtlas
-{
-  ImageElement _imageElement;
-  List<TextureAtlasFrame> _frames;
-
-  TextureAtlas()
-  {
-    _imageElement = new ImageElement();
-    _frames = new List<TextureAtlasFrame>();
-  }
+class TextureAtlas {
+  
+  final ImageElement _imageElement = new ImageElement();
+  final List<TextureAtlasFrame> _frames = new List<TextureAtlasFrame>();
 
   //-------------------------------------------------------------------------------------------------
 
-  static Future<TextureAtlas> load(String url, String textureAtlasFormat)
-  {
+  static Future<TextureAtlas> load(String url, String textureAtlasFormat) {
+    
     Completer<TextureAtlas> completer = new Completer<TextureAtlas>();
     TextureAtlas textureAtlas = new TextureAtlas();
 
-    switch(textureAtlasFormat)
-    {
+    switch(textureAtlasFormat) {
+      
       case TextureAtlasFormat.JSON:
       case TextureAtlasFormat.JSONARRAY:
 
@@ -76,8 +70,8 @@ class TextureAtlas
 
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData getBitmapData(String name)
-  {
+  BitmapData getBitmapData(String name) {
+    
     BitmapData bitmapData;
 
     for(int i = 0; i < _frames.length && bitmapData == null; i++)
@@ -92,9 +86,9 @@ class TextureAtlas
 
   //-------------------------------------------------------------------------------------------------
 
-  List<BitmapData> getBitmapDatas(String namePrefix)
-  {
-    List<BitmapData> bitmapDataList = new List<BitmapData>();
+  List<BitmapData> getBitmapDatas(String namePrefix) {
+    
+    var bitmapDataList = new List<BitmapData>();
 
     for(int i = 0; i < _frames.length; i++)
       if (_frames[i].name.indexOf(namePrefix) == 0)
@@ -105,14 +99,8 @@ class TextureAtlas
 
   //-------------------------------------------------------------------------------------------------
 
-  List<String> get frameNames
-  {
-    List<String> names = new List<String>();
-
-    for(int i = 0; i < _frames.length; i++)
-      names.add(_frames[i].name);
-
-    return names;
+  List<String> get frameNames {
+    return _frames.map((f) => f.name).toList();
   }
 
 }

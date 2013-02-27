@@ -1,7 +1,7 @@
 part of dartflash;
 
-abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
-{
+abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
+  
   num _x = 0.0;
   num _y = 0.0;
   num _pivotX = 0.0;
@@ -10,9 +10,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   num _scaleY = 1.0;
   num _rotation = 0.0;
 
-  Matrix _transformationMatrixPrivate;
-  bool _transformationMatrixRefresh;
-
   num _alpha = 1.0;
   bool _visible = true;
   Mask _mask = null;
@@ -20,20 +17,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   String _name = "";
   DisplayObjectContainer _parent = null;
 
-  // for internal use only to minimize memory allocations.
-  Matrix _tmpMatrix;
-  Matrix _tmpMatrixIdentity;
-  
-  //-------------------------------------------------------------------------------------------------
-
-  DisplayObject()
-  {
-    _transformationMatrixPrivate = new Matrix.fromIdentity();
-    _transformationMatrixRefresh = true;
-
-    _tmpMatrix = new Matrix.fromIdentity();
-    _tmpMatrixIdentity = new Matrix.fromIdentity();
-  }
+  final Matrix _tmpMatrix = new Matrix.fromIdentity();
+  final Matrix _tmpMatrixIdentity = new Matrix.fromIdentity();
+  final Matrix _transformationMatrixPrivate = new Matrix.fromIdentity();
+  bool _transformationMatrixRefresh = true;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -72,8 +59,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject get root
-  {
+  DisplayObject get root {
+    
     DisplayObject currentObject = this;
 
     while (currentObject._parent != null)
@@ -84,8 +71,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  Stage get stage
-  {
+  Stage get stage {
+    
     DisplayObject root = this.root;
 
     if (root is Stage)
@@ -116,15 +103,13 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   num get width => getBoundsTransformed(_transformationMatrix).width;
   num get height => getBoundsTransformed(_transformationMatrix).height;
 
-  void set width(num value)
-  {
+  void set width(num value) {
     this.scaleX = 1;
     num normalWidth = this.width;
     this.scaleX = (normalWidth != 0.0) ? value / normalWidth : 1.0;
   }
 
-  void set height(num value)
-  {
+  void set height(num value) {
     this.scaleY = 1;
     num normalHeight = this.height;
     this.scaleY = (normalHeight != 0.0) ? value / normalHeight : 1.0;
@@ -133,21 +118,18 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void addTo(DisplayObjectContainer parent)
-  {
+  void addTo(DisplayObjectContainer parent) {
     parent.addChild(this);
   }
 
-  void removeFromParent()
-  {
+  void removeFromParent() {
     if (_parent != null)
       _parent.removeChild(this);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  Matrix get _transformationMatrix
-  {
+  Matrix get _transformationMatrix {
     /*
     _transformationMatrixPrivate.identity();
     _transformationMatrixPrivate.translate(-_pivotX, -_pivotY);
@@ -156,16 +138,16 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
     _transformationMatrixPrivate.translate(_x, _y);
     */
 
-    if (_transformationMatrixRefresh)
-    {
+    if (_transformationMatrixRefresh) {
+      
       _transformationMatrixRefresh = false;
 
-      if (_rotation == 0.0)
-      {
+      if (_rotation == 0.0) {
+        
         _transformationMatrixPrivate.setTo(_scaleX, 0.0, 0.0, _scaleY, _x - _pivotX * _scaleX, _y - _pivotY * _scaleY);
-      }
-      else
-      {
+        
+      } else {
+        
         double cosR = cos(_rotation);
         double sinR = sin(_rotation);
 
@@ -185,15 +167,14 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  Matrix get transformationMatrix
-  {
+  Matrix get transformationMatrix {
     return _transformationMatrix.clone();
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  Matrix transformationMatrixTo(DisplayObject targetSpace)
-  {
+  Matrix transformationMatrixTo(DisplayObject targetSpace) {
+    
     if (targetSpace == _parent)
       return _transformationMatrix.clone();
 
@@ -243,8 +224,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle])
-  {
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
+    
     if (returnRectangle == null)
       returnRectangle = new Rectangle.zero();
 
@@ -258,8 +239,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBounds(DisplayObject targetSpace)
-  {
+  Rectangle getBounds(DisplayObject targetSpace) {
+    
     Rectangle returnRectangle = new Rectangle.zero();
     Matrix matrix = (targetSpace == null) ? _transformationMatrix : transformationMatrixTo(targetSpace);
 
@@ -268,17 +249,15 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  bool hitTestObject(DisplayObject other)
-  {
+  bool hitTestObject(DisplayObject other) {
     //ToDo
-
     throw new UnimplementedError("Error #2014: Feature is not available at this time.");
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  bool hitTestPoint(num x, num y, [bool shapeFlag = false])
-  {
+  bool hitTestPoint(num x, num y, [bool shapeFlag = false]) {
+    
     Stage stage = this.stage;
 
     if (stage == null)
@@ -295,8 +274,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject hitTestInput(num localX, num localY)
-  {
+  DisplayObject hitTestInput(num localX, num localY) {
+    
     if (getBoundsTransformed(_tmpMatrixIdentity).contains(localX, localY))
       return this;
 
@@ -305,8 +284,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  Point localToGlobal(Point localPoint)
-  {
+  Point localToGlobal(Point localPoint) {
+    
     _tmpMatrix.identity();
 
     for(DisplayObject displayObject = this; displayObject != null; displayObject = displayObject._parent)
@@ -317,8 +296,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  Point globalToLocal(Point globalPoint)
-  {
+  Point globalToLocal(Point globalPoint) {
+    
     _tmpMatrix.identity();
 
     for(DisplayObject displayObject = this; displayObject != null; displayObject = displayObject._parent)
@@ -332,8 +311,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void dispatchEvent(Event event)
-  {
+  void dispatchEvent(Event event) {
+    
     List<DisplayObject> ancestors = null;
 
     if (event.captures || event.bubbles)
@@ -360,8 +339,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _setParent(DisplayObjectContainer value)
-  {
+  void _setParent(DisplayObjectContainer value) {
+    
     for(var ancestor = value; ancestor != null; ancestor = ancestor._parent)
       if (ancestor == this)
         throw new ArgumentError("Error #2150: An object cannot be added as a child to one of it's children (or children's children, etc.).");

@@ -6,7 +6,7 @@ class _EventStreamIndex<T extends Event>
   int _eventStreamsCount = 0;
   
   _EventStreamIndex():
-    _eventStreams = new List<_EventStream>(50);
+    _eventStreams = new List<_EventStream>();
 
   //-----------------------------------------------------------------------------------------------
 
