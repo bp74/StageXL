@@ -4,7 +4,7 @@ class ColorMatrixFilter extends BitmapFilter {
   final List<num> _matrix;
 
   ColorMatrixFilter(List<num> matrix) :
-    _matrix = new List<num>(20) {
+    _matrix = new List<num>.fixedLength(20) {
 
     if (matrix.length != 20)
       throw new ArgumentError("The supplied matrix needs to be a 4 x 5 matrix.");

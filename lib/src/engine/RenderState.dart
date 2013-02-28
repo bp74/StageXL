@@ -3,8 +3,8 @@ part of dartflash;
 class RenderState
 {
   final CanvasRenderingContext2D _context;
-  final List<Matrix> _matrices = new List<Matrix>(100);
-  final List<double> _alphas = new List<double>(100);
+  final List<Matrix> _matrices = new List<Matrix>.fixedLength(100);
+  final List<double> _alphas = new List<double>.fixedLength(100);
 
   int _depth = 0;
 

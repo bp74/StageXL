@@ -55,7 +55,7 @@ class DropShadowFilter extends BitmapFilter
     var destinationContext = destinationBitmapData._getContext();
     var destinationImageData = destinationContext.createImageData(destinationWidth, destinationHeight);
     var destinationData = destinationImageData.data;
-    var buffer = new List<int>(1024);
+    var buffer = new List<int>.fixedLength(1024);
 
     //--------------------------------------------------
     // blur vertical

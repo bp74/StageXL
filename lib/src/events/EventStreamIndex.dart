@@ -2,13 +2,8 @@ part of dartflash;
 
 class _EventStreamIndex<T extends Event>
 {
-  final List<_EventStream> _eventStreams;
+  final List<_EventStream> _eventStreams = new List<_EventStream>();
   int _eventStreamsCount = 0;
-  
-  _EventStreamIndex():
-    _eventStreams = new List<_EventStream>();
-
-  //-----------------------------------------------------------------------------------------------
 
   static _EventStreamIndex<EnterFrameEvent> enterFrame = new _EventStreamIndex<EnterFrameEvent>();
   
