@@ -3,8 +3,8 @@ part of dartflash;
 class RenderState
 {
   final CanvasRenderingContext2D _context;
-  final List<Matrix> _matrices = new List<Matrix>.fixedLength(100);
-  final List<double> _alphas = new List<double>.fixedLength(100);
+  final List<Matrix> _matrices = new List<Matrix>(100);
+  final List<double> _alphas = new List<double>(100);
 
   int _depth = 0;
 
@@ -33,8 +33,8 @@ class RenderState
 
   //-------------------------------------------------------------------------------------------------
 
-  void reset()
-  {
+  void reset() {
+    
     _depth = 0;
     
     var m = _matrices[0];
@@ -47,8 +47,8 @@ class RenderState
 
   //-------------------------------------------------------------------------------------------------
 
-  void renderDisplayObject(DisplayObject displayObject)
-  {
+  void renderDisplayObject(DisplayObject displayObject) {
+    
     var d1 = _depth;
     var d2 = _depth + 1;
     var m1 = _matrices[d1];
