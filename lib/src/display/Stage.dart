@@ -77,7 +77,7 @@ class Stage extends DisplayObjectContainer {
     _canvas.onMouseUp.listen(_onMouseEvent);
     _canvas.onMouseMove.listen(_onMouseEvent);
     _canvas.onMouseOut.listen(_onMouseEvent);
-    _canvas.onMouseWheel.listen(_onMouseEvent);
+    _canvas.onMouseWheel.listen(_onMouseWheelEvent);
 
     //---------------------------
     // prepare touch events
@@ -280,7 +280,7 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
 
-  _onMouseWheel(html.WheelEvent event) {
+  _onMouseWheelEvent(html.WheelEvent event) {
     
     var clientRect = _canvas.getBoundingClientRect();
     var stagePoint = new Point(event.client.x - clientRect.left, event.client.y - clientRect.top);
@@ -293,6 +293,9 @@ class Stage extends DisplayObjectContainer {
         .._stagePoint = stagePoint
         .._deltaX = event.deltaX
         .._deltaY = event.deltaY);
+      
+      if (_mouseEvent.stopsPropagation)
+        event.preventDefault();
     }
   }
 
