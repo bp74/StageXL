@@ -1,7 +1,6 @@
 part of dartflash;
 
-class _MouseButton
-{
+class _MouseButton {
   InteractiveObject target = null;
   bool buttonDown = false;
   int clickTime = 0;
@@ -12,8 +11,7 @@ class _MouseButton
   _MouseButton(this.mouseDownEventType, this.mouseUpEventType, this.mouseClickEventType, this.mouseDoubleClickEventType);
 }
 
-class _Touch
-{
+class _Touch {
   static int _globalTouchPointID = 0;
 
   int touchPointID = _globalTouchPointID++;
@@ -26,8 +24,8 @@ class _Touch
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class Stage extends DisplayObjectContainer
-{
+class Stage extends DisplayObjectContainer {
+  
   CanvasElement _canvas;
   CanvasRenderingContext2D _context;
 
@@ -47,8 +45,8 @@ class Stage extends DisplayObjectContainer
 
   //-------------------------------------------------------------------------------------------------
 
-  Stage(String name, CanvasElement canvas)
-  {
+  Stage(String name, CanvasElement canvas) {
+    
     _name = name;
 
     _canvas = canvas;
@@ -114,7 +112,7 @@ class Stage extends DisplayObjectContainer
 
   //-------------------------------------------------------------------------------------------------
 
-  void _throwStageException() {
+  _throwStageException() {
     throw new UnsupportedError("Error #2071: The Stage class does not implement this property or method.");
   }
 
@@ -132,10 +130,10 @@ class Stage extends DisplayObjectContainer
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void materialize()
-  {
-    if (_renderMode == StageRenderMode.AUTO || _renderMode == StageRenderMode.ONCE)
-    {
+  materialize() {
+    
+    if (_renderMode == StageRenderMode.AUTO || _renderMode == StageRenderMode.ONCE) {
+      
       _renderState.reset();
       render(_renderState);
 
@@ -147,15 +145,15 @@ class Stage extends DisplayObjectContainer
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _onMouseCursorChanged(String action)
-  {
+  _onMouseCursorChanged(String action) {
+
     _canvas.style.cursor = Mouse._getCssStyle(_mouseCursor);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void _onMouseEvent(html.MouseEvent event)
-  {
+  _onMouseEvent(html.MouseEvent event) {
+    
     event.preventDefault();
 
     var clientRect = _canvas.getBoundingClientRect();
@@ -282,8 +280,8 @@ class Stage extends DisplayObjectContainer
 
   //-------------------------------------------------------------------------------------------------
 
-  void _onMouseWheel(html.WheelEvent event)
-  {
+  _onMouseWheel(html.WheelEvent event) {
+    
     var clientRect = _canvas.getBoundingClientRect();
     var stagePoint = new Point(event.client.x - clientRect.left, event.client.y - clientRect.top);
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
@@ -303,8 +301,8 @@ class Stage extends DisplayObjectContainer
 
   List<StreamSubscription<TouchEvent>> _touchEventSubscriptions = [];
   
-  void _onMultitouchInputModeChanged(String inputMode)
-  {
+  _onMultitouchInputModeChanged(String inputMode) {
+    
     _touchEventSubscriptions.forEach((s) => s.cancel());
         
     if (Multitouch.inputMode == MultitouchInputMode.TOUCH_POINT) {
@@ -321,8 +319,8 @@ class Stage extends DisplayObjectContainer
 
   //-------------------------------------------------------------------------------------------------
 
-  void _onTouchEvent(html.TouchEvent event)
-  {
+  _onTouchEvent(html.TouchEvent event) {
+    
     event.preventDefault();
 
     var clientRect = _canvas.getBoundingClientRect();
@@ -398,8 +396,8 @@ class Stage extends DisplayObjectContainer
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _onKeyEvent(html.KeyboardEvent event)
-  {
+  _onKeyEvent(html.KeyboardEvent event) {
+    
     event.preventDefault();
 
     String keyboardEventType = null;
@@ -428,8 +426,8 @@ class Stage extends DisplayObjectContainer
 
   //-------------------------------------------------------------------------------------------------
 
-  void _onTextEvent(html.KeyboardEvent event)
-  {
+  _onTextEvent(html.KeyboardEvent event) {
+    
     int charCode = (event.charCode != 0) ? event.charCode : event.keyCode;
 
     TextEvent textEvent = new TextEvent(TextEvent.TEXT_INPUT, true);
