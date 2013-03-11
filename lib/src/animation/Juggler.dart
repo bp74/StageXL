@@ -17,6 +17,9 @@ class Juggler implements Animatable {
     
     if (animatable == null)
       return;
+    
+    if (this.contains(animatable))
+      return;
 
     if (_animatablesCount == _animatables.length) {
       _animatables.add(animatable);
@@ -44,6 +47,22 @@ class Juggler implements Animatable {
 
   //-------------------------------------------------------------------------------------------------
 
+  bool contains(Animatable animatable) {
+  
+    if (animatable == null)
+      return false;
+    
+    for(int i = 0; i < _animatablesCount; i++) {
+      if (_animatables[i] == animatable) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
+  //-------------------------------------------------------------------------------------------------
+
   void removeTweens(DisplayObject displayObject) {
     
     if (displayObject == null)
@@ -51,13 +70,31 @@ class Juggler implements Animatable {
 
     for(int i = 0; i < _animatablesCount; i++) {
       var animatable = _animatables[i];
-
       if (animatable != null && animatable is Tween){
         if (animatable.displayObject == displayObject) {
           _animatables[i] = null;
         }
       }
     }
+  }
+  
+  //-------------------------------------------------------------------------------------------------
+
+  bool containsTweens(DisplayObject displayObject) {
+    
+    if (displayObject == null)
+      return false;
+
+    for(int i = 0; i < _animatablesCount; i++) {
+      var animatable = _animatables[i];
+      if (animatable != null && animatable is Tween){
+        if (animatable.displayObject == displayObject) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
   }
 
   //-------------------------------------------------------------------------------------------------
