@@ -93,6 +93,22 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     child._setParent(null);
     _children.removeAt(index);
   }
+  
+  //-------------------------------------------------------------------------------------------------
+
+  void removeChildren([int beginIndex = 0, endIndex = 0x7fffffff]) {
+    
+    if ((?beginIndex && beginIndex < 0) || (?endIndex && endIndex >= _children.length)) 
+      throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
+    
+    if (endIndex >= _children.length) 
+      endIndex = _children.length - 1;
+    
+    for(int i = beginIndex; i <= endIndex; i++) {
+      if (beginIndex >= _children.length) break;
+      removeChildAt(beginIndex);
+    }
+  }
 
   //-------------------------------------------------------------------------------------------------
 
