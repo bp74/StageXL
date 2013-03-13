@@ -96,16 +96,16 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   
   //-------------------------------------------------------------------------------------------------
 
-  void removeChildren([int beginIndex = 0, endIndex = 0x7fffffff]) {
+  void removeChildren([int beginIndex, int endIndex]) {
     
-    if (?beginIndex && (beginIndex < 0 || beginIndex >= _children.length))
+    if (?beginIndex == false) beginIndex = 0;
+    if (?endIndex == false) endIndex = _children.length - 1;
+      
+    if (beginIndex < 0 || beginIndex >= _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
-    if (?endIndex && (endIndex < 0 || endIndex >= _children.length))
+    if (endIndex < 0 || endIndex >= _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
-    
-    if (endIndex >= _children.length) 
-      endIndex = _children.length - 1;
     
     for(int i = beginIndex; i <= endIndex; i++) {
       if (beginIndex >= _children.length) break;
