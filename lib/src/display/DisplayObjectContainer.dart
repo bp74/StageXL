@@ -35,7 +35,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   void addChildAt(DisplayObject child, int index) {
     
-    if (index < 0 && index > _children.length)
+    if (index < 0 || index > _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
     if (child == this)
@@ -80,7 +80,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   void removeChildAt(int index) {
     
-    if (index < 0 && index >= _children.length)
+    if (index < 0 || index >= _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
     DisplayObject child = _children[index];
@@ -98,7 +98,10 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   void removeChildren([int beginIndex = 0, endIndex = 0x7fffffff]) {
     
-    if ((?beginIndex && beginIndex < 0) || (?endIndex && endIndex >= _children.length)) 
+    if (?beginIndex && (beginIndex < 0 || beginIndex >= _children.length))
+      throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
+
+    if (?endIndex && (endIndex < 0 || endIndex >= _children.length))
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
     
     if (endIndex >= _children.length) 
@@ -114,7 +117,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   dynamic getChildAt(int index) {
     
-    if (index < 0 && index >= _children.length)
+    if (index < 0 || index >= _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
     return _children[index];
@@ -141,7 +144,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   void setChildIndex(DisplayObject child, int index) {
     
-    if (index < 0 && index >= _children.length)
+    if (index < 0 || index >= _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
     int oldIndex = getChildIndex(child);
