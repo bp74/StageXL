@@ -40,6 +40,8 @@ class GlowFilter extends BitmapFilter
     int sourceHeight = sourceRect.height;
     int weightX = blurX * blurX;
     int weightY = blurY * blurY;
+    int weightXinv = (1 << 22) ~/ weightX;
+    int weightYinv = (1 << 22) ~/ weightY;
     int rx1 = blurX;
     int rx2 = blurX * 2;
     int ry1 = blurY;
@@ -64,7 +66,7 @@ class GlowFilter extends BitmapFilter
       int offsetDestination = (x + rx1) * 4 + alphaChannel;
 
       for (int y = 0; y < destinationHeight; y++) {
-        destinationData[offsetDestination] = sum ~/ weightY;
+        destinationData[offsetDestination] =  (sum *weightYinv) >> 22;
         offsetDestination += destinationWidth4;
 
         if (y >= ry2) {
@@ -89,7 +91,7 @@ class GlowFilter extends BitmapFilter
       int offsetDestination = y * destinationWidth4 + alphaChannel;
 
       for (int x = 0; x < destinationWidth; x++) {
-        destinationData[offsetDestination] = sum ~/ weightX;
+        destinationData[offsetDestination] = (sum * weightXinv) >> 22;
         offsetDestination += 4;
 
         if (x >= rx2) {
