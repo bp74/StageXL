@@ -1,5 +1,8 @@
 part of dartflash;
 
+final ObjectPool<List<DisplayObject>> _displayObjectListPool = 
+  new ObjectPool<List<DisplayObject>>(() => new List<DisplayObject>());
+
 abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   
   num _x = 0.0;
@@ -318,7 +321,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (event.captures || event.bubbles)
       for(DisplayObject ancestor = _parent; ancestor != null; ancestor = ancestor._parent)
         if (ancestor.hasEventListener(event.type)) {
-          if (ancestors == null) ancestors = new List<DisplayObject>();
+          if (ancestors == null) ancestors = _displayObjectListPool.pop();
           ancestors.add(ancestor);
         }
 
@@ -334,6 +337,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       for(int i = 0; i < ancestors.length; i++)
         if (event.stopsPropagation == false)
           ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.BUBBLING_PHASE);
+    
+    if (ancestors != null) {
+      ancestors.clear();
+      _displayObjectListPool.push(ancestors);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
