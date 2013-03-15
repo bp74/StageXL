@@ -6,7 +6,7 @@ class BitmapData implements BitmapDrawable
   int _height;
   bool _transparent;
 
-  Element _element;
+  CanvasImageSource _source;
   CanvasRenderingContext2D _context;
 
   int _frameMode;
@@ -17,6 +17,9 @@ class BitmapData implements BitmapDrawable
   double _frameWidth;
   double _frameHeight;
 
+  html.Rect _sourceRect;
+  html.Rect _destinationRect;
+  
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
@@ -25,14 +28,14 @@ class BitmapData implements BitmapDrawable
     _width = width;
     _height = height;
     _transparent = transparent;
-
+    
     var canvas = new CanvasElement(width: _width, height: _height);
 
     _context = canvas.context2d;
     _context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
     _context.fillRect(0, 0, width, height);
 
-    _element = canvas;
+    _source = canvas;
     _frameMode = 0;
   }
 
@@ -44,7 +47,7 @@ class BitmapData implements BitmapDrawable
     _height = imageElement.naturalHeight;
     _transparent = true;
 
-    _element = imageElement;
+    _source = imageElement;
     _frameMode = 0;
   }
 
@@ -56,15 +59,24 @@ class BitmapData implements BitmapDrawable
     _height = textureAtlasFrame.originalHeight;
     _transparent = true;
 
-    _element = textureAtlasFrame.textureAtlas.imageElement;
+    _source = textureAtlasFrame.textureAtlas.imageElement;
 
-    _frameMode = textureAtlasFrame.rotated ? 2 : 1;
     _frameOffsetX = textureAtlasFrame.offsetX.toDouble();
     _frameOffsetY = textureAtlasFrame.offsetY.toDouble();
     _frameX = textureAtlasFrame.frameX.toDouble();
     _frameY = textureAtlasFrame.frameY.toDouble();
     _frameWidth = textureAtlasFrame.frameWidth.toDouble();
     _frameHeight = textureAtlasFrame.frameHeight.toDouble();
+    
+    if (textureAtlasFrame.rotated) {
+      _frameMode = 2;
+      _sourceRect =  new html.Rect(_frameX, _frameY, _frameHeight, _frameWidth);
+      _destinationRect = new html.Rect(0.0, 0.0, _frameHeight, _frameWidth);
+    } else {
+      _frameMode = 1;
+      _sourceRect = new html.Rect(_frameX, _frameY, _frameWidth, _frameHeight);
+      _destinationRect = new html.Rect(_frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -263,16 +275,16 @@ class BitmapData implements BitmapDrawable
     switch(_frameMode)
     {
       case 0:
-        renderState.context.drawImage(_element, 0.0, 0.0);
+        renderState.context.drawImage(_source, 0.0, 0.0);
         break;
 
       case 1:
-        renderState.context.drawImage(_element, _frameX, _frameY, _frameWidth, _frameHeight, _frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
+        renderState.context.drawImageAtScale(_source, _destinationRect, sourceRect: _sourceRect);
         break;
 
       case 2:
         renderState.context.transform(0.0, -1.0, 1.0, 0.0, _frameOffsetX, _frameOffsetY + _frameHeight);
-        renderState.context.drawImage(_element, _frameX, _frameY, _frameHeight, _frameWidth, 0.0, 0.0, _frameHeight, _frameWidth);
+        renderState.context.drawImageAtScale(_source, _destinationRect, sourceRect: _sourceRect);
         break;
     }
   }
@@ -283,66 +295,74 @@ class BitmapData implements BitmapDrawable
   {
     if (clipRectangle.width <= 0.0 || clipRectangle.height <= 0.0)
       return;
-
+    
     switch(_frameMode)
     {
       case 0:
-        renderState.context.drawImage(_element,
-          clipRectangle.x, clipRectangle.y, clipRectangle.width, clipRectangle.height,
-          clipRectangle.x, clipRectangle.y, clipRectangle.width, clipRectangle.height);
+        
+        var rect = new html.Rect(clipRectangle.x, clipRectangle.y, clipRectangle.width, clipRectangle.height);
+        
+        renderState.context.drawImageAtScale(_source, rect, sourceRect: rect);
+        
         break;
 
       case 1:
 
-        double fLeft = _frameX;
-        double fTop =  _frameY;
-        double fRight = fLeft + _frameWidth;
-        double fBottom = fTop + _frameHeight;
+        var fLeft = _frameX;
+        var fTop =  _frameY;
+        var fRight = fLeft + _frameWidth;
+        var fBottom = fTop + _frameHeight;
 
-        double cLeft = _frameX - _frameOffsetX + clipRectangle.x;
-        double cTop =  _frameY - _frameOffsetY + clipRectangle.y;
-        double cRight = cLeft + clipRectangle.width;
-        double cBottom = cTop + clipRectangle.height;
+        var cLeft = _frameX - _frameOffsetX + clipRectangle.x;
+        var cTop =  _frameY - _frameOffsetY + clipRectangle.y;
+        var cRight = cLeft + clipRectangle.width;
+        var cBottom = cTop + clipRectangle.height;
 
-        double iLeft = (fLeft > cLeft) ? fLeft : cLeft;
-        double iTop =  (fTop > cTop) ? fTop : cTop;
-        double iRight = (fRight < cRight) ? fRight : cRight;
-        double iBottom = (fBottom < cBottom) ? fBottom : cBottom;
-        double iOffsetX = _frameOffsetX - fLeft + iLeft;
-        double iOffsetY = _frameOffsetY - fTop + iTop;
-        double iWidth = iRight - iLeft;
-        double iHeight = iBottom - iTop;
+        var iLeft = (fLeft > cLeft) ? fLeft : cLeft;
+        var iTop =  (fTop > cTop) ? fTop : cTop;
+        var iRight = (fRight < cRight) ? fRight : cRight;
+        var iBottom = (fBottom < cBottom) ? fBottom : cBottom;
+        var iOffsetX = _frameOffsetX - fLeft + iLeft;
+        var iOffsetY = _frameOffsetY - fTop + iTop;
+        var iWidth = iRight - iLeft;
+        var iHeight = iBottom - iTop;
 
+        var sourceRect = new html.Rect(iLeft, iTop, iWidth, iHeight);
+        var destinationRect = new html.Rect(iOffsetX, iOffsetY, iWidth, iHeight);
+        
         if (iWidth > 0.0 && iHeight > 0.0) {
-          renderState.context.drawImage(_element, iLeft, iTop, iWidth, iHeight, iOffsetX, iOffsetY, iWidth, iHeight);
+          renderState.context.drawImageAtScale(_source, destinationRect, sourceRect: sourceRect);
         }
 
         break;
 
       case 2:
 
-        double fLeft = _frameX;
-        double fTop =  _frameY;
-        double fRight = fLeft + _frameHeight;
-        double fBottom = fTop + _frameWidth;
+        var fLeft = _frameX;
+        var fTop =  _frameY;
+        var fRight = fLeft + _frameHeight;
+        var fBottom = fTop + _frameWidth;
 
-        double cLeft = _frameX + _frameOffsetY - clipRectangle.y + _frameHeight - clipRectangle.height;
-        double cTop =  _frameY - _frameOffsetX + clipRectangle.x;
-        double cRight = cLeft + clipRectangle.height;
-        double cBottom = cTop + clipRectangle.width;
+        var cLeft = _frameX + _frameOffsetY - clipRectangle.y + _frameHeight - clipRectangle.height;
+        var cTop =  _frameY - _frameOffsetX + clipRectangle.x;
+        var cRight = cLeft + clipRectangle.height;
+        var cBottom = cTop + clipRectangle.width;
 
-        double iLeft = (fLeft > cLeft) ? fLeft : cLeft;
-        double iTop =  (fTop > cTop) ? fTop : cTop;
-        double iRight = (fRight < cRight) ? fRight : cRight;
-        double iBottom = (fBottom < cBottom) ? fBottom : cBottom;
-        double iOffsetX = _frameOffsetX - fTop + iTop;
-        double iOffsetY = _frameOffsetY + fRight - iRight;
-        double iWidth = iBottom - iTop;
-        double iHeight = iRight - iLeft;
+        var iLeft = (fLeft > cLeft) ? fLeft : cLeft;
+        var iTop =  (fTop > cTop) ? fTop : cTop;
+        var iRight = (fRight < cRight) ? fRight : cRight;
+        var iBottom = (fBottom < cBottom) ? fBottom : cBottom;
+        var iOffsetX = _frameOffsetX - fTop + iTop;
+        var iOffsetY = _frameOffsetY + fRight - iRight;
+        var iWidth = iBottom - iTop;
+        var iHeight = iRight - iLeft;
 
+        var sourceRect = new html.Rect(iLeft, iTop, iHeight, iWidth);
+        var destinationRect = new html.Rect(0.0, 0.0, iHeight, iWidth);
+        
         if (iWidth > 0.0 && iHeight > 0.0) {
           renderState.context.transform(0.0, -1.0, 1.0, 0.0, iOffsetX, iOffsetY + iHeight);
-          renderState.context.drawImage(_element, iLeft, iTop, iHeight, iWidth, 0.0, 0.0, iHeight, iWidth);
+          renderState.context.drawImageAtScale(_source, destinationRect, sourceRect: sourceRect);
         }
 
         break;
@@ -363,21 +383,21 @@ class BitmapData implements BitmapDrawable
       switch(_frameMode)
       {
         case 0:
-          _context.drawImage(_element, 0, 0);
+          _context.drawImage(_source, 0, 0);
           break;
 
         case 1:
-          _context.drawImage(_element, _frameX, _frameY, _frameWidth, _frameHeight, _frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
+          _context.drawImageAtScale(_source, _destinationRect, sourceRect: _sourceRect);
           break;
 
         case 2:
           _context.setTransform(0.0, -1.0, 1.0, 0.0, _frameOffsetX, _frameOffsetY + _frameHeight);
-          _context.drawImage(_element, _frameX, _frameY, _frameHeight, _frameWidth, 0.0, 0.0, _frameHeight, _frameWidth);
+          _context.drawImageAtScale(_source, _destinationRect, sourceRect: _sourceRect);
           _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
           break;
       }
 
-      _element = canvas;
+      _source = canvas;
       _frameMode = 0;
     }
 

@@ -39,7 +39,7 @@ class GraphicsPattern
 
   CanvasPattern getCanvasPattern(CanvasRenderingContext2D context)
   {
-    return context.createPattern(_bitmapData._element, _repeatOption);
+    return context.createPattern(_bitmapData._source, _repeatOption);
   }
 
 }

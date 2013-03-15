@@ -8,7 +8,8 @@ import 'package:meta/meta.dart';
 
 import 'dart:html' show
   Element, ImageElement, AudioElement, HttpRequest,
-  CanvasElement, CanvasRenderingContext2D, CanvasPattern, CanvasGradient;
+  CanvasElement, CanvasRenderingContext2D, CanvasImageSource,
+  CanvasPattern, CanvasGradient;
 
 import 'dart:web_audio' show
   AudioContext, AudioBuffer, AudioBufferSourceNode, GainNode;
