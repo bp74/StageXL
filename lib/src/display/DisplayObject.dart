@@ -89,16 +89,16 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  set x(num value) { _x = value; _transformationMatrixRefresh = true; }
-  set y(num value) { _y = value; _transformationMatrixRefresh = true; }
-  set pivotX(num value) { _pivotX = value; _transformationMatrixRefresh = true; }
-  set pivotY(num value) { _pivotY = value; _transformationMatrixRefresh = true; }
-  set scaleX(num value) { _scaleX = value; _transformationMatrixRefresh = true; }
-  set scaleY(num value) { _scaleY = value; _transformationMatrixRefresh = true; }
-  set skewX(num value) { _skewX = value; _transformationMatrixRefresh = true; }
-  set skewY(num value) { _skewY = value; _transformationMatrixRefresh = true; }
-  set rotation(num value) { _rotation = value; _transformationMatrixRefresh = true; }
-  set alpha(num value) { _alpha = value; _transformationMatrixRefresh = true; }
+  set x(num value) { _x = value.toDouble(); _transformationMatrixRefresh = true; }
+  set y(num value) { _y = value.toDouble(); _transformationMatrixRefresh = true; }
+  set pivotX(num value) { _pivotX = value.toDouble(); _transformationMatrixRefresh = true; }
+  set pivotY(num value) { _pivotY = value.toDouble(); _transformationMatrixRefresh = true; }
+  set scaleX(num value) { _scaleX = value.toDouble(); _transformationMatrixRefresh = true; }
+  set scaleY(num value) { _scaleY = value.toDouble(); _transformationMatrixRefresh = true; }
+  set skewX(num value) { _skewX = value.toDouble(); _transformationMatrixRefresh = true; }
+  set skewY(num value) { _skewY = value.toDouble(); _transformationMatrixRefresh = true; }
+  set rotation(num value) { _rotation = value.toDouble(); _transformationMatrixRefresh = true; }
+  set alpha(num value) { _alpha = value.toDouble(); _transformationMatrixRefresh = true; }
 
   set visible(bool value) { _visible = value; _transformationMatrixRefresh = true; }
 
