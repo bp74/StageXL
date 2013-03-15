@@ -26,7 +26,7 @@ class SoundMixer {
     var ua = html.window.navigator.userAgent;
 
     if (ua.contains("IEMobile"))
-      if (ua.contains("9.0"))
+      if (ua.contains("9.0") || ua.contains("10.0"))
         engine = "Mock";
 
     if (ua.contains("iPhone") || ua.contains("iPad") || ua.contains("iPod"))
