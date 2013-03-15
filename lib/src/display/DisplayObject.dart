@@ -11,6 +11,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num _pivotY = 0.0;
   num _scaleX = 1.0;
   num _scaleY = 1.0;
+  num _skewX = 0.0;
+  num _skewY = 0.0;
   num _rotation = 0.0;
 
   num _alpha = 1.0;
@@ -48,9 +50,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num get y => _y;
   num get pivotX => _pivotX;
   num get pivotY => _pivotY;
-
   num get scaleX => _scaleX;
   num get scaleY => _scaleY;
+  num get skewX => _skewX;
+  num get skewY => _skewY;  
   num get rotation => _rotation;
   num get alpha => _alpha;
 
@@ -90,9 +93,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   set y(num value) { _y = value; _transformationMatrixRefresh = true; }
   set pivotX(num value) { _pivotX = value; _transformationMatrixRefresh = true; }
   set pivotY(num value) { _pivotY = value; _transformationMatrixRefresh = true; }
-  
   set scaleX(num value) { _scaleX = value; _transformationMatrixRefresh = true; }
   set scaleY(num value) { _scaleY = value; _transformationMatrixRefresh = true; }
+  set skewX(num value) { _skewX = value; _transformationMatrixRefresh = true; }
+  set skewY(num value) { _skewY = value; _transformationMatrixRefresh = true; }
   set rotation(num value) { _rotation = value; _transformationMatrixRefresh = true; }
   set alpha(num value) { _alpha = value; _transformationMatrixRefresh = true; }
 
@@ -144,23 +148,35 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (_transformationMatrixRefresh) {
       
       _transformationMatrixRefresh = false;
-
-      if (_rotation == 0.0) {
+      
+      num skewXrotation =  _skewX + _rotation;
+      num skewYrotation =  _skewY + _rotation;
+      
+      if (skewXrotation == 0.0 && skewYrotation == 0.0) {
         
         _transformationMatrixPrivate.setTo(_scaleX, 0.0, 0.0, _scaleY, _x - _pivotX * _scaleX, _y - _pivotY * _scaleY);
         
       } else {
+
+        num a, b, c, d;
+        num cosX = cos(skewXrotation);
+        num sinX = sin(skewXrotation);
         
-        double cosR = cos(_rotation);
-        double sinR = sin(_rotation);
-
-        double a =   _scaleX * cosR;
-        double b =   _scaleX * sinR;
-        double c = - _scaleY * sinR;
-        double d =   _scaleY * cosR;
-        double tx =  _x - _pivotX * a - _pivotY * c;
-        double ty =  _y - _pivotX * b - _pivotY * d;
-
+        if (skewXrotation == skewYrotation) {
+          a =   _scaleX * cosX;
+          b =   _scaleX * sinX;
+          c = - _scaleY * sinX;
+          d =   _scaleY * cosX;
+        } else {
+          a =   _scaleX * cos(skewYrotation);
+          b =   _scaleX * sin(skewYrotation);
+          c = - _scaleY * sinX;
+          d =   _scaleY * cosX;
+        }
+        
+        num tx =  _x - (_pivotX * a + _pivotY * c);
+        num ty =  _y - (_pivotX * b + _pivotY * d);
+   
         _transformationMatrixPrivate.setTo(a, b, c, d, tx, ty);
       }
     }

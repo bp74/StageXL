@@ -56,7 +56,7 @@ class Tween implements Animatable {
 
   void animate(String property, num targetValue) {
     
-    var properties = ['x', 'y', 'pivotX', 'pivotY', 'scaleX', 'scaleY', 'rotation', 'alpha'];
+    var properties = ['x', 'y', 'pivotX', 'pivotY', 'scaleX', 'scaleY', 'skewX', 'skewY', 'rotation', 'alpha'];
 
     if (properties.indexOf(property) == -1)
       throw new ArgumentError("Error #9003: The supplied property ('$property') is not supported at this time.");
@@ -79,6 +79,19 @@ class Tween implements Animatable {
     animate('y', y);
   }
 
+  //-------------------------------------------------------------------------------------------------
+
+  void skewTo(num skewX, num skewY) {
+    animate('skewX', skewX);
+    animate('skewY', skewY);
+  }
+  
+  //-------------------------------------------------------------------------------------------------
+
+  void rotateTo(num rotation) {
+    animate('rotation', rotation);
+  }  
+  
   //-------------------------------------------------------------------------------------------------
 
   void fadeTo(num alpha) {
@@ -118,6 +131,8 @@ class Tween implements Animatable {
               case 'pivotY':   tp.startValue = _displayObject.pivotY; break;
               case 'scaleX':   tp.startValue = _displayObject.scaleX; break;
               case 'scaleY':   tp.startValue = _displayObject.scaleY; break;
+              case 'skewX':    tp.startValue = _displayObject.skewX; break;
+              case 'skewY':    tp.startValue = _displayObject.skewY; break;
               case 'rotation': tp.startValue = _displayObject.rotation; break;
               case 'alpha':    tp.startValue = _displayObject.alpha; break;
             }
@@ -144,6 +159,8 @@ class Tween implements Animatable {
             case 'pivotY':   _displayObject.pivotY = value; break;
             case 'scaleX':   _displayObject.scaleX = value; break;
             case 'scaleY':   _displayObject.scaleY = value; break;
+            case 'skewX':    _displayObject.skewX = value; break;
+            case 'skewY':    _displayObject.skewY = value; break;            
             case 'rotation': _displayObject.rotation = value; break;
             case 'alpha':    _displayObject.alpha = value; break;
           }
