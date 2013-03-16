@@ -2,8 +2,8 @@ part of dartflash;
 
 //-------------------------------------------------------------------------------------------------
 
-String _color2rgb(int color)
-{
+String _color2rgb(int color) {
+  
   int r = (color >> 16) & 0xFF;
   int g = (color >>  8) & 0xFF;
   int b = (color >>  0) & 0xFF;
@@ -13,8 +13,8 @@ String _color2rgb(int color)
 
 //-------------------------------------------------------------------------------------------------
 
-String _color2rgba(int color)
-{
+String _color2rgba(int color) {
+  
   int a = (color >> 24) & 0xFF;
   int r = (color >> 16) & 0xFF;
   int g = (color >>  8) & 0xFF;
@@ -25,8 +25,8 @@ String _color2rgba(int color)
 
 //-------------------------------------------------------------------------------------------------
 
-String _getFilenameWithoutExtension(String filename)
-{
+String _getFilenameWithoutExtension(String filename) {
+  
   RegExp regex = new RegExp(r"(.+?)(\.[^.]*$|$)", multiLine:false, caseSensitive:false);
   Match match = regex.firstMatch(filename);
   return match.group(1);
@@ -34,8 +34,8 @@ String _getFilenameWithoutExtension(String filename)
 
 //-------------------------------------------------------------------------------------------------
 
-String _replaceFilename(String url, String filename)
-{
+String _replaceFilename(String url, String filename) {
+  
   RegExp regex = new RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))", multiLine:false, caseSensitive:false);
   Match match = regex.firstMatch(url);
   String path = match.group(1);
@@ -44,8 +44,8 @@ String _replaceFilename(String url, String filename)
 
 //-------------------------------------------------------------------------------------------------
 
-bool _checkLittleEndianSystem()
-{
+bool _checkLittleEndianSystem() {
+  
   var canvas = new CanvasElement(width: 1, height: 1);
   canvas.context2d.fillStyle = "#000000";
   canvas.context2d.fillRect(0, 0, 1, 1);
@@ -58,8 +58,8 @@ bool _checkLittleEndianSystem()
 
 //-------------------------------------------------------------------------------------------------
 
-void _premultiplyAlpha(List<int> data)
-{
+void _premultiplyAlpha(List<int> data) {
+  
   if (_isLittleEndianSystem) {
     for(var i = 0; i <= data.length - 4; i += 4) {
       var value = data[i + 3];
@@ -79,8 +79,8 @@ void _premultiplyAlpha(List<int> data)
 
 //-------------------------------------------------------------------------------------------------
 
-void _unpremultiplyAlpha(List<int> data)
-{
+void _unpremultiplyAlpha(List<int> data) {
+  
   if (_isLittleEndianSystem) {
     for(var i = 0; i <= data.length - 4; i += 4) {
       var alpha = data[i + 3];
@@ -104,11 +104,14 @@ void _unpremultiplyAlpha(List<int> data)
 
 //-------------------------------------------------------------------------------------------------
 
-Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rectangle returnRectangle)
-{
+Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rectangle returnRectangle) {
+  
+  width = width.toDouble();
+  height = height.toDouble();
+  
   // tranformedX = X * matrix.a + Y * matrix.c + matrix.tx;
   // tranformedY = X * matrix.b + Y * matrix.d + matrix.ty;
-
+  
   num x1 = 0.0;
   num y1 = 0.0;
   num x2 = width * matrix.a;

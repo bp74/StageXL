@@ -48,14 +48,14 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       if (index > _children.length)
         index --;
 
-      _children.insertRange(index, 1, child);
+      _children.insert(index, child);
     
     } else {
       
       child.removeFromParent();
 
       child._setParent(this);
-      _children.insertRange(index, 1, child);
+      _children.insert(index, child);
 
       child.dispatchEvent(new Event(Event.ADDED, true));
 
@@ -153,7 +153,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       throw new ArgumentError("Error #2025: The supplied DisplayObject must be a child of the caller.");
 
     _children.removeAt(oldIndex);
-    _children.insertRange(index, 1, child);
+    _children.insert(index, child);
   }
 
   //-------------------------------------------------------------------------------------------------
