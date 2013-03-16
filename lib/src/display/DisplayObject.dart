@@ -331,7 +331,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   
   //-------------------------------------------------------------------------------------------------
 
-  void cache(int x, int y, int width, int height, {bool debugBorder: false}) {
+  void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
     
     _cache = new BitmapData(width, height, true, 0x00000000);
     _cache._frameOffsetX = x;
