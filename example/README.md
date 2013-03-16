@@ -26,9 +26,9 @@ Use the Juggler to move objects.
 
 The dartflash library also support vector graphics.
 
-##example07 - TextureAtlas and MovieClip
+##example07 - TextureAtlas and FlipBook
 
-How to use the TextureAtlas class. The MovieClip class can play sprite sheet animations.
+How to use the TextureAtlas class. The FlipBook class can play sprite sheet animations.
 
 ##example08 - Masks
 

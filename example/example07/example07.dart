@@ -47,33 +47,33 @@ void startAnimation()
   List<BitmapData> bitmapDatas = textureAtlas.getBitmapDatas("walk");
 
   //------------------------------------------------------------------
-  // Create a movie clip with the list of bitmapDatas.
+  // Create a flip book with the list of bitmapDatas.
   //------------------------------------------------------------------
 
   num rnd = random.nextDouble();
 
-  MovieClip movieClip = new MovieClip(bitmapDatas, 30);
-  movieClip.x = -128;
-  movieClip.y = 100.0 + 200.0 * rnd;
-  movieClip.scaleX = movieClip.scaleY = 0.5 + 0.5 * rnd;
-  movieClip.play();
+  var flipBook = new FlipBook(bitmapDatas, 30);
+  flipBook.x = -128;
+  flipBook.y = 100.0 + 200.0 * rnd;
+  flipBook.scaleX = flipBook.scaleY = 0.5 + 0.5 * rnd;
+  flipBook.play();
 
-  stage.addChild(movieClip);
+  stage.addChild(flipBook);
   stage.sortChildren((c1, c2) => (c1.y < c2.y) ? -1 : ((c1.y > c2.y) ? 1 : 0));
 
   //------------------------------------------------------------------
   // Let's add a tween so the man walks from the left to the right.
   //------------------------------------------------------------------
 
-  Tween tween = new Tween(movieClip, 5.0 + (1.0 - rnd) * 5.0, TransitionFunction.linear);
+  Tween tween = new Tween(flipBook, 5.0 + (1.0 - rnd) * 5.0, TransitionFunction.linear);
   tween.animate("x", 800.0);
   tween.onComplete = ()
   {
-    renderLoop.juggler.remove(movieClip);
-    stage.removeChild(movieClip);
+    renderLoop.juggler.remove(flipBook);
+    stage.removeChild(flipBook);
   };
 
-  renderLoop.juggler.add(movieClip);
+  renderLoop.juggler.add(flipBook);
   renderLoop.juggler.add(tween);
 
   //------------------------------------------------------------------

@@ -72,6 +72,7 @@ part 'src/display/CapsStyle.dart';
 part 'src/display/JointStyle.dart';
 part 'src/display/Mask.dart';
 
+part 'src/displayEx/FlipBook.dart';
 part 'src/displayEx/Gauge.dart';
 part 'src/displayEx/TimeGauge.dart';
 part 'src/displayEx/GlassPlate.dart';
