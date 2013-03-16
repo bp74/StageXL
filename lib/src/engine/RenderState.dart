@@ -62,13 +62,22 @@ class RenderState
     _context.globalAlpha = a2;
 
     _depth = d2;
-
-    if (displayObject.mask == null) {
-      displayObject.render(this);
-    } else {
+    
+    var mask = displayObject._mask;
+    var cache = displayObject._cache;
+    
+    if (mask != null) {
       _context.save();
-      displayObject.mask.render(this);
+      mask.render(this);
+    }
+    
+    if (cache != null) {
+      cache.render(this);
+    } else {
       displayObject.render(this);
+    }
+        
+    if (mask != null) {
       _context.restore();
     }
 

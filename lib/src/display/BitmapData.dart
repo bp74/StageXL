@@ -10,12 +10,12 @@ class BitmapData implements BitmapDrawable
   CanvasRenderingContext2D _context;
 
   int _frameMode;
-  double _frameOffsetX;
-  double _frameOffsetY;
-  double _frameX;
-  double _frameY;
-  double _frameWidth;
-  double _frameHeight;
+  int _frameOffsetX;
+  int _frameOffsetY;
+  int _frameX;
+  int _frameY;
+  int _frameWidth;
+  int _frameHeight;
 
   html.Rect _sourceRect;
   html.Rect _destinationRect;
@@ -37,6 +37,8 @@ class BitmapData implements BitmapDrawable
 
     _source = canvas;
     _frameMode = 0;
+    _frameOffsetX = 0;
+    _frameOffsetY = 0;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -49,6 +51,8 @@ class BitmapData implements BitmapDrawable
 
     _source = imageElement;
     _frameMode = 0;
+    _frameOffsetX = 0;
+    _frameOffsetY = 0;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -61,12 +65,12 @@ class BitmapData implements BitmapDrawable
 
     _source = textureAtlasFrame.textureAtlas.imageElement;
 
-    _frameOffsetX = textureAtlasFrame.offsetX.toDouble();
-    _frameOffsetY = textureAtlasFrame.offsetY.toDouble();
-    _frameX = textureAtlasFrame.frameX.toDouble();
-    _frameY = textureAtlasFrame.frameY.toDouble();
-    _frameWidth = textureAtlasFrame.frameWidth.toDouble();
-    _frameHeight = textureAtlasFrame.frameHeight.toDouble();
+    _frameOffsetX = textureAtlasFrame.offsetX;
+    _frameOffsetY = textureAtlasFrame.offsetY;
+    _frameX = textureAtlasFrame.frameX;
+    _frameY = textureAtlasFrame.frameY;
+    _frameWidth = textureAtlasFrame.frameWidth;
+    _frameHeight = textureAtlasFrame.frameHeight;
     
     if (textureAtlasFrame.rotated) {
       _frameMode = 2;
@@ -105,7 +109,7 @@ class BitmapData implements BitmapDrawable
 
   int get width => _width;
   int get height => _height;
-
+ 
   //-------------------------------------------------------------------------------------------------
 
   BitmapData clone()
@@ -191,6 +195,15 @@ class BitmapData implements BitmapDrawable
     context.fillStyle = _color2rgba(color);
     context.fillRect(rect.x, rect.y, rect.width, rect.height);
   }
+  
+  //-------------------------------------------------------------------------------------------------
+
+  void clear() 
+  {
+    var context = _getContext();
+    
+    context.clearRect(0, 0, _width, _height);
+  }
 
   //-------------------------------------------------------------------------------------------------
 
@@ -275,7 +288,7 @@ class BitmapData implements BitmapDrawable
     switch(_frameMode)
     {
       case 0:
-        renderState.context.drawImage(_source, 0.0, 0.0);
+        renderState.context.drawImage(_source, _frameOffsetX, _frameOffsetY);
         break;
 
       case 1:
@@ -300,9 +313,10 @@ class BitmapData implements BitmapDrawable
     {
       case 0:
         
-        var rect = new html.Rect(clipRectangle.x, clipRectangle.y, clipRectangle.width, clipRectangle.height);
+        var sourceRect = new html.Rect(clipRectangle.x - _frameOffsetX, clipRectangle.y - _frameOffsetY, clipRectangle.width, clipRectangle.height);
+        var destinationRect = new html.Rect(clipRectangle.x + _frameOffsetX, clipRectangle.y + _frameOffsetY, clipRectangle.width, clipRectangle.height);
         
-        renderState.context.drawImageAtScale(_source, rect, sourceRect: rect);
+        renderState.context.drawImageAtScale(_source, destinationRect, sourceRect: sourceRect);
         
         break;
 
@@ -383,7 +397,7 @@ class BitmapData implements BitmapDrawable
       switch(_frameMode)
       {
         case 0:
-          _context.drawImage(_source, 0, 0);
+          _context.drawImage(_source, _frameOffsetX, _frameOffsetY);
           break;
 
         case 1:
@@ -399,6 +413,8 @@ class BitmapData implements BitmapDrawable
 
       _source = canvas;
       _frameMode = 0;
+      _frameOffsetX = 0;
+      _frameOffsetY = 0;
     }
 
     return _context;

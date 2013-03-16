@@ -18,6 +18,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num _alpha = 1.0;
   bool _visible = true;
   Mask _mask = null;
+  BitmapData _cache = null;
   
   String _name = "";
   DisplayObjectContainer _parent = null;
@@ -58,6 +59,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num get alpha => _alpha;
 
   bool get visible => _visible;
+  bool get cached => _cache != null;
   Mask get mask => _mask;
   String get name => _name;
 
@@ -325,6 +327,34 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     _tmpMatrix.invert();
 
     return _tmpMatrix.transformPoint(globalPoint);
+  }
+  
+  //-------------------------------------------------------------------------------------------------
+
+  void cache(int x, int y, int width, int height, {bool debugBorder: false}) {
+    
+    _cache = new BitmapData(width, height, true, 0x00000000);
+    _cache._frameOffsetX = x;
+    _cache._frameOffsetY = y;
+    _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y));
+    
+    if (debugBorder) {
+      _cache.fillRect(new Rectangle(0, 0, width, 1), 0xFFFF00FF);
+      _cache.fillRect(new Rectangle(width - 1, 0, 1, height), 0xFFFF00FF);
+      _cache.fillRect(new Rectangle(0, height - 1, width, 1), 0xFFFF00FF);
+      _cache.fillRect(new Rectangle(0, 0, 1, height), 0xFFFF00FF);
+    }
+  }
+  
+  void refreshCache() {
+    if (_cache != null) {
+      _cache.clear();
+      _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - _cache._frameOffsetX, - _cache._frameOffsetY));
+    }
+  }
+  
+  void removeCache() {
+    _cache = null;
   }
 
   //-------------------------------------------------------------------------------------------------
