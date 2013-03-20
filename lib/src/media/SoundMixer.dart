@@ -45,11 +45,10 @@ class SoundMixer {
   
   static AudioContext _getAudioContext() {
     
-    try {
+    if (AudioContext.supported)
       return new AudioContext();
-    } catch(e) {
-      return null;
-    }
+    
+    return null;
   }
   
   //-------------------------------------------------------------------------------------------------
