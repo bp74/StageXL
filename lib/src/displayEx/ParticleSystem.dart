@@ -358,11 +358,8 @@ class ParticleSystem extends DisplayObject implements Animatable
       var targetSize = particle.size.toInt();
       var targetX = (particle.x - targetSize / 2.0).toInt();
       var targetY = (particle.y - targetSize / 2.0).toInt();
-      
-      var sourceRect = new html.Rect(sourceX, sourceY, 32, 32);
-      var desinationRect = new html.Rect(targetX, targetY, targetSize, targetSize);
 
-      context.drawImageAtScale(_particleCanvas, desinationRect, sourceRect: sourceRect);
+      context.drawImageScaledFromSource(_particleCanvas, sourceX, sourceY, 32, 32, targetX, targetY, targetSize, targetSize);
     }
 
     context.restore();

@@ -400,13 +400,10 @@ class _FlumpTexture implements BitmapDrawable {
   html.Rect _sourceRect;
   html.Rect _destinationRect;
   
-  _FlumpTexture(this.x, this.y, this.width, this.height, this.originX, this.originY, this.imageElement) {
-    _sourceRect = new html.Rect(x, y, width, height);
-    _destinationRect = new html.Rect(0, 0, width, height);
-  }
+  _FlumpTexture(this.x, this.y, this.width, this.height, this.originX, this.originY, this.imageElement);
   
   void render(RenderState renderState) {
-    renderState.context.drawImageAtScale(imageElement, _destinationRect, sourceRect: _sourceRect);    
+    renderState.context.drawImageScaledFromSource(imageElement, x, y, width, height, 0, 0, width, height);
   }
 }
 

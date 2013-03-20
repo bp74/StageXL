@@ -1,7 +1,7 @@
 part of dartflash;
 
-class BitmapData implements BitmapDrawable
-{
+class BitmapData implements BitmapDrawable {
+  
   int _width;
   int _height;
   bool _transparent;
@@ -17,14 +17,11 @@ class BitmapData implements BitmapDrawable
   int _frameWidth;
   int _frameHeight;
 
-  html.Rect _sourceRect;
-  html.Rect _destinationRect;
-  
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData(int width, int height, [bool transparent = true, int fillColor = 0xFFFFFFFF])
-  {
+  BitmapData(int width, int height, [bool transparent = true, int fillColor = 0xFFFFFFFF]) {
+    
     _width = width;
     _height = height;
     _transparent = transparent;
@@ -43,8 +40,11 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData.fromImageElement(ImageElement imageElement)
-  {
+  BitmapData.fromImageElement(ImageElement imageElement) {
+    
+    if (imageElement == null)
+      throw new ArgumentError();
+    
     _width = imageElement.naturalWidth;
     _height = imageElement.naturalHeight;
     _transparent = true;
@@ -57,37 +57,28 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData.fromTextureAtlasFrame(TextureAtlasFrame textureAtlasFrame)
-  {
+  BitmapData.fromTextureAtlasFrame(TextureAtlasFrame textureAtlasFrame) {
+    
     _width = textureAtlasFrame.originalWidth;
     _height = textureAtlasFrame.originalHeight;
     _transparent = true;
 
     _source = textureAtlasFrame.textureAtlas.imageElement;
 
+    _frameMode = textureAtlasFrame.rotated ? 2 : 1;
     _frameOffsetX = textureAtlasFrame.offsetX;
     _frameOffsetY = textureAtlasFrame.offsetY;
     _frameX = textureAtlasFrame.frameX;
     _frameY = textureAtlasFrame.frameY;
     _frameWidth = textureAtlasFrame.frameWidth;
     _frameHeight = textureAtlasFrame.frameHeight;
-    
-    if (textureAtlasFrame.rotated) {
-      _frameMode = 2;
-      _sourceRect =  new html.Rect(_frameX, _frameY, _frameHeight, _frameWidth);
-      _destinationRect = new html.Rect(0.0, 0.0, _frameHeight, _frameWidth);
-    } else {
-      _frameMode = 1;
-      _sourceRect = new html.Rect(_frameX, _frameY, _frameWidth, _frameHeight);
-      _destinationRect = new html.Rect(_frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
-    }
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<BitmapData> load(String url)
-  {
+  static Future<BitmapData> load(String url) {
+    
     Completer<BitmapData> completer = new Completer<BitmapData>();
 
     var image = new ImageElement();
@@ -99,8 +90,7 @@ class BitmapData implements BitmapDrawable
   }
 
   @deprecated
-  static Future<BitmapData> loadImage(String url) 
-  {
+  static Future<BitmapData> loadImage(String url) {
     return BitmapData.load(url);
   }
     
@@ -112,8 +102,8 @@ class BitmapData implements BitmapDrawable
  
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData clone()
-  {
+  BitmapData clone() {
+    
     BitmapData bitmapData = new BitmapData(_width, _height, true, 0);
     bitmapData.draw(this);
 
@@ -122,15 +112,15 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  void applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, BitmapFilter filter)
-  {
+  void applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, BitmapFilter filter) {
+    
     filter.apply(sourceBitmapData, sourceRect, this, destPoint);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void colorTransform(Rectangle rect, ColorTransform transform)
-  {
+  void colorTransform(Rectangle rect, ColorTransform transform) {
+    
     var context = _getContext();
     var image = context.getImageData(rect.x, rect.y, rect.width, rect.height);
     var data = image.data;
@@ -167,17 +157,16 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  void copyPixels(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, [BitmapData alphaBitmapData = null, Point alphaPoint = null, bool mergeAlpha = false])
-  {
+  void copyPixels(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, [BitmapData alphaBitmapData = null, Point alphaPoint = null, bool mergeAlpha = false]) {
+    
     var imageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-
     _getContext().putImageData(imageData, destPoint.x, destPoint.y);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void draw(BitmapDrawable source, [Matrix matrix = null])
-  {
+  void draw(BitmapDrawable source, [Matrix matrix = null]) {
+    
     var context = _getContext();
     var renderState = new RenderState.fromCanvasRenderingContext2D(context, matrix);
     
@@ -187,8 +176,8 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  void fillRect(Rectangle rect, int color)
-  {
+  void fillRect(Rectangle rect, int color) {
+    
     var context = _getContext();
 
     context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
@@ -198,8 +187,8 @@ class BitmapData implements BitmapDrawable
   
   //-------------------------------------------------------------------------------------------------
 
-  void clear() 
-  {
+  void clear() {
+    
     var context = _getContext();
     
     context.clearRect(0, 0, _width, _height);
@@ -207,8 +196,8 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  int getPixel(int x, int y)
-  {
+  int getPixel(int x, int y) {
+    
     var context = _getContext();
     var imageData = context.getImageData(x, y, 1, 1);
     var data = imageData.data;
@@ -223,8 +212,8 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  int getPixel32(int x, int y)
-  {
+  int getPixel32(int x, int y) {
+    
     var context = _getContext();
     var imageData = context.getImageData(x, y, 1, 1);
     var data = imageData.data;
@@ -238,8 +227,8 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  void setPixel(int x, int y, int color)
-  {
+  void setPixel(int x, int y, int color) {
+    
     var context = _getContext();
     var imageData = context.getImageData(x, y, 1, 1);
     var data = imageData.data;
@@ -259,8 +248,8 @@ class BitmapData implements BitmapDrawable
 
   //-------------------------------------------------------------------------------------------------
 
-  void setPixel32(int x, int y, int color)
-  {
+  void setPixel32(int x, int y, int color) {
+    
     var context = _getContext();
     var imageData = context.getImageData(x, y, 1, 1);
     var data = imageData.data;
@@ -283,40 +272,46 @@ class BitmapData implements BitmapDrawable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void render(RenderState renderState)
-  {
-    switch(_frameMode)
-    {
+  void render(RenderState renderState) {
+    
+    var renderStateContext = renderState.context;
+
+    switch(_frameMode) {
+      
       case 0:
-        renderState.context.drawImage(_source, _frameOffsetX, _frameOffsetY);
+        renderStateContext.drawImage(_source, _frameOffsetX, _frameOffsetY);
         break;
 
       case 1:
-        renderState.context.drawImageAtScale(_source, _destinationRect, sourceRect: _sourceRect);
+        renderStateContext.drawImageScaledFromSource(_source,
+          _frameX, _frameY, _frameWidth, _frameHeight,
+          _frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
         break;
 
       case 2:
-        renderState.context.transform(0.0, -1.0, 1.0, 0.0, _frameOffsetX, _frameOffsetY + _frameHeight);
-        renderState.context.drawImageAtScale(_source, _destinationRect, sourceRect: _sourceRect);
+        renderStateContext.transform(0.0, -1.0, 1.0, 0.0, _frameOffsetX, _frameOffsetY + _frameHeight);
+        renderStateContext.drawImageScaledFromSource(_source, 
+          _frameX, _frameY, _frameHeight, _frameWidth, 0, 0, _frameHeight, _frameWidth);
         break;
     }
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void renderClipped(RenderState renderState, Rectangle clipRectangle)
-  {
+  void renderClipped(RenderState renderState, Rectangle clipRectangle) {
+    
+    var renderStateContext = renderState.context;
+    
     if (clipRectangle.width <= 0.0 || clipRectangle.height <= 0.0)
       return;
     
-    switch(_frameMode)
-    {
+    switch(_frameMode) {
+      
       case 0:
-        
-        var sourceRect = new html.Rect(clipRectangle.x - _frameOffsetX, clipRectangle.y - _frameOffsetY, clipRectangle.width, clipRectangle.height);
-        var destinationRect = new html.Rect(clipRectangle.x + _frameOffsetX, clipRectangle.y + _frameOffsetY, clipRectangle.width, clipRectangle.height);
-        
-        renderState.context.drawImageAtScale(_source, destinationRect, sourceRect: sourceRect);
+
+        renderStateContext.drawImageScaledFromSource(_source, 
+          clipRectangle.x - _frameOffsetX, clipRectangle.y - _frameOffsetY, clipRectangle.width, clipRectangle.height,
+          clipRectangle.x + _frameOffsetX, clipRectangle.y + _frameOffsetY, clipRectangle.width, clipRectangle.height);
         
         break;
 
@@ -341,11 +336,9 @@ class BitmapData implements BitmapDrawable
         var iWidth = iRight - iLeft;
         var iHeight = iBottom - iTop;
 
-        var sourceRect = new html.Rect(iLeft, iTop, iWidth, iHeight);
-        var destinationRect = new html.Rect(iOffsetX, iOffsetY, iWidth, iHeight);
-        
         if (iWidth > 0.0 && iHeight > 0.0) {
-          renderState.context.drawImageAtScale(_source, destinationRect, sourceRect: sourceRect);
+          renderStateContext.drawImageScaledFromSource(_source, 
+            iLeft, iTop, iWidth, iHeight, iOffsetX, iOffsetY, iWidth, iHeight);
         }
 
         break;
@@ -370,13 +363,11 @@ class BitmapData implements BitmapDrawable
         var iOffsetY = _frameOffsetY + fRight - iRight;
         var iWidth = iBottom - iTop;
         var iHeight = iRight - iLeft;
-
-        var sourceRect = new html.Rect(iLeft, iTop, iHeight, iWidth);
-        var destinationRect = new html.Rect(0.0, 0.0, iHeight, iWidth);
         
         if (iWidth > 0.0 && iHeight > 0.0) {
-          renderState.context.transform(0.0, -1.0, 1.0, 0.0, iOffsetX, iOffsetY + iHeight);
-          renderState.context.drawImageAtScale(_source, destinationRect, sourceRect: sourceRect);
+          renderStateContext.transform(0.0, -1.0, 1.0, 0.0, iOffsetX, iOffsetY + iHeight);
+          renderStateContext.drawImageScaledFromSource(_source, 
+            iLeft, iTop, iHeight, iWidth, 0, 0, iHeight, iWidth);
         }
 
         break;
@@ -386,27 +377,32 @@ class BitmapData implements BitmapDrawable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  CanvasRenderingContext2D _getContext()
-  {
-    if (_context == null)
-    {
+  CanvasRenderingContext2D _getContext() {
+    
+    if (_context == null) {
+      
       var canvas = new CanvasElement(width: _width, height: _height);
 
       _context = canvas.context2d;
 
-      switch(_frameMode)
-      {
+      switch(_frameMode) {
+        
         case 0:
           _context.drawImage(_source, _frameOffsetX, _frameOffsetY);
           break;
 
         case 1:
-          _context.drawImageAtScale(_source, _destinationRect, sourceRect: _sourceRect);
+          _context.drawImageScaledFromSource(_source, 
+            _frameX, _frameY, _frameWidth, _frameHeight, 
+            _frameOffsetX, _frameOffsetY, _frameWidth, _frameHeight);
           break;
 
         case 2:
           _context.setTransform(0.0, -1.0, 1.0, 0.0, _frameOffsetX, _frameOffsetY + _frameHeight);
-          _context.drawImageAtScale(_source, _destinationRect, sourceRect: _sourceRect);
+          _context.drawImageScaledFromSource(_source, 
+            _frameX, _frameY, _frameHeight, 
+            _frameWidth, 0, 0, _frameHeight, _frameWidth);
+          
           _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
           break;
       }
@@ -419,6 +415,5 @@ class BitmapData implements BitmapDrawable
 
     return _context;
   }
-
 
 }
