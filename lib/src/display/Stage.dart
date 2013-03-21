@@ -116,16 +116,18 @@ class Stage extends DisplayObjectContainer {
     throw new UnsupportedError("Error #2071: The Stage class does not implement this property or method.");
   }
 
-  void set x(num value) { _throwStageException(); }
-  void set y(num value) { _throwStageException(); }
-  void set pivotX(num value) { _throwStageException(); }
-  void set pivotY(num value) { _throwStageException(); }
-  void set scaleX(num value) { _throwStageException(); }
-  void set scaleY(num value) { _throwStageException(); }
-  void set rotation(num value) { _throwStageException(); }
-  void set alpha(num value) { _throwStageException(); }
-  void set width(num value) { _throwStageException(); }
-  void set height(num value) { _throwStageException(); }
+  set x(num value) { _throwStageException(); }
+  set y(num value) { _throwStageException(); }
+  set pivotX(num value) { _throwStageException(); }
+  set pivotY(num value) { _throwStageException(); }
+  set scaleX(num value) { _throwStageException(); }
+  set scaleY(num value) { _throwStageException(); }
+  set skewX(num value) { _throwStageException(); }
+  set skewY(num value) { _throwStageException(); }
+  set rotation(num value) { _throwStageException(); }
+  set alpha(num value) { _throwStageException(); }
+  set width(num value) { _throwStageException(); }
+  set height(num value) { _throwStageException(); }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
