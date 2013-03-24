@@ -55,15 +55,21 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   Point transformPoint(Point p) {
-    return new Point(p.x * _a + p.y * _c + _tx, p.x * _b + p.y * _d + _ty);
+    var x = p.x.toDouble();
+    var y = p.y.toDouble();
+    return new Point(x * _a + y * _c + _tx, x * _b + y * _d + _ty);
   }
 
   Point deltaTransformPoint(Point p) {
-    return new Point(p.x * _a + p.y * _c, p.x * _b + p.y * _d);
+    var x = p.x.toDouble();
+    var y = p.y.toDouble();
+    return new Point(x * _a + y * _c, x * _b + y * _d);
   }
   
   Point _transformHtmlPoint(html.Point p) {
-    return new Point(p.x * _a + p.y * _c + _tx, p.x * _b + p.y * _d + _ty);
+    var x = p.x.toDouble();
+    var y = p.y.toDouble();
+    return new Point(x * _a + y * _c + _tx, x * _b + y * _d + _ty);
   }
 
   //-------------------------------------------------------------------------------------------------
