@@ -1,7 +1,7 @@
 part of dartflash;
 
-class RenderLoop
-{
+class RenderLoop {
+  
   Juggler _juggler;
   List<Stage> _stages;
   num _renderTime;
@@ -9,8 +9,8 @@ class RenderLoop
   _EventStreamIndex _enterFrameIndex;
   EnterFrameEvent _enterFrameEvent;
 
-  RenderLoop()
-  {
+  RenderLoop() {
+    
     _juggler = new Juggler();
     _stages = new List<Stage>();
     _renderTime = double.NAN;
@@ -26,8 +26,8 @@ class RenderLoop
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _onAnimationFrame(num currentTime)
-  {
+  void _onAnimationFrame(num currentTime) {
+    
     html.window.requestAnimationFrame(_onAnimationFrame);
 
     if (_renderTime.isNaN)
@@ -55,8 +55,7 @@ class RenderLoop
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void addStage(Stage stage)
-  {
+  void addStage(Stage stage) {
     _stages.add(stage);
   }
 }

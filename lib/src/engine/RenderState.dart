@@ -33,7 +33,10 @@ class RenderState
 
   //-------------------------------------------------------------------------------------------------
 
-  void reset() {
+  void reset([Matrix matrix]) {
+    
+    if (matrix != null)
+      _matrices[0].copyFrom(matrix);
     
     _depth = 0;
     

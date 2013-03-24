@@ -61,6 +61,10 @@ class Matrix {
   Point deltaTransformPoint(Point p) {
     return new Point(p.x * _a + p.y * _c, p.x * _b + p.y * _d);
   }
+  
+  Point _transformHtmlPoint(html.Point p) {
+    return new Point(p.x * _a + p.y * _c + _tx, p.x * _b + p.y * _d + _ty);
+  }
 
   //-------------------------------------------------------------------------------------------------
 

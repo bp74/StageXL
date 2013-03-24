@@ -8,7 +8,8 @@ class Event
   static const String ENTER_FRAME = "enterFrame";
   static const String REMOVED = "removed";
   static const String REMOVED_FROM_STAGE = "removedFromStage";
-
+  static const String RESIZE = "resize";
+  
   // Common events
   static const String OKAY = "okay";
   static const String CANCEL = "cancel";

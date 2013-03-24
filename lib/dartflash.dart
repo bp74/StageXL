@@ -31,7 +31,6 @@ part 'src/geom/ColorTransform.dart';
 
 part 'src/engine/RenderLoop.dart';
 part 'src/engine/RenderState.dart';
-part 'src/engine/StageRenderMode.dart';
 
 part 'src/events/Event.dart';
 part 'src/events/EventPhase.dart';

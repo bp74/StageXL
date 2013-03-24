@@ -1,5 +1,32 @@
 part of dartflash;
 
+class StageScaleMode {
+  static const String EXACT_FIT = "exactFit";
+  static const String NO_BORDER = "noBorder";
+  static const String NO_SCALE = "noScale";
+  static const String SHOW_ALL = "showAll";
+}
+
+class StageAlign {
+  static const String BOTTOM = "B";
+  static const String BOTTOM_LEFT = "BL";
+  static const String BOTTOM_RIGHT = "BR";
+  static const String LEFT = "L";
+  static const String RIGHT = "R";
+  static const String TOP = "T";
+  static const String TOP_LEFT = "TL";
+  static const String TOP_RIGHT = "TR";
+  static const String NONE = "";
+}
+
+class StageRenderMode {
+  static const String AUTO = "auto";
+  static const String STOP = "stop";
+  static const String ONCE = "once";
+}
+
+//-------------------------------------------------------------------------------------------------
+
 class _MouseButton {
   InteractiveObject target = null;
   bool buttonDown = false;
@@ -28,11 +55,18 @@ class Stage extends DisplayObjectContainer {
   
   CanvasElement _canvas;
   CanvasRenderingContext2D _context;
-
+  int _defaultWidth, _defaultHeight;
+  int _canvasWidth, _canvasHeight;
+  int _clientWidth, _clientHeight;
+  Matrix _clientTransformation;
+  Matrix _stageTransformation;
+  
   InteractiveObject _focus;
   RenderState _renderState;
-  String _renderMode;
-
+  String _stageRenderMode;
+  String _stageScaleMode;  
+  String _stageAlign;
+  
   String _mouseCursor;
   Point _mousePosition;
   InteractiveObject _mouseTarget;
@@ -46,20 +80,29 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   Stage(String name, CanvasElement canvas) {
-    
-    _name = name;
 
+    _name = name;
     _canvas = canvas;
     _canvas.focus();
 
     _context = canvas.context2d;
-
+    _canvasWidth = _defaultWidth = canvas.width;
+    _canvasHeight = _defaultHeight = canvas.height;
+    
+    _clientWidth = canvas.getBoundingClientRect().width.toInt();
+    _clientHeight = canvas.getBoundingClientRect().height.toInt();
+    _clientTransformation = new Matrix.fromIdentity();
+    _stageTransformation = new Matrix.fromIdentity();
+    
     _renderState = new RenderState.fromCanvasRenderingContext2D(_context);
-    _renderMode = StageRenderMode.AUTO;
-    _mouseCursor = MouseCursor.ARROW;
-
+    _stageRenderMode = StageRenderMode.AUTO;
+    _stageScaleMode = StageScaleMode.SHOW_ALL;
+    _stageAlign = StageAlign.NONE;
+    
     //---------------------------
     // prepare mouse events
+
+    _mouseCursor = MouseCursor.ARROW;
 
     Mouse._onMouseCursorChanged.listen(_onMouseCursorChanged);
 
@@ -100,16 +143,30 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
-
-  int stageWidth() => _canvas.width;
-  int stageHeight() => _canvas.height;
-
+ 
+  int get stageWidth => _clientWidth;
+  int get stageHeight => _clientHeight;
+  
   InteractiveObject get focus => _focus;
-  void set focus(InteractiveObject value) { _focus = value; }
+  set focus(InteractiveObject value) { 
+    _focus = value; 
+  }
 
-  String get renderMode => _renderMode;
-  void set renderMode(String value) { _renderMode = value; }
+  String get renderMode => _stageRenderMode;
+  set renderMode(String value) { 
+    _stageRenderMode = value; 
+  }
 
+  String get scaleMode => _stageScaleMode;
+  set scaleMode(String value) {
+    _stageScaleMode = value;
+  }
+  
+  String get align => _stageAlign;
+  set align(String value) {
+    _stageAlign = value;
+  }
+  
   //-------------------------------------------------------------------------------------------------
 
   _throwStageException() {
@@ -134,17 +191,126 @@ class Stage extends DisplayObjectContainer {
 
   materialize() {
     
-    if (_renderMode == StageRenderMode.AUTO || _renderMode == StageRenderMode.ONCE) {
+    if (_stageRenderMode == StageRenderMode.AUTO || _stageRenderMode == StageRenderMode.ONCE) {
       
-      _renderState.reset();
+      _updateCanvasSize();
+      
+      _renderState.reset(_stageTransformation);
       render(_renderState);
 
-      if (_renderMode == StageRenderMode.ONCE)
-        _renderMode = StageRenderMode.STOP;
+      if (_stageRenderMode == StageRenderMode.ONCE)
+        _stageRenderMode = StageRenderMode.STOP;
     }
   }
 
   //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  _updateCanvasSize() {
+    
+    var clientRect = _canvas.getBoundingClientRect();
+    var clientWidth = clientRect.width.toInt();
+    var clientHeight = clientRect.height.toInt();
+    
+    var canvasWidth = _defaultWidth;
+    var canvasHeight = _defaultHeight;
+    var canvasPivotX = 0;
+    var canvasPivotY = 0;
+    
+    //----------------------------
+    
+    switch(_stageScaleMode) {
+      
+      case StageScaleMode.EXACT_FIT:
+        canvasWidth = _defaultWidth;
+        canvasHeight = _defaultHeight;
+        break;
+        
+      case StageScaleMode.NO_BORDER:
+        if (stageWidth * _defaultHeight > stageHeight * _defaultWidth) {
+          canvasHeight = (_defaultWidth * clientHeight) ~/ clientWidth;
+        } else {
+          canvasWidth = (_defaultHeight * clientWidth) ~/ clientHeight;
+        }
+        break;
+        
+      case StageScaleMode.NO_SCALE: 
+        canvasWidth = clientWidth;
+        canvasHeight = clientHeight;
+        break;
+        
+      case StageScaleMode.SHOW_ALL: 
+        if (stageWidth * _defaultHeight > stageHeight * _defaultWidth) {
+          canvasWidth = (_defaultHeight * clientWidth) ~/ clientHeight;
+        } else {
+          canvasHeight = (_defaultWidth * clientHeight) ~/ clientWidth;
+        }
+        break;
+    }
+    
+    //----------------------------
+    
+    switch(_stageAlign) {
+      case StageAlign.BOTTOM:
+        canvasPivotX = (_defaultWidth - canvasWidth + 1) ~/ 2;
+        canvasPivotY = (_defaultHeight - canvasHeight);
+        break;
+      case StageAlign.BOTTOM_LEFT:
+        canvasPivotX = 0;
+        canvasPivotY = (_defaultHeight - canvasHeight);
+        break;
+      case StageAlign.BOTTOM_RIGHT:
+        canvasPivotX = (_defaultWidth - canvasWidth);
+        canvasPivotY = (_defaultHeight - canvasHeight);
+        break;
+      case StageAlign.LEFT:
+        canvasPivotX = 0;
+        canvasPivotY = (_defaultHeight - canvasHeight + 1) ~/ 2;
+        break;
+      case StageAlign.RIGHT:
+        canvasPivotX = (_defaultWidth - canvasWidth);
+        canvasPivotY = (_defaultHeight - canvasHeight + 1) ~/ 2;
+        break;
+      case StageAlign.TOP:
+        canvasPivotX = (_defaultWidth - canvasWidth + 1) ~/ 2;
+        canvasPivotY = 0;
+        break;
+      case StageAlign.TOP_LEFT:
+        canvasPivotX = 0;
+        canvasPivotY = 0;
+        break;
+      case StageAlign.TOP_RIGHT:
+        canvasPivotX = (_defaultWidth - canvasWidth + 1);
+        canvasPivotY = 0;
+        break;
+      case StageAlign.NONE:
+        canvasPivotX = (_defaultWidth - canvasWidth + 1) ~/ 2;
+        canvasPivotY = (_defaultHeight - canvasHeight + 1) ~/ 2;
+        break;
+    }
+    
+    //----------------------------
+
+    // stage to canvas coordinate transformation    
+    _stageTransformation.setTo(1.0, 0.0, 0.0, 1.0, 0 - canvasPivotX, 0 - canvasPivotY);
+    
+    // client to stage coordinate transformation
+    _clientTransformation.setTo(
+        canvasWidth / clientWidth, 0.0, 0.0, canvasHeight / clientHeight,
+        canvasPivotX - clientRect.left , canvasPivotY - clientRect.top);
+
+    if (_canvasWidth != canvasWidth || _canvasHeight != canvasHeight) {
+      _canvas.width = _canvasWidth = canvasWidth;
+      _canvas.height = _canvasHeight = canvasHeight;
+    }
+    
+    if (_clientWidth != clientWidth || _clientHeight != clientHeight) {
+      _clientWidth = clientWidth;
+      _clientHeight = clientHeight;
+      dispatchEvent(new Event(Event.RESIZE));
+    }
+  }
+
   //-------------------------------------------------------------------------------------------------
 
   _onMouseCursorChanged(String action) {
@@ -158,12 +324,11 @@ class Stage extends DisplayObjectContainer {
     
     event.preventDefault();
 
-    var clientRect = _canvas.getBoundingClientRect();
     var time = new DateTime.now().millisecondsSinceEpoch;
     var button = event.button;
 
     InteractiveObject target = null;
-    Point stagePoint = new Point(event.client.x - clientRect.left, event.client.y - clientRect.top);
+    Point stagePoint = _clientTransformation._transformHtmlPoint(event.client);
     Point localPoint = null;
 
     if (button < 0 || button > 2) return;
@@ -284,8 +449,7 @@ class Stage extends DisplayObjectContainer {
 
   _onMouseWheelEvent(html.WheelEvent event) {
     
-    var clientRect = _canvas.getBoundingClientRect();
-    var stagePoint = new Point(event.client.x - clientRect.left, event.client.y - clientRect.top);
+    var stagePoint = _clientTransformation._transformHtmlPoint(event.client);
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
     if (target != null) {
@@ -328,12 +492,10 @@ class Stage extends DisplayObjectContainer {
     
     event.preventDefault();
 
-    var clientRect = _canvas.getBoundingClientRect();
-
     for(var changedTouch in event.changedTouches) {
 
       var identifier = changedTouch.identifier;
-      var stagePoint = new Point(changedTouch.client.x - clientRect.left, changedTouch.client.y - clientRect.top);
+      var stagePoint = _clientTransformation._transformHtmlPoint(changedTouch.client);
       var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
       var touch = _touches.containsKey(identifier) ? _touches[identifier] : new _Touch(target, _touches.length == 0);
 
