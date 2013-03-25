@@ -212,6 +212,9 @@ class Stage extends DisplayObjectContainer {
     var clientWidth = clientRect.width.toInt();
     var clientHeight = clientRect.height.toInt();
     
+    if (clientWidth == 0 || clientHeight == 0)
+      return;
+    
     var canvasWidth = _defaultWidth;
     var canvasHeight = _defaultHeight;
     var canvasPivotX = 0;
