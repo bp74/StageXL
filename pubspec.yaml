@@ -1,4 +1,4 @@
-name: StageXL
+name: stagexl
 version: 0.7.3
 author: Bernhard Pichler <support@dartflash.com>
 description: A library for graphically rich content like games, based on the Flash API.
