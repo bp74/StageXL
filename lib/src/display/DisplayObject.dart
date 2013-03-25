@@ -1,4 +1,4 @@
-part of dartflash;
+part of stagexl;
 
 final ObjectPool<List<DisplayObject>> _displayObjectListPool = 
   new ObjectPool<List<DisplayObject>>(() => new List<DisplayObject>());

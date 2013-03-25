@@ -3,7 +3,7 @@ library example05;
 import 'dart:async';
 import 'dart:math';
 import 'dart:html' as html;
-import 'package:dartflash/dartflash.dart';
+import 'package:stagexl/stagexl.dart';
 
 part 'world.dart';
 

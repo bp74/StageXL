@@ -1,4 +1,4 @@
-part of dartflash;
+part of stagexl;
 
 // Flump converts Flash keyframe animations into texture atlases and JSON.
 // http://threerings.github.com/flump/

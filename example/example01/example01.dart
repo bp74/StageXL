@@ -1,7 +1,7 @@
 library example01;
 
 import 'dart:html' as html;
-import 'package:dartflash/dartflash.dart';
+import 'package:stagexl/stagexl.dart';
 
 void main() {
 

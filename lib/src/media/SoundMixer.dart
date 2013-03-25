@@ -1,4 +1,4 @@
-part of dartflash;
+part of stagexl;
 
 class SoundMixer {
   
@@ -36,7 +36,7 @@ class SoundMixer {
     if (_supportedTypes.length == 0)
       engine = "Mock";
 
-    print("dartflash: supported audio engine is: $engine");
+    print("StageXL: supported audio engine is: $engine");
     
     return engine;
   }
@@ -63,7 +63,7 @@ class SoundMixer {
     if (valid.indexOf(audio.canPlayType("audio/mpeg", "")) != -1) supportedTypes.add("mp3");
     if (valid.indexOf(audio.canPlayType("audio/wav", "")) != -1) supportedTypes.add("wav");
           
-    print("dartflash: supported audio types are: ${supportedTypes}");
+    print("StageXL: supported audio types are: ${supportedTypes}");
     
     return supportedTypes;
   }

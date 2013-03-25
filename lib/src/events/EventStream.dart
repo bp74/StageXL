@@ -1,4 +1,4 @@
-part of dartflash;
+part of stagexl;
 
 class _EventStream<T extends Event> extends Stream<T> 
 {

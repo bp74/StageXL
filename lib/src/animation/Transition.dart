@@ -1,4 +1,4 @@
-part of dartflash;
+part of stagexl;
 
 /**
  * The [Transition] class animates a value by calling the [onUpdate] function continuously.

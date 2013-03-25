@@ -1,4 +1,4 @@
-### dartflash: Simplified BSD License
+### StageXL: Simplified BSD License
 
 Copyright (c) 2012, Bernhard Pichler
 All rights reserved.

@@ -1,6 +1,6 @@
 # Examples
 
-The examples show the basic building blocks of the dartflash library.
+The examples show the basic building blocks of the StageXL library.
 
 ##example01 - Initialization of Stage and RenderLoop
 
@@ -24,7 +24,7 @@ Use the Juggler to move objects.
 
 ##example06 - Shape and Graphics
 
-The dartflash library also support vector graphics.
+How tu draw vector graphics.
 
 ##example07 - TextureAtlas and FlipBook
 

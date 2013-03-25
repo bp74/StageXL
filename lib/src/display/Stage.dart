@@ -1,4 +1,4 @@
-part of dartflash;
+part of stagexl;
 
 class StageScaleMode {
   static const String EXACT_FIT = "exactFit";

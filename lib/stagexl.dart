@@ -1,4 +1,4 @@
-library dartflash;
+library stagexl;
 
 import 'dart:async';
 import 'dart:math';

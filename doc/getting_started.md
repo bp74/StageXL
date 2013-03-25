@@ -1,6 +1,6 @@
-# Getting started with dartflash
+# Getting started with StageXL
 
-Learn the basic steps to build an application with dartflash.
+Learn the basic steps to build an application with StageXL.
 
 ## Sample Application
 
@@ -33,35 +33,33 @@ The following code will show you how to initialize the main drawing area (Stage)
 
 ### Examples
 
-Please take a look at the example directory for more advanced examples. Those examples will show you the basic building blocks of dartflash. If you have some experience with the Adobe Flash API you will be pleasantly surprised :) 
+Please take a look at the example directory for more advanced examples. Those examples will show you the basic building blocks of StageXL. If you have some experience with the Adobe Flash API you will be pleasantly surprised :) 
 
-There is another github repository which contains a game which was ported from Adobe Flash to HTML5 using the dartflash library. Because of the similarity between Dart and ActionScript and by using the dartflash library the port was finished in only 6 hours. The full source code is available here: <https://github.com/bp74/dartflash_escape>.
+There is another github repository which contains a game which was ported from Adobe Flash to HTML5 using the StageXL library. Because of the similarity between Dart and ActionScript and by using the StageXL library the port was finished in only 6 hours. The full source code is available here: <https://github.com/bp74/StageXL_Escape>.
 
 
 ## Package Import
 
-Add the dartflash depedency to your pubspec.yaml ...
+Add the StageXL depedency to your pubspec.yaml ...
 
     name: BestGameEver
     description: the best game on the web!
     dependencies: 
-      dartflash: { git: https://github.com/bp74/dartflash.git }
+      stagexl: { git: https://github.com/bp74/StageXL.git }
 
 ... then import the library in your Dart code.
 
-    import 'package:dartflash/dartflash.dart';
+    import 'package:stagexl/stagexl.dart';
 
 ## Resources
 
-Visit our main website [www.dartflash.com](http://www.dartflash.com) to get more information about dartflash. 
+Visit our main website [www.stagexl.org](http://www.stagexl.org) to get more information about StageXL. 
 
-* [API Reference](http://www.dartflash.com/docs/api/dartflash.html)
-* [Wiki Articles](http://www.dartflash.com/docs/wiki-articles.html)
-* [Demo Performance](http://www.dartflash.com/demos/performance/performance.html)
-* [Demo Masking](http://www.dartflash.com/demos/masking/masking.html)
-* [Demo MovieClip](http://www.dartflash.com/demos/movieclip/movieclip.html)
-* [FAQ](http://www.dartflash.com/docs/faq.html)
+* [API Reference](http://www.stagexl.org/docs/api/stagexl.html)
+* [Wiki Articles](http://www.stagexl.org/docs/wiki-articles.html)
+* [Demo Performance](http://www.stagexl.org/demos/performance/performance.html)
+* [Demo Masking](http://www.stagexl.org/demos/masking/masking.html)
+* [Demo MovieClip](http://www.stagexl.org/demos/movieclip/movieclip.html)
+* [FAQ](http://www.stagexl.org/docs/faq.html)
 
-Other related websites:
 
-* [dartflash blog](http://blog.dartflash.com)

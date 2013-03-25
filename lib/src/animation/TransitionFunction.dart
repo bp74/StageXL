@@ -1,4 +1,4 @@
-part of dartflash;
+part of stagexl;
 
 /**
  * The [TransitionFunction] class provides common transition functions used for
@@ -11,7 +11,7 @@ part of dartflash;
  *     var linear = (ratio) => ratio;
  *
  * Overview of all available transition types:
- * <http://www.dartflash.com/docs/juggler/transitions.html>
+ * <http://www.stagexl.org/docs/juggler/transitions.html>
  **/
 
 class TransitionFunction {

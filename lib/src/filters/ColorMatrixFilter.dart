@@ -1,4 +1,4 @@
-part of dartflash;
+part of stagexl;
 
 class ColorMatrixFilter extends BitmapFilter {
   final List<num> _matrix;

@@ -3,7 +3,7 @@ library example07;
 import 'dart:async';
 import 'dart:math';
 import 'dart:html' as html;
-import 'package:dartflash/dartflash.dart';
+import 'package:stagexl/stagexl.dart';
 
 //###########################################################################
 //  Credits for "TheZakMan" on http://opengameart.org for the walking man.

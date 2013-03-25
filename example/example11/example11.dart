@@ -2,7 +2,7 @@ library example11;
 
 import 'dart:math';
 import 'dart:html' as html;
-import 'package:dartflash/dartflash.dart';
+import 'package:stagexl/stagexl.dart';
 
 part 'dot.dart';
 
@@ -24,7 +24,7 @@ void main()
  if (Multitouch.supportsTouchEvents) {
     Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
  } else {
-   html.window.alert('''No touch screen detected!\n\nIf this device has a touch screen, please send a bug report to the dartflash issue tracker on github.''');
+   html.window.alert('''No touch screen detected!\n\nIf this device has a touch screen, please send a bug report to the StageXL issue tracker on github.''');
  }
 
   //------------------------------------------------------------------

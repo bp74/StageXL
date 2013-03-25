@@ -1,4 +1,4 @@
-part of dartflash;
+part of stagexl;
 
 typedef void _EventListener<T extends Event>(T event);
 
