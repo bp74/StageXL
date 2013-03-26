@@ -57,9 +57,9 @@ Visit our main website [www.stagexl.org](http://www.stagexl.org) to get more inf
 
 * [API Reference](http://www.stagexl.org/docs/api/stagexl.html)
 * [Wiki Articles](http://www.stagexl.org/docs/wiki-articles.html)
-* [Demo Performance](http://www.stagexl.org/demos/performance/performance.html)
-* [Demo Masking](http://www.stagexl.org/demos/masking/masking.html)
-* [Demo MovieClip](http://www.stagexl.org/demos/movieclip/movieclip.html)
+* [Demo Performance](http://www.stagexl.org/demos/performance.html)
+* [Demo Masking](http://www.stagexl.org/demos/masking.html)
+* [Demo MovieClip](http://www.stagexl.org/demos/flipbook.html)
 * [FAQ](http://www.stagexl.org/docs/faq.html)
 
 
