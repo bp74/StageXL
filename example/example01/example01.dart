@@ -16,8 +16,6 @@ void main() {
   // Add a modern art painting to the Stage. Afterwards the painting
   // is a child of the stage and part of the display list.
   var painting = new Painting();
-  painting.x = 40;
-  painting.y = 40;
   stage.addChild(painting);
 }
 

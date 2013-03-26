@@ -89,8 +89,8 @@ class Stage extends DisplayObjectContainer {
     _canvasWidth = _defaultWidth = canvas.width;
     _canvasHeight = _defaultHeight = canvas.height;
     
-    _clientWidth = canvas.getBoundingClientRect().width.toInt();
-    _clientHeight = canvas.getBoundingClientRect().height.toInt();
+    _clientWidth = canvas.clientWidth;
+    _clientHeight = canvas.clientHeight;
     _clientTransformation = new Matrix.fromIdentity();
     _stageTransformation = new Matrix.fromIdentity();
     
@@ -208,13 +208,14 @@ class Stage extends DisplayObjectContainer {
 
   _updateCanvasSize() {
     
-    var clientRect = _canvas.getBoundingClientRect();
-    var clientWidth = clientRect.width.toInt();
-    var clientHeight = clientRect.height.toInt();
+    var clientLeft = _canvas.clientLeft;
+    var clientTop = _canvas.clientTop;
+    var clientWidth = _canvas.clientWidth;
+    var clientHeight = _canvas.clientHeight;
     
     if (clientWidth == 0 || clientHeight == 0)
       return;
-    
+   
     var canvasWidth = _defaultWidth;
     var canvasHeight = _defaultHeight;
     var canvasPivotX = 0;
@@ -230,7 +231,7 @@ class Stage extends DisplayObjectContainer {
         break;
         
       case StageScaleMode.NO_BORDER:
-        if (stageWidth * _defaultHeight > stageHeight * _defaultWidth) {
+        if (clientWidth * _defaultHeight > clientHeight * _defaultWidth) {
           canvasHeight = (_defaultWidth * clientHeight) ~/ clientWidth;
         } else {
           canvasWidth = (_defaultHeight * clientWidth) ~/ clientHeight;
@@ -243,7 +244,7 @@ class Stage extends DisplayObjectContainer {
         break;
         
       case StageScaleMode.SHOW_ALL: 
-        if (stageWidth * _defaultHeight > stageHeight * _defaultWidth) {
+        if (clientWidth * _defaultHeight > clientHeight * _defaultWidth) {
           canvasWidth = (_defaultHeight * clientWidth) ~/ clientHeight;
         } else {
           canvasHeight = (_defaultWidth * clientHeight) ~/ clientWidth;
@@ -300,7 +301,7 @@ class Stage extends DisplayObjectContainer {
     // client to stage coordinate transformation
     _clientTransformation.setTo(
         canvasWidth / clientWidth, 0.0, 0.0, canvasHeight / clientHeight,
-        canvasPivotX - clientRect.left , canvasPivotY - clientRect.top);
+        canvasPivotX - clientLeft , canvasPivotY - clientTop);
 
     if (_canvasWidth != canvasWidth || _canvasHeight != canvasHeight) {
       _canvas.width = _canvasWidth = canvasWidth;
