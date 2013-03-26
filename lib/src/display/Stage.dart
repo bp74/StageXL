@@ -208,8 +208,9 @@ class Stage extends DisplayObjectContainer {
 
   _updateCanvasSize() {
     
-    var clientLeft = _canvas.clientLeft;
-    var clientTop = _canvas.clientTop;
+    var client = _canvas.getBoundingClientRect();
+    var clientLeft = _canvas.clientLeft + client.left;
+    var clientTop = _canvas.clientTop + client.top;
     var clientWidth = _canvas.clientWidth;
     var clientHeight = _canvas.clientHeight;
     
