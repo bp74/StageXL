@@ -1,15 +1,75 @@
 part of stagexl;
 
-class _TweenProperty
-{
-  String name;
-  num startValue;
-  num targetValue;
+class TweenPropertyFactory {
 
-  _TweenProperty(this.name, this.startValue, this.targetValue);
+  final Tween tween;
+  TweenPropertyFactory(this.tween);
+  
+  @deprecated
+  call(String property, num targetValue) {
+    var tweenProperty = new TweenProperty(tween, property);
+    tweenProperty.to(targetValue);
+  }
+  
+  TweenProperty get x => new TweenProperty(tween, "x");
+  TweenProperty get y => new TweenProperty(tween, "y");
+  TweenProperty get scaleX => new TweenProperty(tween, "scaleX");
+  TweenProperty get scaleY => new TweenProperty(tween, "scaleY");
+  TweenProperty get skewX => new TweenProperty(tween, "skewX");
+  TweenProperty get skewY => new TweenProperty(tween, "skewY");
+  TweenProperty get pivotX => new TweenProperty(tween, "pivotX");
+  TweenProperty get pivotY => new TweenProperty(tween, "pivotY");
+  TweenProperty get rotation => new TweenProperty(tween, "rotation");
+  TweenProperty get alpha => new TweenProperty(tween, "alpha");
 }
 
-//-----------------------------------------------------------------------------------
+class TweenProperty {
+  
+  final Tween tween;
+  final String property;
+  num targetValue = 0.0;
+  num startValue = 0.0;
+  
+  TweenProperty(this.tween, this.property);
+  
+  void to(num targetValue) {
+    this.targetValue = targetValue;
+    this.tween._addTweenProperty(this);
+  }
+  
+  num getPropertyValue(DisplayObject displayObject) {
+    switch(property) {
+      case 'x':        return displayObject.x; 
+      case 'y':        return displayObject.y;
+      case 'pivotX':   return displayObject.pivotX;
+      case 'pivotY':   return displayObject.pivotY;
+      case 'scaleX':   return displayObject.scaleX;
+      case 'scaleY':   return displayObject.scaleY;
+      case 'skewX':    return displayObject.skewX; 
+      case 'skewY':    return displayObject.skewY; 
+      case 'rotation': return displayObject.rotation; 
+      case 'alpha':    return displayObject.alpha; 
+      default:         return 0.0;
+    }
+  }
+  
+  void setPropertyValue(DisplayObject displayObject, num value) {
+    switch(property) {
+      case 'x':        displayObject.x = value; break;
+      case 'y':        displayObject.y = value; break;
+      case 'pivotX':   displayObject.pivotX = value; break;
+      case 'pivotY':   displayObject.pivotY = value; break;
+      case 'scaleX':   displayObject.scaleX = value; break;
+      case 'scaleY':   displayObject.scaleY = value; break;
+      case 'skewX':    displayObject.skewX = value; break;
+      case 'skewY':    displayObject.skewY = value; break;            
+      case 'rotation': displayObject.rotation = value; break;
+      case 'alpha':    displayObject.alpha = value; break;
+    }
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /**
  * The [Tween] class animates the properties of a [DisplayObject].
@@ -27,12 +87,13 @@ class Tween implements Animatable {
   
   final DisplayObject _displayObject;
   final Function _transitionFunction;
-  final List<_TweenProperty> _tweenProperties = new List<_TweenProperty>();
-
+  final List<TweenProperty> _tweenPropertyList = new List<TweenProperty>();
+  
   Function _onStart;
   Function _onUpdate;
   Function _onComplete;
-
+  
+  TweenPropertyFactory _tweenPropertyFactory;  
   num _totalTime;
   num _currentTime;
   num _delay;
@@ -42,8 +103,9 @@ class Tween implements Animatable {
   Tween(DisplayObject displayObject, num time, [num transitionFunction(num ratio)]) : 
   
     _displayObject = displayObject,
-    _transitionFunction = (transitionFunction != null) ? transitionFunction : TransitionFunction.linear {
-
+    _transitionFunction = (?transitionFunction) ? transitionFunction : TransitionFunction.linear {
+    
+    _tweenPropertyFactory = new TweenPropertyFactory(this);
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
     _delay = 0.0;
@@ -54,50 +116,15 @@ class Tween implements Animatable {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void animate(String property, num targetValue) {
+  TweenPropertyFactory get animate => _tweenPropertyFactory;
+
+  void _addTweenProperty(TweenProperty tweenProperty) {
     
-    var properties = ['x', 'y', 'pivotX', 'pivotY', 'scaleX', 'scaleY', 'skewX', 'skewY', 'rotation', 'alpha'];
-
-    if (properties.indexOf(property) == -1)
-      throw new ArgumentError("Error #9003: The supplied property ('$property') is not supported at this time.");
-
-    if (_displayObject != null && _started == false)
-      _tweenProperties.add(new _TweenProperty(property, 0.0, targetValue));
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  void scaleTo(num factor) {
-    animate('scaleX', factor);
-    animate('scaleY', factor);
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  void moveTo(num x, num y) {
-    animate('x', x);
-    animate('y', y);
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  void skewTo(num skewX, num skewY) {
-    animate('skewX', skewX);
-    animate('skewY', skewY);
+    if (_displayObject != null && _started == false) {
+      _tweenPropertyList.add(tweenProperty);
+    }
   }
   
-  //-------------------------------------------------------------------------------------------------
-
-  void rotateTo(num rotation) {
-    animate('rotation', rotation);
-  }  
-  
-  //-------------------------------------------------------------------------------------------------
-
-  void fadeTo(num alpha) {
-    animate('alpha', alpha);
-  }
-
   //-------------------------------------------------------------------------------------------------
 
   void complete() {
@@ -114,60 +141,42 @@ class Tween implements Animatable {
       
       _currentTime = _currentTime + time;
 
-      if (_currentTime > _totalTime) _currentTime = _totalTime;
+      if (_currentTime > _totalTime) {
+        _currentTime = _totalTime;
+      }
 
       if (_currentTime >= 0.0) {
        
+        // set startValues if this is the first start 
+        
         if (_started == false) {
           _started = true;
 
-          for(int i = 0; i < _tweenProperties.length; i++) {
-            var tp = _tweenProperties[i];
-
-            switch(tp.name) {
-              case 'x':        tp.startValue = _displayObject.x; break;
-              case 'y':        tp.startValue = _displayObject.y; break;
-              case 'pivotX':   tp.startValue = _displayObject.pivotX; break;
-              case 'pivotY':   tp.startValue = _displayObject.pivotY; break;
-              case 'scaleX':   tp.startValue = _displayObject.scaleX; break;
-              case 'scaleY':   tp.startValue = _displayObject.scaleY; break;
-              case 'skewX':    tp.startValue = _displayObject.skewX; break;
-              case 'skewY':    tp.startValue = _displayObject.skewY; break;
-              case 'rotation': tp.startValue = _displayObject.rotation; break;
-              case 'alpha':    tp.startValue = _displayObject.alpha; break;
-            }
+          for(int i = 0; i < _tweenPropertyList.length; i++) {
+            var tp = _tweenPropertyList[i];
+            tp.startValue = tp.getPropertyValue(_displayObject);
           }
-
-          if (_onStart != null) _onStart();
+          if (_onStart != null) {
+            _onStart();
+          }
         }
 
-        //-------------
-
+        // calculate transition ratio and value
+        
         num ratio = _currentTime / _totalTime;
         num transition = _transitionFunction(ratio);
 
-        for(int i = 0; i < _tweenProperties.length; i++) {
-          
-          var tp = _tweenProperties[i];
+        for(int i = 0; i < _tweenPropertyList.length; i++) {
+          var tp = _tweenPropertyList[i];
           var value = tp.startValue + transition * (tp.targetValue - tp.startValue);
-          value = _roundToInt ? value.round() : value;
-
-          switch(tp.name) {
-            case 'x':        _displayObject.x = value; break;
-            case 'y':        _displayObject.y = value; break;
-            case 'pivotX':   _displayObject.pivotX = value; break;
-            case 'pivotY':   _displayObject.pivotY = value; break;
-            case 'scaleX':   _displayObject.scaleX = value; break;
-            case 'scaleY':   _displayObject.scaleY = value; break;
-            case 'skewX':    _displayObject.skewX = value; break;
-            case 'skewY':    _displayObject.skewY = value; break;            
-            case 'rotation': _displayObject.rotation = value; break;
-            case 'alpha':    _displayObject.alpha = value; break;
-          }
+          tp.setPropertyValue(_displayObject, _roundToInt ? value.round() : value);
         }
-
-        if (_onUpdate != null) _onUpdate();
-        if (_onComplete != null && _currentTime == _totalTime) _onComplete();
+        if (_onUpdate != null) {
+          _onUpdate();
+        }
+        if (_onComplete != null && _currentTime == _totalTime) {
+          _onComplete();
+        }
       }
     }
 

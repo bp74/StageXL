@@ -65,13 +65,12 @@ void startAnimation()
   // Let's add a tween so the man walks from the left to the right.
   //------------------------------------------------------------------
 
-  Tween tween = new Tween(flipBook, 5.0 + (1.0 - rnd) * 5.0, TransitionFunction.linear);
-  tween.animate("x", 800.0);
-  tween.onComplete = ()
-  {
-    renderLoop.juggler.remove(flipBook);
-    stage.removeChild(flipBook);
-  };
+  Tween tween = new Tween(flipBook, 5.0 + (1.0 - rnd) * 5.0, TransitionFunction.linear)
+    ..animate.x.to(800.0)
+    ..onComplete = () {
+      renderLoop.juggler.remove(flipBook);
+      stage.removeChild(flipBook);
+    };
 
   renderLoop.juggler.add(flipBook);
   renderLoop.juggler.add(tween);

@@ -31,32 +31,32 @@ void main()
   shape.y = 300;
   stage.addChild(shape);
 
-  shape.graphics.beginPath();
-  shape.graphics.moveTo(170, 80);
-  shape.graphics.bezierCurveTo(130, 100, 130, 150, 230, 150);
-  shape.graphics.bezierCurveTo(250, 180, 320, 180, 340, 150);
-  shape.graphics.bezierCurveTo(420, 150, 420, 120, 390, 100);
-  shape.graphics.bezierCurveTo(430, 40, 370, 30, 340, 50);
-  shape.graphics.bezierCurveTo(320, 5, 250, 20, 250, 50);
-  shape.graphics.bezierCurveTo(200, 5, 150, 20, 170, 80);
-  shape.graphics.closePath();
-
-  shape.graphics.fillGradient(gradient);
-  shape.graphics.strokeColor(Color.Blue, 5);
+  shape.graphics
+    ..beginPath()
+    ..moveTo(170, 80)
+    ..bezierCurveTo(130, 100, 130, 150, 230, 150)
+    ..bezierCurveTo(250, 180, 320, 180, 340, 150)
+    ..bezierCurveTo(420, 150, 420, 120, 390, 100)
+    ..bezierCurveTo(430, 40, 370, 30, 340, 50)
+    ..bezierCurveTo(320, 5, 250, 20, 250, 50)
+    ..bezierCurveTo(200, 5, 150, 20, 170, 80)
+    ..closePath()
+    ..fillGradient(gradient)
+    ..strokeColor(Color.Blue, 5);
 
   //------------------------------------------------------------------
   // Add some animation
   //------------------------------------------------------------------
 
-  Tween tween1 = new Tween(shape, 3.0, TransitionFunction.easeInOutBack);
-  tween1.animate("scaleX", 2.5);
-  tween1.animate("scaleY", 2.5);
-  tween1.delay = 1.0;
-
-  Tween tween2 = new Tween(shape, 3.0, TransitionFunction.easeInOutBack);
-  tween2.animate("scaleX", 1);
-  tween2.animate("scaleY", 1);
-  tween2.delay = 5.0;
+  Tween tween1 = new Tween(shape, 3.0, TransitionFunction.easeInOutBack)
+    ..animate.scaleX.to(2.5)
+    ..animate.scaleY.to(2.5)
+    ..delay = 1.0;
+  
+  Tween tween2 = new Tween(shape, 3.0, TransitionFunction.easeInOutBack)
+    ..animate.scaleX.to(1.0)
+    ..animate.scaleY.to(1.0)
+    ..delay = 5.0;
 
   renderLoop.juggler.add(tween1);
   renderLoop.juggler.add(tween2);

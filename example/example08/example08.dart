@@ -68,9 +68,10 @@ void main()
       getButton("Circle", () => animation.mask = circleMask),
       getButton("Custom", () => animation.mask = customMask),
       getButton("spin", () {
-        Tween rotate = new Tween(animation, 2.0, TransitionFunction.easeInOutBack);
-        rotate.animate("rotation", PI * 4.0);
-        rotate.onComplete = () => animation.rotation = 0.0;
+        var rotate = new Tween(animation, 2.0, TransitionFunction.easeInOutBack)
+          ..animate.rotation.to(PI * 4.0)
+          ..onComplete = () => animation.rotation = 0.0;
+        
         renderLoop.juggler.add(rotate);
       })
     ];
@@ -103,8 +104,9 @@ Sprite getAnimation()
     bitmap.y = 164.0 + random.nextDouble() * 372.0;
     sprite.addChild(bitmap);
 
-    Tween tween = new Tween(bitmap, 180.0, TransitionFunction.linear);
-    tween.animate("rotation", PI * 20.0);
+    var tween = new Tween(bitmap, 180.0, TransitionFunction.linear)
+      ..animate.rotation.to(PI * 20.0);
+    
     renderLoop.juggler.add(tween);
   }
 
