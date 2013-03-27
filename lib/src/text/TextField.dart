@@ -133,35 +133,30 @@ class TextField extends InteractiveObject {
       
       for(String paragraph in _text.replaceAll('\r', '').split('\n')) {
         
-        var lineBuffer = new StringBuffer();
-        var previousLength = 0;
-        var line = "";
+        var line = '';
 
-        // Split paragraphs into lines
+        // Split paragraphs into words
         
         for(String word in paragraph.split(' ')) {
           
-          previousLength = lineBuffer.length;
-          lineBuffer.write((previousLength > 0) ? " $word": word);
-          line = lineBuffer.toString();
+          var previousLine = line;
+          
+          line = (line.length == 0) ? word : line + ' ' + word;
   
           if (_context.measureText(line).width > _canvasWidth) {
             
-            if (previousLength > 0) { 
-              line = line.substring(0, previousLength);
+            if (previousLine.length == 0) {
+              _linesText.add(line);
+              line = '';
             } else { 
-              word = "";
+              _linesText.add(previousLine);
+              line = word;
             }
-            
-            _linesText.add(line);
-
-            lineBuffer = new StringBuffer();
-            lineBuffer.write(word);
           }
         }
   
-        if (lineBuffer.isEmpty == false) {
-          _linesText.add(lineBuffer.toString());
+        if (line.isEmpty == false) {
+          _linesText.add(line);
         }
       }
     }
