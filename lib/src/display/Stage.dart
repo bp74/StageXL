@@ -61,6 +61,7 @@ class Stage extends DisplayObjectContainer {
   Matrix _clientTransformation;
   Matrix _stageTransformation;
   RenderLoop _renderLoop;
+  Juggler _juggler;
   
   InteractiveObject _focus;
   RenderState _renderState;
@@ -94,6 +95,8 @@ class Stage extends DisplayObjectContainer {
     _clientHeight = canvas.clientHeight;
     _clientTransformation = new Matrix.fromIdentity();
     _stageTransformation = new Matrix.fromIdentity();
+    _renderLoop = null;
+    _juggler = new Juggler();
     
     _renderState = new RenderState.fromCanvasRenderingContext2D(_context);
     _stageRenderMode = StageRenderMode.AUTO;
@@ -149,7 +152,7 @@ class Stage extends DisplayObjectContainer {
   int get stageHeight => _clientHeight;
   
   RenderLoop get renderLoop => _renderLoop;
-  Juggler get juggler => (_renderLoop != null) ? _renderLoop.juggler : null;
+  Juggler get juggler => _juggler;
   
   InteractiveObject get focus => _focus;
   set focus(InteractiveObject value) { 
@@ -326,10 +329,14 @@ class Stage extends DisplayObjectContainer {
     
     if (_renderLoop != null && _renderLoop != renderLoop) {
       _renderLoop.removeStage(this);
+      _renderLoop.juggler.remove(_juggler);
       _renderLoop = null;
     }
     
-    _renderLoop = renderLoop;
+    if (_renderLoop == null && renderLoop != null) {
+      _renderLoop = renderLoop;
+      _renderLoop.juggler.add(_juggler);
+    }
   }
   
   //-------------------------------------------------------------------------------------------------
