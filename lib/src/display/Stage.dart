@@ -322,22 +322,6 @@ class Stage extends DisplayObjectContainer {
       dispatchEvent(new Event(Event.RESIZE));
     }
   }
-
-  //-------------------------------------------------------------------------------------------------
-
-  _updateRenderLoop(RenderLoop renderLoop) {
-    
-    if (_renderLoop != null && _renderLoop != renderLoop) {
-      _renderLoop.removeStage(this);
-      _renderLoop.juggler.remove(_juggler);
-      _renderLoop = null;
-    }
-    
-    if (_renderLoop == null && renderLoop != null) {
-      _renderLoop = renderLoop;
-      _renderLoop.juggler.add(_juggler);
-    }
-  }
   
   //-------------------------------------------------------------------------------------------------
 

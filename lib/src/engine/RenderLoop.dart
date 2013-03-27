@@ -56,16 +56,22 @@ class RenderLoop {
   //-------------------------------------------------------------------------------------------------
 
   void addStage(Stage stage) {
+   
+    if (stage.renderLoop != null) {
+      stage.renderLoop.removeStage(stage);
+    }
     
-    stage._updateRenderLoop(this);
     _stages.add(stage);
+    _juggler.add(stage.juggler);
+    stage._renderLoop = this;
   }
   
   void removeStage(Stage stage) {
-    
-    if (_stages.contains(stage)) {
+
+    if (stage.renderLoop == this) {
       _stages.remove(stage);
-      stage._updateRenderLoop(null);
+      _juggler.remove(stage.juggler);
+      stage._renderLoop = null;
     }
   }
   
