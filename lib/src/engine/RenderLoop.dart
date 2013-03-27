@@ -56,6 +56,17 @@ class RenderLoop {
   //-------------------------------------------------------------------------------------------------
 
   void addStage(Stage stage) {
+    
+    stage._updateRenderLoop(this);
     _stages.add(stage);
   }
+  
+  void removeStage(Stage stage) {
+    
+    if (_stages.contains(stage)) {
+      stage._updateRenderLoop(null);
+      _stages.remove(stage);
+    }
+  }
+  
 }

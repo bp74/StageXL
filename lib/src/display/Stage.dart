@@ -60,6 +60,7 @@ class Stage extends DisplayObjectContainer {
   int _clientWidth, _clientHeight;
   Matrix _clientTransformation;
   Matrix _stageTransformation;
+  RenderLoop _renderLoop;
   
   InteractiveObject _focus;
   RenderState _renderState;
@@ -146,6 +147,9 @@ class Stage extends DisplayObjectContainer {
  
   int get stageWidth => _clientWidth;
   int get stageHeight => _clientHeight;
+  
+  RenderLoop get renderLoop => _renderLoop;
+  Juggler get juggler => (_renderLoop != null) ? _renderLoop.juggler : null;
   
   InteractiveObject get focus => _focus;
   set focus(InteractiveObject value) { 
@@ -316,6 +320,18 @@ class Stage extends DisplayObjectContainer {
     }
   }
 
+  //-------------------------------------------------------------------------------------------------
+
+  _updateRenderLoop(RenderLoop renderLoop) {
+    
+    if (_renderLoop != null && _renderLoop != renderLoop) {
+      _renderLoop.removeStage(this);
+      _renderLoop = null;
+    }
+    
+    _renderLoop = renderLoop;
+  }
+  
   //-------------------------------------------------------------------------------------------------
 
   _onMouseCursorChanged(String action) {
