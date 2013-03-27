@@ -114,7 +114,9 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _processTextLines() {
+  void _processTextLines(String fontStyle) {
+    
+    var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
     
     _linesText.clear();
     _linesMetrics.clear();
@@ -180,7 +182,8 @@ class TextField extends InteractiveObject {
       if (_defaultTextFormat.align == TextFormatAlign.RIGHT || _defaultTextFormat.align == TextFormatAlign.END)
         offsetX = _canvasWidth - metrics.width;
 
-      TextLineMetrics textLineMetrics = new TextLineMetrics(offsetX, metrics.width, _defaultTextFormat.size, 0, 0, 0);
+      var textLineMetrics = new TextLineMetrics(
+        offsetX, metrics.width, _defaultTextFormat.size, fontStyleMetrics.ascent, fontStyleMetrics.descent, 0);
 
       _linesMetrics.add(textLineMetrics);
       _textWidth = max(_textWidth, textLineMetrics.width);
@@ -210,23 +213,24 @@ class TextField extends InteractiveObject {
       //-----------------------------
       // set canvas context
 
-      StringBuffer fontStyle = new StringBuffer();
+      var fontStyleBuffer = new StringBuffer()
+        ..write(_defaultTextFormat.italic ? "italic " : "normal ")
+        ..write("normal ")
+        ..write(_defaultTextFormat.bold ? "bold " : "normal ")
+        ..write("${_defaultTextFormat.size}px ")
+        ..write("${_defaultTextFormat.font},sans-serif");
+      
+      var fontStyle = fontStyleBuffer.toString(); 
 
-      fontStyle.write(_defaultTextFormat.italic ? "italic " : "normal ");
-      fontStyle.write("normal ");
-      fontStyle.write(_defaultTextFormat.bold ? "bold " : "normal ");
-      fontStyle.write("${_defaultTextFormat.size}px ");
-      fontStyle.write("${_defaultTextFormat.font},sans-serif");
-
-      _context.font = fontStyle.toString();
+      _context.font = fontStyle;
       _context.textAlign = "start";
-      _context.textBaseline = "top";
+      _context.textBaseline = "alphabetic";
       _context.fillStyle = _color2rgb(_textColor);
 
       //-----------------------------
       // split text into lines
 
-      _processTextLines();
+      _processTextLines(fontStyle);
 
       //-----------------------------
       // draw background
@@ -241,7 +245,7 @@ class TextField extends InteractiveObject {
       //-----------------------------
       // draw text
 
-      int offsetY = 0;
+      int offsetY = _defaultTextFormat.size;
 
       for(int i = 0; i < _linesText.length; i++) {
         var metrics = _linesMetrics[i];
