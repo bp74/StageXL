@@ -174,7 +174,9 @@ class Tween implements Animatable {
         for(int i = 0; i < _tweenPropertyList.length; i++) {
           var tp = _tweenPropertyList[i];
           if (tp.isDefined) {
-            var value = tp.startValue + transition * (tp.targetValue - tp.startValue);
+            var startValue = tp.startValue.toDouble();
+            var targetValue = tp.targetValue.toDouble();
+            var value = startValue + transition * (targetValue - startValue);
             tp._setPropertyValue(_displayObject, _roundToInt ? value.round() : value);
           }
         }
