@@ -37,12 +37,12 @@ class TweenProperty {
   TweenProperty(this.property);
   
   void to(num targetValue) {
-    this.targetValue = targetValue;
+    this.targetValue = targetValue.toDouble();
   }
 
   bool get isDefined => !startValue.isNaN && !targetValue.isNaN;
 
-  num getPropertyValue(DisplayObject displayObject) {
+  num _getPropertyValue(DisplayObject displayObject) {
     switch(property) {
       case 'x':        return displayObject.x; 
       case 'y':        return displayObject.y;
@@ -58,7 +58,7 @@ class TweenProperty {
     }
   }
   
-  void setPropertyValue(DisplayObject displayObject, num value) {
+  void _setPropertyValue(DisplayObject displayObject, num value) {
     switch(property) {
       case 'x':        displayObject.x = value; break;
       case 'y':        displayObject.y = value; break;
@@ -159,7 +159,7 @@ class Tween implements Animatable {
 
           for(int i = 0; i < _tweenPropertyList.length; i++) {
             var tp = _tweenPropertyList[i];
-            tp.startValue = tp.getPropertyValue(_displayObject);
+            tp.startValue = tp._getPropertyValue(_displayObject);
           }
           if (_onStart != null) {
             _onStart();
@@ -174,10 +174,8 @@ class Tween implements Animatable {
         for(int i = 0; i < _tweenPropertyList.length; i++) {
           var tp = _tweenPropertyList[i];
           if (tp.isDefined) {
-            var startValue = tp.startValue.toDouble();
-            var targetValue = tp.targetValue.toDouble();
-            var value = startValue + transition * (targetValue - startValue);
-            tp.setPropertyValue(_displayObject, _roundToInt ? value.round() : value);
+            var value = tp.startValue + transition * (tp.targetValue - tp.startValue);
+            tp._setPropertyValue(_displayObject, _roundToInt ? value.round() : value);
           }
         }
         if (_onUpdate != null) {
