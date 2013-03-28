@@ -4,39 +4,44 @@ class TweenPropertyFactory {
 
   final Tween tween;
   TweenPropertyFactory(this.tween);
-  
+
   @deprecated
   call(String property, num targetValue) {
-    var tweenProperty = new TweenProperty(tween, property);
-    tweenProperty.to(targetValue);
+    _addTweenProperty(property).to(targetValue);
   }
   
-  TweenProperty get x => new TweenProperty(tween, "x");
-  TweenProperty get y => new TweenProperty(tween, "y");
-  TweenProperty get scaleX => new TweenProperty(tween, "scaleX");
-  TweenProperty get scaleY => new TweenProperty(tween, "scaleY");
-  TweenProperty get skewX => new TweenProperty(tween, "skewX");
-  TweenProperty get skewY => new TweenProperty(tween, "skewY");
-  TweenProperty get pivotX => new TweenProperty(tween, "pivotX");
-  TweenProperty get pivotY => new TweenProperty(tween, "pivotY");
-  TweenProperty get rotation => new TweenProperty(tween, "rotation");
-  TweenProperty get alpha => new TweenProperty(tween, "alpha");
+  TweenProperty get x => _addTweenProperty("x");
+  TweenProperty get y => _addTweenProperty("y");
+  TweenProperty get scaleX => _addTweenProperty("scaleX");
+  TweenProperty get scaleY => _addTweenProperty("scaleY");
+  TweenProperty get skewX => _addTweenProperty("skewX");
+  TweenProperty get skewY => _addTweenProperty("skewY");
+  TweenProperty get pivotX => _addTweenProperty("pivotX");
+  TweenProperty get pivotY => _addTweenProperty("pivotY");
+  TweenProperty get rotation => _addTweenProperty("rotation");
+  TweenProperty get alpha => _addTweenProperty("alpha");
+  
+  TweenProperty _addTweenProperty(String property) {
+    var tweenProperty = new TweenProperty(property);
+    this.tween._addTweenProperty(tweenProperty);
+    return tweenProperty;
+  }
 }
 
 class TweenProperty {
   
-  final Tween tween;
   final String property;
-  num targetValue = 0.0;
-  num startValue = 0.0;
+  num startValue = double.NAN;
+  num targetValue = double.NAN;
   
-  TweenProperty(this.tween, this.property);
+  TweenProperty(this.property);
   
   void to(num targetValue) {
     this.targetValue = targetValue;
-    this.tween._addTweenProperty(this);
   }
-  
+
+  bool get isDefined => !startValue.isNaN && !targetValue.isNaN;
+
   num getPropertyValue(DisplayObject displayObject) {
     switch(property) {
       case 'x':        return displayObject.x; 
@@ -168,8 +173,10 @@ class Tween implements Animatable {
 
         for(int i = 0; i < _tweenPropertyList.length; i++) {
           var tp = _tweenPropertyList[i];
-          var value = tp.startValue + transition * (tp.targetValue - tp.startValue);
-          tp.setPropertyValue(_displayObject, _roundToInt ? value.round() : value);
+          if (tp.isDefined) {
+            var value = tp.startValue + transition * (tp.targetValue - tp.startValue);
+            tp.setPropertyValue(_displayObject, _roundToInt ? value.round() : value);
+          }
         }
         if (_onUpdate != null) {
           _onUpdate();
