@@ -17,7 +17,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num _skewX = 0.0;
   num _skewY = 0.0;
   num _rotation = 0.0;
-  Rectangle nominalBounds;
 
   num _alpha = 1.0;
   bool _visible = true;

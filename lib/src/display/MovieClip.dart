@@ -54,12 +54,17 @@ class MovieClip extends Sprite implements Animatable
    * See each constant for a description of the behaviour.
    **/
   String mode;
-
+  
   /**
    * Specifies what the first frame to play in this movieclip, or the only frame to display if mode is SINGLE_FRAME.
    */
   int startPosition = 0;
   
+  /**
+   * Specifies the timeline progression speed.
+   */
+  int frameRate = 30;
+
   /**
    * Indicates whether this MovieClip should loop when it reaches the end of its timeline.
    */
@@ -215,8 +220,8 @@ class MovieClip extends Sprite implements Animatable
 // private methods
   
   bool advanceTime(num time) {
-    if (!paused && mode == MovieClip.INDEPENDENT && stage != null) {
-      num sPerFrame = 1 / stage.frameRate;
+    if (!paused && mode == MovieClip.INDEPENDENT) {
+      num sPerFrame = 1 / frameRate;
       num df = min(1, time / sPerFrame);
       //print("advance $sPerFrame $time $df");
       _prevPosition = (_prevPos < 0) ? 0 : _prevPosition+df;
@@ -561,8 +566,6 @@ class Timeline
     if (pos != null) { setPosition(pos); }
   }
 }
-
-typedef num EaseFunction(num ratio);
 
 class TimelineStep 
 {

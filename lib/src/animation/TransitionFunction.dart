@@ -1,5 +1,7 @@
 part of stagexl;
 
+typedef num EaseFunction(num ratio);
+
 /**
  * The [TransitionFunction] class provides common transition functions used for
  * [Transition] and [Tween] animations.
@@ -38,6 +40,18 @@ class TransitionFunction {
 
     if (ratio == 0.0 || ratio == 1.0) return ratio;
     return _random.nextDouble();
+  }
+  
+  static EaseFunction custom(num amount) {
+    if (amount < -1) amount = -1;
+    if (amount > 1) amount = 1;
+    
+    num easing(num t) {
+      if (amount==0) return t;
+      if (amount<0) return t*(t*-amount+1+amount);
+      return t*((2-t)*amount+(1-amount));
+    }
+    return easing;
   }
 
   // Quadratic
