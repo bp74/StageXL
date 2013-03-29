@@ -102,7 +102,7 @@ class MovieClip extends Sprite implements Animatable
   /**
    * Automatically register with the Juggler when rendering is enabled/disabled
    */
-  bool set off(bool value) {
+  set off(bool value) {
     super.off = value;
     if (stage == null) return;
     if (value) stage.juggler.remove(this);
@@ -131,7 +131,7 @@ class MovieClip extends Sprite implements Animatable
    * @param loop Initial value for the loop property.
    * @param labels A hash of labels to pass to the timeline instance associated with this MovieClip.
    **/
-  MovieClip([String mode, int startPosition, bool loop, List<String> labels]): super()
+  MovieClip([String mode, int startPosition, bool loop, Map<String, num> labels]): super()
   {
     this.mode = mode != null ? mode : MovieClip.INDEPENDENT;
     this.startPosition = startPosition != null ? startPosition : 0;
@@ -228,7 +228,7 @@ class MovieClip extends Sprite implements Animatable
     var pos = 0;//timeline.resolve(positionOrLabel);
     if (pos == null) { return; }
     // prevent _updateTimeline from overwriting the new position because of a reset:
-    if (_prevPos == -1) { _prevPos = NaN; }
+    if (_prevPos == -1) { _prevPos = double.NAN; }
     _prevPosition = pos;
     _updateTimeline();
   }
@@ -323,7 +323,7 @@ class MovieClip extends Sprite implements Animatable
   
 }
 
-typedef void ChangeHandler(Timeline timeline);
+typedef void ChangeHandler(dynamic sender); // Tween or Timeline
 
 
 class Timeline
@@ -394,7 +394,9 @@ class Timeline
     }
     setLabels(labels);
     if (props != null && props.containsKey("paused") && props["paused"] == true) { _paused = true; }
-    else { TimelineTween._register(this, true); }
+    // TODO make Timeline a Tween-like object
+    /*else { TimelineTween._register(this, true); }*/
+    
     if (props != null && props.containsKey("position")) { 
       setPosition(props["position"], TimelineTween.NONE); }
   }
@@ -406,7 +408,7 @@ class Timeline
    * @return TimelineTween The first tween that was passed in.
    **/
   TimelineTween addTween(TimelineTween tween) {
-    if (tween == null) return;
+    if (tween == null) return null;
     assert(tween is TimelineTween);
     removeTween(tween);
     _tweens.add(tween);
@@ -704,7 +706,7 @@ class TimelineTween
     for(var i=tweens.length-1; i>=0; i--) {
       if (tweens[i]._target == target) {
         tweens[i]._paused = true;
-        tweens.splice(i,1);
+        tweens.removeAt(i);
       }
     }
     //target.tweenjs_count = 0;
@@ -931,7 +933,7 @@ class TimelineTween
    * @return {TimelineTween} This tween instance (for chaining calls).
    **/
   TimelineTween play(TimelineTween tween) {
-    return call(tween.setPaused, [false], tween);
+    return call(tween.setPaused, [false]);
   }
 
   /** 
@@ -941,8 +943,8 @@ class TimelineTween
    * @return {TimelineTween} This tween instance (for chaining calls)
    **/
   TimelineTween pause(TimelineTween tween) {
-    if (!tween) { tween = this; }
-    return call(tween.setPaused, [true], tween);
+    if (tween == null) return call(this.setPaused, [true]);
+    return call(tween.setPaused, [true]);
   }
   
   /** 
