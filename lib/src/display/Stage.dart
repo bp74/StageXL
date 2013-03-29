@@ -68,6 +68,7 @@ class Stage extends DisplayObjectContainer {
   String _stageRenderMode;
   String _stageScaleMode;  
   String _stageAlign;
+  int _frameRate = 30;
   
   String _mouseCursor;
   Point _mousePosition;
@@ -172,6 +173,11 @@ class Stage extends DisplayObjectContainer {
   String get align => _stageAlign;
   set align(String value) {
     _stageAlign = value;
+  }
+  
+  int get frameRate => _frameRate;
+  set frameRate(int value) {
+    _frameRate = value;
   }
   
   //-------------------------------------------------------------------------------------------------

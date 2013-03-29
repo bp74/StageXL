@@ -276,7 +276,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       
       DisplayObject child = _children[i];
 
-      if (child.visible)
+      if (!child._off && child.visible)
         renderState.renderDisplayObject(child);
     }
   }

@@ -5,6 +5,9 @@ final ObjectPool<List<DisplayObject>> _displayObjectListPool =
 
 abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   
+  static int _nextID = 0;
+  
+  int _id = _nextID++;
   num _x = 0.0;
   num _y = 0.0;
   num _pivotX = 0.0;
@@ -14,9 +17,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num _skewX = 0.0;
   num _skewY = 0.0;
   num _rotation = 0.0;
+  Rectangle nominalBounds;
 
   num _alpha = 1.0;
   bool _visible = true;
+  bool _off = false; // disable rendering
   Mask _mask = null;
   BitmapData _cache = null;
   
@@ -59,6 +64,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num get alpha => _alpha;
 
   bool get visible => _visible;
+  bool get off => _off;
   bool get cached => _cache != null;
   Mask get mask => _mask;
   String get name => _name;
@@ -103,9 +109,32 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   set alpha(num value) { _alpha = value.toDouble(); _transformationMatrixRefresh = true; }
 
   set visible(bool value) { _visible = value; _transformationMatrixRefresh = true; }
+  set off(bool value) { _off = value; if (value) _transformationMatrixRefresh = true; }
 
   set mask(Mask value) { _mask = value; }
   set name(String value) { _name = value; }
+
+  //-------------------------------------------------------------------------------------------------
+  
+  void setTransform(num x, num y, num scaleX, num scaleY, num rotation, [num skewX, num skewY, num pivotX, num pivotY])
+  {
+    if (skewX != null) {
+      _skewX = skewX.toDouble();
+      if (skewY != null) {
+        _skewY = skewY.toDouble();
+        if (pivotX != null) {
+          _pivotX = pivotX.toDouble();
+          if (pivotY != null) _pivotY = pivotY.toDouble();
+        }
+      }
+    }
+    _x = x.toDouble();
+    _y = y.toDouble();
+    _rotation = rotation.toDouble();
+    _scaleX = scaleX.toDouble();
+    _scaleY = scaleY.toDouble();
+    _transformationMatrixRefresh = true;
+  }
 
   //-------------------------------------------------------------------------------------------------
 
@@ -242,7 +271,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     return resultMatrix;
   }
-
+  
   //-------------------------------------------------------------------------------------------------
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
