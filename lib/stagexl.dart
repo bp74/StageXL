@@ -28,6 +28,7 @@ part 'src/geom/Rectangle.dart';
 part 'src/geom/Circle.dart';
 part 'src/geom/Matrix.dart';
 part 'src/geom/ColorTransform.dart';
+part 'src/geom/Vector.dart';
 
 part 'src/engine/RenderLoop.dart';
 part 'src/engine/RenderState.dart';

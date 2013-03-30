@@ -60,6 +60,12 @@ class Matrix {
     return new Point(x * _a + y * _c + _tx, x * _b + y * _d + _ty);
   }
 
+  Vector transformVector(Vector v) {
+    var x = v.x.toDouble();
+    var y = v.y.toDouble();
+    return new Vector(x * _a + y * _c + _tx, x * _b + y * _d + _ty);
+  }
+  
   Point deltaTransformPoint(Point p) {
     var x = p.x.toDouble();
     var y = p.y.toDouble();
