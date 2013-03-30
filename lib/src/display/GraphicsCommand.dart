@@ -539,7 +539,7 @@ class _GraphicsCommandStrokePattern extends _GraphicsCommand {
   }
   
   updateBounds(_GraphicsBounds bounds) {
-    bounds.stroke(width); 
+    bounds.stroke(_lineWidth); 
   }
 }
 

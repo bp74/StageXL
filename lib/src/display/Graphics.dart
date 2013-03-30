@@ -152,7 +152,7 @@ class Graphics {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle _getBounds(Matrix matrix) {
+  Rectangle _getBoundsTransformed(Matrix matrix) {
 
     var bounds = new _GraphicsBounds(matrix);
     
@@ -169,7 +169,7 @@ class Graphics {
     
     if (_identityRectangleRefresh) {
       _identityRectangleRefresh = false;
-      _identityRectangle = _getBounds(new Matrix.fromIdentity());
+      _identityRectangle = _getBoundsTransformed(new Matrix.fromIdentity());
     }
     
     if (_identityRectangle.contains(localX, localY)) {

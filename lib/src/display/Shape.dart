@@ -9,7 +9,7 @@ class Shape extends DisplayObject {
   //-----------------------------------------------------------------------------------------------
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
-    return _graphics._getBounds(matrix);
+    return _graphics._getBoundsTransformed(matrix);
   }
 
   //-----------------------------------------------------------------------------------------------
