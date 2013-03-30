@@ -1,7 +1,7 @@
 part of stagexl;
 
-class GraphicsGradient
-{
+class GraphicsGradient {
+  
   String _kind;
   num _startX;
   num _startY;
@@ -11,8 +11,7 @@ class GraphicsGradient
   num _endRadius;
   List _colorStops;
 
-  GraphicsGradient.linear(num startX, num startY, num endX, num endY)
-  {
+  GraphicsGradient.linear(num startX, num startY, num endX, num endY) {
      _kind = "linear";
      _startX = startX;
      _startY = startY;
@@ -21,8 +20,7 @@ class GraphicsGradient
      _colorStops = new List();
   }
 
-  GraphicsGradient.radial(num startX, num startY, num startRadius, num endX, num endY, num endRadius)
-  {
+  GraphicsGradient.radial(num startX, num startY, num startRadius, num endX, num endY, num endRadius) {
     _kind = "radial";
     _startX = startX;
     _startY = startY;
@@ -36,16 +34,15 @@ class GraphicsGradient
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void addColorStop(num offset, int color)
-  {
+  void addColorStop(num offset, int color) {
     _colorStops.add({"offset" : offset, "color" : _color2rgba(color)});
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context)
-  {
+  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
+    
     // ToDo: Maybe we should cache the CanvasGradient for a given context.
     // This could improve performance!
 

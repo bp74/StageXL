@@ -1,34 +1,30 @@
 part of stagexl;
 
-class GraphicsPattern
-{
+class GraphicsPattern {
+  
   BitmapData _bitmapData;
   Matrix _matrix;
   String _repeatOption;
 
-  GraphicsPattern.repeat(BitmapData bitmapData, [Matrix matrix])
-  {
+  GraphicsPattern.repeat(BitmapData bitmapData, [Matrix matrix]) {
     _bitmapData = bitmapData;
     _matrix = matrix;
     _repeatOption = "repeat";
   }
 
-  GraphicsPattern.repeatX(BitmapData bitmapData, [Matrix matrix])
-  {
+  GraphicsPattern.repeatX(BitmapData bitmapData, [Matrix matrix]) {
     _bitmapData = bitmapData;
     _matrix = matrix;
     _repeatOption = "repeat-x";
   }
 
-  GraphicsPattern.repeatY(BitmapData bitmapData, [Matrix matrix])
-  {
+  GraphicsPattern.repeatY(BitmapData bitmapData, [Matrix matrix]) {
     _bitmapData = bitmapData;
     _matrix = matrix;
     _repeatOption = "repeat-y";
   }
 
-  GraphicsPattern.noRepeat(BitmapData bitmapData, [Matrix matrix])
-  {
+  GraphicsPattern.noRepeat(BitmapData bitmapData, [Matrix matrix]) {
     _bitmapData = bitmapData;
     _matrix = matrix;
     _repeatOption = "no-repeat";
@@ -37,8 +33,9 @@ class GraphicsPattern
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  CanvasPattern getCanvasPattern(CanvasRenderingContext2D context)
-  {
+  Matrix get matrix => _matrix;
+  
+  CanvasPattern getCanvasPattern(CanvasRenderingContext2D context) {
     return context.createPattern(_bitmapData._source, _repeatOption);
   }
 
