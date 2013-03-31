@@ -24,12 +24,16 @@ void main()
   gradient.addColorStop(0, 0xFF8ED6FF);
   gradient.addColorStop(1, 0xFF004CB3);
 
+  Sprite sprite = new Sprite();
+  sprite.useHandCursor = true;
+  stage.addChild(sprite);
+  
   Shape shape = new Shape();
   shape.pivotX = 278;
   shape.pivotY = 90;
   shape.x = 400;
   shape.y = 300;
-  stage.addChild(shape);
+  sprite.addChild(shape);
 
   shape.graphics
     ..beginPath()

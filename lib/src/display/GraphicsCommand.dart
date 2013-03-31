@@ -4,13 +4,13 @@ abstract class _GraphicsCommand {
   
   render(CanvasRenderingContext2D context);
   
-  updateBounds(_GraphicsBounds bounds) {
-    // override if command has an effect on the bounds
+  bool hitTestInput(CanvasRenderingContext2D context, num localX, num localY) {
+    render(context);
+    return false;
   }
   
-  hitTestInput(num localX, num localY) {
-    // override if command has an effect on the hitTest
-    return false;
+  updateBounds(_GraphicsBounds bounds) {
+    // override if command has an effect on the bounds
   }
 }
 
@@ -105,7 +105,7 @@ class _GraphicsCommandBeginPath extends _GraphicsCommand {
   render(CanvasRenderingContext2D context) {
     context.beginPath();
   }
-  
+ 
   updateBounds(_GraphicsBounds bounds) {
     bounds.resetPath();
   }
@@ -446,19 +446,47 @@ class _GraphicsCommandRect extends _GraphicsCommand {
 }
 
 //-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 
-class _GraphicsCommandStrokeColor extends _GraphicsCommand {
+class _GraphicsCommandStroke extends _GraphicsCommand {
   
-  String _color;
   int _lineWidth;
   String _lineJoin;
   String _lineCap;
   
-  _GraphicsCommandStrokeColor(String color, int lineWidth, String lineJoin, String lineCap) {
-    _color = color;
+  _GraphicsCommandStroke(int lineWidth, String lineJoin, String lineCap) {
     _lineWidth = lineWidth.toInt();
     _lineJoin = lineJoin;
     _lineCap = lineCap;
+  }
+  
+  bool hitTestInput(CanvasRenderingContext2D context, num localX, num localY) {
+    context.lineWidth = _lineWidth;
+    context.lineJoin = _lineJoin;
+    context.lineCap = _lineCap;
+    
+    try {
+      return context.isPointInStroke(localX, localY);
+    } catch(e) {
+      return false;
+    }
+  }
+  
+  updateBounds(_GraphicsBounds bounds) {
+    bounds.stroke(_lineWidth); 
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+class _GraphicsCommandStrokeColor extends _GraphicsCommandStroke {
+  
+  String _color;
+  
+  _GraphicsCommandStrokeColor(String color, 
+    int lineWidth, String lineJoin, String lineCap) : super (lineWidth, lineJoin, lineCap) {
+      
+    _color = color;
   }
   
   render(CanvasRenderingContext2D context) {
@@ -468,26 +496,18 @@ class _GraphicsCommandStrokeColor extends _GraphicsCommand {
     context.lineCap = _lineCap;
     context.stroke();
   }
-  
-  updateBounds(_GraphicsBounds bounds) {
-    bounds.stroke(_lineWidth); 
-  }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-class _GraphicsCommandStrokeGradient extends _GraphicsCommand {
+class _GraphicsCommandStrokeGradient extends _GraphicsCommandStroke {
   
   GraphicsGradient _gradient;
-  int _lineWidth;
-  String _lineJoin;
-  String _lineCap;
   
-  _GraphicsCommandStrokeGradient(GraphicsGradient gradient, int lineWidth, String lineJoin, String lineCap) {
+  _GraphicsCommandStrokeGradient(GraphicsGradient gradient, 
+    int lineWidth, String lineJoin, String lineCap) : super (lineWidth, lineJoin, lineCap) {
+      
     _gradient = gradient;
-    _lineWidth = lineWidth.toInt();
-    _lineJoin = lineJoin;
-    _lineCap = lineCap;
   }
   
   render(CanvasRenderingContext2D context) {
@@ -497,26 +517,18 @@ class _GraphicsCommandStrokeGradient extends _GraphicsCommand {
     context.lineCap = _lineCap;
     context.stroke();
   }
-  
-  updateBounds(_GraphicsBounds bounds) {
-    bounds.stroke(_lineWidth); 
-  }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-class _GraphicsCommandStrokePattern extends _GraphicsCommand {
+class _GraphicsCommandStrokePattern extends _GraphicsCommandStroke {
   
   GraphicsPattern _pattern;
-  int _lineWidth;
-  String _lineJoin;
-  String _lineCap;
   
-  _GraphicsCommandStrokePattern(GraphicsPattern pattern, int lineWidth, String lineJoin, String lineCap) {
+  _GraphicsCommandStrokePattern(GraphicsPattern pattern, 
+    int lineWidth, String lineJoin, String lineCap) : super (lineWidth, lineJoin, lineCap) {
+      
     _pattern = pattern;
-    _lineWidth = lineWidth.toInt();
-    _lineJoin = lineJoin;
-    _lineCap = lineCap;
   }
   
   render(CanvasRenderingContext2D context) {
@@ -536,15 +548,21 @@ class _GraphicsCommandStrokePattern extends _GraphicsCommand {
       context.stroke();
     }
   }
-  
-  updateBounds(_GraphicsBounds bounds) {
-    bounds.stroke(_lineWidth); 
+}
+
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
+class _GraphicsCommandFill extends _GraphicsCommand {
+
+  bool hitTestInput(CanvasRenderingContext2D context, num localX, num localY) {
+    return context.isPointInPath(localX, localY);
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-class _GraphicsCommandFillColor extends _GraphicsCommand {
+class _GraphicsCommandFillColor extends _GraphicsCommandFill {
   
   String _color;
   
@@ -560,7 +578,7 @@ class _GraphicsCommandFillColor extends _GraphicsCommand {
 
 //-------------------------------------------------------------------------------------------------
 
-class _GraphicsCommandFillGradient extends _GraphicsCommand {
+class _GraphicsCommandFillGradient extends _GraphicsCommandFill {
   
   GraphicsGradient _gradient;
   
@@ -576,7 +594,7 @@ class _GraphicsCommandFillGradient extends _GraphicsCommand {
 
 //-------------------------------------------------------------------------------------------------
 
-class _GraphicsCommandFillPattern extends _GraphicsCommand {
+class _GraphicsCommandFillPattern extends _GraphicsCommandFill {
   
   GraphicsPattern _pattern;
   
