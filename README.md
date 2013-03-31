@@ -18,3 +18,5 @@ The StageXL website contains more demos and documentation. If you are not famili
 ## Remarks
 
 _As the Dart language is evolving very quickly, please be sure to use the latest version of the Dart Editor. We recommend that you use the latest supported version of Dart Editor and not one of the continuous builds._
+
+[![Build Status](https://drone.io/github.com/bp74/StageXL/status.png)](https://drone.io/github.com/bp74/StageXL/latest)
