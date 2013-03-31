@@ -174,12 +174,13 @@ class Graphics {
     
     if (_identityRectangle.contains(localX, localY)) {
       return true;
-      
+      /*
       for(int i = 0; i < _commands.length; i++) {
         if (_commands[i].hitTestInput(localX, localY)) {
           return true;
         }
       }
+      */
     }
     
     return false;

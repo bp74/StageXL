@@ -442,7 +442,6 @@ class _GraphicsCommandRect extends _GraphicsCommand {
     bounds.updatePath(_x + _width, _y);
     bounds.updatePath(_x + _width, _y + _height);
     bounds.updatePath(_x, _y + _height);
-    bounds.updateCursor(_x, _y + _height);
   }
 }
 
