@@ -448,7 +448,7 @@ class _GraphicsCommandRect extends _GraphicsCommand {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _GraphicsCommandStroke extends _GraphicsCommand {
+abstract class _GraphicsCommandStroke extends _GraphicsCommand {
   
   int _lineWidth;
   String _lineJoin;
@@ -553,7 +553,7 @@ class _GraphicsCommandStrokePattern extends _GraphicsCommandStroke {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _GraphicsCommandFill extends _GraphicsCommand {
+abstract class _GraphicsCommandFill extends _GraphicsCommand {
 
   bool hitTestInput(CanvasRenderingContext2D context, num localX, num localY) {
     return context.isPointInPath(localX, localY);
