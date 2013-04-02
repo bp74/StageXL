@@ -1,17 +1,51 @@
 part of stagexl;
 
-class Sprite extends DisplayObjectContainer
-{
+class Sprite extends DisplayObjectContainer {
+  
   bool buttonMode = false;
   bool useHandCursor = false;
   Sprite hitArea = null;
   
   Graphics _graphics = null;
-
+  DisplayObject _dropTarget = null;
+  
   Graphics get graphics {
     return (_graphics != null) ? _graphics : _graphics = new Graphics();
   }
 
+  //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  
+  startDrag([bool lockCenter = false, Rectangle bounds = null]) {
+    
+    Mouse._dragSprite = this;
+    Mouse._dragSpriteCenter = lockCenter ?
+      this.getBoundsTransformed(_tmpMatrixIdentity).center : _mousePoint;
+      
+      var rect = this.getBoundsTransformed(_tmpMatrixIdentity);
+      print(Mouse._dragSpriteCenter);
+    _updateDrag();
+  }
+  
+  stopDrag() {
+    
+    Mouse._dragSprite = null;
+  }
+  
+  _updateDrag() {
+    
+    if (this.stage != null) {
+      var delta = _mousePoint.subtract(Mouse._dragSpriteCenter);
+      delta.x = delta.x + pivotX;
+      delta.y = delta.y + pivotY;
+      var deltaParent = _transformationMatrix.transformPoint(delta);
+      this.x = deltaParent.x;
+      this.y = deltaParent.y;
+    }
+  }
+  
+  DisplayObject get dropTarget => _dropTarget;
+  
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
   

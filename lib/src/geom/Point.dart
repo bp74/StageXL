@@ -46,7 +46,7 @@ class Point
   }
 
   Point subtract(Point p) {
-    return new Point(_x - p.y, _y - p.y);
+    return new Point(_x - p.x, _y - p.y);
   }
 
   copyFrom(Point p) { 

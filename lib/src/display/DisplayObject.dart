@@ -72,6 +72,16 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
+  Point get _mousePoint {
+    var stage = this.stage;
+    return (stage != null) ? this.globalToLocal(stage._mousePosition) : new Point.zero();
+  }
+  
+  num get mouseX => _mousePoint.x; 
+  num get mouseY => _mousePoint.y; 
+  
+  //-------------------------------------------------------------------------------------------------
+
   DisplayObject get root {
     
     DisplayObject currentObject = this;
@@ -112,7 +122,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   set mask(Mask value) { _mask = value; }
   set name(String value) { _name = value; }
-
+  
   //-------------------------------------------------------------------------------------------------
   
   void setTransform(num x, num y, num scaleX, num scaleY, num rotation, [num skewX, num skewY, num pivotX, num pivotY])

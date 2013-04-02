@@ -33,9 +33,10 @@ class Rectangle
 
   Point get topLeft => new Point(_x, _y);
   Point get bottomRight => new Point(_x + _width, _y + _height);
-
+  Point get center => new Point(_x + _width /2, _y + _height / 2);
+  
   Point get size => new Point(_width, _height);
-
+  
   //-----------------------------------------------------------------------------------------------
   
   set x(num value) {
@@ -176,6 +177,6 @@ class Rectangle
     num rRight = max (this.right, rect.right);
     num rBottom = max (this.bottom, rect.bottom);
 
-    return new Rectangle(rLeft, rRight, rRight - rLeft, rBottom - rTop);
+    return new Rectangle(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 }

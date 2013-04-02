@@ -107,19 +107,18 @@ class Stage extends DisplayObjectContainer {
     //---------------------------
     // prepare mouse events
 
-    _mouseCursor = MouseCursor.ARROW;
-
-    Mouse._onMouseCursorChanged.listen(_onMouseCursorChanged);
-
     _mouseButtons = [
       new _MouseButton(MouseEvent.MOUSE_DOWN, MouseEvent.MOUSE_UP, MouseEvent.CLICK, MouseEvent.DOUBLE_CLICK),
       new _MouseButton(MouseEvent.MIDDLE_MOUSE_DOWN, MouseEvent.MIDDLE_MOUSE_UP, MouseEvent.MIDDLE_CLICK, MouseEvent.MIDDLE_CLICK),
       new _MouseButton(MouseEvent.RIGHT_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_UP, MouseEvent.RIGHT_CLICK, MouseEvent.RIGHT_CLICK)
     ];
 
+    _mouseCursor = MouseCursor.ARROW;
     _mouseTarget = null;
     _mousePosition = new Point(0, 0);
     _mouseEvent = new MouseEvent(MouseEvent.CLICK, true);
+
+    Mouse._onMouseCursorChanged.listen(_onMouseCursorChanged);
 
     _canvas.onMouseDown.listen(_onMouseEvent);
     _canvas.onMouseUp.listen(_onMouseEvent);
@@ -355,6 +354,9 @@ class Stage extends DisplayObjectContainer {
     _MouseButton mouseButton = _mouseButtons[button];
     _mousePosition = stagePoint;
 
+    if (Mouse._dragSprite != null)
+      Mouse._dragSprite._updateDrag();
+    
     if (event.type != "mouseout")
       target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
