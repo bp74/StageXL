@@ -82,6 +82,15 @@ class _GraphicsBounds {
     }
   }
   
+  fill() {
+    if (hasPath) {
+      if (boundsLeft > pathLeft) boundsLeft = pathLeft;
+      if (boundsRight < pathRight) boundsRight = pathRight;
+      if (boundsTop > pathTop) boundsTop = pathTop;
+      if (boundsBottom < pathBottom) boundsBottom = pathBottom;      
+    }
+  }
+  
   Rectangle getRectangle() {
     if (hasBounds) {
       var left = boundsLeft.floor();
@@ -557,6 +566,10 @@ abstract class _GraphicsCommandFill extends _GraphicsCommand {
 
   bool hitTestInput(CanvasRenderingContext2D context, num localX, num localY) {
     return context.isPointInPath(localX, localY);
+  }
+  
+  updateBounds(_GraphicsBounds bounds) {
+    bounds.fill(); 
   }
 }
 
