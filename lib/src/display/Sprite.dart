@@ -4,6 +4,7 @@ class Sprite extends DisplayObjectContainer
 {
   bool buttonMode = false;
   bool useHandCursor = false;
+  Sprite hitArea = null;
   
   Graphics _graphics = null;
 
@@ -32,13 +33,32 @@ class Sprite extends DisplayObjectContainer
   
   DisplayObject hitTestInput(num localX, num localY) {
     
-    var target = super.hitTestInput(localX, localY);
+    DisplayObject target = null;
     
-    if (target == null && _graphics != null) {
-      if (_graphics._hitTestInput(localX, localY)) {
-        target = this;
+    if (this.hitArea != null) {
+      
+      var matrix = this.hitArea.transformationMatrixTo(this);
+      if (matrix != null) {
+        double deltaX = localX - matrix.tx;
+        double deltaY = localY - matrix.ty;
+        double childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
+        double childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
+        
+        if (this.hitArea.hitTestInput(childX, childY) != null) {
+          target = this;
+        }
       }
-    } 
+
+    } else {
+    
+      target = super.hitTestInput(localX, localY);
+      
+      if (target == null && _graphics != null) {
+        if (_graphics._hitTestInput(localX, localY)) {
+          target = this;
+        }
+      } 
+    }
     
     return target;
   }

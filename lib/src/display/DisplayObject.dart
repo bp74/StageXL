@@ -264,7 +264,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       return targetMatrix;
 
     if (targetObject != resultObject)
-      throw new ArgumentError("Error #9001: The supplied DisplayObject has no relationship to the caller.");
+      return null;
 
     resultMatrix.concat(targetMatrix);
 
