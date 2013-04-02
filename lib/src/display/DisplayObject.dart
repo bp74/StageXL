@@ -72,13 +72,20 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  Point get _mousePoint {
+  Point get mousePosition {
     var stage = this.stage;
-    return (stage != null) ? this.globalToLocal(stage._mousePosition) : new Point.zero();
+    return (stage != null) ? this.globalToLocal(stage._mousePosition) : null;
   }
   
-  num get mouseX => _mousePoint.x; 
-  num get mouseY => _mousePoint.y; 
+  num get mouseX {
+    var mp = this.mousePosition;
+    return (mp != null) ? mp.x : 0.0;
+  }
+  
+  num get mouseY {
+    var mp = this.mousePosition;
+    return (mp != null) ? mp.y : 0.0;
+  }
   
   //-------------------------------------------------------------------------------------------------
 

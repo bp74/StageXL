@@ -19,10 +19,15 @@ class Sprite extends DisplayObjectContainer {
   startDrag([bool lockCenter = false, Rectangle bounds = null]) {
     
     Mouse._dragSprite = this;
-    Mouse._dragSpriteCenter = lockCenter ?
-      this.getBoundsTransformed(_tmpMatrixIdentity).center : _mousePoint;
+    
+    if (lockCenter) {
+      Mouse._dragSpriteCenter = this.getBoundsTransformed(_tmpMatrixIdentity).center;
+    } else {
+      var mp = this.mousePosition;
+      Mouse._dragSpriteCenter = (mp != null) ? mp : new Point.zero();
+    }
 
-      _updateDrag();
+    _updateDrag();
   }
   
   stopDrag() {
@@ -32,13 +37,15 @@ class Sprite extends DisplayObjectContainer {
   
   _updateDrag() {
     
-    if (this.stage != null) {
-      var delta = _mousePoint.subtract(Mouse._dragSpriteCenter);
-      delta.x = delta.x + pivotX;
-      delta.y = delta.y + pivotY;
-      var deltaParent = _transformationMatrix.transformPoint(delta);
-      this.x = deltaParent.x;
-      this.y = deltaParent.y;
+    var mp = this.mousePosition;
+    if (mp != null) {
+      
+      var pivot = mp.subtract(Mouse._dragSpriteCenter);
+      pivot.offset(_pivotX, _pivotY);
+      
+      var location = _transformationMatrix.transformPoint(pivot);
+      this.x = location.x;
+      this.y = location.y;
     }
   }
   
