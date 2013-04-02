@@ -20,9 +20,11 @@ class Point
 
   static num distance(Point p1, Point p2) => p1.distanceTo(p2);
 
-  static Point interpolate(Point p1, Point p2) => new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
+  static Point interpolate(Point p1, Point p2, num f) => 
+    new Point(p2.x + (p1.x - p2.x) * f, p2.y + (p1.y - p2.y) * f);
 
-  static Point polar(num len, num angle) => new Point(len * cos(angle), - len * sin(angle));
+  static Point polar(num len, num angle) => 
+    new Point(len * cos(angle), - len * sin(angle));
 
   //-------------------------------------------------------------------------------------------------
 
