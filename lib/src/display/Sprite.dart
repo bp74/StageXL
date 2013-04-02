@@ -21,10 +21,8 @@ class Sprite extends DisplayObjectContainer {
     Mouse._dragSprite = this;
     Mouse._dragSpriteCenter = lockCenter ?
       this.getBoundsTransformed(_tmpMatrixIdentity).center : _mousePoint;
-      
-      var rect = this.getBoundsTransformed(_tmpMatrixIdentity);
-      print(Mouse._dragSpriteCenter);
-    _updateDrag();
+
+      _updateDrag();
   }
   
   stopDrag() {
