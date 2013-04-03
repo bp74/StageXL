@@ -1,16 +1,15 @@
 part of stagexl;
 
-class Rectangle
-{
+class Rectangle {
+  
   num _x;
   num _y;
   num _width;
   num _height;
 
-  Rectangle(num x, num y, num width, num height) :
-    _x = x.toDouble(), _y = y.toDouble(), _width = width.toDouble(), _height = height.toDouble();
-
-  Rectangle.zero() : this(0.0, 0.0, 0.0, 0.0); 
+  Rectangle(num x, num y, num width, num height) : _x = x, _y = y, _width = width, _height = height;
+  
+  Rectangle.zero() : this(0, 0, 0, 0); 
 
   Rectangle.from(Rectangle r) : this(r.x, r.y, r.width, r.height);
 
@@ -40,19 +39,19 @@ class Rectangle
   //-----------------------------------------------------------------------------------------------
   
   set x(num value) {
-    _x = value.toDouble();
+    _x = value;
   }
 
   set y(num value) {
-    _y = value.toDouble();
+    _y = value;
   }
 
   set width(num value) {
-    _width = value.toDouble();
+    _width = value;
   }
 
   set height(num value) {
-    _height = value.toDouble();
+    _height = value;
   }
 
   set bottom(num value) {
@@ -60,32 +59,32 @@ class Rectangle
   }
 
   set left(num value) {
-    this.x = value;
+    _x = value;
   }
 
   set right(num value) {
-    this.width = value - _x;
+    _width = value - _x;
   }
 
   set top(num value) {
-    this.y = value;
+    _y = value;
   }
 
   set bottomRight(Point value) {
-    this.width = value.x - _x;
-    this.height = value.y - _y;
+    _width = value.x - _x;
+    _height = value.y - _y;
   }
 
   set topLeft(Point value) {
-    this.width = _width + _x - value.x;
-    this.height = _height + _y - value.y;
-    this.x = value.x;
-    this.y = value.y;
+    _width = _width + _x - value.x;
+    _height = _height + _y - value.y;
+    _x = value.x;
+    _y = value.y;
    }
 
   void set size(Point value) {
-    this.width = value.x;
-    this.height = value.y;
+    _width = value.x;
+    _height = value.y;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -117,50 +116,50 @@ class Rectangle
   //-----------------------------------------------------------------------------------------------
 
   copyFrom(Rectangle r) { 
-    this.x = r.x;
-    this.y = r.y; 
-    this.width = r.width; 
-    this.height = r.height; 
+    _x = r.x;
+    _y = r.y; 
+    _width = r.width; 
+    _height = r.height; 
   }
   
   inflate(num dx, num dy) { 
-    this.width = _width + dx; 
-    this.height = _height + dy; 
+    _width = _width + dx; 
+    _height = _height + dy; 
   }
   
   inflatePoint(Point p) { 
-    this.width = _width + p.x; 
-    this.height = _height + p.y; 
+    _width = _width + p.x; 
+    _height = _height + p.y; 
   }
   
   offset(num dx, num dy) { 
-    this.x = _x + dx; 
-    this.y = _y + dy; 
+    _x = _x + dx; 
+    _y = _y + dy; 
   }
   
   offsetPoint(Point p) { 
-    this.x = _x + p.x; 
-    this.y = _y + p.y; 
+    _x = _x + p.x; 
+    _y = _y + p.y; 
   }
   
   setEmpty() { 
-    this.x = 0.0; 
-    this.y = 0.0; 
-    this.width = 0.0; 
-    this.height = 0.0; 
+    _x = 0; 
+    _y = 0; 
+    _width = 0; 
+    _height = 0; 
   }
   
   setTo(num rx, num ry, num rwidth, num rheight) { 
-    this.x = rx; 
-    this.y = ry; 
-    this.width = rwidth; 
-    this.height = rheight; 
+    _x = rx; 
+    _y = ry; 
+    _width = rwidth; 
+    _height = rheight; 
   }
 
   Rectangle intersection(Rectangle rect) {
     
     if (this.intersects (rect) == false)
-      return new Rectangle(0.0, 0.0, 0.0, 0.0);
+      return new Rectangle.zero();
 
     num rLeft = max (this.left, rect.left);
     num rTop = max (this.top, rect.top);

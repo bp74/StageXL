@@ -1,11 +1,11 @@
 part of stagexl;
 
-class Point
-{
+class Point {
+  
   num _x;
   num _y;
 
-  Point(num x, num y) : _x = x.toDouble(), _y = y.toDouble(); 
+  Point(num x, num y) : _x = x, _y = y; 
 
   Point.zero() : this(0, 0);
 
@@ -34,11 +34,11 @@ class Point
   num get length => sqrt(_x * _x + _y * _y);
 
   set x(num value) {
-    _x = value.toDouble();
+    _x = value;
   }
 
   set y(num value) {
-    _y = value.toDouble();
+    _y = value;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -52,13 +52,13 @@ class Point
   }
 
   copyFrom(Point p) { 
-    this.x = p.x; 
-    this.y = p.y; 
+    _x = p.x; 
+    _y = p.y; 
   }
 
   setTo(num px, num py) { 
-    this.x = px; 
-    this.y = py; 
+    _x = px; 
+    _y = py; 
   }
 
   bool equals(Point p) {
@@ -67,26 +67,26 @@ class Point
 
   normalize(num length) {
     num currentLength = this.length;
-    this.x = _x * length / currentLength;
-    this.y = _y * length / currentLength;
+    _x = _x * length / currentLength;
+    _y = _y * length / currentLength;
   }
 
   offset(num dx, num dy) {
-    this.x = _x + dx;
-    this.y = _y + dy;
+    _x = _x + dx;
+    _y = _y + dy;
   }
 
   transform(Matrix matrix) {
     num currentX = _x;
     num currentY = _y;
 
-    this.x = currentX * matrix.a + currentY * matrix.c + matrix.tx;
-    this.y = currentX * matrix.b + currentY * matrix.d + matrix.ty;
+    _x = currentX * matrix.a + currentY * matrix.c + matrix.tx;
+    _y = currentX * matrix.b + currentY * matrix.d + matrix.ty;
   }
 
   copyFromAndTransfrom(Point p, Matrix matrix) {
-    this.x = p.x * matrix.a + p.y * matrix.c + matrix.tx;
-    this.y = p.x * matrix.b + p.y * matrix.d + matrix.ty;
+    _x = p.x * matrix.a + p.y * matrix.c + matrix.tx;
+    _y = p.x * matrix.b + p.y * matrix.d + matrix.ty;
   }
 
   num distanceTo(Point other) {
