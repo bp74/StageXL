@@ -1,6 +1,5 @@
 library example01;
 
-import 'dart:math';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
@@ -14,24 +13,12 @@ void main() {
   var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
-  var circle1 = new Shape();
-  circle1.graphics.rect(0, 0, 80, 80);
-  circle1.graphics.fillColor(0xFF0000FF);  
-  circle1.x = 50;
-  circle1.y = 120;
-  stage.addChild(circle1);
-  
-  var circle2 = new Shape();
-  circle2.graphics.rect(0, 0, 80, 80);
-  circle2.graphics.fillColor(0xFF00FF00);
-  circle2.rotation = PI / 4;
-  circle2.x = 180;
-  circle2.y = 180;
-  stage.addChild(circle2);
-  
-  stage.addEventListener(Event.ENTER_FRAME, (Event e ) {
-    print(circle2.hitTestPoint(stage.mouseX, stage.mouseY, true));
-  });
+  // Add a modern art painting to the Stage. Afterwards the painting
+  // is a child of the stage and part of the display list.
+  var painting = new Painting();
+  painting.x = 40;
+  painting.y = 40;
+  stage.addChild(painting);
 }
 
 class Painting extends DisplayObjectContainer {
