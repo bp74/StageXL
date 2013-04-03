@@ -38,7 +38,8 @@ class RenderLoop {
 
     num deltaTime = currentTime - _renderTime;
     num deltaTimeSec = deltaTime / 1000.0;
-
+    num currentTimeSec = currentTime / 1000.0;
+    
     if (deltaTime >= 1) {
       _renderTime = currentTime;
       _enterFrameEvent._passedTime = deltaTimeSec;
@@ -47,7 +48,7 @@ class RenderLoop {
 
       for(int i = 0; i < _stages.length; i++) {
         var stage = _stages[i];
-        stage.materialize();
+        stage.materialize(currentTimeSec, deltaTimeSec);
       }
     }
   }

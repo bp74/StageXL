@@ -197,13 +197,13 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  materialize() {
+  materialize(num currentTime, num deltaTime) {
     
     if (_stageRenderMode == StageRenderMode.AUTO || _stageRenderMode == StageRenderMode.ONCE) {
       
       _updateCanvasSize();
       
-      _renderState.reset(_stageTransformation);
+      _renderState.reset(_stageTransformation, currentTime, deltaTime);
       render(_renderState);
 
       if (_stageRenderMode == StageRenderMode.ONCE)

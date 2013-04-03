@@ -7,6 +7,8 @@ class RenderState
   final List<double> _alphas = new List<double>(100);
 
   int _depth = 0;
+  num _currentTime = 0.0;
+  num _deltaTime = 0.0;
 
   RenderState.fromCanvasRenderingContext2D(CanvasRenderingContext2D context, [Matrix matrix]) :
     _context = context {
@@ -30,15 +32,19 @@ class RenderState
   //-------------------------------------------------------------------------------------------------
 
   CanvasRenderingContext2D get context => _context;
-
+  num get currentTime => _currentTime;
+  num get deltaTime => _deltaTime;
+  
   //-------------------------------------------------------------------------------------------------
 
-  void reset([Matrix matrix]) {
+  void reset([Matrix matrix, num currentTime, num deltaTime]) {
     
     if (matrix != null)
       _matrices[0].copyFrom(matrix);
     
     _depth = 0;
+    _currentTime = ?currentTime ? currentTime : 0.0;
+    _deltaTime = ?deltaTime ? deltaTime : 0.0;
     
     var m = _matrices[0];
     var a = _alphas[0];
