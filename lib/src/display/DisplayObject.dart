@@ -311,29 +311,36 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     Rectangle returnRectangle = new Rectangle.zero();
     Matrix matrix = (targetSpace == null) ? _transformationMatrix : transformationMatrixTo(targetSpace);
 
-    return getBoundsTransformed(matrix, returnRectangle);
+    return (matrix != null) ? getBoundsTransformed(matrix, returnRectangle) : returnRectangle;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   bool hitTestObject(DisplayObject other) {
-    //ToDo
-    throw new UnimplementedError("Error #2014: Feature is not available at this time.");
+    
+    var stage1 = this.stage;
+    var stage2 = other.stage;
+    
+    if (stage1 == null || stage2 == null || stage1 != stage2) return false;
+    
+    var rect1 = this.getBounds(stage1);
+    var rect2 = other.getBounds(stage2);
+
+    return rect1.intersects(rect2);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   bool hitTestPoint(num x, num y, [bool shapeFlag = false]) {
     
-    Stage stage = this.stage;
+    var stage = this.stage;
+    if (stage == null) return false;
 
-    if (stage == null)
-      return false;
+    var matrix = this.transformationMatrixTo(stage);
+    if (matrix == null) return false;
 
-    Matrix matrix = this.transformationMatrixTo(stage);
+    var point = new Point(x, y);
     matrix.invert();
-
-    Point point = new Point(x, y);
     point.transform(matrix);
 
     return getBoundsTransformed(_identityMatrix).contains(point.x, point.y);
