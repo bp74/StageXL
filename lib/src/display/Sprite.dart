@@ -97,14 +97,12 @@ class Sprite extends DisplayObjectContainer {
     
     if (this.hitArea != null) {
       
-      var matrix = this.hitArea.transformationMatrixTo(this);
+      var matrix = this.transformationMatrixTo(this.hitArea);
       if (matrix != null) {
-        double deltaX = localX - matrix.tx;
-        double deltaY = localY - matrix.ty;
-        double childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
-        double childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
+        double hitAreaX = localX * matrix.a + localY * matrix.c + matrix.tx;
+        double hitAreaY = localX * matrix.b + localY * matrix.d + matrix.ty;
         
-        if (this.hitArea.hitTestInput(childX, childY) != null) {
+        if (this.hitArea.hitTestInput(hitAreaX, hitAreaY) != null) {
           target = this;
         }
       }
