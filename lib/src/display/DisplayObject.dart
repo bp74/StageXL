@@ -246,7 +246,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       return _transformationMatrix.clone();
 
     if (targetSpace._parent == this)
-      return _transformationMatrix.cloneInvert();
+      return targetSpace._transformationMatrix.cloneInvert();
 
     //------------------------------------------------
 
@@ -332,18 +332,24 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   bool hitTestPoint(num x, num y, [bool shapeFlag = false]) {
-    
+
     var stage = this.stage;
     if (stage == null) return false;
 
-    var matrix = this.transformationMatrixTo(stage);
-    if (matrix == null) return false;
+    if (shapeFlag) {
+      var matrix = stage.transformationMatrixTo(this);
+      if (matrix == null) return false;
+      
+      var stagePoint = new Point(x, y);
+      var localPoint = matrix.transformPoint(stagePoint);
 
-    var point = new Point(x, y);
-    matrix.invert();
-    point.transform(matrix);
+      return this.hitTestInput(localPoint.x, localPoint.y) != null;
 
-    return getBoundsTransformed(_identityMatrix).contains(point.x, point.y);
+    } else {
+      
+      var rect = this.getBounds(stage);
+      return rect.contains(x, y);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
