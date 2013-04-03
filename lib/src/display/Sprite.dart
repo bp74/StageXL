@@ -22,7 +22,7 @@ class Sprite extends DisplayObjectContainer {
     Mouse._dragSpriteBounds = bounds;
     
     if (lockCenter) {
-      Mouse._dragSpriteCenter = this.getBoundsTransformed(_tmpMatrixIdentity).center;
+      Mouse._dragSpriteCenter = this.getBoundsTransformed(_identityMatrix).center;
     } else {
       var mp = this.mousePosition;
       Mouse._dragSpriteCenter = (mp != null) ? mp : new Point.zero();

@@ -3,6 +3,8 @@ part of stagexl;
 final ObjectPool<List<DisplayObject>> _displayObjectListPool = 
   new ObjectPool<List<DisplayObject>>(() => new List<DisplayObject>());
 
+final Matrix _identityMatrix = new Matrix.fromIdentity();
+
 abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   
   static int _nextID = 0;
@@ -28,7 +30,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   DisplayObjectContainer _parent = null;
 
   final Matrix _tmpMatrix = new Matrix.fromIdentity();
-  final Matrix _tmpMatrixIdentity = new Matrix.fromIdentity();
   final Matrix _transformationMatrixPrivate = new Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
 
@@ -335,14 +336,14 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     Point point = new Point(x, y);
     point.transform(matrix);
 
-    return getBoundsTransformed(_tmpMatrixIdentity).contains(point.x, point.y);
+    return getBoundsTransformed(_identityMatrix).contains(point.x, point.y);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
     
-    if (getBoundsTransformed(_tmpMatrixIdentity).contains(localX, localY))
+    if (getBoundsTransformed(_identityMatrix).contains(localX, localY))
       return this;
 
     return null;
