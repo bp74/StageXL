@@ -30,7 +30,7 @@ const num _deg2rad = PI/180;
 * OTHER DEALINGS IN THE SOFTWARE.
 */
 
-class MovieClip extends Sprite implements Animatable
+class MovieClip extends Sprite
 {
   /**
    * Read-only. The MovieClip will advance independently of its parent, even if its parent is paused.
@@ -104,16 +104,6 @@ class MovieClip extends Sprite implements Animatable
    */
   bool autoReset = true;
 
-  /**
-   * Automatically register with the Juggler when rendering is enabled/disabled
-   */
-  set off(bool value) {
-    super.off = value;
-    if (stage == null) return;
-    if (value) stage.juggler.remove(this);
-    else stage.juggler.add(this);
-  }
-  
 // properties:
 
   int _currentFrame = 0;
@@ -143,11 +133,6 @@ class MovieClip extends Sprite implements Animatable
     this.loop = loop != null ? loop : false;
     props = {"paused":true, "position":this.startPosition};
     timeline = new Timeline(null, labels, props);
-    addEventListener(Event.ADDED_TO_STAGE, _addedToStage);
-  }
-  
-  void _addedToStage(e) {
-    if (!off) stage.juggler.add(this);
   }
   
 // public methods:
@@ -175,6 +160,7 @@ class MovieClip extends Sprite implements Animatable
   void render(RenderState renderState) {
     // draw to cache first:
     //if (this.DisplayObject_draw(ctx, ignoreCache)) { return true; }
+    _advanceTime(renderState.deltaTime);
     _updateTimeline();
     super.render(renderState);
   }
@@ -219,7 +205,7 @@ class MovieClip extends Sprite implements Animatable
   
 // private methods
   
-  bool advanceTime(num time) {
+  bool _advanceTime(num time) {
     if (!paused && mode == MovieClip.INDEPENDENT) {
       num sPerFrame = 1 / frameRate;
       num df = min(1, time / sPerFrame);
@@ -1092,7 +1078,7 @@ class TimelineTween
         DisplayObject d = _target as DisplayObject;
         switch(n)
         {
-          case "_off": d.off = v; break;
+          case "off": d.off = v; break;
           case "x": d.x = dv; break;
           case "y": d.y = dv; break;
           case "rotation": d.rotation = dv * _deg2rad; break;
@@ -1121,10 +1107,13 @@ class TimelineTween
    * @protected
    **/
   void _runActions(int curPos) {
+    
     for(var i=0; i<_actions.length; i++) {
       var action = _actions[i];
-      if (action.t == curPos) 
+      if (action.t == curPos) {
+        //if (action.p != null) Function.apply(action.f, action.p);
         action.f();
+      }
     }
   }
 
@@ -1144,7 +1133,7 @@ class TimelineTween
           DisplayObject d = _target as DisplayObject;
           switch(n)
           {
-            case "_off": oldValue = d.off; break;
+            case "off": oldValue = d.off; break;
             case "x": oldValue = d.x; break;
             case "y": oldValue = d.y; break;
             case "rotation": oldValue = d.rotation * _rad2deg; break;
