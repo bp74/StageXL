@@ -68,7 +68,6 @@ class Stage extends DisplayObjectContainer {
   String _stageRenderMode;
   String _stageScaleMode;  
   String _stageAlign;
-  int _frameRate = 30;
   
   String _mouseCursor;
   Point _mousePosition;
@@ -154,6 +153,8 @@ class Stage extends DisplayObjectContainer {
   RenderLoop get renderLoop => _renderLoop;
   Juggler get juggler => _juggler;
   
+  Point get mousePosition => _mousePosition;
+  
   InteractiveObject get focus => _focus;
   set focus(InteractiveObject value) { 
     _focus = value; 
@@ -173,12 +174,7 @@ class Stage extends DisplayObjectContainer {
   set align(String value) {
     _stageAlign = value;
   }
-  
-  int get frameRate => _frameRate;
-  set frameRate(int value) {
-    _frameRate = value;
-  }
-  
+ 
   //-------------------------------------------------------------------------------------------------
 
   _throwStageException() {

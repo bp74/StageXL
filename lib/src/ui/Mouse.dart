@@ -7,6 +7,7 @@ class Mouse {
   
   static Sprite _dragSprite = null;
   static Point _dragSpriteCenter = null;
+  static Rectangle _dragSpriteBounds = null;
   
   static StreamController<String> _mouseCursorChangedEvent = new StreamController<String>();
   static Stream<String> _onMouseCursorChanged = _mouseCursorChangedEvent.stream.asBroadcastStream();

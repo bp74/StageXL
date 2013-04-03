@@ -19,6 +19,7 @@ class Sprite extends DisplayObjectContainer {
   startDrag([bool lockCenter = false, Rectangle bounds = null]) {
     
     Mouse._dragSprite = this;
+    Mouse._dragSpriteBounds = bounds;
     
     if (lockCenter) {
       Mouse._dragSpriteCenter = this.getBoundsTransformed(_tmpMatrixIdentity).center;
@@ -32,20 +33,40 @@ class Sprite extends DisplayObjectContainer {
   
   stopDrag() {
     
-    Mouse._dragSprite = null;
+    if (Mouse._dragSprite == this) {
+      Mouse._dragSprite = null;
+      Mouse._dragSpriteCenter = null;
+      Mouse._dragSpriteBounds = null;
+    }
   }
-  
+
   _updateDrag() {
     
     var mp = this.mousePosition;
-    if (mp != null) {
+    var stage = this.stage;
+    var visible = this.visible;
+    
+    if (mp != null && this.stage != null) {
       
-      var pivot = mp.subtract(Mouse._dragSpriteCenter);
-      pivot.offset(_pivotX, _pivotY);
+      var bounds = Mouse._dragSpriteBounds;
+      if (bounds != null) {
+        var mpParent = _transformationMatrix.transformPoint(mp);
+        if (mpParent.x < bounds.left) mpParent.x = bounds.left;
+        if (mpParent.x > bounds.right) mpParent.x = bounds.right;
+        if (mpParent.y < bounds.top) mpParent.y = bounds.top;
+        if (mpParent.y > bounds.bottom) mpParent.y = bounds.bottom;
+        mp = _transformationMatrix.cloneInvert().transformPoint(mpParent);
+      }
       
+      var pivot = new Point(_pivotX, _pivotY).add(mp).subtract(Mouse._dragSpriteCenter);
       var location = _transformationMatrix.transformPoint(pivot);
+
+      this.visible = false;
+      _dropTarget = stage.hitTestInput(stage.mouseX, stage.mouseY);
+      
       this.x = location.x;
       this.y = location.y;
+      this.visible = visible;
     }
   }
   
