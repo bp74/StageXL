@@ -11,9 +11,6 @@ class Mask {
   }
   
   factory Mask.custom(List<Point> points) {
-    if (points.length < 3)
-      throw new ArgumentError("A custom mask needs at least 3 points.");
-    
     return new _CustomMask(points);
   }
    
@@ -66,7 +63,11 @@ class _CustomMask implements Mask {
   
   final List<Point> _points;
   
-  _CustomMask(List<Point> points) : _points = points;
+  _CustomMask(List<Point> points) : _points = points.toList(growable:false) {
+    
+    if (points.length < 3)
+      throw new ArgumentError("A custom mask needs at least 3 points.");
+  }
   
   void render(RenderState renderState) {
     
@@ -95,7 +96,7 @@ class _ShapeMask implements Mask {
     context.save();
     context.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     
-    _shape.graphics._drawPath(renderState.context);
+    _shape.graphics._drawPath(context);
     
     context.restore();
     context.clip();
