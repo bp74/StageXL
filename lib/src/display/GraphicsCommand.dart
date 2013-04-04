@@ -8,6 +8,10 @@ abstract class _GraphicsCommand {
     render(context);
     return false;
   }
+
+  drawPath(CanvasRenderingContext2D context) {
+    render(context);
+  }
   
   updateBounds(_GraphicsBounds bounds) {
     // override if command has an effect on the bounds
@@ -480,6 +484,10 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
       return false;
     }
   }
+
+  drawPath(CanvasRenderingContext2D context) {
+    // no action
+  }
   
   updateBounds(_GraphicsBounds bounds) {
     bounds.stroke(_lineWidth); 
@@ -567,7 +575,11 @@ abstract class _GraphicsCommandFill extends _GraphicsCommand {
   bool hitTestInput(CanvasRenderingContext2D context, num localX, num localY) {
     return context.isPointInPath(localX, localY);
   }
-  
+
+  drawPath(CanvasRenderingContext2D context) {
+    // no action
+  }
+
   updateBounds(_GraphicsBounds bounds) {
     bounds.fill(); 
   }
