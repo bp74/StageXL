@@ -1,21 +1,20 @@
 part of stagexl;
 
-class Bitmap extends DisplayObject
-{
+class Bitmap extends DisplayObject {
+  
   BitmapData bitmapData;
   String pixelSnapping;
   Rectangle clipRectangle;
 
-  Bitmap([this.bitmapData = null, this.pixelSnapping = "auto"])
-  {
+  Bitmap([this.bitmapData = null, this.pixelSnapping = "auto"]) {
     clipRectangle = null;
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle])
-  {
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
+    
     int width = (bitmapData != null) ? bitmapData.width : 0;
     int height = (bitmapData != null) ? bitmapData.height : 0;
 
@@ -24,8 +23,8 @@ class Bitmap extends DisplayObject
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject hitTestInput(num localX, num localY)
-  {
+  DisplayObject hitTestInput(num localX, num localY) {
+    
     if (bitmapData != null && localX >= 0.0 && localY >= 0.0 && localX < bitmapData.width && localY < bitmapData.height)
       return this;
 
@@ -34,16 +33,15 @@ class Bitmap extends DisplayObject
 
   //-------------------------------------------------------------------------------------------------
 
-  void render(RenderState renderState)
-  {
-    if (bitmapData != null)
-    {
-      if (clipRectangle == null)
-        bitmapData.render(renderState);
-      else
-        bitmapData.renderClipped(renderState, clipRectangle);
+  void render(RenderState renderState) {
+    
+    if (bitmapData == null) return;
+    
+    if (clipRectangle == null) {
+      bitmapData.render(renderState);
+    } else {
+      bitmapData.renderClipped(renderState, clipRectangle);
     }
   }
-
 
 }

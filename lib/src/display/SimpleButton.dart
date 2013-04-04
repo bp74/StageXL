@@ -1,7 +1,7 @@
 part of stagexl;
 
-class SimpleButton extends InteractiveObject
-{
+class SimpleButton extends InteractiveObject {
+  
   DisplayObject upState;
   DisplayObject overState;
   DisplayObject downState;
@@ -12,8 +12,8 @@ class SimpleButton extends InteractiveObject
 
   DisplayObject _currentState;
 
-  SimpleButton([this.upState, this.overState, this.downState, this.hitTestState])
-  {
+  SimpleButton([this.upState, this.overState, this.downState, this.hitTestState]) {
+    
     addEventListener(MouseEvent.MOUSE_OVER, _onMouseEvent);
     addEventListener(MouseEvent.MOUSE_OUT, _onMouseEvent);
     addEventListener(MouseEvent.MOUSE_DOWN, _onMouseEvent);
@@ -25,12 +25,10 @@ class SimpleButton extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle])
-  {
-    if (_currentState != null)
-    {
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
+    
+    if (_currentState != null) {
       _tmpMatrix.copyFromAndConcat(_currentState._transformationMatrix, matrix);
-
       return _currentState.getBoundsTransformed(_tmpMatrix, returnRectangle);
     }
 
@@ -39,10 +37,10 @@ class SimpleButton extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  DisplayObject hitTestInput(num localX, num localY)
-  {
-    if (this.hitTestState != null)
-    {
+  DisplayObject hitTestInput(num localX, num localY) {
+    
+    if (this.hitTestState != null) {
+      
       Matrix matrix = this.hitTestState._transformationMatrix;
 
       double deltaX = localX - matrix.tx;
@@ -59,8 +57,8 @@ class SimpleButton extends InteractiveObject
 
   //-------------------------------------------------------------------------------------------------
 
-  void render(RenderState renderState)
-  {
+  void render(RenderState renderState) {
+    
     if (_currentState != null)
       renderState.renderDisplayObject(_currentState);
   }
@@ -68,8 +66,8 @@ class SimpleButton extends InteractiveObject
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _onMouseEvent(MouseEvent mouseEvent)
-  {
+  void _onMouseEvent(MouseEvent mouseEvent) {
+    
     if (mouseEvent.type == MouseEvent.MOUSE_OUT) {
       _currentState = upState;
     } else {

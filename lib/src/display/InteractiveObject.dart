@@ -1,7 +1,7 @@
 part of stagexl;
 
-abstract class InteractiveObject extends DisplayObject
-{
+abstract class InteractiveObject extends DisplayObject {
+  
   bool doubleClickEnabled = false;
   bool mouseEnabled = true;
   bool tabEnabled = true;

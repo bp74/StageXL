@@ -1,7 +1,7 @@
 part of stagexl;
 
-class TimeGauge extends Gauge implements Animatable
-{
+class TimeGauge extends Gauge implements Animatable {
+  
   static const String TIME_OUT = 'TIME_OUT';
   static const String TIME_SHORT = 'TIME_SHORT';
 
@@ -12,8 +12,8 @@ class TimeGauge extends Gauge implements Animatable
   Map<String, num> _alarms;
   bool _alarmsEnabled = true;
 
-  TimeGauge(num time, BitmapData bitmapData, [String direction = Gauge.DIRECTION_LEFT]) : super(bitmapData, direction)
-  {
+  TimeGauge(num time, BitmapData bitmapData, [String direction = Gauge.DIRECTION_LEFT]) : super(bitmapData, direction) {
+    
     if (time <= 0)
       throw new ArgumentError('Time must be greater than zero');
 
@@ -24,10 +24,10 @@ class TimeGauge extends Gauge implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  bool advanceTime(num time)
-  {
-    if (_isStarted && ratio > 0.0)
-    {
+  bool advanceTime(num time) {
+    
+    if (_isStarted && ratio > 0.0) {
+      
       ratio = ratio - time / totalTime;
 
       if (ratio == 0.0)
@@ -39,18 +39,16 @@ class TimeGauge extends Gauge implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  void start()
-  {
+  void start() {
     _isStarted = true;
   }
 
-  void pause()
-  {
+  void pause() {
     _isStarted = false;
   }
 
-  void reset([num time = 0.0])
-  {
+  void reset([num time = 0.0]) {
+    
     pause();
 
     time = max(time, 0.0);
@@ -63,18 +61,18 @@ class TimeGauge extends Gauge implements Animatable
     ratio = 1.0;
   }
 
-  void addAlarm(String name, num restTime)
-  {
+  void addAlarm(String name, num restTime) {
+    
     _alarms[name] = restTime / totalTime;
   }
 
-  void removeAlarm(String name)
-  {
+  void removeAlarm(String name) {
+    
     _alarms.remove(name);
   }
 
-  void clearAlarms()
-  {
+  void clearAlarms() {
+    
     _alarms = new Map<String, num>();
     addAlarm(TimeGauge.TIME_OUT, 0);
   }
@@ -96,13 +94,13 @@ class TimeGauge extends Gauge implements Animatable
   num get elapsedRatio => 1.0 - ratio;
   void set elapsedRatio(num value) { ratio = 1.0 - value; }
 
-  void set ratio(num value)
-  {
+  void set ratio(num value) {
+    
     num oldRatio = ratio;
     super.ratio = value;
 
-    if (_alarmsEnabled)
-    {
+    if (_alarmsEnabled) {
+      
       _alarms.forEach((alarmName, alarmRatio) {
         if (alarmRatio < oldRatio && alarmRatio >= ratio)
           dispatchEvent(new Event(alarmName));

@@ -1,7 +1,7 @@
 part of stagexl;
 
-class RenderState
-{
+class RenderState {
+  
   final CanvasRenderingContext2D _context;
   final List<Matrix> _matrices = new List<Matrix>(100);
   final List<double> _alphas = new List<double>(100);

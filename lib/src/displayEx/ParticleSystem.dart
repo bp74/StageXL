@@ -7,14 +7,13 @@ part of stagexl;
 // http://wiki.starling-framework.org/extensions/particlesystem
 //-------------------------------------------------------------------------------------------------
 
-class _ParticleColor
-{
+class _ParticleColor {
+  
   num red, green, blue, alpha;
 
   _ParticleColor([this.red = 0.0, this.green = 0.0, this.blue = 0.0, this.alpha = 0.0]);
 
-  _ParticleColor.fromJSON(Map json)
-  {
+  _ParticleColor.fromJSON(Map json) {
     this.red = json["red"] as num;
     this.green = json["green"] as num;
     this.blue = json["blue"] as num;
@@ -22,8 +21,7 @@ class _ParticleColor
   }
 }
 
-class _Particle
-{
+class _Particle {
   num currentTime;
   num totalTime;
   num x, y;
@@ -38,8 +36,8 @@ class _Particle
   //_ParticleColor color, colorDelta;
 }
 
-class ParticleSystem extends DisplayObject implements Animatable
-{
+class ParticleSystem extends DisplayObject implements Animatable {
+  
   final Random _random = new Random();
   final List<_Particle> _particles = new List<_Particle>();
   
@@ -80,8 +78,8 @@ class ParticleSystem extends DisplayObject implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  ParticleSystem(String jsonConfig)
-  {
+  ParticleSystem(String jsonConfig) {
+    
     _emissionTime = 0.0;
     _frameTime = 0.0;
     _particleCount = 0;
@@ -128,8 +126,8 @@ class ParticleSystem extends DisplayObject implements Animatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _drawParticleCanvas()
-  {
+  void _drawParticleCanvas() {
+    
     _particleCanvas = new CanvasElement(width: 256, height: 256);
     var context = _particleCanvas.context2d;
 
@@ -169,8 +167,8 @@ class ParticleSystem extends DisplayObject implements Animatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _initParticle(_Particle particle)
-  {
+  void _initParticle(_Particle particle) {
+    
     particle.currentTime = 0.0;
     particle.totalTime = lifespan + lifespanVariance * (_random.nextDouble() * 2.0 - 1.0);
 
@@ -219,14 +217,14 @@ class ParticleSystem extends DisplayObject implements Animatable
 
   //-------------------------------------------------------------------------------------------------
 
-  void _advanceParticle(_Particle particle, num passedTime)
-  {
+  void _advanceParticle(_Particle particle, num passedTime) {
+    
     num restTime = particle.totalTime - particle.currentTime;
     passedTime = (restTime > passedTime) ? passedTime : restTime;
     particle.currentTime += passedTime;
 
-    if (emitterType == EMITTER_TYPE_RADIAL)
-    {
+    if (emitterType == EMITTER_TYPE_RADIAL) {
+      
       particle.emitRotation += particle.emitRotationDelta * passedTime;
       particle.emitRadius   -= particle.emitRadiusDelta   * passedTime;
       particle.x = emitterX - cos(particle.emitRotation) * particle.emitRadius;
@@ -234,9 +232,9 @@ class ParticleSystem extends DisplayObject implements Animatable
 
       if (particle.emitRadius < minRadius)
         particle.currentTime = particle.totalTime;
-    }
-    else
-    {
+      
+    } else {
+      
       num distanceX = particle.x - particle.startX;
       num distanceY = particle.y - particle.startY;
       num distanceScalar = sqrt(distanceX * distanceX + distanceY * distanceY);
@@ -265,13 +263,13 @@ class ParticleSystem extends DisplayObject implements Animatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void start([num duration = double.INFINITY])
-  {
+  void start([num duration = double.INFINITY]) {
+    
     _emissionTime = duration;
   }
 
-  void stop(bool clear)
-  {
+  void stop(bool clear) {
+    
     _emissionTime = 0.0;
 
     if (clear)
@@ -281,24 +279,24 @@ class ParticleSystem extends DisplayObject implements Animatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  bool advanceTime(num passedTime)
-  {
+  bool advanceTime(num passedTime) {
+    
     int particleIndex = 0;
 
     //--------------------------------------------------------
     // advance existing particles
 
-    while (particleIndex < _particleCount)
-    {
+    while (particleIndex < _particleCount) {
+      
       _Particle particle = _particles[particleIndex];
 
-      if (particle.currentTime < particle.totalTime)
-      {
+      if (particle.currentTime < particle.totalTime) {
+        
         _advanceParticle(particle, passedTime);
         particleIndex++;
-      }
-      else
-      {
+        
+      } else {
+        
         var swapParticle = _particles[_particleCount - 1];
         _particles[_particleCount - 1] = particle;
         _particles[particleIndex] = swapParticle;
@@ -309,15 +307,15 @@ class ParticleSystem extends DisplayObject implements Animatable
     //--------------------------------------------------------
     // create and advance new particles
 
-    if (_emissionTime > 0.0)
-    {
+    if (_emissionTime > 0.0) {
+      
       num timeBetweenParticles = lifespan / maxNumParticles;
       _frameTime += passedTime;
 
-      while (_frameTime > 0.0)
-      {
-        if (_particleCount < maxNumParticles)
-        {
+      while (_frameTime > 0.0) {
+        
+        if (_particleCount < maxNumParticles) {
+          
           if (_particleCount >= _particles.length)
             _particles.add(new _Particle());
 
@@ -340,15 +338,15 @@ class ParticleSystem extends DisplayObject implements Animatable
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void render(RenderState renderState)
-  {
+  void render(RenderState renderState) {
+    
     var context = renderState.context;
 
     context.save();
     context.globalCompositeOperation = "lighter";
 
-    for(int i = 0; i < _particleCount; i++)
-    {
+    for(int i = 0; i < _particleCount; i++) {
+      
       var particle = _particles[i];
 
       var time = ((particle.currentTime / particle.totalTime) * 63).toInt();

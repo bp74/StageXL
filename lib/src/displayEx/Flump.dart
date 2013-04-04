@@ -3,16 +3,16 @@ part of stagexl;
 // Flump converts Flash keyframe animations into texture atlases and JSON.
 // http://threerings.github.com/flump/
 
-class FlumpLibrary 
-{
+class FlumpLibrary {
+  
   String _url;
   String _md5;
   int _frameRate;
   final List<_FlumpMovieData> _movieDatas = new List<_FlumpMovieData>();
   final List<_FlumpTextureGroup> _textureGroups = new List<_FlumpTextureGroup>();
   
-  static Future<FlumpLibrary> load(String url)
-  {
+  static Future<FlumpLibrary> load(String url) {
+    
     var completer = new Completer<FlumpLibrary>();
   
     HttpRequest.getString(url).then((flumpJson) {
@@ -79,8 +79,8 @@ class FlumpLibrary
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class FlumpMovie extends DisplayObject implements Animatable
-{
+class FlumpMovie extends DisplayObject implements Animatable {
+  
   final FlumpLibrary _flumpLibrary;
   final _FlumpMovieData _flumpMovieData;
   final List<_FlumpMovieLayer> _flumpMovieLayers = new List<_FlumpMovieLayer>();
@@ -131,8 +131,8 @@ class FlumpMovie extends DisplayObject implements Animatable
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _FlumpMovieLayer extends DisplayObject implements Animatable
-{
+class _FlumpMovieLayer extends DisplayObject implements Animatable {
+  
   final FlumpLibrary flumpLibrary;
   final _FlumpLayerData flumpLayerData;
   final Map<String, BitmapDrawable> symbols = new Map<String, BitmapDrawable>();
@@ -297,8 +297,8 @@ class _FlumpLayerData {
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _FlumpKeyframeData
-{
+class _FlumpKeyframeData {
+  
   int index;
   int duration;
   String ref;           
@@ -342,8 +342,8 @@ class _FlumpKeyframeData
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _FlumpTextureGroup
-{
+class _FlumpTextureGroup {
+  
   FlumpLibrary flumpLibrary;
   Map<String, _FlumpTexture> flumpTextures;
   Completer completer;
@@ -394,6 +394,7 @@ class _FlumpTextureGroup
 //-----------------------------------------------------------------------------
 
 class _FlumpTexture implements BitmapDrawable {
+  
   num x, y, width, height;
   num originX, originY;
   ImageElement imageElement;

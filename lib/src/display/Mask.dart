@@ -1,27 +1,24 @@
 part of stagexl;
 
-class Mask
-{
+class Mask {
+  
   int _type;
 
   Rectangle _rectangle;
   Circle _circle;
   List<Point> _points;
 
-  Mask.rectangle(num x, num y, num width, num height)
-  {
+  Mask.rectangle(num x, num y, num width, num height) {
     _type = 0;
     _rectangle = new Rectangle(x, y, width, height);
   }
 
-  Mask.circle(num x, num y, num radius)
-  {
+  Mask.circle(num x, num y, num radius) {
     _type = 1;
     _circle = new Circle(x, y, radius);
   }
 
-  Mask.custom(List<Point> points)
-  {
+  Mask.custom(List<Point> points) {
     _type = 2;
     _points = points;
 
@@ -32,8 +29,8 @@ class Mask
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void render(RenderState renderState)
-  {
+  void render(RenderState renderState) {
+    
     var context = renderState.context;
 
     context.beginPath();
