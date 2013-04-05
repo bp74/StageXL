@@ -1,15 +1,15 @@
 part of stagexl;
 
-class AudioElementSoundChannel extends SoundChannel
-{
+class AudioElementSoundChannel extends SoundChannel {
+  
   AudioElementSound _audioElementSound;
   AudioElement _audio;
 
   bool _loop;
   SoundTransform _soundTransform;
 
-  AudioElementSoundChannel(AudioElementSound audioElementSound, bool loop, SoundTransform soundTransform)
-  {
+  AudioElementSoundChannel(AudioElementSound audioElementSound, bool loop, SoundTransform soundTransform) {
+    
     _audioElementSound = audioElementSound;
     _loop = loop;
     _soundTransform = soundTransform;
@@ -27,8 +27,8 @@ class AudioElementSoundChannel extends SoundChannel
 
   SoundTransform get soundTransform => _soundTransform;
 
-  void set soundTransform(SoundTransform value)
-  {
+  void set soundTransform(SoundTransform value) {
+    
     _soundTransform = value;
 
     if (_audio != null)
@@ -37,15 +37,14 @@ class AudioElementSoundChannel extends SoundChannel
 
   //-------------------------------------------------------------------------------------------------
 
-  void stop()
-  {
-    if (_audio != null)
-    {
+  void stop() {
+    
+    if (_audio != null) {
+      
       if (_audio.ended == false)
         _audio.pause();
 
       _audioElementSound._releaseAudioElement(this);
-
       _audio = null;
     }
   }

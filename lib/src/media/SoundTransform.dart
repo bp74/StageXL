@@ -1,7 +1,7 @@
 part of stagexl;
 
-class SoundTransform
-{
+class SoundTransform {
+  
   num volume;
   num pan;
   num leftToLeft = 1;

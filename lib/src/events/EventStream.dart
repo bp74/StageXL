@@ -1,7 +1,7 @@
 part of stagexl;
 
-class _EventStream<T extends Event> extends Stream<T> 
-{
+class _EventStream<T extends Event> extends Stream<T> {
+  
   final EventDispatcher _target;
   final String _eventType;
   final bool _useCapture;

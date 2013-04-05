@@ -1,6 +1,7 @@
 part of stagexl;
 
 class ColorMatrixFilter extends BitmapFilter {
+  
   final List<num> _matrix;
 
   ColorMatrixFilter(List<num> matrix) :

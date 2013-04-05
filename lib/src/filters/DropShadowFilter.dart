@@ -1,7 +1,7 @@
 part of stagexl;
 
-class DropShadowFilter extends BitmapFilter
-{
+class DropShadowFilter extends BitmapFilter {
+  
   num distance;
   num angle;
   int color;
@@ -13,8 +13,10 @@ class DropShadowFilter extends BitmapFilter
   bool knockout;
   bool hideObject;
 
-  DropShadowFilter([this.distance = 4.0, this.angle = PI / 4, this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4, this.strength = 1.0, this.inner = false, this.knockout = false, this.hideObject = false])
-  {
+  DropShadowFilter([this.distance = 4.0, this.angle = PI / 4, this.color = 0, this.alpha = 1.0, 
+      this.blurX = 4, this.blurY = 4, this.strength = 1.0, this.inner = false, 
+      this.knockout = false, this.hideObject = false]) {
+
     if (blurX < 1 || blurY < 1)
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
 
@@ -25,15 +27,15 @@ class DropShadowFilter extends BitmapFilter
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  BitmapFilter clone()
-  {
+  BitmapFilter clone() {
+    
     return new DropShadowFilter(distance, angle, color, alpha, blurX, blurY, strength, inner, knockout, hideObject);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
-  {
+  void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
+    
     var sourceContext = sourceBitmapData._getContext();
     var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
     var sourceData = sourceImageData.data;
@@ -153,8 +155,8 @@ class DropShadowFilter extends BitmapFilter
 
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBounds()
-  {
+  Rectangle getBounds() {
+    
     var dx = (this.distance * cos(this.angle)).round();
     var dy = (this.distance * sin(this.angle)).round();
     return new Rectangle(dx - blurX, dx - blurY, dx + 2 * blurX, dy + 2 * blurY);

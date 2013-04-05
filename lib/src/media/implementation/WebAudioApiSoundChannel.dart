@@ -1,7 +1,7 @@
 part of stagexl;
 
-class WebAudioApiSoundChannel extends SoundChannel
-{
+class WebAudioApiSoundChannel extends SoundChannel {
+  
   WebAudioApiSound _webAudioApiSound;
   SoundTransform _soundTransform;
   bool _loop;
@@ -9,8 +9,8 @@ class WebAudioApiSoundChannel extends SoundChannel
   GainNode _gainNode;
   AudioBufferSourceNode _sourceNode;
 
-  WebAudioApiSoundChannel(WebAudioApiSound webAudioApiSound, bool loop, SoundTransform soundTransform)
-  {
+  WebAudioApiSoundChannel(WebAudioApiSound webAudioApiSound, bool loop, SoundTransform soundTransform) {
+    
     _webAudioApiSound = webAudioApiSound;
     _loop = loop;
     _soundTransform = soundTransform;
@@ -32,16 +32,14 @@ class WebAudioApiSoundChannel extends SoundChannel
 
   SoundTransform get soundTransform => _soundTransform;
 
-  void set soundTransform(SoundTransform value)
-  {
+  void set soundTransform(SoundTransform value) {
     _soundTransform = value;
     _gainNode.gain.value =  (_soundTransform != null) ? pow(_soundTransform.volume , 2) : 1;
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void stop()
-  {
+  void stop() {
     _sourceNode.stop(0);
   }
 }

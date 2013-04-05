@@ -1,7 +1,7 @@
 part of stagexl;
 
-class MouseEvent extends Event
-{
+class MouseEvent extends Event {
+  
   static const String CLICK = "click";
   static const String DOUBLE_CLICK = "doubleClick";
 
@@ -39,16 +39,16 @@ class MouseEvent extends Event
   int _deltaX;
   int _deltaY;
 
-  MouseEvent(String type, [bool bubbles = false]):super(type, bubbles)
-  {
+  MouseEvent(String type, [bool bubbles = false]):super(type, bubbles) {
+    
     _reset(type, bubbles);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _reset(String type, [bool bubbles = false])
-  {
+  void _reset(String type, [bool bubbles = false]) {
+    
     super._reset(type, bubbles);
 
     _localX = _localY = 0;

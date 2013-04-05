@@ -1,7 +1,7 @@
 part of stagexl;
 
-class TextEvent extends Event
-{
+class TextEvent extends Event {
+  
   static const String LINK = "link";
   static const String TEXT_INPUT = "textInput";
 
@@ -10,10 +10,7 @@ class TextEvent extends Event
 
   String _text = "";
 
-  TextEvent(String type, [bool bubbles = false]):super(type, bubbles)
-  {
-
-  }
+  TextEvent(String type, [bool bubbles = false]) : super(type, bubbles);
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

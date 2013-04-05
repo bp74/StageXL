@@ -1,7 +1,7 @@
 part of stagexl;
 
-class Circle
-{
+class Circle {
+  
   num x;
   num y;
   num radius;

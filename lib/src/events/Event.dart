@@ -1,7 +1,7 @@
 part of stagexl;
 
-class Event
-{
+class Event {
+  
   // DiplayObject events
   static const String ADDED = "added";
   static const String ADDED_TO_STAGE = "addedToStage";
@@ -33,16 +33,14 @@ class Event
   bool _stopsPropagation;
   bool _stopsImmediatePropagation;
 
-  Event(String type, [bool bubbles = false])
-  {
+  Event(String type, [bool bubbles = false]) {
     _reset(type, bubbles);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _reset(String type, [bool bubbles = false])
-  {
+  void _reset(String type, [bool bubbles = false]) {
     _type = type;
     _bubbles = bubbles;
     _eventPhase = EventPhase.AT_TARGET;
@@ -55,13 +53,11 @@ class Event
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void stopPropagation()
-  {
+  void stopPropagation() {
     _stopsPropagation = true;
   }
 
-  void stopImmediatePropagation()
-  {
+  void stopImmediatePropagation() {
     _stopsPropagation = true;
     _stopsImmediatePropagation = true;
   }

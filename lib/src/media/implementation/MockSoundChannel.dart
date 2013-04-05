@@ -1,7 +1,7 @@
 part of stagexl;
 
-class MockSoundChannel extends SoundChannel
-{
+class MockSoundChannel extends SoundChannel {
+  
   bool _loop;
   SoundTransform _soundTransform;
 

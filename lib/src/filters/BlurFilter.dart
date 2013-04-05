@@ -1,7 +1,7 @@
 part of stagexl;
 
-class BlurFilter extends BitmapFilter
-{
+class BlurFilter extends BitmapFilter {
+  
   int blurX;
   int blurY;
 
@@ -12,8 +12,8 @@ class BlurFilter extends BitmapFilter
   // http://free.pages.at/easyfilter/gauss.pdf
   //-------------------------------------------------------------------------------------------------
 
-  BlurFilter([this.blurX = 4, this.blurY = 4])
-  {
+  BlurFilter([this.blurX = 4, this.blurY = 4]) {
+    
     if (blurX < 1 || blurY < 1)
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
 
@@ -21,15 +21,15 @@ class BlurFilter extends BitmapFilter
       throw new ArgumentError("Error #9004: The maximum blur size is 128.");
   }
 
-  BitmapFilter clone()
-  {
+  BitmapFilter clone() {
+    
     return new BlurFilter(blurX, blurY);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
-  {
+  void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
+    
     var sourceContext = sourceBitmapData._getContext();
     var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
     var sourceData = sourceImageData.data;
@@ -119,8 +119,8 @@ class BlurFilter extends BitmapFilter
 
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBounds()
-  {
+  Rectangle getBounds() {
+    
     return new Rectangle(-blurX, -blurY, 2 * blurX, 2 * blurY);
   }
 

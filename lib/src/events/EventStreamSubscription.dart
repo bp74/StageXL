@@ -2,8 +2,8 @@ part of stagexl;
 
 typedef void _EventListener<T extends Event>(T event);
 
-class _EventStreamSubscription<T extends Event> extends StreamSubscription<T> 
-{
+class _EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
+  
   _EventStream _eventStream;
   _EventListener<T> _onData;
   int _pauseCount;
@@ -18,8 +18,7 @@ class _EventStreamSubscription<T extends Event> extends StreamSubscription<T>
   
   void cancel() {
     
-    if (_canceled == false) 
-    {
+    if (_canceled == false) {
       _eventStream._onSubscriptionCancel(this);
       _canceled = true;
       _onData = null;
@@ -46,14 +45,16 @@ class _EventStreamSubscription<T extends Event> extends StreamSubscription<T>
     
     _pauseCount++;
 
-    if (resumeSignal != null)
+    if (resumeSignal != null) {
       resumeSignal.whenComplete(resume);
+    }
   }
 
   void resume()  {
     
-    if (_paused == false)
+    if (_paused == false) {
       throw new StateError("Subscription is not paused.");
+    }
     
     _pauseCount--;
   }

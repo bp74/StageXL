@@ -1,11 +1,11 @@
 part of stagexl;
 
-class WebAudioApiSound extends Sound
-{
+class WebAudioApiSound extends Sound {
+  
   AudioBuffer _buffer;
 
-  WebAudioApiSound()
-  {
+  WebAudioApiSound() {
+    
     if (SoundMixer._audioContext == null)
       throw new UnsupportedError("This browser does not support Web Audio API.");
   }
@@ -13,8 +13,8 @@ class WebAudioApiSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> load(String url)
-  {
+  static Future<Sound> load(String url) {
+    
     var sound = new WebAudioApiSound();
     var soundUrl = Sound.adaptAudioUrl(url);
     var loadCompleter = new Completer<Sound>();
@@ -43,13 +43,13 @@ class WebAudioApiSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get length
-  {
+  num get length {
+    
     return _buffer.duration;
   }
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform])
-  {
+  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
+    
     if (soundTransform == null)
       soundTransform = new SoundTransform();
 

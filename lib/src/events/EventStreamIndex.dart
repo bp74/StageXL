@@ -1,7 +1,7 @@
 part of stagexl;
 
-class _EventStreamIndex<T extends Event>
-{
+class _EventStreamIndex<T extends Event> {
+  
   final List<_EventStream> _eventStreams = new List<_EventStream>();
   int _eventStreamsCount = 0;
 
@@ -11,14 +11,15 @@ class _EventStreamIndex<T extends Event>
   
   void _addEventStream(_EventStream eventStream) {
 
-    for(int i = 0; i < _eventStreamsCount; i++)
-      if (_eventStreams[i] == eventStream)
-        return;
-     
-    if (_eventStreamsCount == _eventStreams.length)
+    for(int i = 0; i < _eventStreamsCount; i++) {
+      if (_eventStreams[i] == eventStream) return;
+    }
+
+    if (_eventStreamsCount == _eventStreams.length) {
       _eventStreams.add(eventStream);
-    else
+    } else {
       _eventStreams[_eventStreamsCount] = eventStream;
+    }
     
     _eventStreamsCount++;
   }

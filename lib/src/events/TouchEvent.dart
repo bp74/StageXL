@@ -1,7 +1,7 @@
 part of stagexl;
 
-class TouchEvent extends Event
-{
+class TouchEvent extends Event {
+  
   static const String TOUCH_BEGIN = "touchBegin";
   static const String TOUCH_END = "touchEnd";
   static const String TOUCH_CANCEL = "touchCancel";
@@ -32,16 +32,16 @@ class TouchEvent extends Event
   int _sizeX;
   int _sizeY;
 
-  TouchEvent(String type, [bool bubbles = false]):super(type, bubbles)
-  {
+  TouchEvent(String type, [bool bubbles = false]):super(type, bubbles) {
+    
     _reset(type, bubbles);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _reset(String type, [bool bubbles = false])
-  {
+  void _reset(String type, [bool bubbles = false]) {
+    
     super._reset(type, bubbles);
 
     _touchPointID = 0;

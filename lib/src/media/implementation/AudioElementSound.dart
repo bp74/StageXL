@@ -1,13 +1,13 @@
 part of stagexl;
 
-class AudioElementSound extends Sound
-{
+class AudioElementSound extends Sound {
+  
   AudioElement _audio;
   List<AudioElement> _audioPool;
   List<AudioElementSoundChannel> _soundChannels;
 
-  AudioElementSound()
-  {
+  AudioElementSound() {
+    
     _soundChannels = new List<AudioElementSoundChannel>();
 
     _audio = new AudioElement();
@@ -22,8 +22,8 @@ class AudioElementSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> load(String url)
-  {
+  static Future<Sound> load(String url) {
+    
     var sound = new AudioElementSound();
     var audio = sound._audio;
     var loadCompleter = new Completer<Sound>();
@@ -55,13 +55,12 @@ class AudioElementSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get length
-  {
+  num get length {
     return _audio.duration;
   }
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform])
-  {
+  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
+    
     if (soundTransform == null)
       soundTransform = new SoundTransform();
 
@@ -71,8 +70,8 @@ class AudioElementSound extends Sound
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  AudioElement _getAudioElement(AudioElementSoundChannel soundChannel)
-  {
+  AudioElement _getAudioElement(AudioElementSoundChannel soundChannel) {
+    
     AudioElement audio;
 
     if (_audioPool.length == 0) {
@@ -87,8 +86,8 @@ class AudioElementSound extends Sound
     return audio;
   }
 
-  void _releaseAudioElement(AudioElementSoundChannel soundChannel)
-  {
+  void _releaseAudioElement(AudioElementSoundChannel soundChannel) {
+    
     AudioElement audio = soundChannel._audio;
     int index = _soundChannels.indexOf(soundChannel);
 
@@ -99,8 +98,8 @@ class AudioElementSound extends Sound
       _audio.currentTime = 0;
   }
 
-  void _onAudioEnded(event)
-  {
+  void _onAudioEnded(html.Event event) {
+    
     AudioElement audio = event.target;
     AudioElementSoundChannel soundChannel = null;
 

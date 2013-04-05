@@ -1,7 +1,7 @@
 part of stagexl;
 
-class KeyboardEvent extends Event
-{
+class KeyboardEvent extends Event {
+  
   static const String KEY_DOWN = "keyDown";
   static const String KEY_UP = "keyUp";
 
@@ -18,16 +18,16 @@ class KeyboardEvent extends Event
   int _keyCode;
   int _keyLocation;
 
-  KeyboardEvent(String type, [bool bubbles = false]):super(type, bubbles)
-  {
+  KeyboardEvent(String type, [bool bubbles = false]):super(type, bubbles) {
+    
     _reset(type, bubbles);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _reset(String type, [bool bubbles = false])
-  {
+  void _reset(String type, [bool bubbles = false]) {
+    
     super._reset(type, bubbles);
 
     _altKey = false;

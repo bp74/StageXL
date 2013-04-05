@@ -1,7 +1,7 @@
 part of stagexl;
 
-abstract class Sound
-{
+abstract class Sound {
+  
   static Future<Sound> load(String url) {
     
     var engine = SoundMixer.engine;
