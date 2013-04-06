@@ -16,35 +16,31 @@ class TextureAtlas {
       
       case TextureAtlasFormat.JSON:
       case TextureAtlasFormat.JSONARRAY:
-
-        void parseFrame(String filename, Map frame) {
-          var frameName = _getFilenameWithoutExtension(filename);
-          var taf = new TextureAtlasFrame(frameName, textureAtlas);
-          taf._frameX = frame["frame"]["x"].toInt();
-          taf._frameY = frame["frame"]["y"].toInt();
-          taf._frameWidth = frame["frame"]["w"].toInt();
-          taf._frameHeight = frame["frame"]["h"].toInt();
-          taf._offsetX = frame["spriteSourceSize"]["x"].toInt();
-          taf._offsetY = frame["spriteSourceSize"]["y"].toInt();
-          taf._originalWidth = frame["sourceSize"]["w"].toInt();
-          taf._originalHeight = frame["sourceSize"]["h"].toInt();
-          taf._rotated = frame["rotated"] as bool;
-          textureAtlas._frames.add(taf);
-        }
         
         HttpRequest.getString(url).then((textureAtlasJson) {
         
           var data = json.parse(textureAtlasJson);
           var frames = data["frames"];
           var meta = data["meta"];
-
-          if (frames is List)
-            for(var frame in frames)
-              parseFrame(frame["filename"], frame);
-
-          if (frames is Map)
-            for(String filename in frames.keys)
-               parseFrame(filename, frames[filename]);
+          
+          if (frames is List) {
+            for(var frame in frames) {
+              var frameMap = frame as Map;
+              var fileName = frameMap["filename"] as String;
+              var frameName = _getFilenameWithoutExtension(fileName);
+              var taf = new TextureAtlasFrame.fromJson(textureAtlas, frameName, frameMap);
+              textureAtlas._frames.add(taf);
+            }
+          }
+          
+          if (frames is Map) {
+            for(String fileName in frames.keys) {
+              var frameMap = frames[fileName] as Map;
+              var frameName = _getFilenameWithoutExtension(fileName);
+              var taf = new TextureAtlasFrame.fromJson(textureAtlas, frameName, frameMap);
+              textureAtlas._frames.add(taf);
+            }
+          }
 
           textureAtlas._imageElement
             ..onLoad.listen((e) => completer.complete(textureAtlas))
@@ -72,16 +68,11 @@ class TextureAtlas {
 
   BitmapData getBitmapData(String name) {
     
-    BitmapData bitmapData;
-
-    for(int i = 0; i < _frames.length && bitmapData == null; i++)
+    for(int i = 0; i < _frames.length; i++)
       if (_frames[i].name == name)
-        bitmapData = new BitmapData.fromTextureAtlasFrame(_frames[i]);
+        return new BitmapData.fromTextureAtlasFrame(_frames[i]);
 
-    if (bitmapData == null)
-      throw new ArgumentError("TextureAtlasFrame not found: '$name'");
-
-    return bitmapData;
+    throw new ArgumentError("TextureAtlasFrame not found: '$name'");
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -91,7 +82,7 @@ class TextureAtlas {
     var bitmapDataList = new List<BitmapData>();
 
     for(int i = 0; i < _frames.length; i++)
-      if (_frames[i].name.indexOf(namePrefix) == 0)
+      if (_frames[i].name.startsWith(namePrefix))
         bitmapDataList.add(new BitmapData.fromTextureAtlasFrame(_frames[i]));
 
     return bitmapDataList;
@@ -100,7 +91,8 @@ class TextureAtlas {
   //-------------------------------------------------------------------------------------------------
 
   List<String> get frameNames {
-    return _frames.map((f) => f.name).toList();
+    
+    return _frames.map((f) => f.name).toList(growable: false);
   }
 
 }
