@@ -91,6 +91,7 @@ part 'src/media/implementation/WebAudioApiSoundChannel.dart';
 part 'src/media/implementation/MockSound.dart';
 part 'src/media/implementation/MockSoundChannel.dart';
 
+part 'src/text/FontStyleMetrics.dart'
 part 'src/text/GridFitType.dart';
 part 'src/text/TextField.dart';
 part 'src/text/TextFieldAutoSize.dart';
