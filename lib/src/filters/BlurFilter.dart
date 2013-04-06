@@ -8,8 +8,8 @@ class BlurFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
   // Credits to Alois Zingl, Vienna, Austria.
   // Extended Binomial Filter for Fast Gaussian Blur
-  // http://free.pages.at/easyfilter/gauss.html
-  // http://free.pages.at/easyfilter/gauss.pdf
+  // http://members.chello.at/easyfilter/gauss.html
+  // http://members.chello.at/easyfilter/gauss.pdf
   //-------------------------------------------------------------------------------------------------
 
   BlurFilter([this.blurX = 4, this.blurY = 4]) {
