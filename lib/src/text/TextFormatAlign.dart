@@ -1,7 +1,7 @@
 part of stagexl;
 
-class TextFormatAlign
-{
+class TextFormatAlign {
+  
   static const String CENTER = "center";
   static const String END = "end";
   static const String JUSTIFY = "justify";

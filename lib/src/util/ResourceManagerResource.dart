@@ -1,6 +1,7 @@
 part of stagexl;
 
 class ResourceManagerResource {
+  
   String _kind;
   String _name;
   String _url;

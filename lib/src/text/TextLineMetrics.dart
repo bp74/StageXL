@@ -1,7 +1,7 @@
 part of stagexl;
 
-class TextLineMetrics
-{
+class TextLineMetrics {
+  
   num ascent;
   num descent;
   num height;

@@ -1,7 +1,7 @@
 part of stagexl;
 
-class TextFormat
-{
+class TextFormat {
+  
   String font;
   int size;
   int color;

@@ -1,14 +1,14 @@
 part of stagexl;
 
-class MultitouchInputMode
-{
+class MultitouchInputMode {
+  
   static const String GESTURE = "gesture";
   static const String NONE = "none";
   static const String TOUCH_POINT = "touchPoint";
 }
 
-class Multitouch
-{
+class Multitouch {
+  
   static bool _initialized = false;
   static bool _supportsGestureEvents = false;
   static bool _supportsTouchEvents = html.TouchEvent.supported;
@@ -30,9 +30,10 @@ class Multitouch
   //------------------------------------------------------------------
 
   static String get inputMode => _inputMode;
+  
   static set inputMode(String value) {
     _inputMode = value;
     _inputModeChangedEvent.add(_inputMode);
   }
-
+  
 }

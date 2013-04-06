@@ -41,11 +41,11 @@ class Mouse {
     String cursor = mouseCursor;
     String style = "auto";
 
-    if (_customCursor != MouseCursor.AUTO)
+    if (_customCursor != MouseCursor.AUTO) {
       cursor = _customCursor;
-
-    switch(cursor)
-    {
+    }
+    
+    switch(cursor) {
       case MouseCursor.AUTO: style = "auto"; break;
       case MouseCursor.ARROW: style = "default"; break;
       case MouseCursor.BUTTON: style = "pointer"; break;
@@ -56,9 +56,10 @@ class Mouse {
 
     // The cursor style "none" is not standardized, but works quite well.
 
-    if (_isCursorHidden)
+    if (_isCursorHidden) {
       style = "none";
-
+    }
+    
     return style;
   }
 
