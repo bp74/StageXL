@@ -60,7 +60,7 @@ num _ensureNum(num value) {
 
 String _ensureString(String value) {
   
-  if (value is string) {
+  if (value is String) {
     return value;
   } else {
     throw new ArgumentError("The supplied value ($value) is not a string.");
