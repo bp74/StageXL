@@ -393,8 +393,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
     
     _cache = new BitmapData(width, height, true, 0x00000000);
-    _cache._frameOffsetX = x;
-    _cache._frameOffsetY = y;
+    _cache._destinationX = x;
+    _cache._destinationY = y;
     _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y));
     
     if (debugBorder) {
@@ -408,7 +408,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   void refreshCache() {
     if (_cache != null) {
       _cache.clear();
-      _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - _cache._frameOffsetX, - _cache._frameOffsetY));
+      _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - _cache._destinationX, - _cache._destinationY));
     }
   }
   
