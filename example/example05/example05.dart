@@ -42,17 +42,17 @@ void main()
     // So we create our own :) Let's move the world ...
 
     Tween tweenDown = new Tween(world, 2.0, TransitionFunction.easeOutBounce);
-    tweenDown.animate("x", 700);
-    tweenDown.animate("y", 500);
+    tweenDown.animate.x.to(700);
+    tweenDown.animate.y.to(500);
     tweenDown.delay = 1.0;
 
     Tween tweenUp = new Tween(world, 2.0, TransitionFunction.easeOutBounce);
-    tweenUp.animate("x", 100);
-    tweenUp.animate("y", 100);
+    tweenUp.animate.x.to(100);
+    tweenUp.animate.y.to(100);
     tweenUp.delay = 4.0;
 
     Tween tweenRotation = new Tween(world, 6.0, TransitionFunction.easeInOutElastic);
-    tweenRotation.animate("rotation", PI * 4.0);
+    tweenRotation.animate.rotation.to(PI * 4.0);
     tweenRotation.delay = 7.0;
 
     renderLoop.juggler.add(tweenDown);
