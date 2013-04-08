@@ -12,7 +12,7 @@ class Transition extends Animatable {
   
   final num _startValue;
   final num _targetValue;
-  final Function _transitionFunction;
+  final EaseFunction _transitionFunction;
   
   num _currentValue;
   Function _onStart;
@@ -25,7 +25,7 @@ class Transition extends Animatable {
   bool _roundToInt;
   bool _started;
 
-  Transition(num startValue, num targetValue, num time, [num transitionFunction(num ratio)]) :
+  Transition(num startValue, num targetValue, num time, [EaseFunction transitionFunction]) :
     
     _startValue = startValue,
     _targetValue = targetValue,

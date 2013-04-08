@@ -7,8 +7,8 @@ import 'package:stagexl/stagexl.dart';
 
 part 'world.dart';
 
-void main()
-{
+void main() {
+  
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
@@ -18,6 +18,8 @@ void main()
   RenderLoop renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
+  Juggler juggler = renderLoop.juggler;
+  
   //------------------------------------------------------------------
   // Use the Resource class to load some Bitmaps
   //------------------------------------------------------------------
@@ -27,8 +29,8 @@ void main()
     ..addBitmapData("sun", "../common/images/Sun.png")
     ..addBitmapData("tree", "../common/images/Tree.png");
 
-  resourceManager.load().then((result)
-  {
+  resourceManager.load().then((result) {
+    
     // Let's create a new World
 
     World world = new World(resourceManager);
@@ -41,23 +43,19 @@ void main()
     // Flash does not support programmable animations out of the box.
     // So we create our own :) Let's move the world ...
 
-    Tween tweenDown = new Tween(world, 2.0, TransitionFunction.easeOutBounce);
-    tweenDown.animate.x.to(700);
-    tweenDown.animate.y.to(500);
-    tweenDown.delay = 1.0;
+    juggler.tween(world, 2.0, TransitionFunction.easeOutBounce)
+      ..animate.x.to(700)
+      ..animate.y.to(500)
+      ..delay = 1.0;
 
-    Tween tweenUp = new Tween(world, 2.0, TransitionFunction.easeOutBounce);
-    tweenUp.animate.x.to(100);
-    tweenUp.animate.y.to(100);
-    tweenUp.delay = 4.0;
+    juggler.tween(world, 2.0, TransitionFunction.easeOutBounce)
+      ..animate.x.to(100)
+      ..animate.y.to(100)
+      ..delay = 4.0;
 
-    Tween tweenRotation = new Tween(world, 6.0, TransitionFunction.easeInOutElastic);
-    tweenRotation.animate.rotation.to(PI * 4.0);
-    tweenRotation.delay = 7.0;
-
-    renderLoop.juggler.add(tweenDown);
-    renderLoop.juggler.add(tweenUp);
-    renderLoop.juggler.add(tweenRotation);
+    juggler.tween(world, 6.0, TransitionFunction.easeInOutElastic)
+      ..animate.rotation.to(PI * 4.0)
+      ..delay = 7.0;
   });
 
 }

@@ -91,7 +91,7 @@ class TweenProperty {
 class Tween implements Animatable {
   
   final DisplayObject _displayObject;
-  final Function _transitionFunction;
+  final EaseFunction _transitionFunction;
   final List<TweenProperty> _tweenPropertyList = new List<TweenProperty>();
   
   Function _onStart;
@@ -105,7 +105,7 @@ class Tween implements Animatable {
   bool _roundToInt;
   bool _started;
 
-  Tween(DisplayObject displayObject, num time, [num transitionFunction(num ratio)]) : 
+  Tween(DisplayObject displayObject, num time, [EaseFunction transitionFunction]) : 
   
     _displayObject = displayObject,
     _transitionFunction = (?transitionFunction) ? transitionFunction : TransitionFunction.linear {

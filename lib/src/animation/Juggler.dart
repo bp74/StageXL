@@ -6,12 +6,12 @@ class Juggler implements Animatable {
   int _animatablesCount = 0;
   num _elapsedTime = 0.0;
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   num get elapsedTime => _elapsedTime;
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void add(Animatable animatable) {
     
@@ -30,7 +30,7 @@ class Juggler implements Animatable {
     _animatablesCount++;
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void remove(Animatable animatable) {
     
@@ -38,14 +38,14 @@ class Juggler implements Animatable {
       return;
 
     for(int i = 0; i < _animatablesCount; i++) {
-      if (_animatables[i] == animatable) {
+      if (identical(_animatables[i], animatable)) {
         _animatables[i] = null;
         break;
       }
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   bool contains(Animatable animatable) {
   
@@ -53,7 +53,7 @@ class Juggler implements Animatable {
       return false;
     
     for(int i = 0; i < _animatablesCount; i++) {
-      if (_animatables[i] == animatable) {
+      if (identical(_animatables[i], animatable)) {
         return true;
       }
     }
@@ -61,24 +61,24 @@ class Juggler implements Animatable {
     return false;
   }
   
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void removeTweens(DisplayObject displayObject) {
     
     if (displayObject == null)
       return;
-
+    
     for(int i = 0; i < _animatablesCount; i++) {
       var animatable = _animatables[i];
       if (animatable != null && animatable is Tween){
-        if (animatable.displayObject == displayObject) {
+        if (identical(animatable.displayObject, displayObject)) {
           _animatables[i] = null;
         }
       }
     }
   }
   
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   bool containsTweens(DisplayObject displayObject) {
     
@@ -87,8 +87,8 @@ class Juggler implements Animatable {
 
     for(int i = 0; i < _animatablesCount; i++) {
       var animatable = _animatables[i];
-      if (animatable != null && animatable is Tween){
-        if (animatable.displayObject == displayObject) {
+      if (animatable != null && animatable is Tween) {
+        if (identical(animatable.displayObject, displayObject)) {
           return true;
         }
       }
@@ -97,7 +97,7 @@ class Juggler implements Animatable {
     return false;
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void purge() {
     
@@ -108,7 +108,29 @@ class Juggler implements Animatable {
     _animatablesCount = 0;
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  
+  Tween tween(DisplayObject displayObject, num time, [EaseFunction transitionFunction]) {
+
+    Tween tween = new Tween(displayObject, time, transitionFunction);
+    add(tween);
+    
+    return tween;
+  }
+  
+  //-----------------------------------------------------------------------------------------------
+
+  Transition transition(num startValue, num targetValue, num time, EaseFunction transitionFunction, void onUpdate(num value)) {
+    
+    Transition transition = new Transition(startValue, targetValue, time, transitionFunction);
+    transition.onUpdate = onUpdate;
+    add(transition);
+
+    return transition;
+  }   
+  
+  //-----------------------------------------------------------------------------------------------
 
   DelayedCall delayCall(Function action, num delay) {
     
@@ -118,18 +140,8 @@ class Juggler implements Animatable {
     return delayedCall;
   }
 
-  //-------------------------------------------------------------------------------------------------
-
-  Transition startTransition(num startValue, num targetValue, num time, num transitionFunction(num ratio), void onUpdate(num value)) {
-    
-    Transition transition = new Transition(startValue, targetValue, time, transitionFunction);
-    transition.onUpdate = onUpdate;
-    add(transition);
-
-    return transition;
-  }
-
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   bool advanceTime(num time) {
     
