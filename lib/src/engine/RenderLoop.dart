@@ -48,6 +48,7 @@ class RenderLoop {
 
       for(int i = 0; i < _stages.length; i++) {
         var stage = _stages[i];
+        stage.juggler.advanceTime(deltaTimeSec);
         stage.materialize(currentTimeSec, deltaTimeSec);
       }
     }
@@ -63,7 +64,6 @@ class RenderLoop {
     }
     
     _stages.add(stage);
-    _juggler.add(stage.juggler);
     stage._renderLoop = this;
   }
   
@@ -71,7 +71,6 @@ class RenderLoop {
 
     if (stage.renderLoop == this) {
       _stages.remove(stage);
-      _juggler.remove(stage.juggler);
       stage._renderLoop = null;
     }
   }
