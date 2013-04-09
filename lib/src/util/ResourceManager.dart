@@ -1,10 +1,5 @@
 part of stagexl;
 
-@deprecated
-class Resource extends ResourceManager {
-
-}
-
 class ResourceManager {
   
   Map<String, ResourceManagerResource> _resources;
@@ -39,12 +34,7 @@ class ResourceManager {
   
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
-
-  @deprecated
-  void addImage(String name, String url) {
-    addBitmapData(name, url); 
-  }
-  
+ 
   void addBitmapData(String name, String url) {
     
     var resource = new ResourceManagerResource("BitmapData", name, url);

@@ -99,11 +99,6 @@ class BitmapData implements BitmapDrawable {
     return completer.future;
   }
 
-  @deprecated
-  static Future<BitmapData> loadImage(String url) {
-    return BitmapData.load(url);
-  }
-    
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 

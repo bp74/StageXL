@@ -14,12 +14,7 @@ abstract class Sound {
 
     return MockSound.load(url);
   }
-
-  @deprecated
-  static Future<Sound> loadAudio(String url) {
-    return Sound.load(url);
-  }
-  
+ 
   //-------------------------------------------------------------------------------------------------
 
   num get length;
