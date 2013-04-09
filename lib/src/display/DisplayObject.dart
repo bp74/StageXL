@@ -133,24 +133,31 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   
   //-------------------------------------------------------------------------------------------------
   
-  void setTransform(num x, num y, num scaleX, num scaleY, num rotation, [num skewX, num skewY, num pivotX, num pivotY])
+  void setTransform(num x, num y, [num scaleX, num scaleY, num rotation, num skewX, num skewY, num pivotX, num pivotY])
   {
-    if (skewX != null) {
-      _skewX = skewX.toDouble();
-      if (skewY != null) {
-        _skewY = skewY.toDouble();
-        if (pivotX != null) {
-          _pivotX = pivotX.toDouble();
-          if (pivotY != null) _pivotY = pivotY.toDouble();
+    _transformationMatrixRefresh = true;
+    _x = x.toDouble();
+    _y = y.toDouble();
+    if (scaleX != null) {
+      _scaleX = scaleX.toDouble();
+      if (scaleY != null) {
+        _scaleY = scaleY.toDouble();
+        if (rotation != null) {
+          _rotation = rotation.toDouble(); 
+          if (skewX != null) {
+            _skewX = skewX.toDouble();
+            if (skewY != null) {
+              _skewY = skewY.toDouble();
+              if (pivotX != null) {
+                _pivotX = pivotX.toDouble();
+                if (pivotY != null) 
+                  _pivotY = pivotY.toDouble();
+              }
+            }
+          }
         }
       }
     }
-    _x = x.toDouble();
-    _y = y.toDouble();
-    _rotation = rotation.toDouble();
-    _scaleX = scaleX.toDouble();
-    _scaleY = scaleY.toDouble();
-    _transformationMatrixRefresh = true;
   }
 
   //-------------------------------------------------------------------------------------------------

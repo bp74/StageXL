@@ -30,9 +30,12 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  TextField() {
+  TextField([String text, TextFormat textFormat]) {
     
-    _defaultTextFormat = new TextFormat("Arial", 12, 0x000000);
+    if (text != null) _text = text;
+    
+    if (textFormat != null) defaultTextFormat = textFormat;
+    else _defaultTextFormat = new TextFormat("Arial", 12, 0x000000);
 
     _linesText = new List<String>();
     _linesMetrics = new List<TextLineMetrics>();
@@ -125,7 +128,8 @@ class TextField extends InteractiveObject {
 
     if (_wordWrap == false) {
       
-      _linesText.add(_text);
+      for(String paragraph in _text.replaceAll('\r', '').split('\n'))
+        _linesText.add(paragraph);
       
     } else {
       

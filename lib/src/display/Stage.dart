@@ -62,6 +62,7 @@ class Stage extends DisplayObjectContainer {
   Matrix _stageTransformation;
   RenderLoop _renderLoop;
   Juggler _juggler;
+  int frameRate = 30;
   
   InteractiveObject _focus;
   RenderState _renderState;

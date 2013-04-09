@@ -1,8 +1,5 @@
 part of stagexl;
 
-const num _rad2deg = 180/PI;
-const num _deg2rad = PI/180;
-
 /*
 * Ported from CreateJS to Dart
 *
@@ -62,8 +59,9 @@ class MovieClip extends Sprite
   
   /**
    * Specifies the timeline progression speed.
+   * If =0, uses the stage's frameRate
    */
-  int frameRate = 30;
+  int frameRate = 0;
 
   /**
    * Indicates whether this MovieClip should loop when it reaches the end of its timeline.
@@ -130,7 +128,7 @@ class MovieClip extends Sprite
   {
     this.mode = mode != null ? mode : MovieClip.INDEPENDENT;
     this.startPosition = startPosition != null ? startPosition : 0;
-    this.loop = loop != null ? loop : false;
+    this.loop = loop != null ? loop : true;
     props = {"paused":true, "position":this.startPosition};
     timeline = new Timeline(null, labels, props);
   }
@@ -158,8 +156,6 @@ class MovieClip extends Sprite
    * into itself).
    **/
   void render(RenderState renderState) {
-    // draw to cache first:
-    //if (this.DisplayObject_draw(ctx, ignoreCache)) { return true; }
     _advanceTime(renderState.deltaTime);
     _updateTimeline();
     super.render(renderState);
@@ -206,17 +202,18 @@ class MovieClip extends Sprite
 // private methods
   
   bool _advanceTime(num time) {
-    if (!paused && mode == MovieClip.INDEPENDENT) {
-      num sPerFrame = 1 / frameRate;
+    if (!paused && mode == MovieClip.INDEPENDENT && stage != null) {
+      var f = frameRate > 0 ? frameRate : stage.frameRate;
+      num sPerFrame = 1 / f;
       num df = min(1, time / sPerFrame);
-      //print("advance $sPerFrame $time $df");
       _prevPosition = (_prevPos < 0) ? 0 : _prevPosition+df;
+      timeline._advanceTime(df);
     }
     return true;
   }
   
   void _goto(positionOrLabel) {
-    var pos = 0;//timeline.resolve(positionOrLabel);
+    var pos = timeline.resolve(positionOrLabel);
     if (pos == null) { return; }
     // prevent _updateTimeline from overwriting the new position because of a reset:
     if (_prevPos == -1) { _prevPos = double.NAN; }
@@ -232,7 +229,6 @@ class MovieClip extends Sprite
   void _updateTimeline() {
     var tl = timeline;
     var tweens = tl._tweens;
-    var kids = _children;
     var synched = mode != MovieClip.INDEPENDENT;
     tl.loop = loop;
     
@@ -245,13 +241,14 @@ class MovieClip extends Sprite
     }
     
     _prevPosition = tl._prevPosition;
-    if (_prevPos == tl._prevPos) { return; }
+    if (_prevPos == tl._prevPos) 
+      return;
     _prevPos = tl._prevPos;
     _currentFrame = _prevPos.toInt();
     
     for (var n in _managed.keys) { _managed[n] = 1; }
     
-    for (var i=0; i<tweens.length; i++) {
+    for (var i=tweens.length-1; i>=0; i--) {
       TimelineTween tween = tweens[i];
       var target = tween._target;
       if (target == null || target == this) continue; // TODO: this assumes this is the actions tween. Valid?
@@ -271,8 +268,8 @@ class MovieClip extends Sprite
       }
     }
     
-    for (var i=0; i<kids.length; i++) {
-      var id = kids[i]._id;
+    for (var i=_children.length-1; i>=0; i--) {
+      var id = _children[i]._id;
       if (_managed[id] == 1) {
         removeChildAt(i);
         _managed.remove(id);
@@ -287,11 +284,39 @@ class MovieClip extends Sprite
       var target = o["t"];
       if (target is DisplayObject)
       {
-        var child = target as DisplayObject;
-        assert(!o.containsKey("p"));
-        /*var props = o.containsKey("p") ? o["p"] : null;
-        for (var n in props) { target[n] = props[n]; }*/
-        _addManagedChild(child, offset);
+        var d = target as DisplayObject;
+        if (o.containsKey("p"))
+        {
+          var p = o["p"];
+          for(var n in p.keys)
+          {
+            var v = p[n];
+            var dv = v is num ? v.toDouble() : 0;  
+            switch(n)
+            {
+              case "off": d.off = v; break;
+              case "x": d.x = dv; break;
+              case "y": d.y = dv; break;
+              case "rotation": d.rotation = dv; break;
+              case "alpha": d.alpha = dv; break;
+              case "scaleX": d.scaleX = dv; break;
+              case "scaleY": d.scaleY = dv; break;
+              case "skewX": d.skewX = dv; break;
+              case "skewY": d.skewY = dv; break;
+              case "regX": d.pivotX = dv; break;
+              case "regY": d.pivotY = dv; break;
+              case "startPosition":
+                if (target is MovieClip)
+                  (target as MovieClip).startPosition = v;
+                break;
+              case "mode":
+                if (target is MovieClip)
+                  (target as MovieClip).mode = v;
+                break;
+            }
+          }
+        }
+        _addManagedChild(d, offset);
       }
     }
   }
@@ -385,8 +410,7 @@ class Timeline
     }
     setLabels(labels);
     if (props != null && props.containsKey("paused") && props["paused"] == true) { _paused = true; }
-    // TODO make Timeline a Tween-like object
-    /*else { TimelineTween._register(this, true); }*/
+    //else { TimelineTween._register(this, true); }
     
     if (props != null && props.containsKey("position")) { 
       setPosition(props["position"], TimelineTween.NONE); }
@@ -400,7 +424,6 @@ class Timeline
    **/
   TimelineTween addTween(TimelineTween tween) {
     if (tween == null) return null;
-    assert(tween is TimelineTween);
     removeTween(tween);
     _tweens.add(tween);
     tween.setPaused(true);
@@ -476,9 +499,7 @@ class Timeline
     bool end = !loop && value >= duration;
     if (t == _prevPos) return end;
     _prevPosition = value;
-    position = t; 
-    if (actionsMode != 0) _prevPos = t; // in case an action changes the current frame.
-
+    position = _prevPos = t; // in case an action changes the current frame.
     for(var i=0; i<_tweens.length; i++) {
       _tweens[i].setPosition(t, actionsMode);
       if (t != _prevPos) return false; // an action changed this timeline's position.
@@ -494,7 +515,7 @@ class Timeline
    **/
   void setPaused(bool value) {
     _paused = !!value;
-    //TimelineTween._register(this, !value); // in what case is that needed?
+    //TimelineTween._register(this, !value); 
   }
   
   /** 
@@ -526,10 +547,15 @@ class Timeline
    * @param positionOrLabel A numeric position value or label string.
    **/
   num resolve(dynamic positionOrLabel) {
-    num pos = 0;
-    if (positionOrLabel is String) _labels[positionOrLabel];
+    num pos = _prevPosition;
+    if (positionOrLabel is String) {
+      if (_labels.containsKey(positionOrLabel))
+        pos = _labels[positionOrLabel];
+      else
+        print("Error: unkown label $positionOrLabel");
+    }
     else pos = positionOrLabel.toDouble();
-    if (pos.isNaN) pos = 0;
+    if (pos.isNaN) pos = _prevPosition;
     return pos;
   }
 
@@ -550,6 +576,13 @@ class Timeline
   void _goto(dynamic positionOrLabel) {
     var pos = resolve(positionOrLabel);
     if (pos != null) { setPosition(pos); }
+  }
+  
+  void _advanceTime(num delta) {
+    for(var i=0; i<_tweens.length; i++) {
+      var tween = _tweens[i];
+      tween.tick(delta);
+    }
   }
 }
 
@@ -633,7 +666,7 @@ class TimelineTween
    **/
   static const int REVERSE = 2;
   
-  static List<TimelineTween> _tweens = [];
+  //static List<TimelineTween> _tweens = [];
   static EaseFunction _linearEase = TransitionFunction.linear;
 
   /**
@@ -673,7 +706,6 @@ class TimelineTween
    * <code>useTicks</code> set to true.
    * @param {Boolean} paused Indicates whether a global pause is in effect. Tweens with <code>ignoreGlobalPause</code> will ignore
    * this, but all others will pause if this is true.
-   **/
   static void tickTweens(num delta, bool paused) {
     var tweens = _tweens; //TimelineTween._tweens.slice(); // to avoid race conditions.
     for(var i=0; i<tweens.length; i++) {
@@ -682,13 +714,13 @@ class TimelineTween
       tween.tick(1);//tween._useTicks?1:delta);
     }
   }
+  **/
   
   /** 
    * Removes all existing tweens for a target. This is called automatically by new tweens if the <code>override</code> prop is true.
    * @method removeTweens
    * @static
    * @param {Object} target The target object to remove existing tweens from.
-   **/
   static void removeTweens(target) {
     //if (!target.tweenjs_count) { return; }
     var tweens = TimelineTween._tweens;
@@ -700,6 +732,7 @@ class TimelineTween
     }
     //target.tweenjs_count = 0;
   }
+   **/
   
   /** 
    * Indicates whether there are any active tweens on the target object (if specified) or in general.
@@ -722,19 +755,20 @@ class TimelineTween
    * @method _register
    * @static
    * @protected 
-   **/
   static void _register(TimelineTween tween, bool value) {
     var target = tween._target;
     if (value) {
       // TODO: this approach might fail if a dev is using sealed objects in ES5
       //if (target) { target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count+1 : 1; }
       TimelineTween._tweens.add(tween);
-    } else {
+    } 
+    else {
       //if (target) { target.tweenjs_count--; }
       var i = TimelineTween._tweens.indexOf(tween);
       if (i != -1) { TimelineTween._tweens.removeAt(i); }
     }
   }
+   **/
     
 // public properties:
   /**
@@ -823,11 +857,11 @@ class TimelineTween
       ignoreGlobalPause = props.containsKey("ignoreGlobalPause") ? props["ignoreGlobalPause"] : false;
       loop = props.containsKey("loop") ? props["loop"] : false;
       onChange = props.containsKey("onChange") ? props["onChange"] : null;
-      if (props.containsKey("override") && props["override"] == true) { TimelineTween.removeTweens(target); }
+      //if (props.containsKey("override") && props["override"] == true) { TimelineTween.removeTweens(target); }
     }
     
     if (props != null && props.containsKey("paused") && props["paused"] == true) { _paused = true; }
-    else { TimelineTween._register(this,true); }
+    //else { TimelineTween._register(this,true); }
     if (props != null && props.containsKey("position")) { 
       setPosition(props["position"], TimelineTween.NONE); }
   }
@@ -1019,7 +1053,7 @@ class TimelineTween
    **/
   TimelineTween setPaused(bool value) {
     _paused = !!value;
-    TimelineTween._register(this, !value);
+    //TimelineTween._register(this, !value);
     return this;
   }
 
@@ -1081,17 +1115,21 @@ class TimelineTween
           case "off": d.off = v; break;
           case "x": d.x = dv; break;
           case "y": d.y = dv; break;
-          case "rotation": d.rotation = dv * _deg2rad; break;
+          case "rotation": d.rotation = dv; break;
           case "alpha": d.alpha = dv; break;
           case "scaleX": d.scaleX = dv; break;
           case "scaleY": d.scaleY = dv; break;
           case "skewX": d.skewX = dv; break;
           case "skewY": d.skewY = dv; break;
-          case "startPosition": 
-            (_target as MovieClip).startPosition = ratio == 1 ? v1 : v0;
+          case "regX": d.pivotX = dv; break;
+          case "regY": d.pivotY = dv; break;
+          case "startPosition":
+            if (_target is MovieClip)
+              (_target as MovieClip).startPosition = ratio == 1 ? v1 : v0;
             break;
           case "mode":
-            (_target as MovieClip).mode = v;
+            if (_target is MovieClip)
+              (_target as MovieClip).mode = v;
             break;
         }
       }
@@ -1136,14 +1174,24 @@ class TimelineTween
             case "off": oldValue = d.off; break;
             case "x": oldValue = d.x; break;
             case "y": oldValue = d.y; break;
-            case "rotation": oldValue = d.rotation * _rad2deg; break;
+            case "rotation": oldValue = d.rotation; break;
             case "alpha": oldValue = d.alpha; break;
             case "scaleX": oldValue = d.scaleX; break;
             case "scaleY": oldValue = d.scaleY; break;
             case "skewX": oldValue = d.skewX; break;
             case "skewY": oldValue = d.skewY; break;
-            case "startPosition": oldValue = (_target as MovieClip).startPosition; break;
-            case "mode": oldValue = (_target as MovieClip).mode; break;
+            case "regX": oldValue = d.pivotX; break;
+            case "regY": oldValue = d.pivotY; break;
+            case "startPosition": 
+              if (_target is MovieClip)
+                oldValue = (_target as MovieClip).startPosition;
+              else oldValue = null;
+              break;
+            case "mode": 
+              if (_target is MovieClip)
+                oldValue = (_target as MovieClip).mode;
+              else oldValue = null;
+              break;
             default:
               print("TimelineTween._appendQueueProps doesn't know property $n");
               continue;
@@ -1215,4 +1263,3 @@ class TimelineTween
     }
   }
 }
-
