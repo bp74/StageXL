@@ -693,7 +693,7 @@ class TimelineTween
    * applied to the returned tween instance.
    **/
   static TimelineTween get(dynamic target, [Map<String, dynamic> props, bool override = false]) {
-    if (override) { TimelineTween.removeTweens(target); }
+    //if (override) { TimelineTween.removeTweens(target); }
     return new TimelineTween(target, props);
   }
   
