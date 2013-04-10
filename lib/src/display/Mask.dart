@@ -2,6 +2,10 @@ part of stagexl;
 
 class Mask {
   
+  DisplayObject targetSpace = null;
+  
+  Mask();
+  
   factory Mask.rectangle(num x, num y, num width, num height) {
     return new _RectangleMask(x, y, width, height);
   }
@@ -25,7 +29,7 @@ class Mask {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _RectangleMask implements Mask {
+class _RectangleMask extends Mask {
   
   final Rectangle _rectangle;
   
@@ -42,7 +46,7 @@ class _RectangleMask implements Mask {
 
 //-------------------------------------------------------------------------------------------------
 
-class _CirlceMask implements Mask {
+class _CirlceMask extends Mask {
   
   final Circle _circle;
   
@@ -59,7 +63,7 @@ class _CirlceMask implements Mask {
 
 //-------------------------------------------------------------------------------------------------
 
-class _CustomMask implements Mask {
+class _CustomMask extends Mask {
   
   final List<Point> _points;
   
@@ -81,7 +85,7 @@ class _CustomMask implements Mask {
 
 //-------------------------------------------------------------------------------------------------
 
-class _ShapeMask implements Mask {
+class _ShapeMask extends Mask {
   
   final Shape _shape;
   

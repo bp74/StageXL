@@ -64,21 +64,34 @@ class RenderState {
     var m2 = _matrices[d2];
     var a1 = _alphas[d1];
     var a2 = _alphas[d2] = displayObject._alpha * a1;
-
-    m2.copyFromAndConcat(displayObject._transformationMatrix, m1);
-
-    _context.setTransform(m2.a, m2.b, m2.c, m2.d, m2.tx, m2.ty);
-    _context.globalAlpha = a2;
-
-    _depth = d2;
-    
+    var mm = m1;
     var mask = displayObject._mask;
     var cache = displayObject._cache;
     
+    _depth = d2;    
+    m2.copyFromAndConcat(displayObject._transformationMatrix, m1);
+    
+    // prepare Mask
     if (mask != null) {
+      if (mask.targetSpace == null) {
+        mm = m2;
+      } else if (identical(mask.targetSpace, displayObject)) {
+        mm = m2;
+      } else if (identical(mask.targetSpace, displayObject.parent)) {
+        mm = m1;
+      } else {
+        mm = mask.targetSpace.transformationMatrixTo(displayObject);
+        if (mm == null) mm = _identityMatrix; else mm.concat(m2);
+      }
+      
       _context.save();
+      _context.setTransform(mm.a, mm.b, mm.c, mm.d, mm.tx, mm.ty);
       mask.render(this);
     }
+
+    // render DisplayObject
+    _context.setTransform(m2.a, m2.b, m2.c, m2.d, m2.tx, m2.ty);
+    _context.globalAlpha = a2;
     
     if (cache != null) {
       cache.render(this);
@@ -86,6 +99,7 @@ class RenderState {
       displayObject.render(this);
     }
         
+    // restore Mask
     if (mask != null) {
       _context.restore();
     }
