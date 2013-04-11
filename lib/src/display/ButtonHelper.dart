@@ -10,7 +10,7 @@ class ButtonHelper {
   bool useHandCursor = true;
   bool enabled = true;
   
-  ButtonHelper(this.target, this.upLabel, this.overLabel, this.downLabel, DisplayObject hitArea)
+  ButtonHelper(this.target, this.upLabel, this.overLabel, this.downLabel, [DisplayObject hitArea])
     : super() {
     
     target.useHandCursor = true;
@@ -20,16 +20,18 @@ class ButtonHelper {
     target.addEventListener(MouseEvent.MOUSE_DOWN, _onMouseEvent);
     target.addEventListener(MouseEvent.MOUSE_UP, _onMouseEvent);
     
-    if (hitArea != null && hitArea is MovieClip) {
-      var mc = hitArea as MovieClip;
-      mc.actionsEnabled = false;
-      mc.stop();
-      mc.advance(0); // process frame out of stage
+    if (hitArea != null) {
+      if (hitArea is MovieClip) {
+        var mc = hitArea as MovieClip;
+        mc.actionsEnabled = false;
+        mc.stop();
+        mc.advance(0); // process frame out of stage
+      }
+      
+      if (hitArea._parent == null)
+        hitArea._parent = target; // consider the hitArea as a child
+      target.hitArea = hitArea;
     }
-    
-    if (hitArea._parent == null)
-      hitArea._parent = target; // consider the hitArea as a child
-    target.hitArea = hitArea;
   }
   
   //-------------------------------------------------------------------------------------------------
