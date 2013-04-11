@@ -10,13 +10,21 @@ class Shape extends DisplayObject {
   //-----------------------------------------------------------------------------------------------
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
-    return _graphics._getBoundsTransformed(matrix);
+    if (_graphics == null) {
+      return super.getBoundsTransformed(matrix, returnRectangle);
+    } else {
+      return _graphics._getBoundsTransformed(matrix);
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-    return _graphics._hitTestInput(localX, localY) ? this : null;
+    if (_graphics == null) {
+      return null;
+    } else {
+      return _graphics._hitTestInput(localX, localY) ? this : null;
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
