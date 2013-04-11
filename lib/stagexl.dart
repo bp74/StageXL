@@ -61,6 +61,7 @@ part 'src/display/Bitmap.dart';
 part 'src/display/BitmapData.dart';
 part 'src/display/BitmapDrawable.dart';
 part 'src/display/MovieClip.dart';
+part 'src/display/ButtonHelper.dart';
 part 'src/display/Shape.dart';
 part 'src/display/PixelSnapping.dart';
 part 'src/display/SimpleButton.dart';

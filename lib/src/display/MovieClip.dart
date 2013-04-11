@@ -76,6 +76,13 @@ class MovieClip extends Sprite
   }
 
   /**
+   * Read-Only. The number of frames of the movieclip.
+   */
+  int get totalFrames {
+    return timeline.duration.toInt();
+  }
+
+  /**
    * The Timeline that is associated with this MovieClip. This is created automatically when the MovieClip
    * instance is initialized.
    */
@@ -124,8 +131,9 @@ class MovieClip extends Sprite
    * @param loop Initial value for the loop property.
    * @param labels A hash of labels to pass to the timeline instance associated with this MovieClip.
    **/
-  MovieClip([String mode, int startPosition, bool loop, Map<String, num> labels]): super()
-  {
+  MovieClip([String mode, int startPosition, bool loop, Map<String, num> labels])
+    : super() {
+    
     this.mode = mode != null ? mode : MovieClip.INDEPENDENT;
     this.startPosition = startPosition != null ? startPosition : 0;
     this.loop = loop != null ? loop : true;
@@ -145,6 +153,15 @@ class MovieClip extends Sprite
     // children are placed in draw, so we can't determine if we have content.
     return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
   }
+
+  /**
+   * Advances timelines and places children depending on the currentframe
+   * NOTE: automatically called by .render()
+   */
+  void advance(num deltaTime) {
+    _advanceTime(deltaTime);
+    _updateTimeline();
+  }
   
   /**
    * Draws the display object into the specified context ignoring it's visible, alpha, shadow, and transform.
@@ -156,8 +173,7 @@ class MovieClip extends Sprite
    * into itself).
    **/
   void render(RenderState renderState) {
-    _advanceTime(renderState.deltaTime);
-    _updateTimeline();
+    advance(renderState.deltaTime);
     super.render(renderState);
   }
   
@@ -200,7 +216,7 @@ class MovieClip extends Sprite
   }
   
 // private methods
-  
+
   bool _advanceTime(num time) {
     if (!paused && mode == MovieClip.INDEPENDENT && stage != null) {
       var f = frameRate > 0 ? frameRate : stage.frameRate;
@@ -214,7 +230,7 @@ class MovieClip extends Sprite
   
   void _goto(positionOrLabel) {
     var pos = timeline.resolve(positionOrLabel);
-    if (pos == null) { return; }
+    if (pos == null) return;
     // prevent _updateTimeline from overwriting the new position because of a reset:
     if (_prevPos == -1) { _prevPos = double.NAN; }
     _prevPosition = pos;
@@ -338,6 +354,7 @@ class MovieClip extends Sprite
   }
   
 }
+
 
 typedef void ChangeHandler(dynamic sender); // Tween or Timeline
 
@@ -548,6 +565,7 @@ class Timeline
    **/
   num resolve(dynamic positionOrLabel) {
     num pos = _prevPosition;
+    if (positionOrLabel == null) return null;
     if (positionOrLabel is String) {
       if (_labels.containsKey(positionOrLabel))
         pos = _labels[positionOrLabel];
