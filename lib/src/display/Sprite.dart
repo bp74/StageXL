@@ -12,6 +12,7 @@ class Sprite extends DisplayObjectContainer {
   Graphics get graphics {
     return (_graphics != null) ? _graphics : _graphics = new Graphics();
   }
+  set graphics(Graphics value) => _graphics = value;
 
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------

@@ -329,6 +329,10 @@ class MovieClip extends Sprite
                 if (target is MovieClip)
                   (target as MovieClip).mode = v;
                 break;
+              case "graphics":
+                if (target is Shape)
+                  (target as Shape).graphics = v;
+                break;
             }
           }
         }
@@ -1149,6 +1153,10 @@ class TimelineTween
             if (_target is MovieClip)
               (_target as MovieClip).mode = v;
             break;
+          case "graphics":
+            if (_target is Shape)
+              (_target as Shape).graphics = v;
+            break;
         }
       }
       else _target[n] = v;
@@ -1208,6 +1216,11 @@ class TimelineTween
             case "mode": 
               if (_target is MovieClip)
                 oldValue = (_target as MovieClip).mode;
+              else oldValue = null;
+              break;
+            case "graphics":
+              if (target is Shape)
+                oldValue = (target as Shape).graphics;
               else oldValue = null;
               break;
             default:

@@ -2,9 +2,10 @@ part of stagexl;
 
 class Shape extends DisplayObject {
   
-  final Graphics _graphics = new Graphics();
+  Graphics _graphics = new Graphics();
 
   Graphics get graphics => _graphics;
+  set graphics(Graphics value) => _graphics = value;
   
   //-----------------------------------------------------------------------------------------------
 
