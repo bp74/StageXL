@@ -22,7 +22,7 @@ class Shape extends DisplayObject {
   //-----------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-    _graphics.render(renderState);
+    if (_graphics != null) _graphics.render(renderState);
   }
 
 }
