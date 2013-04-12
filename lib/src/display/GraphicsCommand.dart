@@ -71,7 +71,7 @@ class _GraphicsBounds {
     }
   }
   
-  stroke(int lineWidth) {
+  stroke(num lineWidth) {
     if (hasPath) {
       var lw = sqrt(matrix.det) * lineWidth / 2;
       var left = pathLeft - lw;
