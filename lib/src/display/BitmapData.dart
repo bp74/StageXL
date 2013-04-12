@@ -91,11 +91,23 @@ class BitmapData implements BitmapDrawable {
     
     Completer<BitmapData> completer = new Completer<BitmapData>();
 
-    var image = new ImageElement();
-    image.onLoad.listen((event) => completer.complete(new BitmapData.fromImageElement(image)));
-    image.onError.listen((event) => completer.completeError(new StateError("Error loading image.")));
-    image.src = url;
+    ImageElement imageElement = new ImageElement();
+    StreamSubscription onLoadSubscription;
+    StreamSubscription onErrorSubscription;
+    
+    onLoadSubscription = imageElement.onLoad.listen((event) {
+      onLoadSubscription.cancel();
+      onErrorSubscription.cancel();
+      completer.complete(new BitmapData.fromImageElement(imageElement));
+    });
+    
+    onErrorSubscription = imageElement.onError.listen((event) {
+      onLoadSubscription.cancel();
+      onErrorSubscription.cancel();
+      completer.completeError(new StateError("Error loading image."));
+    });
 
+    imageElement.src = url;
     return completer.future;
   }
 

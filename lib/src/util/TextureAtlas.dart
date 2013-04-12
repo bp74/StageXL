@@ -42,10 +42,23 @@ class TextureAtlas {
             }
           }
 
-          textureAtlas._imageElement
-            ..onLoad.listen((e) => completer.complete(textureAtlas))
-            ..onError.listen((e) => completer.completeError(new StateError("Failed to load image.")))
-            ..src = _replaceFilename(url, meta["image"]);
+          ImageElement imageElement = textureAtlas._imageElement;
+          StreamSubscription onLoadSubscription;
+          StreamSubscription onErrorSubscription;
+          
+          onLoadSubscription = imageElement.onLoad.listen((e) {
+            onLoadSubscription.cancel();
+            onErrorSubscription.cancel();
+            completer.complete(textureAtlas);
+          });
+          
+          onErrorSubscription = imageElement.onError.listen((e) {
+            onLoadSubscription.cancel();
+            onErrorSubscription.cancel();
+            completer.completeError(new StateError("Failed to load image."));
+          });
+          
+          imageElement.src = _replaceFilename(url, meta["image"]);
         
         }).catchError((error) {
           
