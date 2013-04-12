@@ -48,6 +48,9 @@ void main()
     ..fillGradient(gradient)
     ..strokeColor(Color.Blue, 5);
 
+  var rect = shape.getBounds(shape);
+  shape.applyCache(rect.x.floor(), rect.y.floor(), rect.width.ceil(), rect.height.ceil(), debugBorder: true);
+  
   //------------------------------------------------------------------
   // Add some animation
   //------------------------------------------------------------------

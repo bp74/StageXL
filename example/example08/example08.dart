@@ -37,6 +37,15 @@ void main()
   Mask circleMask = new Mask.circle(400.0, 350.0, 200.0);
   Mask customMask = new Mask.custom(starPath);
 
+  var maskTarget = new Sprite();
+  maskTarget.addChild(new GlassPlate(800, 700));
+  maskTarget.startDrag(true);
+  stage.addChild(maskTarget);
+  
+  rectangleMask.targetSpace = maskTarget;
+  circleMask.targetSpace = maskTarget;
+  customMask.targetSpace = maskTarget;
+  
   //------------------------------------------------------------------
   // Use the Resource class to load some Bitmaps
   //------------------------------------------------------------------

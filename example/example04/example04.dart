@@ -79,6 +79,10 @@ void main()
 
       clickCount++;
     });
+  }).catchError((error) {
+    resourceManager.failedResources.forEach((rmr) {
+      print("failed to load resource -> name: ${rmr.name}, url: ${rmr.url}");
+    });
   });
 
 }

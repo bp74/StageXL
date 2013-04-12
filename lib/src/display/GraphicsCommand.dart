@@ -101,7 +101,7 @@ class _GraphicsBounds {
       var right = boundsRight.ceil();
       var top = boundsTop.floor();
       var bottom = boundsBottom.ceil();
-      return new Rectangle(left, top, right - left, bottom - top);
+      return new Rectangle(left, top, right - left + 1, bottom - top + 1);
     } else {
       return new Rectangle.zero();
     }
