@@ -28,8 +28,8 @@ void main()
     ..addBitmapData("sun", "../common/images/Sun.png")
     ..addBitmapData("tree", "../common/images/Tree.png");
 
-  resourceManager.load().then((result) {
-    
+  resourceManager.load().then((result)
+  {
     Bitmap house = new Bitmap(resourceManager.getBitmapData("house"));
     house.x = 200;
     house.y = 200;
@@ -44,9 +44,5 @@ void main()
     sun.x = 250;
     sun.y = 50;
     stage.addChild(sun);
-  }).catchError((error) {
-    resourceManager.failedResources.forEach((rmr) {
-      print("failed to load resource -> name: ${rmr.name}, url: ${rmr.url}");
-    });
   });
 }
