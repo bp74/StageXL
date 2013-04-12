@@ -26,6 +26,7 @@ class AudioElementSound extends Sound {
     
     var sound = new AudioElementSound();
     var audio = sound._audio;
+    var audioUrls = SoundMixer._getOptimalAudioUrls(url);
     var loadCompleter = new Completer<Sound>();
 
     StreamSubscription onCanPlayThroughSubscription;
@@ -38,15 +39,20 @@ class AudioElementSound extends Sound {
     };
 
     onError(event) {
-      onCanPlayThroughSubscription.cancel();
-      onErrorSubscription.cancel();
-      loadCompleter.completeError(new StateError("Failed to load audio."));
+      if (audioUrls.length > 0) {
+        audio.src = audioUrls.removeAt(0);
+        audio.load();
+      } else {
+        onCanPlayThroughSubscription.cancel();
+        onErrorSubscription.cancel();
+        loadCompleter.completeError(new StateError("Failed to load audio."));
+      }
     };
 
     onCanPlayThroughSubscription = audio.onCanPlayThrough.listen(onCanPlayThrough);
     onErrorSubscription = audio.onError.listen(onError);
     
-    audio.src = Sound.adaptAudioUrl(url);
+    audio.src = audioUrls.removeAt(0);
     audio.load();
 
     return loadCompleter.future;

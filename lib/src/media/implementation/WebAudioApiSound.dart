@@ -16,27 +16,31 @@ class WebAudioApiSound extends Sound {
   static Future<Sound> load(String url) {
     
     var sound = new WebAudioApiSound();
-    var soundUrl = Sound.adaptAudioUrl(url);
     var loadCompleter = new Completer<Sound>();
+    var audioUrls = SoundMixer._getOptimalAudioUrls(url);
+    var audioContext = SoundMixer._audioContext;
     
-    HttpRequest.request(soundUrl, responseType: 'arraybuffer').then((request) {
-      
-      var audioData = request.response;
-      var audioContext = SoundMixer._audioContext;
-      
-      audioContext.decodeAudioData(audioData, (AudioBuffer buffer) {
+    audioRequestFinished(request) {
+      audioContext.decodeAudioData(request.response, (AudioBuffer buffer) {
         sound._buffer = buffer;
         loadCompleter.complete(sound);
       }, (error) {
         loadCompleter.completeError(new StateError("Failed to decode audio."));
       });
-      
-    }).catchError((error) {
-      
-      loadCompleter.completeError(new StateError("Failed to load audio."));
-      
-    });
-  
+    }
+    
+    audioRequestNext(error) {
+      if (audioUrls.length > 0) {
+        HttpRequest.request(audioUrls.removeAt(0), responseType: 'arraybuffer')
+        .then(audioRequestFinished)
+        .catchError(audioRequestNext);
+      } else {
+        loadCompleter.completeError(new StateError("Failed to load audio."));
+      }
+    }
+
+    audioRequestNext(null);
+    
     return loadCompleter.future;
   }
 
