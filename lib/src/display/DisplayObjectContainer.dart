@@ -290,7 +290,8 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
     if (displayObject is DisplayObjectContainer) {
       
-      var children = new List<DisplayObject>.from(displayObject._children, growable:false);
+      var displayObjectContainer = displayObject as DisplayObjectContainer;
+      var children = displayObjectContainer._children.toList(growable:false);
 
       for(int i = 0; i < children.length; i++)
         _dispatchEventOnChildren(children[i], event);

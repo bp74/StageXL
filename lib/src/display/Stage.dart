@@ -361,14 +361,14 @@ class Stage extends DisplayObjectContainer {
 
     var mouseCursor = MouseCursor.ARROW;
 
-    if (target is Sprite)
-      if (target.useHandCursor)
-        mouseCursor = MouseCursor.BUTTON;
+    if (target is Sprite && (target as Sprite).useHandCursor) {
+      mouseCursor = MouseCursor.BUTTON;
+    }
 
-    if (target is SimpleButton)
-      if (target.useHandCursor)
-        mouseCursor = MouseCursor.BUTTON;
-
+    if (target is SimpleButton && (target as SimpleButton).useHandCursor) {
+      mouseCursor = MouseCursor.BUTTON;
+    }
+    
     if (_mouseCursor != mouseCursor) {
       _mouseCursor = mouseCursor;
       _canvas.style.cursor = Mouse._getCssStyle(mouseCursor);
