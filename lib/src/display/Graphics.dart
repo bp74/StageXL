@@ -50,13 +50,13 @@ class Graphics {
   rect(num x, num y, num width, num height) =>
     _addCommand(new _GraphicsCommandRect(x,y, width, height));
 
-  strokeColor(int color, [int width = 1, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
+  strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
     _addCommand(new _GraphicsCommandStrokeColor(_color2rgba(color), width, joints, caps));
 
-  strokeGradient(GraphicsGradient gradient, [int width = 1, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
+  strokeGradient(GraphicsGradient gradient, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
     _addCommand(new _GraphicsCommandStrokeGradient(gradient, width, joints, caps));
 
-  strokePattern(GraphicsPattern pattern, [int width = 1, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
+  strokePattern(GraphicsPattern pattern, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
     _addCommand(new _GraphicsCommandStrokePattern(pattern, width, joints, caps));
 
   fillColor(int color) =>

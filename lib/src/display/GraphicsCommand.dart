@@ -463,12 +463,12 @@ class _GraphicsCommandRect extends _GraphicsCommand {
 
 abstract class _GraphicsCommandStroke extends _GraphicsCommand {
   
-  int _lineWidth;
+  num _lineWidth;
   String _lineJoin;
   String _lineCap;
   
-  _GraphicsCommandStroke(int lineWidth, String lineJoin, String lineCap) {
-    _lineWidth = lineWidth.toInt();
+  _GraphicsCommandStroke(num lineWidth, String lineJoin, String lineCap) {
+    _lineWidth = lineWidth.toDouble();
     _lineJoin = lineJoin;
     _lineCap = lineCap;
   }
@@ -501,7 +501,7 @@ class _GraphicsCommandStrokeColor extends _GraphicsCommandStroke {
   String _color;
   
   _GraphicsCommandStrokeColor(String color, 
-    int lineWidth, String lineJoin, String lineCap) : super (lineWidth, lineJoin, lineCap) {
+    num lineWidth, String lineJoin, String lineCap) : super (lineWidth, lineJoin, lineCap) {
       
     _color = color;
   }
@@ -522,7 +522,7 @@ class _GraphicsCommandStrokeGradient extends _GraphicsCommandStroke {
   GraphicsGradient _gradient;
   
   _GraphicsCommandStrokeGradient(GraphicsGradient gradient, 
-    int lineWidth, String lineJoin, String lineCap) : super (lineWidth, lineJoin, lineCap) {
+    num lineWidth, String lineJoin, String lineCap) : super (lineWidth, lineJoin, lineCap) {
       
     _gradient = gradient;
   }
@@ -543,7 +543,7 @@ class _GraphicsCommandStrokePattern extends _GraphicsCommandStroke {
   GraphicsPattern _pattern;
   
   _GraphicsCommandStrokePattern(GraphicsPattern pattern, 
-    int lineWidth, String lineJoin, String lineCap) : super (lineWidth, lineJoin, lineCap) {
+    num lineWidth, String lineJoin, String lineCap) : super (lineWidth, lineJoin, lineCap) {
       
     _pattern = pattern;
   }
