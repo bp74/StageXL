@@ -2,9 +2,9 @@ part of stagexl;
 
 class TextureAtlas {
   
-  final ImageElement _imageElement = new ImageElement();
   final List<TextureAtlasFrame> _frames = new List<TextureAtlasFrame>();
-
+  BitmapData _bitmapData;
+  
   //-------------------------------------------------------------------------------------------------
 
   static Future<TextureAtlas> load(String url, String textureAtlasFormat) {
@@ -22,6 +22,7 @@ class TextureAtlas {
           var data = json.parse(textureAtlasJson);
           var frames = data["frames"];
           var meta = data["meta"];
+          var imageUrl = _replaceFilename(url, meta["image"]);
           
           if (frames is List) {
             for(var frame in frames) {
@@ -41,29 +42,16 @@ class TextureAtlas {
               textureAtlas._frames.add(taf);
             }
           }
-
-          ImageElement imageElement = textureAtlas._imageElement;
-          StreamSubscription onLoadSubscription;
-          StreamSubscription onErrorSubscription;
           
-          onLoadSubscription = imageElement.onLoad.listen((e) {
-            onLoadSubscription.cancel();
-            onErrorSubscription.cancel();
+          BitmapData.load(imageUrl).then((BitmapData bitmapData) {
+            textureAtlas._bitmapData = bitmapData;
             completer.complete(textureAtlas);
-          });
-          
-          onErrorSubscription = imageElement.onError.listen((e) {
-            onLoadSubscription.cancel();
-            onErrorSubscription.cancel();
+          }).catchError((error) {
             completer.completeError(new StateError("Failed to load image."));
           });
-          
-          imageElement.src = _replaceFilename(url, meta["image"]);
-        
+
         }).catchError((error) {
-          
           completer.completeError(new StateError("Failed to load json file."));
-          
         });
         
         break;
@@ -73,10 +61,6 @@ class TextureAtlas {
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  ImageElement get imageElement => _imageElement;
-
   //-------------------------------------------------------------------------------------------------
 
   BitmapData getBitmapData(String name) {

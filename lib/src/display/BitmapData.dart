@@ -83,7 +83,7 @@ class BitmapData implements BitmapDrawable {
     _sourceWidth = textureAtlasFrame.frameWidth;
     _sourceHeight = textureAtlasFrame.frameHeight;
    
-    _source = textureAtlasFrame.textureAtlas.imageElement;
+    _source = textureAtlasFrame.textureAtlas._bitmapData._source;
   }
 
   //-------------------------------------------------------------------------------------------------
