@@ -185,6 +185,6 @@ class Rectangle {
     int rRight = this.right.ceil();
     int rBottom = this.bottom.ceil();
 
-    return new Rectangle(rLeft, rTop, rRight - rLeft + 1, rBottom - rTop + 1);
+    return new Rectangle(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 }
