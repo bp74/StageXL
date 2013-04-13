@@ -27,7 +27,9 @@ void main()
   //------------------------------------------------------------------
   // Load a TextureAtlas
   //------------------------------------------------------------------
-
+  
+  BitmapData.defaultLoadOptions = new BitmapDataLoadOptions(png:true, jpg:true, webp:true);
+    
   resourceManager = new ResourceManager();
   resourceManager.addTextureAtlas("ta1", "images/walk.json", TextureAtlasFormat.JSONARRAY);
   resourceManager.load().then((result) => startAnimation());
