@@ -61,10 +61,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num get skewX => _skewX;
   num get skewY => _skewY;  
   num get rotation => _rotation;
-  num get alpha => _alpha;
 
   bool get visible => _visible;
   bool get off => _off;
+  num get alpha => _alpha;  
   bool get cached => _cache != null;
   Mask get mask => _mask;
   String get name => _name;
@@ -123,10 +123,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   set skewX(num value) { _skewX = value.toDouble(); _transformationMatrixRefresh = true; }
   set skewY(num value) { _skewY = value.toDouble(); _transformationMatrixRefresh = true; }
   set rotation(num value) { _rotation = value.toDouble(); _transformationMatrixRefresh = true; }
-  set alpha(num value) { _alpha = value.toDouble(); _transformationMatrixRefresh = true; }
 
-  set visible(bool value) { _visible = value; _transformationMatrixRefresh = true; }
-  set off(bool value) { _off = value; if (value) _transformationMatrixRefresh = true; }
+  set visible(bool value) { _visible = value; }
+  set off(bool value) { _off = value;  }
+  set alpha(num value) { _alpha = value.toDouble(); }
 
   set mask(Mask value) { _mask = value; }
   set name(String value) { _name = value; }
