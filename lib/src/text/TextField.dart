@@ -173,7 +173,7 @@ class TextField extends InteractiveObject {
     for(String line in _linesText) {
       
       var metrics = _context.measureText(line);
-      var offsetX = 0;
+      var offsetX = 0.0;
 
       if (_defaultTextFormat.align == TextFormatAlign.CENTER || _defaultTextFormat.align == TextFormatAlign.JUSTIFY)
         offsetX = (_canvasWidth - metrics.width) / 2;
