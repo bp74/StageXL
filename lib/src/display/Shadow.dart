@@ -10,7 +10,7 @@ class Shadow {
   
   Shadow(this.color, this.offsetX , this.offsetY, this.blur);
   
-  void render(RenderState renderState, matrix) {
+  void render(RenderState renderState, Matrix matrix) {
 
     var context = renderState.context;
     context.shadowColor = _color2rgba(color);
