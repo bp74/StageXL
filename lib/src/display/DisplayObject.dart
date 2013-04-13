@@ -23,8 +23,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num _alpha = 1.0;
   bool _visible = true;
   bool _off = false; // disable rendering
+  
   Mask _mask = null;
   BitmapData _cache = null;
+  List<BitmapFilter> _filters = null;
   
   String _name = "";
   DisplayObjectContainer _parent = null;
@@ -65,10 +67,15 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   bool get visible => _visible;
   bool get off => _off;
   num get alpha => _alpha;  
-  bool get cached => _cache != null;
+  
   Mask get mask => _mask;
+  bool get cached => _cache != null;
+  
+  List<BitmapFilter> get filters => (_filters != null) 
+      ? _filters 
+      : _filters = new List<BitmapFilter>(); 
+  
   String get name => _name;
-
   DisplayObjectContainer get parent => _parent;
 
   //-------------------------------------------------------------------------------------------------
@@ -129,6 +136,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   set alpha(num value) { _alpha = value.toDouble(); }
 
   set mask(Mask value) { _mask = value; }
+  set filters(List<BitmapFilter> value) { _filters = value; }
   set name(String value) { _name = value; }
   
   //-------------------------------------------------------------------------------------------------
@@ -403,6 +411,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     _cache._destinationX = x;
     _cache._destinationY = y;
     _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y));
+
+    for(int i = 0; _filters != null && i < _filters.length; i++) {
+      _filters[i].apply(_cache, new Rectangle(0, 0, width, height), _cache, new Point.zero()); 
+    }
     
     if (debugBorder) {
       _cache.fillRect(new Rectangle(0, 0, width, 1), 0xFFFF00FF);

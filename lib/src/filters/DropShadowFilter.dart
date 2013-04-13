@@ -36,6 +36,13 @@ class DropShadowFilter extends BitmapFilter {
 
   void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
     
+    if (sourceBitmapData == destinationBitmapData && !hideObject) {
+      var newSourceBitmapData = new BitmapData(sourceRect.width, sourceRect.height);
+      newSourceBitmapData.copyPixels(sourceBitmapData, sourceRect, new Point.zero());
+      sourceBitmapData = newSourceBitmapData;
+      sourceRect = new Rectangle(0, 0, sourceBitmapData.width, sourceBitmapData.height);
+    }
+    
     var sourceContext = sourceBitmapData._getContext();
     var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
     var sourceData = sourceImageData.data;

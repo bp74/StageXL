@@ -178,4 +178,13 @@ class Rectangle {
 
     return new Rectangle(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
+  
+  Rectangle align() {
+    int rLeft = this.left.floor();
+    int rTop = this.top.floor();
+    int rRight = this.right.ceil();
+    int rBottom = this.bottom.ceil();
+
+    return new Rectangle(rLeft, rTop, rRight - rLeft + 1, rBottom - rTop + 1);
+  }
 }
