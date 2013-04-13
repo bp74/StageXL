@@ -26,6 +26,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   
   Mask _mask = null;
   BitmapData _cache = null;
+  Rectangle _cacheRectangle = null;
+  bool _cacheDebugBorder = false;
   List<BitmapFilter> _filters = null;
   
   String _name = "";
@@ -410,25 +412,34 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     _cache = new BitmapData(width, height, true, 0x00000000);
     _cache._destinationX = x;
     _cache._destinationY = y;
+    
+    _cacheRectangle = new Rectangle(x,y, width, height);
+    _cacheDebugBorder = debugBorder;
+    refreshCache();
+  }
+  
+  void refreshCache() {
+    
+    if (_cache == null) return;
+    
+    var x = _cacheRectangle.x;
+    var y = _cacheRectangle.y;
+    var width = _cacheRectangle.width;
+    var height = _cacheRectangle.height;
+    
+    _cache.clear();
     _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y));
-
+    
     for(int i = 0; _filters != null && i < _filters.length; i++) {
       _filters[i].apply(_cache, new Rectangle(0, 0, width, height), _cache, new Point.zero()); 
     }
     
-    if (debugBorder) {
+    if (_cacheDebugBorder) {
       _cache.fillRect(new Rectangle(0, 0, width, 1), 0xFFFF00FF);
       _cache.fillRect(new Rectangle(width - 1, 0, 1, height), 0xFFFF00FF);
       _cache.fillRect(new Rectangle(0, height - 1, width, 1), 0xFFFF00FF);
       _cache.fillRect(new Rectangle(0, 0, 1, height), 0xFFFF00FF);
-    }
-  }
-  
-  void refreshCache() {
-    if (_cache != null) {
-      _cache.clear();
-      _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - _cache._destinationX, - _cache._destinationY));
-    }
+    }      
   }
   
   void removeCache() {
