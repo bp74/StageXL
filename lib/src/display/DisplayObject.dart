@@ -430,27 +430,32 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     
     List<DisplayObject> ancestors = null;
 
-    if (event.captures || event.bubbles)
-      for(DisplayObject ancestor = _parent; ancestor != null; ancestor = ancestor._parent)
-        if (ancestor.hasEventListener(event.type)) {
+    if (event.captures || event.bubbles) {
+      for(DisplayObject ancestor = _parent; ancestor != null; ancestor = ancestor._parent) {
+        if (ancestor._hasEventListener(event.type, event.captures, event.bubbles)) {
           if (ancestors == null) ancestors = _displayObjectListPool.pop() as List<DisplayObject>;
           ancestors.add(ancestor);
         }
-
-    if (event.captures && ancestors != null)
-      for(int i = ancestors.length - 1 ; i >= 0; i--)
-        if (event.stopsPropagation == false)
-          ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.CAPTURING_PHASE);
-
-    if (event.stopsPropagation == false)
-      _dispatchEventInternal(event, this, this, EventPhase.AT_TARGET);
-
-    if (event.bubbles && ancestors != null)
-      for(int i = 0; i < ancestors.length; i++)
-        if (event.stopsPropagation == false)
-          ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.BUBBLING_PHASE);
+      }
+    }
     
-    if (ancestors != null) {
+    if (event.captures && ancestors != null) {
+      for(int i = ancestors.length - 1 ; i >= 0 && event.stopsPropagation == false; i--) {
+        ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.CAPTURING_PHASE);
+      }
+    }
+    
+    if (event.stopsPropagation == false) {
+      _dispatchEventInternal(event, this, this, EventPhase.AT_TARGET);
+    }
+    
+    if (event.bubbles && ancestors != null) {
+      for(int i = 0; i < ancestors.length && event.stopsPropagation == false; i++) {
+        ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.BUBBLING_PHASE);
+      }
+    }
+    
+    if (ancestors != null) { 
       ancestors.clear();
       _displayObjectListPool.push(ancestors);
     }

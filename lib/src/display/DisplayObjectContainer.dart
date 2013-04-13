@@ -60,7 +60,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       child.dispatchEvent(new Event(Event.ADDED, true));
 
       if (this.stage != null)
-        _dispatchEventOnChildren(child, new Event(Event.ADDED_TO_STAGE));
+        _dispatchEventDescendants(child, new Event(Event.ADDED_TO_STAGE));
     }
   }
 
@@ -88,7 +88,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     child.dispatchEvent(new Event(Event.REMOVED, true));
 
     if (this.stage != null)
-      _dispatchEventOnChildren(child, new Event(Event.REMOVED_FROM_STAGE));
+      _dispatchEventDescendants(child, new Event(Event.REMOVED_FROM_STAGE));
 
     child._setParent(null);
     _children.removeAt(index);
@@ -284,18 +284,32 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _dispatchEventOnChildren(DisplayObject displayObject, Event event) {
+  _collectDescendants(DisplayObject displayObject, List<DisplayObject> descendants) {
     
-    displayObject.dispatchEvent(event);
-
+    descendants.add(displayObject);
+    
     if (displayObject is DisplayObjectContainer) {
       
       var displayObjectContainer = displayObject as DisplayObjectContainer;
-      var children = displayObjectContainer._children.toList(growable:false);
-
-      for(int i = 0; i < children.length; i++)
-        _dispatchEventOnChildren(children[i], event);
+      var children = displayObjectContainer._children;
+    
+      for(int i = 0; i < children.length; i++) {
+        _collectDescendants(children[i], descendants);
+      }
     }
+  }
+  
+  _dispatchEventDescendants(DisplayObject displayObject, Event event) {
+
+    var descendants = _displayObjectListPool.pop() as List<DisplayObject>;
+    _collectDescendants(displayObject, descendants);
+
+    for(int i = 0; i < descendants.length; i++) {
+      descendants[i].dispatchEvent(event);
+    }
+    
+    descendants.clear();
+    _displayObjectListPool.push(descendants);
   }
 
 

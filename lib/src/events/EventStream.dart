@@ -22,10 +22,11 @@ class _EventStream<T extends Event> extends Stream<T> {
 
     var subscription = new _EventStreamSubscription<T>(this, onData);
     
-    if (_subscriptionsCount == _subscriptions.length)
+    if (_subscriptionsCount == _subscriptions.length) {
       _subscriptions.add(subscription);
-    else
+    } else {
       _subscriptions[_subscriptionsCount] = subscription;
+    }
     
     _subscriptionsCount++;
     
@@ -40,13 +41,24 @@ class _EventStream<T extends Event> extends Stream<T> {
   void _onSubscriptionCancel(StreamSubscription subscription) {
     
     for(int i = 0; i < _subscriptionsCount; i++) {
-      if (_subscriptions[i] == subscription) {
+      if (identical(_subscriptions[i], subscription)) {
         _subscriptions[i] = null;
         break;
       }
     }
   }
   
+  //-----------------------------------------------------------------------------------------------
+ 
+  bool get _hasSubscriptions {
+    
+    for(var i = 0; i < _subscriptionsCount; i++)
+      if (_subscriptions[i] != null) 
+        return true;
+    
+    return false;
+  }
+    
   //-----------------------------------------------------------------------------------------------
   
   void _cancelSubscriptions() {
