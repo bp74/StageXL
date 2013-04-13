@@ -121,5 +121,5 @@ part 'src/util/ObjectPool.dart';
 //-----------------------------------------------------------------------------
 
 bool _isLittleEndianSystem = _checkLittleEndianSystem();
-
+Future<bool> _isWebpSupported = _checkWebpSupport();
 

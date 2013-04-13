@@ -104,8 +104,6 @@ bool _checkLittleEndianSystem() {
 
 Future<bool> _checkWebpSupport() {
   
-  // ToDo: make this an one time operation.
-  
   var completer = new Completer<bool>();
   var image = new ImageElement();
 

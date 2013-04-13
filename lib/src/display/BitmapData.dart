@@ -118,7 +118,7 @@ class BitmapData implements BitmapDrawable {
     
     //---------------------------
     
-    _checkWebpSupport().then((bool webpSupported) {
+    _isWebpSupported.then((bool webpSupported) {
       
       var regex = new RegExp(r"(png|jpg|jpeg)$", multiLine:false, caseSensitive:true);
       var match = regex.firstMatch(url);
