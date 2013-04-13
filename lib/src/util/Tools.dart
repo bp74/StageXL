@@ -102,6 +102,26 @@ bool _checkLittleEndianSystem() {
 
 //-------------------------------------------------------------------------------------------------
 
+Future<bool> _checkWebpSupport() {
+  
+  // ToDo: make this an one time operation.
+  
+  var completer = new Completer<bool>();
+  var image = new ImageElement();
+
+  void checkImage() {
+    completer.complete(image.width == 2 && image.height == 2); 
+  }
+ 
+  image.onLoad.listen((e) => checkImage());
+  image.onError.listen((e) => checkImage());
+  image.src = "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA";
+
+  return completer.future;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void _premultiplyAlpha(List<int> data) {
   
   if (_isLittleEndianSystem) {

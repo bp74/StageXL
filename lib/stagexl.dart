@@ -59,6 +59,7 @@ part 'src/display/Stage.dart';
 part 'src/display/Sprite.dart';
 part 'src/display/Bitmap.dart';
 part 'src/display/BitmapData.dart';
+part 'src/display/BitmapDataLoadOptions.dart';
 part 'src/display/BitmapDrawable.dart';
 part 'src/display/MovieClip.dart';
 part 'src/display/ButtonHelper.dart';

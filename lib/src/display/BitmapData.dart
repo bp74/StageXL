@@ -19,6 +19,8 @@ class BitmapData implements BitmapDrawable {
   CanvasImageSource _source;
   CanvasRenderingContext2D _context;
 
+  static BitmapDataLoadOptions defaultLoadOptions = new BitmapDataLoadOptions(png:true, jpg:true, webp:false);
+  
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
@@ -87,7 +89,9 @@ class BitmapData implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<BitmapData> load(String url) {
+  static Future<BitmapData> load(String url, [BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
+    
+    if (bitmapDataLoadOptions == null) bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
     
     Completer<BitmapData> completer = new Completer<BitmapData>();
 
@@ -107,7 +111,25 @@ class BitmapData implements BitmapDrawable {
       completer.completeError(new StateError("Error loading image."));
     });
 
-    imageElement.src = url;
+    if (bitmapDataLoadOptions.webp == false) {
+      imageElement.src = url;
+      return completer.future;
+    } 
+    
+    //---------------------------
+    
+    _checkWebpSupport().then((bool webpSupported) {
+      
+      var regex = new RegExp(r"(png|jpg|jpeg)$", multiLine:false, caseSensitive:true);
+      var match = regex.firstMatch(url);
+      
+      if (webpSupported == false || match == null) {
+        imageElement.src = url;
+      } else {
+        imageElement.src = url.substring(0, url.length - match.group(1).length) + "webp";
+      }
+    });
+   
     return completer.future;
   }
 

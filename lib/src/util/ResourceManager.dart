@@ -35,10 +35,10 @@ class ResourceManager {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
  
-  void addBitmapData(String name, String url) {
+  void addBitmapData(String name, String url, [BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
     
     var resource = new ResourceManagerResource("BitmapData", name, url);
-    resource._load(BitmapData.load(url));
+    resource._load(BitmapData.load(url, bitmapDataLoadOptions));
     
     _addResourceManagerResource(resource);
   }

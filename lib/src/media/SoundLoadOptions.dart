@@ -2,16 +2,29 @@ part of stagexl;
 
 class SoundLoadOptions {
   
-  /// Fallback to mp3-file if the browser does not support the supplied file type.
+  /**
+   *  The application provides *mp3* files as an option to load audio files.
+   */
   bool mp3;
-  /// Fallback to mp4-file if the browser does not support the supplied file type.
+  
+  /**
+   *  The application provides *mp4* files as an option to load audio files.
+   */
   bool mp4;
-  /// Fallback to ogg-file if the browser does not support the supplied file type.
+  
+  /**
+   *  The application provides *ogg* files as an option to load audio files.
+   */
   bool ogg;
-  /// Fallback to wav-file if the browser does not support the supplied file type.  
+  
+  /**
+   *  The application provides *wav* files as an option to load audio files.
+   */
   bool wav;
   
-  /// Ignore all loading errors.
+  /**
+   *  Ignore loading errors and use a silent audio sample instead.
+   */
   bool ignoreErrors;
   
   SoundLoadOptions({
