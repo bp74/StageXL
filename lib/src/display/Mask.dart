@@ -22,7 +22,9 @@ class Mask {
     return new _ShapeMask(shape);
   }
 
-  void render(RenderState renderState) {
+  void render(RenderState renderState, Matrix matrix) {
+    var context = renderState.context;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
   }
 }
 
@@ -35,9 +37,11 @@ class _RectangleMask extends Mask {
   
   _RectangleMask(num x, num y, num width, num height) : _rectangle = new Rectangle(x, y, width, height);
   
-  void render(RenderState renderState) {
+  void render(RenderState renderState, Matrix matrix) {
     
     var context = renderState.context;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    
     context.beginPath();
     context.rect(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
     context.clip();
@@ -52,9 +56,11 @@ class _CirlceMask extends Mask {
   
   _CirlceMask(num x, num y, num radius) : _circle = new Circle(x, y, radius);
   
-  void render(RenderState renderState) {
+void render(RenderState renderState, Matrix matrix) {
     
     var context = renderState.context;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty); 
+    
     context.beginPath();
     context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false);
     context.clip();
@@ -73,9 +79,11 @@ class _CustomMask extends Mask {
       throw new ArgumentError("A custom mask needs at least 3 points.");
   }
   
-  void render(RenderState renderState) {
+  void render(RenderState renderState, Matrix matrix) {
     
     var context = renderState.context;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    
     context.beginPath();
     for(int i = 0; i < _points.length; i++)
       context.lineTo(_points[i].x, _points[i].y);
@@ -91,14 +99,15 @@ class _ShapeMask extends Mask {
   
   _ShapeMask(Shape shape) : _shape = shape;
   
-  void render(RenderState renderState) {
+  void render(RenderState renderState, Matrix matrix) {
     
     var context = renderState.context;
-    var matrix = _shape._transformationMatrix;
+    var mtx = matrix.clone();
+    mtx.concat(_shape._transformationMatrix);
     
     context.beginPath();
     context.save();
-    context.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    context.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
     
     _shape.graphics._drawPath(context);
     
