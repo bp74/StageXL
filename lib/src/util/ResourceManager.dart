@@ -43,10 +43,10 @@ class ResourceManager {
     _addResourceManagerResource(resource);
   }
 
-  void addSound(String name, String url) {
+  void addSound(String name, String url, [SoundLoadOptions soundFileSupport = null]) {
     
     var resource = new ResourceManagerResource("Sound", name, url);
-    resource._load(Sound.load(url));
+    resource._load(Sound.load(url, soundFileSupport));
     
     _addResourceManagerResource(resource);
   }

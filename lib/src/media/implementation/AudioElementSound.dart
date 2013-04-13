@@ -22,13 +22,19 @@ class AudioElementSound extends Sound {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> load(String url) {
-    
+  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
+
+    if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
+
     var sound = new AudioElementSound();
     var audio = sound._audio;
-    var audioUrls = SoundMixer._getOptimalAudioUrls(url);
+    var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
     var loadCompleter = new Completer<Sound>();
-
+    
+    if (audioUrls.length == 0) {
+      return MockSound.load(url, soundLoadOptions);
+    }
+    
     StreamSubscription onCanPlayThroughSubscription;
     StreamSubscription onErrorSubscription;
 
@@ -45,7 +51,12 @@ class AudioElementSound extends Sound {
       } else {
         onCanPlayThroughSubscription.cancel();
         onErrorSubscription.cancel();
-        loadCompleter.completeError(new StateError("Failed to load audio."));
+        
+        if (soundLoadOptions.ignoreErrors) {
+          MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
+        } else {
+          loadCompleter.completeError(new StateError("Failed to load audio."));
+        }
       }
     };
 

@@ -83,6 +83,7 @@ part 'src/displayEx/Flump.dart';
 
 part 'src/media/Sound.dart';
 part 'src/media/SoundChannel.dart';
+part 'src/media/SoundLoadOptions.dart';
 part 'src/media/SoundTransform.dart';
 part 'src/media/SoundMixer.dart';
 part 'src/media/implementation/AudioElementSound.dart';

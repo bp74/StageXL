@@ -13,19 +13,29 @@ class WebAudioApiSound extends Sound {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> load(String url) {
-    
+  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
+
+    if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
+
     var sound = new WebAudioApiSound();
     var loadCompleter = new Completer<Sound>();
-    var audioUrls = SoundMixer._getOptimalAudioUrls(url);
+    var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
     var audioContext = SoundMixer._audioContext;
+   
+    if (audioUrls.length == 0) {
+      return MockSound.load(url, soundLoadOptions);
+    }
     
     audioRequestFinished(request) {
       audioContext.decodeAudioData(request.response, (AudioBuffer buffer) {
         sound._buffer = buffer;
         loadCompleter.complete(sound);
       }, (error) {
-        loadCompleter.completeError(new StateError("Failed to decode audio."));
+        if (soundLoadOptions.ignoreErrors) {
+          MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
+        } else {
+          loadCompleter.completeError(new StateError("Failed to decode audio."));
+        }
       });
     }
     
@@ -35,7 +45,11 @@ class WebAudioApiSound extends Sound {
         .then(audioRequestFinished)
         .catchError(audioRequestNext);
       } else {
-        loadCompleter.completeError(new StateError("Failed to load audio."));
+        if (soundLoadOptions.ignoreErrors) {
+          MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
+        } else {
+          loadCompleter.completeError(new StateError("Failed to load audio."));
+        }
       }
     }
 

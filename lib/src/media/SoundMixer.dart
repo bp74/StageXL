@@ -71,13 +71,13 @@ class SoundMixer {
   
   //-------------------------------------------------------------------------------------------------
   
-  static List<String> _getOptimalAudioUrls(String originalUrl) {
+  static List<String> _getOptimalAudioUrls(String originalUrl, SoundLoadOptions soundLoadOptions) {
 
     var regex = new RegExp(r"(mp3|mp4|ogg|wav)$", multiLine:false, caseSensitive:true);
     var availableTypes = _supportedTypes.toList();    
     var match = regex.firstMatch(originalUrl);
     var urls = new List<String>();
-
+    
     if (match == null) {
       throw new ArgumentError("Unsupported file extension.");
     }
@@ -85,6 +85,11 @@ class SoundMixer {
     if (availableTypes.length == 0) {
       throw new UnsupportedError("This browser supports no known audio codec.");
     }
+    
+    if (!soundLoadOptions.mp3) availableTypes.remove("mp3");
+    if (!soundLoadOptions.mp4) availableTypes.remove("mp4");
+    if (!soundLoadOptions.ogg) availableTypes.remove("ogg");
+    if (!soundLoadOptions.wav) availableTypes.remove("wav");
     
     var fileType = match.group(1);
     

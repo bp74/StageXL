@@ -9,7 +9,7 @@ class MockSound extends Sound {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> load(String url) {
+  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
     return new Future<Sound>.of(() => new MockSound());
   }
 
