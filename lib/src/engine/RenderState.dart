@@ -57,22 +57,23 @@ class RenderState {
   //-------------------------------------------------------------------------------------------------
 
   void renderDisplayObject(DisplayObject displayObject) {
+
+    var matrix = displayObject._transformationMatrix;
+    var alpha = displayObject._alpha;
+    var mask = displayObject._mask;
+    var shadow = displayObject._shadow;
+    var cache = displayObject._cache;
     
     var d1 = _depth;
     var d2 = _depth + 1;
     var m1 = _matrices[d1];
     var m2 = _matrices[d2];
     var a1 = _alphas[d1];
-    var a2 = _alphas[d2] = displayObject._alpha * a1;
-    var matrix = m1;
+    var a2 = _alphas[d2] = alpha * a1;
     
-    var mask = displayObject._mask;
-    var cache = displayObject._cache;
-    var shadow = displayObject._shadow;
+    m2.copyFromAndConcat(matrix, m1);
+    _depth = d2;
     
-    _depth = d2;    
-    m2.copyFromAndConcat(displayObject._transformationMatrix, m1);
-
     // save context 
     if (mask != null || shadow != null) {
       _context.save();      
