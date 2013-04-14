@@ -26,7 +26,7 @@ void main() {
   // Use the Resource class to load some Bitmaps
   //------------------------------------------------------------------
 
-  BitmapData.defaultLoadOptions = new BitmapDataLoadOptions(png:true, jpg:true, webp:true);
+  BitmapData.defaultLoadOptions.webp = true;
   
   resourceManager = new ResourceManager()
     ..addBitmapData("house", "../common/images/House.png")
