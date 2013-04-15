@@ -5,7 +5,7 @@ class RenderState {
   final CanvasRenderingContext2D _context;
   final List<Matrix> _matrices = new List<Matrix>(100);
   final List<double> _alphas = new List<double>(100);
-
+  final List<String> _composite = new List<String>(100);
   int _depth = 0;
   num _currentTime = 0.0;
   num _deltaTime = 0.0;
@@ -16,16 +16,15 @@ class RenderState {
     for(int i = 0; i < 100; i++) {
       _matrices[i] = new Matrix.fromIdentity();
       _alphas[i] = 1.0;
+      _composite[i] = CompositeOperation.SOURCE_OVER;
     }
    
-    if (matrix != null)
-      _matrices[0].copyFrom(matrix);
-    
     var m = _matrices[0];
-    var a = _alphas[0];
+    if (matrix != null) m.copyFrom(matrix);
     
     _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
-    _context.globalAlpha = a;
+    _context.globalAlpha = _alphas[0];
+    _context.globalCompositeOperation = _composite[0];
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -39,18 +38,17 @@ class RenderState {
 
   void reset([Matrix matrix, num currentTime, num deltaTime]) {
     
-    if (matrix != null)
-      _matrices[0].copyFrom(matrix);
-    
     _depth = 0;
     _currentTime = ?currentTime ? currentTime : 0.0;
     _deltaTime = ?deltaTime ? deltaTime : 0.0;
-    
+
     var m = _matrices[0];
-    var a = _alphas[0];
+    if (matrix != null) m.copyFrom(matrix);
     
     _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
-    _context.globalAlpha = a;
+    _context.globalAlpha = _alphas[0];
+    _context.globalCompositeOperation = _composite[0];
+    
     _context.clearRect(0, 0, _context.canvas.width, _context.canvas.height);
   }
  
@@ -63,6 +61,7 @@ class RenderState {
     var mask = displayObject._mask;
     var shadow = displayObject._shadow;
     var cache = displayObject._cache;
+    var composite = displayObject._compositeOperation;
     
     var d1 = _depth;
     var d2 = _depth + 1;
@@ -70,6 +69,8 @@ class RenderState {
     var m2 = _matrices[d2];
     var a1 = _alphas[d1];
     var a2 = _alphas[d2] = alpha * a1;
+    var c1 = _composite[d1];
+    var c2 = _composite[d2] = ((composite == null) ? c1 : composite);
     
     m2.copyFromAndConcat(matrix, m1);
     _depth = d2;
@@ -114,8 +115,10 @@ class RenderState {
     }
 
     // render DisplayObject
+    
     _context.setTransform(m2.a, m2.b, m2.c, m2.d, m2.tx, m2.ty);
     _context.globalAlpha = a2;
+    _context.globalCompositeOperation = c2;
     
     if (cache != null) {
       cache.render(this);

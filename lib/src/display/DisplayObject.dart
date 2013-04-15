@@ -30,6 +30,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   bool _cacheDebugBorder = false;
   List<BitmapFilter> _filters = null;
   Shadow _shadow = null;
+  String _compositeOperation = null;
   
   String _name = "";
   DisplayObjectContainer _parent = null;
@@ -79,6 +80,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       : _filters = new List<BitmapFilter>(); 
   
   Shadow get shadow => _shadow;
+  String get compositeOperation => _compositeOperation;
   
   String get name => _name;
   DisplayObjectContainer get parent => _parent;
@@ -143,6 +145,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   set mask(Mask value) { _mask = value; }
   set filters(List<BitmapFilter> value) { _filters = value; }
   set shadow(Shadow value) { _shadow = value; }
+  set compositeOperation(String value) { _compositeOperation = value; }
+  
   set name(String value) { _name = value; }
   
   //-------------------------------------------------------------------------------------------------

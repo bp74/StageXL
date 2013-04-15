@@ -74,6 +74,7 @@ part 'src/display/CapsStyle.dart';
 part 'src/display/JointStyle.dart';
 part 'src/display/Mask.dart';
 part 'src/display/Shadow.dart';
+part 'src/display/CompositeOperation.dart';
 
 part 'src/displayEx/FlipBook.dart';
 part 'src/displayEx/Gauge.dart';
