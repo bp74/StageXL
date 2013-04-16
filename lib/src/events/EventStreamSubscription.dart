@@ -32,11 +32,21 @@ class _EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   }
 
   void onError(void handleError(error)) {
+    // This stream has no errors.
   }
 
   void onDone(void handleDone()) {
+    // This stream is never done.    
   }
 
+  //-----------------------------------------------------------------------------------------------
+  
+  Future asFuture([var futureValue]) {
+    // This stream is never done and has no errors.
+    var completer = new Completer();
+    return completer.future;
+  }
+  
   //-----------------------------------------------------------------------------------------------
   
   bool get _paused => _pauseCount > 0;
