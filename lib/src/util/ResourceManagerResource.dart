@@ -34,9 +34,9 @@ class ResourceManagerResource {
     _loader = loader.then((value) {
       _resource = value;
       _error = null;
-    }, onError: (AsyncError error) {
+    }, onError: (error) {
       _resource = null;
-     _error = error.error;
+     _error = error;
     });
   }
 }

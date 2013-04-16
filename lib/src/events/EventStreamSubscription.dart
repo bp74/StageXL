@@ -31,7 +31,7 @@ class _EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
     _onData = handleData;
   }
 
-  void onError(void handleError(AsyncError error)) {
+  void onError(void handleError(error)) {
   }
 
   void onDone(void handleDone()) {
