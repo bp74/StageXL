@@ -18,7 +18,7 @@ class _EventStream<T extends Event> extends Stream<T> {
 
   //-----------------------------------------------------------------------------------------------
   
-  StreamSubscription<T> listen(void onData(T event), {void onError(error), void onDone(), bool unsubscribeOnError}) {
+  StreamSubscription<T> listen(void onData(T event), {void onError(error), void onDone(), bool cancelOnError:false}) {
 
     var subscription = new _EventStreamSubscription<T>(this, onData);
     
