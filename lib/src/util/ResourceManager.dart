@@ -69,7 +69,7 @@ class ResourceManager {
 
   void addText(String name, String text) {
     var resource = new ResourceManagerResource("Text", name, "");
-    resource._load(new Future.immediate(text));
+    resource._load(new Future.value(text));
     
     _addResourceManagerResource(resource);
   }
