@@ -38,7 +38,7 @@ class BitmapData implements BitmapDrawable {
     
     var canvas = new CanvasElement(width: _width, height: _height);
 
-    _context = canvas.context2d;
+    _context = canvas.context2D;
     _context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
     _context.fillRect(0, 0, _width, _height);
 
@@ -424,7 +424,7 @@ class BitmapData implements BitmapDrawable {
       
       var canvas = new CanvasElement(width: _width, height: _height);
 
-      _context = canvas.context2d;
+      _context = canvas.context2D;
 
       switch(_renderMode) {
         

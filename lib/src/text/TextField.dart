@@ -203,7 +203,7 @@ class TextField extends InteractiveObject {
 
       if (_canvas == null) {
         _canvas = new CanvasElement(width: canvasWidthInt, height: canvasHeightInt);
-        _context = _canvas.context2d;
+        _context = _canvas.context2D;
       }
 
       if (_canvas.width != canvasWidthInt) _canvas.width = canvasWidthInt;

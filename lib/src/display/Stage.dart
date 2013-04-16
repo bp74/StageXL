@@ -88,7 +88,7 @@ class Stage extends DisplayObjectContainer {
     _canvas = canvas;
     _canvas.focus();
 
-    _context = canvas.context2d;
+    _context = canvas.context2D;
     _canvasWidth = _defaultWidth = canvas.width;
     _canvasHeight = _defaultHeight = canvas.height;
     
