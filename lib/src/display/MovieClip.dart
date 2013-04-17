@@ -86,7 +86,7 @@ class MovieClip extends Sprite
    * The Timeline that is associated with this MovieClip. This is created automatically when the MovieClip
    * instance is initialized.
    */
-  Timeline timeline = null;
+  Timeline timeline;
 
   /**
    * If true, the MovieClip's position will not advance when ticked.
@@ -115,7 +115,7 @@ class MovieClip extends Sprite
   int _synchOffset = 0;  
   num _prevPos = -1; // TODO: evaluate using a ._reset Boolean prop instead of -1.
   num _prevPosition = 0;
-  Map<int, int> _managed = new Map<int, int>();
+  final Map<int, int> _managed = new Map<int, int>();
   Map<String, dynamic> props;
   
   /**
@@ -396,7 +396,7 @@ class Timeline
 // private properties:
   
   bool _paused = false;
-  List<TimelineTween> _tweens = [];
+  final List<TimelineTween> _tweens = new List<TimelineTween>();
   Map<String, num> _labels;
   num _prevPosition = 0;
   num _prevPos = -1;
@@ -843,10 +843,10 @@ class TimelineTween
 // private properties:
   
   bool _paused = false;
-  Map<String, dynamic> _curQueueProps = {};
-  Map<String, dynamic> _initQueueProps = {};
-  List<TimelineStep> _steps = [];
-  List<TimelineAction> _actions =  [];
+  final Map<String, dynamic> _curQueueProps = {};
+  final Map<String, dynamic> _initQueueProps = {};
+  final List<TimelineStep> _steps = new List<TimelineStep>();
+  final List<TimelineAction> _actions = new List<TimelineAction>();
   
   /**
    * Raw position.
