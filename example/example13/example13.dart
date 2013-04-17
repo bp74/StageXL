@@ -44,6 +44,9 @@ class Astronaut extends MovieClip
         .to({"x":0, "rotation":0}, 5) // animate during 5 frames
         .to({"alpha":0}, 20) // fade out during 20 frames
         );
+    
+    // Note: using the timeline overrides the behavior of addChild/removeChild
+    // and everything must be added through timeline.addTween. 
   }
 }
 
