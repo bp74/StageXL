@@ -332,6 +332,10 @@ class BitmapData implements BitmapDrawable {
             _sourceX, _sourceY, _sourceHeight, _sourceWidth, 
             0.0 , 0.0, _destinationHeight, _destinationWidth);
         break;
+        
+      case 3:
+        renderStateContext.drawImageScaled(_source, _destinationX, _destinationY, _destinationWidth, _destinationHeight);
+        break;
     }
   }
 

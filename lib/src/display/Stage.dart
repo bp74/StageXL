@@ -53,6 +53,13 @@ class _Touch {
 
 class Stage extends DisplayObjectContainer {
   
+  // handle non-automatic hi-dpi canvas scaling (ie. Chrome VS Safari)
+  static bool autoHiDpi = true;
+  static num _canvasRatio = 1.0;
+  static get canvasRatio => _canvasRatio;
+  
+  //-------------------------------------------------------------------------------------------------
+  
   CanvasElement _canvas;
   CanvasRenderingContext2D _context;
   int _defaultWidth, _defaultHeight;
@@ -89,8 +96,12 @@ class Stage extends DisplayObjectContainer {
     _canvas.focus();
 
     _context = canvas.context2D;
-    _canvasWidth = _defaultWidth = canvas.width;
-    _canvasHeight = _defaultHeight = canvas.height;
+    // do we need explicit hi-dpi scaling?
+    _canvasRatio = Stage.autoHiDpi ? html.window.devicePixelRatio / _context.backingStorePixelRatio : 1.0;
+    
+    _defaultWidth = canvas.width;
+    _defaultHeight = canvas.height;
+    _setCanvasSize(_defaultWidth, _defaultHeight);
     
     _clientWidth = canvas.clientWidth;
     _clientHeight = canvas.clientHeight;
@@ -314,14 +325,37 @@ class Stage extends DisplayObjectContainer {
         canvasPivotX - clientLeft , canvasPivotY - clientTop);
 
     if (_canvasWidth != canvasWidth || _canvasHeight != canvasHeight) {
-      _canvas.width = _canvasWidth = canvasWidth;
-      _canvas.height = _canvasHeight = canvasHeight;
+      _setCanvasSize(canvasWidth, canvasHeight);
+    }
+    
+    // explicit hi-dpi scaling
+    if (canvasRatio != 1.0) {
+      _stageTransformation.scale(canvasRatio, canvasRatio);
     }
     
     if (_clientWidth != clientWidth || _clientHeight != clientHeight) {
       _clientWidth = clientWidth;
       _clientHeight = clientHeight;
       dispatchEvent(new Event(Event.RESIZE));
+    }
+  }
+  
+  //-------------------------------------------------------------------------------------------------
+  
+  _setCanvasSize(int canvasWidth, int canvasHeight) {
+    
+    if (canvasRatio == 1.0) {
+      _canvas.width = _canvasWidth = canvasWidth;
+      _canvas.height = _canvasHeight = canvasHeight;
+    }
+    else {
+      // explicit hi-dpi scaling
+      _canvasWidth = canvasWidth;
+      _canvasHeight = canvasHeight;
+      _canvas.width = (_canvasWidth * canvasRatio).round();
+      _canvas.height = (_canvasHeight * canvasRatio).round();
+      _canvas.style.width = "${_canvasWidth}px";
+      _canvas.style.height = "${_canvasHeight}px";
     }
   }
   

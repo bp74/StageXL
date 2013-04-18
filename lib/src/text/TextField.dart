@@ -110,7 +110,12 @@ class TextField extends InteractiveObject {
   void render(RenderState renderState) {
     
     _canvasRefresh();
-
+  
+    if (Stage.canvasRatio != 1.0) {
+      // explicit hi-dpi scaling
+      num ratio = 1.0 / Stage.canvasRatio;
+      renderState._context.scale(ratio, ratio);
+    }
     renderState._context.drawImage(_canvas, 0.0, 0.0);
   }
 
@@ -198,12 +203,14 @@ class TextField extends InteractiveObject {
       
       _canvasRefreshPending = false;
 
-      int canvasWidthInt = _canvasWidth.ceil().toInt();
-      int canvasHeightInt =  _canvasHeight.ceil().toInt();
+      num ratio = Stage.canvasRatio;      
+      int canvasWidthInt = (_canvasWidth * ratio).ceil().toInt();
+      int canvasHeightInt =  (_canvasHeight * ratio).ceil().toInt();
 
       if (_canvas == null) {
         _canvas = new CanvasElement(width: canvasWidthInt, height: canvasHeightInt);
         _context = _canvas.context2D;
+        _context.scale(ratio, ratio);
       }
 
       if (_canvas.width != canvasWidthInt) _canvas.width = canvasWidthInt;

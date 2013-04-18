@@ -417,7 +417,17 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
     
-    _cache = new BitmapData(width, height, true, 0x00000000);
+    if (Stage.canvasRatio != 1.0) {
+      // explicit hi-dpi scaling
+      num ratio = Stage.canvasRatio;
+      _cache = new BitmapData((width*ratio).ceil(), (height*ratio).ceil(), true, 0x00000000);
+      _cache._destinationWidth = width;
+      _cache._destinationHeight = height;
+      _cache._renderMode = 3;
+    }
+    else {
+      _cache = new BitmapData(width, height, true, 0x00000000);
+    }
     _cache._destinationX = x;
     _cache._destinationY = y;
     
@@ -434,9 +444,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     var y = _cacheRectangle.y;
     var width = _cacheRectangle.width;
     var height = _cacheRectangle.height;
+    num ratio = Stage.canvasRatio;
     
     _cache.clear();
-    _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y));
+    _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y)..scale(ratio, ratio));
     
     for(int i = 0; _filters != null && i < _filters.length; i++) {
       _filters[i].apply(_cache, new Rectangle(0, 0, width, height), _cache, new Point.zero()); 
