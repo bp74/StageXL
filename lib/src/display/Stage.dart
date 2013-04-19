@@ -96,8 +96,15 @@ class Stage extends DisplayObjectContainer {
     _canvas.focus();
 
     _context = canvas.context2D;
+
     // do we need explicit hi-dpi scaling?
-    _canvasRatio = Stage.autoHiDpi ? html.window.devicePixelRatio / _context.backingStorePixelRatio : 1.0;
+    if (Stage.autoHiDpi) {
+      var devicePixelRatio = html.window.devicePixelRatio;
+      var backingStorePixelRatio = _context.backingStorePixelRatio;
+      if (devicePixelRatio == null) devicePixelRatio = 1.0;
+      if (backingStorePixelRatio == null) backingStorePixelRatio = 1.0;
+      _canvasRatio =  devicePixelRatio / backingStorePixelRatio;
+    }
     
     _defaultWidth = canvas.width;
     _defaultHeight = canvas.height;
