@@ -18,11 +18,7 @@ class AlphaMaskFilter extends BitmapFilter {
 
   void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
     
-    var sourceContext = sourceBitmapData._getContext();
-    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-    
-    var destinationContext = destinationBitmapData._getContext();
-    destinationContext.putImageData(sourceImageData, destinationPoint.x, destinationPoint.y);
+    destinationBitmapData.copyPixels(sourceBitmapData, sourceRect, destinationPoint);
     
     var alphaRoot = new Sprite();
     var alphaWarp = new Warp();

@@ -196,10 +196,13 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  void copyPixels(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, [BitmapData alphaBitmapData = null, Point alphaPoint = null, bool mergeAlpha = false]) {
+  void copyPixels(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint) {
     
-    var imageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-    _getContext().putImageData(imageData, destPoint.x, destPoint.y);
+    var sourceContext = sourceBitmapData._getContext();
+    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+    
+    var destinationContext = _getContext();
+    destinationContext.putImageData(sourceImageData, destPoint.x, destPoint.y);
   }
 
   //-------------------------------------------------------------------------------------------------
