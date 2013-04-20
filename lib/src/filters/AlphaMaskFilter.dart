@@ -2,16 +2,17 @@ part of stagexl;
 
 class AlphaMaskFilter extends BitmapFilter {
   
-  BitmapData _alphaBitmapData;
-  Matrix _matrix;
+  final BitmapData _alphaBitmapData;
+  final Matrix _matrix;
   
-  AlphaMaskFilter(BitmapData alphaBitmapData, [Matrix matrix]) {
-    _alphaBitmapData = alphaBitmapData;
-    _matrix = (matrix != null) ? matrix : _identityMatrix;
-  }
+  AlphaMaskFilter(BitmapData alphaBitmapData, [Matrix matrix]) :
+    _alphaBitmapData = alphaBitmapData,
+    _matrix = (matrix != null) ? matrix : new Matrix.fromIdentity();
+  
+  Matrix get matrix => _matrix;
   
   BitmapFilter clone() {
-    return new AlphaMaskFilter(_alphaBitmapData, _matrix);
+    return new AlphaMaskFilter(_alphaBitmapData, _matrix.clone());
   }
   
   //-----------------------------------------------------------------------------------------------
