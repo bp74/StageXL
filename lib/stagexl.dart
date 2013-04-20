@@ -51,6 +51,7 @@ part 'src/filters/BlurFilter.dart';
 part 'src/filters/ColorMatrixFilter.dart';
 part 'src/filters/DropShadowFilter.dart';
 part 'src/filters/GlowFilter.dart';
+part 'src/filters/AlphaMaskFilter.dart';
 
 part 'src/display/DisplayObject.dart';
 part 'src/display/InteractiveObject.dart';
