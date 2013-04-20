@@ -6,7 +6,7 @@ typedef num EaseFunction(num ratio);
  * The [TransitionFunction] class provides common transition functions used for
  * [Transition] and [Tween] animations.
  *
- * A transition function takes the [ratio] which is in the range from 0.0 to 1.0
+ * A transition function takes the ratio argument in a range of 0.0 to 1.0
  * and calculates the progress of the transitions.
  *
  * The most simple transition function is a linear transition:

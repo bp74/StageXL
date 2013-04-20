@@ -1,7 +1,7 @@
 part of stagexl;
 
 /**
- * The [Transition] class animates a value by calling the [onUpdate] function continuously.
+ * The [Transition] class animates a value by calling the onUpdate function continuously.
  *
  *     var transition = new Transition(0.0, 100.0, 1.0, TransitionFunction.linear);
  *     transition.onUpdate = (value) => print('the value changed to $value');
