@@ -13,7 +13,7 @@ typedef num EaseFunction(num ratio);
  *     var linear = (ratio) => ratio;
  *
  * Overview of all available transition types:
- * <http://www.stagexl.org/docs/juggler/transitions.html>
+ * <http://www.stagexl.org/docs/transitions.html>
  **/
 
 class TransitionFunction {

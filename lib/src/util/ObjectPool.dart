@@ -14,7 +14,7 @@ class ObjectPool<T> {
   T pop() {
     
     var poolCount = _poolCount;
-    if (poolCount is! int) throw "dartjs_hint";
+    if (poolCount is! int) throw "dart2js_hint";
     
     if (poolCount == 0) {
       return _valueFactory();
@@ -29,7 +29,7 @@ class ObjectPool<T> {
   push(T value) {
     
     var poolCount = _poolCount;
-    if (poolCount is! int) throw "dartjs_hint";
+    if (poolCount is! int) throw "dart2js_hint";
     
     if (poolCount == _pool.length) {
       _pool.add(value);
