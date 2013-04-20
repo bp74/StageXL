@@ -18,9 +18,8 @@ class AlphaMaskFilter extends BitmapFilter {
 
   void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
     
-    if (!identical(sourceBitmapData, destinationBitmapData) || !sourceRect.topLeft.equals(destinationPoint)) {
-      destinationBitmapData.copyPixels(sourceBitmapData, sourceRect, destinationPoint);
-    }
+    var destinationRect = new Rectangle(destinationPoint.x, destinationPoint.y, sourceRect.width, sourceRect.height);
+    var destinationBounds = new Rectangle(0, 0, destinationBitmapData.width, destinationBitmapData.height);
     
     var alphaRoot = new Sprite();
     var alphaWarp = new Warp();
@@ -32,9 +31,16 @@ class AlphaMaskFilter extends BitmapFilter {
     
     alphaWarp.matrix = _matrix;
     alphaWarp.compositeOperation = CompositeOperation.DESTINATION_IN;
-    alphaWarp.mask = new Mask.rectangle(0, 0, sourceRect.width, sourceRect.height);
-    alphaWarp.mask.targetSpace = alphaRoot;
     alphaWarp.addChild(alphaBitmap);
+    
+    if (!destinationRect.containsRect(destinationBounds)) {
+      alphaWarp.mask = new Mask.rectangle(0, 0, sourceRect.width, sourceRect.height);
+      alphaWarp.mask.targetSpace = alphaRoot;
+    }
+    
+    if (!identical(sourceBitmapData, destinationBitmapData) || !sourceRect.topLeft.equals(destinationPoint)) {
+      destinationBitmapData.copyPixels(sourceBitmapData, sourceRect, destinationPoint);
+    }
     
     destinationBitmapData.draw(alphaRoot, alphaRoot.transformationMatrix);
   }
