@@ -211,6 +211,8 @@ class BitmapData implements BitmapDrawable {
     
     source.render(renderState);
     context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    context.globalAlpha = 1.0;
+    context.globalCompositeOperation = CompositeOperation.SOURCE_OVER;
   }
 
   //-------------------------------------------------------------------------------------------------
