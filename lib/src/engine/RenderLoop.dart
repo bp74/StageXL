@@ -5,6 +5,7 @@ class RenderLoop {
   Juggler _juggler;
   List<Stage> _stages;
   num _renderTime;
+  Function _requestAnimationFrameCallback; // Cached closure to pass to requestAnimationFrame.
 
   _EventStreamIndex _enterFrameIndex;
   EnterFrameEvent _enterFrameEvent;
@@ -13,12 +14,13 @@ class RenderLoop {
     
     _juggler = new Juggler();
     _stages = new List<Stage>();
-    _renderTime = double.NAN;
+    _renderTime = -1;
 
     _enterFrameIndex = _EventStreamIndex.enterFrame;
     _enterFrameEvent = new EnterFrameEvent(0);
 
-    html.window.requestAnimationFrame(_onAnimationFrame);
+    _requestAnimationFrameCallback = _onAnimationFrame;
+    _requestAnimationFrame();
   }
 
   Juggler get juggler => _juggler;
@@ -26,15 +28,18 @@ class RenderLoop {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _onAnimationFrame(num currentTime) {
+  _requestAnimationFrame() {
+    html.window.requestAnimationFrame(_requestAnimationFrameCallback); 
+  }
+  
+  _onAnimationFrame(num currentTime) {
     
-    html.window.requestAnimationFrame(_onAnimationFrame);
+    _requestAnimationFrame();
 
-    if (_renderTime.isNaN)
-      _renderTime = currentTime;
-
-    if (_renderTime > currentTime)
-      _renderTime = currentTime;
+    currentTime = currentTime.toDouble();
+    
+    if (_renderTime == -1) _renderTime = currentTime;
+    if (_renderTime > currentTime) _renderTime = currentTime;
 
     num deltaTime = currentTime - _renderTime;
     num deltaTimeSec = deltaTime / 1000.0;
