@@ -79,6 +79,8 @@ class _EventStream<T extends Event> extends Stream<T> {
     int subscriptionsCount = _subscriptionsCount;
     int tail = 0;
     
+    if (subscriptionsCount is! int) throw "dart2js_hint";
+    
     for(int head = 0; head < subscriptionsCount; head++) {
       
       var subscription = _subscriptions[head];

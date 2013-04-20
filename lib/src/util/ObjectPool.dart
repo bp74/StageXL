@@ -13,10 +13,13 @@ class ObjectPool<T> {
  
   T pop() {
     
-    if (_poolCount == 0) {
+    var poolCount = _poolCount;
+    if (poolCount is! int) throw "dartjs_hint";
+    
+    if (poolCount == 0) {
       return _valueFactory();
     } else {
-      _poolCount--;
+      _poolCount = poolCount - 1;
       return _pool[_poolCount];
     }
   }
@@ -25,12 +28,15 @@ class ObjectPool<T> {
   
   push(T value) {
     
-    if (_poolCount == _pool.length) {
+    var poolCount = _poolCount;
+    if (poolCount is! int) throw "dartjs_hint";
+    
+    if (poolCount == _pool.length) {
       _pool.add(value);
     } else {
-      _pool[_poolCount] = value;
+      _pool[poolCount] = value;
     }
-    _poolCount++;
+    _poolCount = poolCount + 1;
   }
   
   //---------------------------------------------------------------------------

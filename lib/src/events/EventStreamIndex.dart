@@ -39,6 +39,8 @@ class _EventStreamIndex<T extends Event> {
     int eventStreamsCount = _eventStreamsCount;
     int tail = 0;
     
+    if (eventStreamsCount is! int) throw "dart2js_hint";
+    
     for(int head = 0; head < eventStreamsCount; head++) {
 
       var eventStream = _eventStreams[head];

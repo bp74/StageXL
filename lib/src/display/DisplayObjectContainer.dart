@@ -239,6 +239,9 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   DisplayObject hitTestInput(num localX, num localY) {
     
+    localX = localX.toDouble();
+    localY = localY.toDouble();
+    
     DisplayObject hit = null;
 
     for (int i = _children.length - 1; i >= 0; i--) {
