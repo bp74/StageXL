@@ -62,14 +62,14 @@ class Stage extends DisplayObjectContainer {
   
   CanvasElement _canvas;
   CanvasRenderingContext2D _context;
-  int _defaultWidth, _defaultHeight;
+  int _contentWidth, _contentHeight;
+  int _contentFrameRate;
   int _canvasWidth, _canvasHeight;
   int _clientWidth, _clientHeight;
   Matrix _clientTransformation;
   Matrix _stageTransformation;
   RenderLoop _renderLoop;
   Juggler _juggler;
-  int frameRate = 30;
   
   InteractiveObject _focus;
   RenderState _renderState;
@@ -89,7 +89,7 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
 
-  Stage(String name, CanvasElement canvas) {
+  Stage(String name, CanvasElement canvas, [int contentWidth, int contentHeight, int contentFrameRate]) {
 
     _name = name;
     _canvas = canvas;
@@ -106,14 +106,19 @@ class Stage extends DisplayObjectContainer {
       _canvasRatio =  devicePixelRatio / backingStorePixelRatio;
     }
     
-    _defaultWidth = canvas.width;
-    _defaultHeight = canvas.height;
-    _setCanvasSize(_defaultWidth, _defaultHeight);
+    _contentWidth = (contentWidth != null) ? contentWidth : canvas.width;
+    _contentHeight = (contentHeight != null) ? contentHeight : canvas.height;
+    _contentFrameRate = (contentFrameRate != null) ? contentFrameRate : 30;
     
     _clientWidth = canvas.clientWidth;
     _clientHeight = canvas.clientHeight;
+    _canvasWidth = -1;
+    _canvasHeight = -1;
+    
     _clientTransformation = new Matrix.fromIdentity();
     _stageTransformation = new Matrix.fromIdentity();
+    _updateCanvasSize();
+    
     _renderLoop = null;
     _juggler = new Juggler();
     
@@ -169,6 +174,11 @@ class Stage extends DisplayObjectContainer {
   int get stageWidth => _clientWidth;
   int get stageHeight => _clientHeight;
   
+  int get frameRate => _contentFrameRate;
+  set frameRate(int value) {
+    _contentFrameRate = value;
+  }
+  
   RenderLoop get renderLoop => _renderLoop;
   Juggler get juggler => _juggler;
   
@@ -181,17 +191,19 @@ class Stage extends DisplayObjectContainer {
 
   String get renderMode => _stageRenderMode;
   set renderMode(String value) { 
-    _stageRenderMode = value; 
+    _stageRenderMode = value;
   }
 
   String get scaleMode => _stageScaleMode;
   set scaleMode(String value) {
     _stageScaleMode = value;
+    _updateCanvasSize();
   }
   
   String get align => _stageAlign;
   set align(String value) {
     _stageAlign = value;
+    _updateCanvasSize();    
   }
  
   //-------------------------------------------------------------------------------------------------
@@ -244,125 +256,103 @@ class Stage extends DisplayObjectContainer {
     if (clientWidth == 0 || clientHeight == 0)
       return;
    
-    var canvasWidth = _defaultWidth;
-    var canvasHeight = _defaultHeight;
-    var canvasPivotX = 0;
-    var canvasPivotY = 0;
-    
     //----------------------------
+
+    var scaleX = 0;
+    var scaleY = 0;
     
     switch(_stageScaleMode) {
       
       case StageScaleMode.EXACT_FIT:
-        canvasWidth = _defaultWidth;
-        canvasHeight = _defaultHeight;
+        scaleX = clientWidth / _contentWidth;
+        scaleY = clientHeight / _contentHeight;
         break;
         
       case StageScaleMode.NO_BORDER:
-        if (clientWidth * _defaultHeight > clientHeight * _defaultWidth) {
-          canvasHeight = (_defaultWidth * clientHeight) ~/ clientWidth;
+        if (clientWidth * _contentHeight > clientHeight * _contentWidth) {
+          scaleX = scaleY = clientWidth / _contentWidth;
         } else {
-          canvasWidth = (_defaultHeight * clientWidth) ~/ clientHeight;
+          scaleX = scaleY = clientHeight / _contentHeight;          
         }
         break;
         
       case StageScaleMode.NO_SCALE: 
-        canvasWidth = clientWidth;
-        canvasHeight = clientHeight;
+        scaleX = scaleY = 1.0;
         break;
         
       case StageScaleMode.SHOW_ALL: 
-        if (clientWidth * _defaultHeight > clientHeight * _defaultWidth) {
-          canvasWidth = (_defaultHeight * clientWidth) ~/ clientHeight;
+        if (clientWidth * _contentHeight > clientHeight * _contentWidth) {
+          scaleX = scaleY = clientHeight / _contentHeight;
         } else {
-          canvasHeight = (_defaultWidth * clientHeight) ~/ clientWidth;
+          scaleX = scaleY = clientWidth / _contentWidth;          
         }
         break;
     }
     
     //----------------------------
     
+    var pivotX = 0;
+    var pivotY = 0;
+    
     switch(_stageAlign) {
       case StageAlign.BOTTOM:
-        canvasPivotX = (_defaultWidth - canvasWidth + 1) ~/ 2;
-        canvasPivotY = (_defaultHeight - canvasHeight);
+        pivotX = (clientWidth - _contentWidth * scaleX) ~/ 2;
+        pivotY = (clientHeight - _contentHeight * scaleY);
         break;
       case StageAlign.BOTTOM_LEFT:
-        canvasPivotX = 0;
-        canvasPivotY = (_defaultHeight - canvasHeight);
+        pivotX = 0;
+        pivotY = (clientHeight - _contentHeight * scaleY);
         break;
       case StageAlign.BOTTOM_RIGHT:
-        canvasPivotX = (_defaultWidth - canvasWidth);
-        canvasPivotY = (_defaultHeight - canvasHeight);
+        pivotX = (clientWidth - _contentWidth * scaleX);
+        pivotY = (clientHeight - _contentHeight * scaleY);
         break;
       case StageAlign.LEFT:
-        canvasPivotX = 0;
-        canvasPivotY = (_defaultHeight - canvasHeight + 1) ~/ 2;
+        pivotX = 0;
+        pivotY = (clientHeight - _contentHeight * scaleY) ~/ 2;
         break;
       case StageAlign.RIGHT:
-        canvasPivotX = (_defaultWidth - canvasWidth);
-        canvasPivotY = (_defaultHeight - canvasHeight + 1) ~/ 2;
+        pivotX = (clientWidth - _contentWidth * scaleX);
+        pivotY = (clientHeight - _contentHeight * scaleY) ~/ 2;
         break;
       case StageAlign.TOP:
-        canvasPivotX = (_defaultWidth - canvasWidth + 1) ~/ 2;
-        canvasPivotY = 0;
+        pivotX = (clientWidth - _contentWidth * scaleX) ~/ 2;
+        pivotY = 0;
         break;
       case StageAlign.TOP_LEFT:
-        canvasPivotX = 0;
-        canvasPivotY = 0;
+        pivotX = 0;
+        pivotY = 0;
         break;
       case StageAlign.TOP_RIGHT:
-        canvasPivotX = (_defaultWidth - canvasWidth + 1);
-        canvasPivotY = 0;
+        pivotX = (clientWidth - _contentWidth * scaleX);
+        pivotY = 0;
         break;
       case StageAlign.NONE:
-        canvasPivotX = (_defaultWidth - canvasWidth + 1) ~/ 2;
-        canvasPivotY = (_defaultHeight - canvasHeight + 1) ~/ 2;
+        pivotX = (clientWidth - _contentWidth * scaleX) ~/ 2;
+        pivotY = (clientHeight - _contentHeight * scaleY) ~/ 2;
         break;
     }
     
     //----------------------------
-
+    
     // stage to canvas coordinate transformation    
-    _stageTransformation.setTo(1.0, 0.0, 0.0, 1.0, 0 - canvasPivotX, 0 - canvasPivotY);
+    _stageTransformation.setTo(scaleX * _canvasRatio, 0.0, 0.0, scaleY * _canvasRatio, pivotX, pivotY);
     
     // client to stage coordinate transformation
-    _clientTransformation.setTo(
-        canvasWidth / clientWidth, 0.0, 0.0, canvasHeight / clientHeight,
-        canvasPivotX - clientLeft , canvasPivotY - clientTop);
-
-    if (_canvasWidth != canvasWidth || _canvasHeight != canvasHeight) {
-      _setCanvasSize(canvasWidth, canvasHeight);
-    }
+    _clientTransformation.setTo(1 / scaleX, 0.0, 0.0, 1 / scaleY,  
+        -(clientLeft + pivotX) / scaleX, -(clientTop + pivotY) / scaleY); 
     
-    // explicit hi-dpi scaling
-    if (canvasRatio != 1.0) {
-      _stageTransformation.scale(canvasRatio, canvasRatio);
+    if (_canvasWidth != clientWidth || _canvasHeight != clientHeight) {
+      _canvasWidth = clientWidth;
+      _canvasHeight = clientHeight;
+      _canvas.width = (_canvasWidth * _canvasRatio).round();
+      _canvas.height = (_canvasHeight * _canvasRatio).round();
     }
     
     if (_clientWidth != clientWidth || _clientHeight != clientHeight) {
       _clientWidth = clientWidth;
       _clientHeight = clientHeight;
       dispatchEvent(new Event(Event.RESIZE));
-    }
-  }
-  
-  //-------------------------------------------------------------------------------------------------
-  
-  _setCanvasSize(int canvasWidth, int canvasHeight) {
-    
-    if (canvasRatio == 1.0) {
-      _canvas.width = _canvasWidth = canvasWidth;
-      _canvas.height = _canvasHeight = canvasHeight;
-    }
-    else {
-      // explicit hi-dpi scaling
-      _canvasWidth = canvasWidth;
-      _canvasHeight = canvasHeight;
-      _canvas.width = (_canvasWidth * canvasRatio).round();
-      _canvas.height = (_canvasHeight * canvasRatio).round();
-      _canvas.style.width = "${_canvasWidth}px";
-      _canvas.style.height = "${_canvasHeight}px";
     }
   }
   
@@ -385,7 +375,7 @@ class Stage extends DisplayObjectContainer {
     InteractiveObject target = null;
     Point stagePoint = _clientTransformation._transformHtmlPoint(event.client);
     Point localPoint = null;
-
+    
     if (button < 0 || button > 2) return;
     if (event.type == "mousemove" && _mousePosition.equals(stagePoint)) return;
 
