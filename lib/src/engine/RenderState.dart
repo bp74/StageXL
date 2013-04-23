@@ -58,10 +58,12 @@ class RenderState {
     }
     
     var m = _firstContextState.matrix;
+    _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    _context.clearRect(0, 0, _context.canvas.width, _context.canvas.height);
     _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
     _context.globalAlpha = 1.0;
     _context.globalCompositeOperation = CompositeOperation.SOURCE_OVER;
-    _context.clearRect(0, 0, _context.canvas.width, _context.canvas.height);
+    
   }
  
   //-------------------------------------------------------------------------------------------------
