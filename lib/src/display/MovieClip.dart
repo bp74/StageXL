@@ -307,10 +307,10 @@ class MovieClip extends Sprite
           for(var n in p.keys)
           {
             var v = p[n];
-            var dv = v is num ? v.toDouble() : 0;  
+            num dv = v is num ? v.toDouble() : 0;  
             switch(n)
             {
-              case "off": d.off = v; break;
+              case "off": d.off = v as bool; break;
               case "x": d.x = dv; break;
               case "y": d.y = dv; break;
               case "rotation": d.rotation = dv; break;
@@ -323,15 +323,26 @@ class MovieClip extends Sprite
               case "regY": d.pivotY = dv; break;
               case "startPosition":
                 if (target is MovieClip)
-                  (target as MovieClip).startPosition = v;
+                  (target as MovieClip).startPosition = dv.toInt();
                 break;
               case "mode":
                 if (target is MovieClip)
-                  (target as MovieClip).mode = v;
+                  (target as MovieClip).mode = v.toString();
+                break;
+              case "loop":
+                if (target is MovieClip)
+                  (target as MovieClip).loop = v as bool;
                 break;
               case "graphics":
                 if (target is Shape)
-                  (target as Shape).graphics = v;
+                  (target as Shape).graphics = v as Graphics;
+                break;
+              case "textColor":
+                if (target is TextField) {
+                  var field = target as TextField;
+                  if (v is String) field.textColor = int.parse(v.toString());
+                  else field.textColor = dv.toInt();
+                }
                 break;
             }
           }
@@ -1134,7 +1145,7 @@ class TimelineTween
         DisplayObject d = _target as DisplayObject;
         switch(n)
         {
-          case "off": d.off = v; break;
+          case "off": d.off = v as bool; break;
           case "x": d.x = dv; break;
           case "y": d.y = dv; break;
           case "rotation": d.rotation = dv; break;
@@ -1153,9 +1164,20 @@ class TimelineTween
             if (_target is MovieClip)
               (_target as MovieClip).mode = v;
             break;
+          case "loop":
+            if (_target is MovieClip)
+              (_target as MovieClip).loop = v as bool;
+            break;
           case "graphics":
             if (_target is Shape)
-              (_target as Shape).graphics = v;
+              (_target as Shape).graphics = v as Graphics;
+            break;
+          case "textColor":
+            if (_target is TextField) {
+              var field = _target as TextField;
+              if (v is String) field.textColor = int.parse(v.toString());
+              else field.textColor = dv.toInt();
+            }
             break;
         }
       }
@@ -1218,13 +1240,22 @@ class TimelineTween
                 oldValue = (_target as MovieClip).mode;
               else oldValue = null;
               break;
+            case "loop": 
+              if (_target is MovieClip)
+                oldValue = (_target as MovieClip).loop;
+              else oldValue = null;
+              break;
             case "graphics":
               if (target is Shape)
                 oldValue = (target as Shape).graphics;
               else oldValue = null;
               break;
+            case "textColor":
+              if (target is TextField)
+                oldValue = (target as TextField).textColor;
+              break;
             default:
-              print("TimelineTween._appendQueueProps doesn't know property $n");
+              print("TimelineTween._appendQueueProps: unknown property '$n'");
               continue;
           }
         }

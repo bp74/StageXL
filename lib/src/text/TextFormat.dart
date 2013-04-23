@@ -3,20 +3,21 @@ part of stagexl;
 class TextFormat {
   
   String font;
-  int size;
+  num size;
   int color;
   bool bold;
   bool italic;
   bool underline;
 
   String align;
-  int leftMargin;
-  int rightMargin;
-  int indent;
-  int leading;
+  num topMargin;
+  num leftMargin;
+  num rightMargin;
+  num indent;
+  num leading;
 
-  int letterSpacing = 0;
-  int blockIndent = 0;
+  num letterSpacing = 0;
+  num blockIndent = 0;
   bool bullet = false;
   bool kerning = false;
 
@@ -27,6 +28,7 @@ class TextFormat {
     this.italic       : false,
     this.underline    : false,
     this.align        : "left",
+    this.topMargin    : 0,
     this.leftMargin   : 0,
     this.rightMargin  : 0,
     this.indent       : 0,

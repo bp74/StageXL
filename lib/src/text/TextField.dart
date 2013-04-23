@@ -251,7 +251,7 @@ class TextField extends InteractiveObject {
       //-----------------------------
       // draw text
 
-      int offsetY = _defaultTextFormat.size;
+      num offsetY = _defaultTextFormat.topMargin + _defaultTextFormat.size;
 
       for(int i = 0; i < _linesText.length; i++) {
         var metrics = _linesMetrics[i];

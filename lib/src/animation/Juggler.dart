@@ -113,7 +113,7 @@ class Juggler implements Animatable {
   
   Tween tween(DisplayObject displayObject, num time, [EaseFunction transitionFunction]) {
 
-    Tween tween = new Tween(displayObject, time, transitionFunction);
+    Tween tween = transitionFunction != null ? new Tween(displayObject, time, transitionFunction) : new Tween(displayObject, time);
     add(tween);
     
     return tween;

@@ -345,6 +345,10 @@ class Stage extends DisplayObjectContainer {
     if (_canvasWidth != clientWidth || _canvasHeight != clientHeight) {
       _canvasWidth = clientWidth;
       _canvasHeight = clientHeight;
+      if (_canvasRatio != 1.0) {
+        _canvas.style.width = "${_canvasWidth}px";
+        _canvas.style.height = "${_canvasHeight}px";
+      }
       _canvas.width = (_canvasWidth * _canvasRatio).round();
       _canvas.height = (_canvasHeight * _canvasRatio).round();
     }
