@@ -93,6 +93,16 @@ class BitmapData implements BitmapDrawable {
     
     if (bitmapDataLoadOptions == null) bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
     
+    bool isHiDpi = false;
+    if (Stage.autoHiDpi && bitmapDataLoadOptions.autoHiDpi && url.indexOf("@1x.") > 0) {
+      num dpr = html.window.devicePixelRatio; 
+      if (dpr != null && dpr >= 1.5) {
+        isHiDpi = true;
+        int last = url.lastIndexOf("@1x.");
+        url = url.substring(0, last) + "@2x." + url.substring(last + 4);
+      }
+    }
+    
     Completer<BitmapData> completer = new Completer<BitmapData>();
 
     ImageElement imageElement = new ImageElement();
@@ -102,7 +112,13 @@ class BitmapData implements BitmapDrawable {
     onLoadSubscription = imageElement.onLoad.listen((event) {
       onLoadSubscription.cancel();
       onErrorSubscription.cancel();
-      completer.complete(new BitmapData.fromImageElement(imageElement));
+      var bmp = new BitmapData.fromImageElement(imageElement);
+      if (isHiDpi) { // use logical resolution
+        bmp._destinationWidth ~/= 2;
+        bmp._destinationHeight ~/= 2;
+        bmp._renderMode = 3;
+      }
+      completer.complete(bmp);
     });
     
     onErrorSubscription = imageElement.onError.listen((event) {

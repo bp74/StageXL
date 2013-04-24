@@ -19,11 +19,18 @@ class BitmapDataLoadOptions {
    * and *jpg* files to this more efficient file format.
    */
   bool webp;
+  
+  /**
+   * If the file name contains "@1x." it will be replaced by "@2x." when the 
+   * context is high density.
+   */
+  bool autoHiDpi;
 
   BitmapDataLoadOptions({
     this.png: true, 
     this.jpg: true, 
-    this.webp: false
+    this.webp: false,
+    this.autoHiDpi: true
   });
 }
 
