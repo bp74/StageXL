@@ -65,7 +65,7 @@ class Stage extends DisplayObjectContainer {
   int _contentWidth, _contentHeight;
   int _contentFrameRate;
   int _canvasWidth, _canvasHeight;
-  int _clientWidth, _clientHeight;
+
   Matrix _clientTransformation;
   Matrix _stageTransformation;
   RenderLoop _renderLoop;
@@ -109,9 +109,6 @@ class Stage extends DisplayObjectContainer {
     _contentWidth = (contentWidth != null) ? contentWidth : canvas.width;
     _contentHeight = (contentHeight != null) ? contentHeight : canvas.height;
     _contentFrameRate = (contentFrameRate != null) ? contentFrameRate : 30;
-    
-    _clientWidth = canvas.clientWidth;
-    _clientHeight = canvas.clientHeight;
     _canvasWidth = -1;
     _canvasHeight = -1;
     
@@ -171,8 +168,8 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
  
-  int get stageWidth => _clientWidth;
-  int get stageHeight => _clientHeight;
+  int get stageWidth => _canvasWidth;
+  int get stageHeight => _canvasHeight;
   
   int get frameRate => _contentFrameRate;
   set frameRate(int value) {
@@ -252,87 +249,67 @@ class Stage extends DisplayObjectContainer {
     var clientTop = _canvas.clientTop + client.top;
     var clientWidth = _canvas.clientWidth;
     var clientHeight = _canvas.clientHeight;
+    var contentWidth = _contentWidth;
+    var contentHeight = _contentHeight;
     
-    if (clientWidth == 0 || clientHeight == 0)
-      return;
-   
+    if (clientWidth is! num) throw "dart2js_hint";
+    if (clientHeight is! num) throw "dart2js_hint";
+    if (contentWidth is! num) throw "dart2js_hint";
+    if (contentHeight is! num) throw "dart2js_hint";
+    
+    if (clientWidth == 0 || clientHeight == 0) return;
+    
     //----------------------------
-
-    var scaleX = 0;
-    var scaleY = 0;
+    
+    var scaleX = 1.0;
+    var scaleY = 1.0;
+    var pivotX = 0.0;
+    var pivotY = 0.0;
+    var ratioWidth = clientWidth / contentWidth;
+    var ratioHeight = clientHeight / contentHeight;
     
     switch(_stageScaleMode) {
-      
       case StageScaleMode.EXACT_FIT:
-        scaleX = clientWidth / _contentWidth;
-        scaleY = clientHeight / _contentHeight;
+        scaleX = ratioWidth;
+        scaleY = ratioHeight;
         break;
-        
       case StageScaleMode.NO_BORDER:
-        if (clientWidth * _contentHeight > clientHeight * _contentWidth) {
-          scaleX = scaleY = clientWidth / _contentWidth;
-        } else {
-          scaleX = scaleY = clientHeight / _contentHeight;          
-        }
+        scaleX = scaleY = (ratioWidth > ratioHeight) ? ratioWidth : ratioHeight;
         break;
-        
       case StageScaleMode.NO_SCALE: 
         scaleX = scaleY = 1.0;
         break;
-        
       case StageScaleMode.SHOW_ALL: 
-        if (clientWidth * _contentHeight > clientHeight * _contentWidth) {
-          scaleX = scaleY = clientHeight / _contentHeight;
-        } else {
-          scaleX = scaleY = clientWidth / _contentWidth;          
-        }
+        scaleX = scaleY = (ratioWidth < ratioHeight) ? ratioWidth : ratioHeight;
         break;
     }
-    
-    //----------------------------
-    
-    var pivotX = 0;
-    var pivotY = 0;
     
     switch(_stageAlign) {
-      case StageAlign.BOTTOM:
-        pivotX = (clientWidth - _contentWidth * scaleX) ~/ 2;
-        pivotY = (clientHeight - _contentHeight * scaleY);
-        break;
-      case StageAlign.BOTTOM_LEFT:
-        pivotX = 0;
-        pivotY = (clientHeight - _contentHeight * scaleY);
-        break;
-      case StageAlign.BOTTOM_RIGHT:
-        pivotX = (clientWidth - _contentWidth * scaleX);
-        pivotY = (clientHeight - _contentHeight * scaleY);
-        break;
-      case StageAlign.LEFT:
-        pivotX = 0;
-        pivotY = (clientHeight - _contentHeight * scaleY) ~/ 2;
-        break;
+      case StageAlign.TOP_RIGHT:
       case StageAlign.RIGHT:
-        pivotX = (clientWidth - _contentWidth * scaleX);
-        pivotY = (clientHeight - _contentHeight * scaleY) ~/ 2;
+      case StageAlign.BOTTOM_RIGHT:
+        pivotX = (clientWidth - contentWidth * scaleX);
         break;
       case StageAlign.TOP:
-        pivotX = (clientWidth - _contentWidth * scaleX) ~/ 2;
-        pivotY = 0;
-        break;
-      case StageAlign.TOP_LEFT:
-        pivotX = 0;
-        pivotY = 0;
-        break;
-      case StageAlign.TOP_RIGHT:
-        pivotX = (clientWidth - _contentWidth * scaleX);
-        pivotY = 0;
-        break;
       case StageAlign.NONE:
-        pivotX = (clientWidth - _contentWidth * scaleX) ~/ 2;
-        pivotY = (clientHeight - _contentHeight * scaleY) ~/ 2;
+      case StageAlign.BOTTOM:
+        pivotX = (clientWidth - contentWidth * scaleX) / 2;
         break;
     }
     
+    switch(_stageAlign) {
+      case StageAlign.BOTTOM_LEFT:
+      case StageAlign.BOTTOM:
+      case StageAlign.BOTTOM_RIGHT:
+        pivotY = (clientHeight - contentHeight * scaleY);
+        break;
+      case StageAlign.LEFT:
+      case StageAlign.NONE:
+      case StageAlign.RIGHT:
+        pivotY = (clientHeight - contentHeight * scaleY) / 2;
+        break;
+    }
+
     //----------------------------
     
     // stage to canvas coordinate transformation    
@@ -345,17 +322,16 @@ class Stage extends DisplayObjectContainer {
     if (_canvasWidth != clientWidth || _canvasHeight != clientHeight) {
       _canvasWidth = clientWidth;
       _canvasHeight = clientHeight;
-      if (_canvasRatio != 1.0) {
-        _canvas.style.width = "${_canvasWidth}px";
-        _canvas.style.height = "${_canvasHeight}px";
-      }
       _canvas.width = (_canvasWidth * _canvasRatio).round();
       _canvas.height = (_canvasHeight * _canvasRatio).round();
-    }
-    
-    if (_clientWidth != clientWidth || _clientHeight != clientHeight) {
-      _clientWidth = clientWidth;
-      _clientHeight = clientHeight;
+      
+      // update hi-dpi canvas style size if client size has changed
+      if (_canvas.clientWidth != clientWidth || _canvas.clientHeight != clientHeight) {
+        _canvas.style.width = "${clientWidth}px";
+        _canvas.style.height = "${clientHeight}px";
+        print("Fixed Canvas Style Size !!!!");
+      }
+      
       dispatchEvent(new Event(Event.RESIZE));
     }
   }
