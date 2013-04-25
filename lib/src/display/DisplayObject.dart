@@ -52,8 +52,12 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   Stream<Event> get onRemovedFromStage => DisplayObject.removedFromStageEvent.forTarget(this);  
 
   static const EventStreamProvider<EnterFrameEvent> enterFrameEvent = const EventStreamProvider<EnterFrameEvent>(Event.ENTER_FRAME);
+  static const EventStreamProvider<ExitFrameEvent> exitFrameEvent = const EventStreamProvider<ExitFrameEvent>(Event.EXIT_FRAME);
+  static const EventStreamProvider<RenderEvent> renderEvent = const EventStreamProvider<RenderEvent>(Event.RENDER);
   
   Stream<EnterFrameEvent> get onEnterFrame => DisplayObject.enterFrameEvent.forTarget(this);
+  Stream<ExitFrameEvent> get onExitFrame => DisplayObject.exitFrameEvent.forTarget(this);
+  Stream<RenderEvent> get onRender => DisplayObject.renderEvent.forTarget(this);
   
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

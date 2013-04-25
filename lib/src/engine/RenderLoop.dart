@@ -7,8 +7,10 @@ class RenderLoop {
   num _renderTime;
   Function _requestAnimationFrameCallback; // Cached closure to pass to requestAnimationFrame.
 
-  _EventStreamIndex _enterFrameIndex;
   EnterFrameEvent _enterFrameEvent;
+  ExitFrameEvent _exitFrameEvent;
+  RenderEvent _renderEvent;
+  
 
   RenderLoop() {
     
@@ -16,9 +18,10 @@ class RenderLoop {
     _stages = new List<Stage>();
     _renderTime = -1;
 
-    _enterFrameIndex = _EventStreamIndex.enterFrame;
     _enterFrameEvent = new EnterFrameEvent(0);
-
+    _exitFrameEvent = new ExitFrameEvent();
+    _renderEvent = new RenderEvent();
+    
     _requestAnimationFrameCallback = _onAnimationFrame;
     _requestAnimationFrame();
   }
@@ -41,21 +44,36 @@ class RenderLoop {
     if (_renderTime == -1) _renderTime = currentTime;
     if (_renderTime > currentTime) _renderTime = currentTime;
 
-    num deltaTime = currentTime - _renderTime;
-    num deltaTimeSec = deltaTime / 1000.0;
-    num currentTimeSec = currentTime / 1000.0;
+    var deltaTime = currentTime - _renderTime;
+    var deltaTimeSec = deltaTime / 1000.0;
+    var currentTimeSec = currentTime / 1000.0;
+    var invalidate = false;
     
     if (deltaTime >= 1) {
       _renderTime = currentTime;
       _enterFrameEvent._passedTime = deltaTimeSec;
-      _enterFrameIndex._dispatchEvent(_enterFrameEvent);
+      _EventStreamIndex.enterFrame._dispatchEvent(_enterFrameEvent);
+      
       _juggler.advanceTime(deltaTimeSec);
 
       for(int i = 0; i < _stages.length; i++) {
-        var stage = _stages[i];
-        stage.juggler.advanceTime(deltaTimeSec);
-        stage.materialize(currentTimeSec, deltaTimeSec);
+        _stages[i].juggler.advanceTime(deltaTimeSec);
       }
+      
+      for(int i = 0; i < _stages.length; i++) {
+        invalidate = invalidate || _stages[i]._invalidate;
+      }
+      
+      if (invalidate) {
+        _EventStreamIndex.render._dispatchEvent(_renderEvent);
+      }
+      
+      for(int i = 0; i < _stages.length; i++) {
+        _stages[i]._invalidate = false;
+        _stages[i].materialize(currentTimeSec, deltaTimeSec);
+      }
+      
+      _EventStreamIndex.exitFrame._dispatchEvent(_exitFrameEvent);
     }
   }
 

@@ -30,8 +30,13 @@ class _EventStream<T extends Event> extends Stream<T> {
     
     _subscriptionsCount++;
     
-    if (_eventType == Event.ENTER_FRAME && _useCapture == false)
-      _EventStreamIndex.enterFrame._addEventStream(this);
+    if(_useCapture == false) {
+      switch(_eventType) {
+        case Event.ENTER_FRAME: _EventStreamIndex.enterFrame._addEventStream(this); break;
+        case Event.EXIT_FRAME: _EventStreamIndex.exitFrame._addEventStream(this); break;
+        case Event.RENDER: _EventStreamIndex.render._addEventStream(this); break;
+      }
+    }
     
     return subscription;
   }

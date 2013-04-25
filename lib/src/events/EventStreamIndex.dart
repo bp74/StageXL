@@ -6,6 +6,8 @@ class _EventStreamIndex<T extends Event> {
   int _eventStreamsCount = 0;
 
   static _EventStreamIndex<EnterFrameEvent> enterFrame = new _EventStreamIndex<EnterFrameEvent>();
+  static _EventStreamIndex<ExitFrameEvent> exitFrame = new _EventStreamIndex<ExitFrameEvent>();
+  static _EventStreamIndex<RenderEvent> render = new _EventStreamIndex<RenderEvent>();
   
   //-----------------------------------------------------------------------------------------------
   

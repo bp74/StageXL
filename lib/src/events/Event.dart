@@ -6,9 +6,11 @@ class Event {
   static const String ADDED = "added";
   static const String ADDED_TO_STAGE = "addedToStage";
   static const String ENTER_FRAME = "enterFrame";
+  static const String EXIT_FRAME = "exitFrame";
   static const String REMOVED = "removed";
   static const String REMOVED_FROM_STAGE = "removedFromStage";
   static const String RESIZE = "resize";
+  static const String RENDER = "render";
   
   // Common events
   static const String OKAY = "okay";

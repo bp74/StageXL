@@ -40,7 +40,7 @@ part 'src/events/EventStreamIndex.dart';
 part 'src/events/EventStream.dart';
 part 'src/events/EventStreamProvider.dart';
 part 'src/events/EventStreamSubscription.dart';
-part 'src/events/EnterFrameEvent.dart';
+part 'src/events/BroadcastEvent.dart';
 part 'src/events/MouseEvent.dart';
 part 'src/events/KeyboardEvent.dart';
 part 'src/events/TextEvent.dart';
