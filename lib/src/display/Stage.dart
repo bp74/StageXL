@@ -335,7 +335,6 @@ class Stage extends DisplayObjectContainer {
       if (_canvas.clientWidth != clientWidth || _canvas.clientHeight != clientHeight) {
         _canvas.style.width = "${clientWidth}px";
         _canvas.style.height = "${clientHeight}px";
-        print("Fixed Canvas Style Size !!!!");
       }
       
       dispatchEvent(new Event(Event.RESIZE));
