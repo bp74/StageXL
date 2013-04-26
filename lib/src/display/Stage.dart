@@ -70,7 +70,6 @@ class Stage extends DisplayObjectContainer {
   Matrix _stageTransformation;
   RenderLoop _renderLoop;
   Juggler _juggler;
-  bool _invalidate;
   
   InteractiveObject _focus;
   RenderState _renderState;
@@ -119,7 +118,6 @@ class Stage extends DisplayObjectContainer {
     
     _renderLoop = null;
     _juggler = new Juggler();
-    _invalidate = false;
     
     _renderState = new RenderState.fromCanvasRenderingContext2D(_context);
     _stageRenderMode = StageRenderMode.AUTO;
@@ -206,7 +204,9 @@ class Stage extends DisplayObjectContainer {
   }
  
   invalidate() {
-    _invalidate = true;
+    if (_renderLoop != null) {
+      _renderLoop.invalidate();
+    }
   }
   
   //-------------------------------------------------------------------------------------------------

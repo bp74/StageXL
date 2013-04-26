@@ -6,17 +6,18 @@ class RenderLoop {
   List<Stage> _stages;
   num _renderTime;
   Function _requestAnimationFrameCallback; // Cached closure to pass to requestAnimationFrame.
+  bool _invalidate;
 
   EnterFrameEvent _enterFrameEvent;
   ExitFrameEvent _exitFrameEvent;
   RenderEvent _renderEvent;
-  
 
   RenderLoop() {
     
     _juggler = new Juggler();
     _stages = new List<Stage>();
     _renderTime = -1;
+    _invalidate = false;
 
     _enterFrameEvent = new EnterFrameEvent(0);
     _exitFrameEvent = new ExitFrameEvent();
@@ -60,16 +61,12 @@ class RenderLoop {
         _stages[i].juggler.advanceTime(deltaTimeSec);
       }
       
-      for(int i = 0; i < _stages.length; i++) {
-        invalidate = invalidate || _stages[i]._invalidate;
-      }
-      
-      if (invalidate) {
+      if (_invalidate) {
+        _invalidate = false;
         _EventStreamIndex.render._dispatchEvent(_renderEvent);
       }
       
       for(int i = 0; i < _stages.length; i++) {
-        _stages[i]._invalidate = false;
         _stages[i].materialize(currentTimeSec, deltaTimeSec);
       }
       
@@ -80,6 +77,10 @@ class RenderLoop {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  void invalidate() {
+    _invalidate = true;
+  }
+  
   void addStage(Stage stage) {
    
     if (stage.renderLoop != null) {
