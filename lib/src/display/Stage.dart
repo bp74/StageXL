@@ -168,9 +168,32 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
  
+  /**
+   * Gets the current width of the Stage in pixels on the screen.
+   */
   int get stageWidth => _canvasWidth;
+
+  /**
+   * Gets the current height of the Stage in pixels on the screen.
+   */
   int get stageHeight => _canvasHeight;
   
+  /**
+   * Gets the available content area on the stage. The value of this rectangle
+   * changes with the scaleMode and the alignment of the stage, as well as the size 
+   * of the underlying Canvas element. 
+   */
+  Rectangle get contentRectangle {
+    var matrix = _stageTransformation.cloneInvert();
+    var p1 = matrix.transformPoint(new Point(0, 0));
+    var p2 = matrix.transformPoint(new Point(_canvasWidth, _canvasHeight));
+    return new Rectangle(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
+  }
+  
+  /**
+   * Gets and sets the default frame rate for MovieClips. This value has no
+   * impact on the frame rate of the Stage itself.
+   */
   int get frameRate => _contentFrameRate;
   set frameRate(int value) {
     _contentFrameRate = value;
