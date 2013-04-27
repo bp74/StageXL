@@ -61,6 +61,7 @@ class Stage extends DisplayObjectContainer {
   int _contentWidth, _contentHeight;
   int _contentFrameRate;
   int _canvasWidth, _canvasHeight;
+  Rectangle _contentRectangle;
 
   Matrix _clientTransformation;
   Matrix _stageTransformation;
@@ -97,6 +98,7 @@ class Stage extends DisplayObjectContainer {
     _contentFrameRate = (contentFrameRate != null) ? contentFrameRate : 30;
     _canvasWidth = -1;
     _canvasHeight = -1;
+    _contentRectangle = new Rectangle.zero();
 
     _clientTransformation = new Matrix.fromIdentity();
     _stageTransformation = new Matrix.fromIdentity();
@@ -169,12 +171,7 @@ class Stage extends DisplayObjectContainer {
    * changes with the scaleMode and the alignment of the stage, as well as the size
    * of the underlying Canvas element.
    */
-  Rectangle get contentRectangle {
-    var matrix = _stageTransformation.cloneInvert();
-    var p1 = matrix.transformPoint(new Point(0, 0));
-    var p2 = matrix.transformPoint(new Point(_canvasWidth, _canvasHeight));
-    return new Rectangle(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
-  }
+  Rectangle get contentRectangle => _contentRectangle.clone();
 
   /**
    * Gets and sets the default frame rate for MovieClips. This value has no
@@ -327,10 +324,16 @@ class Stage extends DisplayObjectContainer {
 
     //----------------------------
 
+    _contentRectangle.x = - pivotX / scaleX;
+    _contentRectangle.y = - pivotY / scaleX;
+    _contentRectangle.width = _canvasWidth / scaleX;
+    _contentRectangle.height = _canvasHeight / scaleY;
+
     var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
 
     // stage to canvas coordinate transformation
     _stageTransformation.setTo(scaleX, 0.0, 0.0, scaleY, pivotX, pivotY);
+    _stageTransformation.scale(pixelRatio, pixelRatio);
 
     // client to stage coordinate transformation
     _clientTransformation.setTo(1 / scaleX, 0.0, 0.0, 1 / scaleY,

@@ -58,9 +58,7 @@ class RenderState {
     }
 
     var m = _firstContextState.matrix;
-    var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
-    m.scale(pixelRatio, pixelRatio);
-    
+
     _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
     _context.clearRect(0, 0, _context.canvas.width, _context.canvas.height);
     _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
