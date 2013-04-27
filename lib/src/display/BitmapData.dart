@@ -249,7 +249,7 @@ class BitmapData implements BitmapDrawable {
   void colorTransform(Rectangle rect, ColorTransform transform) {
 
     var imageData = getImageData(rect.x, rect.y, rect.width, rect.height);
-    var data = image.data;
+    var data = imageData.data;
     var length = data.length;
 
     int r = transform.redOffset;
@@ -278,7 +278,7 @@ class BitmapData implements BitmapDrawable {
       }
     }
 
-    putImageData(image, rect.x, rect.y);
+    putImageData(imageData, rect.x, rect.y);
   }
 
   //-------------------------------------------------------------------------------------------------
