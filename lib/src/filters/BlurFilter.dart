@@ -17,8 +17,8 @@ class BlurFilter extends BitmapFilter {
     if (blurX < 1 || blurY < 1)
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
 
-    if (blurX > 128 || blurY > 128)
-      throw new ArgumentError("Error #9004: The maximum blur size is 128.");
+    if (blurX > 64 || blurY > 64)
+      throw new ArgumentError("Error #9004: The maximum blur size is 64.");
   }
 
   BitmapFilter clone() {
@@ -30,27 +30,27 @@ class BlurFilter extends BitmapFilter {
 
   void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
     
-    var sourceContext = sourceBitmapData._getContext();
-    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+    var sourceImageData = sourceBitmapData.getImageData(
+        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destinationBitmapData.pixelRatio);
     var sourceData = sourceImageData.data;
 
+    num pixelRatio = destinationBitmapData.pixelRatio;
     int sourceWidth = sourceImageData.width;
     int sourceHeight = sourceImageData.height;
-    int weightX = blurX * blurX;
-    int weightY = blurY * blurY;
+    int weightX = (blurX * blurX * pixelRatio * pixelRatio).floor();
+    int weightY = (blurY * blurY * pixelRatio * pixelRatio).floor();
     int weightXinv = (1 << 22) ~/ weightX;
     int weightYinv = (1 << 22) ~/ weightY;  
-    int rx1 = blurX;
-    int rx2 = blurX * 2;
-    int ry1 = blurY;
-    int ry2 = blurY * 2;
+    int rx1 = (blurX * pixelRatio).floor();
+    int rx2 = (blurX * pixelRatio * 2).floor();
+    int ry1 = (blurY * pixelRatio).floor();
+    int ry2 = (blurY * pixelRatio * 2).floor();
     int destinationWidth = sourceWidth + rx2;
     int destinationHeight = sourceHeight + ry2;
     int sourceWidth4 = sourceWidth * 4;
     int destinationWidth4 = destinationWidth * 4;
 
-    var destinationContext = destinationBitmapData._getContext();
-    var destinationImageData = destinationContext.createImageData(destinationWidth, destinationHeight);
+    var destinationImageData = destinationBitmapData.createImageData(destinationWidth, destinationHeight);
     var destinationData = destinationImageData.data;
     var buffer = new List<int>(1024);
     
@@ -114,7 +114,7 @@ class BlurFilter extends BitmapFilter {
 
     _unpremultiplyAlpha(destinationData);
 
-    destinationContext.putImageData(destinationImageData, destinationPoint.x - rx1, destinationPoint.y - ry1);
+    destinationBitmapData.putImageData(destinationImageData, destinationPoint.x - rx1, destinationPoint.y - ry1);
   }
 
   //-------------------------------------------------------------------------------------------------

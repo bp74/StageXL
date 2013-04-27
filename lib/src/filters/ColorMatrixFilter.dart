@@ -42,7 +42,8 @@ class ColorMatrixFilter extends BitmapFilter {
     //blueResult  = (a[10] * srcR) + (a[11] * srcG) + (a[12] * srcB) + (a[13] * srcA) + a[14]
     //alphaResult = (a[15] * srcR) + (a[16] * srcG) + (a[17] * srcB) + (a[18] * srcA) + a[19]
 
-    var imageData = sourceBitmapData._getContext().getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+    var imageData = sourceBitmapData.getImageData(
+        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destinationBitmapData.pixelRatio);
     var data = imageData.data;
 
     int a00 = (_matrix[00] * 65536).toInt();
@@ -92,7 +93,7 @@ class ColorMatrixFilter extends BitmapFilter {
       }
     }
 
-    destinationBitmapData._getContext().putImageData(imageData, destinationPoint.x, destinationPoint.y);
+    destinationBitmapData.putImageData(imageData, destinationPoint.x, destinationPoint.y);
   }
 
   //-------------------------------------------------------------------------------------------------

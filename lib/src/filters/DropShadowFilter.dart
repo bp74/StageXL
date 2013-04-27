@@ -1,7 +1,7 @@
 part of stagexl;
 
 class DropShadowFilter extends BitmapFilter {
-  
+
   num distance;
   num angle;
   int color;
@@ -13,58 +13,57 @@ class DropShadowFilter extends BitmapFilter {
   bool knockout;
   bool hideObject;
 
-  DropShadowFilter([this.distance = 4.0, this.angle = PI / 4, this.color = 0, this.alpha = 1.0, 
-      this.blurX = 4, this.blurY = 4, this.strength = 1.0, this.inner = false, 
+  DropShadowFilter([this.distance = 4.0, this.angle = PI / 4, this.color = 0, this.alpha = 1.0,
+      this.blurX = 4, this.blurY = 4, this.strength = 1.0, this.inner = false,
       this.knockout = false, this.hideObject = false]) {
 
     if (blurX < 1 || blurY < 1)
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
 
-    if (blurX > 128 || blurY > 128)
-      throw new ArgumentError("Error #9004: The maximum blur size is 128.");
+    if (blurX > 64 || blurY > 64)
+      throw new ArgumentError("Error #9004: The maximum blur size is 64.");
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   BitmapFilter clone() {
-    
+
     return new DropShadowFilter(distance, angle, color, alpha, blurX, blurY, strength, inner, knockout, hideObject);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
-    
+
+    var originalBitmapData = sourceBitmapData;
+
     if (sourceBitmapData == destinationBitmapData && !hideObject) {
-      var newSourceBitmapData = new BitmapData(sourceRect.width, sourceRect.height);
-      newSourceBitmapData.copyPixels(sourceBitmapData, sourceRect, new Point.zero());
-      sourceBitmapData = newSourceBitmapData;
-      sourceRect = new Rectangle(0, 0, sourceBitmapData.width, sourceBitmapData.height);
+      originalBitmapData = sourceBitmapData.clone(destinationBitmapData.pixelRatio);
     }
-    
-    var sourceContext = sourceBitmapData._getContext();
-    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+
+    var sourceImageData = sourceBitmapData.getImageData(
+        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destinationBitmapData.pixelRatio);
     var sourceData = sourceImageData.data;
 
+    num pixelRatio = destinationBitmapData.pixelRatio;
     int sourceWidth = sourceRect.width;
     int sourceHeight = sourceRect.height;
-    int weightX = blurX * blurX;
-    int weightY = blurY * blurY;
+    int weightX = (blurX * blurX * pixelRatio * pixelRatio).floor();
+    int weightY = (blurY * blurY * pixelRatio * pixelRatio).floor();
     int weightXinv = (1 << 22) ~/ weightX;
     int weightYinv = (1 << 22) ~/ weightY;
-    int rx1 = blurX;
-    int rx2 = blurX * 2;
-    int ry1 = blurY;
-    int ry2 = blurY * 2;
+    int rx1 = (blurX * pixelRatio).floor();
+    int rx2 = (blurX * pixelRatio * 2).floor();
+    int ry1 = (blurY * pixelRatio).floor();
+    int ry2 = (blurY * pixelRatio * 2).floor();
     int destinationWidth = sourceWidth + rx2;
     int destinationHeight = sourceHeight + ry2;
     int sourceWidth4 = sourceWidth * 4;
     int destinationWidth4 = destinationWidth * 4;
     int alphaChannel = _isLittleEndianSystem ? 3 : 0;
 
-    var destinationContext = destinationBitmapData._getContext();
-    var destinationImageData = destinationContext.createImageData(destinationWidth, destinationHeight);
+    var destinationImageData = destinationBitmapData.createImageData(destinationWidth, destinationHeight);
     var destinationData = destinationImageData.data;
     var buffer = new List<int>(1024);
 
@@ -146,26 +145,28 @@ class DropShadowFilter extends BitmapFilter {
 
     var sx = destinationPoint.x;
     var sy = destinationPoint.y;
-    var dx = destinationPoint.x - rx1 + (this.distance * cos(this.angle)).round().toInt();
-    var dy = destinationPoint.y - ry1 + (this.distance * sin(this.angle)).round().toInt();
+    var dx = destinationPoint.x - rx1 + (this.distance * cos(this.angle)).round();
+    var dy = destinationPoint.y - ry1 + (this.distance * sin(this.angle)).round();
     var sRect = new Rectangle(sx, sy, sourceWidth, sourceHeight);
     var dRect = new Rectangle(dx, dy, destinationWidth, destinationHeight);
     var uRect = sRect.union(dRect);
 
-    destinationContext.setTransform(1, 0, 0, 1, 0, 0);
-    destinationContext.clearRect(uRect.x, uRect.y, uRect.width, uRect.height);
-    destinationContext.putImageData(destinationImageData, dx, dy);
+    destinationBitmapData.fillRect(uRect, Color.Transparent);
+    destinationBitmapData.putImageData(destinationImageData, dx, dy);
 
-    if (this.hideObject == false)
-      destinationContext.drawImage(sourceContext.canvas, sx, sy);
+    if (this.hideObject == false) {
+      destinationBitmapData.draw(originalBitmapData, new Matrix(1.0, 0.0, 0.0, 1.0, sx, sy));
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
 
   Rectangle getBounds() {
-    
+
     var dx = (this.distance * cos(this.angle)).round();
     var dy = (this.distance * sin(this.angle)).round();
-    return new Rectangle(dx - blurX, dx - blurY, dx + 2 * blurX, dy + 2 * blurY);
+    var sRect = new Rectangle(0, 0, 0, 0);
+    var dRect = new Rectangle(dx - blurX, dy - blurY, 2 * blurX, 2 * blurY);
+    return sRect.union(dRect);
   }
 }

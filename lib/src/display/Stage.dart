@@ -52,14 +52,10 @@ class _Touch {
 //-------------------------------------------------------------------------------------------------
 
 class Stage extends DisplayObjectContainer {
-  
-  // handle non-automatic hi-dpi canvas scaling (ie. Chrome VS Safari)
+
   static bool autoHiDpi = true;
-  static num _canvasRatio = 1.0;
-  static get canvasRatio => _canvasRatio;
-  
-  //-------------------------------------------------------------------------------------------------
-  
+  static num get devicePixelRatio => _devicePixelRatio;
+
   CanvasElement _canvas;
   CanvasRenderingContext2D _context;
   int _contentWidth, _contentHeight;
@@ -70,13 +66,13 @@ class Stage extends DisplayObjectContainer {
   Matrix _stageTransformation;
   RenderLoop _renderLoop;
   Juggler _juggler;
-  
+
   InteractiveObject _focus;
   RenderState _renderState;
   String _stageRenderMode;
-  String _stageScaleMode;  
+  String _stageScaleMode;
   String _stageAlign;
-  
+
   String _mouseCursor;
   Point _mousePosition;
   InteractiveObject _mouseTarget;
@@ -94,36 +90,26 @@ class Stage extends DisplayObjectContainer {
     _name = name;
     _canvas = canvas;
     _canvas.focus();
-
     _context = canvas.context2D;
 
-    // do we need explicit hi-dpi scaling?
-    if (Stage.autoHiDpi) {
-      var devicePixelRatio = html.window.devicePixelRatio;
-      var backingStorePixelRatio = _context.backingStorePixelRatio;
-      if (devicePixelRatio == null) devicePixelRatio = 1.0;
-      if (backingStorePixelRatio == null) backingStorePixelRatio = 1.0;
-      _canvasRatio =  devicePixelRatio / backingStorePixelRatio;
-    }
-    
     _contentWidth = (contentWidth != null) ? contentWidth : canvas.width;
     _contentHeight = (contentHeight != null) ? contentHeight : canvas.height;
     _contentFrameRate = (contentFrameRate != null) ? contentFrameRate : 30;
     _canvasWidth = -1;
     _canvasHeight = -1;
-    
+
     _clientTransformation = new Matrix.fromIdentity();
     _stageTransformation = new Matrix.fromIdentity();
     _updateCanvasSize();
-    
+
     _renderLoop = null;
     _juggler = new Juggler();
-    
+
     _renderState = new RenderState.fromCanvasRenderingContext2D(_context);
     _stageRenderMode = StageRenderMode.AUTO;
     _stageScaleMode = StageScaleMode.SHOW_ALL;
     _stageAlign = StageAlign.NONE;
-    
+
     //---------------------------
     // prepare mouse events
 
@@ -167,7 +153,7 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
- 
+
   /**
    * Gets the current width of the Stage in pixels on the screen.
    */
@@ -177,11 +163,11 @@ class Stage extends DisplayObjectContainer {
    * Gets the current height of the Stage in pixels on the screen.
    */
   int get stageHeight => _canvasHeight;
-  
+
   /**
    * Gets the available content area on the stage. The value of this rectangle
-   * changes with the scaleMode and the alignment of the stage, as well as the size 
-   * of the underlying Canvas element. 
+   * changes with the scaleMode and the alignment of the stage, as well as the size
+   * of the underlying Canvas element.
    */
   Rectangle get contentRectangle {
     var matrix = _stageTransformation.cloneInvert();
@@ -189,7 +175,7 @@ class Stage extends DisplayObjectContainer {
     var p2 = matrix.transformPoint(new Point(_canvasWidth, _canvasHeight));
     return new Rectangle(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
   }
-  
+
   /**
    * Gets and sets the default frame rate for MovieClips. This value has no
    * impact on the frame rate of the Stage itself.
@@ -198,19 +184,19 @@ class Stage extends DisplayObjectContainer {
   set frameRate(int value) {
     _contentFrameRate = value;
   }
-  
+
   RenderLoop get renderLoop => _renderLoop;
   Juggler get juggler => _juggler;
-  
+
   Point get mousePosition => _mousePosition;
-  
+
   InteractiveObject get focus => _focus;
-  set focus(InteractiveObject value) { 
-    _focus = value; 
+  set focus(InteractiveObject value) {
+    _focus = value;
   }
 
   String get renderMode => _stageRenderMode;
-  set renderMode(String value) { 
+  set renderMode(String value) {
     _stageRenderMode = value;
   }
 
@@ -219,19 +205,19 @@ class Stage extends DisplayObjectContainer {
     _stageScaleMode = value;
     _updateCanvasSize();
   }
-  
+
   String get align => _stageAlign;
   set align(String value) {
     _stageAlign = value;
-    _updateCanvasSize();    
+    _updateCanvasSize();
   }
- 
+
   invalidate() {
     if (_renderLoop != null) {
       _renderLoop.invalidate();
     }
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   _throwStageException() {
@@ -255,11 +241,11 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   materialize(num currentTime, num deltaTime) {
-    
+
     if (_stageRenderMode == StageRenderMode.AUTO || _stageRenderMode == StageRenderMode.ONCE) {
-      
+
       _updateCanvasSize();
-      
+
       _renderState.reset(_stageTransformation, currentTime, deltaTime);
       render(_renderState);
 
@@ -267,12 +253,12 @@ class Stage extends DisplayObjectContainer {
         _stageRenderMode = StageRenderMode.STOP;
     }
   }
-  
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   _updateCanvasSize() {
-    
+
     var client = _canvas.getBoundingClientRect();
     var clientLeft = _canvas.clientLeft + client.left;
     var clientTop = _canvas.clientTop + client.top;
@@ -280,23 +266,23 @@ class Stage extends DisplayObjectContainer {
     var clientHeight = _canvas.clientHeight;
     var contentWidth = _contentWidth;
     var contentHeight = _contentHeight;
-    
+
     if (clientWidth is! num) throw "dart2js_hint";
     if (clientHeight is! num) throw "dart2js_hint";
     if (contentWidth is! num) throw "dart2js_hint";
     if (contentHeight is! num) throw "dart2js_hint";
-    
+
     if (clientWidth == 0 || clientHeight == 0) return;
-    
+
     //----------------------------
-    
+
     var scaleX = 1.0;
     var scaleY = 1.0;
     var pivotX = 0.0;
     var pivotY = 0.0;
     var ratioWidth = clientWidth / contentWidth;
     var ratioHeight = clientHeight / contentHeight;
-    
+
     switch(_stageScaleMode) {
       case StageScaleMode.EXACT_FIT:
         scaleX = ratioWidth;
@@ -305,14 +291,14 @@ class Stage extends DisplayObjectContainer {
       case StageScaleMode.NO_BORDER:
         scaleX = scaleY = (ratioWidth > ratioHeight) ? ratioWidth : ratioHeight;
         break;
-      case StageScaleMode.NO_SCALE: 
+      case StageScaleMode.NO_SCALE:
         scaleX = scaleY = 1.0;
         break;
-      case StageScaleMode.SHOW_ALL: 
+      case StageScaleMode.SHOW_ALL:
         scaleX = scaleY = (ratioWidth < ratioHeight) ? ratioWidth : ratioHeight;
         break;
     }
-    
+
     switch(_stageAlign) {
       case StageAlign.TOP_RIGHT:
       case StageAlign.RIGHT:
@@ -325,7 +311,7 @@ class Stage extends DisplayObjectContainer {
         pivotX = (clientWidth - contentWidth * scaleX) / 2;
         break;
     }
-    
+
     switch(_stageAlign) {
       case StageAlign.BOTTOM_LEFT:
       case StageAlign.BOTTOM:
@@ -340,30 +326,32 @@ class Stage extends DisplayObjectContainer {
     }
 
     //----------------------------
-    
-    // stage to canvas coordinate transformation    
-    _stageTransformation.setTo(scaleX * _canvasRatio, 0.0, 0.0, scaleY * _canvasRatio, pivotX, pivotY);
-    
+
+    var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio / _backingStorePixelRatio : 1.0;
+
+    // stage to canvas coordinate transformation
+    _stageTransformation.setTo(scaleX * pixelRatio, 0.0, 0.0, scaleY * pixelRatio, pivotX, pivotY);
+
     // client to stage coordinate transformation
-    _clientTransformation.setTo(1 / scaleX, 0.0, 0.0, 1 / scaleY,  
-        -(clientLeft + pivotX) / scaleX, -(clientTop + pivotY) / scaleY); 
-    
+    _clientTransformation.setTo(1 / scaleX, 0.0, 0.0, 1 / scaleY,
+        -(clientLeft + pivotX) / scaleX, -(clientTop + pivotY) / scaleY);
+
     if (_canvasWidth != clientWidth || _canvasHeight != clientHeight) {
       _canvasWidth = clientWidth;
       _canvasHeight = clientHeight;
-      _canvas.width = (_canvasWidth * _canvasRatio).round();
-      _canvas.height = (_canvasHeight * _canvasRatio).round();
-      
+      _canvas.width = (_canvasWidth * pixelRatio).round();
+      _canvas.height = (_canvasHeight * pixelRatio).round();
+
       // update hi-dpi canvas style size if client size has changed
       if (_canvas.clientWidth != clientWidth || _canvas.clientHeight != clientHeight) {
         _canvas.style.width = "${clientWidth}px";
         _canvas.style.height = "${clientHeight}px";
       }
-      
+
       dispatchEvent(new Event(Event.RESIZE));
     }
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   _onMouseCursorChanged(String action) {
@@ -374,7 +362,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   _onMouseEvent(html.MouseEvent event) {
-    
+
     event.preventDefault();
 
     var time = new DateTime.now().millisecondsSinceEpoch;
@@ -383,7 +371,7 @@ class Stage extends DisplayObjectContainer {
     InteractiveObject target = null;
     Point stagePoint = _clientTransformation._transformHtmlPoint(event.client);
     Point localPoint = null;
-    
+
     if (button < 0 || button > 2) return;
     if (event.type == "mousemove" && _mousePosition.equals(stagePoint)) return;
 
@@ -392,7 +380,7 @@ class Stage extends DisplayObjectContainer {
 
     if (Mouse._dragSprite != null)
       Mouse._dragSprite._updateDrag();
-    
+
     if (event.type != "mouseout")
       target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
@@ -407,7 +395,7 @@ class Stage extends DisplayObjectContainer {
     if (target is SimpleButton && (target as SimpleButton).useHandCursor) {
       mouseCursor = MouseCursor.BUTTON;
     }
-    
+
     if (_mouseCursor != mouseCursor) {
       _mouseCursor = mouseCursor;
       _canvas.style.cursor = Mouse._getCssStyle(mouseCursor);
@@ -504,7 +492,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   _onMouseWheelEvent(html.WheelEvent event) {
-    
+
     var stagePoint = _clientTransformation._transformHtmlPoint(event.client);
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
@@ -515,7 +503,7 @@ class Stage extends DisplayObjectContainer {
         .._stagePoint = stagePoint
         .._deltaX = event.deltaX
         .._deltaY = event.deltaY);
-      
+
       if (_mouseEvent.stopsPropagation)
         event.preventDefault();
     }
@@ -525,11 +513,11 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   List<StreamSubscription<TouchEvent>> _touchEventSubscriptions = [];
-  
+
   _onMultitouchInputModeChanged(String inputMode) {
-    
+
     _touchEventSubscriptions.forEach((s) => s.cancel());
-        
+
     if (Multitouch.inputMode == MultitouchInputMode.TOUCH_POINT) {
       _touchEventSubscriptions = [
         _canvas.onTouchStart.listen(_onTouchEvent),
@@ -545,7 +533,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   _onTouchEvent(html.TouchEvent event) {
-    
+
     event.preventDefault();
 
     for(var changedTouch in event.changedTouches) {
@@ -620,7 +608,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   _onKeyEvent(html.KeyboardEvent event) {
-    
+
     event.preventDefault();
 
     String keyboardEventType = null;
@@ -650,7 +638,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   _onTextEvent(html.KeyboardEvent event) {
-    
+
     int charCode = (event.charCode != 0) ? event.charCode : event.keyCode;
 
     TextEvent textEvent = new TextEvent(TextEvent.TEXT_INPUT, true);

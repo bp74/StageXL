@@ -1,7 +1,7 @@
 part of stagexl;
 
 class TextField extends InteractiveObject {
-  
+
   String _text = "";
   int _textColor = 0x000000;
   TextFormat _defaultTextFormat = null;
@@ -11,11 +11,12 @@ class TextField extends InteractiveObject {
   String _type = TextFieldType.DYNAMIC;
 
   bool _wordWrap = false;
-
   bool _background = false;
   int _backgroundColor = 0x000000;
   bool _border = false;
   int _borderColor = 0x000000;
+  num _width = 100;
+  num _height = 100;
 
   num _textWidth = 0;
   num _textHeight = 0;
@@ -23,17 +24,15 @@ class TextField extends InteractiveObject {
   List<TextLineMetrics> _linesMetrics;
 
   bool _canvasRefreshPending = true;
-  num _canvasWidth = 100;
-  num _canvasHeight = 100;
   CanvasElement _canvas = null;
   CanvasRenderingContext2D _context = null;
 
   //-------------------------------------------------------------------------------------------------
 
   TextField([String text, TextFormat textFormat]) {
-    
+
     if (text != null) _text = text;
-    
+
     if (textFormat != null) defaultTextFormat = textFormat;
     else _defaultTextFormat = new TextFormat("Arial", 12, 0x000000);
 
@@ -57,8 +56,8 @@ class TextField extends InteractiveObject {
   int get backgroundColor => _backgroundColor;
   bool get border => _border;
   int get borderColor => _borderColor;
-  num get width => _canvasWidth;
-  num get height => _canvasHeight;
+  num get width => _width;
+  num get height => _height;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -75,8 +74,8 @@ class TextField extends InteractiveObject {
   void set backgroundColor(int value) { _backgroundColor = value; _canvasRefreshPending = true; }
   void set border(bool value) { _border = value; _canvasRefreshPending = true; }
   void set borderColor(int value) { _borderColor = value; _canvasRefreshPending = true; }
-  void set width(num value) { _canvasWidth = value; _canvasRefreshPending = true; }
-  void set height(num value) { _canvasHeight = value; _canvasRefreshPending = true; }
+  void set width(num value) { _width = value; _canvasRefreshPending = true; }
+  void set height(num value) { _height = value; _canvasRefreshPending = true; }
 
   //-------------------------------------------------------------------------------------------------
 
@@ -92,14 +91,14 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
-    return _getBoundsTransformedHelper(matrix, _canvasWidth, _canvasHeight, returnRectangle);
+    return _getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-    
-    if (localX >= 0 && localY >= 0 && localX < _canvasWidth && localY < _canvasHeight)
+
+    if (localX >= 0 && localY >= 0 && localX < _width && localY < _height)
       return this;
 
     return null;
@@ -108,62 +107,56 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-    
+
     _canvasRefresh();
-  
-    if (Stage.canvasRatio != 1.0) {
-      // explicit hi-dpi scaling
-      num ratio = 1.0 / Stage.canvasRatio;
-      renderState._context.scale(ratio, ratio);
-    }
-    renderState._context.drawImage(_canvas, 0.0, 0.0);
+    renderState._context.drawImageScaled(_canvas, 0.0, 0.0, _width, _height);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   void _processTextLines(String fontStyle) {
-    
+
     var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
-    
+
     _linesText.clear();
     _linesMetrics.clear();
 
     //---------------------------
 
     if (_wordWrap == false) {
-      
+
       for(String paragraph in _text.replaceAll('\r', '').split('\n'))
         _linesText.add(paragraph);
-      
+
     } else {
-      
+
       // Split text into paragraphs
-      
+
       for(String paragraph in _text.replaceAll('\r', '').split('\n')) {
-        
+
         var line = '';
 
         // Split paragraphs into words
-        
+
         for(String word in paragraph.split(' ')) {
-          
+
           var previousLine = line;
-          
+
           line = (line.length == 0) ? word : line + ' ' + word;
-  
-          if (_context.measureText(line).width > _canvasWidth) {
-            
+
+          if (_context.measureText(line).width > _width) {
+
             if (previousLine.length == 0) {
               _linesText.add(line);
               line = '';
-            } else { 
+            } else {
               _linesText.add(previousLine);
               line = word;
             }
           }
         }
-  
+
         if (line.isEmpty == false) {
           _linesText.add(line);
         }
@@ -176,15 +169,15 @@ class TextField extends InteractiveObject {
     _textHeight = 0;
 
     for(String line in _linesText) {
-      
+
       var metrics = _context.measureText(line);
       var offsetX = 0.0;
 
       if (_defaultTextFormat.align == TextFormatAlign.CENTER || _defaultTextFormat.align == TextFormatAlign.JUSTIFY)
-        offsetX = (_canvasWidth - metrics.width) / 2;
+        offsetX = (_width - metrics.width) / 2;
 
       if (_defaultTextFormat.align == TextFormatAlign.RIGHT || _defaultTextFormat.align == TextFormatAlign.END)
-        offsetX = _canvasWidth - metrics.width;
+        offsetX = _width - metrics.width;
 
       var textLineMetrics = new TextLineMetrics(
         offsetX, metrics.width, _defaultTextFormat.size, fontStyleMetrics.ascent, fontStyleMetrics.descent, 0);
@@ -198,23 +191,22 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void _canvasRefresh() {
-    
+
     if (_canvasRefreshPending) {
-      
+
       _canvasRefreshPending = false;
 
-      num ratio = Stage.canvasRatio;      
-      int canvasWidthInt = (_canvasWidth * ratio).ceil().toInt();
-      int canvasHeightInt =  (_canvasHeight * ratio).ceil().toInt();
+      var ratio = _devicePixelRatio / _backingStorePixelRatio;
+      var canvasWidth = (_width * ratio).ceil();
+      var canvasHeight =  (_height * ratio).ceil();
 
       if (_canvas == null) {
-        _canvas = new CanvasElement(width: canvasWidthInt, height: canvasHeightInt);
+        _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
         _context = _canvas.context2D;
-        _context.scale(ratio, ratio);
       }
 
-      if (_canvas.width != canvasWidthInt) _canvas.width = canvasWidthInt;
-      if (_canvas.height != canvasHeightInt) _canvas.height = canvasHeightInt;
+      if (_canvas.width != canvasWidth) _canvas.width = canvasWidth;
+      if (_canvas.height != canvasHeight) _canvas.height = canvasHeight;
 
       //-----------------------------
       // set canvas context
@@ -225,13 +217,14 @@ class TextField extends InteractiveObject {
         ..write(_defaultTextFormat.bold ? "bold " : "normal ")
         ..write("${_defaultTextFormat.size}px ")
         ..write("${_defaultTextFormat.font},sans-serif");
-      
-      var fontStyle = fontStyleBuffer.toString(); 
+
+      var fontStyle = fontStyleBuffer.toString();
 
       _context.font = fontStyle;
       _context.textAlign = "start";
       _context.textBaseline = "alphabetic";
       _context.fillStyle = _color2rgb(_textColor);
+      _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
       //-----------------------------
       // split text into lines
@@ -241,11 +234,13 @@ class TextField extends InteractiveObject {
       //-----------------------------
       // draw background
 
+      _context.setTransform(ratio, 0.0, 0.0, ratio, 0.0, 0.0);
+
       if (_background) {
         _context.fillStyle = _color2rgb(_backgroundColor);
-        _context.fillRect(0, 0, _canvasWidth, _canvasHeight);
+        _context.fillRect(0, 0, _width, _height);
       } else {
-        _context.clearRect(0, 0, _canvasWidth, _canvasHeight);
+        _context.clearRect(0, 0, _width, _height);
       }
 
       //-----------------------------
@@ -267,7 +262,7 @@ class TextField extends InteractiveObject {
       if (_border) {
         _context.strokeStyle = _color2rgb(_borderColor);
         _context.lineWidth = 1;
-        _context.strokeRect(0, 0, _canvasWidth, _canvasHeight);
+        _context.strokeRect(0, 0, _width, _height);
       }
     }
   }

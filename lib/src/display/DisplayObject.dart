@@ -1,14 +1,9 @@
 part of stagexl;
 
-final ObjectPool<List<DisplayObject>> _displayObjectListPool = 
-  new ObjectPool<List<DisplayObject>>(() => new List<DisplayObject>());
-
-final Matrix _identityMatrix = new Matrix.fromIdentity();
-
 abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
-  
+
   static int _nextID = 0;
-  
+
   int _id = _nextID++;
   num _x = 0.0;
   num _y = 0.0;
@@ -23,7 +18,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num _alpha = 1.0;
   bool _visible = true;
   bool _off = false; // disable rendering
-  
+
   Mask _mask = null;
   BitmapData _cache = null;
   Rectangle _cacheRectangle = null;
@@ -31,7 +26,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   List<BitmapFilter> _filters = null;
   Shadow _shadow = null;
   String _compositeOperation = null;
-  
+
   String _name = "";
   DisplayObjectContainer _parent = null;
 
@@ -45,20 +40,20 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   static const EventStreamProvider<Event> removedEvent = const EventStreamProvider<Event>(Event.REMOVED);
   static const EventStreamProvider<Event> addedToStageEvent = const EventStreamProvider<Event>(Event.ADDED_TO_STAGE);
   static const EventStreamProvider<Event> removedFromStageEvent = const EventStreamProvider<Event>(Event.REMOVED_FROM_STAGE);
-   
-  Stream<Event> get onAdded => DisplayObject.addedEvent.forTarget(this);  
-  Stream<Event> get onRemoved => DisplayObject.removedEvent.forTarget(this);  
-  Stream<Event> get onAddedToStage => DisplayObject.addedToStageEvent.forTarget(this);  
-  Stream<Event> get onRemovedFromStage => DisplayObject.removedFromStageEvent.forTarget(this);  
+
+  Stream<Event> get onAdded => DisplayObject.addedEvent.forTarget(this);
+  Stream<Event> get onRemoved => DisplayObject.removedEvent.forTarget(this);
+  Stream<Event> get onAddedToStage => DisplayObject.addedToStageEvent.forTarget(this);
+  Stream<Event> get onRemovedFromStage => DisplayObject.removedFromStageEvent.forTarget(this);
 
   static const EventStreamProvider<EnterFrameEvent> enterFrameEvent = const EventStreamProvider<EnterFrameEvent>(Event.ENTER_FRAME);
   static const EventStreamProvider<ExitFrameEvent> exitFrameEvent = const EventStreamProvider<ExitFrameEvent>(Event.EXIT_FRAME);
   static const EventStreamProvider<RenderEvent> renderEvent = const EventStreamProvider<RenderEvent>(Event.RENDER);
-  
+
   Stream<EnterFrameEvent> get onEnterFrame => DisplayObject.enterFrameEvent.forTarget(this);
   Stream<ExitFrameEvent> get onExitFrame => DisplayObject.exitFrameEvent.forTarget(this);
   Stream<RenderEvent> get onRender => DisplayObject.renderEvent.forTarget(this);
-  
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
@@ -69,23 +64,23 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num get scaleX => _scaleX;
   num get scaleY => _scaleY;
   num get skewX => _skewX;
-  num get skewY => _skewY;  
+  num get skewY => _skewY;
   num get rotation => _rotation;
 
   bool get visible => _visible;
   bool get off => _off;
-  num get alpha => _alpha;  
-  
+  num get alpha => _alpha;
+
   Mask get mask => _mask;
   bool get cached => _cache != null;
-  
-  List<BitmapFilter> get filters => (_filters != null) 
-      ? _filters 
-      : _filters = new List<BitmapFilter>(); 
-  
+
+  List<BitmapFilter> get filters => (_filters != null)
+      ? _filters
+      : _filters = new List<BitmapFilter>();
+
   Shadow get shadow => _shadow;
   String get compositeOperation => _compositeOperation;
-  
+
   String get name => _name;
   DisplayObjectContainer get parent => _parent;
 
@@ -95,21 +90,21 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     var stage = this.stage;
     return (stage != null) ? this.globalToLocal(stage._mousePosition) : null;
   }
-  
+
   num get mouseX {
     var mp = this.mousePosition;
     return (mp != null) ? mp.x : 0.0;
   }
-  
+
   num get mouseY {
     var mp = this.mousePosition;
     return (mp != null) ? mp.y : 0.0;
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject get root {
-    
+
     DisplayObject currentObject = this;
 
     while (currentObject._parent != null)
@@ -121,7 +116,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   Stage get stage {
-    
+
     DisplayObject root = this.root;
 
     if (root is Stage)
@@ -150,11 +145,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   set filters(List<BitmapFilter> value) { _filters = value; }
   set shadow(Shadow value) { _shadow = value; }
   set compositeOperation(String value) { _compositeOperation = value; }
-  
+
   set name(String value) { _name = value; }
-  
+
   //-------------------------------------------------------------------------------------------------
-  
+
   void setTransform(num x, num y, [num scaleX, num scaleY, num rotation, num skewX, num skewY, num pivotX, num pivotY])
   {
     _transformationMatrixRefresh = true;
@@ -165,14 +160,14 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       if (scaleY != null) {
         _scaleY = scaleY.toDouble();
         if (rotation != null) {
-          _rotation = rotation.toDouble(); 
+          _rotation = rotation.toDouble();
           if (skewX != null) {
             _skewX = skewX.toDouble();
             if (skewY != null) {
               _skewY = skewY.toDouble();
               if (pivotX != null) {
                 _pivotX = pivotX.toDouble();
-                if (pivotY != null) 
+                if (pivotY != null)
                   _pivotY = pivotY.toDouble();
               }
             }
@@ -223,22 +218,22 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     */
 
     if (_transformationMatrixRefresh) {
-      
+
       _transformationMatrixRefresh = false;
-      
+
       num skewXrotation =  _skewX + _rotation;
       num skewYrotation =  _skewY + _rotation;
-      
+
       if (skewXrotation == 0.0 && skewYrotation == 0.0) {
-        
+
         _transformationMatrixPrivate.setTo(_scaleX, 0.0, 0.0, _scaleY, _x - _pivotX * _scaleX, _y - _pivotY * _scaleY);
-        
+
       } else {
 
         num a, b, c, d;
         num cosX = cos(skewXrotation);
         num sinX = sin(skewXrotation);
-        
+
         if (skewXrotation == skewYrotation) {
           a =   _scaleX * cosX;
           b =   _scaleX * sinX;
@@ -250,10 +245,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
           c = - _scaleY * sinX;
           d =   _scaleY * cosX;
         }
-        
+
         num tx =  _x - (_pivotX * a + _pivotY * c);
         num ty =  _y - (_pivotX * b + _pivotY * d);
-   
+
         _transformationMatrixPrivate.setTo(a, b, c, d, tx, ty);
       }
     }
@@ -270,7 +265,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   Matrix transformationMatrixTo(DisplayObject targetSpace) {
-    
+
     if (targetSpace == _parent)
       return _transformationMatrix.clone();
 
@@ -317,11 +312,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     return resultMatrix;
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
-    
+
     if (returnRectangle == null)
       returnRectangle = new Rectangle.zero();
 
@@ -336,7 +331,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle getBounds(DisplayObject targetSpace) {
-    
+
     Rectangle returnRectangle = new Rectangle.zero();
     Matrix matrix = (targetSpace == null) ? _transformationMatrix : transformationMatrixTo(targetSpace);
 
@@ -346,12 +341,12 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   bool hitTestObject(DisplayObject other) {
-    
+
     var stage1 = this.stage;
     var stage2 = other.stage;
-    
+
     if (stage1 == null || stage2 == null || stage1 != stage2) return false;
-    
+
     var rect1 = this.getBounds(stage1);
     var rect2 = other.getBounds(stage2);
 
@@ -368,14 +363,14 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (shapeFlag) {
       var matrix = stage.transformationMatrixTo(this);
       if (matrix == null) return false;
-      
+
       var stagePoint = new Point(x, y);
       var localPoint = matrix.transformPoint(stagePoint);
 
       return this.hitTestInput(localPoint.x, localPoint.y) != null;
 
     } else {
-      
+
       var rect = this.getBounds(stage);
       return rect.contains(x, y);
     }
@@ -384,7 +379,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-    
+
     if (getBoundsTransformed(_identityMatrix).contains(localX, localY))
       return this;
 
@@ -394,7 +389,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   Point localToGlobal(Point localPoint) {
-    
+
     _tmpMatrix.identity();
 
     for(DisplayObject displayObject = this; displayObject != null; displayObject = displayObject._parent)
@@ -406,7 +401,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   Point globalToLocal(Point globalPoint) {
-    
+
     _tmpMatrix.identity();
 
     for(DisplayObject displayObject = this; displayObject != null; displayObject = displayObject._parent)
@@ -416,64 +411,58 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     return _tmpMatrix.transformPoint(globalPoint);
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
-    
-    if (Stage.canvasRatio != 1.0) {
-      // explicit hi-dpi scaling
-      num ratio = Stage.canvasRatio;
-      _cache = new BitmapData((width*ratio).ceil(), (height*ratio).ceil(), true, 0x00000000);
-      _cache._destinationWidth = width;
-      _cache._destinationHeight = height;
-      _cache._renderMode = 3;
-    }
-    else {
-      _cache = new BitmapData(width, height, true, 0x00000000);
-    }
-    _cache._destinationX = x;
-    _cache._destinationY = y;
-    
-    _cacheRectangle = new Rectangle(x,y, width, height);
+
+    _cache = new BitmapData(width, height, true, Color.Transparent, _devicePixelRatio);
+    _cacheRectangle = new Rectangle(x, y, width, height);
     _cacheDebugBorder = debugBorder;
     refreshCache();
   }
-  
+
   void refreshCache() {
-    
+
     if (_cache == null) return;
-    
+
     var x = _cacheRectangle.x;
     var y = _cacheRectangle.y;
     var width = _cacheRectangle.width;
     var height = _cacheRectangle.height;
-    num ratio = Stage.canvasRatio;
-    
+
     _cache.clear();
-    _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y)..scale(ratio, ratio));
-    
+    _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y));
+
     for(int i = 0; _filters != null && i < _filters.length; i++) {
-      _filters[i].apply(_cache, new Rectangle(0, 0, width, height), _cache, new Point.zero()); 
+      var sourceRectangle = new Rectangle(0, 0, width, height);
+      var destinationPoint = new Point.zero();
+      _filters[i].apply(_cache, sourceRectangle, _cache, destinationPoint);
     }
-    
+
     if (_cacheDebugBorder) {
       _cache.fillRect(new Rectangle(0, 0, width, 1), 0xFFFF00FF);
       _cache.fillRect(new Rectangle(width - 1, 0, 1, height), 0xFFFF00FF);
       _cache.fillRect(new Rectangle(0, height - 1, width, 1), 0xFFFF00FF);
       _cache.fillRect(new Rectangle(0, 0, 1, height), 0xFFFF00FF);
-    }      
+    }
   }
-  
+
   void removeCache() {
     _cache = null;
+  }
+
+  void _renderCache(RenderState renderState) {
+    var context = renderState.context;
+    context.transform(1.0, 0.0, 0.0, 1.0, _cacheRectangle.x, _cacheRectangle.y);
+    _cache.render(renderState);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   void dispatchEvent(Event event) {
-    
+
     List<DisplayObject> ancestors = null;
 
     if (event.captures || event.bubbles) {
@@ -484,24 +473,24 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
         }
       }
     }
-    
+
     if (event.captures && ancestors != null) {
       for(int i = ancestors.length - 1 ; i >= 0 && event.stopsPropagation == false; i--) {
         ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.CAPTURING_PHASE);
       }
     }
-    
+
     if (event.stopsPropagation == false) {
       _dispatchEventInternal(event, this, this, EventPhase.AT_TARGET);
     }
-    
+
     if (event.bubbles && ancestors != null) {
       for(int i = 0; i < ancestors.length && event.stopsPropagation == false; i++) {
         ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.BUBBLING_PHASE);
       }
     }
-    
-    if (ancestors != null) { 
+
+    if (ancestors != null) {
       ancestors.clear();
       _displayObjectListPool.push(ancestors);
     }
@@ -511,7 +500,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   void _setParent(DisplayObjectContainer value) {
-    
+
     for(var ancestor = value; ancestor != null; ancestor = ancestor._parent)
       if (ancestor == this)
         throw new ArgumentError("Error #2150: An object cannot be added as a child to one of it's children (or children's children, etc.).");
