@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 import 'dart:html' show
   Element, ImageElement, AudioElement, HttpRequest,
   CanvasElement, CanvasRenderingContext2D, CanvasImageSource,
-  CanvasPattern, CanvasGradient;
+  CanvasPattern, CanvasGradient, ImageData;
 
 import 'dart:web_audio' show
   AudioContext, AudioBuffer, AudioBufferSourceNode, GainNode;
@@ -122,6 +122,21 @@ part 'src/util/ObjectPool.dart';
 
 //-----------------------------------------------------------------------------
 
-bool _isLittleEndianSystem = _checkLittleEndianSystem();
-Future<bool> _isWebpSupported = _checkWebpSupport();
+final bool _isLittleEndianSystem = _checkLittleEndianSystem();
+
+final Future<bool> _isWebpSupported = _checkWebpSupport();
+
+final ObjectPool<List<DisplayObject>> _displayObjectListPool = 
+  new ObjectPool<List<DisplayObject>>(() => new List<DisplayObject>());
+
+final Matrix _identityMatrix = new Matrix.fromIdentity();
+
+final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
+final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
+
+final num _backingStorePixelRatio = _dummyCanvasContext.backingStorePixelRatio == null ?
+    1.0 : _dummyCanvasContext.backingStorePixelRatio.toDouble();
+
+final num _devicePixelRatio = html.window.devicePixelRatio == null ?
+    1.0 : html.window.devicePixelRatio;
 

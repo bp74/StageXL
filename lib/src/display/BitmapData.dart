@@ -1,10 +1,12 @@
 part of stagexl;
 
 class BitmapData implements BitmapDrawable {
-  
+
   int _width;
   int _height;
   bool _transparent;
+  num _pixelRatio;
+  num _pixelRatioSource;
 
   int _renderMode;
   int _destinationWidth;
@@ -19,48 +21,59 @@ class BitmapData implements BitmapDrawable {
   CanvasImageSource _source;
   CanvasRenderingContext2D _context;
 
-  static BitmapDataLoadOptions defaultLoadOptions = new BitmapDataLoadOptions(png:true, jpg:true, webp:false);
-  
+  static BitmapDataLoadOptions defaultLoadOptions = new BitmapDataLoadOptions();
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData(int width, int height, [bool transparent = true, int fillColor = 0xFFFFFFFF]) {
-    
+  BitmapData(int width, int height, [bool transparent = true, int fillColor = 0xFFFFFFFF, pixelRatio = 1.0]) {
+
     _width = width.toInt();
     _height = height.toInt();
     _transparent = transparent;
-    
-    _renderMode = 0;
-    _destinationX = _sourceX = 0;
-    _destinationY = _sourceY = 0;
-    _destinationWidth = _sourceWidth = _width;
-    _destinationHeight = _sourceHeight = _height;
-    
-    var canvas = new CanvasElement(width: _width, height: _height);
+    _pixelRatio = pixelRatio.toDouble();
+    _pixelRatioSource = _pixelRatio / _backingStorePixelRatio;
 
-    _context = canvas.context2D;
-    _context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
-    _context.fillRect(0, 0, _width, _height);
+    _renderMode = ((1.0 - _pixelRatioSource).abs() < 0.001) ? 0 : 1;
+    _destinationX = 0;
+    _destinationY = 0;
+    _destinationWidth = _width;
+    _destinationHeight = _height;
+    _sourceX = 0;
+    _sourceY = 0;
+    _sourceWidth = (_width * _pixelRatioSource).ceil();
+    _sourceHeight = (_height * _pixelRatioSource).ceil();
+
+    var canvas = new CanvasElement(width: _sourceWidth, height: _sourceHeight);
 
     _source = canvas;
+    _context = canvas.context2D;
+    _context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
+    _context.fillRect(0, 0, _sourceWidth, _sourceHeight);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData.fromImageElement(ImageElement imageElement) {
-    
-    if (imageElement == null)
-      throw new ArgumentError();
-    
-    _width = imageElement.naturalWidth.toInt();
-    _height = imageElement.naturalHeight.toInt();
-    _transparent = true;
+  BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
 
-    _renderMode = 0;
-    _destinationX = _sourceX = 0;
-    _destinationY = _sourceY = 0;
-    _destinationWidth = _sourceWidth = _width;
-    _destinationHeight = _sourceHeight = _height;
+    var imageWidth = imageElement.naturalWidth.toInt();
+    var imageHeight = imageElement.naturalHeight.toInt();
+
+    _width = (imageWidth / pixelRatio).round();
+    _height = (imageHeight / pixelRatio).round();
+    _transparent = true;
+    _pixelRatio = pixelRatio.toDouble();
+    _pixelRatioSource = _pixelRatio;
+
+    _renderMode = ((1.0 - _pixelRatioSource).abs() < 0.001) ? 0 : 1;
+    _destinationX = 0;
+    _destinationY = 0;
+    _destinationWidth = _width;
+    _destinationHeight = _height;
+    _sourceX = 0;
+    _sourceY = 0;
+    _sourceWidth = imageWidth;
+    _sourceHeight = imageHeight;
 
     _source = imageElement;
   }
@@ -69,58 +82,56 @@ class BitmapData implements BitmapDrawable {
 
   BitmapData.fromTextureAtlasFrame(TextureAtlasFrame textureAtlasFrame) {
 
+    var bitmapData = textureAtlasFrame.textureAtlas._bitmapData;
+
     _width = textureAtlasFrame.originalWidth.toInt();
     _height = textureAtlasFrame.originalHeight.toInt();
     _transparent = true;
+    _pixelRatio = bitmapData._pixelRatio;
+    _pixelRatioSource = bitmapData._pixelRatioSource;
 
-    _renderMode = textureAtlasFrame.rotated ? 2 : 1;
+    _renderMode = textureAtlasFrame.rotated ? 3 : 2;
     _destinationX = textureAtlasFrame.offsetX;
     _destinationY = textureAtlasFrame.offsetY;
     _destinationWidth = textureAtlasFrame.frameWidth;
     _destinationHeight = textureAtlasFrame.frameHeight;
-    _sourceX = textureAtlasFrame.frameX;
-    _sourceY = textureAtlasFrame.frameY;
-    _sourceWidth = textureAtlasFrame.frameWidth;
-    _sourceHeight = textureAtlasFrame.frameHeight;
-   
-    _source = textureAtlasFrame.textureAtlas._bitmapData._source;
+    _sourceX = (textureAtlasFrame.frameX * _pixelRatioSource).floor();
+    _sourceY = (textureAtlasFrame.frameY * _pixelRatioSource).floor();
+    _sourceWidth = (textureAtlasFrame.frameWidth * _pixelRatioSource).ceil();
+    _sourceHeight = (textureAtlasFrame.frameHeight * _pixelRatioSource).ceil();
+
+    _source = bitmapData._source;
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<BitmapData> load(String url, [BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
-    
-    if (bitmapDataLoadOptions == null) bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
-    
-    bool isHiDpi = false;
-    if (Stage.autoHiDpi && bitmapDataLoadOptions.autoHiDpi && url.indexOf("@1x.") > 0) {
-      num dpr = html.window.devicePixelRatio; 
-      if (dpr != null && dpr >= 1.5) {
-        isHiDpi = true;
-        int last = url.lastIndexOf("@1x.");
-        url = url.substring(0, last) + "@2x." + url.substring(last + 4);
+  static Future<BitmapData> load(String url,
+      [BitmapDataLoadOptions bitmapDataLoadOptions = null, num pixelRatio = 1.0]) {
+
+    if (bitmapDataLoadOptions == null) {
+      bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
+    }
+
+    if (Stage.autoHiDpi && bitmapDataLoadOptions.autoHiDpi) {
+      if (url.contains("@1x.") && _devicePixelRatio >= 1.5) {
+        pixelRatio = pixelRatio * 2.0;
+        url = url.replaceAll("@1x.", "@2x.");
       }
     }
-    
+
     Completer<BitmapData> completer = new Completer<BitmapData>();
 
     ImageElement imageElement = new ImageElement();
     StreamSubscription onLoadSubscription;
     StreamSubscription onErrorSubscription;
-    
+
     onLoadSubscription = imageElement.onLoad.listen((event) {
       onLoadSubscription.cancel();
       onErrorSubscription.cancel();
-      var bmp = new BitmapData.fromImageElement(imageElement);
-      if (isHiDpi) { // use logical resolution
-        bmp._destinationWidth ~/= 2;
-        bmp._destinationHeight ~/= 2;
-        bmp._renderMode = 3;
-      }
-      completer.complete(bmp);
+      completer.complete(new BitmapData.fromImageElement(imageElement, pixelRatio));
     });
-    
+
     onErrorSubscription = imageElement.onError.listen((event) {
       onLoadSubscription.cancel();
       onErrorSubscription.cancel();
@@ -130,22 +141,22 @@ class BitmapData implements BitmapDrawable {
     if (bitmapDataLoadOptions.webp == false) {
       imageElement.src = url;
       return completer.future;
-    } 
-    
+    }
+
     //---------------------------
-    
+
     _isWebpSupported.then((bool webpSupported) {
-      
+
       var regex = new RegExp(r"(png|jpg|jpeg)$", multiLine:false, caseSensitive:true);
       var match = regex.firstMatch(url);
-      
+
       if (webpSupported == false || match == null) {
         imageElement.src = url;
       } else {
         imageElement.src = url.substring(0, url.length - match.group(1).length) + "webp";
       }
     });
-   
+
     return completer.future;
   }
 
@@ -154,12 +165,73 @@ class BitmapData implements BitmapDrawable {
 
   int get width => _width;
   int get height => _height;
- 
+
+  num get pixelRatio => _pixelRatio;
+
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData clone() {
-    
-    BitmapData bitmapData = new BitmapData(_width, _height, true, 0);
+  ImageData getImageData(int x, int y, int width, int height, [num pixelRatio]) {
+
+    if (pixelRatio != null && pixelRatio != _pixelRatio) {
+
+      var tempBitmapData = new BitmapData(width, height, true, 0, pixelRatio);
+      tempBitmapData.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, -x, -y));
+
+      var pr = tempBitmapData._pixelRatio;
+      var prs = tempBitmapData._pixelRatioSource;
+
+      if (_backingStorePixelRatio > 1.0) {
+        return tempBitmapData._context.getImageDataHD(0, 0, width * pr, height * pr);
+      } else {
+        return tempBitmapData._context.getImageData(0, 0, width * prs, height * prs);
+      }
+
+    } else {
+
+      _ensureContext();
+
+      var pr = _pixelRatio;
+      var prs = _pixelRatioSource;
+
+      if (_backingStorePixelRatio > 1.0) {
+        return _context.getImageDataHD(x * pr, y * pr, width * pr, height * pr);
+      } else {
+        return _context.getImageData(x * prs, y * prs, width * prs, height * prs);
+      }
+    }
+  }
+
+  void putImageData(ImageData imageData, int x, int y) {
+
+    _ensureContext();
+
+    var pr = _pixelRatio;
+    var prs = _pixelRatioSource;
+
+    if (_backingStorePixelRatio > 1.0) {
+      _context.putImageDataHD(imageData, x * pr, y * pr);
+    } else {
+      _context.putImageData(imageData, x * prs, y * prs);
+    }
+  }
+
+  ImageData createImageData(int width, int height) {
+
+    _ensureContext();
+
+    var pr = _pixelRatio;
+    var prs = _pixelRatioSource;
+
+    return _context.createImageData(width * pr, height * pr);
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  BitmapData clone([num pixelRatio]) {
+
+    pixelRatio = (pixelRatio != null) ? pixelRatio : _pixelRatio;
+
+    var bitmapData = new BitmapData(_width, _height, true, 0, pixelRatio);
     bitmapData.draw(this);
 
     return bitmapData;
@@ -168,17 +240,16 @@ class BitmapData implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   void applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, BitmapFilter filter) {
-    
+
     filter.apply(sourceBitmapData, sourceRect, this, destPoint);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void colorTransform(Rectangle rect, ColorTransform transform) {
-    
-    var context = _getContext();
-    var image = context.getImageData(rect.x, rect.y, rect.width, rect.height);
-    var data = image.data;
+
+    var imageData = getImageData(rect.x, rect.y, rect.width, rect.height);
+    var data = imageData.data;
     var length = data.length;
 
     int r = transform.redOffset;
@@ -207,155 +278,133 @@ class BitmapData implements BitmapDrawable {
       }
     }
 
-    context.putImageData(image, rect.x, rect.y);
+    putImageData(imageData, rect.x, rect.y);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void copyPixels(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint) {
-    
-    var sourceContext = sourceBitmapData._getContext();
-    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-    
-    var destinationContext = _getContext();
-    destinationContext.putImageData(sourceImageData, destPoint.x, destPoint.y);
+
+    _ensureContext();
+
+    var sourceImageData = sourceBitmapData.getImageData(
+        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, _pixelRatio);
+
+    _context.putImageData(sourceImageData, destPoint.x, destPoint.y);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void draw(BitmapDrawable source, [Matrix matrix = null]) {
-    
-    var context = _getContext();
-    var renderState = new RenderState.fromCanvasRenderingContext2D(context, matrix);
-    
+
+    _ensureContext();
+
+    matrix = (matrix == null) ? new Matrix.fromIdentity() : matrix.clone();
+    matrix.scale(_pixelRatioSource, _pixelRatioSource);
+
+    var renderState = new RenderState.fromCanvasRenderingContext2D(_context, matrix);
     source.render(renderState);
-    context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    context.globalAlpha = 1.0;
-    context.globalCompositeOperation = CompositeOperation.SOURCE_OVER;
+
+    _context.globalAlpha = 1.0;
+    _context.globalCompositeOperation = CompositeOperation.SOURCE_OVER;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void fillRect(Rectangle rect, int color) {
-    
-    var context = _getContext();
 
-    context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    context.fillStyle = _color2rgba(color);
-    context.fillRect(rect.x, rect.y, rect.width, rect.height);
+    _ensureContext();
+
+    _context.setTransform(_pixelRatioSource, 0.0, 0.0, _pixelRatioSource, 0.0, 0.0);
+    _context.fillStyle = _color2rgba(color);
+    _context.fillRect(rect.x, rect.y, rect.width, rect.height);
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   void clear() {
-    
-    var context = _getContext();
-    
-    context.clearRect(0, 0, _width, _height);
+
+    _ensureContext();
+
+    _context.setTransform(_pixelRatioSource, 0.0, 0.0, _pixelRatioSource, 0.0, 0.0);
+    _context.clearRect(0, 0, _width, _height);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   int getPixel(int x, int y) {
-    
-    var context = _getContext();
-    var imageData = context.getImageData(x, y, 1, 1);
-    var data = imageData.data;
+    return getPixel32(x, y) & 0x00FFFFFF;
+  }
 
-    if (_isLittleEndianSystem) {
-      return (data[0] << 16) + (data[1] << 8) + (data[2] << 0);
-    } else {
-      return (data[3] << 16) + (data[2] << 8) + (data[1] << 0);
-    }
+  void setPixel(int x, int y, int color) {
+    setPixel32(x, y, color | 0xFF000000);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   int getPixel32(int x, int y) {
-    
-    var context = _getContext();
-    var imageData = context.getImageData(x, y, 1, 1);
+
+    var imageData = getImageData(x, y, 1, 1);
+    var pixels = imageData.width * imageData.height;
     var data = imageData.data;
+    var r = 0, g = 0, b = 0, a = 0;
 
-    if (_isLittleEndianSystem) {
-      return (data[0] << 16) + (data[1] << 8) + (data[2] << 0) + (data[3] << 24);
-    } else {
-      return (data[3] << 16) + (data[2] << 8) + (data[1] << 0) + (data[0] << 24);
-    }
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  void setPixel(int x, int y, int color) {
-    
-    var context = _getContext();
-    var imageData = context.getImageData(x, y, 1, 1);
-    var data = imageData.data;
-
-    if (_isLittleEndianSystem) {
-      data[0] = (color >> 16) & 0xFF;
-      data[1] = (color >>  8) & 0xFF;
-      data[2] = (color >>  0) & 0xFF;
-    } else {
-      data[1] = (color >>  0) & 0xFF;
-      data[2] = (color >>  8) & 0xFF;
-      data[3] = (color >> 16) & 0xFF;
+    for(int p = 0; p < pixels; p++) {
+      r += _isLittleEndianSystem ? data[p * 4 + 0] : data[p * 4 + 3];
+      g += _isLittleEndianSystem ? data[p * 4 + 1] : data[p * 4 + 2];
+      b += _isLittleEndianSystem ? data[p * 4 + 2] : data[p * 4 + 1];
+      a += _isLittleEndianSystem ? data[p * 4 + 3] : data[p * 4 + 0];
     }
 
-    context.putImageData(imageData, x, y);
+    return ((a ~/ pixels) << 24) + ((r ~/ pixels) << 16) + ((g ~/ pixels) << 8) + ((b ~/ pixels) << 0);
   }
-
-  //-------------------------------------------------------------------------------------------------
 
   void setPixel32(int x, int y, int color) {
-    
-    var context = _getContext();
-    var imageData = context.getImageData(x, y, 1, 1);
+
+    var imageData = createImageData(1, 1);
+    var pixels = imageData.width * imageData.height;
     var data = imageData.data;
 
-    if (_isLittleEndianSystem) {
-      data[0] = (color >> 16) & 0xFF;
-      data[1] = (color >>  8) & 0xFF;
-      data[2] = (color >>  0) & 0xFF;
-      data[3] = (color >> 24) & 0xFF;
-    } else {
-      data[0] = (color >> 24) & 0xFF;
-      data[1] = (color >>  0) & 0xFF;
-      data[2] = (color >>  8) & 0xFF;
-      data[3] = (color >> 16) & 0xFF;
+    for(int p = 0; p < pixels; p++) {
+      data[p * 4 + 0] = _isLittleEndianSystem ? (color >> 16) & 0xFF : (color >> 24) & 0xFF;
+      data[p * 4 + 1] = _isLittleEndianSystem ? (color >>  8) & 0xFF : (color >>  0) & 0xFF;
+      data[p * 4 + 2] = _isLittleEndianSystem ? (color >>  0) & 0xFF : (color >>  8) & 0xFF;
+      data[p * 4 + 3] = _isLittleEndianSystem ? (color >> 24) & 0xFF : (color >> 16) & 0xFF;
     }
 
-    context.putImageData(imageData, x, y);
+    putImageData(imageData, x, y);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-    
+
     var renderStateContext = renderState.context;
 
     switch(_renderMode) {
-      
+
       case 0:
-        renderStateContext.drawImage(_source, _destinationX, _destinationY);
+        renderStateContext.drawImage(_source,
+            _destinationX, _destinationY);
         break;
 
       case 1:
+        renderStateContext.drawImageScaled(_source,
+            _destinationX, _destinationY, _destinationWidth, _destinationHeight);
+        break;
+
+      case 2:
         renderStateContext.drawImageScaledFromSource(_source,
             _sourceX, _sourceY, _sourceWidth, _sourceHeight,
             _destinationX, _destinationY, _destinationWidth, _destinationHeight);
         break;
 
-      case 2:
-        renderStateContext.transform(0.0, -1.0, 1.0, 0.0, _destinationX, _destinationY + _destinationHeight);
-        renderStateContext.drawImageScaledFromSource(_source, 
-            _sourceX, _sourceY, _sourceHeight, _sourceWidth, 
-            0.0 , 0.0, _destinationHeight, _destinationWidth);
-        break;
-        
       case 3:
-        renderStateContext.drawImageScaled(_source, _destinationX, _destinationY, _destinationWidth, _destinationHeight);
+        renderStateContext.transform(0.0, -1.0, 1.0, 0.0, _destinationX, _destinationY + _destinationHeight);
+        renderStateContext.drawImageScaledFromSource(_source,
+            _sourceX, _sourceY, _sourceHeight, _sourceWidth,
+            0.0 , 0.0, _destinationHeight, _destinationWidth);
         break;
     }
   }
@@ -363,126 +412,63 @@ class BitmapData implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   void renderClipped(RenderState renderState, Rectangle clipRectangle) {
-    
+
+    if (clipRectangle.width == 0 ||  clipRectangle.height == 0) return;
+
     var renderStateContext = renderState.context;
-    
-    if (clipRectangle.width <= 0.0 || clipRectangle.height <= 0.0)
-      return;
-    
-    switch(_renderMode) {
-      
-      case 0:
 
-        renderStateContext.drawImageScaledFromSource(_source, 
-            clipRectangle.x - _destinationX, clipRectangle.y - _destinationY, clipRectangle.width, clipRectangle.height,
-            clipRectangle.x + _destinationX, clipRectangle.y + _destinationY, clipRectangle.width, clipRectangle.height);
-        
-        break;
+    // Drawing a clipped BitmapData with a _renderMode other than 0 is pretty complicated.
+    // Therefore we convert all BitmapDatas to _renderMode 0 and use a simple drawing method.
 
-      case 1:
-
-        var fLeft = _sourceX;
-        var fTop =  _sourceY;
-        var fRight = fLeft + _sourceWidth;
-        var fBottom = fTop + _sourceHeight;
-
-        var cLeft = _sourceX - _destinationX + clipRectangle.x;
-        var cTop =  _sourceY - _destinationY + clipRectangle.y;
-        var cRight = cLeft + clipRectangle.width;
-        var cBottom = cTop + clipRectangle.height;
-
-        var iLeft = (fLeft > cLeft) ? fLeft : cLeft;
-        var iTop =  (fTop > cTop) ? fTop : cTop;
-        var iRight = (fRight < cRight) ? fRight : cRight;
-        var iBottom = (fBottom < cBottom) ? fBottom : cBottom;
-        var iWidth = iRight - iLeft;
-        var iHeight = iBottom - iTop;
-        var destinationX = _destinationX - fLeft + iLeft;
-        var destinationY = _destinationY - fTop + iTop;
-
-        if (iWidth > 0.0 && iHeight > 0.0) {
-          renderStateContext.drawImageScaledFromSource(_source, 
-              iLeft, iTop, iWidth, iHeight, 
-              destinationX, destinationY, iWidth, iHeight);
-        }
-
-        break;
-
-      case 2:
-
-        var fLeft = _sourceX;
-        var fTop =  _sourceY;
-        var fRight = fLeft + _sourceHeight;
-        var fBottom = fTop + _sourceWidth;
-
-        var cLeft = _sourceX + _destinationY - clipRectangle.y + _destinationHeight - clipRectangle.height;
-        var cTop =  _sourceY - _destinationX + clipRectangle.x;
-        var cRight = cLeft + clipRectangle.height;
-        var cBottom = cTop + clipRectangle.width;
-
-        var iLeft = (fLeft > cLeft) ? fLeft : cLeft;
-        var iTop =  (fTop > cTop) ? fTop : cTop;
-        var iRight = (fRight < cRight) ? fRight : cRight;
-        var iBottom = (fBottom < cBottom) ? fBottom : cBottom;
-        var iWidth = iBottom - iTop;
-        var iHeight = iRight - iLeft;
-        var destinationX = _destinationX - fTop + iTop;
-        var destinationY = _destinationY + fRight - iRight;
-        
-        if (iWidth > 0.0 && iHeight > 0.0) {
-          renderStateContext.transform(0.0, -1.0, 1.0, 0.0, destinationX, destinationY + iHeight);
-          renderStateContext.drawImageScaledFromSource(_source, 
-              iLeft, iTop, iHeight, iWidth, 
-              0, 0, iHeight, iWidth);
-        }
-
-        break;
+    if (_renderMode != 0) {
+      _ensureContext();
     }
+
+    var sourceX = (clipRectangle.x - _destinationX) * _pixelRatioSource;
+    var sourceY = (clipRectangle.y - _destinationY) * _pixelRatioSource;
+    var sourceWidth = clipRectangle.width * _pixelRatioSource;
+    var sourceHeight = clipRectangle.height * _pixelRatioSource;
+    var destinationX = clipRectangle.x + _destinationX;
+    var destinationY = clipRectangle.y + _destinationY;
+    var destinationWidth = clipRectangle.width;
+    var destinationHeight = clipRectangle.height;
+
+    renderStateContext.drawImageScaledFromSource(_source,
+        sourceX, sourceY, sourceWidth, sourceHeight,
+        destinationX, destinationY, destinationWidth, destinationHeight);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  CanvasRenderingContext2D _getContext() {
-    
+  void _ensureContext() {
+
     if (_context == null) {
-      
-      var canvas = new CanvasElement(width: _width, height: _height);
 
-      _context = canvas.context2D;
+      var pixelRatioSource = _pixelRatio / _backingStorePixelRatio;
+      var sourceWidth = (_width * pixelRatioSource).ceil();
+      var sourceHeight = (_height * pixelRatioSource).ceil();
 
-      switch(_renderMode) {
-        
-        case 0:
-          _context.drawImage(_source, _destinationX, _destinationY);
-          break;
-          
-        case 1:
-          _context.drawImageScaledFromSource(_source,
-              _sourceX, _sourceY, _sourceWidth, _sourceHeight,
-              _destinationX, _destinationY, _destinationWidth, _destinationHeight);
-          break;
+      var canvas = new CanvasElement(width: sourceWidth, height: sourceHeight);
+      var matrix = new Matrix(pixelRatioSource, 0.0, 0.0, pixelRatioSource, 0.0, 0.0);
+      var renderState = new RenderState.fromCanvasRenderingContext2D(canvas.context2D, matrix);
+      this.render(renderState);
 
-        case 2:
-          _context.transform(0.0, -1.0, 1.0, 0.0, _destinationX, _destinationY + _destinationHeight);
-          _context.drawImageScaledFromSource(_source, 
-              _sourceX, _sourceY, _sourceHeight, _sourceWidth, 
-              0.0 , 0.0, _destinationHeight, _destinationWidth);
-          
-          _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-          break;
-      }
+      _pixelRatio = _pixelRatio;
+      _pixelRatioSource = pixelRatioSource;
 
-      _renderMode = 0;
-      _destinationX = _sourceX = 0;
-      _destinationY = _sourceY = 0;
-      _destinationWidth = _sourceWidth = _width;
-      _destinationHeight = _sourceHeight = _height;
-      
+      _renderMode = ((1.0 - _pixelRatioSource).abs() < 0.001) ? 0 : 1;
+      _destinationX = 0;
+      _destinationY = 0;
+      _destinationWidth = _width;
+      _destinationHeight = _height;
+      _sourceX = 0;
+      _sourceY = 0;
+      _sourceWidth = sourceWidth;
+      _sourceHeight = sourceHeight;
+
       _source = canvas;
+      _context = canvas.context2D;
     }
-
-    return _context;
   }
-
 }
