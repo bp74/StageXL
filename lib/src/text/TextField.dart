@@ -196,9 +196,9 @@ class TextField extends InteractiveObject {
 
       _canvasRefreshPending = false;
 
-      var ratio = _devicePixelRatio / _backingStorePixelRatio;
-      var canvasWidth = (_width * ratio).ceil();
-      var canvasHeight =  (_height * ratio).ceil();
+      var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
+      var canvasWidth = (_width * pixelRatio).ceil();
+      var canvasHeight =  (_height * pixelRatio).ceil();
 
       if (_canvas == null) {
         _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
@@ -234,7 +234,7 @@ class TextField extends InteractiveObject {
       //-----------------------------
       // draw background
 
-      _context.setTransform(ratio, 0.0, 0.0, ratio, 0.0, 0.0);
+      _context.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
 
       if (_background) {
         _context.fillStyle = _color2rgb(_backgroundColor);
