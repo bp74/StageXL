@@ -342,7 +342,7 @@ class Stage extends DisplayObjectContainer {
     //----------------------------
     
     // stage to canvas coordinate transformation    
-    _stageTransformation.setTo(scaleX * _canvasRatio, 0.0, 0.0, scaleY * _canvasRatio, pivotX, pivotY);
+    _stageTransformation.setTo(scaleX, 0.0, 0.0, scaleY, pivotX, pivotY);
     
     // client to stage coordinate transformation
     _clientTransformation.setTo(1 / scaleX, 0.0, 0.0, 1 / scaleY,  

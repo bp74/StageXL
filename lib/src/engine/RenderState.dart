@@ -58,6 +58,7 @@ class RenderState {
     }
     
     var m = _firstContextState.matrix;
+    m.scale(Stage.canvasRatio, Stage.canvasRatio);
     _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
     _context.clearRect(0, 0, _context.canvas.width, _context.canvas.height);
     _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
