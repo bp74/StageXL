@@ -75,7 +75,6 @@ class RenderState {
     var mask = displayObject._mask;
     var shadow = displayObject._shadow;
     var composite = displayObject._compositeOperation;
-    var cache = displayObject._cache;
 
     var cs1 = _currentContextState as _ContextState;
     var cs2 = _currentContextState.nextContextState as _ContextState;
@@ -130,7 +129,7 @@ class RenderState {
     _context.globalCompositeOperation = nextCompositeOperation;
     _context.globalAlpha = nextAlpha;
 
-    if (cache != null) {
+    if (displayObject.cached) {
       displayObject._renderCache(this);
     } else {
       displayObject.render(this);
