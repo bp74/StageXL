@@ -336,8 +336,8 @@ class Stage extends DisplayObjectContainer {
     _stageTransformation.scale(pixelRatio, pixelRatio);
 
     // client to stage coordinate transformation
-    _clientTransformation.setTo(1 / scaleX, 0.0, 0.0, 1 / scaleY,
-        -(clientLeft + pivotX) / scaleX, -(clientTop + pivotY) / scaleY);
+    _clientTransformation.setTo(1.0, 0.0, 0.0, 1.0, - clientLeft - pivotX, - clientTop - pivotY);
+    _clientTransformation.scale(1.0 / scaleX, 1.0 / scaleY);
 
     if (_canvasWidth != clientWidth || _canvasHeight != clientHeight) {
       _canvasWidth = clientWidth;
