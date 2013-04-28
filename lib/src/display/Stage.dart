@@ -86,6 +86,11 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
 
+  static const EventStreamProvider<Event> resizeEvent = const EventStreamProvider<Event>(Event.RESIZE);
+  Stream<Event> get onResize => Stage.resizeEvent.forTarget(this);
+
+  //-------------------------------------------------------------------------------------------------
+
   Stage(String name, CanvasElement canvas, [int contentWidth, int contentHeight, int contentFrameRate]) {
 
     _name = name;
