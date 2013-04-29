@@ -622,8 +622,6 @@ class Stage extends DisplayObjectContainer {
 
     String keyboardEventType = null;
 
-    print("charCode: ${event.charCode}, keyCode. ${event.keyCode}");
-
     if (event.type == "keypress") {
 
       int charCode = (event.charCode != 0) ? event.charCode : event.keyCode;
