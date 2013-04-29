@@ -155,7 +155,7 @@ class Stage extends DisplayObjectContainer {
 
     _canvas.onKeyDown.listen(_onKeyEvent);
     _canvas.onKeyUp.listen(_onKeyEvent);
-    _canvas.onKeyPress.listen(_onTextEvent);
+    _canvas.onKeyPress.listen(_onKeyEvent);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -441,6 +441,7 @@ class Stage extends DisplayObjectContainer {
     bool isDoubleClick = false;
 
     if (event.type == "mousedown") {
+      _canvas.focus();
       mouseEventType = mouseButton.mouseDownEventType;
 
       if (target != mouseButton.target || time > mouseButton.clickTime + 500)
@@ -583,6 +584,7 @@ class Stage extends DisplayObjectContainer {
       String touchEventType = null;
 
       if (event.type == "touchstart") {
+        _canvas.focus();
         _touches[identifier] = touch;
         touchEventType = TouchEvent.TOUCH_BEGIN;
       }
@@ -618,9 +620,24 @@ class Stage extends DisplayObjectContainer {
 
   _onKeyEvent(html.KeyboardEvent event) {
 
-    event.preventDefault();
-
     String keyboardEventType = null;
+
+    print("charCode: ${event.charCode}, keyCode. ${event.keyCode}");
+
+    if (event.type == "keypress") {
+
+      int charCode = (event.charCode != 0) ? event.charCode : event.keyCode;
+      TextEvent textEvent = new TextEvent(TextEvent.TEXT_INPUT, true);
+      textEvent._text = new String.fromCharCodes([charCode]);
+
+      if (_focus != null) {
+        _focus.dispatchEvent(textEvent);
+      }
+
+      return;
+    }
+
+    //------------------------------------------------------------------------
 
     if (event.type == "keyup") keyboardEventType = KeyboardEvent.KEY_UP;
     if (event.type == "keydown") keyboardEventType = KeyboardEvent.KEY_DOWN;
@@ -640,21 +657,13 @@ class Stage extends DisplayObjectContainer {
     if (event.keyLocation == html.KeyLocation.JOYSTICK) _keyboardEvent._keyLocation = KeyLocation.D_PAD;
     if (event.keyLocation == html.KeyLocation.MOBILE) _keyboardEvent._keyLocation = KeyLocation.D_PAD;
 
-    if (_focus != null)
+    if (_focus != null) {
       _focus.dispatchEvent(_keyboardEvent);
-  }
+    }
 
-  //-------------------------------------------------------------------------------------------------
-
-  _onTextEvent(html.KeyboardEvent event) {
-
-    int charCode = (event.charCode != 0) ? event.charCode : event.keyCode;
-
-    TextEvent textEvent = new TextEvent(TextEvent.TEXT_INPUT, true);
-    textEvent._text = new String.fromCharCodes([charCode]);
-
-    if (_focus != null)
-      _focus.dispatchEvent(textEvent);
+    if (event.keyCode == 8) {
+      event.preventDefault();
+    }
   }
 
 }
