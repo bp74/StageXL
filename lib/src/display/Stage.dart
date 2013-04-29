@@ -81,7 +81,6 @@ class Stage extends DisplayObjectContainer {
   Map<int, _Touch> _touches;
 
   MouseEvent _mouseEvent;
-  KeyboardEvent _keyboardEvent;
   TouchEvent _touchEvent;
 
   //-------------------------------------------------------------------------------------------------
@@ -150,8 +149,6 @@ class Stage extends DisplayObjectContainer {
 
     //---------------------------
     // prepare keyboard events
-
-    _keyboardEvent = new KeyboardEvent(KeyboardEvent.KEY_DOWN, true);
 
     _canvas.onKeyDown.listen(_onKeyEvent);
     _canvas.onKeyUp.listen(_onKeyEvent);
@@ -620,47 +617,46 @@ class Stage extends DisplayObjectContainer {
 
   _onKeyEvent(html.KeyboardEvent event) {
 
-    String keyboardEventType = null;
+    if (event.keyCode == 8) {
+      event.preventDefault();
+    }
 
-    if (event.type == "keypress") {
-
-      int charCode = (event.charCode != 0) ? event.charCode : event.keyCode;
-      TextEvent textEvent = new TextEvent(TextEvent.TEXT_INPUT, true);
-      textEvent._text = new String.fromCharCodes([charCode]);
-
-      if (_focus != null) {
-        _focus.dispatchEvent(textEvent);
-      }
-
+    if (_focus == null) {
       return;
     }
 
-    //------------------------------------------------------------------------
+    if (event.type == "keypress") {
 
-    if (event.type == "keyup") keyboardEventType = KeyboardEvent.KEY_UP;
-    if (event.type == "keydown") keyboardEventType = KeyboardEvent.KEY_DOWN;
+      var charCode = event.charCode;
+      if (charCode == 0) charCode = event.keyCode;
 
-    _keyboardEvent
-      .._reset(keyboardEventType, true)
+      var textEvent = new TextEvent(TextEvent.TEXT_INPUT, true)
+      .._text = new String.fromCharCodes([charCode]);
+
+      _focus.dispatchEvent(textEvent);
+
+    } else {
+
+      var keyLocation = KeyLocation.STANDARD;
+      var keyboardEventType = "";
+
+      if (event.type == "keyup") keyboardEventType = KeyboardEvent.KEY_UP;
+      if (event.type == "keydown") keyboardEventType = KeyboardEvent.KEY_DOWN;
+      if (event.keyLocation == html.KeyLocation.LEFT) keyLocation = KeyLocation.LEFT;
+      if (event.keyLocation == html.KeyLocation.RIGHT) keyLocation = KeyLocation.RIGHT;
+      if (event.keyLocation == html.KeyLocation.NUMPAD) keyLocation = KeyLocation.NUM_PAD;
+      if (event.keyLocation == html.KeyLocation.JOYSTICK) keyLocation = KeyLocation.D_PAD;
+      if (event.keyLocation == html.KeyLocation.MOBILE) keyLocation = KeyLocation.D_PAD;
+
+      var keyboardEvent = new KeyboardEvent(keyboardEventType, true)
       .._altKey = event.altKey
       .._ctrlKey = event.ctrlKey
       .._shiftKey = event.shiftKey
       .._charCode = event.charCode
       .._keyCode = event.keyCode
-      .._keyLocation = KeyLocation.STANDARD;
+      .._keyLocation = keyLocation;
 
-    if (event.keyLocation == html.KeyLocation.LEFT) _keyboardEvent._keyLocation = KeyLocation.LEFT;
-    if (event.keyLocation == html.KeyLocation.RIGHT) _keyboardEvent._keyLocation = KeyLocation.RIGHT;
-    if (event.keyLocation == html.KeyLocation.NUMPAD) _keyboardEvent._keyLocation = KeyLocation.NUM_PAD;
-    if (event.keyLocation == html.KeyLocation.JOYSTICK) _keyboardEvent._keyLocation = KeyLocation.D_PAD;
-    if (event.keyLocation == html.KeyLocation.MOBILE) _keyboardEvent._keyLocation = KeyLocation.D_PAD;
-
-    if (_focus != null) {
-      _focus.dispatchEvent(_keyboardEvent);
-    }
-
-    if (event.keyCode == 8) {
-      event.preventDefault();
+      _focus.dispatchEvent(keyboardEvent);
     }
   }
 

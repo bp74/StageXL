@@ -1,47 +1,24 @@
 part of stagexl;
 
 class KeyboardEvent extends Event {
-  
+
   static const String KEY_DOWN = "keyDown";
   static const String KEY_UP = "keyUp";
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
 
-  bool _altKey;
-  bool _ctrlKey;
-  bool _shiftKey;
-  bool _commandKey;     // Not supported
-  bool _controlKey;     // Not supported
+  bool _altKey = false;
+  bool _ctrlKey = false;
+  bool _shiftKey = false;
+  bool _commandKey = false;     // Not supported
+  bool _controlKey = false;     // Not supported
 
-  int _charCode;
-  int _keyCode;
-  int _keyLocation;
+  int _charCode = 0;
+  int _keyCode = 0;
+  int _keyLocation = 0;
 
-  KeyboardEvent(String type, [bool bubbles = false]):super(type, bubbles) {
-    
-    _reset(type, bubbles);
-  }
+  KeyboardEvent(String type, [bool bubbles = false]):super(type, bubbles);
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  void _reset(String type, [bool bubbles = false]) {
-    
-    super._reset(type, bubbles);
-
-    _altKey = false;
-    _ctrlKey = false;
-    _shiftKey = false;
-    _commandKey = false;
-    _controlKey = false;
-
-    _charCode = 0;
-    _keyCode = 0;
-    _keyLocation = 0;
-  }
-
-  //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   bool get altKey => _altKey;
@@ -53,5 +30,4 @@ class KeyboardEvent extends Event {
   int get charCode => _charCode;
   int get keyCode => _keyCode;
   int get keyLocation => _keyLocation;
-
 }
