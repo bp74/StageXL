@@ -329,10 +329,11 @@ class Stage extends DisplayObjectContainer {
 
     //----------------------------
 
-    _contentRectangle.x = - pivotX / scaleX;
-    _contentRectangle.y = - pivotY / scaleY;
-    _contentRectangle.width = _canvasWidth / scaleX;
-    _contentRectangle.height = _canvasHeight / scaleY;
+    var contentRectangle = _contentRectangle;
+    contentRectangle.x = - pivotX / scaleX;
+    contentRectangle.y = - pivotY / scaleY;
+    contentRectangle.width = clientWidth / scaleX;
+    contentRectangle.height = clientHeight / scaleY;
 
     var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
 
