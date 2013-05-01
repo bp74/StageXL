@@ -10,7 +10,16 @@ class TextField extends InteractiveObject {
   String _gridFitType = GridFitType.PIXEL;
   String _type = TextFieldType.DYNAMIC;
 
+  int _caretIndex = 0;
+  int _caretLine = 0;
+  num _caretTime = 0.0;
+  num _caretX = 0.0;
+  num _caretY = 0.0;
+  num _caretWidth = 0.0;
+  num _caretHeight = 0.0;
+
   bool _wordWrap = false;
+  bool _multiline = false;
   bool _background = false;
   int _backgroundColor = 0x000000;
   bool _border = false;
@@ -20,24 +29,24 @@ class TextField extends InteractiveObject {
 
   num _textWidth = 0;
   num _textHeight = 0;
-  List<String> _linesText;
-  List<TextLineMetrics> _linesMetrics;
+  List<TextLineMetrics> _textLineMetrics;
 
-  bool _canvasRefreshPending = true;
+  bool _refreshPending = true;
   CanvasElement _canvas = null;
   CanvasRenderingContext2D _context = null;
+  num _canvasPixelRatio = 1.0;
 
   //-------------------------------------------------------------------------------------------------
 
   TextField([String text, TextFormat textFormat]) {
 
-    if (text != null) _text = text;
+    _text = (text != null) ? text : "";
+    _defaultTextFormat = (textFormat != null) ? textFormat : new TextFormat("Arial", 12, 0x000000);
+    _textLineMetrics = new List<TextLineMetrics>();
+    _refreshPending = true;
 
-    if (textFormat != null) defaultTextFormat = textFormat;
-    else _defaultTextFormat = new TextFormat("Arial", 12, 0x000000);
-
-    _linesText = new List<String>();
-    _linesMetrics = new List<TextLineMetrics>();
+    this.onKeyDown.listen(_onKeyDown);
+    this.onTextInput.listen(_onTextInput);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -47,10 +56,13 @@ class TextField extends InteractiveObject {
   int get textColor => _textColor;
   TextFormat get defaultTextFormat => _defaultTextFormat;
 
+  int get caretIndex => _caretIndex;
+
   String get autoSize => _autoSize;
   String get gridFitType => _gridFitType;
   String get type => _type;
   bool get wordWrap => _wordWrap;
+  bool get multiline => _multiline;
 
   bool get background => _background;
   int get backgroundColor => _backgroundColor;
@@ -61,31 +73,107 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  void set text(String value) { _text = value; _canvasRefreshPending = true; }
-  void set textColor(int value) { _textColor = value; _canvasRefreshPending = true; }
-  void set defaultTextFormat(TextFormat value) { _defaultTextFormat = value; _textColor = _defaultTextFormat.color; _canvasRefreshPending = true; }
+  void set text(String value) {
+    _text = value.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+    _caretIndex = _text.length;
+    _refreshPending = true;
+  }
 
-  void set autoSize(String value) { _autoSize = value; _canvasRefreshPending = true; }
-  void set gridFitType(String value) { _gridFitType = value; _canvasRefreshPending = true; }
-  void set type(String value) { _type = value; _canvasRefreshPending = true; }
-  void set wordWrap(bool value) { _wordWrap = value; _canvasRefreshPending = true; }
+  void set textColor(int value) {
+    _textColor = value;
+    _refreshPending = true;
+  }
 
-  void set background(bool value) { _background = value; _canvasRefreshPending = true; }
-  void set backgroundColor(int value) { _backgroundColor = value; _canvasRefreshPending = true; }
-  void set border(bool value) { _border = value; _canvasRefreshPending = true; }
-  void set borderColor(int value) { _borderColor = value; _canvasRefreshPending = true; }
-  void set width(num value) { _width = value; _canvasRefreshPending = true; }
-  void set height(num value) { _height = value; _canvasRefreshPending = true; }
+  void set defaultTextFormat(TextFormat value) {
+    _defaultTextFormat = value;
+    _textColor = _defaultTextFormat.color;
+    _refreshPending = true;
+  }
+
+  void set autoSize(String value) {
+    _autoSize = value;
+    _refreshPending = true;
+  }
+
+  void set gridFitType(String value) {
+    _gridFitType = value;
+    _refreshPending = true;
+  }
+
+  void set type(String value) {
+    _type = value;
+    _refreshPending = true;
+  }
+
+  void set wordWrap(bool value) {
+    _wordWrap = value;
+    _refreshPending = true;
+  }
+
+  void set multiline(bool value) {
+    _multiline = value;
+    _refreshPending = true;
+  }
+
+  void set background(bool value) {
+    _background = value;
+    _refreshPending = true;
+  }
+
+  void set backgroundColor(int value) {
+    _backgroundColor = value;
+    _refreshPending = true;
+  }
+
+  void set border(bool value) {
+    _border = value;
+    _refreshPending = true;
+  }
+
+  void set borderColor(int value) {
+    _borderColor = value;
+    _refreshPending = true;
+  }
+
+  void set width(num value) {
+    _width = value;
+    _refreshPending = true;
+  }
+
+  void set height(num value) {
+    _height = value;
+    _refreshPending = true;
+  }
 
   //-------------------------------------------------------------------------------------------------
 
-  num get textWidth { _canvasRefresh(); return _textWidth; }
-  num get textHeight { _canvasRefresh(); return _textHeight; }
-  int get numLines { _canvasRefresh(); return _linesText.length; }
+  num get textWidth {
+    _refresh();
+    return _textWidth;
+  }
 
-  int getLineLength(int lineIndex) { _canvasRefresh(); return _linesText[lineIndex].length; }
-  TextLineMetrics getLineMetrics(int lineIndex) { _canvasRefresh(); return _linesMetrics[lineIndex]; }
-  String getLineText(int lineIndex) { _canvasRefresh(); return _linesText[lineIndex]; }
+  num get textHeight {
+    _refresh();
+    return _textHeight;
+  }
+
+  int get numLines {
+    _refresh();
+    return _textLineMetrics.length;
+  }
+
+  TextLineMetrics getLineMetrics(int lineIndex) {
+    _refresh();
+    return _textLineMetrics[lineIndex];
+  }
+
+  String getLineText(int lineIndex) {
+    return getLineMetrics(lineIndex)._text;
+  }
+
+  int getLineLength(int lineIndex) {
+    return getLineMetrics(lineIndex)._text.length;
+  }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
@@ -108,97 +196,158 @@ class TextField extends InteractiveObject {
 
   void render(RenderState renderState) {
 
-    _canvasRefresh();
-    renderState._context.drawImageScaled(_canvas, 0.0, 0.0, _width, _height);
+    _refresh();
+    _caretTime += renderState.deltaTime;
+
+    var renderContext = renderState._context;
+    renderContext.drawImageScaled(_canvas, 0.0, 0.0, _width, _height);
+
+    if (_type == TextFieldType.INPUT) {
+      var stage = this.stage;
+      if (stage != null && stage.focus == this && _caretTime.remainder(1.0) < 0.5) {
+        renderContext.fillStyle = _color2rgb(_textColor);
+        renderContext.fillRect(_caretX, _caretY, _caretWidth, _caretHeight);
+      }
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _processTextLines(String fontStyle) {
+  _refreshTextLineMetrics(_FontStyleMetrics fontStyleMetrics) {
 
-    var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
+    _textLineMetrics.clear();
 
-    _linesText.clear();
-    _linesMetrics.clear();
+    //-----------------------------
+    // split lines
 
-    //---------------------------
+    var startIndex = 0;
+    var checkLine = '';
+    var validLine = '';
+    var lineWidth = 0;
 
-    if (_wordWrap == false) {
+    for(var paragraph in _text.split('\n')) {
 
-      for(String paragraph in _text.replaceAll('\r', '').split('\n'))
-        _linesText.add(paragraph);
+      if (_wordWrap == false) {
 
-    } else {
+        _textLineMetrics.add(new TextLineMetrics._internal(paragraph, startIndex));
+        startIndex += paragraph.length + 1;
 
-      // Split text into paragraphs
+      } else {
 
-      for(String paragraph in _text.replaceAll('\r', '').split('\n')) {
+        checkLine = null;
 
-        var line = '';
+        for(var word in paragraph.split(' ')) {
 
-        // Split paragraphs into words
+          validLine = checkLine;
+          checkLine = (validLine == null) ? word : validLine + ' ' + word;
+          lineWidth = _context.measureText(checkLine).width / _canvasPixelRatio;
 
-        for(String word in paragraph.split(' ')) {
-
-          var previousLine = line;
-
-          line = (line.length == 0) ? word : line + ' ' + word;
-
-          if (_context.measureText(line).width > _width) {
-
-            if (previousLine.length == 0) {
-              _linesText.add(line);
-              line = '';
+          if (lineWidth > _width) {
+            if (validLine == null) {
+              _textLineMetrics.add(new TextLineMetrics._internal(checkLine, startIndex));
+              startIndex += checkLine.length + 1;
+              checkLine = '';
             } else {
-              _linesText.add(previousLine);
-              line = word;
+              _textLineMetrics.add(new TextLineMetrics._internal(validLine, startIndex));
+              startIndex += validLine.length + 1;
+              checkLine = word;
             }
           }
         }
 
-        if (line.isEmpty == false) {
-          _linesText.add(line);
+        if (checkLine != null) {
+          _textLineMetrics.add(new TextLineMetrics._internal(checkLine, startIndex));
+          startIndex += checkLine.length + 1;
         }
       }
     }
 
-    //---------------------------
+    //-----------------------------
+    // calculate metrics
 
     _textWidth = 0;
     _textHeight = 0;
 
-    for(String line in _linesText) {
+    var offsetX = 0.0;
+    var offsetY = _defaultTextFormat.topMargin + _defaultTextFormat.size;
 
-      var metrics = _context.measureText(line);
-      var offsetX = 0.0;
+    for(var textLineMetrics in _textLineMetrics) {
+      var width = _context.measureText(textLineMetrics._text).width / _canvasPixelRatio;
+      var align = _defaultTextFormat.align;
 
-      if (_defaultTextFormat.align == TextFormatAlign.CENTER || _defaultTextFormat.align == TextFormatAlign.JUSTIFY)
-        offsetX = (_width - metrics.width) / 2;
+      if (align == TextFormatAlign.CENTER || align == TextFormatAlign.JUSTIFY) {
+        offsetX = (_width - width) / 2;
+      } else  if (align == TextFormatAlign.RIGHT || align == TextFormatAlign.END) {
+        offsetX = (_width - width);
+      } else {
+        offsetX = 0;
+      }
 
-      if (_defaultTextFormat.align == TextFormatAlign.RIGHT || _defaultTextFormat.align == TextFormatAlign.END)
-        offsetX = _width - metrics.width;
+      textLineMetrics._x = offsetX;
+      textLineMetrics._y = offsetY;
+      textLineMetrics._width = width;
+      textLineMetrics._height = _defaultTextFormat.size;
+      textLineMetrics._ascent = fontStyleMetrics.ascent;
+      textLineMetrics._descent = fontStyleMetrics.descent;
+      textLineMetrics._leading = 0;
 
-      var textLineMetrics = new TextLineMetrics(
-        offsetX, metrics.width, _defaultTextFormat.size, fontStyleMetrics.ascent, fontStyleMetrics.descent, 0);
+      offsetY = offsetY + _defaultTextFormat.size;
 
-      _linesMetrics.add(textLineMetrics);
-      _textWidth = max(_textWidth, textLineMetrics.width);
-      _textHeight = _textHeight + textLineMetrics.height;
+      _textWidth = max(_textWidth, textLineMetrics._width);
+      _textHeight = _textHeight + textLineMetrics._height;
+    }
+
+    //-----------------------------
+    // calculate caret position
+
+    if (_type == TextFieldType.INPUT) {
+
+      for(int line = _textLineMetrics.length - 1; line >= 0; line--) {
+        var textLineMetrics = _textLineMetrics[line];
+
+        if (_caretIndex >= textLineMetrics._textIndex) {
+          var textIndex = _caretIndex - textLineMetrics._textIndex;
+          var text = textLineMetrics._text.substring(0, textIndex);
+          _caretLine = line;
+          _caretX = textLineMetrics._x + _context.measureText(text).width / _canvasPixelRatio;
+          _caretY = textLineMetrics._y - fontStyleMetrics.ascent * 0.9;
+          _caretWidth = 2;
+          _caretHeight = _defaultTextFormat.size;
+          break;
+        }
+      }
+
+      var shiftX = 0.0;
+      var shiftY = 0.0;
+
+      while (shiftX + _caretX + _caretWidth > _width) shiftX -= _width * 0.2;
+      while (shiftX + _caretX < 0) shiftX += _width * 0.2;
+      while (shiftY + _caretY + _caretHeight > _height) shiftY -= _defaultTextFormat.size;
+      while (shiftY + _caretY < 0) shiftY += _defaultTextFormat.size;
+
+      _caretX += shiftX;
+      _caretY += shiftY;
+
+      for(int i = 0; i < _textLineMetrics.length; i++) {
+        var tlm = _textLineMetrics[i];
+        tlm._x += shiftX;
+        tlm._y += shiftY;
+      }
     }
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void _canvasRefresh() {
+  _refresh({bool calculateOnly:false}) {
 
-    if (_canvasRefreshPending) {
+    if (_refreshPending) {
 
-      _canvasRefreshPending = false;
+      _refreshPending = false;
+      _canvasPixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
 
-      var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
-      var canvasWidth = (_width * pixelRatio).ceil();
-      var canvasHeight =  (_height * pixelRatio).ceil();
+      var canvasWidth = (_width * _canvasPixelRatio).ceil();
+      var canvasHeight =  (_height * _canvasPixelRatio).ceil();
 
       if (_canvas == null) {
         _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
@@ -210,6 +359,7 @@ class TextField extends InteractiveObject {
 
       //-----------------------------
       // set canvas context
+      // calculate TextLineMetrics
 
       var fontStyleBuffer = new StringBuffer()
         ..write(_defaultTextFormat.italic ? "italic " : "normal ")
@@ -219,6 +369,7 @@ class TextField extends InteractiveObject {
         ..write("${_defaultTextFormat.font},sans-serif");
 
       var fontStyle = fontStyleBuffer.toString();
+      var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
 
       _context.font = fontStyle;
       _context.textAlign = "start";
@@ -226,15 +377,17 @@ class TextField extends InteractiveObject {
       _context.fillStyle = _color2rgb(_textColor);
       _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
-      //-----------------------------
-      // split text into lines
+      _refreshTextLineMetrics(fontStyleMetrics);
 
-      _processTextLines(fontStyle);
+      if (calculateOnly) {
+        _refreshPending = true;
+        return;
+      }
 
       //-----------------------------
       // draw background
 
-      _context.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
+      _context.setTransform(_canvasPixelRatio, 0.0, 0.0, _canvasPixelRatio, 0.0, 0.0);
 
       if (_background) {
         _context.fillStyle = _color2rgb(_backgroundColor);
@@ -246,25 +399,131 @@ class TextField extends InteractiveObject {
       //-----------------------------
       // draw text
 
-      num offsetY = _defaultTextFormat.topMargin + _defaultTextFormat.size;
+      _context.fillStyle = _color2rgb(_textColor);
 
-      for(int i = 0; i < _linesText.length; i++) {
-        var metrics = _linesMetrics[i];
-        _context.fillStyle = _color2rgb(_textColor);
-        _context.fillText(_linesText[i], metrics.x, offsetY);
-
-        offsetY += metrics.height;
+      for(int i = 0; i < _textLineMetrics.length; i++) {
+        var lm = _textLineMetrics[i];
+        _context.fillText(lm._text, lm._x, lm._y);
       }
 
       //-----------------------------
       // draw border
 
       if (_border) {
+        _context.setTransform(_canvasPixelRatio, 0.0, 0.0, _canvasPixelRatio, 0.0, 0.0);
         _context.strokeStyle = _color2rgb(_borderColor);
         _context.lineWidth = 1;
         _context.strokeRect(0, 0, _width, _height);
       }
     }
   }
+
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  _onKeyDown(KeyboardEvent keyboardEvent) {
+
+    if (_type == TextFieldType.INPUT) {
+
+      _refresh(calculateOnly:true);
+
+      var text = _text;
+      var textLength = text.length;
+      var textLineMetrics = _textLineMetrics;
+      var caretIndex = _caretIndex;
+      var caretLine = _caretLine;
+      var caretIndexNew = -1;
+      var keyCode = keyboardEvent.keyCode;
+
+      switch(keyboardEvent.keyCode) {
+
+        case 8: // backspace
+          if (caretIndex > 0) {
+            _text = text.substring(0, caretIndex - 1) + text.substring(caretIndex);
+            caretIndexNew = caretIndex - 1;
+          }
+          break;
+
+        case 35:  // end
+          var tlm = textLineMetrics[caretLine];
+          caretIndexNew = tlm._textIndex + tlm._text.length;
+          break;
+
+        case 36:  // home
+          var tlm = textLineMetrics[caretLine];
+          caretIndexNew = tlm._textIndex;
+          break;
+
+        case 37: // arrow left
+          if (caretIndex > 0) {
+            caretIndexNew = caretIndex - 1;
+          }
+          break;
+
+        case 38: // arrow up
+          if (caretLine > 0 && caretLine < textLineMetrics.length) {
+            var tlmFrom = textLineMetrics[caretLine ];
+            var tlmTo = textLineMetrics[caretLine - 1];
+            var lineIndex = min(caretIndex - tlmFrom._textIndex, tlmTo._text.length);
+            caretIndexNew = tlmTo._textIndex + lineIndex;
+          } else {
+            caretIndexNew = 0;
+          }
+          break;
+
+        case 39: // arrow right
+          if (caretIndex < textLength) {
+            caretIndexNew = caretIndex + 1;
+          }
+          break;
+
+        case 40: // arrow down
+          if (caretLine >= 0 && caretLine < textLineMetrics.length - 1) {
+            var tlmFrom = textLineMetrics[caretLine ];
+            var tlmTo = textLineMetrics[caretLine + 1];
+            var lineIndex = min(caretIndex - tlmFrom._textIndex, tlmTo._text.length);
+            caretIndexNew = tlmTo._textIndex + lineIndex;
+          } else {
+            caretIndexNew = textLength;
+          }
+          break;
+
+        case 46: // delete
+          if (caretIndex < textLength) {
+            _text = text.substring(0, caretIndex) + text.substring(caretIndex + 1);
+            caretIndexNew = caretIndex;
+          }
+          break;
+      }
+
+      if (caretIndexNew != -1) {
+        _caretIndex = caretIndexNew;
+        _caretTime = 0.0;
+        _refreshPending = true;
+      }
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  _onTextInput(TextEvent textEvent) {
+
+    if (_type == TextFieldType.INPUT) {
+
+      var textLength = _text.length;
+      var caretIndex = _caretIndex;
+      var newText = textEvent.text;
+
+      if (newText == '\r') newText = '\n';
+      if (newText == '\n' && _multiline == false) newText = '';
+      if (newText != '') {
+        _text = _text.substring(0, caretIndex) + newText + _text.substring(caretIndex);
+        _caretIndex = _caretIndex + newText.length;
+        _caretTime = 0.0;
+        _refreshPending = true;
+      }
+    }
+  }
+
 
 }
