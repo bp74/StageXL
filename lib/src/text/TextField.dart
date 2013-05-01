@@ -242,7 +242,7 @@ class TextField extends InteractiveObject {
           checkLine = (validLine == null) ? word : validLine + ' ' + word;
           lineWidth = _context.measureText(checkLine).width;
 
-          if (lineWidth > _width) {
+          if (lineWidth >= _width) {
             if (validLine == null) {
               _textLineMetrics.add(new TextLineMetrics._internal(checkLine, startIndex));
               startIndex += checkLine.length + 1;
@@ -320,7 +320,7 @@ class TextField extends InteractiveObject {
       var shiftX = 0.0;
       var shiftY = 0.0;
 
-      while (shiftX + _caretX + _caretWidth > _width) shiftX -= _width * 0.2;
+      while (shiftX + _caretX > _width) shiftX -= _width * 0.2;
       while (shiftX + _caretX < 0) shiftX += _width * 0.2;
       while (shiftY + _caretY + _caretHeight > _height) shiftY -= _defaultTextFormat.size;
       while (shiftY + _caretY < 0) shiftY += _defaultTextFormat.size;

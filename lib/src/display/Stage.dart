@@ -628,6 +628,8 @@ class Stage extends DisplayObjectContainer {
     if (event.type == "keypress") {
 
       var charCode = event.charCode;
+      var keyCode = event.keyCode;
+      if (keyCode == 13) charCode = 13;
       if (charCode == 0) return;
 
       var textEvent = new TextEvent(TextEvent.TEXT_INPUT, true)
