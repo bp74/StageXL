@@ -34,7 +34,6 @@ class TextField extends InteractiveObject {
   bool _refreshPending = true;
   CanvasElement _canvas = null;
   CanvasRenderingContext2D _context = null;
-  num _canvasPixelRatio = 1.0;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -204,7 +203,7 @@ class TextField extends InteractiveObject {
 
     if (_type == TextFieldType.INPUT) {
       var stage = this.stage;
-      if (stage != null && stage.focus == this && _caretTime.remainder(1.0) < 0.5) {
+      if (stage != null && stage.focus == this && _caretTime.remainder(0.8) < 0.4) {
         renderContext.fillStyle = _color2rgb(_textColor);
         renderContext.fillRect(_caretX, _caretY, _caretWidth, _caretHeight);
       }
@@ -241,7 +240,7 @@ class TextField extends InteractiveObject {
 
           validLine = checkLine;
           checkLine = (validLine == null) ? word : validLine + ' ' + word;
-          lineWidth = _context.measureText(checkLine).width / _canvasPixelRatio;
+          lineWidth = _context.measureText(checkLine).width;
 
           if (lineWidth > _width) {
             if (validLine == null) {
@@ -273,7 +272,7 @@ class TextField extends InteractiveObject {
     var offsetY = _defaultTextFormat.topMargin + _defaultTextFormat.size;
 
     for(var textLineMetrics in _textLineMetrics) {
-      var width = _context.measureText(textLineMetrics._text).width / _canvasPixelRatio;
+      var width = _context.measureText(textLineMetrics._text).width;
       var align = _defaultTextFormat.align;
 
       if (align == TextFormatAlign.CENTER || align == TextFormatAlign.JUSTIFY) {
@@ -310,9 +309,9 @@ class TextField extends InteractiveObject {
           var textIndex = _caretIndex - textLineMetrics._textIndex;
           var text = textLineMetrics._text.substring(0, textIndex);
           _caretLine = line;
-          _caretX = textLineMetrics._x + _context.measureText(text).width / _canvasPixelRatio;
+          _caretX = textLineMetrics._x + _context.measureText(text).width;
           _caretY = textLineMetrics._y - fontStyleMetrics.ascent * 0.9;
-          _caretWidth = 2;
+          _caretWidth = 1;
           _caretHeight = _defaultTextFormat.size;
           break;
         }
@@ -344,10 +343,10 @@ class TextField extends InteractiveObject {
     if (_refreshPending) {
 
       _refreshPending = false;
-      _canvasPixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
 
-      var canvasWidth = (_width * _canvasPixelRatio).ceil();
-      var canvasHeight =  (_height * _canvasPixelRatio).ceil();
+      var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
+      var canvasWidth = (_width * pixelRatio).ceil();
+      var canvasHeight =  (_height * pixelRatio).ceil();
 
       if (_canvas == null) {
         _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
@@ -357,16 +356,15 @@ class TextField extends InteractiveObject {
       if (_canvas.width != canvasWidth) _canvas.width = canvasWidth;
       if (_canvas.height != canvasHeight) _canvas.height = canvasHeight;
 
-      //-----------------------------
+      //-------------------------------------
       // set canvas context
-      // calculate TextLineMetrics
 
       var fontStyleBuffer = new StringBuffer()
-        ..write(_defaultTextFormat.italic ? "italic " : "normal ")
-        ..write("normal ")
-        ..write(_defaultTextFormat.bold ? "bold " : "normal ")
-        ..write("${_defaultTextFormat.size}px ")
-        ..write("${_defaultTextFormat.font},sans-serif");
+      ..write(_defaultTextFormat.italic ? "italic " : "normal ")
+      ..write("normal ")
+      ..write(_defaultTextFormat.bold ? "bold " : "normal ")
+      ..write("${_defaultTextFormat.size}px ")
+      ..write("${_defaultTextFormat.font},sans-serif");
 
       var fontStyle = fontStyleBuffer.toString();
       var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
@@ -375,6 +373,10 @@ class TextField extends InteractiveObject {
       _context.textAlign = "start";
       _context.textBaseline = "alphabetic";
       _context.fillStyle = _color2rgb(_textColor);
+
+      //-------------------------------------
+      // refresh TextLineMetrics
+
       _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
       _refreshTextLineMetrics(fontStyleMetrics);
@@ -384,10 +386,10 @@ class TextField extends InteractiveObject {
         return;
       }
 
-      //-----------------------------
-      // draw background
+      //-------------------------------------
+      // draw background, text, border
 
-      _context.setTransform(_canvasPixelRatio, 0.0, 0.0, _canvasPixelRatio, 0.0, 0.0);
+      _context.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
 
       if (_background) {
         _context.fillStyle = _color2rgb(_backgroundColor);
@@ -396,9 +398,6 @@ class TextField extends InteractiveObject {
         _context.clearRect(0, 0, _width, _height);
       }
 
-      //-----------------------------
-      // draw text
-
       _context.fillStyle = _color2rgb(_textColor);
 
       for(int i = 0; i < _textLineMetrics.length; i++) {
@@ -406,11 +405,7 @@ class TextField extends InteractiveObject {
         _context.fillText(lm._text, lm._x, lm._y);
       }
 
-      //-----------------------------
-      // draw border
-
       if (_border) {
-        _context.setTransform(_canvasPixelRatio, 0.0, 0.0, _canvasPixelRatio, 0.0, 0.0);
         _context.strokeStyle = _color2rgb(_borderColor);
         _context.lineWidth = 1;
         _context.strokeRect(0, 0, _width, _height);
