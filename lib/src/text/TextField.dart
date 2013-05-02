@@ -3,7 +3,6 @@ part of stagexl;
 class TextField extends InteractiveObject {
 
   String _text = "";
-  int _textColor = 0x000000;
   TextFormat _defaultTextFormat = null;
 
   String _autoSize = TextFieldAutoSize.NONE;
@@ -52,7 +51,7 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   String get text => _text;
-  int get textColor => _textColor;
+  int get textColor => _defaultTextFormat.color;
   TextFormat get defaultTextFormat => _defaultTextFormat;
 
   int get caretIndex => _caretIndex;
@@ -79,13 +78,12 @@ class TextField extends InteractiveObject {
   }
 
   void set textColor(int value) {
-    _textColor = value;
+    _defaultTextFormat.color = value;
     _refreshPending = true;
   }
 
   void set defaultTextFormat(TextFormat value) {
     _defaultTextFormat = value;
-    _textColor = _defaultTextFormat.color;
     _refreshPending = true;
   }
 
@@ -204,7 +202,7 @@ class TextField extends InteractiveObject {
     if (_type == TextFieldType.INPUT) {
       var stage = this.stage;
       if (stage != null && stage.focus == this && _caretTime.remainder(0.8) < 0.4) {
-        renderContext.fillStyle = _color2rgb(_textColor);
+        renderContext.fillStyle = _color2rgb(_defaultTextFormat.color);
         renderContext.fillRect(_caretX, _caretY, _caretWidth, _caretHeight);
       }
     }
@@ -372,7 +370,7 @@ class TextField extends InteractiveObject {
       _context.font = fontStyle;
       _context.textAlign = "start";
       _context.textBaseline = "alphabetic";
-      _context.fillStyle = _color2rgb(_textColor);
+      _context.fillStyle = _color2rgb(_defaultTextFormat.color);
 
       //-------------------------------------
       // refresh TextLineMetrics
@@ -398,7 +396,7 @@ class TextField extends InteractiveObject {
         _context.clearRect(0, 0, _width, _height);
       }
 
-      _context.fillStyle = _color2rgb(_textColor);
+      _context.fillStyle = _color2rgb(_defaultTextFormat.color);
 
       for(int i = 0; i < _textLineMetrics.length; i++) {
         var lm = _textLineMetrics[i];
