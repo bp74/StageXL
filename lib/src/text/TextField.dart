@@ -135,12 +135,12 @@ class TextField extends InteractiveObject {
   }
 
   void set width(num value) {
-    _width = value;
+    _width = value.toDouble();
     _refreshPending = true;
   }
 
   void set height(num value) {
-    _height = value;
+    _height = value.toDouble();
     _refreshPending = true;
   }
 
@@ -240,7 +240,7 @@ class TextField extends InteractiveObject {
 
           validLine = checkLine;
           checkLine = (validLine == null) ? word : validLine + ' ' + word;
-          lineWidth = _context.measureText(checkLine).width;
+          lineWidth = _context.measureText(checkLine).width.toDouble();
 
           if (lineWidth >= _width) {
             if (validLine == null) {
@@ -272,7 +272,7 @@ class TextField extends InteractiveObject {
     var offsetY = _defaultTextFormat.topMargin + _defaultTextFormat.size;
 
     for(var textLineMetrics in _textLineMetrics) {
-      var width = _context.measureText(textLineMetrics._text).width;
+      var width = _context.measureText(textLineMetrics._text).width.toDouble();
       var align = _defaultTextFormat.align;
 
       if (align == TextFormatAlign.CENTER || align == TextFormatAlign.JUSTIFY) {
@@ -309,8 +309,8 @@ class TextField extends InteractiveObject {
           var textIndex = _caretIndex - textLineMetrics._textIndex;
           var text = textLineMetrics._text.substring(0, textIndex);
           _caretLine = line;
-          _caretX = textLineMetrics._x + _context.measureText(text).width;
-          _caretY = textLineMetrics._y - fontStyleMetrics.ascent * 0.9;
+          _caretX = (textLineMetrics._x + _context.measureText(text).width).toDouble();
+          _caretY = (textLineMetrics._y - fontStyleMetrics.ascent * 0.9).toDouble();
           _caretWidth = 1;
           _caretHeight = _defaultTextFormat.size;
           break;
