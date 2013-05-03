@@ -21,7 +21,7 @@ class TextField extends InteractiveObject {
   bool _displayAsPassword = false;
   bool _background = false;
   bool _border = false;
-  int _passwordCharCode = 8226;
+  String _passwordChar = "•";
   int _backgroundColor = 0x000000;
   int _borderColor = 0x000000;
   int _maxChars = 0;
@@ -66,7 +66,7 @@ class TextField extends InteractiveObject {
   bool get background => _background;
   bool get border => _border;
 
-  int get passwordCharCode => _passwordCharCode;
+  String get passwordChar => _passwordChar;
   int get backgroundColor => _backgroundColor;
   int get borderColor => _borderColor;
   int get maxChars => _maxChars;
@@ -117,8 +117,8 @@ class TextField extends InteractiveObject {
     _refreshPending = true;
   }
 
-  void set passwordCharCode(int value) {
-    _passwordCharCode = value;
+  void set passwordChar(String value) {
+    _passwordChar = value[0];
     _refreshPending = true;
   }
 
@@ -184,7 +184,7 @@ class TextField extends InteractiveObject {
   }
 
   int getLineLength(int lineIndex) {
-    return getLineMetrics(lineIndex)._text.length;
+    return getLineText(lineIndex).length;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -369,15 +369,14 @@ class TextField extends InteractiveObject {
 
   String _passwordEncoder(String text) {
 
-    if (_displayAsPassword == false) {
-      return text;
-    } else {
-      var stringBuffer = new StringBuffer();
-      for(int i = 0; i < text.length; i++) {
-        stringBuffer.writeCharCode(_passwordCharCode);
-      }
-      return stringBuffer.toString();
+    if (text is! String) return text;
+    if (_displayAsPassword == false) return text;
+
+    var newText = "";
+    for(int i = 0; i < text.length; i++) {
+      newText = "$newText$_passwordChar";
     }
+    return newText;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -407,8 +406,6 @@ class TextField extends InteractiveObject {
       if (_defaultTextFormat.bold) fontStyle = "bold $fontStyle";
       if (_defaultTextFormat.italic) fontStyle = "italic $fontStyle";
 
-      var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
-
       _context.font = fontStyle;
       _context.textAlign = "start";
       _context.textBaseline = "alphabetic";
@@ -417,7 +414,8 @@ class TextField extends InteractiveObject {
       // refresh TextLineMetrics
 
       _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-      _refreshTextLineMetrics(fontStyleMetrics);
+
+      _refreshTextLineMetrics(_getFontStyleMetrics(fontStyle));
 
       if (calculateOnly) {
         _refreshPending = true;
@@ -466,34 +464,33 @@ class TextField extends InteractiveObject {
       var caretIndex = _caretIndex;
       var caretLine = _caretLine;
       var caretIndexNew = -1;
-      var keyCode = keyboardEvent.keyCode;
 
       switch(keyboardEvent.keyCode) {
 
-        case 8: // backspace
+        case html.KeyCode.BACKSPACE:
           if (caretIndex > 0) {
             _text = text.substring(0, caretIndex - 1) + text.substring(caretIndex);
             caretIndexNew = caretIndex - 1;
           }
           break;
 
-        case 35:  // end
+        case html.KeyCode.END:
           var tlm = textLineMetrics[caretLine];
           caretIndexNew = tlm._textIndex + tlm._text.length;
           break;
 
-        case 36:  // home
+        case html.KeyCode.HOME:
           var tlm = textLineMetrics[caretLine];
           caretIndexNew = tlm._textIndex;
           break;
 
-        case 37: // arrow left
+        case html.KeyCode.LEFT:
           if (caretIndex > 0) {
             caretIndexNew = caretIndex - 1;
           }
           break;
 
-        case 38: // arrow up
+        case html.KeyCode.UP:
           if (caretLine > 0 && caretLine < textLineMetrics.length) {
             var tlmFrom = textLineMetrics[caretLine ];
             var tlmTo = textLineMetrics[caretLine - 1];
@@ -504,13 +501,13 @@ class TextField extends InteractiveObject {
           }
           break;
 
-        case 39: // arrow right
+        case html.KeyCode.RIGHT:
           if (caretIndex < textLength) {
             caretIndexNew = caretIndex + 1;
           }
           break;
 
-        case 40: // arrow down
+        case html.KeyCode.DOWN:
           if (caretLine >= 0 && caretLine < textLineMetrics.length - 1) {
             var tlmFrom = textLineMetrics[caretLine ];
             var tlmTo = textLineMetrics[caretLine + 1];
@@ -521,7 +518,7 @@ class TextField extends InteractiveObject {
           }
           break;
 
-        case 46: // delete
+        case html.KeyCode.DELETE:
           if (caretIndex < textLength) {
             _text = text.substring(0, caretIndex) + text.substring(caretIndex + 1);
             caretIndexNew = caretIndex;
