@@ -30,7 +30,7 @@ class TextField extends InteractiveObject {
 
   num _textWidth = 0.0;
   num _textHeight = 0.0;
-  List<TextLineMetrics> _textLineMetrics;
+  final List<TextLineMetrics> _textLineMetrics = new List<TextLineMetrics>();
 
   bool _refreshPending = true;
   CanvasElement _canvas = null;
@@ -40,11 +40,8 @@ class TextField extends InteractiveObject {
 
   TextField([String text, TextFormat textFormat]) {
 
-    _text = (text != null) ? text : "";
-    _defaultTextFormat = (textFormat != null) ? textFormat : new TextFormat("Arial", 12, 0x000000);
-
-    _textLineMetrics = new List<TextLineMetrics>();
-    _refreshPending = true;
+    this.text = (text != null) ? text : "";
+    this.defaultTextFormat = (textFormat != null) ? textFormat : new TextFormat("Arial", 12, 0x000000);
 
     this.onKeyDown.listen(_onKeyDown);
     this.onTextInput.listen(_onTextInput);
