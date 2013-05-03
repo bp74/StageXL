@@ -83,7 +83,7 @@ class TextField extends InteractiveObject {
   }
 
   void set defaultTextFormat(TextFormat value) {
-    _defaultTextFormat = value;
+    _defaultTextFormat = value.clone();
     _refreshPending = true;
   }
 
@@ -244,7 +244,7 @@ class TextField extends InteractiveObject {
             if (validLine == null) {
               _textLineMetrics.add(new TextLineMetrics._internal(checkLine, startIndex));
               startIndex += checkLine.length + 1;
-              checkLine = '';
+              checkLine = null;
             } else {
               _textLineMetrics.add(new TextLineMetrics._internal(validLine, startIndex));
               startIndex += validLine.length + 1;

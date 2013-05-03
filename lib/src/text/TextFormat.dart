@@ -1,29 +1,25 @@
 part of stagexl;
 
 class TextFormat {
-  
+
   String font;
   num size;
   int color;
+
   bool bold;
   bool italic;
   bool underline;
-
   String align;
+
   num topMargin;
   num leftMargin;
   num rightMargin;
   num indent;
   num leading;
 
-  num letterSpacing = 0;
-  num blockIndent = 0;
-  bool bullet = false;
-  bool kerning = false;
-
   //-------------------------------------------------------------------------------------------------
 
-  TextFormat( this.font, this.size, this.color, {
+  TextFormat(this.font, this.size, this.color, {
     this.bold         : false,
     this.italic       : false,
     this.underline    : false,
@@ -32,6 +28,16 @@ class TextFormat {
     this.leftMargin   : 0,
     this.rightMargin  : 0,
     this.indent       : 0,
-    this.leading      : 0  });
+    this.leading      : 0
+  });
+
+  //-------------------------------------------------------------------------------------------------
+
+  TextFormat clone() {
+    return new TextFormat(font, size, color,
+        bold: bold, italic: italic, underline: underline, align: align,
+        topMargin: topMargin, leftMargin: leftMargin, rightMargin: rightMargin,
+        indent: indent, leading: leading);
+  }
 
 }
