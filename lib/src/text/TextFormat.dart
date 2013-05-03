@@ -24,11 +24,11 @@ class TextFormat {
     this.italic       : false,
     this.underline    : false,
     this.align        : "left",
-    this.topMargin    : 0,
-    this.leftMargin   : 0,
-    this.rightMargin  : 0,
-    this.indent       : 0,
-    this.leading      : 0
+    this.topMargin    : 0.0,
+    this.leftMargin   : 0.0,
+    this.rightMargin  : 0.0,
+    this.indent       : 0.0,
+    this.leading      : 0.0
   });
 
   //-------------------------------------------------------------------------------------------------

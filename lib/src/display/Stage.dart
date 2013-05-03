@@ -402,6 +402,10 @@ class Stage extends DisplayObjectContainer {
       mouseCursor = MouseCursor.BUTTON;
     }
 
+    if (target is TextField && (target as TextField).type == TextFieldType.INPUT) {
+      mouseCursor = MouseCursor.IBEAM;
+    }
+
     if (_mouseCursor != mouseCursor) {
       _mouseCursor = mouseCursor;
       _canvas.style.cursor = Mouse._getCssStyle(mouseCursor);

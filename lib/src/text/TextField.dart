@@ -6,7 +6,6 @@ class TextField extends InteractiveObject {
   TextFormat _defaultTextFormat = null;
 
   String _autoSize = TextFieldAutoSize.NONE;
-  String _gridFitType = GridFitType.PIXEL;
   String _type = TextFieldType.DYNAMIC;
 
   int _caretIndex = 0;
@@ -19,15 +18,18 @@ class TextField extends InteractiveObject {
 
   bool _wordWrap = false;
   bool _multiline = false;
+  bool _displayAsPassword = false;
   bool _background = false;
-  int _backgroundColor = 0x000000;
   bool _border = false;
+  int _passwordCharCode = 8226;
+  int _backgroundColor = 0x000000;
   int _borderColor = 0x000000;
+  int _maxChars = 0;
   num _width = 100;
   num _height = 100;
 
-  num _textWidth = 0;
-  num _textHeight = 0;
+  num _textWidth = 0.0;
+  num _textHeight = 0.0;
   List<TextLineMetrics> _textLineMetrics;
 
   bool _refreshPending = true;
@@ -40,11 +42,13 @@ class TextField extends InteractiveObject {
 
     _text = (text != null) ? text : "";
     _defaultTextFormat = (textFormat != null) ? textFormat : new TextFormat("Arial", 12, 0x000000);
+
     _textLineMetrics = new List<TextLineMetrics>();
     _refreshPending = true;
 
     this.onKeyDown.listen(_onKeyDown);
     this.onTextInput.listen(_onTextInput);
+    this.onMouseDown.listen(_onMouseDown);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -57,15 +61,19 @@ class TextField extends InteractiveObject {
   int get caretIndex => _caretIndex;
 
   String get autoSize => _autoSize;
-  String get gridFitType => _gridFitType;
   String get type => _type;
+
   bool get wordWrap => _wordWrap;
   bool get multiline => _multiline;
-
+  bool get displayAsPassword => _displayAsPassword;
   bool get background => _background;
-  int get backgroundColor => _backgroundColor;
   bool get border => _border;
+
+  int get passwordCharCode => _passwordCharCode;
+  int get backgroundColor => _backgroundColor;
   int get borderColor => _borderColor;
+  int get maxChars => _maxChars;
+
   num get width => _width;
   num get height => _height;
 
@@ -92,11 +100,6 @@ class TextField extends InteractiveObject {
     _refreshPending = true;
   }
 
-  void set gridFitType(String value) {
-    _gridFitType = value;
-    _refreshPending = true;
-  }
-
   void set type(String value) {
     _type = value;
     _refreshPending = true;
@@ -109,6 +112,16 @@ class TextField extends InteractiveObject {
 
   void set multiline(bool value) {
     _multiline = value;
+    _refreshPending = true;
+  }
+
+  void set displayAsPassword(bool value) {
+    _displayAsPassword = value;
+    _refreshPending = true;
+  }
+
+  void set passwordCharCode(int value) {
+    _passwordCharCode = value;
     _refreshPending = true;
   }
 
@@ -129,6 +142,11 @@ class TextField extends InteractiveObject {
 
   void set borderColor(int value) {
     _borderColor = value;
+    _refreshPending = true;
+  }
+
+  void set maxChars(int value) {
+    _maxChars = value;
     _refreshPending = true;
   }
 
@@ -222,6 +240,11 @@ class TextField extends InteractiveObject {
     var checkLine = '';
     var validLine = '';
     var lineWidth = 0;
+    var textFormatSize = _defaultTextFormat.size.toDouble();
+    var textFormatTopMargin = _defaultTextFormat.topMargin.toDouble();
+    var textFormatAlign = _defaultTextFormat.align.toString();
+    var fontStyleMetricsAscent = fontStyleMetrics.ascent.toDouble();
+    var fontStyleMetricsDescent = fontStyleMetrics.descent.toDouble();
 
     for(var paragraph in _text.split('\n')) {
 
@@ -237,7 +260,8 @@ class TextField extends InteractiveObject {
         for(var word in paragraph.split(' ')) {
 
           validLine = checkLine;
-          checkLine = (validLine == null) ? word : validLine + ' ' + word;
+          checkLine = (validLine == null) ? word : "$validLine $word";
+          checkLine = _passwordEncoder(checkLine);
           lineWidth = _context.measureText(checkLine).width.toDouble();
 
           if (lineWidth >= _width) {
@@ -248,7 +272,7 @@ class TextField extends InteractiveObject {
             } else {
               _textLineMetrics.add(new TextLineMetrics._internal(validLine, startIndex));
               startIndex += validLine.length + 1;
-              checkLine = word;
+              checkLine = _passwordEncoder(word);
             }
           }
         }
@@ -263,36 +287,43 @@ class TextField extends InteractiveObject {
     //-----------------------------
     // calculate metrics
 
-    _textWidth = 0;
-    _textHeight = 0;
+    _textWidth = 0.0;
+    _textHeight = 0.0;
 
     var offsetX = 0.0;
-    var offsetY = _defaultTextFormat.topMargin + _defaultTextFormat.size;
+    var offsetY = textFormatTopMargin + textFormatSize;
 
-    for(var textLineMetrics in _textLineMetrics) {
+    for(int line = 0; line < _textLineMetrics.length; line++) {
+      var textLineMetrics = _textLineMetrics[line];
+      if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
+
       var width = _context.measureText(textLineMetrics._text).width.toDouble();
-      var align = _defaultTextFormat.align;
 
-      if (align == TextFormatAlign.CENTER || align == TextFormatAlign.JUSTIFY) {
-        offsetX = (_width - width) / 2;
-      } else  if (align == TextFormatAlign.RIGHT || align == TextFormatAlign.END) {
-        offsetX = (_width - width);
-      } else {
-        offsetX = 0;
+      switch(textFormatAlign) {
+        case TextFormatAlign.CENTER:
+        case TextFormatAlign.JUSTIFY:
+          offsetX = (_width - width) / 2;
+          break;
+        case TextFormatAlign.RIGHT:
+        case TextFormatAlign.END:
+          offsetX = (_width - width);
+          break;
+        default:
+          offsetX = 0;
       }
 
       textLineMetrics._x = offsetX;
       textLineMetrics._y = offsetY;
       textLineMetrics._width = width;
-      textLineMetrics._height = _defaultTextFormat.size;
-      textLineMetrics._ascent = fontStyleMetrics.ascent;
-      textLineMetrics._descent = fontStyleMetrics.descent;
-      textLineMetrics._leading = 0;
+      textLineMetrics._height = textFormatSize;
+      textLineMetrics._ascent = fontStyleMetricsAscent;
+      textLineMetrics._descent = fontStyleMetricsDescent;
+      textLineMetrics._leading = 0.0;
 
-      offsetY = offsetY + _defaultTextFormat.size;
+      offsetY = offsetY + textFormatSize;
 
-      _textWidth = max(_textWidth, textLineMetrics._width);
-      _textHeight = _textHeight + textLineMetrics._height;
+      _textWidth = max(_textWidth, width);
+      _textHeight = _textHeight + textFormatSize;
     }
 
     //-----------------------------
@@ -302,15 +333,16 @@ class TextField extends InteractiveObject {
 
       for(int line = _textLineMetrics.length - 1; line >= 0; line--) {
         var textLineMetrics = _textLineMetrics[line];
+        if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
 
         if (_caretIndex >= textLineMetrics._textIndex) {
           var textIndex = _caretIndex - textLineMetrics._textIndex;
           var text = textLineMetrics._text.substring(0, textIndex);
           _caretLine = line;
-          _caretX = (textLineMetrics._x + _context.measureText(text).width).toDouble();
-          _caretY = (textLineMetrics._y - fontStyleMetrics.ascent * 0.9).toDouble();
-          _caretWidth = 1;
-          _caretHeight = _defaultTextFormat.size;
+          _caretX = textLineMetrics._x + _context.measureText(text).width.toDouble();
+          _caretY = textLineMetrics._y - fontStyleMetricsAscent * 0.9;
+          _caretWidth = 1.0;
+          _caretHeight = textFormatSize;
           break;
         }
       }
@@ -320,17 +352,34 @@ class TextField extends InteractiveObject {
 
       while (shiftX + _caretX > _width) shiftX -= _width * 0.2;
       while (shiftX + _caretX < 0) shiftX += _width * 0.2;
-      while (shiftY + _caretY + _caretHeight > _height) shiftY -= _defaultTextFormat.size;
-      while (shiftY + _caretY < 0) shiftY += _defaultTextFormat.size;
+      while (shiftY + _caretY + _caretHeight > _height) shiftY -= textFormatSize;
+      while (shiftY + _caretY < 0) shiftY += textFormatSize;
 
       _caretX += shiftX;
       _caretY += shiftY;
 
-      for(int i = 0; i < _textLineMetrics.length; i++) {
-        var tlm = _textLineMetrics[i];
-        tlm._x += shiftX;
-        tlm._y += shiftY;
+      for(int line = 0; line < _textLineMetrics.length; line++) {
+        var textLineMetrics = _textLineMetrics[line];
+        if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
+
+        textLineMetrics._x += shiftX;
+        textLineMetrics._y += shiftY;
       }
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  String _passwordEncoder(String text) {
+
+    if (_displayAsPassword == false) {
+      return text;
+    } else {
+      var stringBuffer = new StringBuffer();
+      for(int i = 0; i < text.length; i++) {
+        stringBuffer.writeCharCode(_passwordCharCode);
+      }
+      return stringBuffer.toString();
     }
   }
 
@@ -357,26 +406,20 @@ class TextField extends InteractiveObject {
       //-------------------------------------
       // set canvas context
 
-      var fontStyleBuffer = new StringBuffer()
-      ..write(_defaultTextFormat.italic ? "italic " : "normal ")
-      ..write("normal ")
-      ..write(_defaultTextFormat.bold ? "bold " : "normal ")
-      ..write("${_defaultTextFormat.size}px ")
-      ..write("${_defaultTextFormat.font},sans-serif");
+      var fontStyle = "${_defaultTextFormat.size}px ${_defaultTextFormat.font},sans-serif";
+      if (_defaultTextFormat.bold) fontStyle = "bold $fontStyle";
+      if (_defaultTextFormat.italic) fontStyle = "italic $fontStyle";
 
-      var fontStyle = fontStyleBuffer.toString();
       var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
 
       _context.font = fontStyle;
       _context.textAlign = "start";
       _context.textBaseline = "alphabetic";
-      _context.fillStyle = _color2rgb(_defaultTextFormat.color);
 
       //-------------------------------------
       // refresh TextLineMetrics
 
       _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-
       _refreshTextLineMetrics(fontStyleMetrics);
 
       if (calculateOnly) {
@@ -509,14 +552,51 @@ class TextField extends InteractiveObject {
 
       if (newText == '\r') newText = '\n';
       if (newText == '\n' && _multiline == false) newText = '';
-      if (newText != '') {
-        _text = _text.substring(0, caretIndex) + newText + _text.substring(caretIndex);
-        _caretIndex = _caretIndex + newText.length;
+      if (newText == '') return;
+      if (_maxChars != 0 && textLength >= _maxChars) return;
+
+      _text = _text.substring(0, caretIndex) + newText + _text.substring(caretIndex);
+      _caretIndex = _caretIndex + newText.length;
+      _caretTime = 0.0;
+      _refreshPending = true;
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  _onMouseDown(MouseEvent mouseEvent) {
+    var mouseX = mouseEvent.localX.toDouble();
+    var mouseY = mouseEvent.localY.toDouble();
+
+    if (_context == null) return;
+    _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+
+    for(int line = 0; line < _textLineMetrics.length; line++) {
+      var textLineMetrics = _textLineMetrics[line];
+      if (textLineMetrics is! TextLineMetrics) continue;  // dart2js_hint
+
+      var text = textLineMetrics._text;
+      var lineX = textLineMetrics._x;
+      var lineY1 = textLineMetrics._y - textLineMetrics._ascent;
+      var lineY2 = textLineMetrics._y + textLineMetrics._descent;
+
+      if (lineY1 <= mouseY && lineY2 >= mouseY) {
+        var bestDistance = double.INFINITY;
+        var bestIndex = 0;
+
+        for(var c = 0; c <= text.length; c++) {
+          var width = _context.measureText(text.substring(0, c)).width.toDouble();
+          var distance = (lineX + width - mouseX).abs();
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            bestIndex = c;
+          }
+        }
+
+        _caretIndex = textLineMetrics._textIndex + bestIndex;
         _caretTime = 0.0;
         _refreshPending = true;
       }
     }
   }
-
-
 }

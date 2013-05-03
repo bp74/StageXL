@@ -98,7 +98,6 @@ part 'src/media/implementation/MockSound.dart';
 part 'src/media/implementation/MockSoundChannel.dart';
 
 part 'src/text/FontStyleMetrics.dart';
-part 'src/text/GridFitType.dart';
 part 'src/text/TextField.dart';
 part 'src/text/TextFieldAutoSize.dart';
 part 'src/text/TextFieldType.dart';
@@ -126,7 +125,7 @@ final bool _isLittleEndianSystem = _checkLittleEndianSystem();
 
 final Future<bool> _isWebpSupported = _checkWebpSupport();
 
-final ObjectPool<List<DisplayObject>> _displayObjectListPool = 
+final ObjectPool<List<DisplayObject>> _displayObjectListPool =
   new ObjectPool<List<DisplayObject>>(() => new List<DisplayObject>());
 
 final Matrix _identityMatrix = new Matrix.fromIdentity();
