@@ -173,31 +173,20 @@ class BitmapData implements BitmapDrawable {
   ImageData getImageData(int x, int y, int width, int height, [num pixelRatio]) {
 
     if (pixelRatio != null && pixelRatio != _pixelRatio) {
-
       var tempBitmapData = new BitmapData(width, height, true, 0, pixelRatio);
       tempBitmapData.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, -x, -y));
+      return tempBitmapData.getImageData(x, y, width, height);
+    }
 
-      var pr = tempBitmapData._pixelRatio;
-      var prs = tempBitmapData._pixelRatioSource;
+    _ensureContext();
 
-      if (_backingStorePixelRatio > 1.0) {
-        return tempBitmapData._context.getImageDataHD(0, 0, width * pr, height * pr);
-      } else {
-        return tempBitmapData._context.getImageData(0, 0, width * prs, height * prs);
-      }
+    var pr = _pixelRatio;
+    var prs = _pixelRatioSource;
 
+    if (_backingStorePixelRatio > 1.0) {
+      return _context.getImageDataHD(x * pr, y * pr, width * pr, height * pr);
     } else {
-
-      _ensureContext();
-
-      var pr = _pixelRatio;
-      var prs = _pixelRatioSource;
-
-      if (_backingStorePixelRatio > 1.0) {
-        return _context.getImageDataHD(x * pr, y * pr, width * pr, height * pr);
-      } else {
-        return _context.getImageData(x * prs, y * prs, width * prs, height * prs);
-      }
+      return _context.getImageData(x * prs, y * prs, width * prs, height * prs);
     }
   }
 
