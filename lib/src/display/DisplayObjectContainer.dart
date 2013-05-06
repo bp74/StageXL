@@ -1,7 +1,7 @@
 part of stagexl;
 
 abstract class DisplayObjectContainer extends InteractiveObject {
-  
+
   final List<DisplayObject> _children = new List<DisplayObject>();
   bool _mouseChildren = true;
   bool _tabChildren = true;
@@ -21,7 +21,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void addChild(DisplayObject child) {
-    
+
     if (child.parent == this) {
       int index = _children.indexOf(child);
       _children.removeAt(index);
@@ -34,7 +34,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void addChildAt(DisplayObject child, int index) {
-    
+
     if (index < 0 || index > _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
@@ -42,16 +42,16 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       throw new ArgumentError("Error #2024: An object cannot be added as a child of itself.");
 
     if (child.parent == this) {
-      
+
       _children.removeAt(_children.indexOf(child));
 
       if (index > _children.length)
         index --;
 
       _children.insert(index, child);
-    
+
     } else {
-      
+
       child.removeFromParent();
 
       child._setParent(this);
@@ -67,7 +67,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void removeChild(DisplayObject child) {
-    
+
     int childIndex = _children.indexOf(child);
 
     if (childIndex == -1)
@@ -79,7 +79,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void removeChildAt(int index) {
-    
+
     if (index < 0 || index >= _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
@@ -93,20 +93,21 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     child._setParent(null);
     _children.removeAt(index);
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
-  void removeChildren([int beginIndex, int endIndex]) {
-    
-    if (?beginIndex == false) beginIndex = 0;
-    if (?endIndex == false) endIndex = _children.length - 1;
-      
-    if (beginIndex < 0 || beginIndex >= _children.length)
-      throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
+  void removeChildren([int beginIndex = 0, int endIndex = 0x7fffffff]) {
 
-    if (endIndex < 0 || endIndex >= _children.length)
+    var length = _children.length;
+
+    if (endIndex == 0x7fffffff) {
+      endIndex = length - 1;
+    }
+
+    if (beginIndex < 0 || endIndex < 0 || beginIndex >= length || endIndex >= length) {
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
-    
+    }
+
     for(int i = beginIndex; i <= endIndex; i++) {
       if (beginIndex >= _children.length) break;
       removeChildAt(beginIndex);
@@ -116,7 +117,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   dynamic getChildAt(int index) {
-    
+
     if (index < 0 || index >= _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
@@ -143,7 +144,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void setChildIndex(DisplayObject child, int index) {
-    
+
     if (index < 0 || index >= _children.length)
       throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
 
@@ -159,7 +160,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void swapChildren(DisplayObject child1, DisplayObject child2) {
-    
+
       int index1 = getChildIndex(child1);
       int index2 = getChildIndex(child2);
 
@@ -172,7 +173,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void swapChildrenAt(int index1, int index2) {
-    
+
     DisplayObject child1 = getChildAt(index1);
     DisplayObject child2 = getChildAt(index2);
     _children[index1] = child2;
@@ -188,7 +189,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   bool contains(DisplayObject child) {
-    
+
     for(; child != null; child = child._parent)
       if (child == this)
         return true;
@@ -200,7 +201,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
-    
+
     if (returnRectangle == null)
       returnRectangle = new Rectangle.zero();
 
@@ -215,7 +216,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     int childrenLength = _children.length;
 
     for (int i = 0; i < _children.length; i++) {
-      
+
       DisplayObject child = _children[i];
 
       _tmpMatrix.copyFromAndConcat(child._transformationMatrix, matrix);
@@ -238,14 +239,14 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-    
+
     localX = localX.toDouble();
     localY = localY.toDouble();
-    
+
     DisplayObject hit = null;
 
     for (int i = _children.length - 1; i >= 0; i--) {
-      
+
       DisplayObject child = _children[i];
 
       if (child.visible) {
@@ -274,9 +275,9 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-    
+
     for(int i = 0; i < _children.length; i++) {
-      
+
       DisplayObject child = _children[i];
 
       if (!child._off && child.visible)
@@ -288,20 +289,20 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   _collectDescendants(DisplayObject displayObject, List<DisplayObject> descendants) {
-    
+
     descendants.add(displayObject);
-    
+
     if (displayObject is DisplayObjectContainer) {
-      
+
       var displayObjectContainer = displayObject as DisplayObjectContainer;
       var children = displayObjectContainer._children;
-    
+
       for(int i = 0; i < children.length; i++) {
         _collectDescendants(children[i], descendants);
       }
     }
   }
-  
+
   _dispatchEventDescendants(DisplayObject displayObject, Event event) {
 
     var descendants = _displayObjectListPool.pop() as List<DisplayObject>;
@@ -310,7 +311,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     for(int i = 0; i < descendants.length; i++) {
       descendants[i].dispatchEvent(event);
     }
-    
+
     descendants.clear();
     _displayObjectListPool.push(descendants);
   }
