@@ -436,10 +436,12 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     _cache.clear();
     _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y));
 
-    for(int i = 0; _filters != null && i < _filters.length; i++) {
-      var sourceRectangle = new Rectangle(0, 0, width, height);
-      var destinationPoint = new Point.zero();
-      _filters[i].apply(_cache, sourceRectangle, _cache, destinationPoint);
+    if (_filters != null) {
+      for(int i = 0; i < _filters.length; i++) {
+        var sourceRectangle = new Rectangle(0, 0, width, height);
+        var destinationPoint = new Point.zero();
+        _filters[i].apply(_cache, sourceRectangle, _cache, destinationPoint);
+      }
     }
 
     if (_cacheDebugBorder) {
