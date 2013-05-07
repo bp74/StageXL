@@ -34,7 +34,7 @@ void main()
   shape.x = 400;
   shape.y = 300;
   sprite.addChild(shape);
-
+  
   shape.graphics
     ..beginPath()
     ..moveTo(170, 80)
@@ -48,6 +48,10 @@ void main()
     ..fillGradient(gradient)
     ..strokeColor(Color.Blue, 5);
 
+  // temporary apply cache to demonstrate darbug.com/10474
+  var shapeBounds = shape.getBounds(shape);
+  shape.applyCache(shapeBounds.x, shapeBounds.y, shapeBounds.width, shapeBounds.height);
+   
   //------------------------------------------------------------------
   // Add some animation
   //------------------------------------------------------------------
