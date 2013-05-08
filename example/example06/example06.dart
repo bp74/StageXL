@@ -27,14 +27,14 @@ void main()
   Sprite sprite = new Sprite();
   sprite.useHandCursor = true;
   stage.addChild(sprite);
-  
+
   Shape shape = new Shape();
   shape.pivotX = 278;
   shape.pivotY = 90;
   shape.x = 400;
   shape.y = 300;
   sprite.addChild(shape);
-  
+
   shape.graphics
     ..beginPath()
     ..moveTo(170, 80)
@@ -48,10 +48,6 @@ void main()
     ..fillGradient(gradient)
     ..strokeColor(Color.Blue, 5);
 
-  // temporary apply cache to demonstrate darbug.com/10474
-  var shapeBounds = shape.getBounds(shape);
-  shape.applyCache(shapeBounds.x, shapeBounds.y, shapeBounds.width, shapeBounds.height);
-   
   //------------------------------------------------------------------
   // Add some animation
   //------------------------------------------------------------------
@@ -60,7 +56,7 @@ void main()
     ..animate.scaleX.to(2.5)
     ..animate.scaleY.to(2.5)
     ..delay = 1.0;
-  
+
   Tween tween2 = new Tween(shape, 3.0, TransitionFunction.easeInOutBack)
     ..animate.scaleX.to(1.0)
     ..animate.scaleY.to(1.0)
