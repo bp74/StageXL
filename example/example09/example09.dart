@@ -46,8 +46,7 @@ void main()
     }
 
     particleSystem = new ParticleSystem(config);
-    particleSystem.emitterX = 400;
-    particleSystem.emitterY = 400;
+    particleSystem.setEmitterPosition(400, 400);
     particleSystem.start();
 
     stageForeground.addChild(particleSystem);
@@ -73,8 +72,7 @@ void main()
 
   void mouseAction(MouseEvent me) {
     if (me.buttonDown) {
-      particleSystem.emitterX = me.localX;
-      particleSystem.emitterY = me.localY;
+      particleSystem.setEmitterPosition(me.localX, me.localY);
     }
   }
 
@@ -91,7 +89,7 @@ void main()
     ..addBitmapData("buttonDown", "../common/images/ButtonDown.png");
 
   resourceManager.load().then((result) {
-  
+
     List<Sprite> buttons = [
       getButton("Jelly", () => startParticleSystem(jsonJelly)),
       getButton("Fire", () => startParticleSystem(jsonFire)),
