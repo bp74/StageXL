@@ -40,7 +40,19 @@ class _Particle {
   num _emitRadiusDelta = 0.0;
   num _emitRotation = 0.0;
   num _emitRotationDelta = 0.0;
-  //_ParticleColor color, colorDelta;
+
+  CanvasElement _particleCanvas;
+
+  _renderParticle(CanvasRenderingContext2D context) {
+
+    var imageIndex = ( _currentTime * 32 / _totalTime).floor();
+    var sourceX = 32 * imageIndex;
+    var sourceY = 0;
+    var targetX = _x - _size / 2.0;
+    var targetY = _y - _size / 2.0;
+
+    context.drawImageScaledFromSource(_particleCanvas, sourceX, sourceY, 32, 32, targetX, targetY, _size, _size);
+  }
 }
 
 class ParticleEmitter extends DisplayObject implements Animatable {
@@ -113,19 +125,19 @@ class ParticleEmitter extends DisplayObject implements Animatable {
 
   void _drawParticleCanvas() {
 
-    _particleCanvas = new CanvasElement(width: 256, height: 256);
+    _particleCanvas = new CanvasElement(width: 1024, height: 32);
     var context = _particleCanvas.context2D;
 
-    for(int i = 0; i < 64; i++) {
+    for(int i = 0; i < 32; i++) {
 
       var radius = 15;
-      num targetX = (i  % 8) * 32 + 15.5;
-      num targetY = (i ~/ 8) * 32 + 15.5;
+      num targetX = i * 32 + 15.5;
+      num targetY = 15.5;
 
-      num colorRed   = _startColor.red   + i * (_endColor.red    - _startColor.red ) / 63;
-      num colorGreen = _startColor.green + i * (_endColor.green - _startColor.green) / 63;
-      num colorBlue  = _startColor.blue  + i * (_endColor.blue  - _startColor.blue ) / 63;
-      num colorAlpha = _startColor.alpha + i * (_endColor.alpha - _startColor.alpha) / 63;
+      num colorRed   = _startColor.red   + i * (_endColor.red    - _startColor.red ) / 31;
+      num colorGreen = _startColor.green + i * (_endColor.green - _startColor.green) / 31;
+      num colorBlue  = _startColor.blue  + i * (_endColor.blue  - _startColor.blue ) / 31;
+      num colorAlpha = _startColor.alpha + i * (_endColor.alpha - _startColor.alpha) / 31;
 
       int cRed = (255.0 * colorRed).toInt();
       int cGreen = (255.0 * colorGreen).toInt();
@@ -158,6 +170,7 @@ class ParticleEmitter extends DisplayObject implements Animatable {
 
     particle._currentTime = 0.0;
     particle._totalTime = totalTime;
+    particle._particleCanvas = _particleCanvas;
 
     particle._x = _locationX + _locationXVariance * (_random.nextDouble() * 2.0 - 1.0);
     particle._y = _locationY + _locationYVariance * (_random.nextDouble() * 2.0 - 1.0);
@@ -381,22 +394,8 @@ class ParticleEmitter extends DisplayObject implements Animatable {
     context.globalCompositeOperation = _compositeOperation;
 
     for(int i = 0; i < _particleCount; i++) {
-
-      var particle = _particles[i];
-
-      var time = ((particle._currentTime / particle._totalTime) * 63).floor();
-      var sourceX = (time  % 8) * 32;
-      var sourceY = (time ~/ 8) * 32;
-
-      var targetSize = particle._size;
-      var targetX = particle._x - targetSize / 2.0;
-      var targetY = particle._y - targetSize / 2.0;
-
-      context.drawImageScaledFromSource(_particleCanvas, sourceX, sourceY, 32, 32, targetX, targetY, targetSize, targetSize);
+      _particles[i]._renderParticle(context);
     }
-
-    //context.setTransform(1, 0, 0, 1, 0, 0);
-    //context.drawImage(_particleCanvas, 0, 0);
   }
 
 }
