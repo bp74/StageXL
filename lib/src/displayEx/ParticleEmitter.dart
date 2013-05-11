@@ -45,7 +45,7 @@ class _Particle {
 
   _renderParticle(CanvasRenderingContext2D context) {
 
-    var imageIndex = ( _currentTime * 32 / _totalTime).floor();
+    var imageIndex = _currentTime * 32 ~/ _totalTime;
     var sourceX = 32 * imageIndex;
     var sourceY = 0;
     var targetX = _x - _size / 2.0;
@@ -166,7 +166,7 @@ class ParticleEmitter extends DisplayObject implements Animatable {
   void _initParticle(_Particle particle) {
 
     var totalTime = _lifespan + _lifespanVariance * (_random.nextDouble() * 2.0 - 1.0);
-    if (totalTime <= 0.0) return;
+    if (totalTime < 0.01) totalTime = 0.01;
 
     particle._currentTime = 0.0;
     particle._totalTime = totalTime;
