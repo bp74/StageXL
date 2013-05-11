@@ -81,7 +81,7 @@ part 'src/displayEx/FlipBook.dart';
 part 'src/displayEx/Gauge.dart';
 part 'src/displayEx/TimeGauge.dart';
 part 'src/displayEx/GlassPlate.dart';
-part 'src/displayEx/ParticleSystem.dart';
+part 'src/displayEx/ParticleEmitter.dart';
 part 'src/displayEx/Warp.dart';
 part 'src/displayEx/Flump.dart';
 

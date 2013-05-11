@@ -5,9 +5,9 @@ import 'dart:math';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
-String jsonJelly = '{"sourcePosition" : { "x" : 160.00, "y" : 370.00 }, "sourcePositionVariance": { "x" : 20.00, "y" : 0.00 }, "speed" : 140.00, "speedVariance" : 0.00, "particleLifeSpan" : 0.70, "particleLifespanVariance" : 0.00, "angle" : 225.00, "angleVariance" : 360.00, "gravity" : { "x" : 0.00, "y" : -1400.00 }, "radialAcceleration" : 0.00, "tangentialAcceleration" : 0.00, "radialAccelVariance" : 0.00, "tangentialAccelVariance" : 0.00, "startColor" : { "red" : 0.15, "green" : 0.06 , "blue" : 1.00 , "alpha" : 1.0 }, "finishColor" : { "red" : 0.00 , "green" : 0.14 , "blue" : 0.23 , "alpha" : 0.00 }, "maxParticles" : 100, "startParticleSize" : 40.00, "startParticleSizeVariance" : 0.00, "finishParticleSize" : 80.00, "FinishParticleSizeVariance" : 0.00, "duration" : -1.00, "emitterType" : 0, "maxRadius" : 100.00, "maxRadiusVariance" : 0.00, "minRadius" : 0.00, "rotatePerSecond" : 0.00, "rotatePerSecondVariance" : 0.00 }';
-String jsonFire = '{"sourcePosition" : { "x" : 160.00, "y" : 430.00 }, "sourcePositionVariance": { "x" : 40.00, "y" : 0.00 }, "speed" : 190.00, "speedVariance" : 30.00, "particleLifeSpan" : 1.00, "particleLifespanVariance" : 0.70, "angle" : 270.00, "angleVariance" : 15.00, "gravity" : { "x" : 0.00, "y" : 0.00 }, "radialAcceleration" : 0.00, "tangentialAcceleration" : 0.00, "radialAccelVariance" : 0.00, "tangentialAccelVariance" : 0.00, "startColor" : { "red" : 1.00, "green" : 0.31 , "blue" : 0.00 , "alpha" : 0.62 }, "finishColor" : { "red" : 1.00 , "green" :  0.31 , "blue" : 0.00 , "alpha" : 0.00 }, "maxParticles" : 200, "startParticleSize" : 50.00, "startParticleSizeVariance" : 30.00, "finishParticleSize" : 10.00, "FinishParticleSizeVariance" : 0.00, "duration" : -1.00, "emitterType" : 0, "maxRadius" : 100.00, "maxRadiusVariance" : 0.00, "minRadius" : 0.00, "rotatePerSecond" : 0.00, "rotatePerSecondVariance" : 0.00 }';
-String jsonSun = '{"sourcePosition" : { "x" : 160.00, "y" : 230.00 }, "sourcePositionVariance": { "x" : 7.00, "y" : 7.00 }, "speed" : 260.00, "speedVariance" : 10.00, "particleLifeSpan" : 1.00, "particleLifespanVariance" : 0.70, "angle" : 0.00, "angleVariance" : 360.00, "gravity" : { "x" : 0.00, "y" : 0.00 }, "radialAcceleration" : -600.00, "tangentialAcceleration" : -100.00, "radialAccelVariance" : 0.00, "tangentialAccelVariance" : 0.00, "startColor" : { "red" : 1.00, "green" : 0.0 , "blue" : 0.0 , "alpha" : 1.0 }, "finishColor" : { "red" : 1.00 , "green" : 1.00 , "blue" : 0.00 , "alpha" : 1.00 }, "maxParticles" : 200, "startParticleSize" : 30.00, "startParticleSizeVariance" : 20.00, "finishParticleSize" : 5.00, "FinishParticleSizeVariance" : 5.00, "duration" : -1.00, "emitterType" : 0, "maxRadius" : 40.00, "maxRadiusVariance" : 0.00, "minRadius" : 0.00, "rotatePerSecond" : 0.00, "rotatePerSecondVariance" : 0.00 }';
+String jsonJelly = '{"location" : { "x" : 160.00, "y" : 370.00 }, "locationVariance": { "x" : 20.00, "y" : 0.00 }, "speed" : 140.00, "speedVariance" : 0.00, "lifeSpan" : 0.70, "lifespanVariance" : 0.00, "angle" : 225.00, "angleVariance" : 360.00, "gravity" : { "x" : 0.00, "y" : -1400.00 }, "radialAcceleration" : 0.00, "tangentialAcceleration" : 0.00, "radialAccelerationVariance" : 0.00, "tangentialAccelerationVariance" : 0.00, "startColor" : { "red" : 0.15, "green" : 0.06 , "blue" : 1.00 , "alpha" : 1.0 }, "finishColor" : { "red" : 0.00 , "green" : 0.14 , "blue" : 0.23 , "alpha" : 0.00 }, "maxParticles" : 100, "startSize" : 40.00, "startSizeVariance" : 0.00, "finishSize" : 80.00, "finishSizeVariance" : 0.00, "duration" : -1.00, "emitterType" : 0, "maxRadius" : 100.00, "maxRadiusVariance" : 0.00, "minRadius" : 0.00, "rotatePerSecond" : 0.00, "rotatePerSecondVariance" : 0.00 }';
+String jsonFire = '{"location" : { "x" : 160.00, "y" : 430.00 }, "locationVariance": { "x" : 40.00, "y" : 0.00 }, "speed" : 190.00, "speedVariance" : 30.00, "lifeSpan" : 1.00, "lifespanVariance" : 0.70, "angle" : 270.00, "angleVariance" : 15.00, "gravity" : { "x" : 0.00, "y" : 0.00 }, "radialAcceleration" : 0.00, "tangentialAcceleration" : 0.00, "radialAccelerationVariance" : 0.00, "tangentialAccelerationVariance" : 0.00, "startColor" : { "red" : 1.00, "green" : 0.31 , "blue" : 0.00 , "alpha" : 0.62 }, "finishColor" : { "red" : 1.00 , "green" :  0.31 , "blue" : 0.00 , "alpha" : 0.00 }, "maxParticles" : 200, "startSize" : 50.00, "startSizeVariance" : 30.00, "finishSize" : 10.00, "finishSizeVariance" : 0.00, "duration" : -1.00, "emitterType" : 0, "maxRadius" : 100.00, "maxRadiusVariance" : 0.00, "minRadius" : 0.00, "rotatePerSecond" : 0.00, "rotatePerSecondVariance" : 0.00 }';
+String jsonSun = '{"location" : { "x" : 160.00, "y" : 230.00 }, "locationVariance": { "x" : 7.00, "y" : 7.00 }, "speed" : 260.00, "speedVariance" : 10.00, "lifeSpan" : 1.00, "lifespanVariance" : 0.70, "angle" : 0.00, "angleVariance" : 360.00, "gravity" : { "x" : 0.00, "y" : 0.00 }, "radialAcceleration" : -600.00, "tangentialAcceleration" : -100.00, "radialAccelerationVariance" : 0.00, "tangentialAccelerationVariance" : 0.00, "startColor" : { "red" : 1.00, "green" : 0.0 , "blue" : 0.0 , "alpha" : 1.0 }, "finishColor" : { "red" : 1.00 , "green" : 1.00 , "blue" : 0.00 , "alpha" : 1.00 }, "maxParticles" : 200, "startSize" : 30.00, "startSizeVariance" : 20.00, "finishSize" : 5.00, "finishSizeVariance" : 5.00, "duration" : -1.00, "emitterType" : 0, "maxRadius" : 40.00, "maxRadiusVariance" : 0.00, "minRadius" : 0.00, "rotatePerSecond" : 0.00, "rotatePerSecondVariance" : 0.00 }';
 
 Stage stageBackground;
 Stage stageForeground;
@@ -16,6 +16,7 @@ ResourceManager resourceManager;
 
 void main()
 {
+
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
@@ -35,22 +36,22 @@ void main()
   stageBackground.addChild(background);
   stageBackground.renderMode = StageRenderMode.ONCE;
 
-  ParticleSystem particleSystem = null;
+  ParticleEmitter particleEmitter = null;
 
   void startParticleSystem(String config) {
 
-    if (particleSystem != null) {
-      particleSystem.stop(true);
-      stageForeground.removeChild(particleSystem);
-      renderLoop.juggler.remove(particleSystem);
+    if (particleEmitter != null) {
+      particleEmitter.stop(true);
+      stageForeground.removeChild(particleEmitter);
+      renderLoop.juggler.remove(particleEmitter);
     }
 
-    particleSystem = new ParticleSystem(config);
-    particleSystem.setEmitterPosition(400, 400);
-    particleSystem.start();
+    particleEmitter = new ParticleEmitter(config);
+    particleEmitter.setEmitterLocation(400, 400);
+    particleEmitter.start();
 
-    stageForeground.addChild(particleSystem);
-    renderLoop.juggler.add(particleSystem);
+    stageForeground.addChild(particleEmitter);
+    renderLoop.juggler.add(particleEmitter);
   }
 
   startParticleSystem(jsonJelly);
@@ -72,7 +73,7 @@ void main()
 
   void mouseAction(MouseEvent me) {
     if (me.buttonDown) {
-      particleSystem.setEmitterPosition(me.localX, me.localY);
+      particleEmitter.setEmitterLocation(me.localX, me.localY);
     }
   }
 
@@ -94,7 +95,7 @@ void main()
       getButton("Jelly", () => startParticleSystem(jsonJelly)),
       getButton("Fire", () => startParticleSystem(jsonFire)),
       getButton("Sun", () => startParticleSystem(jsonSun)),
-      getButton("Stop", () => particleSystem.stop(false))
+      getButton("Stop", () => particleEmitter.stop(false))
     ];
 
     for(int b = 0; b < buttons.length; b++) {

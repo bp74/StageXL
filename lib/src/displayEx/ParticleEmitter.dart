@@ -43,25 +43,25 @@ class _Particle {
   //_ParticleColor color, colorDelta;
 }
 
-class ParticleSystem extends DisplayObject implements Animatable {
+class ParticleEmitter extends DisplayObject implements Animatable {
 
   final Random _random = new Random();
   final List<_Particle> _particles = new List<_Particle>();
 
-  int _particleCount;
   CanvasElement _particleCanvas;
-  num _frameTime;
-  num _emissionTime;
+  int _particleCount = 0;
+  num _frameTime = 0.0;
+  num _emissionTime = 0.0;
 
   static const int EMITTER_TYPE_GRAVITY = 0;
   static const int EMITTER_TYPE_RADIAL = 1;
 
   // emitter configuration
   int _emitterType = 0;
-  num _emitterX = 0.0;
-  num _emitterY = 0.0;
-  num _emitterXVariance = 0.0;
-  num _emitterYVariance = 0.0;
+  num _locationX = 0.0;
+  num _locationY = 0.0;
+  num _locationXVariance = 0.0;
+  num _locationYVariance = 0.0;
 
   // particle configuration
   int _maxNumParticles = 0;
@@ -71,14 +71,15 @@ class ParticleSystem extends DisplayObject implements Animatable {
   num _startSizeVariance = 0.0;
   num _endSize = 0.0;
   num _endSizeVariance = 0.0;
-  num _emitAngle = 0.0;
-  num _emitAngleVariance = 0.0;
+  String _shape = "circle";
 
   // gravity configuration
   num _gravityX = 0.0;
   num _gravityY = 0.0;
   num _speed = 0.0;
   num _speedVariance = 0.0;
+  num _angle = 0.0;
+  num _angleVariance = 0.0;
   num _radialAcceleration = 0.0;
   num _radialAccelerationVariance = 0.0;
   num _tangentialAcceleration = 0.0;
@@ -92,54 +93,19 @@ class ParticleSystem extends DisplayObject implements Animatable {
   num _rotatePerSecondVariance = 0.0;
 
   // color configuration
-  _ParticleColor startColor;
-  _ParticleColor endColor;
+  String _compositeOperation;
+  _ParticleColor _startColor;
+  _ParticleColor _endColor;
 
   //-------------------------------------------------------------------------------------------------
 
-  ParticleSystem(String jsonConfig) {
+  ParticleEmitter(String jsonConfig) {
 
     _emissionTime = 0.0;
     _frameTime = 0.0;
     _particleCount = 0;
 
-    var pex = json.parse(jsonConfig);
-
-    _emitterType = _ensureInt(pex["emitterType"]);
-    _emitterX = _ensureNum(pex["sourcePosition"]["x"]);
-    _emitterY = _ensureNum(pex["sourcePosition"]["y"]);
-    _emitterXVariance = _ensureNum(pex["sourcePositionVariance"]["x"]);
-    _emitterYVariance = _ensureNum(pex["sourcePositionVariance"]["y"]);
-
-    _maxNumParticles = _ensureInt(pex["maxParticles"]);
-    _lifespan = _ensureNum(max(0.01, pex["particleLifeSpan"]));
-    _lifespanVariance = _ensureNum(pex["particleLifespanVariance"]);
-    _startSize = _ensureNum(pex["startParticleSize"]);
-    _startSizeVariance = _ensureNum(pex["startParticleSizeVariance"]);
-    _endSize = _ensureNum(pex["finishParticleSize"]);
-    _endSizeVariance = _ensureNum(pex["FinishParticleSizeVariance"]);
-    _emitAngle = _ensureNum(pex["angle"]) * PI / 180.0;
-    _emitAngleVariance = _ensureNum(pex["angleVariance"]) * PI / 180.0;
-
-    _gravityX = _ensureNum(pex["gravity"]["x"]);
-    _gravityY = _ensureNum(pex["gravity"]["y"]);
-    _speed = _ensureNum(pex["speed"]);
-    _speedVariance = _ensureNum(pex["speedVariance"]);
-    _radialAcceleration = _ensureNum(pex["radialAcceleration"]);
-    _radialAccelerationVariance = _ensureNum(pex["radialAccelVariance"]);
-    _tangentialAcceleration = _ensureNum(pex["tangentialAcceleration"]);
-    _tangentialAccelerationVariance = _ensureNum(pex["tangentialAccelVariance"]);
-
-    _minRadius = _ensureNum(pex["minRadius"]);
-    _maxRadius = _ensureNum(pex["maxRadius"]);
-    _maxRadiusVariance = _ensureNum(pex["maxRadiusVariance"]);
-    _rotatePerSecond = _ensureNum(pex["rotatePerSecond"]) * PI / 180.0;
-    _rotatePerSecondVariance = _ensureNum(pex["rotatePerSecondVariance"]) * PI / 180.0;
-
-    startColor = new _ParticleColor.fromJSON(pex["startColor"]);
-    endColor = new _ParticleColor.fromJSON(pex["finishColor"]);
-
-    _drawParticleCanvas();
+    updateConfig(jsonConfig);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -150,16 +116,16 @@ class ParticleSystem extends DisplayObject implements Animatable {
     _particleCanvas = new CanvasElement(width: 256, height: 256);
     var context = _particleCanvas.context2D;
 
-    for(int i = 0; i< 64; i++)
-    {
+    for(int i = 0; i < 64; i++) {
+
       var radius = 15;
       num targetX = (i  % 8) * 32 + 15.5;
       num targetY = (i ~/ 8) * 32 + 15.5;
 
-      num colorRed   = startColor.red   + i * (endColor.red    - startColor.red ) / 63;
-      num colorGreen = startColor.green + i * (endColor.green - startColor.green) / 63;
-      num colorBlue  = startColor.blue  + i * (endColor.blue  - startColor.blue ) / 63;
-      num colorAlpha = startColor.alpha + i * (endColor.alpha - startColor.alpha) / 63;
+      num colorRed   = _startColor.red   + i * (_endColor.red    - _startColor.red ) / 63;
+      num colorGreen = _startColor.green + i * (_endColor.green - _startColor.green) / 63;
+      num colorBlue  = _startColor.blue  + i * (_endColor.blue  - _startColor.blue ) / 63;
+      num colorAlpha = _startColor.alpha + i * (_endColor.alpha - _startColor.alpha) / 63;
 
       int cRed = (255.0 * colorRed).toInt();
       int cGreen = (255.0 * colorGreen).toInt();
@@ -172,9 +138,8 @@ class ParticleSystem extends DisplayObject implements Animatable {
       if (cAlpha < 0) cAlpha = 0; else if (cAlpha > 255) cAlpha = 255;
 
       var gradient = context.createRadialGradient(targetX, targetY, 0, targetX, targetY, radius);
-      gradient.addColorStop(0.0, "rgba($cRed, $cGreen, $cBlue, ${cAlpha / 255.0})");
-      gradient.addColorStop(1.0, "rgba($cRed, $cGreen, $cBlue, 0.0)");
-
+      gradient.addColorStop(0.00, "rgba($cRed, $cGreen, $cBlue, ${cAlpha / 255.0})");
+      gradient.addColorStop(1.00, "rgba($cRed, $cGreen, $cBlue, 0.0)");
       context.beginPath();
       context.moveTo(targetX + radius, targetY);
       context.arc(targetX, targetY, radius, 0, PI * 2.0, false);
@@ -188,27 +153,25 @@ class ParticleSystem extends DisplayObject implements Animatable {
 
   void _initParticle(_Particle particle) {
 
-    if (particle is! _Particle) return;     // dart2js hint
-
     var totalTime = _lifespan + _lifespanVariance * (_random.nextDouble() * 2.0 - 1.0);
     if (totalTime <= 0.0) return;
 
     particle._currentTime = 0.0;
     particle._totalTime = totalTime;
 
-    particle._x = _emitterX + _emitterXVariance * (_random.nextDouble() * 2.0 - 1.0);
-    particle._y = _emitterY + _emitterYVariance * (_random.nextDouble() * 2.0 - 1.0);
-    particle._startX = _emitterX;
-    particle._startY = _emitterY;
+    particle._x = _locationX + _locationXVariance * (_random.nextDouble() * 2.0 - 1.0);
+    particle._y = _locationY + _locationYVariance * (_random.nextDouble() * 2.0 - 1.0);
+    particle._startX = _locationX;
+    particle._startY = _locationY;
 
-    num angle = _emitAngle + _emitAngleVariance * (_random.nextDouble() * 2.0 - 1.0);
+    num angle = _angle + _angleVariance * (_random.nextDouble() * 2.0 - 1.0);
     num velocity = _speed + _speedVariance * (_random.nextDouble() * 2.0 - 1.0);
     particle._velocityX = (velocity * cos(angle));
     particle._velocityY = (velocity * sin(angle));
 
     particle._emitRadius = _maxRadius + _maxRadiusVariance * (_random.nextDouble() * 2.0 - 1.0);
     particle._emitRadiusDelta = _maxRadius / particle._totalTime;
-    particle._emitRotation = _emitAngle + _emitAngleVariance * (_random.nextDouble() * 2.0 - 1.0);
+    particle._emitRotation = _angle + _angleVariance * (_random.nextDouble() * 2.0 - 1.0);
     particle._emitRotationDelta = _rotatePerSecond + _rotatePerSecondVariance * (_random.nextDouble() * 2.0 - 1.0);
     particle._radialAcceleration = _ensureNum(_radialAcceleration) + _radialAccelerationVariance * (_random.nextDouble() * 2.0 - 1.0);
     particle._tangentialAcceleration = _ensureNum(_tangentialAcceleration) + _tangentialAccelerationVariance * (_random.nextDouble() * 2.0 - 1.0);
@@ -241,8 +204,6 @@ class ParticleSystem extends DisplayObject implements Animatable {
 
   void _advanceParticle(_Particle particle, num passedTime) {
 
-    if (particle is! _Particle) return;     // dart2js hint
-
     num restTime = particle._totalTime - particle._currentTime;
     passedTime = (restTime > passedTime) ? passedTime : restTime;
     particle._currentTime += passedTime;
@@ -251,8 +212,8 @@ class ParticleSystem extends DisplayObject implements Animatable {
 
       particle._emitRotation += particle._emitRotationDelta * passedTime;
       particle._emitRadius   -= particle._emitRadiusDelta   * passedTime;
-      particle._x = _emitterX - cos(particle._emitRotation) * particle._emitRadius;
-      particle._y = _emitterY - sin(particle._emitRotation) * particle._emitRadius;
+      particle._x = _locationX - cos(particle._emitRotation) * particle._emitRadius;
+      particle._y = _locationY - sin(particle._emitRotation) * particle._emitRadius;
 
       if (particle._emitRadius < _minRadius)
         particle._currentTime = particle._totalTime;
@@ -300,9 +261,52 @@ class ParticleSystem extends DisplayObject implements Animatable {
       _particleCount = 0;
   }
 
-  void setEmitterPosition(num x, num y) {
-    _emitterX = _ensureNum(x);
-    _emitterY = _ensureNum(y);
+  void setEmitterLocation(num x, num y) {
+    _locationX = _ensureNum(x);
+    _locationY = _ensureNum(y);
+  }
+
+  void updateConfig(String jsonConfig) {
+
+    var config = json.parse(jsonConfig);
+
+    _emitterType = _ensureInt(config["emitterType"]);
+    _locationX = _ensureNum(config["location"]["x"]);
+    _locationY = _ensureNum(config["location"]["y"]);
+
+    _maxNumParticles = _ensureInt(config["maxParticles"]);
+    _lifespan = _ensureNum(max(0.01, config["lifeSpan"]));
+    _lifespanVariance = _ensureNum(config["lifespanVariance"]);
+    _startSize = _ensureNum(config["startSize"]);
+    _startSizeVariance = _ensureNum(config["startSizeVariance"]);
+    _endSize = _ensureNum(config["finishSize"]);
+    _endSizeVariance = _ensureNum(config["finishSizeVariance"]);
+    _shape = config["shape"];
+
+    _locationXVariance = _ensureNum(config["locationVariance"]["x"]);
+    _locationYVariance = _ensureNum(config["locationVariance"]["y"]);
+    _speed = _ensureNum(config["speed"]);
+    _speedVariance = _ensureNum(config["speedVariance"]);
+    _angle = _ensureNum(config["angle"]) * PI / 180.0;
+    _angleVariance = _ensureNum(config["angleVariance"]) * PI / 180.0;
+    _gravityX = _ensureNum(config["gravity"]["x"]);
+    _gravityY = _ensureNum(config["gravity"]["y"]);
+    _radialAcceleration = _ensureNum(config["radialAcceleration"]);
+    _radialAccelerationVariance = _ensureNum(config["radialAccelerationVariance"]);
+    _tangentialAcceleration = _ensureNum(config["tangentialAcceleration"]);
+    _tangentialAccelerationVariance = _ensureNum(config["tangentialAccelerationVariance"]);
+
+    _minRadius = _ensureNum(config["minRadius"]);
+    _maxRadius = _ensureNum(config["maxRadius"]);
+    _maxRadiusVariance = _ensureNum(config["maxRadiusVariance"]);
+    _rotatePerSecond = _ensureNum(config["rotatePerSecond"]) * PI / 180.0;
+    _rotatePerSecondVariance = _ensureNum(config["rotatePerSecondVariance"]) * PI / 180.0;
+
+    _compositeOperation = config["compositeOperation"];
+    _startColor = new _ParticleColor.fromJSON(config["startColor"]);
+    _endColor = new _ParticleColor.fromJSON(config["finishColor"]);
+
+    _drawParticleCanvas();
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -318,6 +322,7 @@ class ParticleSystem extends DisplayObject implements Animatable {
     while (particleIndex < _particleCount) {
 
       _Particle particle = _particles[particleIndex];
+      if (particle is! _Particle) continue; // dart2js hint
 
       if (particle._currentTime < particle._totalTime) {
 
@@ -349,6 +354,8 @@ class ParticleSystem extends DisplayObject implements Animatable {
             _particles.add(new _Particle());
 
           var particle = _particles[_particleCount++];
+          if (particle is! _Particle) continue; // dart2js hint
+
           _initParticle(particle);
           _advanceParticle(particle, _frameTime);
         }
@@ -361,7 +368,8 @@ class ParticleSystem extends DisplayObject implements Animatable {
 
     //--------------------------------------------------------
 
-    return (_particleCount > 0);
+    //return (_particleCount > 0);
+    return true;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -370,7 +378,7 @@ class ParticleSystem extends DisplayObject implements Animatable {
   void render(RenderState renderState) {
 
     var context = renderState.context;
-    context.globalCompositeOperation = "lighter";
+    context.globalCompositeOperation = _compositeOperation;
 
     for(int i = 0; i < _particleCount; i++) {
 
@@ -386,6 +394,9 @@ class ParticleSystem extends DisplayObject implements Animatable {
 
       context.drawImageScaledFromSource(_particleCanvas, sourceX, sourceY, 32, 32, targetX, targetY, targetSize, targetSize);
     }
+
+    //context.setTransform(1, 0, 0, 1, 0, 0);
+    //context.drawImage(_particleCanvas, 0, 0);
   }
 
 }
