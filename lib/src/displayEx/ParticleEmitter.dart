@@ -77,6 +77,7 @@ class ParticleEmitter extends DisplayObject implements Animatable {
 
   // particle configuration
   int _maxNumParticles = 0;
+  num _duration = 0.0;
   num _lifespan = 0.0;
   num _lifespanVariance = 0.0;
   num _startSize = 0.0;
@@ -261,23 +262,21 @@ class ParticleEmitter extends DisplayObject implements Animatable {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void start([num duration = double.INFINITY]) {
-
-    _emissionTime = duration;
+  void start([num duration]) {
+    _emissionTime = (duration != null) ? duration : _duration;
   }
 
   void stop(bool clear) {
-
     _emissionTime = 0.0;
-
-    if (clear)
-      _particleCount = 0;
+    if (clear) _particleCount = 0;
   }
 
   void setEmitterLocation(num x, num y) {
     _locationX = _ensureNum(x);
     _locationY = _ensureNum(y);
   }
+
+  int get particleCount => _particleCount;
 
   void updateConfig(String jsonConfig) {
 
@@ -288,7 +287,8 @@ class ParticleEmitter extends DisplayObject implements Animatable {
     _locationY = _ensureNum(config["location"]["y"]);
 
     _maxNumParticles = _ensureInt(config["maxParticles"]);
-    _lifespan = _ensureNum(max(0.01, config["lifeSpan"]));
+    _duration = _ensureNum(config["duration"]);
+    _lifespan = _ensureNum(config["lifeSpan"]);
     _lifespanVariance = _ensureNum(config["lifespanVariance"]);
     _startSize = _ensureNum(config["startSize"]);
     _startSizeVariance = _ensureNum(config["startSizeVariance"]);
@@ -318,6 +318,9 @@ class ParticleEmitter extends DisplayObject implements Animatable {
     _compositeOperation = config["compositeOperation"];
     _startColor = new _ParticleColor.fromJSON(config["startColor"]);
     _endColor = new _ParticleColor.fromJSON(config["finishColor"]);
+
+    if (_duration <= 0) _duration = double.INFINITY;
+    _emissionTime = _duration;
 
     _drawParticleCanvas();
   }
