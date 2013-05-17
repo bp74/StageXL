@@ -33,7 +33,7 @@ bool _ensureBool(bool value) {
 
 int _ensureInt(int value) {
   if (value is int) {
-    return 0 + value;
+    return value;
   } else {
     throw new ArgumentError("The supplied value ($value) is not an int.");
   }
@@ -41,7 +41,7 @@ int _ensureInt(int value) {
 
 num _ensureNum(num value) {
   if (value is num) {
-    return 0 + value;
+    return value;
   } else {
     throw new ArgumentError("The supplied value ($value) is not a number.");
   }

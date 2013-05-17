@@ -9,19 +9,26 @@ part of stagexl;
 
 class _ParticleColor {
 
-  num red, green, blue, alpha;
-
-  _ParticleColor([this.red = 0.0, this.green = 0.0, this.blue = 0.0, this.alpha = 0.0]);
+  num _red = 0.0;
+  num _green = 0.0;
+  num _blue = 0.0;
+  num _alpha = 0.0;
 
   _ParticleColor.fromJSON(Map json) {
-    this.red = _ensureNum(json["red"]);
-    this.green = _ensureNum(json["green"]);
-    this.blue = _ensureNum(json["blue"]);
-    this.alpha = _ensureNum(json["alpha"]);
+    _red = min(1.0, max(0.0, _ensureNum(json["red"])));
+    _green = min(1.0, max(0.0, _ensureNum(json["green"])));
+    _blue = min(1.0, max(0.0, _ensureNum(json["blue"])));
+    _alpha = min(1.0, max(0.0, _ensureNum(json["alpha"])));
   }
 }
 
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
 class _Particle {
+
+  final ParticleEmitter _particleEmitter;
+
   num _currentTime = 0.0;
   num _totalTime = 0.0;
   num _x = 0.0;
@@ -42,6 +49,118 @@ class _Particle {
   num _emitRotationDelta = 0.0;
 
   CanvasElement _particleCanvas;
+  _Particle _nextParticle;
+
+  _Particle(ParticleEmitter particleEmitter) : _particleEmitter = particleEmitter;
+
+  //-----------------------------------------------------------------------------------------------
+
+  _initParticle() {
+
+    var pe = _particleEmitter;
+    var totalTime = pe._lifespan + pe._lifespanVariance * pe._randomVariance;
+    if (totalTime < 0.01) totalTime = 0.01;
+
+    _currentTime = 0.0;
+    _totalTime = totalTime;
+
+    _x = pe._locationX + pe._locationXVariance * pe._randomVariance;
+    _y = pe._locationY + pe._locationYVariance * pe._randomVariance;
+    _startX = pe._locationX;
+    _startY = pe._locationY;
+
+    num angle = pe._angle + pe._angleVariance * pe._randomVariance;
+    num velocity = pe._speed + pe._speedVariance * pe._randomVariance;
+    _velocityX = (velocity * cos(angle));
+    _velocityY = (velocity * sin(angle));
+
+    _emitRadius = pe._maxRadius + pe._maxRadiusVariance * pe._randomVariance;
+    _emitRadiusDelta = pe._maxRadius / _totalTime;
+    _emitRotation = pe._angle + pe._angleVariance * pe._randomVariance;
+    _emitRotationDelta = pe._rotatePerSecond + pe._rotatePerSecondVariance * pe._randomVariance;
+    _radialAcceleration = pe._radialAcceleration + pe._radialAccelerationVariance * pe._randomVariance;
+    _tangentialAcceleration = pe._tangentialAcceleration + pe._tangentialAccelerationVariance * pe._randomVariance;
+
+    num size1 = pe._startSize + pe._startSizeVariance * pe._randomVariance;
+    num size2 = pe._endSize + pe._endSizeVariance * pe._randomVariance;
+    if (size1 < 0.1) size1 = 0.1;
+    if (size2 < 0.1) size2 = 0.1;
+    _size = size1;
+    _sizeDelta = (size2 - size1) / _totalTime;
+
+    _particleCanvas = pe._particleCanvas;
+
+    /*
+    ParticleColor color = particle.color;
+    ParticleColor colorDelta = particle.colorDelta;
+
+    color.red   = startColor.red;
+    color.green = startColor.green;
+    color.blue  = startColor.blue;
+    color.alpha = startColor.alpha;
+
+    colorDelta.red   = (endColor.red   - startColor.red)   / particle.totalTime;
+    colorDelta.green = (endColor.green - startColor.green) / particle.totalTime;
+    colorDelta.blue  = (endColor.blue  - startColor.blue)  / particle.totalTime;
+    colorDelta.alpha = (endColor.alpha - startColor.alpha) / particle.totalTime;
+    */
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  bool _advanceParticle(num passedTime) {
+
+    var pe = _particleEmitter;
+    var restTime = _totalTime - _currentTime;
+    if (restTime <= 0.0) return false;
+    if (restTime <= passedTime) passedTime = restTime;
+
+    _currentTime += passedTime;
+
+    if (pe._emitterType == ParticleEmitter.EMITTER_TYPE_RADIAL) {
+
+      _emitRotation += _emitRotationDelta * passedTime;
+      _emitRadius   -= _emitRadiusDelta   * passedTime;
+      _x = pe._locationX - cos(_emitRotation) * _emitRadius;
+      _y = pe._locationY - sin(_emitRotation) * _emitRadius;
+
+      if (_emitRadius < pe._minRadius) {
+        _currentTime = _totalTime;
+      }
+
+    } else {
+
+      num distanceX = _x - _startX;
+      num distanceY = _y - _startY;
+      num distanceScalar = sqrt(distanceX * distanceX + distanceY * distanceY);
+      if (distanceScalar < 0.01) distanceScalar = 0.01;
+      distanceX = distanceX / distanceScalar;
+      distanceY = distanceY / distanceScalar;
+
+      var gravityX = pe._gravityX;
+      var gravityY = pe._gravityY;
+
+      _velocityX += passedTime * (gravityX + distanceX * _radialAcceleration - distanceY * _tangentialAcceleration);
+      _velocityY += passedTime * (gravityY + distanceY * _radialAcceleration + distanceX * _tangentialAcceleration);
+      _x += _velocityX * passedTime;
+      _y += _velocityY * passedTime;
+    }
+
+    _size += _sizeDelta * passedTime;
+
+    /*
+    ParticleColor color = particle.color;
+    ParticleColor colorDelta = particle.colorDelta;
+    color.red   += colorDelta.red   * passedTime;
+    color.green += colorDelta.green * passedTime;
+    color.blue  += colorDelta.blue  * passedTime;
+    color.alpha += colorDelta.alpha * passedTime;
+    */
+
+    return true;
+  }
+
+  //-----------------------------------------------------------------------------------------------
 
   _renderParticle(CanvasRenderingContext2D context) {
 
@@ -55,10 +174,15 @@ class _Particle {
   }
 }
 
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
 class ParticleEmitter extends DisplayObject implements Animatable {
 
   final Random _random = new Random();
-  final List<_Particle> _particles = new List<_Particle>();
+
+  _Particle _rootParticle;
+  _Particle _lastParticle;
 
   CanvasElement _particleCanvas;
   int _particleCount = 0;
@@ -114,6 +238,9 @@ class ParticleEmitter extends DisplayObject implements Animatable {
 
   ParticleEmitter(String jsonConfig) {
 
+    _rootParticle = new _Particle(this);
+    _lastParticle = _rootParticle;
+
     _emissionTime = 0.0;
     _frameTime = 0.0;
     _particleCount = 0;
@@ -135,23 +262,17 @@ class ParticleEmitter extends DisplayObject implements Animatable {
       num targetX = i * 32 + 15.5;
       num targetY = 15.5;
 
-      num colorRed   = _startColor.red   + i * (_endColor.red    - _startColor.red ) / 31;
-      num colorGreen = _startColor.green + i * (_endColor.green - _startColor.green) / 31;
-      num colorBlue  = _startColor.blue  + i * (_endColor.blue  - _startColor.blue ) / 31;
-      num colorAlpha = _startColor.alpha + i * (_endColor.alpha - _startColor.alpha) / 31;
+      num colorRed   = _startColor._red   + i * (_endColor._red   - _startColor._red ) / 31;
+      num colorGreen = _startColor._green + i * (_endColor._green - _startColor._green) / 31;
+      num colorBlue  = _startColor._blue  + i * (_endColor._blue  - _startColor._blue ) / 31;
+      num colorAlpha = _startColor._alpha + i * (_endColor._alpha - _startColor._alpha) / 31;
 
       int cRed = (255.0 * colorRed).toInt();
       int cGreen = (255.0 * colorGreen).toInt();
       int cBlue = (255.0 * colorBlue).toInt();
-      int cAlpha = (255.0 * colorAlpha).toInt();
-
-      if (cRed < 0) cRed = 0; else if (cRed > 255) cRed = 255;
-      if (cGreen < 0) cGreen = 0; else if (cGreen > 255) cGreen = 255;
-      if (cBlue < 0) cBlue = 0; else if (cBlue > 255) cBlue = 255;
-      if (cAlpha < 0) cAlpha = 0; else if (cAlpha > 255) cAlpha = 255;
 
       var gradient = context.createRadialGradient(targetX, targetY, 0, targetX, targetY, radius);
-      gradient.addColorStop(0.00, "rgba($cRed, $cGreen, $cBlue, ${cAlpha / 255.0})");
+      gradient.addColorStop(0.00, "rgba($cRed, $cGreen, $cBlue, $colorAlpha)");
       gradient.addColorStop(1.00, "rgba($cRed, $cGreen, $cBlue, 0.0)");
       context.beginPath();
       context.moveTo(targetX + radius, targetY);
@@ -162,108 +283,12 @@ class ParticleEmitter extends DisplayObject implements Animatable {
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  void _initParticle(_Particle particle) {
-
-    var totalTime = _lifespan + _lifespanVariance * (_random.nextDouble() * 2.0 - 1.0);
-    if (totalTime < 0.01) totalTime = 0.01;
-
-    particle._currentTime = 0.0;
-    particle._totalTime = totalTime;
-    particle._particleCanvas = _particleCanvas;
-
-    particle._x = _locationX + _locationXVariance * (_random.nextDouble() * 2.0 - 1.0);
-    particle._y = _locationY + _locationYVariance * (_random.nextDouble() * 2.0 - 1.0);
-    particle._startX = _locationX;
-    particle._startY = _locationY;
-
-    num angle = _angle + _angleVariance * (_random.nextDouble() * 2.0 - 1.0);
-    num velocity = _speed + _speedVariance * (_random.nextDouble() * 2.0 - 1.0);
-    particle._velocityX = (velocity * cos(angle));
-    particle._velocityY = (velocity * sin(angle));
-
-    particle._emitRadius = _maxRadius + _maxRadiusVariance * (_random.nextDouble() * 2.0 - 1.0);
-    particle._emitRadiusDelta = _maxRadius / particle._totalTime;
-    particle._emitRotation = _angle + _angleVariance * (_random.nextDouble() * 2.0 - 1.0);
-    particle._emitRotationDelta = _rotatePerSecond + _rotatePerSecondVariance * (_random.nextDouble() * 2.0 - 1.0);
-    particle._radialAcceleration = _ensureNum(_radialAcceleration) + _radialAccelerationVariance * (_random.nextDouble() * 2.0 - 1.0);
-    particle._tangentialAcceleration = _ensureNum(_tangentialAcceleration) + _tangentialAccelerationVariance * (_random.nextDouble() * 2.0 - 1.0);
-
-    num size1 = _startSize + _startSizeVariance * (_random.nextDouble() * 2.0 - 1.0);
-    num size2 = _endSize + _endSizeVariance * (_random.nextDouble() * 2.0 - 1.0);
-    if (size1 < 0.1) size1 = 0.1;
-    if (size2 < 0.1) size2 = 0.1;
-    particle._size = size1;
-    particle._sizeDelta = (size2 - size1) / particle._totalTime;
-
-    // colors
-    /*
-    ParticleColor color = particle.color;
-    ParticleColor colorDelta = particle.colorDelta;
-
-    color.red   = startColor.red;
-    color.green = startColor.green;
-    color.blue  = startColor.blue;
-    color.alpha = startColor.alpha;
-
-    colorDelta.red   = (endColor.red   - startColor.red)   / particle.totalTime;
-    colorDelta.green = (endColor.green - startColor.green) / particle.totalTime;
-    colorDelta.blue  = (endColor.blue  - startColor.blue)  / particle.totalTime;
-    colorDelta.alpha = (endColor.alpha - startColor.alpha) / particle.totalTime;
-    */
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  void _advanceParticle(_Particle particle, num passedTime) {
-
-    num restTime = particle._totalTime - particle._currentTime;
-    passedTime = (restTime > passedTime) ? passedTime : restTime;
-    particle._currentTime += passedTime;
-
-    if (_emitterType == EMITTER_TYPE_RADIAL) {
-
-      particle._emitRotation += particle._emitRotationDelta * passedTime;
-      particle._emitRadius   -= particle._emitRadiusDelta   * passedTime;
-      particle._x = _locationX - cos(particle._emitRotation) * particle._emitRadius;
-      particle._y = _locationY - sin(particle._emitRotation) * particle._emitRadius;
-
-      if (particle._emitRadius < _minRadius)
-        particle._currentTime = particle._totalTime;
-
-    } else {
-
-      num distanceX = particle._x - particle._startX;
-      num distanceY = particle._y - particle._startY;
-      num distanceScalar = sqrt(distanceX * distanceX + distanceY * distanceY);
-      if (distanceScalar < 0.01) distanceScalar = 0.01;
-      distanceX = distanceX / distanceScalar;
-      distanceY = distanceY / distanceScalar;
-
-      particle._velocityX += passedTime * (_gravityX + distanceX * particle._radialAcceleration - distanceY * particle._tangentialAcceleration);
-      particle._velocityY += passedTime * (_gravityY + distanceY * particle._radialAcceleration + distanceX * particle._tangentialAcceleration);
-      particle._x += particle._velocityX * passedTime;
-      particle._y += particle._velocityY * passedTime;
-    }
-
-    particle._size += particle._sizeDelta * passedTime;
-
-    /*
-    ParticleColor color = particle.color;
-    ParticleColor colorDelta = particle.colorDelta;
-    color.red   += colorDelta.red   * passedTime;
-    color.green += colorDelta.green * passedTime;
-    color.blue  += colorDelta.blue  * passedTime;
-    color.alpha += colorDelta.alpha * passedTime;
-    */
-  }
-
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
 
   void start([num duration]) {
-    _emissionTime = (duration != null) ? duration : _duration;
+    _emissionTime = _duration;
+
+    if (duration != null && duration is num)
+      _emissionTime = duration;
   }
 
   void stop(bool clear) {
@@ -277,6 +302,10 @@ class ParticleEmitter extends DisplayObject implements Animatable {
   }
 
   int get particleCount => _particleCount;
+
+  num get _randomVariance => _random.nextDouble() * 2.0 - 1.0;
+
+  //-------------------------------------------------------------------------------------------------
 
   void updateConfig(String jsonConfig) {
 
@@ -326,35 +355,33 @@ class ParticleEmitter extends DisplayObject implements Animatable {
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
 
   bool advanceTime(num passedTime) {
 
-    int particleIndex = 0;
+    var particle = _rootParticle;
+    var particleCount = _particleCount;
 
-    //--------------------------------------------------------
     // advance existing particles
 
-    while (particleIndex < _particleCount) {
+    for (int i = 0; i < particleCount; i++) {
 
-      _Particle particle = _particles[particleIndex];
-      if (particle is! _Particle) continue; // dart2js hint
+      var nextParticle = particle._nextParticle as _Particle;
 
-      if (particle._currentTime < particle._totalTime) {
-
-        _advanceParticle(particle, passedTime);
-        particleIndex++;
-
-      } else {
-
-        var swapParticle = _particles[_particleCount - 1];
-        _particles[_particleCount - 1] = particle;
-        _particles[particleIndex] = swapParticle;
-        _particleCount--;
+      if (nextParticle._advanceParticle(passedTime)) {
+        particle = nextParticle;
+        continue;
       }
+
+      if (nextParticle._nextParticle != null) {
+        particle._nextParticle = nextParticle._nextParticle;
+        _lastParticle._nextParticle = nextParticle;
+        _lastParticle = nextParticle;
+        _lastParticle._nextParticle = null;
+      }
+
+      _particleCount--;
     }
 
-    //--------------------------------------------------------
     // create and advance new particles
 
     if (_emissionTime > 0.0) {
@@ -366,14 +393,16 @@ class ParticleEmitter extends DisplayObject implements Animatable {
 
         if (_particleCount < _maxNumParticles) {
 
-          if (_particleCount >= _particles.length)
-            _particles.add(new _Particle());
+          var nextParticle = particle._nextParticle;
 
-          var particle = _particles[_particleCount++];
-          if (particle is! _Particle) continue; // dart2js hint
+          if (nextParticle == null) {
+            nextParticle = _lastParticle = particle._nextParticle = new _Particle(this);
+          }
 
-          _initParticle(particle);
-          _advanceParticle(particle, _frameTime);
+          particle = nextParticle;
+          particle._initParticle();
+          particle._advanceParticle(_frameTime);
+          _particleCount++;
         }
 
         _frameTime -= timeBetweenParticles;
@@ -389,15 +418,17 @@ class ParticleEmitter extends DisplayObject implements Animatable {
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
 
     var context = renderState.context;
     context.globalCompositeOperation = _compositeOperation;
 
+    var particle = _rootParticle;
+
     for(int i = 0; i < _particleCount; i++) {
-      _particles[i]._renderParticle(context);
+      particle = particle._nextParticle;
+      particle._renderParticle(context);
     }
   }
 
