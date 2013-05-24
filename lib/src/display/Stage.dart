@@ -92,6 +92,13 @@ class Stage extends DisplayObjectContainer {
 
   Stage(String name, CanvasElement canvas, [int contentWidth, int contentHeight, int contentFrameRate]) {
 
+    if (canvas is! CanvasElement) {
+      throw new ArgumentError("The canvas argument is not a CanvasElement");
+    }
+
+    if (canvas.tabIndex == -1) canvas.tabIndex = 0;
+    if (canvas.style.outline == "") canvas.style.outline = "none";
+
     _name = name;
     _canvas = canvas;
     _canvas.focus();
