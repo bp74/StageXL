@@ -457,8 +457,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   }
 
   void _renderCache(RenderState renderState) {
-    var context = renderState.context;
-    context.transform(1.0, 0.0, 0.0, 1.0, _cacheRectangle.x, _cacheRectangle.y);
+    renderState.context.translate(_cacheRectangle.x, _cacheRectangle.y);
     _cache.render(renderState);
   }
 
