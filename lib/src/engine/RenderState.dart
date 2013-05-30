@@ -49,8 +49,8 @@ class RenderState {
 
   void reset([Matrix matrix, num currentTime, num deltaTime]) {
 
-    _currentTime = ?currentTime ? currentTime : 0.0;
-    _deltaTime = ?deltaTime ? deltaTime : 0.0;
+    _currentTime = (currentTime is num) ? currentTime : 0.0;
+    _deltaTime = (deltaTime is num) ? deltaTime : 0.0;
     _currentContextState = _firstContextState;
 
     if (matrix != null) {
