@@ -74,9 +74,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   Mask get mask => _mask;
   bool get cached => _cache != null;
 
-  List<BitmapFilter> get filters => (_filters != null)
-      ? _filters
-      : _filters = new List<BitmapFilter>();
+  List<BitmapFilter> get filters {
+    if (_filters == null) _filters = new List<BitmapFilter>();
+    return _filters;
+  }
 
   Shadow get shadow => _shadow;
   String get compositeOperation => _compositeOperation;
@@ -113,68 +114,104 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     return currentObject;
   }
 
-  //-------------------------------------------------------------------------------------------------
-
   Stage get stage {
 
     DisplayObject root = this.root;
-
-    if (root is Stage)
-      return root;
-
-    return null;
+    return (root is Stage) ? root : null;
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  set x(num value) { _x = value.toDouble(); _transformationMatrixRefresh = true; }
-  set y(num value) { _y = value.toDouble(); _transformationMatrixRefresh = true; }
-  set pivotX(num value) { _pivotX = value.toDouble(); _transformationMatrixRefresh = true; }
-  set pivotY(num value) { _pivotY = value.toDouble(); _transformationMatrixRefresh = true; }
-  set scaleX(num value) { _scaleX = value.toDouble(); _transformationMatrixRefresh = true; }
-  set scaleY(num value) { _scaleY = value.toDouble(); _transformationMatrixRefresh = true; }
-  set skewX(num value) { _skewX = value.toDouble(); _transformationMatrixRefresh = true; }
-  set skewY(num value) { _skewY = value.toDouble(); _transformationMatrixRefresh = true; }
-  set rotation(num value) { _rotation = value.toDouble(); _transformationMatrixRefresh = true; }
+  set x(num value) {
+    if (value is num) _x = value;
+    _transformationMatrixRefresh = true;
+  }
 
-  set visible(bool value) { _visible = value; }
-  set off(bool value) { _off = value;  }
-  set alpha(num value) { _alpha = value.toDouble(); }
+  set y(num value) {
+    if (value is num) _y = value;
+    _transformationMatrixRefresh = true;
+  }
 
-  set mask(Mask value) { _mask = value; }
-  set filters(List<BitmapFilter> value) { _filters = value; }
-  set shadow(Shadow value) { _shadow = value; }
-  set compositeOperation(String value) { _compositeOperation = value; }
+  set pivotX(num value) {
+    if (value is num) _pivotX = value;
+    _transformationMatrixRefresh = true;
+  }
 
-  set name(String value) { _name = value; }
+  set pivotY(num value) {
+    if (value is num) _pivotY = value;
+    _transformationMatrixRefresh = true;
+  }
+
+  set scaleX(num value) {
+    if (value is num) _scaleX = value;
+    _transformationMatrixRefresh = true;
+  }
+
+  set scaleY(num value) {
+    if (value is num) _scaleY = value;
+    _transformationMatrixRefresh = true;
+  }
+
+  set skewX(num value) {
+    if (value is num) _skewX = value;
+    _transformationMatrixRefresh = true;
+  }
+
+  set skewY(num value) {
+    if (value is num) _skewY = value;
+    _transformationMatrixRefresh = true;
+  }
+
+  set rotation(num value) {
+    if (value is num) _rotation = value;
+    _transformationMatrixRefresh = true;
+  }
+
+  set visible(bool value) {
+    if (value is bool) _visible = value;
+  }
+
+  set off(bool value) {
+    if (value is bool) _off = value;
+  }
+
+  set alpha(num value) {
+    if (value is num) _alpha = value;
+  }
+
+  set mask(Mask value) {
+    _mask = value;
+  }
+
+  set filters(List<BitmapFilter> value) {
+    _filters = value;
+  }
+
+  set shadow(Shadow value) {
+    _shadow = value;
+  }
+
+  set compositeOperation(String value) {
+    _compositeOperation = value;
+  }
+
+  set name(String value) {
+    _name = value;
+  }
 
   //-------------------------------------------------------------------------------------------------
 
-  void setTransform(num x, num y, [num scaleX, num scaleY, num rotation, num skewX, num skewY, num pivotX, num pivotY])
-  {
+  void setTransform(num x, num y, [num scaleX, num scaleY, num rotation, num skewX, num skewY, num pivotX, num pivotY]) {
+    if (x is num) _x = x;
+    if (y is num) _y = y;
+    if (scaleX is num) _scaleX = scaleX;
+    if (scaleY is num) _scaleY = scaleY;
+    if (rotation is num) _rotation = rotation;
+    if (skewX is num) _skewX = skewX;
+    if (skewY is num) _skewY = skewY;
+    if (pivotX is num) _pivotX = pivotX;
+    if (pivotY is num) _pivotY = pivotY;
     _transformationMatrixRefresh = true;
-    _x = x.toDouble();
-    _y = y.toDouble();
-    if (scaleX != null) {
-      _scaleX = scaleX.toDouble();
-      if (scaleY != null) {
-        _scaleY = scaleY.toDouble();
-        if (rotation != null) {
-          _rotation = rotation.toDouble();
-          if (skewX != null) {
-            _skewX = skewX.toDouble();
-            if (skewY != null) {
-              _skewY = skewY.toDouble();
-              if (pivotX != null) {
-                _pivotX = pivotX.toDouble();
-                if (pivotY != null)
-                  _pivotY = pivotY.toDouble();
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -207,6 +244,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   }
 
   //-------------------------------------------------------------------------------------------------
+
+  bool get _visibleAndNotOff => _visible && !_off;
 
   Matrix get _transformationMatrix {
     /*

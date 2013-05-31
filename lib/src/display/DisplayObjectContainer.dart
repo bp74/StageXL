@@ -249,7 +249,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
       DisplayObject child = _children[i];
 
-      if (child.visible) {
+      if (child._visibleAndNotOff) {
         Matrix matrix = child._transformationMatrix;
 
         double deltaX = localX - matrix.tx;
@@ -280,7 +280,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
       DisplayObject child = _children[i];
 
-      if (!child._off && child.visible)
+      if (child._visibleAndNotOff)
         renderState.renderDisplayObject(child);
     }
   }

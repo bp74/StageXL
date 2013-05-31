@@ -28,12 +28,13 @@ class RenderState {
     _firstContextState = new _ContextState();
     _currentContextState = _firstContextState;
 
-    if (matrix != null) {
-      _firstContextState.matrix.copyFrom(matrix);
+    var fcsm = _firstContextState.matrix;
+
+    if (matrix is Matrix) {
+      fcsm.copyFrom(matrix);
     }
 
-    var m = _firstContextState.matrix;
-    _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
+    _context.setTransform(fcsm.a, fcsm.b, fcsm.c, fcsm.d, fcsm.tx, fcsm.ty);
     _context.globalAlpha = 1.0;
     _context.globalCompositeOperation = CompositeOperation.SOURCE_OVER;
   }
@@ -53,15 +54,15 @@ class RenderState {
     _deltaTime = (deltaTime is num) ? deltaTime : 0.0;
     _currentContextState = _firstContextState;
 
-    if (matrix != null) {
-      _firstContextState.matrix.copyFrom(matrix);
-    }
+    var fcsm = _firstContextState.matrix;
 
-    var m = _firstContextState.matrix;
+    if (matrix is Matrix) {
+      fcsm.copyFrom(matrix);
+    }
 
     _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
     _context.clearRect(0, 0, _context.canvas.width, _context.canvas.height);
-    _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
+    _context.setTransform(fcsm.a, fcsm.b, fcsm.c, fcsm.d, fcsm.tx, fcsm.ty);
     _context.globalAlpha = 1.0;
     _context.globalCompositeOperation = CompositeOperation.SOURCE_OVER;
 
