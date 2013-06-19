@@ -154,8 +154,6 @@ class Juggler implements Animatable {
     int animatablesCount = _animatablesCount;
     int tail = 0;
 
-    if (animatablesCount is! int) throw "dart2js_hint";
-
     for(int head = 0; head < animatablesCount; head++) {
 
       var animatable = _animatables[head];
