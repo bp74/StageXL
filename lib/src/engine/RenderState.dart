@@ -91,41 +91,40 @@ class RenderState {
     cs2.alpha = nextAlpha;
     cs2.compositeOperation = nextCompositeOperation;
 
-    // apply Mask and Shadow
-    if (mask != null || shadow != null) {
+    // apply mask
 
-      _context.save();
-
-      if (mask != null) {
-        if (mask.targetSpace == null) {
-          matrix = cs2.matrix;
-        } else if (identical(mask.targetSpace, displayObject)) {
-          matrix = cs2.matrix;
-        } else if (identical(mask.targetSpace, displayObject.parent)) {
-          matrix = cs1.matrix;
-        } else {
-          matrix = mask.targetSpace.transformationMatrixTo(displayObject);
-          if (matrix == null) matrix = _identityMatrix; else matrix.concat(cs2.matrix);
-        }
-        mask.render(this, matrix);
+    if (mask != null) {
+      if (mask.targetSpace == null) {
+        matrix = cs2.matrix;
+      } else if (identical(mask.targetSpace, displayObject)) {
+        matrix = cs2.matrix;
+      } else if (identical(mask.targetSpace, displayObject.parent)) {
+        matrix = cs1.matrix;
+      } else {
+        matrix = mask.targetSpace.transformationMatrixTo(displayObject);
+        if (matrix == null) matrix = _identityMatrix; else matrix.concat(cs2.matrix);
       }
+      mask.beginRenderMask(this, matrix);
+    }
 
-      if (shadow != null) {
-        if (shadow.targetSpace == null) {
-          matrix = cs2.matrix;
-        } else if (identical(shadow.targetSpace, displayObject)) {
-          matrix = cs2.matrix;
-        } else if (identical(shadow.targetSpace, displayObject.parent)) {
-          matrix = cs1.matrix;
-        } else {
-          matrix = shadow.targetSpace.transformationMatrixTo(displayObject);
-          if (matrix == null) matrix = _identityMatrix; else matrix.concat(cs2.matrix);
-        }
-        shadow.render(this, matrix);
+    // apply shadow
+
+    if (shadow != null) {
+      if (shadow.targetSpace == null) {
+        matrix = cs2.matrix;
+      } else if (identical(shadow.targetSpace, displayObject)) {
+        matrix = cs2.matrix;
+      } else if (identical(shadow.targetSpace, displayObject.parent)) {
+        matrix = cs1.matrix;
+      } else {
+        matrix = shadow.targetSpace.transformationMatrixTo(displayObject);
+        if (matrix == null) matrix = _identityMatrix; else matrix.concat(cs2.matrix);
       }
+      shadow.beginRenderShadow(this, matrix);
     }
 
     // render DisplayObject
+
     var m = nextMatrix;
     _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
     _context.globalCompositeOperation = nextCompositeOperation;
@@ -137,9 +136,16 @@ class RenderState {
       displayObject.render(this);
     }
 
-    // restore context
-    if (mask != null || shadow != null) {
-      _context.restore();
+    // restore shadow
+
+    if (shadow != null) {
+      shadow.endRenderShadow();
+    }
+
+    // restore mask
+
+    if (mask != null) {
+      mask.endRenderMask();
     }
 
     _currentContextState = cs1;
