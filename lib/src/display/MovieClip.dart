@@ -444,7 +444,7 @@ class Timeline
     if (props != null && props.containsKey("paused") && props["paused"] == true) { _paused = true; }
     //else { TimelineTween._register(this, true); }
     
-    if (props != null && props.containsKey("position")) { 
+    if (props != null && props.containsKey("position") && props["position"] != 0) { 
       setPosition(props["position"], TimelineTween.NONE); }
   }
   
@@ -529,9 +529,11 @@ class Timeline
     if (value.isNaN || value < 0) { value = 0; }
     num t = loop ? value%duration : value;
     bool end = !loop && value >= duration;
+    
     if (t == _prevPos) return end;
     _prevPosition = value;
     position = _prevPos = t; // in case an action changes the current frame.
+    
     for(var i=0; i<_tweens.length; i++) {
       _tweens[i].setPosition(t, actionsMode);
       if (t != _prevPos) return false; // an action changed this timeline's position.
