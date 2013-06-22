@@ -1,10 +1,21 @@
 part of stagexl;
 
+class _AnimatableLink {
+  Animatable animatable;
+  _AnimatableLink nextAnimatableLink;
+}
+
 class Juggler implements Animatable {
 
-  final List<Animatable> _animatables = new List<Animatable>();
-  int _animatablesCount = 0;
+  _AnimatableLink _firstAnimatableLink;
+  _AnimatableLink _lastAnimatableLink;
+
   num _elapsedTime = 0.0;
+
+  Juggler() {
+    _firstAnimatableLink = new _AnimatableLink();
+    _lastAnimatableLink = _firstAnimatableLink;
+  }
 
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
@@ -15,32 +26,30 @@ class Juggler implements Animatable {
 
   void add(Animatable animatable) {
 
-    if (animatable == null)
-      return;
-
-    if (this.contains(animatable))
-      return;
-
-    if (_animatablesCount == _animatables.length) {
-      _animatables.add(animatable);
-    } else {
-      _animatables[_animatablesCount] = animatable;
+    if (animatable is! Animatable) {
+      throw new ArgumentError("The supplied animatable does not extend type Animatable.");
     }
 
-    _animatablesCount++;
+    if (this.contains(animatable) == false) {
+      var animatableLink = new _AnimatableLink();
+      _lastAnimatableLink.animatable = animatable;
+      _lastAnimatableLink.nextAnimatableLink = animatableLink;
+      _lastAnimatableLink = animatableLink;
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
 
   void remove(Animatable animatable) {
 
-    if (animatable == null)
-      return;
-
-    for(int i = 0; i < _animatablesCount; i++) {
-      if (identical(_animatables[i], animatable)) {
-        _animatables[i] = null;
-        break;
+    if (animatable != null) {
+      var animatableLink = _firstAnimatableLink;
+      while(identical(animatableLink, _lastAnimatableLink) == false) {
+        if (identical(animatableLink.animatable, animatable)) {
+          animatableLink.animatable = null;
+          break;
+        }
+        animatableLink = animatableLink.nextAnimatableLink;
       }
     }
   }
@@ -49,12 +58,13 @@ class Juggler implements Animatable {
 
   bool contains(Animatable animatable) {
 
-    if (animatable == null)
-      return false;
-
-    for(int i = 0; i < _animatablesCount; i++) {
-      if (identical(_animatables[i], animatable)) {
-        return true;
+    if (animatable != null) {
+      var animatableLink = _firstAnimatableLink;
+      while(identical(animatableLink, _lastAnimatableLink) == false) {
+        if (identical(animatableLink.animatable, animatable)) {
+          return true;
+        }
+        animatableLink = animatableLink.nextAnimatableLink;
       }
     }
 
@@ -65,16 +75,13 @@ class Juggler implements Animatable {
 
   void removeTweens(DisplayObject displayObject) {
 
-    if (displayObject == null)
-      return;
-
-    for(int i = 0; i < _animatablesCount; i++) {
-      var animatable = _animatables[i];
-      if (animatable != null && animatable is Tween){
-        if (identical(animatable.displayObject, displayObject)) {
-          _animatables[i] = null;
-        }
+    var animatableLink = _firstAnimatableLink;
+    while(identical(animatableLink, _lastAnimatableLink) == false) {
+      var animatable = animatableLink.animatable;
+      if (animatable is Tween && identical(animatable.displayObject, displayObject)) {
+        animatableLink.animatable = null;
       }
+      animatableLink = animatableLink.nextAnimatableLink;
     }
   }
 
@@ -82,16 +89,13 @@ class Juggler implements Animatable {
 
   bool containsTweens(DisplayObject displayObject) {
 
-    if (displayObject == null)
-      return false;
-
-    for(int i = 0; i < _animatablesCount; i++) {
-      var animatable = _animatables[i];
-      if (animatable != null && animatable is Tween) {
-        if (identical(animatable.displayObject, displayObject)) {
-          return true;
-        }
+    var animatableLink = _firstAnimatableLink;
+    while(identical(animatableLink, _lastAnimatableLink) == false) {
+      var animatable = animatableLink.animatable;
+      if (animatable is Tween && identical(animatable.displayObject, displayObject)) {
+        return true;
       }
+      animatableLink = animatableLink.nextAnimatableLink;
     }
 
     return false;
@@ -101,11 +105,12 @@ class Juggler implements Animatable {
 
   void purge() {
 
-    for(int i = 0; i < _animatablesCount; i++) {
-      _animatables[i] = null;
+    var animatableLink = _firstAnimatableLink;
+    while(identical(animatableLink, _lastAnimatableLink) == false) {
+      animatableLink.animatable = null;
     }
 
-    _animatablesCount = 0;
+    _lastAnimatableLink = _firstAnimatableLink;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -113,9 +118,11 @@ class Juggler implements Animatable {
 
   Tween tween(DisplayObject displayObject, num time, [EaseFunction transitionFunction]) {
 
-    Tween tween = transitionFunction != null ? new Tween(displayObject, time, transitionFunction) : new Tween(displayObject, time);
-    add(tween);
+    Tween tween = transitionFunction != null
+        ? new Tween(displayObject, time, transitionFunction)
+        : new Tween(displayObject, time);
 
+    add(tween);
     return tween;
   }
 
@@ -149,37 +156,29 @@ class Juggler implements Animatable {
 
     // Call advanceTime of current animatables.
     // Do not call advanceTime of newly added animatables.
-    // Adjust _animatables List.
 
-    int animatablesCount = _animatablesCount;
-    int tail = 0;
+    var animatableLink = _firstAnimatableLink;
+    var lastAnimatableLink = _lastAnimatableLink;
 
-    for(int head = 0; head < animatablesCount; head++) {
+    while(identical(animatableLink, lastAnimatableLink) == false) {
 
-      var animatable = _animatables[head];
-      if (animatable == null) continue;
+      var animatable = animatableLink.animatable;
+      if (animatable == null) {
+        var nextAnimatableLink = animatableLink.nextAnimatableLink;
+        animatableLink.animatable = nextAnimatableLink.animatable;
+        animatableLink.nextAnimatableLink = nextAnimatableLink.nextAnimatableLink;
 
-      if (animatable.advanceTime(time) == false) {
-        _animatables[head] = null;
-        continue;
+        if (identical(nextAnimatableLink, lastAnimatableLink)) {
+          lastAnimatableLink = animatableLink;
+          if (identical(nextAnimatableLink, _lastAnimatableLink)) {
+            _lastAnimatableLink = animatableLink;
+          }
+        }
+      } else if (animatable.advanceTime(time) == false) {
+        animatableLink.animatable = null;
+      } else {
+        animatableLink = animatableLink.nextAnimatableLink;
       }
-
-      if (tail != head) {
-        _animatables[tail] = _animatables[head];
-        _animatables[head] = null;
-      }
-
-      tail++;
-    }
-
-    if (tail != animatablesCount) {
-
-      for(int head = animatablesCount; head < _animatablesCount; head++) {
-        _animatables[tail++] = _animatables[head];
-        _animatables[head] = null;
-      }
-
-      _animatablesCount = tail;
     }
 
     return true;
