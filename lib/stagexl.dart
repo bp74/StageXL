@@ -36,7 +36,6 @@ part 'src/engine/RenderState.dart';
 part 'src/events/Event.dart';
 part 'src/events/EventPhase.dart';
 part 'src/events/EventDispatcher.dart';
-part 'src/events/EventStreamIndex.dart';
 part 'src/events/EventStream.dart';
 part 'src/events/EventStreamProvider.dart';
 part 'src/events/EventStreamSubscription.dart';

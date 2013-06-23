@@ -1,7 +1,7 @@
 part of stagexl;
 
 class RenderLoop {
-  
+
   Juggler _juggler;
   List<Stage> _stages;
   num _renderTime;
@@ -13,7 +13,7 @@ class RenderLoop {
   RenderEvent _renderEvent;
 
   RenderLoop() {
-    
+
     _juggler = new Juggler();
     _stages = new List<Stage>();
     _renderTime = -1;
@@ -22,7 +22,7 @@ class RenderLoop {
     _enterFrameEvent = new EnterFrameEvent(0);
     _exitFrameEvent = new ExitFrameEvent();
     _renderEvent = new RenderEvent();
-    
+
     _requestAnimationFrameCallback = _onAnimationFrame;
     _requestAnimationFrame();
   }
@@ -33,15 +33,15 @@ class RenderLoop {
   //-------------------------------------------------------------------------------------------------
 
   _requestAnimationFrame() {
-    html.window.requestAnimationFrame(_requestAnimationFrameCallback); 
+    html.window.requestAnimationFrame(_requestAnimationFrameCallback);
   }
-  
+
   _onAnimationFrame(num currentTime) {
-    
+
     _requestAnimationFrame();
 
     currentTime = currentTime.toDouble();
-    
+
     if (_renderTime == -1) _renderTime = currentTime;
     if (_renderTime > currentTime) _renderTime = currentTime;
 
@@ -49,28 +49,28 @@ class RenderLoop {
     var deltaTimeSec = deltaTime / 1000.0;
     var currentTimeSec = currentTime / 1000.0;
     var invalidate = false;
-    
+
     if (deltaTime >= 1) {
       _renderTime = currentTime;
       _enterFrameEvent._passedTime = deltaTimeSec;
-      _EventStreamIndex.enterFrame._dispatchEvent(_enterFrameEvent);
-      
+      _enterFrameEventIndex.dispatchEvent(_enterFrameEvent);
+
       _juggler.advanceTime(deltaTimeSec);
 
       for(int i = 0; i < _stages.length; i++) {
         _stages[i].juggler.advanceTime(deltaTimeSec);
       }
-      
+
       if (_invalidate) {
         _invalidate = false;
-        _EventStreamIndex.render._dispatchEvent(_renderEvent);
+        _renderEventIndex.dispatchEvent(_renderEvent);
       }
-      
+
       for(int i = 0; i < _stages.length; i++) {
         _stages[i].materialize(currentTimeSec, deltaTimeSec);
       }
-      
-      _EventStreamIndex.exitFrame._dispatchEvent(_exitFrameEvent);
+
+      _exitFrameEventIndex.dispatchEvent(_exitFrameEvent);
     }
   }
 
@@ -80,17 +80,17 @@ class RenderLoop {
   void invalidate() {
     _invalidate = true;
   }
-  
+
   void addStage(Stage stage) {
-   
+
     if (stage.renderLoop != null) {
       stage.renderLoop.removeStage(stage);
     }
-    
+
     _stages.add(stage);
     stage._renderLoop = this;
   }
-  
+
   void removeStage(Stage stage) {
 
     if (stage.renderLoop == this) {
@@ -98,5 +98,5 @@ class RenderLoop {
       stage._renderLoop = null;
     }
   }
-  
+
 }
