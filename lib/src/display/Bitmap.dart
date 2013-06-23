@@ -1,22 +1,48 @@
 part of stagexl;
 
 class Bitmap extends DisplayObject {
-  
-  BitmapData bitmapData;
-  String pixelSnapping;
-  Rectangle clipRectangle;
 
-  Bitmap([this.bitmapData = null, this.pixelSnapping = "auto"]) {
-    clipRectangle = null;
+  BitmapData _bitmapData;
+  String _pixelSnapping;
+  Rectangle _clipRectangle;
+
+  Bitmap([BitmapData bitmapData = null, String pixelSnapping = "auto"]) {
+    this.bitmapData = bitmapData;
+    this.pixelSnapping = pixelSnapping;
+    _clipRectangle = null;
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  BitmapData get bitmapData => _bitmapData;
+  String get pixelSnapping => _pixelSnapping;
+  Rectangle get clipRectangle => _clipRectangle;
+
+  set bitmapData(BitmapData value) {
+    if (value == null) _bitmapData = null;
+    if (value is BitmapData) _bitmapData = value;
+  }
+
+  set pixelSnapping(String value) {
+    if (value is String) _pixelSnapping = value;
+  }
+
+  set clipRectangle(Rectangle value) {
+    if (value is Rectangle) _clipRectangle = value;
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
-    
-    int width = (bitmapData != null) ? bitmapData.width : 0;
-    int height = (bitmapData != null) ? bitmapData.height : 0;
+
+    var bitmapData = _bitmapData;
+    var width = 0, height = 0;
+
+    if (bitmapData != null) {
+      width = bitmapData.width;
+      height = bitmapData.height;
+    }
 
     return _getBoundsTransformedHelper(matrix, width, height, returnRectangle);
   }
@@ -24,19 +50,22 @@ class Bitmap extends DisplayObject {
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-    
-    if (bitmapData != null && localX >= 0.0 && localY >= 0.0 && localX < bitmapData.width && localY < bitmapData.height)
-      return this;
 
-    return null;
+    var bitmapData = _bitmapData;
+    if (bitmapData == null) return null;
+    if (localX < 0.0 || localY < 0) return null;
+    if (localX >= bitmapData.width || localY >= bitmapData.height) return null;
+
+    return this;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-    
+
+    var bitmapData = _bitmapData;
     if (bitmapData == null) return;
-    
+
     if (clipRectangle == null) {
       bitmapData.render(renderState);
     } else {

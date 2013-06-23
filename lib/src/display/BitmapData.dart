@@ -28,8 +28,8 @@ class BitmapData implements BitmapDrawable {
 
   BitmapData(int width, int height, [bool transparent = true, int fillColor = 0xFFFFFFFF, pixelRatio = 1.0]) {
 
-    _width = width.toInt();
-    _height = height.toInt();
+    _width = _ensureInt(width);
+    _height = _ensureInt(height);
     _transparent = transparent;
     _pixelRatio = pixelRatio.toDouble();
     _pixelRatioSource = _pixelRatio / _backingStorePixelRatio;
@@ -56,14 +56,14 @@ class BitmapData implements BitmapDrawable {
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
 
-    var imageWidth = imageElement.naturalWidth.toInt();
-    var imageHeight = imageElement.naturalHeight.toInt();
+    var imageWidth = _ensureInt(imageElement.naturalWidth);
+    var imageHeight = _ensureInt(imageElement.naturalHeight);
 
-    _width = (imageWidth / pixelRatio).round();
-    _height = (imageHeight / pixelRatio).round();
     _transparent = true;
-    _pixelRatio = pixelRatio.toDouble();
+    _pixelRatio = _ensureNum(pixelRatio);
     _pixelRatioSource = _pixelRatio;
+    _width = (imageWidth / _pixelRatio).round();
+    _height = (imageHeight / _pixelRatio).round();
 
     _renderMode = ((1.0 - _pixelRatioSource).abs() < 0.001) ? 0 : 1;
     _destinationX = 0;
