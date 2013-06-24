@@ -1,98 +1,66 @@
 part of stagexl;
 
-class ResourceManager {
+class ResourceManager extends EventDispatcher {
 
-  Map<String, ResourceManagerResource> _resources;
+  final Map<String, ResourceManagerResource> _resources = new Map<String, ResourceManagerResource>();
 
-  ResourceManager() {
-    _resources = new Map<String, ResourceManagerResource>();
-  }
+  static const EventStreamProvider<Event> progressEvent = const EventStreamProvider<Event>(Event.PROGRESS);
+  Stream<Event> get onProgress => ResourceManager.progressEvent.forTarget(this);
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
-  void _addResourceManagerResource(ResourceManagerResource resource) {
+  _addResource(String kind, String name, String url, Future loader) {
 
-    var kind = resource.kind;
-    var name = resource.name;
     var key = "$kind.$name";
 
-    if (_resources.containsKey(key))
+    if (_resources.containsKey(key)) {
       throw new StateError("ResourceManager already contains a resource called '$name'");
+    }
+
+    var resource = new ResourceManagerResource (kind, name, url, loader);
+    resource.complete.then((_) {
+      this.dispatchEvent(new Event(Event.PROGRESS));
+    });
 
     _resources[key] = resource;
   }
 
-  dynamic _getResourceManagerResource(String kind, String name) {
+  dynamic _getResource(String kind, String name) {
 
     var key = "$kind.$name";
 
-    if (_resources.containsKey(key) == false)
+    if (_resources.containsKey(key) == false) {
       throw new StateError("ResourceManager does not contains a resource called '$name'");
+    }
 
     return _resources[key];
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  void addBitmapData(String name, String url, [BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
-
-    var resource = new ResourceManagerResource("BitmapData", name, url);
-    resource._load(BitmapData.load(url, bitmapDataLoadOptions));
-
-    _addResourceManagerResource(resource);
-  }
-
-  void addSound(String name, String url, [SoundLoadOptions soundFileSupport = null]) {
-
-    var resource = new ResourceManagerResource("Sound", name, url);
-    resource._load(Sound.load(url, soundFileSupport));
-
-    _addResourceManagerResource(resource);
-  }
-
-  void addTextureAtlas(String name, String url, String textureAtlasFormat) {
-
-    var resource = new ResourceManagerResource("TextureAtlas", name, url);
-    resource._load(TextureAtlas.load(url, textureAtlasFormat));
-
-    _addResourceManagerResource(resource);
-  }
-
-  void addFlumpLibrary(String name, String url) {
-
-    var resource = new ResourceManagerResource("FlumpLibrary", name, url);
-    resource._load(FlumpLibrary.load(url));
-
-    _addResourceManagerResource(resource);
-  }
-
-  void addText(String name, String text) {
-
-    var resource = new ResourceManagerResource("Text", name, "");
-    resource._load(new Future.value(text));
-
-    _addResourceManagerResource(resource);
-  }
-
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   Future<ResourceManager> load() {
 
-    var loaders = this.pendingResources.map((r) => r._loader);
+    var futures = this.pendingResources.map((r) => r.complete);
 
-    return Future.wait(loaders).then((value) {
-
-      var errors = this.failedResources;
-      if (errors.length > 0)
-        throw new StateError("Failed to load ${errors.length} resource(s).");
-
-      return this;
+    return Future.wait(futures).then((value) {
+      var errors = this.failedResources.length;
+      if (errors > 0) {
+        throw new StateError("Failed to load $errors resource(s).");
+      } else {
+        return this;
+      }
     });
   }
 
+  //-----------------------------------------------------------------------------------------------
+
+  List<ResourceManagerResource> get finishedResources {
+    return _resources.values.where((r) => r.resource != null).toList();
+  }
+
   List<ResourceManagerResource> get pendingResources {
-    return _resources.values.where((r) => r.resource == null).toList();
+    return _resources.values.where((r) => r.resource == null && r.error == null).toList();
   }
 
   List<ResourceManagerResource> get failedResources {
@@ -103,34 +71,56 @@ class ResourceManager {
     return _resources.values.toList();
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+
+  void addBitmapData(String name, String url, [BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
+    _addResource("BitmapData", name, url, BitmapData.load(url, bitmapDataLoadOptions));
+  }
+
+  void addSound(String name, String url, [SoundLoadOptions soundFileSupport = null]) {
+    _addResource("Sound", name, url, Sound.load(url, soundFileSupport));
+  }
+
+  void addTextureAtlas(String name, String url, String textureAtlasFormat) {
+    _addResource("TextureAtlas", name, url, TextureAtlas.load(url, textureAtlasFormat));
+  }
+
+  void addFlumpLibrary(String name, String url) {
+    _addResource("FlumpLibrary", name, url, FlumpLibrary.load(url));
+  }
+
+  void addText(String name, String text) {
+    _addResource("Text", name, "", new Future.value(text));
+  }
+
+  //-----------------------------------------------------------------------------------------------
 
   BitmapData getBitmapData(String name) {
-    var value = _getResourceManagerResource("BitmapData", name).resource;
+    var value = _getResource("BitmapData", name).resource;
     if (value is! BitmapData) throw "dart2js_hint";
     return value;
   }
 
   Sound getSound(String name) {
-    var value = _getResourceManagerResource("Sound", name).resource;
+    var value = _getResource("Sound", name).resource;
     if (value is! Sound) throw "dart2js_hint";
     return value;
   }
 
   TextureAtlas getTextureAtlas(String name) {
-    var value = _getResourceManagerResource("TextureAtlas", name).resource;
+    var value = _getResource("TextureAtlas", name).resource;
     if (value is! TextureAtlas) throw "dart2js_hint";
     return value;
   }
 
   FlumpLibrary getFlumpLibrary(String name) {
-    var value = _getResourceManagerResource("FlumpLibrary", name).resource;
+    var value = _getResource("FlumpLibrary", name).resource;
     if (value is! FlumpLibrary) throw "dart2js_hint";
     return value;
   }
 
   String getText(String name) {
-    var value = _getResourceManagerResource("Text", name).resource;
+    var value = _getResource("Text", name).resource;
     if (value is! String) throw "dart2js_hint";
     return value;
   }
