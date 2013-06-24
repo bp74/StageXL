@@ -67,10 +67,10 @@ class Bitmap extends DisplayObject {
     var bitmapData = _bitmapData;
     if (bitmapData == null) return;
 
-    if (clipRectangle == null) {
+    if (_clipRectangle == null) {
       bitmapData.render(renderState);
     } else {
-      bitmapData.renderClipped(renderState, clipRectangle);
+      bitmapData.renderClipped(renderState, _clipRectangle);
     }
   }
 
