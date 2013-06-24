@@ -28,6 +28,7 @@ class Bitmap extends DisplayObject {
   }
 
   set clipRectangle(Rectangle value) {
+    if (value == null) _clipRectangle = null;
     if (value is Rectangle) _clipRectangle = value;
   }
 
