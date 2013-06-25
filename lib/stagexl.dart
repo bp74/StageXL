@@ -138,3 +138,11 @@ final num _backingStorePixelRatio = _dummyCanvasContext.backingStorePixelRatio =
 final num _devicePixelRatio = html.window.devicePixelRatio == null ?
     1.0 : html.window.devicePixelRatio;
 
+final bool _isMobile = (() {
+  var ua = html.window.navigator.userAgent.toLowerCase();
+  return ua.indexOf("iphone") >= 0 || ua.indexOf("ipad") >= 0 || ua.indexOf("ipod") >= 0 
+  || ua.indexOf("android") >= 0 || ua.indexOf("webos") >= 0 || ua.indexOf("windows phone") >= 0;
+})();
+
+final int _screenMax = html.window.screen == null ? 1024 : max(html.window.screen.width, html.window.screen.height); 
+final bool _autoHiDpi = _devicePixelRatio > 1.0 && (!_isMobile || _screenMax > 480); // only recent devices (> iPhone4) and hi-dpi desktops
