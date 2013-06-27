@@ -9,7 +9,7 @@ class TweenPropertyFactory {
   call(String property, num targetValue) {
     _addTweenProperty(property).to(targetValue);
   }
-  
+
   TweenProperty get x => _addTweenProperty("x");
   TweenProperty get y => _addTweenProperty("y");
   TweenProperty get scaleX => _addTweenProperty("scaleX");
@@ -20,7 +20,7 @@ class TweenPropertyFactory {
   TweenProperty get pivotY => _addTweenProperty("pivotY");
   TweenProperty get rotation => _addTweenProperty("rotation");
   TweenProperty get alpha => _addTweenProperty("alpha");
-  
+
   TweenProperty _addTweenProperty(String property) {
     var tweenProperty = new TweenProperty(property);
     this.tween._addTweenProperty(tweenProperty);
@@ -29,13 +29,13 @@ class TweenPropertyFactory {
 }
 
 class TweenProperty {
-  
+
   final String property;
   num startValue = double.NAN;
   num targetValue = double.NAN;
-  
+
   TweenProperty(this.property);
-  
+
   void to(num targetValue) {
     this.targetValue = targetValue.toDouble();
   }
@@ -44,20 +44,20 @@ class TweenProperty {
 
   num _getPropertyValue(DisplayObject displayObject) {
     switch(property) {
-      case 'x':        return displayObject.x; 
+      case 'x':        return displayObject.x;
       case 'y':        return displayObject.y;
       case 'pivotX':   return displayObject.pivotX;
       case 'pivotY':   return displayObject.pivotY;
       case 'scaleX':   return displayObject.scaleX;
       case 'scaleY':   return displayObject.scaleY;
-      case 'skewX':    return displayObject.skewX; 
-      case 'skewY':    return displayObject.skewY; 
-      case 'rotation': return displayObject.rotation; 
-      case 'alpha':    return displayObject.alpha; 
+      case 'skewX':    return displayObject.skewX;
+      case 'skewY':    return displayObject.skewY;
+      case 'rotation': return displayObject.rotation;
+      case 'alpha':    return displayObject.alpha;
       default:         return 0.0;
     }
   }
-  
+
   void _setPropertyValue(DisplayObject displayObject, num value) {
     switch(property) {
       case 'x':        displayObject.x = value; break;
@@ -67,7 +67,7 @@ class TweenProperty {
       case 'scaleX':   displayObject.scaleX = value; break;
       case 'scaleY':   displayObject.scaleY = value; break;
       case 'skewX':    displayObject.skewX = value; break;
-      case 'skewY':    displayObject.skewY = value; break;            
+      case 'skewY':    displayObject.skewY = value; break;
       case 'rotation': displayObject.rotation = value; break;
       case 'alpha':    displayObject.alpha = value; break;
     }
@@ -89,27 +89,27 @@ class TweenProperty {
  **/
 
 class Tween implements Animatable {
-  
+
   final DisplayObject _displayObject;
   final EaseFunction _transitionFunction;
   final List<TweenProperty> _tweenPropertyList = new List<TweenProperty>();
-  
+
   Function _onStart;
   Function _onUpdate;
   Function _onComplete;
-  
-  TweenPropertyFactory _tweenPropertyFactory;  
+
+  TweenPropertyFactory _tweenPropertyFactory;
   num _totalTime;
   num _currentTime;
   num _delay;
   bool _roundToInt;
   bool _started;
 
-  Tween(DisplayObject displayObject, num time, [EaseFunction transitionFunction]) : 
-  
+  Tween(DisplayObject displayObject, num time, [EaseFunction transitionFunction = TransitionFunction.linear]) :
+
     _displayObject = displayObject,
-    _transitionFunction = (?transitionFunction) ? transitionFunction : TransitionFunction.linear {
-    
+    _transitionFunction = transitionFunction {
+
     _tweenPropertyFactory = new TweenPropertyFactory(this);
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
@@ -124,12 +124,12 @@ class Tween implements Animatable {
   TweenPropertyFactory get animate => _tweenPropertyFactory;
 
   void _addTweenProperty(TweenProperty tweenProperty) {
-    
+
     if (_displayObject != null && _started == false) {
       _tweenPropertyList.add(tweenProperty);
     }
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   void complete() {
@@ -141,9 +141,9 @@ class Tween implements Animatable {
   //-------------------------------------------------------------------------------------------------
 
   bool advanceTime(num time) {
-    
+
     if (_currentTime < _totalTime || _started == false) {
-      
+
       _currentTime = _currentTime + time;
 
       if (_currentTime > _totalTime) {
@@ -151,9 +151,9 @@ class Tween implements Animatable {
       }
 
       if (_currentTime >= 0.0) {
-       
-        // set startValues if this is the first start 
-        
+
+        // set startValues if this is the first start
+
         if (_started == false) {
           _started = true;
 
@@ -167,7 +167,7 @@ class Tween implements Animatable {
         }
 
         // calculate transition ratio and value
-        
+
         num ratio = _currentTime / _totalTime;
         num transition = _transitionFunction(ratio).toDouble();
 
@@ -203,7 +203,7 @@ class Tween implements Animatable {
   bool get isComplete => _currentTime >= _totalTime;
 
   set delay(num value) {
-    
+
     if (_started == false)
       _currentTime = _currentTime + _delay - value;
 
