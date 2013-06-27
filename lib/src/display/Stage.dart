@@ -53,7 +53,8 @@ class _Touch {
 
 class Stage extends DisplayObjectContainer {
 
-  static bool autoHiDpi = true;
+  static bool autoHiDpi = _autoHiDpi;
+  static bool get isMobile => _isMobile;
   static num get devicePixelRatio => _devicePixelRatio;
 
   CanvasElement _canvas;
