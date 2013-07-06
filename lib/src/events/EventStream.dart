@@ -13,13 +13,17 @@ class _EventStream<T extends Event> extends Stream<T> {
   //-----------------------------------------------------------------------------------------------
 
   bool get isBroadcast => true;
-  Stream<T> asBroadcastStream() => this;
+
+  Stream<T> asBroadcastStream({
+    void onListen(StreamSubscription subscription),
+    void onCancel(StreamSubscription subscription)}) => this;
 
   bool get _hasSubscriptions => _subscriptions.length > 0;
 
   //-----------------------------------------------------------------------------------------------
 
-  StreamSubscription<T> listen(void onData(T event), {void onError(error), void onDone(), bool cancelOnError:false}) {
+  StreamSubscription<T> listen(void onData(T event), {
+    void onError(error), void onDone(), bool cancelOnError:false}) {
 
     var eventStreamSubscription = new _EventStreamSubscription<T>(this, onData);
     _subscriptions.add(eventStreamSubscription);
