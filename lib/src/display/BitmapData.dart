@@ -135,7 +135,7 @@ class BitmapData implements BitmapDrawable {
     onErrorSubscription = imageElement.onError.listen((event) {
       onLoadSubscription.cancel();
       onErrorSubscription.cancel();
-      completer.completeError(new StateError("Error loading image."));
+      completer.completeError(new StateError("Failed to load image."));
     });
 
     if (bitmapDataLoadOptions.webp == false) {
