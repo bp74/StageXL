@@ -1,11 +1,11 @@
 part of stagexl;
 
 class WebAudioApiSound extends Sound {
-  
+
   AudioBuffer _buffer;
 
   WebAudioApiSound() {
-    
+
     if (SoundMixer._audioContext == null)
       throw new UnsupportedError("This browser does not support Web Audio API.");
   }
@@ -21,16 +21,16 @@ class WebAudioApiSound extends Sound {
     var loadCompleter = new Completer<Sound>();
     var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
     var audioContext = SoundMixer._audioContext;
-   
+
     if (audioUrls.length == 0) {
       return MockSound.load(url, soundLoadOptions);
     }
-    
+
     audioRequestFinished(request) {
-      audioContext.decodeAudioData(request.response, (AudioBuffer buffer) {
+      audioContext.decodeAudioData(request.response).then((AudioBuffer buffer) {
         sound._buffer = buffer;
         loadCompleter.complete(sound);
-      }, (error) {
+      }).catchError((error) {
         if (soundLoadOptions.ignoreErrors) {
           MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
         } else {
@@ -38,7 +38,7 @@ class WebAudioApiSound extends Sound {
         }
       });
     }
-    
+
     audioRequestNext(error) {
       if (audioUrls.length > 0) {
         HttpRequest.request(audioUrls.removeAt(0), responseType: 'arraybuffer')
@@ -54,7 +54,7 @@ class WebAudioApiSound extends Sound {
     }
 
     audioRequestNext(null);
-    
+
     return loadCompleter.future;
   }
 
@@ -62,12 +62,12 @@ class WebAudioApiSound extends Sound {
   //-------------------------------------------------------------------------------------------------
 
   num get length {
-    
+
     return _buffer.duration;
   }
 
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-    
+
     if (soundTransform == null)
       soundTransform = new SoundTransform();
 
