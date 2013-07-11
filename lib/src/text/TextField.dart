@@ -238,6 +238,7 @@ class TextField extends InteractiveObject {
     var validLine = '';
     var lineWidth = 0;
     var textFormatSize = _defaultTextFormat.size.toDouble();
+    var textFormatLeftMargin = _defaultTextFormat.leftMargin.toDouble();
     var textFormatTopMargin = _defaultTextFormat.topMargin.toDouble();
     var textFormatAlign = _defaultTextFormat.align.toString();
     var fontStyleMetricsAscent = fontStyleMetrics.ascent.toDouble();
@@ -306,7 +307,7 @@ class TextField extends InteractiveObject {
           offsetX = (_width - width);
           break;
         default:
-          offsetX = 0;
+          offsetX = textFormatLeftMargin;
       }
 
       textLineMetrics._x = offsetX;
