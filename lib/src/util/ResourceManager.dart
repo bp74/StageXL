@@ -90,10 +90,6 @@ class ResourceManager extends EventDispatcher {
     _addResource("TextureAtlas", name, url, TextureAtlas.load(url, textureAtlasFormat));
   }
 
-  void addFlumpLibrary(String name, String url) {
-    _addResource("FlumpLibrary", name, url, FlumpLibrary.load(url));
-  }
-
   void addTextFile(String name, String url) {
     _addResource("TextFile", name, url,
         HttpRequest.getString(url).then((text) => text, onError: (error) {
@@ -103,6 +99,10 @@ class ResourceManager extends EventDispatcher {
 
   void addText(String name, String text) {
     _addResource("Text", name, "", new Future.value(text));
+  }
+
+  void addCustomObject(String name, Future loader) {
+    _addResource("CustomObject", name, "", loader);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -125,12 +125,6 @@ class ResourceManager extends EventDispatcher {
     return value;
   }
 
-  FlumpLibrary getFlumpLibrary(String name) {
-    var value = _getResourceValue("FlumpLibrary", name);
-    if (value is! FlumpLibrary) throw "dart2js_hint";
-    return value;
-  }
-
   String getTextFile(String name) {
     var value = _getResourceValue("TextFile", name);
     if (value is! String) throw "dart2js_hint";
@@ -141,6 +135,10 @@ class ResourceManager extends EventDispatcher {
     var value = _getResourceValue("Text", name);
     if (value is! String) throw "dart2js_hint";
     return value;
+  }
+
+  dynamic getCustomObject(String name) {
+    return _getResourceValue("CustomObject", name);
   }
 
 }
