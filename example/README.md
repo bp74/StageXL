@@ -16,7 +16,7 @@ Use Sprites to composite all objects on the screen.
 
 ##example04 - SimpleButton, TextField, Sound and Events
 
-More basic classes from the Flash API. 
+More basic classes from the Flash API.
 
 ##example05 - Animations with Tweens
 
@@ -46,8 +46,13 @@ With filters you can change the appearance of Bitmaps.
 
 Work with Touch Events.
 
-##example12 - Flump
+##example12 - TextField input mode.
 
-Flash timeline animations converted with &apos;Flump&apos;
-http://threerings.github.com/flump/
+Input text with TextField.
+
+##example13 - Movieclip
+
+Export Movieclips from Flash Professional.
+
+
 

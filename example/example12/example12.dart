@@ -5,32 +5,36 @@ import 'dart:math';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
-Stage stage;
-RenderLoop renderLoop;
-
 void main()
 {
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
 
-  stage = new Stage("stage", html.document.query('#stage'));
+  var canvas = html.document.query('#stage');
+  var stage = new Stage("stage", canvas);
 
-  renderLoop = new RenderLoop();
+  var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
   //------------------------------------------------------------------
-  // load a Flump object and show it
-  //------------------------------------------------------------------
 
-  // ToDo: The Flump runtime has moved to the "StageXL_Flump" library.
+  canvas.focus();
 
   var textField = new TextField();
-  textField.defaultTextFormat = new TextFormat("Arial", 20, Color.Red, bold:true);
-  textField.text = "The Flump runtime has moved to the stagexl_flump library";
-  textField.width = 700;
-  textField.height= 100;
+  textField.defaultTextFormat = new TextFormat("Helvetica,Arial", 20, Color.Black);
+  textField.text = "The Dart language is familiar and easy to learn. "
+"It's class based and object oriented, without being dogmatic.\n\n";
+  textField.type = TextFieldType.INPUT;
+  textField.width = 400;
+  textField.height= 300;
+  textField.wordWrap = true;
+  textField.multiline = true;
+  textField.background = true;
+  textField.backgroundColor = Color.Beige;
   textField.x = 20;
   textField.y = 20;
+
   stage.addChild(textField);
+  stage.focus = textField;
 }
