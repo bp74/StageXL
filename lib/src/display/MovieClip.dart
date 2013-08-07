@@ -341,7 +341,7 @@ class MovieClip extends Sprite
                 if (target is TextField) {
                   var field = target as TextField;
                   if (v is String) field.textColor = int.parse(v.toString());
-                  else field.textColor = dv.toInt();
+                  else if (v != null) field.textColor = dv.toInt();
                 }
                 break;
             }
@@ -1178,7 +1178,7 @@ class TimelineTween
             if (_target is TextField) {
               var field = _target as TextField;
               if (v is String) field.textColor = int.parse(v.toString());
-              else field.textColor = dv.toInt();
+              else if (v != null) field.textColor = dv.toInt();
             }
             break;
         }
