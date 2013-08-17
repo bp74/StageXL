@@ -9,8 +9,8 @@ Stage stage;
 RenderLoop renderLoop;
 ResourceManager resourceManager;
 
-void main()
-{
+void main() {
+
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
@@ -24,18 +24,18 @@ void main()
   // prepare different Masks for later use
   //------------------------------------------------------------------
 
-  List<Point> starPath = new List<Point>();
+  var starPath = new List<Point>();
 
-  for(int i = 0; i < 6; i++) {
-    num a1 = PI * (i * 60.0) / 180.0;
-    num a2 = PI * (i * 60.0 + 30.0) / 180.0;
+  for(var i = 0; i < 6; i++) {
+    var a1 = PI * (i * 60.0) / 180.0;
+    var a2 = PI * (i * 60.0 + 30.0) / 180.0;
     starPath.add(new Point(400.0 + 200.0 * cos(a1), 350.0 + 200.0 * sin(a1)));
     starPath.add(new Point(400.0 + 100.0 * cos(a2), 350.0 + 100.0 * sin(a2)));
   }
 
-  Mask rectangleMask = new Mask.rectangle(100.0, 200.0, 600.0, 300.0);
-  Mask circleMask = new Mask.circle(400.0, 350.0, 200.0);
-  Mask customMask = new Mask.custom(starPath);
+  var rectangleMask = new Mask.rectangle(100.0, 200.0, 600.0, 300.0);
+  var circleMask = new Mask.circle(400.0, 350.0, 200.0);
+  var customMask = new Mask.custom(starPath);
 
   //------------------------------------------------------------------
   // Use the Resource class to load some Bitmaps
@@ -53,31 +53,29 @@ void main()
   // Draw buttons for different masks and start animation
   //------------------------------------------------------------------
 
-  resourceManager.load().then((result)
-  {
-    Sprite animation = getAnimation();
+  resourceManager.load().then((result) {
+
+    var animation = getAnimation();
     animation.pivotX = 400;
     animation.pivotY = 350;
     animation.x = 400;
     animation.y = 350;
     stage.addChild(animation);
 
-    List<Sprite> buttons = [
+    var buttons = [
       getButton("None", () => animation.mask = null),
       getButton("Rectangle", () => animation.mask = rectangleMask),
       getButton("Circle", () => animation.mask = circleMask),
       getButton("Custom", () => animation.mask = customMask),
       getButton("spin", () {
-        var rotate = new Tween(animation, 2.0, TransitionFunction.easeInOutBack)
+        renderLoop.juggler.tween(animation, 2.0, TransitionFunction.easeInOutBack)
           ..animate.rotation.to(PI * 4.0)
           ..onComplete = () => animation.rotation = 0.0;
-        
-        renderLoop.juggler.add(rotate);
       })
     ];
 
-    for(int b = 0; b < buttons.length; b++) {
-      Sprite button = buttons[b];
+    for(var b = 0; b < buttons.length; b++) {
+      var button = buttons[b];
       stage.addChild(button);
 
       button.x = (b < 4 ) ? 10 + b * 130 : 645;
@@ -89,44 +87,43 @@ void main()
   });
 }
 
-Sprite getAnimation()
-{
-  Sprite sprite = new Sprite();
-  Random random = new Random();
+Sprite getAnimation() {
 
-  for(int i = 0; i < 150; i++) {
-    int f = 1 + random.nextInt(3);
-    BitmapData bitmapData = resourceManager.getBitmapData("flower$f");
-    Bitmap bitmap = new Bitmap(bitmapData);
+  var sprite = new Sprite();
+  var random = new Random();
+
+  for(var i = 0; i < 150; i++) {
+    var f = 1 + random.nextInt(3);
+    var bitmapData = resourceManager.getBitmapData("flower$f");
+    var bitmap = new Bitmap(bitmapData);
     bitmap.pivotX = 64;
     bitmap.pivotY = 64;
     bitmap.x = 64.0 + random.nextDouble() * 672.0;
     bitmap.y = 164.0 + random.nextDouble() * 372.0;
     sprite.addChild(bitmap);
 
-    var tween = new Tween(bitmap, 180.0, TransitionFunction.linear)
+    renderLoop.juggler.tween(bitmap, 180.0, TransitionFunction.linear)
       ..animate.rotation.to(PI * 20.0);
-    
-    renderLoop.juggler.add(tween);
   }
 
   return sprite;
 }
 
 
-Sprite getButton(String text, Function clickHandler)
-{
-  Sprite button = new Sprite();
+Sprite getButton(String text, Function clickHandler) {
 
-  Bitmap buttonUp = new Bitmap(resourceManager.getBitmapData("buttonUp"));
-  Bitmap buttonOver = new Bitmap(resourceManager.getBitmapData("buttonOver"));
-  Bitmap buttonDown = new Bitmap(resourceManager.getBitmapData("buttonDown"));
+  var container = new Sprite();
 
-  SimpleButton simpleButton = new SimpleButton(buttonUp, buttonOver, buttonDown, buttonOver);
+  var buttonUp = new Bitmap(resourceManager.getBitmapData("buttonUp"));
+  var buttonOver = new Bitmap(resourceManager.getBitmapData("buttonOver"));
+  var buttonDown = new Bitmap(resourceManager.getBitmapData("buttonDown"));
+
+  var simpleButton = new SimpleButton(buttonUp, buttonOver, buttonDown, buttonOver);
   simpleButton.x = 20;
   simpleButton.y = 20;
+  simpleButton.addTo(container);
 
-  TextField textField = new TextField();
+  var textField = new TextField();
   textField.defaultTextFormat = new TextFormat("Verdana", 30, 0xFFFFFF, align:TextFormatAlign.CENTER);
   textField.width = simpleButton.width;
   textField.height = 40;
@@ -134,13 +131,11 @@ Sprite getButton(String text, Function clickHandler)
   textField.x = simpleButton.x;
   textField.y = simpleButton.y + 10;
   textField.mouseEnabled = false;
+  textField.addTo(container);
 
-  button.addChild(simpleButton);
-  button.addChild(textField);
+  simpleButton.onMouseClick.listen((me) => clickHandler());
 
-  simpleButton.addEventListener(MouseEvent.CLICK, (me) => clickHandler());
-
-  return button;
+  return container;
 }
 
 

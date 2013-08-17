@@ -1,25 +1,22 @@
 library example01;
 
-import 'dart:async';
-import 'dart:math';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
-void main()
-{
+void main() {
+
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
 
   var canvas = html.document.query('#stage');
   var stage = new Stage("stage", canvas);
-
   var renderLoop = new RenderLoop();
+
   renderLoop.addStage(stage);
+  canvas.focus();
 
   //------------------------------------------------------------------
-
-  canvas.focus();
 
   var textField = new TextField();
   textField.defaultTextFormat = new TextFormat("Helvetica,Arial", 20, Color.Black);

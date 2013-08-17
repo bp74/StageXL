@@ -1,7 +1,5 @@
 library example09;
 
-import 'dart:async';
-import 'dart:math';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
@@ -10,8 +8,7 @@ Stage stageForeground;
 RenderLoop renderLoop;
 ResourceManager resourceManager;
 
-void main()
-{
+void main() {
 
   //------------------------------------------------------------------
   // Initialize the Display List

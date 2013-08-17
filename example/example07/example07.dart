@@ -13,8 +13,8 @@ Stage stage;
 RenderLoop renderLoop;
 ResourceManager resourceManager;
 
-void main()
-{
+void main() {
+
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
@@ -27,9 +27,9 @@ void main()
   //------------------------------------------------------------------
   // Load a TextureAtlas
   //------------------------------------------------------------------
-  
+
   BitmapData.defaultLoadOptions.webp = true;
-  
+
   resourceManager = new ResourceManager();
   resourceManager.addTextureAtlas("ta1", "images/walk.json", TextureAtlasFormat.JSONARRAY);
   resourceManager.load().then((result) => startAnimation());
@@ -37,22 +37,22 @@ void main()
 
 //---------------------------------------------------------------------------------------
 
-void startAnimation()
-{
-  Random random = new Random();
+void startAnimation() {
+
+  var random = new Random();
 
   //------------------------------------------------------------------
   // Get all the "walk" bitmapDatas in the texture atlas.
   //------------------------------------------------------------------
 
-  TextureAtlas textureAtlas = resourceManager.getTextureAtlas("ta1");
-  List<BitmapData> bitmapDatas = textureAtlas.getBitmapDatas("walk");
+  var textureAtlas = resourceManager.getTextureAtlas("ta1");
+  var bitmapDatas = textureAtlas.getBitmapDatas("walk");
 
   //------------------------------------------------------------------
   // Create a flip book with the list of bitmapDatas.
   //------------------------------------------------------------------
 
-  num rnd = random.nextDouble();
+  var rnd = random.nextDouble();
 
   var flipBook = new FlipBook(bitmapDatas, 30);
   flipBook.x = -128;
@@ -67,21 +67,21 @@ void startAnimation()
   // Let's add a tween so the man walks from the left to the right.
   //------------------------------------------------------------------
 
-  Tween tween = new Tween(flipBook, 5.0 + (1.0 - rnd) * 5.0, TransitionFunction.linear)
+  var tween = new Tween(flipBook, 5.0 + (1.0 - rnd) * 5.0, TransitionFunction.linear)
     ..animate.x.to(800.0)
     ..onComplete = () {
-      renderLoop.juggler.remove(flipBook);
+      stage.juggler.remove(flipBook);
       stage.removeChild(flipBook);
     };
 
-  renderLoop.juggler.add(flipBook);
-  renderLoop.juggler.add(tween);
+  stage.juggler.add(flipBook);
+  stage.juggler.add(tween);
 
   //------------------------------------------------------------------
   // after 0.3 seconds the next animation should start
   //------------------------------------------------------------------
 
-  renderLoop.juggler.delayCall(startAnimation, 0.3);
+  stage.juggler.delayCall(startAnimation, 0.3);
 }
 
 

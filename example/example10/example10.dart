@@ -9,8 +9,8 @@ Stage stage;
 RenderLoop renderLoop;
 ResourceManager resourceManager;
 
-void main()
-{
+void main() {
+
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------

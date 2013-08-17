@@ -1,7 +1,6 @@
 library example03;
 
 import 'dart:async';
-import 'dart:math';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
@@ -12,7 +11,7 @@ RenderLoop renderLoop;
 ResourceManager resourceManager;
 
 void main() {
-  
+
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
@@ -27,7 +26,7 @@ void main() {
   //------------------------------------------------------------------
 
   BitmapData.defaultLoadOptions.webp = true;
-  
+
   resourceManager = new ResourceManager()
     ..addBitmapData("house", "../common/images/House.png")
     ..addBitmapData("sun", "../common/images/Sun.png")
@@ -37,7 +36,7 @@ void main() {
 }
 
 void drawWorlds() {
-    
+
   // Place the World on the stage
 
   var world = new World(resourceManager);
@@ -46,12 +45,11 @@ void drawWorlds() {
   world.filters = [new ColorMatrixFilter.grayscale(), new GlowFilter(Color.Magenta, 1.0, 20, 20)];
   world.applyCache(-10, -10, 185, 190);
   world.addTo(stage);
-  
+
   // Only one World? We want many worlds ....
-  
-  num posX = 20;
-  for(int i = 0; i < 5; i++) {
-    
+
+  for(var i = 0, posX = 20; i < 5; i++) {
+
     var otherWorld = new World(resourceManager);
     otherWorld.scaleX = 1.0 - i * 0.1;
     otherWorld.scaleY = 1.0 - i * 0.1;

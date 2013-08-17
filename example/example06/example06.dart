@@ -1,39 +1,36 @@
 library example06;
 
-import 'dart:async';
-import 'dart:math';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
-void main()
-{
+void main() {
+
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
 
-  Stage stage = new Stage("myStage", html.document.query('#stage'));
-
-  RenderLoop renderLoop = new RenderLoop();
+  var stage = new Stage("myStage", html.document.query('#stage'));
+  var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
   //------------------------------------------------------------------
   // Draw a cloud with vectors
   //------------------------------------------------------------------
 
-  var gradient = new GraphicsGradient.linear(230, 0, 370, 200);
-  gradient.addColorStop(0, 0xFF8ED6FF);
-  gradient.addColorStop(1, 0xFF004CB3);
+  var gradient = new GraphicsGradient.linear(230, 0, 370, 200)
+    ..addColorStop(0, 0xFF8ED6FF)
+    ..addColorStop(1, 0xFF004CB3);
 
-  Sprite sprite = new Sprite();
-  sprite.useHandCursor = true;
-  stage.addChild(sprite);
+  var sprite = new Sprite()
+    ..useHandCursor = true
+    ..addTo(stage);
 
-  Shape shape = new Shape();
-  shape.pivotX = 278;
-  shape.pivotY = 90;
-  shape.x = 400;
-  shape.y = 300;
-  sprite.addChild(shape);
+  var shape = new Shape()
+    ..x = 400
+    ..y = 300
+    ..pivotX = 278
+    ..pivotY = 90
+    ..addTo(sprite);
 
   shape.graphics
     ..beginPath()
@@ -52,16 +49,13 @@ void main()
   // Add some animation
   //------------------------------------------------------------------
 
-  Tween tween1 = new Tween(shape, 3.0, TransitionFunction.easeInOutBack)
+  stage.juggler.tween(shape, 3.0, TransitionFunction.easeInOutBack)
     ..animate.scaleX.to(2.5)
     ..animate.scaleY.to(2.5)
     ..delay = 1.0;
 
-  Tween tween2 = new Tween(shape, 3.0, TransitionFunction.easeInOutBack)
+  stage.juggler.tween(shape, 3.0, TransitionFunction.easeInOutBack)
     ..animate.scaleX.to(1.0)
     ..animate.scaleY.to(1.0)
     ..delay = 5.0;
-
-  renderLoop.juggler.add(tween1);
-  renderLoop.juggler.add(tween2);
 }

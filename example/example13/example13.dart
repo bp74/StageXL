@@ -12,29 +12,28 @@ void main() {
   // The RenderLoop controls the flow of the program
   var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
-  
+
   // Load one image
   var resourceManager = new ResourceManager()
-  ..addBitmapData("astronaut", "../common/images/Astronaut.jpg");
+    ..addBitmapData("astronaut", "../common/images/Astronaut.jpg");
 
-  resourceManager.load().then((result)
-  {
-    Bitmap image = new Bitmap(resourceManager.getBitmapData("astronaut"));
-    
+  resourceManager.load().then((result) {
+    var image = new Bitmap(resourceManager.getBitmapData("astronaut"));
+    var astronaut = new Astronaut(image);
+
     // Create the MovieClip animation
-    stage.addChild(new Astronaut(image));
+    stage.addChild(astronaut);
   });
 }
 
-class Astronaut extends MovieClip
-{
+class Astronaut extends MovieClip {
+
   Bitmap image;
-  
-  Astronaut(this.image)
-  : super(null, 0, true/*loop*/, null) {
-    
+
+  Astronaut(this.image) : super(null, 0, true/*loop*/, null) {
+
     image.off = true; // disabled
-    
+
     // build the timeline animation
     timeline.addTween(TimelineTween.get(image)
         .wait(20) // hidden during 20 frames
@@ -44,9 +43,9 @@ class Astronaut extends MovieClip
         .to({"x":0, "rotation":0}, 5) // animate during 5 frames
         .to({"alpha":0}, 20) // fade out during 20 frames
         );
-    
+
     // Note: using the timeline overrides the behavior of addChild/removeChild
-    // and everything must be added through timeline.addTween. 
+    // and everything must be added through timeline.addTween.
   }
 }
 

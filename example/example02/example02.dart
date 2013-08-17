@@ -1,19 +1,17 @@
 library example02;
 
 import 'dart:async';
-import 'dart:math';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
-void main()
-{
+void main() {
+
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
 
-  Stage stage = new Stage("myStage", html.document.query('#stage'));
-
-  RenderLoop renderLoop = new RenderLoop();
+  var stage = new Stage("myStage", html.document.query('#stage'));
+  var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
   //------------------------------------------------------------------
@@ -28,19 +26,19 @@ void main()
     ..addBitmapData("sun", "../common/images/Sun.png")
     ..addBitmapData("tree", "../common/images/Tree.png");
 
-  resourceManager.load().then((result)
-  {
-    Bitmap house = new Bitmap(resourceManager.getBitmapData("house"));
+  resourceManager.load().then((result) {
+
+    var house = new Bitmap(resourceManager.getBitmapData("house"));
     house.x = 200;
     house.y = 200;
     stage.addChild(house);
 
-    Bitmap tree = new Bitmap(resourceManager.getBitmapData("tree"));
+    var tree = new Bitmap(resourceManager.getBitmapData("tree"));
     tree.x = 330;
     tree.y = 200;
     stage.addChild(tree);
 
-    Bitmap sun = new Bitmap(resourceManager.getBitmapData("sun"));
+    var sun = new Bitmap(resourceManager.getBitmapData("sun"));
     sun.x = 250;
     sun.y = 50;
     stage.addChild(sun);

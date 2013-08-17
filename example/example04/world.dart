@@ -1,12 +1,12 @@
 part of example04;
 
-class World extends Sprite
-{
-  World(ResourceManager resourceManager)
-  {
+class World extends Sprite {
+
+  World(ResourceManager resourceManager) {
+
     // the sun ...
 
-    Bitmap sun = new Bitmap(resourceManager.getBitmapData("sun"));
+    var sun = new Bitmap(resourceManager.getBitmapData("sun"));
     sun.x = 100;
     sun.y = 0;
     sun.scaleX = 0.5;
@@ -15,7 +15,7 @@ class World extends Sprite
 
     // and a tree ...
 
-    Bitmap tree = new Bitmap(resourceManager.getBitmapData("tree"));
+    var tree = new Bitmap(resourceManager.getBitmapData("tree"));
     tree.x = 0;
     tree.y = 30;
     tree.scaleX = 0.7;
@@ -24,7 +24,7 @@ class World extends Sprite
 
     // and a house ...
 
-    Bitmap house = new Bitmap(resourceManager.getBitmapData("house"));
+    var house = new Bitmap(resourceManager.getBitmapData("house"));
     house.x = 30;
     house.y = 40;
     this.addChild(house);

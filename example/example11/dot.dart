@@ -1,11 +1,11 @@
 part of example11;
 
-class Dot extends Sprite
-{
+class Dot extends Sprite {
+
   int touchPointID;
 
-  Dot(int touchPointID, bool primaryTouchPoint)
-  {
+  Dot(int touchPointID, bool primaryTouchPoint) {
+
     this.touchPointID = touchPointID;
 
     var shape = new Shape();
@@ -17,7 +17,7 @@ class Dot extends Sprite
     addChild(shape);
 
     var textField = new TextField();
-    textField.defaultTextFormat = new TextFormat('Helvetica,Arial', 18, Color.Black, bold:true, align:TextFormatAlign.CENTER);
+    textField.defaultTextFormat = new TextFormat('Helvetica,Arial', 18, Color.Black,bold:true, align:TextFormatAlign.CENTER);
     textField.width = 80;
     textField.height = 20;
     textField.x = -40;

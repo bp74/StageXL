@@ -1,21 +1,19 @@
 library example04;
 
 import 'dart:async';
-import 'dart:math';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
 part 'world.dart';
 
-void main()
-{
+void main() {
+
   //------------------------------------------------------------------
   // Initialize the Display List
   //------------------------------------------------------------------
 
-  Stage stage = new Stage("myStage", html.document.query('#stage'));
-
-  RenderLoop renderLoop = new RenderLoop();
+  var stage = new Stage("myStage", html.document.query('#stage'));
+  var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
   //------------------------------------------------------------------
@@ -31,15 +29,15 @@ void main()
     ..addBitmapData("buttonDown", "../common/images/ButtonDown.png")
     ..addSound("plop", "../common/sounds/Plop.mp3");
 
-  resourceManager.load().then((result)
-  {
+  resourceManager.load().then((result) {
+
     // Create a SimpleButton
 
-    Bitmap buttonUp = new Bitmap(resourceManager.getBitmapData("buttonUp"));
-    Bitmap buttonOver = new Bitmap(resourceManager.getBitmapData("buttonOver"));
-    Bitmap buttonDown = new Bitmap(resourceManager.getBitmapData("buttonDown"));
+    var buttonUp = new Bitmap(resourceManager.getBitmapData("buttonUp"));
+    var buttonOver = new Bitmap(resourceManager.getBitmapData("buttonOver"));
+    var buttonDown = new Bitmap(resourceManager.getBitmapData("buttonDown"));
 
-    SimpleButton simpleButton = new SimpleButton(buttonUp, buttonOver, buttonDown, buttonOver);
+    var simpleButton = new SimpleButton(buttonUp, buttonOver, buttonDown, buttonOver);
     simpleButton.x = 20;
     simpleButton.y = 20;
 
@@ -47,8 +45,11 @@ void main()
 
     // Overlay the button with a TextField
 
-    TextField textField = new TextField();
-    textField.defaultTextFormat = new TextFormat("Verdana", 30, 0xFFFFFF, bold:true, align:TextFormatAlign.CENTER);
+    var textFormat = new TextFormat("Verdana", 30, 0xFFFFFF, bold:true);
+    textFormat.align = TextFormatAlign.CENTER;
+
+    var textField = new TextField();
+    textField.defaultTextFormat = textFormat;
     textField.width = simpleButton.width;
     textField.height = 40;
     textField.text = "Click me";
@@ -60,19 +61,19 @@ void main()
 
     // Add an event listener to the SimpleButton
 
-    int clickCount = 0;
+    var clickCount = 0;
 
-    simpleButton.addEventListener(MouseEvent.CLICK, (MouseEvent me)
-    {
+    simpleButton.addEventListener(MouseEvent.CLICK, (MouseEvent me) {
+
       // play plop sound
 
-      SoundTransform soundTransform = new SoundTransform(1);
-      Sound sound = resourceManager.getSound("plop");
-      SoundChannel soundChannel = sound.play(false, soundTransform);
+      var soundTransform = new SoundTransform(1);
+      var sound = resourceManager.getSound("plop");
+      var soundChannel = sound.play(false, soundTransform);
 
       // add a new world to the stage
 
-      World world = new World(resourceManager);
+      var world = new World(resourceManager);
       world.x = 20 + clickCount * 40;
       world.y = 100 + clickCount * 20;
       stage.addChild(world);
