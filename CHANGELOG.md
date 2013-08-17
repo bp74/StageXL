@@ -3,6 +3,13 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.8.4
+  * Fixed TextFieldAutoSize feature.
+  * Fixed TextFormat margins.
+  * TextField.backgroundColor now matches Flash's default.
+  * Moved Flump runtime to separate package.
+  * Moved Particle Emitter runtime to separate package.
+
 #### Pub version 0.8.3
   * Added support for text files in ResourceManager.
   * Follow the latest Dart API changes.
