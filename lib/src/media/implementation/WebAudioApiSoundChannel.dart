@@ -2,29 +2,26 @@ part of stagexl;
 
 class WebAudioApiSoundChannel extends SoundChannel {
 
-  WebAudioApiSound _webAudioApiSound;
   SoundTransform _soundTransform;
   bool _loop;
 
-  GainNode _gainNode;
   AudioBufferSourceNode _sourceNode;
+  WebAudioApiSound _webAudioApiSound;
+  WebAudioApiMixer _webAudioApiMixer;
 
   WebAudioApiSoundChannel(WebAudioApiSound webAudioApiSound, bool loop, SoundTransform soundTransform) {
 
     _webAudioApiSound = webAudioApiSound;
+    _soundTransform = (soundTransform != null) ? soundTransform : new SoundTransform();
     _loop = loop;
-    _soundTransform = soundTransform;
 
-    var context = SoundMixer._audioContext;
+    _webAudioApiMixer = new WebAudioApiMixer(SoundMixer._webAudioApiMixer.inputNode);
+    _webAudioApiMixer.applySoundTransform(_soundTransform);
 
-    _gainNode = context.createGain();
-    _gainNode.connectNode(context.destination, 0, 0);
-    _gainNode.gain.value =  (_soundTransform != null) ? pow(_soundTransform.volume , 2) : 1;
-
-    _sourceNode = context.createBufferSource();
+    _sourceNode = WebAudioApiMixer.audioContext.createBufferSource();
     _sourceNode.buffer = _webAudioApiSound._buffer;
     _sourceNode.loop = loop;
-    _sourceNode.connectNode(_gainNode, 0, 0);
+    _sourceNode.connectNode(_webAudioApiMixer.inputNode);
     _sourceNode.start(0);
   }
 
@@ -33,13 +30,13 @@ class WebAudioApiSoundChannel extends SoundChannel {
   SoundTransform get soundTransform => _soundTransform;
 
   void set soundTransform(SoundTransform value) {
-    _soundTransform = value;
-    _gainNode.gain.value =  (_soundTransform != null) ? pow(_soundTransform.volume , 2) : 1;
+
+    _soundTransform = (soundTransform != null) ? soundTransform : new SoundTransform();
+    _webAudioApiMixer.applySoundTransform(value);
   }
 
-  //-------------------------------------------------------------------------------------------------
-
   void stop() {
+
     _sourceNode.stop(0);
   }
 }

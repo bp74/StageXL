@@ -1,13 +1,13 @@
 part of stagexl;
 
 class AudioElementSound extends Sound {
-  
+
   AudioElement _audio;
   List<AudioElement> _audioPool;
   List<AudioElementSoundChannel> _soundChannels;
 
   AudioElementSound() {
-    
+
     _soundChannels = new List<AudioElementSoundChannel>();
 
     _audio = new AudioElement();
@@ -30,11 +30,11 @@ class AudioElementSound extends Sound {
     var audio = sound._audio;
     var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
     var loadCompleter = new Completer<Sound>();
-    
+
     if (audioUrls.length == 0) {
       return MockSound.load(url, soundLoadOptions);
     }
-    
+
     StreamSubscription onCanPlayThroughSubscription;
     StreamSubscription onErrorSubscription;
 
@@ -51,7 +51,7 @@ class AudioElementSound extends Sound {
       } else {
         onCanPlayThroughSubscription.cancel();
         onErrorSubscription.cancel();
-        
+
         if (soundLoadOptions.ignoreErrors) {
           MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
         } else {
@@ -62,7 +62,7 @@ class AudioElementSound extends Sound {
 
     onCanPlayThroughSubscription = audio.onCanPlayThrough.listen(onCanPlayThrough);
     onErrorSubscription = audio.onError.listen(onError);
-    
+
     audio.src = audioUrls.removeAt(0);
     audio.load();
 
@@ -72,15 +72,11 @@ class AudioElementSound extends Sound {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get length {
-    return _audio.duration;
-  }
+  num get length => _audio.duration;
 
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-    
-    if (soundTransform == null)
-      soundTransform = new SoundTransform();
 
+    if (soundTransform == null) soundTransform = new SoundTransform();
     return new AudioElementSoundChannel(this, loop, soundTransform);
   }
 
@@ -88,7 +84,7 @@ class AudioElementSound extends Sound {
   //-------------------------------------------------------------------------------------------------
 
   AudioElement _getAudioElement(AudioElementSoundChannel soundChannel) {
-    
+
     AudioElement audio;
 
     if (_audioPool.length == 0) {
@@ -98,33 +94,34 @@ class AudioElementSound extends Sound {
       audio = _audioPool.removeAt(0);
     }
 
+    SoundMixer._audioElementMixer._addSoundChannel(soundChannel);
     _soundChannels.add(soundChannel);
 
     return audio;
   }
 
   void _releaseAudioElement(AudioElementSoundChannel soundChannel) {
-    
-    AudioElement audio = soundChannel._audio;
-    int index = _soundChannels.indexOf(soundChannel);
 
-    _soundChannels.removeAt(index);
+    SoundMixer._audioElementMixer._removeSoundChannel(soundChannel);
+    _soundChannels.remove(soundChannel);
+
+    AudioElement audio = soundChannel._audio;
     _audioPool.add(audio);
 
-    if (_audio.currentTime > 0 && _audio.ended == false)
-      _audio.currentTime = 0;
+    if (audio.currentTime > 0 && audio.ended == false) {
+      audio.currentTime = 0;
+    }
   }
 
   void _onAudioEnded(html.Event event) {
-    
-    AudioElement audio = event.target;
-    AudioElementSoundChannel soundChannel = null;
+    var audio = event.target;
 
-    for(int i = 0; i < _soundChannels.length && soundChannel == null; i++)
-      if (_soundChannels[i]._audio == audio)
-        soundChannel = _soundChannels[i];
-
-    if (soundChannel != null)
-      soundChannel.stop();
+    for(var i = 0; i < _soundChannels.length; i++) {
+      if (identical(_soundChannels[i]._audio, audio)) {
+        _soundChannels[i].stop();
+        break;
+      }
+    }
   }
+
 }

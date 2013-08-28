@@ -5,9 +5,9 @@ class WebAudioApiSound extends Sound {
   AudioBuffer _buffer;
 
   WebAudioApiSound() {
-
-    if (SoundMixer._audioContext == null)
+    if (SoundMixer.engine != "WebAudioApi") {
       throw new UnsupportedError("This browser does not support Web Audio API.");
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ class WebAudioApiSound extends Sound {
     var sound = new WebAudioApiSound();
     var loadCompleter = new Completer<Sound>();
     var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
-    var audioContext = SoundMixer._audioContext;
+    var audioContext = WebAudioApiMixer.audioContext;
 
     if (audioUrls.length == 0) {
       return MockSound.load(url, soundLoadOptions);
@@ -62,15 +62,11 @@ class WebAudioApiSound extends Sound {
   //-------------------------------------------------------------------------------------------------
 
   num get length {
-
     return _buffer.duration;
   }
 
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-
-    if (soundTransform == null)
-      soundTransform = new SoundTransform();
-
+    if (soundTransform == null) soundTransform = new SoundTransform();
     return new WebAudioApiSoundChannel(this, loop, soundTransform);
   }
 

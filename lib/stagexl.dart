@@ -12,7 +12,9 @@ import 'dart:html' show
   CanvasPattern, CanvasGradient, ImageData;
 
 import 'dart:web_audio' show
-  AudioContext, AudioBuffer, AudioBufferSourceNode, GainNode;
+  AudioContext, AudioBuffer, AudioBufferSourceNode,
+  AudioNode, GainNode, PannerNode, DynamicsCompressorNode,
+  ChannelSplitterNode, ChannelMergerNode;
 
 //-----------------------------------------------------------------------------
 
@@ -87,8 +89,10 @@ part 'src/media/SoundChannel.dart';
 part 'src/media/SoundLoadOptions.dart';
 part 'src/media/SoundTransform.dart';
 part 'src/media/SoundMixer.dart';
+part 'src/media/implementation/AudioElementMixer.dart';
 part 'src/media/implementation/AudioElementSound.dart';
 part 'src/media/implementation/AudioElementSoundChannel.dart';
+part 'src/media/implementation/WebAudioApiMixer.dart';
 part 'src/media/implementation/WebAudioApiSound.dart';
 part 'src/media/implementation/WebAudioApiSoundChannel.dart';
 part 'src/media/implementation/MockSound.dart';
