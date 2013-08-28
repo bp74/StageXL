@@ -7,7 +7,7 @@ class AudioElementMixer {
 
   applySoundTransform(SoundTransform value) {
     _mixerVolume = value.volume;
-    _soundChannels.forEach((soundChannel) => _updateSoundChannel(soundChannel));
+    _soundChannels.forEach(_updateSoundChannel);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ class AudioElementMixer {
     var audio = audioElementSoundChannel._audio;
     var channelVolume = audioElementSoundChannel._soundTransform.volume;
 
-    if (audio != null && !audio.ended && !audio.paused) {
+    if (audio != null) {
       audio.volume = _mixerVolume * channelVolume;
     }
   }
