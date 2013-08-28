@@ -66,7 +66,7 @@ class ColorMatrixFilter extends BitmapFilter {
 
     var imageData = sourceBitmapData.getImageData(
         sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destinationBitmapData.pixelRatio);
-    var data = imageData.data as Iterable;
+    var data = imageData.data;
 
     if (_isLittleEndianSystem) {
       for(int index = 0 ; index <= data.length - 4; index += 4) {
