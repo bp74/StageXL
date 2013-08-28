@@ -391,11 +391,13 @@ class Stage extends DisplayObjectContainer {
     _MouseButton mouseButton = _mouseButtons[button];
     _mousePosition = stagePoint;
 
-    if (Mouse._dragSprite != null)
+    if (Mouse._dragSprite != null) {
       Mouse._dragSprite._updateDrag();
+    }
 
-    if (event.type != "mouseout")
+    if (event.type != "mouseout") {
       target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
+    }
 
     //-----------------------------------------------------------------
 
@@ -670,6 +672,10 @@ class Stage extends DisplayObjectContainer {
       .._keyLocation = keyLocation;
 
       _focus.dispatchEvent(keyboardEvent);
+
+      if (keyboardEvent.stopsPropagation) {
+        event.preventDefault();
+      }
     }
   }
 
