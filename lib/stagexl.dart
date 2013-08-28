@@ -2,7 +2,7 @@ library stagexl;
 
 import 'dart:async';
 import 'dart:math';
-import 'dart:json' as json;
+import 'dart:convert';
 import 'dart:html' as html;
 import 'package:meta/meta.dart';
 
