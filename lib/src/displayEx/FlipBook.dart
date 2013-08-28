@@ -3,8 +3,8 @@ part of stagexl;
 class FlipBook extends InteractiveObject implements Animatable {
 
   List<BitmapData> _bitmapDatas;
+  List<double> _frameDurations;
 
-  int _frameRate;
   int _currentFrame;
   double _frameTime;
 
@@ -20,7 +20,8 @@ class FlipBook extends InteractiveObject implements Animatable {
   FlipBook(List<BitmapData> bitmapDatas, [int frameRate = 30, bool loop = true]) {
 
     _bitmapDatas = bitmapDatas;
-    _frameRate = frameRate;
+    _frameDurations = new List.filled(_bitmapDatas.length, 1.0 / frameRate);
+
     _currentFrame = 0;
     _frameTime = null;
     _play = false;
@@ -49,6 +50,14 @@ class FlipBook extends InteractiveObject implements Animatable {
   void set loop(bool value) { _loop = value; }
 
   bool get playing => _play;
+
+  List<num> get frameDurations => _frameDurations;
+
+  set frameDurations(List<num> value) {
+    for(var i = 0; i < _frameDurations.length; i++) {
+      _frameDurations[i] = (i < value.length) ? value[i] : value.last;
+    }
+  }
 
   //-------------------------------------------------------------------------------------------------
 
@@ -92,8 +101,8 @@ class FlipBook extends InteractiveObject implements Animatable {
   //-------------------------------------------------------------------------------------------------
 
   bool advanceTime(num time) {
-    if (_play == false)
-      return true;
+
+    if (_play == false) return true;
 
     if (_frameTime == null) {
 
@@ -104,28 +113,25 @@ class FlipBook extends InteractiveObject implements Animatable {
 
       _frameTime += time;
 
-      num frameDuration = 1.0 / _frameRate;
+      while (_play) {
 
-      while (_play && _frameTime >= frameDuration)
-      {
+        var frameDuration = _frameDurations[_currentFrame];
         var lastFrame = _currentFrame;
         var nextFrame = _loop ? (lastFrame + 1) % totalFrames : min(lastFrame + 1, totalFrames - 1);
+
+        if (_frameTime < frameDuration) break;
 
         _currentFrame = nextFrame;
         _frameTime -= frameDuration;
 
         // dispatch progress event on every new frame
-
         if (lastFrame != nextFrame) {
-
           _dispatchEventInternal(_progressEvent, this, this, EventPhase.AT_TARGET);
           if (_currentFrame != nextFrame) return true;
         }
 
         // dispatch complete event only on last frame
-
         if (lastFrame != nextFrame && nextFrame == totalFrames - 1 && _loop == false) {
-
           _dispatchEventInternal(_completeEvent, this, this, EventPhase.AT_TARGET);
           if (_currentFrame != nextFrame) return true;
         }
@@ -141,7 +147,7 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
 
-    BitmapData bitmapData = _bitmapDatas[_currentFrame];
+    var bitmapData = _bitmapDatas[_currentFrame];
     return _getBoundsTransformedHelper(matrix, bitmapData.width, bitmapData.height, returnRectangle);
   }
 
@@ -149,7 +155,7 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   DisplayObject hitTestInput(num localX, num localY) {
 
-    BitmapData bitmapData = _bitmapDatas[_currentFrame];
+    var bitmapData = _bitmapDatas[_currentFrame];
 
     if (localX >= 0 && localY >= 0 && localX < bitmapData.width && localY < bitmapData.height)
       return this;
