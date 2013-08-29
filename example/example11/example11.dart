@@ -72,11 +72,10 @@ void main() {
 
   var glass = new GlassPlate(800,600);
   glass.addTo(stage);
-  glass.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-  glass.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
-  glass.addEventListener(TouchEvent.TOUCH_CANCEL, onTouchCancel);
-  glass.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
-  glass.addEventListener(TouchEvent.TOUCH_OUT, onTouchOut);
-  glass.addEventListener(TouchEvent.TOUCH_OVER, onTouchOver);
-
+  glass.onTouchBegin.listen(onTouchBegin);
+  glass.onTouchEnd.listen(onTouchEnd);
+  glass.onTouchCancel.listen(onTouchCancel);
+  glass.onTouchMove.listen(onTouchMove);
+  glass.onTouchOut.listen(onTouchOut);
+  glass.onTouchOver.listen(onTouchOver);
 }
