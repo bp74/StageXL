@@ -1,7 +1,7 @@
 part of stagexl;
 
 class MouseEvent extends Event {
-  
+
   static const String CLICK = "click";
   static const String DOUBLE_CLICK = "doubleClick";
 
@@ -28,19 +28,17 @@ class MouseEvent extends Event {
 
   num _localX, _localY;
   num _stageX, _stageY;
-  bool _buttonDown;
+  num _deltaX, _deltaY;
 
+  bool _buttonDown;
   bool _altKey;
   bool _controlKey;
   bool _ctrlKey;
   bool _shiftKey;
 
   int _clickCount;
-  int _deltaX;
-  int _deltaY;
 
   MouseEvent(String type, [bool bubbles = false]):super(type, bubbles) {
-    
     _reset(type, bubbles);
   }
 
@@ -48,21 +46,20 @@ class MouseEvent extends Event {
   //-------------------------------------------------------------------------------------------------
 
   void _reset(String type, [bool bubbles = false]) {
-    
+
     super._reset(type, bubbles);
 
     _localX = _localY = 0;
     _stageX = _stageY = 0;
-    _buttonDown = false;
+    _deltaX = _deltaY = 0;
 
+    _buttonDown = false;
     _altKey = false;
     _controlKey = false;
     _ctrlKey = false;
     _shiftKey = false;
 
     _clickCount = 0;
-    _deltaX = 0;
-    _deltaY = 0;
   }
 
   set _localPoint(Point point) {
@@ -82,14 +79,14 @@ class MouseEvent extends Event {
   num get localY => _localY;
   num get stageX => _stageX;
   num get stageY => _stageY;
-  bool get buttonDown => _buttonDown;
+  num get deltaX => _deltaX;
+  num get deltaY => _deltaY;
 
+  bool get buttonDown => _buttonDown;
   bool get altKey => _altKey;
   bool get controlKey => _controlKey;
   bool get ctrlKey => _ctrlKey;
   bool get shiftKey => _shiftKey;
 
   int get clickCount => _clickCount;
-  int get deltaX => _deltaX;
-  int get deltaY => _deltaY;
 }
