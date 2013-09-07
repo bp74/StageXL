@@ -3,6 +3,13 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.8.5
+  * Added FlipBook.frameDurations property for flexible animation speeds.
+  * Added SoundMixer.soundTransform implementation. 
+  * KeyboardEvent stopPropagation prevents html event defaults.
+  * Fixed Point.polar method. 
+  * Include the latest Dart API changes.
+
 #### Pub version 0.8.4
   * Fixed TextFieldAutoSize feature.
   * Fixed TextFormat margins.
@@ -12,7 +19,7 @@ package. This file is normally updated whenever we push a new version to pub.
 
 #### Pub version 0.8.3
   * Added support for text files in ResourceManager.
-  * Follow the latest Dart API changes.
+  * Include the latest Dart API changes.
   * Honor TextFormat.leftMargin in TextField.
 
 #### Pub version 0.8.2
