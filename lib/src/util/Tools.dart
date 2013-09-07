@@ -108,52 +108,6 @@ Future<bool> _checkWebpSupport() {
 
 //-------------------------------------------------------------------------------------------------
 
-void _premultiplyAlpha(List<int> data) {
-
-  if (_isLittleEndianSystem) {
-    for(var i = 0; i <= data.length - 4; i += 4) {
-      var value = data[i + 3];
-      data[i + 0] = (data[i + 0] * value) ~/ 255;
-      data[i + 1] = (data[i + 1] * value) ~/ 255;
-      data[i + 2] = (data[i + 2] * value) ~/ 255;
-    }
-  } else {
-    for(var i = 0; i <= data.length - 4; i += 4) {
-      var value = data[i + 0];
-      data[i + 1] = (data[i + 1] * value) ~/ 255;
-      data[i + 2] = (data[i + 2] * value) ~/ 255;
-      data[i + 3] = (data[i + 3] * value) ~/ 255;
-    }
-  }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void _unpremultiplyAlpha(List<int> data) {
-
-  if (_isLittleEndianSystem) {
-    for(var i = 0; i <= data.length - 4; i += 4) {
-      var alpha = data[i + 3];
-      if (alpha > 0) {
-        data[i + 0] = (data[i + 0] * 255) ~/ alpha;
-        data[i + 1] = (data[i + 1] * 255) ~/ alpha;
-        data[i + 2] = (data[i + 2] * 255) ~/ alpha;
-      }
-    }
-  } else {
-    for(var i = 0; i <= data.length - 4; i += 4) {
-      var alpha = data[i + 0];
-      if (alpha > 0) {
-        data[i + 1] = (data[i + 1] * 255) ~/ alpha;
-        data[i + 2] = (data[i + 2] * 255) ~/ alpha;
-        data[i + 3] = (data[i + 3] * 255) ~/ alpha;
-      }
-    }
-  }
-}
-
-//-------------------------------------------------------------------------------------------------
-
 Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rectangle returnRectangle) {
 
   width = width.toDouble();
