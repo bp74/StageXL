@@ -1,6 +1,5 @@
 library example04;
 
-import 'dart:async';
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
