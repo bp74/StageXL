@@ -510,7 +510,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (event.captures || event.bubbles) {
       for(DisplayObject ancestor = _parent; ancestor != null; ancestor = ancestor._parent) {
         if (ancestor._hasEventListener(event.type, event.captures, event.bubbles)) {
-          if (ancestors == null) ancestors = _displayObjectListPool.pop() as List<DisplayObject>;
+          if (ancestors == null) ancestors = _displayObjectListPool.pop();
           ancestors.add(ancestor);
         }
       }

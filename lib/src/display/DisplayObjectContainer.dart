@@ -305,7 +305,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   _dispatchEventDescendants(DisplayObject displayObject, Event event) {
 
-    var descendants = _displayObjectListPool.pop() as List<DisplayObject>;
+    var descendants = _displayObjectListPool.pop();
     _collectDescendants(displayObject, descendants);
 
     for(int i = 0; i < descendants.length; i++) {

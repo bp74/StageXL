@@ -78,8 +78,8 @@ class RenderState {
     var shadow = displayObject._shadow;
     var composite = displayObject._compositeOperation;
 
-    var cs1 = _currentContextState as _ContextState;
-    var cs2 = _currentContextState.nextContextState as _ContextState;
+    var cs1 = _currentContextState;
+    var cs2 = _currentContextState.nextContextState;
 
     _currentContextState = cs2;
 
