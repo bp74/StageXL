@@ -291,7 +291,37 @@ class BitmapData implements BitmapDrawable {
     var dh = destinationPixelRatio * sourceRect.height;
 
     _context.clearRect(dx, dy, dw, dh);
-    _context.drawImageScaledFromSource(sourceCanvas, sx, sy, sw, sh,dx, dy, dw, dh);
+    _context.drawImageScaledFromSource(sourceCanvas, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  void drawPixels(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint,
+                  [String compositeOperation = null]) {
+
+    _ensureContext();
+    sourceBitmapData._ensureContext();
+
+    var sourceCanvas = sourceBitmapData._context.canvas;
+    var sourcePixelRatio = sourceBitmapData._pixelRatioSource;
+    var sx = sourcePixelRatio * sourceRect.x;
+    var sy = sourcePixelRatio * sourceRect.y;
+    var sw = sourcePixelRatio * sourceRect.width;
+    var sh = sourcePixelRatio * sourceRect.height;
+
+    var destinationPixelRatio = _pixelRatioSource;
+    var dx = destinationPixelRatio * destPoint.x;
+    var dy = destinationPixelRatio * destPoint.y;
+    var dw = destinationPixelRatio * sourceRect.width;
+    var dh = destinationPixelRatio * sourceRect.height;
+
+    if (compositeOperation != null) {
+      _context.globalCompositeOperation = compositeOperation;
+      _context.drawImageScaledFromSource(sourceCanvas, sx, sy, sw, sh, dx, dy, dw, dh);
+      _context.globalCompositeOperation = CompositeOperation.SOURCE_OVER;
+    } else {
+      _context.drawImageScaledFromSource(sourceCanvas, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
