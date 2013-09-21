@@ -288,7 +288,6 @@ class TextField extends InteractiveObject {
     canvasContext.textAlign = "start";
     canvasContext.textBaseline = "alphabetic";
     canvasContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    canvasContext.imageSmoothingEnabled = true;
 
     for(var paragraph in _text.split('\n')) {
 
