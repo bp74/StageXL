@@ -18,8 +18,15 @@ void main() {
 
   //------------------------------------------------------------------
 
+  var textFormat = new TextFormat("Helvetica,Arial", 20, Color.Black);
+  textFormat.leftMargin = 10;
+  textFormat.rightMargin = 20;
+  textFormat.topMargin = 10;
+  textFormat.bottomMargin = 5;
+  textFormat.leading = 4;
+
   var textField = new TextField();
-  textField.defaultTextFormat = new TextFormat("Helvetica,Arial", 20, Color.Black);
+  textField.defaultTextFormat = textFormat;
   textField.text = "The Dart language is familiar and easy to learn. "
 "It's class based and object oriented, without being dogmatic.\n\n";
   textField.type = TextFieldType.INPUT;
@@ -31,6 +38,7 @@ void main() {
   textField.backgroundColor = Color.Beige;
   textField.x = 20;
   textField.y = 20;
+  textField.autoSize = TextFieldAutoSize.LEFT;
 
   stage.addChild(textField);
   stage.focus = textField;

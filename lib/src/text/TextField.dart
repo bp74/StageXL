@@ -230,7 +230,7 @@ class TextField extends InteractiveObject {
 
     // draw text
 
-    var renderContext = renderState._context;
+    var renderContext = renderState.context;
 
     if (_cacheAsBitmap) {
       renderContext.drawImageScaled(_cacheAsBitmapCanvas, 0.0, 0.0, _width, _height);
@@ -271,17 +271,22 @@ class TextField extends InteractiveObject {
     var checkLine = '';
     var validLine = '';
     var lineWidth = 0;
-    var textFormatSize = _defaultTextFormat.size.toDouble();
-    var textFormatLeftMargin = _defaultTextFormat.leftMargin.toDouble();
-    var textFormatRightMargin = _defaultTextFormat.rightMargin.toDouble();
-    var textFormatTopMargin = _defaultTextFormat.topMargin.toDouble();
-    var textFormatBottomMargin = _defaultTextFormat.bottomMargin.toDouble();
-    var textFormatAlign = _defaultTextFormat.align.toString();
-    var availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
+
+    var textFormatSize = _ensureNum(_defaultTextFormat.size);
+    var textFormatLeftMargin = _ensureNum(_defaultTextFormat.leftMargin);
+    var textFormatRightMargin = _ensureNum(_defaultTextFormat.rightMargin);
+    var textFormatTopMargin = _ensureNum(_defaultTextFormat.topMargin);
+    var textFormatBottomMargin = _ensureNum(_defaultTextFormat.bottomMargin);
+    var textFormatIndent = _ensureNum(_defaultTextFormat.indent);
+    var textFormatLeading = _ensureNum(defaultTextFormat.leading);
+    var textFormatAlign = _ensureString(_defaultTextFormat.align);
+
     var fontStyle = _defaultTextFormat._cssFontStyle;
     var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
-    var fontStyleMetricsAscent = fontStyleMetrics.ascent.toDouble();
-    var fontStyleMetricsDescent = fontStyleMetrics.descent.toDouble();
+    var fontStyleMetricsAscent = _ensureNum(fontStyleMetrics.ascent);
+    var fontStyleMetricsDescent = _ensureNum(fontStyleMetrics.descent);
+
+    var availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
     var canvasContext = _dummyCanvasContext;
 
     canvasContext.font = fontStyle;
@@ -338,8 +343,10 @@ class TextField extends InteractiveObject {
       var textLineMetrics = _textLineMetrics[line];
       if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
 
-      var offsetX = textFormatLeftMargin;
-      var offsetY = textFormatTopMargin + line * textFormatSize + textFormatSize;
+      var offsetX = textFormatIndent + textFormatLeftMargin;
+      var offsetY = textFormatLeading + textFormatTopMargin + textFormatSize +
+                    line * (textFormatLeading + textFormatSize + fontStyleMetricsDescent);
+
       var width = canvasContext.measureText(textLineMetrics._text).width.toDouble();
 
       switch(textFormatAlign) {
@@ -361,13 +368,34 @@ class TextField extends InteractiveObject {
       textLineMetrics._descent = fontStyleMetricsDescent;
       textLineMetrics._leading = 0.0;
 
-      _textWidth = max(_textWidth, width);
-      _textHeight = _textHeight + textFormatSize;
+      _textWidth = max(_textWidth, textFormatLeftMargin + width + textFormatRightMargin);
+      _textHeight = offsetY + fontStyleMetricsDescent + textFormatBottomMargin;
     }
 
-    if (_textLineMetrics.length > 0) {
-      _textHeight += textFormatTopMargin + textFormatBottomMargin + fontStyleMetricsDescent;
-      _textWidth += textFormatLeftMargin + textFormatRightMargin;
+    //-----------------------------
+    // calculate autoSize
+
+    var autoWidth = _wordWrap ? _width : _textWidth.ceil();
+    var autoHeight = _textHeight.ceil();
+
+    if (_width != autoWidth || _height != autoHeight) {
+
+      switch(_autoSize) {
+        case TextFieldAutoSize.LEFT:
+          this.width = autoWidth;
+          this.height = autoHeight;
+          break;
+        case TextFieldAutoSize.RIGHT:
+          this.x = this.x - (autoWidth - _width);
+          this.width = autoWidth;
+          this.height = autoHeight;
+          break;
+        case TextFieldAutoSize.CENTER:
+          this.x = this.x - (autoWidth - _width) / 2;
+          this.width = autoWidth;
+          this.height = autoHeight;
+          break;
+      }
     }
 
     //-----------------------------
@@ -408,32 +436,6 @@ class TextField extends InteractiveObject {
 
         textLineMetrics._x += shiftX;
         textLineMetrics._y += shiftY;
-      }
-    }
-
-    //-----------------------------
-    // calculate autoSize
-
-    var autoWidth = _wordWrap ? _width : _textWidth.ceil();
-    var autoHeight = _textHeight.ceil();
-
-    if (_width != autoWidth || _height != autoHeight) {
-
-      switch(_autoSize) {
-        case TextFieldAutoSize.LEFT:
-          this.width = autoWidth;
-          this.height = autoHeight;
-          break;
-        case TextFieldAutoSize.RIGHT:
-          this.x = this.x - (autoWidth - _width);
-          this.width = autoWidth;
-          this.height = autoHeight;
-          break;
-        case TextFieldAutoSize.CENTER:
-          this.x = this.x - (autoWidth - _width) / 2;
-          this.width = autoWidth;
-          this.height = autoHeight;
-          break;
       }
     }
   }
