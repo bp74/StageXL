@@ -32,12 +32,9 @@ class TextField extends InteractiveObject {
   num _textHeight = 0.0;
   final List<TextLineMetrics> _textLineMetrics = new List<TextLineMetrics>();
 
-  // bit 0: refreshTextLineMetrics
-  // bit 1: refreshCanvas
-  int _refreshPending = 3;
-
-  CanvasElement _canvas = null;
-  CanvasRenderingContext2D _context = null;
+  int _refreshPending = 3;   // bit 0: textLineMetrics, bit 1: cache
+  bool _cacheAsBitmap = true;
+  CanvasElement _cacheAsBitmapCanvas;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -68,6 +65,7 @@ class TextField extends InteractiveObject {
   bool get displayAsPassword => _displayAsPassword;
   bool get background => _background;
   bool get border => _border;
+  bool get cacheAsBitmap => _cacheAsBitmap;
 
   String get passwordChar => _passwordChar;
   int get backgroundColor => _backgroundColor;
@@ -156,6 +154,11 @@ class TextField extends InteractiveObject {
     _maxChars = value;
   }
 
+  void set cacheAsBitmap(bool value) {
+    if (value) _refreshPending |= 2;
+    _cacheAsBitmap = value;
+  }
+
   //-------------------------------------------------------------------------------------------------
 
   num get x {
@@ -223,11 +226,21 @@ class TextField extends InteractiveObject {
   void render(RenderState renderState) {
 
     _refreshTextLineMetrics();
-    _refreshCanvas();
-    _caretTime += renderState.deltaTime;
+    _refreshCache();
+
+    // draw text
 
     var renderContext = renderState._context;
-    renderContext.drawImageScaled(_canvas, 0.0, 0.0, _width, _height);
+
+    if (_cacheAsBitmap) {
+      renderContext.drawImageScaled(_cacheAsBitmapCanvas, 0.0, 0.0, _width, _height);
+    } else {
+      _renderText(renderContext);
+    }
+
+    // draw cursor for INPUT text fields
+
+    _caretTime += renderState.deltaTime;
 
     if (_type == TextFieldType.INPUT) {
       var stage = this.stage;
@@ -275,6 +288,7 @@ class TextField extends InteractiveObject {
     canvasContext.textAlign = "start";
     canvasContext.textBaseline = "alphabetic";
     canvasContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    canvasContext.imageSmoothingEnabled = true;
 
     for(var paragraph in _text.split('\n')) {
 
@@ -427,56 +441,64 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  _refreshCanvas() {
+  _refreshCache() {
 
-    if ((_refreshPending & 2) == 0) {
-      return;
-    } else {
+    if (_cacheAsBitmap && (_refreshPending & 2) == 2) {
+
       _refreshPending &= 255 - 2;
+
+      var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
+      var canvasWidth = (_width * pixelRatio).ceil();
+      var canvasHeight =  (_height * pixelRatio).ceil();
+
+      if (_cacheAsBitmapCanvas == null) {
+        _cacheAsBitmapCanvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
+      }
+
+      if (_cacheAsBitmapCanvas.width != canvasWidth) _cacheAsBitmapCanvas.width = canvasWidth;
+      if (_cacheAsBitmapCanvas.height != canvasHeight) _cacheAsBitmapCanvas.height = canvasHeight;
+
+      _cacheAsBitmapCanvas.context2D.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
+      _renderText(_cacheAsBitmapCanvas.context2D);
     }
+  }
 
-    var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
-    var canvasWidth = (_width * pixelRatio).ceil();
-    var canvasHeight =  (_height * pixelRatio).ceil();
+  //-------------------------------------------------------------------------------------------------
 
-    if (_canvas == null) {
-      _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
-      _context = _canvas.context2D;
-    }
+  _renderText(CanvasRenderingContext2D context) {
 
-    if (_canvas.width != canvasWidth) _canvas.width = canvasWidth;
-    if (_canvas.height != canvasHeight) _canvas.height = canvasHeight;
+    context.clearRect(0, 0, _width, _height);
 
-    //-------------------------------------
-    // set canvas context
+    context.save();
+    context.beginPath();
+    context.rect(0, 0, _width, _height);
+    context.clip();
 
-    _context.font = _defaultTextFormat._cssFontStyle;
-    _context.textAlign = "start";
-    _context.textBaseline = "alphabetic";
-    _context.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
+    context.font = _defaultTextFormat._cssFontStyle;
+    context.textAlign = "start";
+    context.textBaseline = "alphabetic";
 
-    //-------------------------------------
     // draw background, text, border
 
     if (_background) {
-      _context.fillStyle = _color2rgb(_backgroundColor);
-      _context.fillRect(0, 0, _width, _height);
-    } else {
-      _context.clearRect(0, 0, _width, _height);
+      context.fillStyle = _color2rgb(_backgroundColor);
+      context.fillRect(0, 0, _width, _height);
     }
 
-    _context.fillStyle = _color2rgb(_defaultTextFormat.color);
+    context.fillStyle = _color2rgb(_defaultTextFormat.color);
 
     for(int i = 0; i < _textLineMetrics.length; i++) {
       var lm = _textLineMetrics[i];
-      _context.fillText(lm._text, lm._x, lm._y);
+      context.fillText(lm._text, lm._x, lm._y);
     }
 
     if (_border) {
-      _context.strokeStyle = _color2rgb(_borderColor);
-      _context.lineWidth = 1;
-      _context.strokeRect(0, 0, _width, _height);
+      context.strokeStyle = _color2rgb(_borderColor);
+      context.lineWidth = 1;
+      context.strokeRect(0, 0, _width, _height);
     }
+
+    context.restore();
   }
 
   //-------------------------------------------------------------------------------------------------
