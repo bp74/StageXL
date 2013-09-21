@@ -458,6 +458,8 @@ class TextField extends InteractiveObject {
       if (_cacheAsBitmapCanvas.height != canvasHeight) _cacheAsBitmapCanvas.height = canvasHeight;
 
       _cacheAsBitmapCanvas.context2D.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
+      _cacheAsBitmapCanvas.context2D.clearRect(0, 0, _width, _height);
+
       _renderText(_cacheAsBitmapCanvas.context2D);
     }
   }
@@ -465,8 +467,6 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   _renderText(CanvasRenderingContext2D context) {
-
-    context.clearRect(0, 0, _width, _height);
 
     context.save();
     context.beginPath();
