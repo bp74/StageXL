@@ -20,10 +20,10 @@ void main() {
 
   var textFormat = new TextFormat("Helvetica,Arial", 20, Color.Black);
   textFormat.leftMargin = 10;
-  textFormat.rightMargin = 20;
+  textFormat.rightMargin = 10;
   textFormat.topMargin = 10;
-  textFormat.bottomMargin = 5;
-  textFormat.leading = 4;
+  textFormat.bottomMargin = 10;
+  textFormat.leading = 0;
 
   var textField = new TextField();
   textField.defaultTextFormat = textFormat;
