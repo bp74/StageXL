@@ -308,7 +308,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (targetSpace == _parent)
       return _transformationMatrix.clone();
 
-    if (targetSpace._parent == this)
+    if (targetSpace != null && targetSpace._parent == this)
       return targetSpace._transformationMatrix.cloneInvert();
 
     //------------------------------------------------
