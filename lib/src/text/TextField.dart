@@ -271,6 +271,7 @@ class TextField extends InteractiveObject {
     var checkLine = '';
     var validLine = '';
     var lineWidth = 0;
+    var lineIndent = 0;
 
     var textFormatSize = _ensureNum(_defaultTextFormat.size);
     var textFormatLeftMargin = _ensureNum(_defaultTextFormat.leftMargin);
@@ -288,6 +289,7 @@ class TextField extends InteractiveObject {
 
     var availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
     var canvasContext = _dummyCanvasContext;
+    var paragraphLines = new List<int>();
 
     canvasContext.font = fontStyle;
     canvasContext.textAlign = "start";
@@ -295,6 +297,8 @@ class TextField extends InteractiveObject {
     canvasContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
     for(var paragraph in _text.split('\n')) {
+
+      paragraphLines.add(_textLineMetrics.length);
 
       if (_wordWrap == false) {
 
@@ -304,6 +308,7 @@ class TextField extends InteractiveObject {
       } else {
 
         checkLine = null;
+        lineIndent = textFormatIndent;
 
         for(var word in paragraph.split(' ')) {
 
@@ -312,15 +317,17 @@ class TextField extends InteractiveObject {
           checkLine = _passwordEncoder(checkLine);
           lineWidth = canvasContext.measureText(checkLine).width.toDouble();
 
-          if (lineWidth >= availableWidth) {
+          if (lineIndent + lineWidth >= availableWidth) {
             if (validLine == null) {
               _textLineMetrics.add(new TextLineMetrics._internal(checkLine, startIndex));
               startIndex += checkLine.length + 1;
               checkLine = null;
+              lineIndent = 0;
             } else {
               _textLineMetrics.add(new TextLineMetrics._internal(validLine, startIndex));
               startIndex += validLine.length + 1;
               checkLine = _passwordEncoder(word);
+              lineIndent = 0;
             }
           }
         }
@@ -343,8 +350,9 @@ class TextField extends InteractiveObject {
       var textLineMetrics = _textLineMetrics[line];
       if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
 
-      var offsetX = textFormatIndent + textFormatLeftMargin;
-      var offsetY = textFormatLeading + textFormatTopMargin + textFormatSize +
+      var indent = paragraphLines.contains(line) ? textFormatIndent : 0;
+      var offsetX = textFormatLeftMargin + indent;
+      var offsetY = textFormatTopMargin + textFormatSize +
                     line * (textFormatLeading + textFormatSize + fontStyleMetricsDescent);
 
       var width = canvasContext.measureText(textLineMetrics._text).width.toDouble();
@@ -366,9 +374,10 @@ class TextField extends InteractiveObject {
       textLineMetrics._height = textFormatSize;
       textLineMetrics._ascent = fontStyleMetricsAscent;
       textLineMetrics._descent = fontStyleMetricsDescent;
-      textLineMetrics._leading = 0.0;
+      textLineMetrics._leading = textFormatLeading;
+      textLineMetrics._indent = indent;
 
-      _textWidth = max(_textWidth, textFormatLeftMargin + width + textFormatRightMargin);
+      _textWidth = max(_textWidth, textFormatLeftMargin + indent + width + textFormatRightMargin);
       _textHeight = offsetY + fontStyleMetricsDescent + textFormatBottomMargin;
     }
 

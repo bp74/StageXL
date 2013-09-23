@@ -12,6 +12,7 @@ class TextLineMetrics {
   num _ascent = 0.0;
   num _descent = 0.0;
   num _leading = 0.0;
+  num _indent = 0.0;
 
   TextLineMetrics._internal(this._text, this._textIndex);
 
@@ -26,4 +27,5 @@ class TextLineMetrics {
   num get ascent => _ascent;
   num get descent => _descent;
   num get leading => _leading;
+  num get indent => _indent;
 }

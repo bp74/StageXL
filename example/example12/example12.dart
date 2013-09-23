@@ -24,6 +24,7 @@ void main() {
   textFormat.topMargin = 10;
   textFormat.bottomMargin = 10;
   textFormat.leading = 0;
+  textFormat.indent = 15;
 
   var textField = new TextField();
   textField.defaultTextFormat = textFormat;
