@@ -262,10 +262,18 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
       num skewXrotation =  _skewX + _rotation;
       num skewYrotation =  _skewY + _rotation;
+      num scaleX = _scaleX;
+      num scaleY = _scaleY;
+      num pivotX = _pivotX;
+      num pivotY = _pivotY;
+
+      // ToDo: https://bugzilla.mozilla.org/show_bug.cgi?id=661452
+      if (scaleX > -0.0001 && scaleX < 0.0001) scaleX = (scaleX >= 0) ? 0.0001 : -0.0001;
+      if (scaleY > -0.0001 && scaleY < 0.0001) scaleY = (scaleY >= 0) ? 0.0001 : -0.0001;
 
       if (skewXrotation == 0.0 && skewYrotation == 0.0) {
 
-        _transformationMatrixPrivate.setTo(_scaleX, 0.0, 0.0, _scaleY, _x - _pivotX * _scaleX, _y - _pivotY * _scaleY);
+        _transformationMatrixPrivate.setTo(scaleX, 0.0, 0.0, scaleY, _x - pivotX * scaleX, _y - pivotY * scaleY);
 
       } else {
 
@@ -274,19 +282,19 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
         num sinX = sin(skewXrotation);
 
         if (skewXrotation == skewYrotation) {
-          a =   _scaleX * cosX;
-          b =   _scaleX * sinX;
-          c = - _scaleY * sinX;
-          d =   _scaleY * cosX;
+          a =   scaleX * cosX;
+          b =   scaleX * sinX;
+          c = - scaleY * sinX;
+          d =   scaleY * cosX;
         } else {
-          a =   _scaleX * cos(skewYrotation);
-          b =   _scaleX * sin(skewYrotation);
-          c = - _scaleY * sinX;
-          d =   _scaleY * cosX;
+          a =   scaleX * cos(skewYrotation);
+          b =   scaleX * sin(skewYrotation);
+          c = - scaleY * sinX;
+          d =   scaleY * cosX;
         }
 
-        num tx =  _x - (_pivotX * a + _pivotY * c);
-        num ty =  _y - (_pivotX * b + _pivotY * d);
+        num tx =  _x - (pivotX * a + pivotY * c);
+        num ty =  _y - (pivotX * b + pivotY * d);
 
         _transformationMatrixPrivate.setTo(a, b, c, d, tx, ty);
       }
