@@ -59,8 +59,8 @@ class Stage extends DisplayObjectContainer {
 
   CanvasElement _canvas;
   CanvasRenderingContext2D _context;
-  int _contentWidth, _contentHeight;
-  int _contentFrameRate;
+  int _sourceWidth, _sourceHeight;
+  int _frameRate;
   int _canvasWidth, _canvasHeight;
   Rectangle _contentRectangle;
 
@@ -91,7 +91,7 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
 
-  Stage(String name, CanvasElement canvas, [int contentWidth, int contentHeight, int contentFrameRate]) {
+  Stage(String name, CanvasElement canvas, [int sourceWidth, int sourceHeight, int frameRate]) {
 
     if (canvas is! CanvasElement) {
       throw new ArgumentError("The canvas argument is not a CanvasElement");
@@ -104,9 +104,9 @@ class Stage extends DisplayObjectContainer {
     _canvas = canvas;
     _context = canvas.context2D;
 
-    _contentWidth = (contentWidth != null) ? contentWidth : canvas.width;
-    _contentHeight = (contentHeight != null) ? contentHeight : canvas.height;
-    _contentFrameRate = (contentFrameRate != null) ? contentFrameRate : 30;
+    _sourceWidth = (sourceWidth != null) ? sourceWidth : canvas.width;
+    _sourceHeight = (sourceHeight != null) ? sourceHeight : canvas.height;
+    _frameRate = (frameRate != null) ? frameRate : 30;
     _canvasWidth = -1;
     _canvasHeight = -1;
     _contentRectangle = new Rectangle.zero();
@@ -166,6 +166,16 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   /**
+   * Gets the original source width of the Stage as defined in the constructor.
+   */
+  int get sourceWidth => _sourceWidth;
+
+  /**
+   * Gets the original source height of the Stage as defined in the constructor.
+   */
+  int get sourceHeight => _sourceHeight;
+
+  /**
    * Gets the current width of the Stage in pixels on the screen.
    */
   int get stageWidth => _canvasWidth;
@@ -186,9 +196,9 @@ class Stage extends DisplayObjectContainer {
    * Gets and sets the default frame rate for MovieClips. This value has no
    * impact on the frame rate of the Stage itself.
    */
-  int get frameRate => _contentFrameRate;
+  int get frameRate => _frameRate;
   set frameRate(int value) {
-    _contentFrameRate = value;
+    _frameRate = value;
   }
 
   RenderLoop get renderLoop => _renderLoop;
@@ -270,13 +280,13 @@ class Stage extends DisplayObjectContainer {
     var clientTop = _canvas.clientTop + client.top;
     var clientWidth = _canvas.clientWidth;
     var clientHeight = _canvas.clientHeight;
-    var contentWidth = _contentWidth;
-    var contentHeight = _contentHeight;
+    var sourceWidth = _sourceWidth;
+    var sourceHeight = _sourceHeight;
 
     if (clientWidth is! num) throw "dart2js_hint";
     if (clientHeight is! num) throw "dart2js_hint";
-    if (contentWidth is! num) throw "dart2js_hint";
-    if (contentHeight is! num) throw "dart2js_hint";
+    if (sourceWidth is! num) throw "dart2js_hint";
+    if (sourceHeight is! num) throw "dart2js_hint";
 
     if (clientWidth == 0 || clientHeight == 0) return;
 
@@ -286,8 +296,8 @@ class Stage extends DisplayObjectContainer {
     var scaleY = 1.0;
     var pivotX = 0.0;
     var pivotY = 0.0;
-    var ratioWidth = clientWidth / contentWidth;
-    var ratioHeight = clientHeight / contentHeight;
+    var ratioWidth = clientWidth / sourceWidth;
+    var ratioHeight = clientHeight / sourceHeight;
 
     switch(_stageScaleMode) {
       case StageScaleMode.EXACT_FIT:
@@ -309,12 +319,12 @@ class Stage extends DisplayObjectContainer {
       case StageAlign.TOP_RIGHT:
       case StageAlign.RIGHT:
       case StageAlign.BOTTOM_RIGHT:
-        pivotX = (clientWidth - contentWidth * scaleX);
+        pivotX = (clientWidth - sourceWidth * scaleX);
         break;
       case StageAlign.TOP:
       case StageAlign.NONE:
       case StageAlign.BOTTOM:
-        pivotX = (clientWidth - contentWidth * scaleX) / 2;
+        pivotX = (clientWidth - sourceWidth * scaleX) / 2;
         break;
     }
 
@@ -322,12 +332,12 @@ class Stage extends DisplayObjectContainer {
       case StageAlign.BOTTOM_LEFT:
       case StageAlign.BOTTOM:
       case StageAlign.BOTTOM_RIGHT:
-        pivotY = (clientHeight - contentHeight * scaleY);
+        pivotY = (clientHeight - sourceHeight * scaleY);
         break;
       case StageAlign.LEFT:
       case StageAlign.NONE:
       case StageAlign.RIGHT:
-        pivotY = (clientHeight - contentHeight * scaleY) / 2;
+        pivotY = (clientHeight - sourceHeight * scaleY) / 2;
         break;
     }
 
