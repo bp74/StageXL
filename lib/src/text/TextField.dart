@@ -225,8 +225,10 @@ class TextField extends InteractiveObject {
 
   void render(RenderState renderState) {
 
-    _refreshTextLineMetrics();
-    _refreshCache();
+    if ((_refreshPending & 1) == 1) _refreshTextLineMetrics();
+    if ((_refreshPending & 2) == 2) _refreshCache();
+
+    _refreshPending = 0;
 
     // draw text
 
@@ -255,12 +257,6 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   _refreshTextLineMetrics() {
-
-    if ((_refreshPending & 1) == 0) {
-      return;
-    } else {
-      _refreshPending &= 255 - 1;
-    }
 
     _textLineMetrics.clear();
 
@@ -453,9 +449,7 @@ class TextField extends InteractiveObject {
 
   _refreshCache() {
 
-    if (_cacheAsBitmap && (_refreshPending & 2) == 2) {
-
-      _refreshPending &= 255 - 2;
+    if (_cacheAsBitmap) {
 
       var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
       var canvasWidth = (_width * pixelRatio).ceil();
