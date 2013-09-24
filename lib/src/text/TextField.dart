@@ -225,10 +225,8 @@ class TextField extends InteractiveObject {
 
   void render(RenderState renderState) {
 
-    if ((_refreshPending & 1) == 1) _refreshTextLineMetrics();
-    if ((_refreshPending & 2) == 2) _refreshCache();
-
-    _refreshPending = 0;
+    _refreshTextLineMetrics();
+    _refreshCache();
 
     // draw text
 
@@ -259,6 +257,12 @@ class TextField extends InteractiveObject {
 
   _refreshTextLineMetrics() {
 
+    if ((_refreshPending & 1) == 0) {
+      return;
+    } else {
+      _refreshPending &= 255 - 1;
+    }
+    
     _textLineMetrics.clear();
 
     //-----------------------------
@@ -450,6 +454,12 @@ class TextField extends InteractiveObject {
 
   _refreshCache() {
 
+    if ((_refreshPending & 2) == 0) {
+      return;
+    } else {
+      _refreshPending &= 255 - 2;
+    }
+    
     if (_cacheAsBitmap == false) {
       return;
     }
