@@ -235,7 +235,8 @@ class TextField extends InteractiveObject {
     var renderContext = renderState.context;
 
     if (_cacheAsBitmap) {
-      renderContext.drawImageScaled(_cacheAsBitmapCanvas, 0.0, 0.0, _width, _height);
+      var canvas = _cacheAsBitmapCanvas;
+      if (canvas != null) renderContext.drawImageScaled(canvas, 0.0, 0.0, _width, _height);
     } else {
       _renderText(renderContext);
     }
@@ -387,18 +388,18 @@ class TextField extends InteractiveObject {
 
       switch(_autoSize) {
         case TextFieldAutoSize.LEFT:
-          this.width = autoWidth;
-          this.height = autoHeight;
+          _width = autoWidth;
+          _height = autoHeight;
           break;
         case TextFieldAutoSize.RIGHT:
-          this.x = this.x - (autoWidth - _width);
-          this.width = autoWidth;
-          this.height = autoHeight;
+          super.x -= (autoWidth - _width);
+          _width = autoWidth;
+          _height = autoHeight;
           break;
         case TextFieldAutoSize.CENTER:
-          this.x = this.x - (autoWidth - _width) / 2;
-          this.width = autoWidth;
-          this.height = autoHeight;
+          super.x -= (autoWidth - _width) / 2;
+          _width = autoWidth;
+          _height = autoHeight;
           break;
       }
     }
@@ -449,25 +450,31 @@ class TextField extends InteractiveObject {
 
   _refreshCache() {
 
-    if (_cacheAsBitmap) {
-
-      var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
-      var canvasWidth = (_width * pixelRatio).ceil();
-      var canvasHeight =  (_height * pixelRatio).ceil();
-
-      if (_cacheAsBitmapCanvas == null) {
-        _cacheAsBitmapCanvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
-      }
-
-      if (_cacheAsBitmapCanvas.width != canvasWidth) _cacheAsBitmapCanvas.width = canvasWidth;
-      if (_cacheAsBitmapCanvas.height != canvasHeight) _cacheAsBitmapCanvas.height = canvasHeight;
-
-      var context = _cacheAsBitmapCanvas.context2D;
-      context.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
-      context.clearRect(0, 0, _width, _height);
-
-      _renderText(context);
+    if (_cacheAsBitmap == false) {
+      return;
     }
+
+    var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
+    var canvasWidth = (_width * pixelRatio).ceil();
+    var canvasHeight =  (_height * pixelRatio).ceil();
+
+    if (canvasWidth <= 0 || canvasHeight <= 0) {
+      _cacheAsBitmapCanvas = null;
+      return;
+    }
+    
+    if (_cacheAsBitmapCanvas == null) {
+      _cacheAsBitmapCanvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
+    }
+
+    if (_cacheAsBitmapCanvas.width != canvasWidth) _cacheAsBitmapCanvas.width = canvasWidth;
+    if (_cacheAsBitmapCanvas.height != canvasHeight) _cacheAsBitmapCanvas.height = canvasHeight;
+
+    var context = _cacheAsBitmapCanvas.context2D;
+    context.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
+    context.clearRect(0, 0, _width, _height);
+
+    _renderText(context);
   }
 
   //-------------------------------------------------------------------------------------------------
