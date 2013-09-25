@@ -63,9 +63,9 @@ class DropShadowFilter extends BitmapFilter {
     int destinationWidth4 = destinationWidth * 4;
     int alphaChannel = _isLittleEndianSystem ? 3 : 0;
 
-    var destinationImageData = destinationBitmapData.createImageData(destinationWidth, destinationHeight);
-    var destinationData = destinationImageData.data;
-    var buffer = new List<int>(1024);
+    ImageData destinationImageData = destinationBitmapData.createImageData(destinationWidth, destinationHeight);
+    List<int> destinationData = destinationImageData.data;
+    List<int> buffer = new List<int>(1024);
 
     //--------------------------------------------------
     // blur vertical
