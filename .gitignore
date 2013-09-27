@@ -3,6 +3,7 @@
 #################
 
 *.dart.js
+*.dart.precompiled.js
 *.dart.js.map
 *.dart.js.deps
 pubspec.lock
