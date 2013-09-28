@@ -150,7 +150,7 @@ class _CustomMask extends Mask {
       num dy = pointJ.y - pointI.y;
       num tx = x - pointI.x;
       num ty = y - pointI.y;
-      if ((tx < (y - pointI.y) * dx / dy)) hit = !hit;
+      if ((tx < ty * dx / dy)) hit = !hit;
     }
 
     return hit;
