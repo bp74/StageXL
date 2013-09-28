@@ -247,25 +247,46 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
     for (int i = _children.length - 1; i >= 0; i--) {
 
-      DisplayObject child = _children[i];
+      var child = _children[i];
+      var mask = child._mask;
+      var matrix = child._transformationMatrix;
 
       if (child._visibleAndNotOff) {
-        Matrix matrix = child._transformationMatrix;
 
-        double deltaX = localX - matrix.tx;
-        double deltaY = localY - matrix.ty;
-        double childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
-        double childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
+        num deltaX = localX - matrix.tx;
+        num deltaY = localY - matrix.ty;
+        num childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
+        num childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
+        num maskX = 0.0;
+        num maskY = 0.0;
+
+        if (mask != null) {
+          if (mask.targetSpace == null) {
+            maskX = childX;
+            maskY = childY;
+          } else if (identical(mask.targetSpace, child)) {
+            maskX = childX;
+            maskY = childY;
+          } else if (identical(mask.targetSpace, this)) {
+            maskX = localX;
+            maskY = localY;
+          } else {
+            matrix = this.transformationMatrixTo(mask.targetSpace);
+            matrix = (matrix != null) ? matrix : _identityMatrix;
+            maskX = localX * matrix.a + localY * matrix.c + matrix.tx;
+            maskY = localX * matrix.b + localY * matrix.d + matrix.ty;
+          }
+          if (mask.hitTest(maskX, maskY) == false) continue;
+        }
 
         var displayObject = child.hitTestInput(childX, childY);
+        if (displayObject == null) continue;
 
-        if (displayObject != null) {
-          if (displayObject is InteractiveObject)
-            if (displayObject.mouseEnabled)
-              return _mouseChildren ? displayObject : this;
-
-          hit = this;
+        if (displayObject is InteractiveObject && displayObject.mouseEnabled) {
+          return _mouseChildren ? displayObject : this;
         }
+
+        hit = this;
       }
     }
 
