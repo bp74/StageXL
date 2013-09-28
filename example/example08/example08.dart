@@ -26,7 +26,7 @@ void main() {
 
   var starPath = new List<Point>();
 
-  for(var i = 0; i < 5; i++) {
+  for(var i = 0; i < 6; i++) {
     var a1 = PI * (i * 60.0) / 180.0;
     var a2 = PI * (i * 60.0 + 30.0) / 180.0;
     starPath.add(new Point(400.0 + 200.0 * cos(a1), 350.0 + 200.0 * sin(a1)));
@@ -60,7 +60,6 @@ void main() {
     animation.pivotY = 350;
     animation.x = 400;
     animation.y = 350;
-    animation.useHandCursor = true;
     stage.addChild(animation);
 
     var buttons = [
