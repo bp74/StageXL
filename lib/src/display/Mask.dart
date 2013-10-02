@@ -172,8 +172,11 @@ class _ShapeMask extends Mask {
   }
 
   bool hitTest(num x, num y) {
-    var matrix = _shape._transformationMatrix.cloneInvert();
-    var point = matrix.transformPoint(new Point(x, y));
-    return _shape.hitTestInput(point.x, point.y) != null;
+    var context = _dummyCanvasContext;
+    var mtx = _shape._transformationMatrix;
+    context.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+    context.beginPath();
+    _shape.graphics._drawPath(context);
+    return context.isPointInPath(x, y);
   }
 }
