@@ -262,7 +262,7 @@ class TextField extends InteractiveObject {
     } else {
       _refreshPending &= 255 - 1;
     }
-    
+
     _textLineMetrics.clear();
 
     //-----------------------------
@@ -421,8 +421,8 @@ class TextField extends InteractiveObject {
           var textIndex = _caretIndex - textLineMetrics._textIndex;
           var text = textLineMetrics._text.substring(0, textIndex);
           _caretLine = line;
-          _caretX = textLineMetrics._x + canvasContext.measureText(text).width.toDouble();
-          _caretY = textLineMetrics._y - fontStyleMetricsAscent * 0.9;
+          _caretX = textLineMetrics.x + canvasContext.measureText(text).width.toDouble();
+          _caretY = textLineMetrics.y - fontStyleMetricsAscent * 0.9;
           _caretWidth = 1.0;
           _caretHeight = textFormatSize;
           break;
@@ -459,7 +459,7 @@ class TextField extends InteractiveObject {
     } else {
       _refreshPending &= 255 - 2;
     }
-    
+
     if (_cacheAsBitmap == false) {
       return;
     }
@@ -472,7 +472,7 @@ class TextField extends InteractiveObject {
       _cacheAsBitmapCanvas = null;
       return;
     }
-    
+
     if (_cacheAsBitmapCanvas == null) {
       _cacheAsBitmapCanvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
     }
@@ -491,27 +491,38 @@ class TextField extends InteractiveObject {
 
   _renderText(CanvasRenderingContext2D context) {
 
+    var textFormat = _defaultTextFormat;
+    var lineWidth = (textFormat.bold ? textFormat.size / 10 : textFormat.size / 20).ceil();
+
     context.save();
     context.beginPath();
     context.rect(0, 0, _width, _height);
     context.clip();
-
-    context.font = _defaultTextFormat._cssFontStyle;
-    context.textAlign = "start";
-    context.textBaseline = "alphabetic";
-
-    // draw background, text, border
 
     if (_background) {
       context.fillStyle = _color2rgb(_backgroundColor);
       context.fillRect(0, 0, _width, _height);
     }
 
-    context.fillStyle = _color2rgb(_defaultTextFormat.color);
+    context.font = textFormat._cssFontStyle;
+    context.textAlign = "start";
+    context.textBaseline = "alphabetic";
+    context.fillStyle = context.strokeStyle = _color2rgb(textFormat.color);
+    context.lineCap = context.lineJoin = "round";
+    context.lineWidth = lineWidth;
 
     for(int i = 0; i < _textLineMetrics.length; i++) {
       var lm = _textLineMetrics[i];
-      context.fillText(lm._text, lm._x, lm._y);
+      context.fillText(lm._text, lm.x, lm.y);
+
+      if(textFormat.underline) {
+        num underlineY = (lm.y + lineWidth).round();
+        if (lineWidth % 2 != 0) underlineY += 0.5;
+        context.beginPath();
+        context.moveTo(lm.x, underlineY);
+        context.lineTo(lm.x + lm.width, underlineY);
+        context.stroke();
+      }
     }
 
     if (_border) {
@@ -660,9 +671,9 @@ class TextField extends InteractiveObject {
       if (textLineMetrics is! TextLineMetrics) continue;  // dart2js_hint
 
       var text = textLineMetrics._text;
-      var lineX = textLineMetrics._x;
-      var lineY1 = textLineMetrics._y - textLineMetrics._ascent;
-      var lineY2 = textLineMetrics._y + textLineMetrics._descent;
+      var lineX = textLineMetrics.x;
+      var lineY1 = textLineMetrics.y - textLineMetrics.ascent;
+      var lineY2 = textLineMetrics.y + textLineMetrics.descent;
 
       if (lineY1 <= mouseY && lineY2 >= mouseY) {
         var bestDistance = double.INFINITY;
