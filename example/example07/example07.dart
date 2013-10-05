@@ -1,7 +1,7 @@
 library example07;
 
 import 'dart:async';
-import 'dart:math';
+import 'dart:math' hide Point, Rectangle;
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
 
