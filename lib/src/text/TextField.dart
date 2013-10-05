@@ -204,6 +204,11 @@ class TextField extends InteractiveObject {
     return getLineText(lineIndex).length;
   }
 
+  Matrix get _transformationMatrix {
+    _refreshTextLineMetrics();
+    return super._transformationMatrix;
+  }
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
@@ -265,7 +270,7 @@ class TextField extends InteractiveObject {
 
     _textLineMetrics.clear();
 
-    //-----------------------------
+    //-----------------------------------
     // split lines
 
     var startIndex = 0;
@@ -291,13 +296,17 @@ class TextField extends InteractiveObject {
     var availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
     var canvasContext = _dummyCanvasContext;
     var paragraphLines = new List<int>();
+    var paragraphs = _text.split('\n');
 
     canvasContext.font = fontStyle;
     canvasContext.textAlign = "start";
     canvasContext.textBaseline = "alphabetic";
     canvasContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
-    for(var paragraph in _text.split('\n')) {
+    for(int p = 0; p < paragraphs.length; p++) {
+
+      var paragraph = paragraphs[p];
+      if (paragraph is! String) continue; // dart2js_hint
 
       paragraphLines.add(_textLineMetrics.length);
 
@@ -311,7 +320,12 @@ class TextField extends InteractiveObject {
         checkLine = null;
         lineIndent = textFormatIndent;
 
-        for(var word in paragraph.split(' ')) {
+        var words = paragraph.split(' ');
+
+        for(int w = 0; w < words.length; w++) {
+
+          var word = words[w];
+          if (word is! String) continue; // dart2js_hint
 
           validLine = checkLine;
           checkLine = (validLine == null) ? word : "$validLine $word";
@@ -340,7 +354,7 @@ class TextField extends InteractiveObject {
       }
     }
 
-    //-----------------------------
+    //-----------------------------------
     // calculate metrics
 
     _textWidth = 0.0;
@@ -358,17 +372,6 @@ class TextField extends InteractiveObject {
 
       var width = canvasContext.measureText(textLineMetrics._text).width.toDouble();
 
-      switch(textFormatAlign) {
-        case TextFormatAlign.CENTER:
-        case TextFormatAlign.JUSTIFY:
-          offsetX += (availableWidth - width) / 2;
-          break;
-        case TextFormatAlign.RIGHT:
-        case TextFormatAlign.END:
-          offsetX += (availableWidth - width);
-          break;
-      }
-
       textLineMetrics._x = offsetX;
       textLineMetrics._y = offsetY;
       textLineMetrics._width = width;
@@ -382,8 +385,8 @@ class TextField extends InteractiveObject {
       _textHeight = offsetY + fontStyleMetricsDescent + textFormatBottomMargin;
     }
 
-    //-----------------------------
-    // calculate autoSize
+    //-----------------------------------
+    // calculate TextField autoSize
 
     var autoWidth = _wordWrap ? _width : _textWidth.ceil();
     var autoHeight = _textHeight.ceil();
@@ -408,12 +411,35 @@ class TextField extends InteractiveObject {
       }
     }
 
-    //-----------------------------
+    availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
+
+    //-----------------------------------
+    // calculate TextFormat align
+
+    for(int line = 0; line < _textLineMetrics.length; line++) {
+
+      var textLineMetrics = _textLineMetrics[line];
+      if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
+
+      switch(textFormatAlign) {
+        case TextFormatAlign.CENTER:
+        case TextFormatAlign.JUSTIFY:
+          textLineMetrics._x += (availableWidth - textLineMetrics.width) / 2;
+          break;
+        case TextFormatAlign.RIGHT:
+        case TextFormatAlign.END:
+          textLineMetrics._x += (availableWidth - textLineMetrics.width);
+          break;
+      }
+    }
+
+    //-----------------------------------
     // calculate caret position
 
     if (_type == TextFieldType.INPUT) {
 
       for(int line = _textLineMetrics.length - 1; line >= 0; line--) {
+
         var textLineMetrics = _textLineMetrics[line];
         if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
 
