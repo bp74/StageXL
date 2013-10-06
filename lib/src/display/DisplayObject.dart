@@ -245,8 +245,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  bool get _visibleAndNotOff => _visible && !_off;
-
   Matrix get transformationMatrix {
     /*
     _transformationMatrix.identity();

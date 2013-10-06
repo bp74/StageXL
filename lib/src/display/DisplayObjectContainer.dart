@@ -251,7 +251,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       var mask = child._mask;
       var matrix = child.transformationMatrix;
 
-      if (child._visibleAndNotOff) {
+      if (child.visible && child.off == false) {
 
         num deltaX = localX - matrix.tx;
         num deltaY = localY - matrix.ty;
@@ -298,11 +298,10 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   void render(RenderState renderState) {
 
     for(int i = 0; i < _children.length; i++) {
-
       DisplayObject child = _children[i];
-
-      if (child._visibleAndNotOff)
+      if (child.visible && child.off == false) {
         renderState.renderDisplayObject(child);
+      }
     }
   }
 
