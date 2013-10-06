@@ -248,7 +248,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     for (int i = _children.length - 1; i >= 0; i--) {
 
       var child = _children[i];
-      var mask = child._mask;
+      var mask = child.mask;
       var matrix = child.transformationMatrix;
 
       if (child.visible && child.off == false) {
