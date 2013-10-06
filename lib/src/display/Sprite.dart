@@ -51,16 +51,16 @@ class Sprite extends DisplayObjectContainer {
       
       var bounds = Mouse._dragSpriteBounds;
       if (bounds != null) {
-        var mpParent = _transformationMatrix.transformPoint(mp);
+        var mpParent = this.transformationMatrix.transformPoint(mp);
         if (mpParent.x < bounds.left) mpParent.x = bounds.left;
         if (mpParent.x > bounds.right) mpParent.x = bounds.right;
         if (mpParent.y < bounds.top) mpParent.y = bounds.top;
         if (mpParent.y > bounds.bottom) mpParent.y = bounds.bottom;
-        mp = _transformationMatrix.cloneInvert().transformPoint(mpParent);
+        mp = this.transformationMatrix.cloneInvert().transformPoint(mpParent);
       }
       
       var pivot = new Point(_pivotX, _pivotY).add(mp).subtract(Mouse._dragSpriteCenter);
-      var location = _transformationMatrix.transformPoint(pivot);
+      var location = this.transformationMatrix.transformPoint(pivot);
 
       this.visible = false;
       _dropTarget = stage.hitTestInput(stage.mouseX, stage.mouseY);

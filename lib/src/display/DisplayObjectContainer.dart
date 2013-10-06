@@ -219,7 +219,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
       DisplayObject child = _children[i];
 
-      _tmpMatrix.copyFromAndConcat(child._transformationMatrix, matrix);
+      _tmpMatrix.copyFromAndConcat(child.transformationMatrix, matrix);
       Rectangle rectangle = child.getBoundsTransformed(_tmpMatrix, returnRectangle);
 
       if (rectangle.left < left) left = rectangle.left;
@@ -249,7 +249,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
       var child = _children[i];
       var mask = child._mask;
-      var matrix = child._transformationMatrix;
+      var matrix = child.transformationMatrix;
 
       if (child._visibleAndNotOff) {
 

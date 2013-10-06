@@ -166,14 +166,14 @@ class _ShapeMask extends Mask {
   _ShapeMask(Shape shape) : _shape = shape;
 
   _drawMask() {
-    var mtx = _shape._transformationMatrix;
+    var mtx = _shape.transformationMatrix;
     _context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
     _shape.graphics._drawPath(_context);
   }
 
   bool hitTest(num x, num y) {
     var context = _dummyCanvasContext;
-    var mtx = _shape._transformationMatrix;
+    var mtx = _shape.transformationMatrix;
     context.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
     context.beginPath();
     _shape.graphics._drawPath(context);

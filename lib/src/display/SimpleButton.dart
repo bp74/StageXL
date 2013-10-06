@@ -28,7 +28,7 @@ class SimpleButton extends InteractiveObject {
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
     
     if (_currentState != null) {
-      _tmpMatrix.copyFromAndConcat(_currentState._transformationMatrix, matrix);
+      _tmpMatrix.copyFromAndConcat(_currentState.transformationMatrix, matrix);
       return _currentState.getBoundsTransformed(_tmpMatrix, returnRectangle);
     }
 
@@ -41,7 +41,7 @@ class SimpleButton extends InteractiveObject {
     
     if (this.hitTestState != null) {
       
-      Matrix matrix = this.hitTestState._transformationMatrix;
+      Matrix matrix = this.hitTestState.transformationMatrix;
 
       double deltaX = localX - matrix.tx;
       double deltaY = localY - matrix.ty;

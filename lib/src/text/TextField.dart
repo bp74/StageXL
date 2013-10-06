@@ -204,9 +204,9 @@ class TextField extends InteractiveObject {
     return getLineText(lineIndex).length;
   }
 
-  Matrix get _transformationMatrix {
+  Matrix get transformationMatrix {
     _refreshTextLineMetrics();
-    return super._transformationMatrix;
+    return super.transformationMatrix;
   }
 
   //-------------------------------------------------------------------------------------------------

@@ -72,11 +72,11 @@ class RenderState {
 
   void renderDisplayObject(DisplayObject displayObject) {
 
-    var matrix = displayObject._transformationMatrix;
-    var alpha = displayObject._alpha;
-    var mask = displayObject._mask;
-    var shadow = displayObject._shadow;
-    var composite = displayObject._compositeOperation;
+    var matrix = displayObject.transformationMatrix;
+    var alpha = displayObject.alpha;
+    var mask = displayObject.mask;
+    var shadow = displayObject.shadow;
+    var composite = displayObject.compositeOperation;
 
     var cs1 = _currentContextState;
     var cs2 = _currentContextState.nextContextState;

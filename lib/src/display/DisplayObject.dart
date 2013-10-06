@@ -31,7 +31,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   DisplayObjectContainer _parent = null;
 
   final Matrix _tmpMatrix = new Matrix.fromIdentity();
-  final Matrix _transformationMatrixPrivate = new Matrix.fromIdentity();
+  final Matrix _transformationMatrix = new Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
 
   //-------------------------------------------------------------------------------------------------
@@ -216,8 +216,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  num get width => getBoundsTransformed(_transformationMatrix).width;
-  num get height => getBoundsTransformed(_transformationMatrix).height;
+  num get width => getBoundsTransformed(this.transformationMatrix).width;
+  num get height => getBoundsTransformed(this.transformationMatrix).height;
 
   void set width(num value) {
     this.scaleX = 1;
@@ -247,13 +247,13 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   bool get _visibleAndNotOff => _visible && !_off;
 
-  Matrix get _transformationMatrix {
+  Matrix get transformationMatrix {
     /*
-    _transformationMatrixPrivate.identity();
-    _transformationMatrixPrivate.translate(-_pivotX, -_pivotY);
-    _transformationMatrixPrivate.scale(_scaleX, _scaleY);
-    _transformationMatrixPrivate.rotate(_rotation);
-    _transformationMatrixPrivate.translate(_x, _y);
+    _transformationMatrix.identity();
+    _transformationMatrix.translate(-_pivotX, -_pivotY);
+    _transformationMatrix.scale(_scaleX, _scaleY);
+    _transformationMatrix.rotate(_rotation);
+    _transformationMatrix.translate(_x, _y);
     */
 
     if (_transformationMatrixRefresh) {
@@ -273,7 +273,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
       if (skewXrotation == 0.0 && skewYrotation == 0.0) {
 
-        _transformationMatrixPrivate.setTo(scaleX, 0.0, 0.0, scaleY, _x - pivotX * scaleX, _y - pivotY * scaleY);
+        _transformationMatrix.setTo(scaleX, 0.0, 0.0, scaleY, _x - pivotX * scaleX, _y - pivotY * scaleY);
 
       } else {
 
@@ -296,41 +296,37 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
         num tx =  _x - (pivotX * a + pivotY * c);
         num ty =  _y - (pivotX * b + pivotY * d);
 
-        _transformationMatrixPrivate.setTo(a, b, c, d, tx, ty);
+        _transformationMatrix.setTo(a, b, c, d, tx, ty);
       }
     }
 
-    return _transformationMatrixPrivate;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  Matrix get transformationMatrix {
-    return _transformationMatrix.clone();
+    return _transformationMatrix;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   Matrix transformationMatrixTo(DisplayObject targetSpace) {
 
-    if (targetSpace == _parent)
-      return _transformationMatrix.clone();
-
-    if (targetSpace != null && targetSpace._parent == this)
-      return targetSpace._transformationMatrix.cloneInvert();
-
+    if (targetSpace == _parent) {
+      return this.transformationMatrix.clone();
+    }
+    
+    if (targetSpace != null && targetSpace._parent == this) {
+      return targetSpace.transformationMatrix.cloneInvert();
+    }
+    
     //------------------------------------------------
 
     Matrix resultMatrix = new Matrix.fromIdentity();
     DisplayObject resultObject = this;
 
     while(resultObject != targetSpace && resultObject._parent != null) {
-      resultMatrix.concat(resultObject._transformationMatrix);
+      resultMatrix.concat(resultObject.transformationMatrix);
       resultObject = resultObject._parent;
     }
 
     if (targetSpace == null && resultObject != null) {
-      resultMatrix.concat(resultObject._transformationMatrix);
+      resultMatrix.concat(resultObject.transformationMatrix);
       resultObject = null;
     }
 
@@ -343,17 +339,19 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     DisplayObject targetObject = targetSpace;
 
     while(targetObject != this && targetObject._parent != null) {
-      targetMatrix.concat(targetObject._transformationMatrix);
+      targetMatrix.concat(targetObject.transformationMatrix);
       targetObject = targetObject._parent;
     }
 
     targetMatrix.invert();
 
-    if (targetObject == this)
+    if (targetObject == this) {
       return targetMatrix;
-
-    if (targetObject != resultObject)
+    }
+    
+    if (targetObject != resultObject) {
       return null;
+    }
 
     resultMatrix.concat(targetMatrix);
 
@@ -364,8 +362,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
 
-    if (returnRectangle == null)
-      returnRectangle = new Rectangle.zero();
+    if (returnRectangle == null) returnRectangle = new Rectangle.zero();
 
     returnRectangle.x = matrix.tx;
     returnRectangle.y = matrix.ty;
@@ -380,7 +377,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   Rectangle getBounds(DisplayObject targetSpace) {
 
     Rectangle returnRectangle = new Rectangle.zero();
-    Matrix matrix = (targetSpace == null) ? _transformationMatrix : transformationMatrixTo(targetSpace);
+    Matrix matrix = (targetSpace == null) ? transformationMatrix : transformationMatrixTo(targetSpace);
 
     return (matrix != null) ? getBoundsTransformed(matrix, returnRectangle) : returnRectangle;
   }
@@ -439,8 +436,9 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     _tmpMatrix.identity();
 
-    for(DisplayObject displayObject = this; displayObject != null; displayObject = displayObject._parent)
-      _tmpMatrix.concat(displayObject._transformationMatrix);
+    for(var current = this; current != null; current = current._parent) {
+      _tmpMatrix.concat(current.transformationMatrix);
+    }
 
     return _tmpMatrix.transformPoint(localPoint);
   }
@@ -451,8 +449,9 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     _tmpMatrix.identity();
 
-    for(DisplayObject displayObject = this; displayObject != null; displayObject = displayObject._parent)
-      _tmpMatrix.concat(displayObject._transformationMatrix);
+    for(var current = this; current != null; current = current._parent) {
+      _tmpMatrix.concat(current.transformationMatrix);
+    }
 
     _tmpMatrix.invert();
 
