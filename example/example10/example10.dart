@@ -47,7 +47,7 @@ void main() {
     //-------------------------------------------
     // use a blur filter for the astronaut
 
-    var blurBitmapData = new BitmapData(astronautRectangle.width + 40, astronautRectangle.height + 40, true);
+    var blurBitmapData = new BitmapData(astronautRectangle.width + 40, astronautRectangle.height + 40, true, Color.Transparent);
     var blurBitmap = new Bitmap(blurBitmapData);
     blurBitmap.x = 420 - 20;
     blurBitmap.y = 40 - 20;
@@ -86,7 +86,7 @@ void main() {
     //-------------------------------------------
     // use drop-shadow filter
 
-    var dropShadowBitmapData = new BitmapData(160, 160, true);
+    var dropShadowBitmapData = new BitmapData(160, 160, true, Color.Transparent);
     var dropShadowBitmap = new Bitmap(dropShadowBitmapData);
     dropShadowBitmap.x = 420;
     dropShadowBitmap.y = 390;
@@ -98,7 +98,7 @@ void main() {
     //-------------------------------------------
     // use glow filter
 
-    var glowBitmapData= new BitmapData(160, 160, true);
+    var glowBitmapData= new BitmapData(160, 160, true, Color.Transparent);
     var glowBitmap = new Bitmap(glowBitmapData);
     glowBitmap.x = 580;
     glowBitmap.y = 390;
