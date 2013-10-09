@@ -1,14 +1,14 @@
 part of stagexl;
 
 class Graphics {
-  
+
   static final Map _BASE_64 = {"A":0,"B":1,"C":2,"D":3,"E":4,"F":5,"G":6,"H":7,"I":8,"J":9,"K":10,"L":11,"M":12,"N":13,"O":14,"P":15,"Q":16,"R":17,"S":18,"T":19,"U":20,"V":21,"W":22,"X":23,"Y":24,"Z":25,"a":26,"b":27,"c":28,"d":29,"e":30,"f":31,"g":32,"h":33,"i":34,"j":35,"k":36,"l":37,"m":38,"n":39,"o":40,"p":41,"q":42,"r":43,"s":44,"t":45,"u":46,"v":47,"w":48,"x":49,"y":50,"z":51,"0":52,"1":53,"2":54,"3":55,"4":56,"5":57,"6":58,"7":59,"8":60,"9":61,"+":62,"/":63};
 
   final List<_GraphicsCommand> _commands = new List<_GraphicsCommand>();
-  
-  Rectangle _identityRectangle = new Rectangle.zero(); 
+
+  Rectangle _identityRectangle = new Rectangle.zero();
   bool _identityRectangleRefresh = true;
-  
+
   clear() {
     _commands.clear();
     _identityRectangleRefresh = true;
@@ -20,10 +20,10 @@ class Graphics {
   }
 
   //-------------------------------------------------------------------------------------------------
-  
+
   beginPath() =>
     _addCommand(new _GraphicsCommandBeginPath());
-  
+
   closePath() =>
     _addCommand(new _GraphicsCommandClosePath());
 
@@ -69,7 +69,7 @@ class Graphics {
   //-------------------------------------------------------------------------------------------------
 
   rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
-    
+
     _addCommand(new _GraphicsCommandMoveTo(x + ellipseWidth, y));
     _addCommand(new _GraphicsCommandLineTo(x + width - ellipseWidth, y));
     _addCommand(new _GraphicsCommandQuadraticCurveTo(x + width, y, x + width, y + ellipseHeight));
@@ -84,7 +84,7 @@ class Graphics {
   //-------------------------------------------------------------------------------------------------
 
   circle(num x, num y, num radius) {
-    
+
     _addCommand(new _GraphicsCommandMoveTo(x + radius, y));
     _addCommand(new _GraphicsCommandArc(x, y, radius, 0, PI * 2, false));
   }
@@ -92,7 +92,7 @@ class Graphics {
   //-------------------------------------------------------------------------------------------------
 
   ellipse(num x, num y, num width, num height) {
-    
+
     num kappa = 0.5522848;
     num ox = (width / 2) * kappa;
     num oy = (height / 2) * kappa;
@@ -113,21 +113,21 @@ class Graphics {
   //-------------------------------------------------------------------------------------------------
 
   decode(String str)  {
-    
+
     var base64 = _BASE_64;
     var instructions = [moveTo, lineTo, quadraticCurveTo, bezierCurveTo, closePath];
     List<int> paramCount = [2, 2, 4, 6, 0];
     List<num> params = new List<num>();
     var x=0, y=0;
     var i=0, l=str.length;
-    
+
     while (i<l) {
       var c = str[i];
       var n = base64[c];
       var fi = n>>3; // highest order bits 1-3 code for operation.
       var f = instructions[fi];
       // check that we have a valid instruction & that the unused bits are empty:
-      if (f == null || (n&3) > 0) 
+      if (f == null || (n&3) > 0)
         throw("bad path data (@$i): $c");
       var pl = paramCount[fi];
       if (fi == 0) x=y=0; // move operations reset the position.
@@ -148,66 +148,67 @@ class Graphics {
       Function.apply(f, params);
     }
   }
-  
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   Rectangle _getBoundsTransformed(Matrix matrix) {
 
     var bounds = new _GraphicsBounds(matrix);
-    
+
     for(int i = 0; i < _commands.length; i++) {
       _commands[i].updateBounds(bounds);
     }
-    
+
     return bounds.getRectangle();
   }
 
   //-------------------------------------------------------------------------------------------------
 
   bool _hitTestInput(num localX, num localY) {
-    
+
     if (_identityRectangleRefresh) {
       _identityRectangleRefresh = false;
       _identityRectangle = _getBoundsTransformed(new Matrix.fromIdentity());
     }
-    
+
     if (_identityRectangle.contains(localX, localY)) {
-      
+
       var context = _dummyCanvasContext;
+      context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
       context.beginPath();
-      
+
       for(int i = 0; i < _commands.length; i++) {
         if (_commands[i].hitTestInput(context, localX, localY)) {
           return true;
         }
       }
     }
-    
+
     return false;
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   void _drawPath(CanvasRenderingContext2D context) {
-    
+
     for(int i = 0; i < _commands.length; i++) {
       _commands[i].drawPath(context);
     }
   }
-  
+
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-    
+
     var context = renderState.context;
     context.save();
     context.beginPath();
-    
+
     for(int i = 0; i < _commands.length; i++) {
       _commands[i].render(context);
     }
-    
+
     context.restore();
   }
 
