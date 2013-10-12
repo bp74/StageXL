@@ -12,23 +12,28 @@ abstract class BitmapFilter {
   _premultiplyAlpha(ImageData imageData) {
 
     var data = imageData.data;
-
-    var rChannel = _isLittleEndianSystem ? 0 : 3;
-    var gChannel = _isLittleEndianSystem ? 1 : 2;
-    var bChannel = _isLittleEndianSystem ? 2 : 1;
-    var aChannel = _isLittleEndianSystem ? 3 : 0;
+    var isLittleEndianSystem = _isLittleEndianSystem;
 
     for(var i = 0; i <= data.length - 4; i += 4) {
-      var r = data[i + rChannel];
-      var g = data[i + gChannel];
-      var b = data[i + bChannel];
-      var a = data[i + aChannel];
-      r = (r * a) ~/ 255;
-      g = (g * a) ~/ 255;
-      b = (b * a) ~/ 255;
-      data[i + rChannel] = r;
-      data[i + gChannel] = g;
-      data[i + bChannel] = b;
+      int c0 = data[i + 0];
+      int c1 = data[i + 1];
+      int c2 = data[i + 2];
+      int c3 = data[i + 3];
+
+      if (c0 is! num) continue; // dart2js_hint
+      if (c1 is! num) continue; // dart2js_hint
+      if (c2 is! num) continue; // dart2js_hint
+      if (c3 is! num) continue; // dart2js_hint
+
+      if (isLittleEndianSystem) {
+        data[i + 0] = (c0 * c3) ~/ 255;
+        data[i + 1] = (c1 * c3) ~/ 255;
+        data[i + 2] = (c2 * c3) ~/ 255;
+      } else {
+        data[i + 1] = (c1 * c0) ~/ 255;
+        data[i + 2] = (c2 * c0) ~/ 255;
+        data[i + 3] = (c3 * c0) ~/ 255;
+      }
     }
   }
 
@@ -37,24 +42,29 @@ abstract class BitmapFilter {
   _unpremultiplyAlpha(ImageData imageData) {
 
     var data = imageData.data;
-
-    var rChannel = _isLittleEndianSystem ? 0 : 3;
-    var gChannel = _isLittleEndianSystem ? 1 : 2;
-    var bChannel = _isLittleEndianSystem ? 2 : 1;
-    var aChannel = _isLittleEndianSystem ? 3 : 0;
+    var isLittleEndianSystem = _isLittleEndianSystem;
 
     for(var i = 0; i <= data.length - 4; i += 4) {
-      var r = data[i + rChannel];
-      var g = data[i + gChannel];
-      var b = data[i + bChannel];
-      var a = data[i + aChannel];
-      if (a > 0) {
-        r = (r * 255) ~/ a;
-        g = (g * 255) ~/ a;
-        b = (b * 255) ~/ a;
-        data[i + rChannel] = r;
-        data[i + gChannel] = g;
-        data[i + bChannel] = b;
+      int c0 = data[i + 0];
+      int c1 = data[i + 1];
+      int c2 = data[i + 2];
+      int c3 = data[i + 3];
+
+      if (c0 is! num) continue; // dart2js_hint
+      if (c1 is! num) continue; // dart2js_hint
+      if (c2 is! num) continue; // dart2js_hint
+      if (c3 is! num) continue; // dart2js_hint
+
+      if (isLittleEndianSystem) {
+        if (c3 == 0) continue;
+        data[i + 0] = (c0 * 255) ~/ c3;
+        data[i + 1] = (c1 * 255) ~/ c3;
+        data[i + 2] = (c2 * 255) ~/ c3;
+      } else {
+        if (c0 == 0) continue;
+        data[i + 1] = (c1 * 255) ~/ c0;
+        data[i + 2] = (c2 * 255) ~/ c0;
+        data[i + 3] = (c3 * 255) ~/ c0;
       }
     }
   }
