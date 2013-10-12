@@ -165,6 +165,7 @@ class BitmapData implements BitmapDrawable {
 
   int get width => _width;
   int get height => _height;
+  Rectangle get rectangle => new Rectangle(0, 0, _width, _height);
 
   num get pixelRatio => _pixelRatio;
 
@@ -237,34 +238,46 @@ class BitmapData implements BitmapDrawable {
 
   void colorTransform(Rectangle rect, ColorTransform transform) {
 
+    int redMultiplier = (1024 * transform.redMultiplier).toInt();
+    int greenMultiplier = (1024 * transform.greenMultiplier).toInt();
+    int blueMultiplier = (1024 * transform.blueMultiplier).toInt();
+    int alphaMultiplier = (1024 * transform.alphaMultiplier).toInt();
+
+    int redOffset = transform.redOffset;
+    int greenOffset = transform.greenOffset;
+    int blueOffset = transform.blueOffset;
+    int alphaOffset = transform.alphaOffset;
+
+    var isLittleEndianSystem = _isLittleEndianSystem;
+
+    int mulitplier0 = isLittleEndianSystem ? redMultiplier : alphaMultiplier;
+    int mulitplier1 = isLittleEndianSystem ? greenMultiplier : blueMultiplier;
+    int mulitplier2 = isLittleEndianSystem ? blueMultiplier : greenMultiplier;
+    int mulitplier3 = isLittleEndianSystem ? alphaMultiplier : redMultiplier;
+
+    int offset0 = isLittleEndianSystem ? redOffset : alphaOffset;
+    int offset1 = isLittleEndianSystem ? greenOffset : blueOffset;
+    int offset2 = isLittleEndianSystem ? blueOffset : greenOffset;
+    int offset3 = isLittleEndianSystem ? alphaOffset : redOffset;
+
     var imageData = getImageData(rect.x, rect.y, rect.width, rect.height);
     var data = imageData.data;
-    var length = data.length;
 
-    int r = transform.redOffset;
-    int g = transform.greenOffset;
-    int b = transform.blueOffset;
-    int a = transform.alphaOffset;
+    for (int i = 0; i <= data.length - 4; i += 4) {
+      int c0 = data[i + 0];
+      int c1 = data[i + 1];
+      int c2 = data[i + 2];
+      int c3 = data[i + 3];
 
-    num rm = transform.redMultiplier;
-    num gm = transform.greenMultiplier;
-    num bm = transform.blueMultiplier;
-    num am = transform.alphaMultiplier;
+      if (c0 is! num) continue; // dart2js hint
+      if (c1 is! num) continue; // dart2js hint
+      if (c2 is! num) continue; // dart2js hint
+      if (c3 is! num) continue; // dart2js hint
 
-    if (_isLittleEndianSystem) {
-      for (int i = 0; i <= length - 4; i += 4) {
-        data[i + 0] = data[i + 0] * (1 - rm) + (r * rm);
-        data[i + 1] = data[i + 1] * (1 - gm) + (g * gm);
-        data[i + 2] = data[i + 2] * (1 - bm) + (b * bm);
-        data[i + 3] = data[i + 3] * (1 - am) + (a * am);
-      }
-    } else {
-      for (int i = 0; i <= length - 4; i += 4) {
-        data[i + 0] = data[i + 0] * (1 - am) + (a * am);
-        data[i + 1] = data[i + 1] * (1 - bm) + (b * bm);
-        data[i + 2] = data[i + 2] * (1 - gm) + (g * gm);
-        data[i + 3] = data[i + 3] * (1 - rm) + (r * rm);
-      }
+      data[i + 0] = offset0 + ((c0 * mulitplier0) >> 10);
+      data[i + 1] = offset1 + ((c1 * mulitplier1) >> 10);
+      data[i + 2] = offset2 + ((c2 * mulitplier2) >> 10);
+      data[i + 3] = offset3 + ((c3 * mulitplier3) >> 10);
     }
 
     putImageData(imageData, rect.x, rect.y);
