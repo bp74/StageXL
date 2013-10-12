@@ -202,14 +202,11 @@ class Graphics {
   void render(RenderState renderState) {
 
     var context = renderState.context;
-    context.save();
     context.beginPath();
 
     for(int i = 0; i < _commands.length; i++) {
       _commands[i].render(context);
     }
-
-    context.restore();
   }
 
 }
