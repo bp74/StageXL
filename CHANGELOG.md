@@ -3,6 +3,16 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.8.6
+  * Added TextField.cacheAsBitmap (default = true) for better text scaling.
+  * Fixed TextField.autoSize.  
+  * Fixed TextFormat.leading, TextFormat.indent and TextFormat.underline.
+  * Fixed mouse and touch events for DisplayObjects with masks.
+  * Optimized BitmapData.copyPixel and added BitmapData.drawPixels.
+  * Fixed BitmapData.colorTransform.
+  * Fixed Firefox render problems on Linux.
+  * Added Stage.sourceWidth and Stage.sourceHeight getters.
+
 #### Pub version 0.8.5
   * Added FlipBook.frameDurations property for flexible animation speeds.
   * Added SoundMixer.soundTransform implementation. 
