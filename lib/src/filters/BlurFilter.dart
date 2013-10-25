@@ -52,7 +52,7 @@ class BlurFilter extends BitmapFilter {
 
     var destinationImageData = destinationBitmapData.createImageData(destinationWidth, destinationHeight);
     var destinationData = destinationImageData.data;
-    var buffer = new List<int>(1024);
+    var buffer = new List<int>.filled(1024, 0);
 
     _premultiplyAlpha(sourceImageData);
 
