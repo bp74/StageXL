@@ -41,18 +41,18 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   static const EventStreamProvider<Event> addedToStageEvent = const EventStreamProvider<Event>(Event.ADDED_TO_STAGE);
   static const EventStreamProvider<Event> removedFromStageEvent = const EventStreamProvider<Event>(Event.REMOVED_FROM_STAGE);
 
-  Stream<Event> get onAdded => DisplayObject.addedEvent.forTarget(this);
-  Stream<Event> get onRemoved => DisplayObject.removedEvent.forTarget(this);
-  Stream<Event> get onAddedToStage => DisplayObject.addedToStageEvent.forTarget(this);
-  Stream<Event> get onRemovedFromStage => DisplayObject.removedFromStageEvent.forTarget(this);
+  EventStream<Event> get onAdded => DisplayObject.addedEvent.forTarget(this);
+  EventStream<Event> get onRemoved => DisplayObject.removedEvent.forTarget(this);
+  EventStream<Event> get onAddedToStage => DisplayObject.addedToStageEvent.forTarget(this);
+  EventStream<Event> get onRemovedFromStage => DisplayObject.removedFromStageEvent.forTarget(this);
 
   static const EventStreamProvider<EnterFrameEvent> enterFrameEvent = const EventStreamProvider<EnterFrameEvent>(Event.ENTER_FRAME);
   static const EventStreamProvider<ExitFrameEvent> exitFrameEvent = const EventStreamProvider<ExitFrameEvent>(Event.EXIT_FRAME);
   static const EventStreamProvider<RenderEvent> renderEvent = const EventStreamProvider<RenderEvent>(Event.RENDER);
 
-  Stream<EnterFrameEvent> get onEnterFrame => DisplayObject.enterFrameEvent.forTarget(this);
-  Stream<ExitFrameEvent> get onExitFrame => DisplayObject.exitFrameEvent.forTarget(this);
-  Stream<RenderEvent> get onRender => DisplayObject.renderEvent.forTarget(this);
+  EventStream<EnterFrameEvent> get onEnterFrame => DisplayObject.enterFrameEvent.forTarget(this);
+  EventStream<ExitFrameEvent> get onExitFrame => DisplayObject.exitFrameEvent.forTarget(this);
+  EventStream<RenderEvent> get onRender => DisplayObject.renderEvent.forTarget(this);
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
@@ -308,11 +308,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (targetSpace == _parent) {
       return this.transformationMatrix.clone();
     }
-    
+
     if (targetSpace != null && targetSpace._parent == this) {
       return targetSpace.transformationMatrix.cloneInvert();
     }
-    
+
     //------------------------------------------------
 
     Matrix resultMatrix = new Matrix.fromIdentity();
@@ -346,7 +346,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (targetObject == this) {
       return targetMatrix;
     }
-    
+
     if (targetObject != resultObject) {
       return null;
     }
@@ -513,8 +513,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     List<DisplayObject> ancestors = null;
 
     if (event.captures || event.bubbles) {
-      for(DisplayObject ancestor = _parent; ancestor != null; ancestor = ancestor._parent) {
-        if (ancestor._hasEventListener(event.type, event.captures, event.bubbles)) {
+      for(DisplayObject  ancestor = parent; ancestor != null; ancestor = ancestor.parent) {
+        if(ancestor._hasPropagationEventListeners(event)) {
           if (ancestors == null) ancestors = _displayObjectListPool.pop();
           ancestors.add(ancestor);
         }
@@ -523,17 +523,17 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     if (event.captures && ancestors != null) {
       for(int i = ancestors.length - 1 ; i >= 0 && event.stopsPropagation == false; i--) {
-        ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.CAPTURING_PHASE);
+        ancestors[i]._dispatchEventInternal(event, this, EventPhase.CAPTURING_PHASE);
       }
     }
 
     if (event.stopsPropagation == false) {
-      _dispatchEventInternal(event, this, this, EventPhase.AT_TARGET);
+      _dispatchEventInternal(event, this, EventPhase.AT_TARGET);
     }
 
     if (event.bubbles && ancestors != null) {
       for(int i = 0; i < ancestors.length && event.stopsPropagation == false; i++) {
-        ancestors[i]._dispatchEventInternal(event, this, ancestors[i], EventPhase.BUBBLING_PHASE);
+        ancestors[i]._dispatchEventInternal(event, this, EventPhase.BUBBLING_PHASE);
       }
     }
 

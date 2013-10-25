@@ -1,7 +1,7 @@
 part of stagexl;
 
 class Event {
-  
+
   // DiplayObject events
   static const String ADDED = "added";
   static const String ADDED_TO_STAGE = "addedToStage";
@@ -11,7 +11,7 @@ class Event {
   static const String REMOVED_FROM_STAGE = "removedFromStage";
   static const String RESIZE = "resize";
   static const String RENDER = "render";
-  
+
   // Common events
   static const String OKAY = "okay";
   static const String CANCEL = "cancel";

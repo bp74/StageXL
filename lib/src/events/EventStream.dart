@@ -1,14 +1,14 @@
 part of stagexl;
 
-class _EventStream<T extends Event> extends Stream<T> {
+class EventStream<T extends Event> extends Stream<T> {
 
   final EventDispatcher _target;
   final String _eventType;
-  final bool _useCapture;
 
-  List<_EventStreamSubscription> _subscriptions = [];
+  List<EventStreamSubscription> _subscriptions = [];
+  int _capturingSubscriptionCount = 0;
 
-  _EventStream(this._target, this._eventType, this._useCapture);
+  EventStream._internal(this._target, this._eventType);
 
   //-----------------------------------------------------------------------------------------------
 
@@ -18,76 +18,92 @@ class _EventStream<T extends Event> extends Stream<T> {
     void onListen(StreamSubscription subscription),
     void onCancel(StreamSubscription subscription)}) => this;
 
-  bool get _hasSubscriptions => _subscriptions.length > 0;
+  bool get hasSubscriptions => _subscriptions.length > 0;
+
+  EventDispatcher get target => _target;
 
   //-----------------------------------------------------------------------------------------------
 
-  StreamSubscription<T> listen(void onData(T event), {
-    void onError(error), void onDone(), bool cancelOnError:false}) {
+  EventStreamSubscription<T> listen(void onData(T event), {
+    Function onError, void onDone(), bool cancelOnError:false }) {
 
-    var eventStreamSubscription = new _EventStreamSubscription<T>(this, onData);
-    _subscriptions.add(eventStreamSubscription);
+    var subscription = new EventStreamSubscription<T>._internal(this, onData, false);
+    _subscriptions.add(subscription);
 
-    if(_useCapture == false) {
-      var eventStream = this;
-      switch(_eventType) {
-        case Event.ENTER_FRAME: _enterFrameEventIndex.addEventStream(eventStream); break;
-        case Event.EXIT_FRAME: _exitFrameEventIndex.addEventStream(eventStream); break;
-        case Event.RENDER: _renderEventIndex.addEventStream(eventStream); break;
-      }
+    switch(_eventType) {
+      case Event.ENTER_FRAME: _enterFrameSubscriptions.add(subscription); break;
+      case Event.EXIT_FRAME: _exitFrameSubscriptions.add(subscription); break;
+      case Event.RENDER: _renderSubscriptions.add(subscription); break;
     }
+
+    return subscription;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  EventStreamSubscription<T> capture(void onData(T event)) {
+
+    var eventStreamSubscription = new EventStreamSubscription<T>._internal(this, onData, true);
+
+    _subscriptions.add(eventStreamSubscription);
+    _capturingSubscriptionCount++;
 
     return eventStreamSubscription;
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  cancelSubscription(_EventStreamSubscription eventStreamSubscription) {
+  void cancelSubscriptions() {
 
-    if (eventStreamSubscription._canceled) return;
+    var subscriptions = _subscriptions;
 
-    var subscriptions = [];
+    for(var i = 0; i < subscriptions.length; i++) {
+      subscriptions[i].cancel();
+    }
+  }
 
-    for(var i = 0; i < _subscriptions.length; i++) {
-      var subscription = _subscriptions[i];
-      if (identical(subscription, eventStreamSubscription)) {
-        subscription._canceled = true;
-      } else {
-        subscriptions.add(subscription);
+  //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+
+  _onSubscriptionCancel(EventStreamSubscription eventStreamSubscription) {
+
+    var oldSubscriptions = _subscriptions;
+    var newSubscriptions = [];
+
+    if (eventStreamSubscription.isCapturing) {
+      _capturingSubscriptionCount--;
+    }
+
+    for(var i = 0; i < oldSubscriptions.length; i++) {
+      var subscription = oldSubscriptions[i];
+      if (identical(subscription, eventStreamSubscription) == false) {
+        newSubscriptions.add(subscription);
       }
     }
 
-    _subscriptions = subscriptions;
+    _subscriptions = newSubscriptions;
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  cancelSubscriptions() {
+  bool _hasPropagationSubscriptions(Event event) {
 
-    for(var i = 0; i < _subscriptions.length; i++) {
-      var subscription = _subscriptions[i];
-      subscription._canceled = true;
-    }
-
-    _subscriptions = [];
+    return
+        event.captures && _capturingSubscriptionCount > 0 ||
+        event.bubbles && _subscriptions.length > _capturingSubscriptionCount;
   }
 
-  //-----------------------------------------------------------------------------------------------
-
-  dispatchEvent(T event)  {
+  _dispatchEventInternal(T event, EventDispatcher target, int eventPhase)  {
 
     // The _subscriptions list will change when a subscription is canceled.
     // The _subscriptions length will change when a subscription is added.
     // Therefore we keep the current list and length in a local variable.
 
     var subscriptions = _subscriptions;
-    var subscriptionsLength = _subscriptions.length;
+    var length = subscriptions.length;
 
-    for(var i = 0; i < subscriptionsLength; i++) {
-      var subscription = subscriptions[i];
-      if (subscription._canceled == false) {
-        subscription._onData(event);
-      }
+    for(var i = 0; i < length && event.stopsImmediatePropagation == false; i++) {
+      subscriptions[i]._dispatchEventInternal(event, target, eventPhase);
     }
   }
 

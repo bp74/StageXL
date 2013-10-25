@@ -53,7 +53,7 @@ class RenderLoop {
     if (deltaTime >= 1) {
       _renderTime = currentTime;
       _enterFrameEvent._passedTime = deltaTimeSec;
-      _enterFrameEventIndex.dispatchEvent(_enterFrameEvent);
+      _dispatchBroadcastEvent(_enterFrameEvent, _enterFrameSubscriptions);
 
       _juggler.advanceTime(deltaTimeSec);
 
@@ -63,14 +63,14 @@ class RenderLoop {
 
       if (_invalidate) {
         _invalidate = false;
-        _renderEventIndex.dispatchEvent(_renderEvent);
+        _dispatchBroadcastEvent(_renderEvent, _renderSubscriptions);
       }
 
       for(int i = 0; i < _stages.length; i++) {
         _stages[i].materialize(currentTimeSec, deltaTimeSec);
       }
 
-      _exitFrameEventIndex.dispatchEvent(_exitFrameEvent);
+      _dispatchBroadcastEvent(_exitFrameEvent, _exitFrameSubscriptions);
     }
   }
 

@@ -1,24 +1,30 @@
 part of stagexl;
 
-typedef void _EventListener<T extends Event>(T event);
+typedef void EventListener<T extends Event>(T event);
 
-class _EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
+class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
 
   int _pauseCount = 0;
   bool _canceled = false;
+  bool _captures = false;
 
-  _EventStream<T> _eventStream;
-  _EventListener<T> _onData;
-  _EventStreamSubscription(this._eventStream, this._onData);
+  EventStream<T> _eventStream;
+  EventListener<T> _eventListener;
+
+  EventStreamSubscription._internal(this._eventStream, this._eventListener, this._captures);
 
   //-----------------------------------------------------------------------------------------------
 
   bool get isPaused => _pauseCount > 0;
+  bool get isCanceled => _canceled;
+  bool get isCapturing => _captures;
+
+  EventStream<T> get eventStream => _eventStream;
 
   //-----------------------------------------------------------------------------------------------
 
   void onData(void handleData(T event)) {
-    _onData = handleData;
+    _eventListener = handleData;
   }
 
   void onError(void handleError(error)) {
@@ -33,14 +39,17 @@ class _EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
 
   Future asFuture([var futureValue]) {
     // This stream is never done and has no errors.
-    var completer = new Completer();
-    return completer.future;
+    return new Completer().future;
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  void cancel() {
-    _eventStream.cancelSubscription(this);
+  Future cancel() {
+    if (_canceled == false) {
+      _canceled = true;
+      _eventStream._onSubscriptionCancel(this);
+    }
+    return null;
   }
 
   void pause([Future resumeSignal]) {
@@ -57,5 +66,18 @@ class _EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
     _pauseCount--;
   }
 
+  //-----------------------------------------------------------------------------------------------
+
+  _dispatchEventInternal(T event, EventDispatcher target, int eventPhase) {
+
+    if (_canceled) return;
+    if (_captures != (eventPhase == EventPhase.CAPTURING_PHASE)) return;
+
+    event._target = target;
+    event._currentTarget = _eventStream.target;
+    event._eventPhase = eventPhase;
+
+    _eventListener(event);
+  }
 }
 

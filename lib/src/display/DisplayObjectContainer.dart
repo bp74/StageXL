@@ -313,10 +313,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     descendants.add(displayObject);
 
     if (displayObject is DisplayObjectContainer) {
-
-      var displayObjectContainer = displayObject as DisplayObjectContainer;
-      var children = displayObjectContainer._children;
-
+      var children = displayObject._children;
       for(int i = 0; i < children.length; i++) {
         _collectDescendants(children[i], descendants);
       }

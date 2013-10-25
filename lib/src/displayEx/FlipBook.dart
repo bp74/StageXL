@@ -37,8 +37,8 @@ class FlipBook extends InteractiveObject implements Animatable {
   static const EventStreamProvider<Event> progressEvent = const EventStreamProvider<Event>(Event.PROGRESS);
   static const EventStreamProvider<Event> completeEvent = const EventStreamProvider<Event>(Event.COMPLETE);
 
-  Stream<Event> get onProgress => FlipBook.progressEvent.forTarget(this);
-  Stream<Event> get onComplete => FlipBook.completeEvent.forTarget(this);
+  EventStream<Event> get onProgress => FlipBook.progressEvent.forTarget(this);
+  EventStream<Event> get onComplete => FlipBook.completeEvent.forTarget(this);
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ class FlipBook extends InteractiveObject implements Animatable {
     if (_frameTime == null) {
 
       _frameTime = 0.0;
-      _dispatchEventInternal(_progressEvent, this, this, EventPhase.AT_TARGET);
+      this.dispatchEvent(_progressEvent);
 
     } else {
 
@@ -126,13 +126,13 @@ class FlipBook extends InteractiveObject implements Animatable {
 
         // dispatch progress event on every new frame
         if (lastFrame != nextFrame) {
-          _dispatchEventInternal(_progressEvent, this, this, EventPhase.AT_TARGET);
+          this.dispatchEvent(_progressEvent);
           if (_currentFrame != nextFrame) return true;
         }
 
         // dispatch complete event only on last frame
         if (lastFrame != nextFrame && nextFrame == totalFrames - 1 && _loop == false) {
-          _dispatchEventInternal(_completeEvent, this, this, EventPhase.AT_TARGET);
+          this.dispatchEvent(_completeEvent);
           if (_currentFrame != nextFrame) return true;
         }
       }

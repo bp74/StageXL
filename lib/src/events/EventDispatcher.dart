@@ -2,85 +2,79 @@ part of stagexl;
 
 class EventDispatcher {
 
-  Map<String, _EventStream> _eventStreams;
-  Map<String, _EventStream> _captureEventStreams;
+  Map<String, EventStream> _eventStreams;
+
+  //-----------------------------------------------------------------------------------------------
+
+  EventStream<Event> on(String eventType) {
+
+    var eventStreams = _eventStreams;
+    if (eventStreams == null) {
+      eventStreams = new Map<String, EventStream>();
+      _eventStreams = eventStreams;
+    }
+
+    var eventStream = eventStreams[eventType];
+    if (eventStream == null) {
+      eventStream = new EventStream._internal(this, eventType);
+      eventStreams[eventType] = eventStream;
+    }
+
+    return eventStream;
+  }
 
   //-----------------------------------------------------------------------------------------------
 
   bool hasEventListener(String eventType) {
-    return _hasEventListener(eventType, true, true);
+
+    var eventStreams = _eventStreams;
+    if (eventStreams == null) return false;
+    var eventStream = eventStreams[eventType];
+    if (eventStream == null) return false;
+
+    return eventStream.hasSubscriptions;
   }
 
-  StreamSubscription<Event> addEventListener(String eventType, void eventListener(event), {bool useCapture: false}) {
-    return _getEventStream(eventType, useCapture).listen(eventListener);
+  StreamSubscription<Event> addEventListener(
+      String eventType, EventListener eventListener, { bool useCapture: false }) {
+
+    return useCapture
+        ? this.on(eventType).capture(eventListener)
+        : this.on(eventType).listen(eventListener);
   }
 
-  removeEventListeners(String eventType, {bool useCapture: false}) {
-    _getEventStream(eventType, useCapture).cancelSubscriptions();
+  void removeEventListeners(String eventType) {
+    this.on(eventType).cancelSubscriptions();
   }
 
-  dispatchEvent(Event event) {
-    _dispatchEventInternal(event, this, this, EventPhase.AT_TARGET);
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  Stream<Event> on(String eventType, {bool useCapture: false}) {
-    return _getEventStream(eventType, useCapture);
-  }
-
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
-
-  bool _hasEventListener(String eventType, bool capturingPhase, bool bubblingPhase) {
-
-    if (capturingPhase && _captureEventStreams != null) {
-      var eventStream = _captureEventStreams[eventType];
-      if (eventStream != null && eventStream._hasSubscriptions) return true;
-    }
-
-    if (bubblingPhase && _eventStreams != null) {
-      var eventStream = _eventStreams[eventType];
-      if (eventStream != null && eventStream._hasSubscriptions) return true;
-    }
-
-    return false;
+  void dispatchEvent(Event event) {
+    _dispatchEventInternal(event, this, EventPhase.AT_TARGET);
   }
 
   //-----------------------------------------------------------------------------------------------
-
-  _EventStream _getEventStream(String eventType, bool useCapture) {
-
-    if (useCapture) {
-      if (_captureEventStreams == null) _captureEventStreams = new Map<String, _EventStream>();
-    } else {
-      if (_eventStreams == null) _eventStreams = new Map<String, _EventStream>();
-    }
-
-    var eventStreams = useCapture ? _captureEventStreams : _eventStreams;
-
-    return eventStreams.putIfAbsent(eventType, () {
-      return new _EventStream(this, eventType, useCapture);
-    });
-  }
-
   //-----------------------------------------------------------------------------------------------
 
-  _dispatchEventInternal(Event event, EventDispatcher target, EventDispatcher currentTarget, int eventPhase) {
+  bool _hasPropagationEventListeners(Event event) {
 
-    var eventStreams = (eventPhase == EventPhase.CAPTURING_PHASE) ? _captureEventStreams : _eventStreams;
-    if (eventStreams == null) return;
-
+    var eventStreams = _eventStreams;
+    if (eventStreams == null) return false;
     var eventStream = eventStreams[event.type];
-    if (eventStream == null) return;
+    if (eventStream == null) return false;
 
-    event._target = target;
-    event._currentTarget = currentTarget;
-    event._eventPhase = eventPhase;
+    return eventStream._hasPropagationSubscriptions(event);
+  }
+
+  _dispatchEventInternal(Event event, EventDispatcher target, int eventPhase) {
+
     event._stopsPropagation = false;
     event._stopsImmediatePropagation = false;
 
-    eventStream.dispatchEvent(event);
+    var eventStreams = _eventStreams;
+    if (eventStreams == null) return;
+    var eventStream = eventStreams[event.type];
+    if (eventStream == null) return;
+
+    eventStream._dispatchEventInternal(event, target, eventPhase);
   }
 
 }

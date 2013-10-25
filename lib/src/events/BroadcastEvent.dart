@@ -20,42 +20,32 @@ class RenderEvent extends BroadcastEvent {
 }
 
 //-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 
-final _BroadcastEventIndex<EnterFrameEvent> _enterFrameEventIndex = new _BroadcastEventIndex<EnterFrameEvent>();
-final _BroadcastEventIndex<ExitFrameEvent> _exitFrameEventIndex = new _BroadcastEventIndex<ExitFrameEvent>();
-final _BroadcastEventIndex<RenderEvent> _renderEventIndex = new _BroadcastEventIndex<RenderEvent>();
+final List<EventStreamSubscription<EnterFrameEvent>> _enterFrameSubscriptions = [];
+final List<EventStreamSubscription<ExitFrameEvent>> _exitFrameSubscriptions = [];
+final List<EventStreamSubscription<RenderEvent>> _renderSubscriptions = [];
 
-class _BroadcastEventIndex<T extends BroadcastEvent> {
+_dispatchBroadcastEvent(BroadcastEvent broadcastEvent, List<EventStreamSubscription> subscriptions) {
 
-  final List<_EventStream<T>> _eventStreams = [];
+  // Dispatch event to current subscriptions.
+  // Do not dispatch events to newly added subscriptions.
+  // It is guaranteed that this function is not called recursively.
+  // Therefore it is safe to mutate the list.
 
-  addEventStream(_EventStream<T> eventStream) {
-    _eventStreams.add(eventStream);
-  }
+  var length = subscriptions.length;
 
-  dispatchEvent(T event) {
-
-    // Dispatch event to current event streams. Do not dispatch events to
-    // newly added streams. It is guaranteed that this function is not
-    // called recursively, therefore we can mutate the list.
-
-    var eventStreams = _eventStreams;
-    var eventStreamsLength = _eventStreams.length;
-
-    for(int i = 0; i < eventStreamsLength; i++) {
-      var eventStream = eventStreams[i];
-      if (eventStream._hasSubscriptions) {
-        event._target = eventStream._target;
-        event._currentTarget = eventStream._target;
-        event._eventPhase = EventPhase.AT_TARGET;
-        event._stopsPropagation = false;
-        event._stopsImmediatePropagation = false;
-        eventStream.dispatchEvent(event);
-      } else {
-        eventStreams.removeAt(i);
-        eventStreamsLength--;
-        i--;
-      }
+  for(int i = 0; i < length; i++) {
+    var subscription = subscriptions[i];
+    if (subscription.isCanceled == false) {
+      broadcastEvent._stopsPropagation = false;
+      broadcastEvent._stopsImmediatePropagation = false;
+      var target = subscription.eventStream.target;
+      subscription._dispatchEventInternal(broadcastEvent, target, EventPhase.AT_TARGET);
+    } else {
+      subscriptions.removeAt(i);
+      length--;
+      i--;
     }
   }
 }

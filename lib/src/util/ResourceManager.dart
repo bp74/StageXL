@@ -5,7 +5,7 @@ class ResourceManager extends EventDispatcher {
   final Map<String, ResourceManagerResource> _resources = new Map<String, ResourceManagerResource>();
 
   static const EventStreamProvider<Event> progressEvent = const EventStreamProvider<Event>(Event.PROGRESS);
-  Stream<Event> get onProgress => ResourceManager.progressEvent.forTarget(this);
+  EventStream<Event> get onProgress => ResourceManager.progressEvent.forTarget(this);
 
   //-----------------------------------------------------------------------------------------------
 
