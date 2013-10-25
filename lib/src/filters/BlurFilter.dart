@@ -35,8 +35,8 @@ class BlurFilter extends BitmapFilter {
     var sourceData = sourceImageData.data;
 
     num pixelRatio = destinationBitmapData.pixelRatio;
-    int sourceWidth = sourceImageData.width;
-    int sourceHeight = sourceImageData.height;
+    int sourceWidth = _ensureInt(sourceImageData.width);
+    int sourceHeight = _ensureInt(sourceImageData.height);
     int weightX = (blurX * blurX * pixelRatio * pixelRatio).floor();
     int weightY = (blurY * blurY * pixelRatio * pixelRatio).floor();
     int weightXinv = (1 << 22) ~/ weightX;

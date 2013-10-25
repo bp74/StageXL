@@ -47,8 +47,8 @@ class DropShadowFilter extends BitmapFilter {
     var sourceData = sourceImageData.data;
 
     num pixelRatio = destinationBitmapData.pixelRatio;
-    int sourceWidth = sourceRect.width;
-    int sourceHeight = sourceRect.height;
+    int sourceWidth = _ensureInt(sourceRect.width);
+    int sourceHeight = _ensureInt(sourceRect.height);
     int weightX = (blurX * blurX * pixelRatio * pixelRatio).floor();
     int weightY = (blurY * blurY * pixelRatio * pixelRatio).floor();
     int weightXinv = (1 << 22) ~/ weightX;
