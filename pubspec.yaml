@@ -5,6 +5,5 @@ description: A library for graphically rich content like games, based on the Fla
 homepage: http://www.stagexl.org
 dependencies:
   browser: any
-  meta: any
 dev_dependencies:
   unittest: any

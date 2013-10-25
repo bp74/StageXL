@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:math' hide Point, Rectangle;
 import 'dart:convert';
 import 'dart:html' as html;
-import 'package:meta/meta.dart';
 
 import 'dart:html' show
   Element, ImageElement, AudioElement, HttpRequest,
