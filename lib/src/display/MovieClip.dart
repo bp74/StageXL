@@ -360,7 +360,7 @@ class MovieClip extends Sprite
     addChild(child);
     
     if (child is MovieClip) {
-      var mc = child as MovieClip;
+      var mc = child;
       mc._synchOffset = offset;
       // TODO: this does not precisely match Flash. Flash loses track of the clip if it is renamed or removed from the timeline, which causes it to reset.
       if (mc.mode == MovieClip.INDEPENDENT && mc.autoReset && !_managed.containsKey(child._id)) { mc._reset(); }

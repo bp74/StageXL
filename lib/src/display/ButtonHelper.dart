@@ -22,7 +22,7 @@ class ButtonHelper {
     
     if (hitArea != null) {
       if (hitArea is MovieClip) {
-        var mc = hitArea as MovieClip;
+        var mc = hitArea;
         mc.actionsEnabled = false;
         mc.stop();
         mc.advance(0); // process frame out of stage
