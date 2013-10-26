@@ -6,7 +6,7 @@ import 'package:stagexl/stagexl.dart';
 void main() {
 
   // The Stage is the root of the display list.
-  var canvas = html.query('#stage');
+  var canvas = html.querySelector('#stage');
   var stage = new Stage('myStage', canvas);
 
   // The RenderLoop controls the flow of the program

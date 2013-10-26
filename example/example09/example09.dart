@@ -14,8 +14,11 @@ void main() {
   // Initialize the Display List
   //------------------------------------------------------------------
 
-  stageBackground = new Stage("stageBackground", html.document.query('#stageBackground'));
-  stageForeground = new Stage("stageForeground", html.document.query('#stageForeground'));
+  var canvasBackground = html.querySelector('#stageBackground');
+  var canvasForeground = html.querySelector('#stageForeground');
+
+  stageBackground = new Stage("stageBackground", canvasBackground);
+  stageForeground = new Stage("stageForeground", canvasForeground);
 
   renderLoop = new RenderLoop();
   renderLoop.addStage(stageBackground);

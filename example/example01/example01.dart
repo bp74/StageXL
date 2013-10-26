@@ -6,7 +6,7 @@ import 'package:stagexl/stagexl.dart';
 void main() {
 
   // The Stage is the root of the display list.
-  var canvas = html.query('#stage');
+  var canvas = html.querySelector('#stage');
   var stage = new Stage('myStage', canvas);
 
   // The RenderLoop controls the flow of the program
@@ -27,13 +27,13 @@ class Painting extends DisplayObjectContainer {
 
   Painting() {
 
-    // The background of the painting is 400x300 pixels in size and  
+    // The background of the painting is 400x300 pixels in size and
     // filled wit the color 'BlanchedAlmond'.
     var background = new BitmapData(400, 300, false, Color.BlanchedAlmond);
     var backgroundBitmap = new Bitmap(background);
     addChild(backgroundBitmap);
 
-    // Draw 4 boxes. Each box is a little bit shifted to the 
+    // Draw 4 boxes. Each box is a little bit shifted to the
     // bottom right relative to it's predecessor.
     for(var i = 0; i < colors.length; i++) {
       var box = new BitmapData(100, 100, false, colors[i]);

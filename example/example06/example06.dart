@@ -9,7 +9,8 @@ void main() {
   // Initialize the Display List
   //------------------------------------------------------------------
 
-  var stage = new Stage("myStage", html.document.query('#stage'));
+  var canvas = html.querySelector('#stage');
+  var stage = new Stage("myStage", canvas);
   var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
