@@ -413,15 +413,15 @@ class Stage extends DisplayObjectContainer {
 
     var mouseCursor = MouseCursor.ARROW;
 
-    if (target is Sprite && target.useHandCursor) {
+    if (target is Sprite && (target as Sprite).useHandCursor) {
       mouseCursor = MouseCursor.BUTTON;
     }
 
-    if (target is SimpleButton && target.useHandCursor) {
+    if (target is SimpleButton && (target as SimpleButton).useHandCursor) {
       mouseCursor = MouseCursor.BUTTON;
     }
 
-    if (target is TextField && target.type == TextFieldType.INPUT) {
+    if (target is TextField && (target as TextField).type == TextFieldType.INPUT) {
       mouseCursor = MouseCursor.IBEAM;
     }
 
