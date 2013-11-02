@@ -3,6 +3,12 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.8.7
+  * Refactored event system and how we add capturing event listeners.
+  * Optimized filters (up to twice as fast now).
+  * Improved performance of Graphics renderer. 
+  * Some minor changes to align with the latest Dart changes.
+
 #### Pub version 0.8.6
   * Added TextField.cacheAsBitmap (default = true) for better text scaling.
   * Fixed TextField.autoSize.  
