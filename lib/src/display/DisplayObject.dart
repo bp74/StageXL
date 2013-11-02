@@ -176,7 +176,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   }
 
   set alpha(num value) {
-    if (value is num) _alpha = value;
+    if (value is num) {
+      if (value < 0.0) value = 0.0;
+      if (value > 1.0) value = 1.0;
+      _alpha = value;
+    }
   }
 
   set mask(Mask value) {
