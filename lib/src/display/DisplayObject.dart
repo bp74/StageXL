@@ -514,18 +514,15 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void dispatchEvent(Event event) {
 
-    List<DisplayObject> ancestors = null;
+    List ancestors = [];
 
     if (event.captures || event.bubbles) {
-      for(DisplayObject  ancestor = parent; ancestor != null; ancestor = ancestor.parent) {
-        if(ancestor._hasPropagationEventListeners(event)) {
-          if (ancestors == null) ancestors = _displayObjectListPool.pop();
-          ancestors.add(ancestor);
-        }
+      for(DisplayObject ancestor = parent; ancestor != null; ancestor = ancestor.parent) {
+        if(ancestor._hasPropagationEventListeners(event)) ancestors.add(ancestor);
       }
     }
 
-    if (event.captures && ancestors != null) {
+    if (event.captures) {
       for(int i = ancestors.length - 1 ; i >= 0 && event.stopsPropagation == false; i--) {
         ancestors[i]._dispatchEventInternal(event, this, EventPhase.CAPTURING_PHASE);
       }
@@ -535,15 +532,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       _dispatchEventInternal(event, this, EventPhase.AT_TARGET);
     }
 
-    if (event.bubbles && ancestors != null) {
+    if (event.bubbles) {
       for(int i = 0; i < ancestors.length && event.stopsPropagation == false; i++) {
         ancestors[i]._dispatchEventInternal(event, this, EventPhase.BUBBLING_PHASE);
       }
-    }
-
-    if (ancestors != null) {
-      ancestors.clear();
-      _displayObjectListPool.push(ancestors);
     }
   }
 

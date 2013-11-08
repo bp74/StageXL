@@ -125,9 +125,6 @@ final bool _isLittleEndianSystem = _checkLittleEndianSystem();
 
 final Future<bool> _isWebpSupported = _checkWebpSupport();
 
-final ObjectPool<List<DisplayObject>> _displayObjectListPool =
-  new ObjectPool<List<DisplayObject>>(() => new List<DisplayObject>());
-
 final Matrix _identityMatrix = new Matrix.fromIdentity();
 
 final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);

@@ -308,7 +308,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  _collectDescendants(DisplayObject displayObject, List<DisplayObject> descendants) {
+  _collectDescendants(DisplayObject displayObject, List descendants) {
 
     descendants.add(displayObject);
 
@@ -322,15 +322,12 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   _dispatchEventDescendants(DisplayObject displayObject, Event event) {
 
-    var descendants = _displayObjectListPool.pop();
+    List descendants = [];
     _collectDescendants(displayObject, descendants);
 
     for(int i = 0; i < descendants.length; i++) {
       descendants[i].dispatchEvent(event);
     }
-
-    descendants.clear();
-    _displayObjectListPool.push(descendants);
   }
 
 
