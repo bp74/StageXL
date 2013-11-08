@@ -11,6 +11,8 @@ abstract class InteractiveObject extends DisplayObject {
 
   static const EventStreamProvider<MouseEvent> mouseOutEvent = const EventStreamProvider<MouseEvent>(MouseEvent.MOUSE_OUT);
   static const EventStreamProvider<MouseEvent> mouseOverEvent = const EventStreamProvider<MouseEvent>(MouseEvent.MOUSE_OVER);
+  static const EventStreamProvider<MouseEvent> mouseRollOutEvent = const EventStreamProvider<MouseEvent>(MouseEvent.ROLL_OUT);
+  static const EventStreamProvider<MouseEvent> mouseRollOverEvent = const EventStreamProvider<MouseEvent>(MouseEvent.ROLL_OVER);
   static const EventStreamProvider<MouseEvent> mouseMoveEvent = const EventStreamProvider<MouseEvent>(MouseEvent.MOUSE_MOVE);
   static const EventStreamProvider<MouseEvent> mouseDownEvent = const EventStreamProvider<MouseEvent>(MouseEvent.MOUSE_DOWN);
   static const EventStreamProvider<MouseEvent> mouseUpEvent = const EventStreamProvider<MouseEvent>(MouseEvent.MOUSE_UP);
@@ -26,6 +28,8 @@ abstract class InteractiveObject extends DisplayObject {
 
   EventStream<MouseEvent> get onMouseOut => InteractiveObject.mouseOutEvent.forTarget(this);
   EventStream<MouseEvent> get onMouseOver => InteractiveObject.mouseOverEvent.forTarget(this);
+  EventStream<MouseEvent> get onMouseRollOut => InteractiveObject.mouseRollOutEvent.forTarget(this);
+  EventStream<MouseEvent> get onMouseRollOver => InteractiveObject.mouseRollOverEvent.forTarget(this);
   EventStream<MouseEvent> get onMouseMove => InteractiveObject.mouseMoveEvent.forTarget(this);
   EventStream<MouseEvent> get onMouseDown => InteractiveObject.mouseDownEvent.forTarget(this);
   EventStream<MouseEvent> get onMouseUp => InteractiveObject.mouseUpEvent.forTarget(this);

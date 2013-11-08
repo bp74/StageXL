@@ -432,26 +432,65 @@ class Stage extends DisplayObjectContainer {
 
     //-----------------------------------------------------------------
 
-    if (_mouseTarget != null && _mouseTarget != target) {
+    if (_mouseTarget != target) {
 
-      _mouseTarget.dispatchEvent(_mouseEvent
-        .._reset(MouseEvent.MOUSE_OUT, true)
-        .._localPoint = (_mouseTarget.stage != null) ? _mouseTarget.globalToLocal(stagePoint) : new Point.zero()
-        .._stagePoint = stagePoint
-        .._buttonDown = mouseButton.buttonDown);
+      DisplayObject oldTarget = _mouseTarget;
+      DisplayObject newTarget = target;
+      List oldTargetList = [];
+      List newTargetList = [];
+      int commonCount = 0;
 
-      _mouseTarget = null;
-    }
+      for(DisplayObject p = oldTarget; p != null; p = p.parent) {
+        oldTargetList.add(p);
+      }
 
-    if (target != null && target != _mouseTarget) {
+      for(DisplayObject p = newTarget; p != null; p = p.parent) {
+        newTargetList.add(p);
+      }
 
-      target.dispatchEvent(_mouseEvent
-        .._reset(MouseEvent.MOUSE_OVER, true)
-        .._localPoint = target.globalToLocal(stagePoint)
-        .._stagePoint = stagePoint
-        .._buttonDown = mouseButton.buttonDown);
+      for(;;commonCount++) {
+        if (commonCount == oldTargetList.length) break;
+        if (commonCount == newTargetList.length) break;
+        var ot = oldTargetList[oldTargetList.length - commonCount - 1];
+        var nt = newTargetList[newTargetList.length - commonCount - 1];
+        if (ot != nt) break;
+      }
 
-      _mouseTarget = target;
+      if (oldTarget != null) {
+        oldTarget.dispatchEvent(_mouseEvent
+            .._reset(MouseEvent.MOUSE_OUT, true)
+            .._localPoint = oldTarget.globalToLocal(stagePoint)
+            .._stagePoint = stagePoint
+            .._buttonDown = mouseButton.buttonDown);
+      }
+
+      for(int i = 0; i < oldTargetList.length - commonCount; i++) {
+        DisplayObject target = oldTargetList[i];
+        target.dispatchEvent(_mouseEvent
+            .._reset(MouseEvent.ROLL_OUT, false)
+            .._localPoint = target.globalToLocal(stagePoint)
+            .._stagePoint = stagePoint
+            .._buttonDown = mouseButton.buttonDown);
+      }
+
+      for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
+        DisplayObject target = newTargetList[i];
+        target.dispatchEvent(_mouseEvent
+            .._reset(MouseEvent.ROLL_OVER, false)
+            .._localPoint = target.globalToLocal(stagePoint)
+            .._stagePoint = stagePoint
+            .._buttonDown = mouseButton.buttonDown);
+      }
+
+      if (newTarget != null) {
+        newTarget.dispatchEvent(_mouseEvent
+            .._reset(MouseEvent.MOUSE_OVER, true)
+            .._localPoint = newTarget.globalToLocal(stagePoint)
+            .._stagePoint = stagePoint
+            .._buttonDown = mouseButton.buttonDown);
+      }
+
+      _mouseTarget = newTarget;
     }
 
     //-----------------------------------------------------------------
@@ -464,8 +503,9 @@ class Stage extends DisplayObjectContainer {
       _canvas.focus();
       mouseEventType = mouseButton.mouseDownEventType;
 
-      if (target != mouseButton.target || time > mouseButton.clickTime + 500)
+      if (target != mouseButton.target || time > mouseButton.clickTime + 500) {
         mouseButton.clickCount = 0;
+      }
 
       mouseButton.buttonDown = true;
       mouseButton.target = target;
@@ -477,7 +517,9 @@ class Stage extends DisplayObjectContainer {
       mouseEventType = mouseButton.mouseUpEventType;
       mouseButton.buttonDown = false;
       isClick = (mouseButton.target == target);
-      isDoubleClick = isClick && mouseButton.clickCount.isEven && (time < mouseButton.clickTime + 500);
+      isDoubleClick = isClick
+          && mouseButton.clickCount.isEven
+          && (time < mouseButton.clickTime + 500);
     }
 
     if (event.type == "mousemove") {
@@ -491,29 +533,29 @@ class Stage extends DisplayObjectContainer {
       localPoint = target.globalToLocal(stagePoint);
 
       target.dispatchEvent(_mouseEvent
-        .._reset(mouseEventType, true)
-        .._localPoint = localPoint
-        .._stagePoint = stagePoint
-        .._buttonDown = mouseButton.buttonDown
-        .._clickCount = mouseButton.clickCount);
+          .._reset(mouseEventType, true)
+          .._localPoint = localPoint
+          .._stagePoint = stagePoint
+          .._buttonDown = mouseButton.buttonDown
+          .._clickCount = mouseButton.clickCount);
 
       if (isClick) {
 
         if (isDoubleClick && target.doubleClickEnabled) {
 
           target.dispatchEvent(_mouseEvent
-            .._reset(mouseButton.mouseDoubleClickEventType, true)
-            .._localPoint = localPoint
-            .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown);
+              .._reset(mouseButton.mouseDoubleClickEventType, true)
+              .._localPoint = localPoint
+              .._stagePoint = stagePoint
+              .._buttonDown = mouseButton.buttonDown);
 
         } else {
 
           target.dispatchEvent(_mouseEvent
-            .._reset(mouseButton.mouseClickEventType, true)
-            .._localPoint = localPoint
-            .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown);
+              .._reset(mouseButton.mouseClickEventType, true)
+              .._localPoint = localPoint
+              .._stagePoint = stagePoint
+              .._buttonDown = mouseButton.buttonDown);
         }
       }
     }
