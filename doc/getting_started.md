@@ -1,65 +1,73 @@
 # Getting started with StageXL
 
-Learn the basic steps to build an application with StageXL.
+Learn the basic steps to build an application with StageXL. A more detailed getting started guide is available on the StageXL hompage:
+
+<http://www.stagexl.org/docs/getting-started.html>
 
 ## Sample Application
 
-The following code will show you how to initialize the main drawing area (Stage) and how to put an image (BitmapData) to the screen. The image will be rotated, scaled and placed in the coordinate system of the Stage.
+This is a short guide to build your very first StageXL application.
+
+### Package Import
+
+To use StageXL in your application you have to add a depedency in your pubspec.yaml file. StageXL is hosted on the Pub package manager for Dart, so all you have to do is this:
+
+    name: BestGameEver
+    description: the best game on the web!
+    dependencies: 
+      stagexl: any
 
 ### HTML Code
+
+You can use the standard Web application template from the Dart Editor to get started. But you have to add a Canvas element which will be the drawing area for StageXL.   
 
     <canvas id="stageCanvas" width="320" height="240"></canvas>
 
 ### Dart Code
 
-    // the Stage is a wrapper over the HTML canvas element.
-    Stage stage = new Stage('myStage', html.query('#stageCanvas'));
+The following code shows how to initialize the main drawing area (Stage) and how to put an image (BitmapData) to the screen. The image will be rotated, scaled and placed in the coordinate system of the Stage.
 
-    // the RenderLoop controls the flow of the program
-    RenderLoop renderLoop = new RenderLoop();
-    renderLoop.addStage(stage);
-
-    // start loading an image (BitmapData) and continue when finished
-    Future<BitmapData> future = BitmapData.loadImage('Flower.png');
-    future.then((BitmapData bitmapData)
-    {
-      Bitmap bitmap = new Bitmap(bitmapData);
-      bitmap.scaleX = bitmap.scaleY = 0.5;
-      bitmap.rotation = PI / 8;
-      bitmap.x = 50;
-      bitmap.y = 30;
-      stage.addChild(bitmap);
-    });
-
-### Examples
-
-Please take a look at the example directory for more advanced examples. Those examples will show you the basic building blocks of StageXL. If you have some experience with the Adobe Flash API you will be pleasantly surprised :) 
-
-There is another github repository which contains a game which was ported from Adobe Flash to HTML5 using the StageXL library. Because of the similarity between Dart and ActionScript and by using the StageXL library the port was finished in only 6 hours. The full source code is available here: <https://github.com/bp74/StageXL_Escape>.
-
-
-## Package Import
-
-Add the StageXL depedency to your pubspec.yaml ...
-
-    name: BestGameEver
-    description: the best game on the web!
-    dependencies: 
-      stagexl: { git: https://github.com/bp74/StageXL.git }
-
-... then import the library in your Dart code.
-
+    import 'dart:html' as html;    
     import 'package:stagexl/stagexl.dart';
 
-## Resources
+    void main() {
 
-Visit our main website [www.stagexl.org](http://www.stagexl.org) to get more information about StageXL. 
+      // The Stage is a wrapper over the HTML canvas element.
+      CanvasElement canvas = html.querySelector('#stageCanvas')
+      Stage stage = new Stage('myStage', canvas);
 
-* [API Reference](http://www.stagexl.org/docs/api/stagexl.html)
-* [Wiki Articles](http://www.stagexl.org/docs/wiki-articles.html)
-* [Demo Performance](http://www.stagexl.org/demos/performance.html)
-* [Demo Masking](http://www.stagexl.org/demos/masking.html)
-* [Demo MovieClip](http://www.stagexl.org/demos/flipbook.html)
-* [FAQ](http://www.stagexl.org/docs/faq.html)
+      // The RenderLoop controls the flow of the program
+      RenderLoop renderLoop = new RenderLoop();
+      renderLoop.addStage(stage);
 
+      // Start loading an image (BitmapData) and continue when done
+      Future<BitmapData> future = BitmapData.loadImage('Flower.png');
+      future.then((BitmapData bitmapData) {
 
+        // A Bitmap is the display object you can add to the display list.
+        Bitmap bitmap = new Bitmap(bitmapData);
+        bitmap.scaleX = 0.5;
+        bitmap.scaleY = 0.5;
+        bitmap.rotation = PI / 8;
+        bitmap.x = 50;
+        bitmap.y = 30;
+
+        // Add the Bitmap to the display list.
+        stage.addChild(bitmap);
+      });
+    }
+
+## Documentation
+
+To learn more about the StageXL library please read the Wiki articles on the StageXL homepage. Learn about the Display List, how to animate your display objects with the Juggler animation framework, how to draw vector graphics and many other things here:
+
+<http://www.stagexl.org/docs/wiki-articles.html> 
+
+You are welcome to ask questions on the StageXL forum. Maybe your question was alread asked and you can find the answer right away. So please feel free and ask anything StageXL related here:
+
+<http://www.stagexl.org/forum.html>
+
+Or check out some of the more advances samples here: 
+
+<http://www.stagexl.org/samples><br/>
+<https://github.com/bp74/StageXL_Samples>
