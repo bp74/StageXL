@@ -11,7 +11,7 @@ Please visit the StageXL Samples website to get a glimpse of the kind of applica
 
 <http://www.stagexl.org/samples>
 
-The source code for this samples is available in this GitHub repository:
+The source code for this samples is available on GitHub:
 
 <https://github.com/bp74/StageXL_Samples>
 
