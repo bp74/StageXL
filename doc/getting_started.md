@@ -1,12 +1,6 @@
 # Getting started with StageXL
 
-Learn the basic steps to build an application with StageXL. A more detailed getting started guide is available on the StageXL hompage:
-
-<http://www.stagexl.org/docs/getting-started.html>
-
-## Sample Application
-
-This is a short guide to build your very first StageXL application.
+Learn the basic steps to build an application with StageXL. A more detailed getting started guide is available on the StageXL hompage: <http://www.stagexl.org/docs/getting-started.html>
 
 ### Package Import
 
