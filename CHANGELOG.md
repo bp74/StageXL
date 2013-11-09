@@ -3,6 +3,12 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.8.8
+  * Added new mouse event for roll over and out.
+  * Removed examples in favor of StageXL_Samples.
+  * Updated ReadMe and GettingStarted documents.
+  * Set version of dependencies according to Dart 1.0 release.
+  
 #### Pub version 0.8.7
   * Refactored event system and how we add capturing event listeners.
   * Optimized filters (up to twice as fast now).
