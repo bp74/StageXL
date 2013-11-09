@@ -1,22 +1,24 @@
-The StageXL library is intended for Flash developers who want to migrate their projects as well as their skills to HTML5. Therefore the library provides the familiar Flash API built on open web standards. For an easy transition the library fulfills the following requirements:
+# StageXL
 
-* The library is highly compatible with the Flash API.
-* The programming language is similar to ActionScript 3.
+StageXL is a package for the Dart programming language. It offers an easy to use and complete API for impressive 2D content like games and other rich applications. The library started as an easy migration path for Adobe Flash developers to HTML5. Therefore the StageXL API is for the most part identical to the Flash API. Today many developers who have no prior experience with Flash are using StageXL for their applications.
 
-To meet those requirements the library is built with Googles new programming language called Dart. Dart is a class-based, single inheritance, object-oriented language and compiles to efficient JavaScript.
+StageXL homepage: <http://www.stagexl.org><br>
+Dart homepage: <http://www.dartlang.org>
 
-## Demo
+## Get more information
 
-This little game was developed with Flash and later ported to HTML5 in only 6 hours. The new HTML5 version runs with smooth 60fps and does not require the Flash plugin anymore!
+Please visit the StageXL Samples website to get a glimpse of the kind of applications you can built with StageXL and Dart. It shows two casual games and many other demos and examples. 
 
-<http://www.stagexl.org/games/escape/escape.html>
+<http://www.stagexl.org/samples>
 
-The StageXL website contains more demos and documentation. If you are not familiar with the Dart programming language, please take a look at the ActionScript-Dart comparison.
+The source code for this samples is available in this GitHub repository:
+
+<https://github.com/bp74/StageXL_Samples>
+
+Flash developers who are not familiar with the Dart language, may take a look at the ActionScript to Dart comparision on the StageXL homapge:
 
 <http://www.stagexl.org/docs/actionscript-dart.html>
 
-## Remarks
-
-_As the Dart language is evolving very quickly, please be sure to use the latest version of the Dart Editor. We recommend that you use the latest supported version of Dart Editor and not one of the continuous builds._
+---
 
 [![Build Status](https://drone.io/github.com/bp74/StageXL/status.png)](https://drone.io/github.com/bp74/StageXL/latest)
