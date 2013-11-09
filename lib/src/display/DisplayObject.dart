@@ -514,27 +514,31 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void dispatchEvent(Event event) {
 
-    List ancestors = [];
+    List<DisplayObject> ancestors = null;
 
     if (event.captures || event.bubbles) {
       for(DisplayObject ancestor = parent; ancestor != null; ancestor = ancestor.parent) {
-        if(ancestor._hasPropagationEventListeners(event)) ancestors.add(ancestor);
+        if(ancestor._hasPropagationEventListeners(event)) {
+          if (ancestors == null) ancestors = [];
+          ancestors.add(ancestor);
+        }
       }
     }
 
-    if (event.captures) {
-      for(int i = ancestors.length - 1 ; i >= 0 && event.stopsPropagation == false; i--) {
+    if (ancestors != null && event.captures) {
+      for(int i = ancestors.length - 1 ; i >= 0; i--) {
         ancestors[i]._dispatchEventInternal(event, this, EventPhase.CAPTURING_PHASE);
+        if (event.stopsPropagation) return;
       }
     }
 
-    if (event.stopsPropagation == false) {
-      _dispatchEventInternal(event, this, EventPhase.AT_TARGET);
-    }
+    _dispatchEventInternal(event, this, EventPhase.AT_TARGET);
+    if (event.stopsPropagation) return;
 
-    if (event.bubbles) {
-      for(int i = 0; i < ancestors.length && event.stopsPropagation == false; i++) {
+    if (ancestors != null && event.bubbles) {
+      for(int i = 0; i < ancestors.length; i++) {
         ancestors[i]._dispatchEventInternal(event, this, EventPhase.BUBBLING_PHASE);
+        if (event.stopsPropagation) return;
       }
     }
   }

@@ -102,8 +102,9 @@ class EventStream<T extends Event> extends Stream<T> {
     var subscriptions = _subscriptions;
     var length = subscriptions.length;
 
-    for(var i = 0; i < length && event.stopsImmediatePropagation == false; i++) {
+    for(var i = 0; i < length; i++) {
       subscriptions[i]._dispatchEventInternal(event, target, eventPhase);
+      if (event.stopsImmediatePropagation) return;
     }
   }
 
