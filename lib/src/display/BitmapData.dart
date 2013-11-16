@@ -107,7 +107,7 @@ class BitmapData implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   static List<BitmapData> sliceSpriteSheet(BitmapData source, int width, int height) {
-    var tileCount = ((source.width / width) * (source.height / height)).toInt();
+    var tileCount = (source.width ~/ width) * (source.height ~/ height);
     var tiles = new List<BitmapData>();
     for(var y = 0; y < source.height; y += height) {
       for(var x = 0; x < source.width; x += width) {
