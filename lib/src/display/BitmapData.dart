@@ -171,21 +171,26 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight) {
-    var tileCount = (width ~/ frameWidth) * (height ~/ frameHeight);
-    var tiles = new List<BitmapData>();
+  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, [int frameCount]) {
+    int rows = (height ~/ frameHeight), cols = (width ~/ frameWidth);
+    var frames = new List<BitmapData>();
+    if (frameCount == null) {
+      frameCount = rows * cols;
+    }
+
     for(var y = 0; y < height; y += frameHeight) {
       for(var x = 0; x < width; x += frameWidth) {
+        if (frames.length >= frameCount) { break; }
         var bitmapData = new BitmapData(frameWidth, frameHeight)
           .._sourceX = x
           .._sourceY = y
           .._source  = _source
           .._renderMode = 2;
 
-        tiles.add(bitmapData);
+        frames.add(bitmapData);
       }
     }
-    return tiles;
+    return frames;
   }
 
   //-------------------------------------------------------------------------------------------------

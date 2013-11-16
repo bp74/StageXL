@@ -30,6 +30,11 @@ void main() {
       expect(bitmapDatas.length, equals(12));
     });
 
+    test('optionally only parses the number of tiles specified by frameCount', () {
+    bitmapDatas = monster.sliceIntoFrames(32, 64, 1);
+      expect(bitmapDatas.length, equals(1));
+    });
+
     test('has created the expected BitmapDatas', () {
       var width = 32, height = 64, rows = 4, cols = 3;
 
