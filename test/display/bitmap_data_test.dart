@@ -5,12 +5,21 @@ import 'package:stagexl/stagexl.dart';
 
 void main() {
   ResourceManager resourceManager = new ResourceManager();
-  resourceManager.addBitmapData('spiders', '/StageXL/test/assets/spider.png');
-  var spiders;
+  resourceManager.addBitmapData('monster', '/StageXL/test/assets/brainmonster.png');
+  var monster;
 
   setUp(() {
     return resourceManager.load().then((_) {
-      spiders = resourceManager.getBitmapData('spiders');
+      monster = resourceManager.getBitmapData('monster');
+    });
+  });
+  
+  group('sliceSpriteSheet', () {
+    List<BitmapData> bitmapDatas;
+    setUp(() => bitmapDatas = BitmapData.sliceSpriteSheet(monster, 32, 64));
+    
+    test('creates the expected number of BitmapDatas', () {
+      expect(bitmapDatas.length, equals(12));      
     });
   });
 }
