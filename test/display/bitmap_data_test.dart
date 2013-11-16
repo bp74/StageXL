@@ -24,7 +24,7 @@ void main() {
 
   group('sliceSpriteSheet', () {
     List<BitmapData> bitmapDatas;
-    setUp(() => bitmapDatas = BitmapData.sliceSpriteSheet(monster, 32, 64));
+    setUp(() => bitmapDatas = monster.sliceIntoFrames(32, 64));
 
     test('creates the expected number of BitmapDatas', () {
       expect(bitmapDatas.length, equals(12));

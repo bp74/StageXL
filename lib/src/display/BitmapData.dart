@@ -106,25 +106,6 @@ class BitmapData implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static List<BitmapData> sliceSpriteSheet(BitmapData source, int width, int height) {
-    var tileCount = (source.width ~/ width) * (source.height ~/ height);
-    var tiles = new List<BitmapData>();
-    for(var y = 0; y < source.height; y += height) {
-      for(var x = 0; x < source.width; x += width) {
-        var bitmapData = new BitmapData(width, height)
-          .._sourceX = x
-          .._sourceY = y
-          .._source  = source._source
-          .._renderMode = 2;
-
-        tiles.add(bitmapData);
-      }
-    }
-    return tiles;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
   static Future<BitmapData> load(String url,
       [BitmapDataLoadOptions bitmapDataLoadOptions = null, num pixelRatio = 1.0]) {
 
@@ -187,6 +168,25 @@ class BitmapData implements BitmapDrawable {
   Rectangle get rectangle => new Rectangle(0, 0, _width, _height);
 
   num get pixelRatio => _pixelRatio;
+
+  //-------------------------------------------------------------------------------------------------
+
+  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight) {
+    var tileCount = (width ~/ frameWidth) * (height ~/ frameHeight);
+    var tiles = new List<BitmapData>();
+    for(var y = 0; y < height; y += frameHeight) {
+      for(var x = 0; x < width; x += frameWidth) {
+        var bitmapData = new BitmapData(frameWidth, frameHeight)
+          .._sourceX = x
+          .._sourceY = y
+          .._source  = _source
+          .._renderMode = 2;
+
+        tiles.add(bitmapData);
+      }
+    }
+    return tiles;
+  }
 
   //-------------------------------------------------------------------------------------------------
 

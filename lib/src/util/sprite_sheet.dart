@@ -7,7 +7,7 @@ class SpriteSheet {
   List<BitmapData> frames;
 
   SpriteSheet(this.source, this.width, this.height) {
-    frames = BitmapData.sliceSpriteSheet(source, width, height);
+    frames = source.sliceIntoFrames(width, height);
   }
 
   BitmapData spriteAt(int index) {
