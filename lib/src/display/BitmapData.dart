@@ -171,6 +171,17 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
+  /*
+   * Returns an array of BitmapData based on this BitmapData's _source.
+   *
+   * This function is used to "slice" a spritesheet, tileset, or spritemap into
+   * several different frames. All BitmapData's produced by this method are linked
+   * to this BitmapData's _source for performance.
+   *
+   * The optional frameCount parameter will limit the number of frames generated,
+   * in case you have empty frames you don't care about due to the width / height
+   * of this BitmapData.
+   */
   List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, [int frameCount]) {
     int rows = (height ~/ frameHeight), cols = (width ~/ frameWidth);
     var frames = new List<BitmapData>();
