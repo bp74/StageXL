@@ -34,5 +34,5 @@ void main() {
   // unpleasant at the moment. Maybe in the future.
   // There's no "pending" concept, either...
   test('SpriteSheet.frames calls BitmapData.sliceSpriteSheet correctly', () {});
-  test('SpriteSheet.spriteAt uses SpriteSheet.frames', () {});
+  test('SpriteSheet.frameAt uses SpriteSheet.frames', () {});
 }

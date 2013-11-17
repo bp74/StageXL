@@ -10,7 +10,7 @@ class SpriteSheet {
     frames = source.sliceIntoFrames(width, height);
   }
 
-  BitmapData spriteAt(int index) {
+  BitmapData frameAt(int index) {
     return frames[index];
   }
 }
