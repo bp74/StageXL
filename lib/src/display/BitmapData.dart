@@ -27,7 +27,6 @@ class BitmapData implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   BitmapData(int width, int height, [bool transparent = true, int fillColor = 0xFFFFFFFF, pixelRatio = 1.0]) {
-
     _width = _ensureInt(width);
     _height = _ensureInt(height);
     _transparent = transparent;
@@ -50,6 +49,24 @@ class BitmapData implements BitmapDrawable {
     _context = canvas.context2D;
     _context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
     _context.fillRect(0, 0, _sourceWidth, _sourceHeight);
+  }
+
+  BitmapData._default(int width, int height, [bool transparent = true, int fillColor = 0xFFFFFFFF, pixelRatio = 1.0]) {
+    _width = _ensureInt(width);
+    _height = _ensureInt(height);
+    _transparent = transparent;
+    _pixelRatio = pixelRatio.toDouble();
+    _pixelRatioSource = _pixelRatio / _backingStorePixelRatio;
+
+    _renderMode = ((1.0 - _pixelRatioSource).abs() < 0.001) ? 0 : 1;
+    _destinationX = 0;
+    _destinationY = 0;
+    _destinationWidth = _width;
+    _destinationHeight = _height;
+    _sourceX = 0;
+    _sourceY = 0;
+    _sourceWidth = (_width * _pixelRatioSource).ceil();
+    _sourceHeight = (_height * _pixelRatioSource).ceil();
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -168,6 +185,41 @@ class BitmapData implements BitmapDrawable {
   Rectangle get rectangle => new Rectangle(0, 0, _width, _height);
 
   num get pixelRatio => _pixelRatio;
+
+  //-------------------------------------------------------------------------------------------------
+
+  /*
+   * Returns an array of BitmapData based on this BitmapData's _source.
+   *
+   * This function is used to "slice" a spritesheet, tileset, or spritemap into
+   * several different frames. All BitmapData's produced by this method are linked
+   * to this BitmapData's _source for performance.
+   *
+   * The optional frameCount parameter will limit the number of frames generated,
+   * in case you have empty frames you don't care about due to the width / height
+   * of this BitmapData.
+   */
+  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, [int frameCount]) {
+    int rows = (height ~/ frameHeight), cols = (width ~/ frameWidth);
+    var frames = new List<BitmapData>();
+    if (frameCount == null) {
+      frameCount = rows * cols;
+    }
+    loop:
+    for(var y = 0; y < height; y += frameHeight) {
+      for(var x = 0; x < width; x += frameWidth) {
+        if (frames.length >= frameCount) { break loop; }
+        var bitmapData = new BitmapData._default(frameWidth, frameHeight)
+          .._sourceX = x
+          .._sourceY = y
+          .._source  = _source
+          .._renderMode = 2;
+
+        frames.add(bitmapData);
+      }
+    }
+    return frames;
+  }
 
   //-------------------------------------------------------------------------------------------------
 

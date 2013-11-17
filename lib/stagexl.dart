@@ -118,6 +118,7 @@ part 'src/util/TextureAtlasFormat.dart';
 part 'src/util/TextureAtlasFrame.dart';
 part 'src/util/Tools.dart';
 part 'src/util/ObjectPool.dart';
+part 'src/util/sprite_sheet.dart';
 
 //-----------------------------------------------------------------------------
 
