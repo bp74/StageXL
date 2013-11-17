@@ -27,7 +27,6 @@ class BitmapData implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   BitmapData(int width, int height, [bool transparent = true, int fillColor = 0xFFFFFFFF, pixelRatio = 1.0]) {
-
     _width = _ensureInt(width);
     _height = _ensureInt(height);
     _transparent = transparent;
@@ -50,6 +49,24 @@ class BitmapData implements BitmapDrawable {
     _context = canvas.context2D;
     _context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
     _context.fillRect(0, 0, _sourceWidth, _sourceHeight);
+  }
+
+  BitmapData._default(int width, int height, [bool transparent = true, int fillColor = 0xFFFFFFFF, pixelRatio = 1.0]) {
+    _width = _ensureInt(width);
+    _height = _ensureInt(height);
+    _transparent = transparent;
+    _pixelRatio = pixelRatio.toDouble();
+    _pixelRatioSource = _pixelRatio / _backingStorePixelRatio;
+
+    _renderMode = ((1.0 - _pixelRatioSource).abs() < 0.001) ? 0 : 1;
+    _destinationX = 0;
+    _destinationY = 0;
+    _destinationWidth = _width;
+    _destinationHeight = _height;
+    _sourceX = 0;
+    _sourceY = 0;
+    _sourceWidth = (_width * _pixelRatioSource).ceil();
+    _sourceHeight = (_height * _pixelRatioSource).ceil();
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -192,7 +209,7 @@ class BitmapData implements BitmapDrawable {
     for(var y = 0; y < height; y += frameHeight) {
       for(var x = 0; x < width; x += frameWidth) {
         if (frames.length >= frameCount) { break loop; }
-        var bitmapData = new BitmapData(frameWidth, frameHeight)
+        var bitmapData = new BitmapData._default(frameWidth, frameHeight)
           .._sourceX = x
           .._sourceY = y
           .._source  = _source
