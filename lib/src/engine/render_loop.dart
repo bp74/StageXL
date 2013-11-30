@@ -7,6 +7,7 @@ class RenderLoop {
   num _renderTime;
   Function _requestAnimationFrameCallback; // Cached closure to pass to requestAnimationFrame.
   bool _invalidate;
+  int _requestId;
 
   EnterFrameEvent _enterFrameEvent;
   ExitFrameEvent _exitFrameEvent;
@@ -23,6 +24,7 @@ class RenderLoop {
     _exitFrameEvent = new ExitFrameEvent();
     _renderEvent = new RenderEvent();
 
+    _requestId = null;
     _requestAnimationFrameCallback = _onAnimationFrame;
     _requestAnimationFrame();
   }
@@ -32,12 +34,55 @@ class RenderLoop {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  void start() {
+    _requestAnimationFrame();
+  }
+
+  void stop() {
+    _cancelAnimationFrame();
+  }
+
+  void invalidate() {
+    _invalidate = true;
+  }
+
+  void addStage(Stage stage) {
+
+    if (stage.renderLoop != null) {
+      stage.renderLoop.removeStage(stage);
+    }
+
+    _stages.add(stage);
+    stage._renderLoop = this;
+  }
+
+  void removeStage(Stage stage) {
+
+    if (stage.renderLoop == this) {
+      _stages.remove(stage);
+      stage._renderLoop = null;
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
   _requestAnimationFrame() {
-    html.window.requestAnimationFrame(_requestAnimationFrameCallback);
+    if (_requestId == null) {
+      _requestId = html.window.requestAnimationFrame(_requestAnimationFrameCallback);
+    }
+  }
+
+  _cancelAnimationFrame() {
+    if (_requestId != null) {
+      html.window.cancelAnimationFrame(_requestId);
+      _requestId = null;
+    }
   }
 
   _onAnimationFrame(num currentTime) {
 
+    _requestId = null;
     _requestAnimationFrame();
 
     currentTime = currentTime.toDouble();
@@ -73,30 +118,4 @@ class RenderLoop {
       _dispatchBroadcastEvent(_exitFrameEvent, _exitFrameSubscriptions);
     }
   }
-
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  void invalidate() {
-    _invalidate = true;
-  }
-
-  void addStage(Stage stage) {
-
-    if (stage.renderLoop != null) {
-      stage.renderLoop.removeStage(stage);
-    }
-
-    _stages.add(stage);
-    stage._renderLoop = this;
-  }
-
-  void removeStage(Stage stage) {
-
-    if (stage.renderLoop == this) {
-      _stages.remove(stage);
-      stage._renderLoop = null;
-    }
-  }
-
 }
