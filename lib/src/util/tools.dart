@@ -6,7 +6,7 @@ String _color2rgb(int color) {
 
   int r = (color >> 16) & 0xFF;
   int g = (color >>  8) & 0xFF;
-  int b = (color >>  0) & 0xFF;
+  int b = color & 0xFF;
 
   return "rgb($r,$g,$b)";
 }
@@ -16,7 +16,7 @@ String _color2rgba(int color) {
   int a = (color >> 24) & 0xFF;
   int r = (color >> 16) & 0xFF;
   int g = (color >>  8) & 0xFF;
-  int b = (color >>  0) & 0xFF;
+  int b = color & 0xFF;
 
   return "rgba($r,$g,$b,${a / 255.0})";
 }
