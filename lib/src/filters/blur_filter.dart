@@ -66,7 +66,7 @@ class BlurFilter extends BitmapFilter {
         int offsetDestination = (x + rx1) * 4 + z;
 
         for (int y = 0; y < destinationHeight; y++) {
-          destinationData[offsetDestination] = ((sum * weightYinv) & 0xFFFFFFFF) >> 22;
+          destinationData[offsetDestination] = ((sum * weightYinv) | 0) >> 22;
           offsetDestination += destinationWidth4;
 
           if (y >= ry2) {
@@ -93,7 +93,7 @@ class BlurFilter extends BitmapFilter {
         int offsetDestination = y * destinationWidth4 + z;
 
         for (int x = 0; x < destinationWidth; x++) {
-          destinationData[offsetDestination] = ((sum * weightXinv) & 0xFFFFFFFF) >> 22;
+          destinationData[offsetDestination] = ((sum * weightXinv) | 0) >> 22;
           offsetDestination += 4;
 
           if (x >= rx2) {

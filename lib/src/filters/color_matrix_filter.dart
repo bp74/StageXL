@@ -74,10 +74,10 @@ class ColorMatrixFilter extends BitmapFilter {
         int srcG = data[index + 1];
         int srcB = data[index + 2];
         int srcA = data[index + 3];
-        data[index + 0] = ((a00 * srcR + a01 * srcG + a02 * srcB + a03 * srcA + a04) & 0xFFFFFFFF) >> 16;
-        data[index + 1] = ((a05 * srcR + a06 * srcG + a07 * srcB + a08 * srcA + a09) & 0xFFFFFFFF) >> 16;
-        data[index + 2] = ((a10 * srcR + a11 * srcG + a12 * srcB + a13 * srcA + a14) & 0xFFFFFFFF) >> 16;
-        data[index + 3] = ((a15 * srcR + a16 * srcG + a17 * srcB + a18 * srcA + a19) & 0xFFFFFFFF) >> 16;
+        data[index + 0] = ((a00 * srcR + a01 * srcG + a02 * srcB + a03 * srcA + a04) | 0) >> 16;
+        data[index + 1] = ((a05 * srcR + a06 * srcG + a07 * srcB + a08 * srcA + a09) | 0) >> 16;
+        data[index + 2] = ((a10 * srcR + a11 * srcG + a12 * srcB + a13 * srcA + a14) | 0) >> 16;
+        data[index + 3] = ((a15 * srcR + a16 * srcG + a17 * srcB + a18 * srcA + a19) | 0) >> 16;
       }
     } else {
       for(int index = 0 ; index <= data.length - 4; index += 4) {
@@ -85,10 +85,10 @@ class ColorMatrixFilter extends BitmapFilter {
         int srcB = data[index + 1];
         int srcG = data[index + 2];
         int srcR = data[index + 3];
-        data[index + 0] = ((a15 * srcR + a16 * srcG + a17 * srcB + a18 * srcA + a19) & 0xFFFFFFFF) >> 16;
-        data[index + 1] = ((a10 * srcR + a11 * srcG + a12 * srcB + a13 * srcA + a14) & 0xFFFFFFFF) >> 16;
-        data[index + 2] = ((a05 * srcR + a06 * srcG + a07 * srcB + a08 * srcA + a09) & 0xFFFFFFFF) >> 16;
-        data[index + 3] = ((a00 * srcR + a01 * srcG + a02 * srcB + a03 * srcA + a04) & 0xFFFFFFFF) >> 16;
+        data[index + 0] = ((a15 * srcR + a16 * srcG + a17 * srcB + a18 * srcA + a19) | 0) >> 16;
+        data[index + 1] = ((a10 * srcR + a11 * srcG + a12 * srcB + a13 * srcA + a14) | 0) >> 16;
+        data[index + 2] = ((a05 * srcR + a06 * srcG + a07 * srcB + a08 * srcA + a09) | 0) >> 16;
+        data[index + 3] = ((a00 * srcR + a01 * srcG + a02 * srcB + a03 * srcA + a04) | 0) >> 16;
       }
     }
 
