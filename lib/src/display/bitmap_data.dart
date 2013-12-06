@@ -326,10 +326,10 @@ class BitmapData implements BitmapDrawable {
       if (c2 is! num) continue; // dart2js hint
       if (c3 is! num) continue; // dart2js hint
 
-      data[i + 0] = offset0 + ((c0 * mulitplier0) >> 10);
-      data[i + 1] = offset1 + ((c1 * mulitplier1) >> 10);
-      data[i + 2] = offset2 + ((c2 * mulitplier2) >> 10);
-      data[i + 3] = offset3 + ((c3 * mulitplier3) >> 10);
+      data[i + 0] = offset0 + (((c0 * mulitplier0) & 0xFFFFFFFF) >> 10);
+      data[i + 1] = offset1 + (((c1 * mulitplier1) & 0xFFFFFFFF) >> 10);
+      data[i + 2] = offset2 + (((c2 * mulitplier2) & 0xFFFFFFFF) >> 10);
+      data[i + 3] = offset3 + (((c3 * mulitplier3) & 0xFFFFFFFF) >> 10);
     }
 
     putImageData(imageData, rect.x, rect.y);
@@ -465,11 +465,16 @@ class BitmapData implements BitmapDrawable {
     var pixels = imageData.width * imageData.height;
     var data = imageData.data;
 
+    var c0 = ((color & 0xFFFFFFFF) >> 24) & 0xFF;
+    var c1 = ((color & 0xFFFFFFFF) >> 16) & 0xFF;
+    var c2 = ((color & 0xFFFFFFFF) >>  8) & 0xFF;
+    var c3 = ((color & 0xFFFFFFFF)      ) & 0xFF;
+
     for(int p = 0; p < pixels; p++) {
-      data[p * 4 + 0] = _isLittleEndianSystem ? (color >> 16) & 0xFF : (color >> 24) & 0xFF;
-      data[p * 4 + 1] = _isLittleEndianSystem ? (color >>  8) & 0xFF : (color >>  0) & 0xFF;
-      data[p * 4 + 2] = _isLittleEndianSystem ? (color >>  0) & 0xFF : (color >>  8) & 0xFF;
-      data[p * 4 + 3] = _isLittleEndianSystem ? (color >> 24) & 0xFF : (color >> 16) & 0xFF;
+      data[p * 4 + 0] = _isLittleEndianSystem ? c1 : c0;
+      data[p * 4 + 1] = _isLittleEndianSystem ? c2 : c3;
+      data[p * 4 + 2] = _isLittleEndianSystem ? c3 : c2;
+      data[p * 4 + 3] = _isLittleEndianSystem ? c0 : c1;
     }
 
     putImageData(imageData, x, y);
