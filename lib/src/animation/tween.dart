@@ -2,74 +2,68 @@ part of stagexl;
 
 class TweenPropertyFactory {
 
-  final Tween tween;
-  TweenPropertyFactory(this.tween);
+  final Tween _tween;
 
-  @deprecated
-  call(String property, num targetValue) {
-    _addTweenProperty(property).to(targetValue);
-  }
+  TweenPropertyFactory._internal(this._tween);
 
-  TweenProperty get x => _addTweenProperty("x");
-  TweenProperty get y => _addTweenProperty("y");
-  TweenProperty get scaleX => _addTweenProperty("scaleX");
-  TweenProperty get scaleY => _addTweenProperty("scaleY");
-  TweenProperty get skewX => _addTweenProperty("skewX");
-  TweenProperty get skewY => _addTweenProperty("skewY");
-  TweenProperty get pivotX => _addTweenProperty("pivotX");
-  TweenProperty get pivotY => _addTweenProperty("pivotY");
-  TweenProperty get rotation => _addTweenProperty("rotation");
-  TweenProperty get alpha => _addTweenProperty("alpha");
-
-  TweenProperty _addTweenProperty(String property) {
-    var tweenProperty = new TweenProperty(property);
-    this.tween._addTweenProperty(tweenProperty);
-    return tweenProperty;
-  }
+  TweenProperty get x => _tween._addTweenProperty(0);
+  TweenProperty get y => _tween._addTweenProperty(1);
+  TweenProperty get pivotX => _tween._addTweenProperty(2);
+  TweenProperty get pivotY => _tween._addTweenProperty(3);
+  TweenProperty get scaleX => _tween._addTweenProperty(4);
+  TweenProperty get scaleY => _tween._addTweenProperty(5);
+  TweenProperty get skewX => _tween._addTweenProperty(6);
+  TweenProperty get skewY => _tween._addTweenProperty(7);
+  TweenProperty get rotation => _tween._addTweenProperty(8);
+  TweenProperty get alpha => _tween._addTweenProperty(9);
 }
 
 class TweenProperty {
 
-  final String property;
-  num startValue = double.NAN;
-  num targetValue = double.NAN;
+  final DisplayObject _displayObject;
+  final int _propertyIndex;
+  num _startValue = double.NAN;
+  num _targetValue = double.NAN;
 
-  TweenProperty(this.property);
+  TweenProperty._internal(this._displayObject, this._propertyIndex);
 
   void to(num targetValue) {
-    this.targetValue = targetValue.toDouble();
+    _targetValue = targetValue.toDouble();
   }
 
-  bool get isDefined => !startValue.isNaN && !targetValue.isNaN;
-
-  num _getPropertyValue(DisplayObject displayObject) {
-    switch(property) {
-      case 'x':        return displayObject.x;
-      case 'y':        return displayObject.y;
-      case 'pivotX':   return displayObject.pivotX;
-      case 'pivotY':   return displayObject.pivotY;
-      case 'scaleX':   return displayObject.scaleX;
-      case 'scaleY':   return displayObject.scaleY;
-      case 'skewX':    return displayObject.skewX;
-      case 'skewY':    return displayObject.skewY;
-      case 'rotation': return displayObject.rotation;
-      case 'alpha':    return displayObject.alpha;
-      default:         return 0.0;
+  void _init() {
+    switch(_propertyIndex) {
+      case 0: _startValue = _displayObject.x; break;
+      case 1: _startValue = _displayObject.y;  break;
+      case 2: _startValue = _displayObject.pivotX; break;
+      case 3: _startValue = _displayObject.pivotY; break;
+      case 4: _startValue = _displayObject.scaleX; break;
+      case 5: _startValue = _displayObject.scaleY; break;
+      case 6: _startValue = _displayObject.skewX; break;
+      case 7: _startValue = _displayObject.skewY; break;
+      case 8: _startValue = _displayObject.rotation; break;
+      case 9: _startValue = _displayObject.alpha; break;
+      default: _startValue = 0.0;
     }
   }
 
-  void _setPropertyValue(DisplayObject displayObject, num value) {
-    switch(property) {
-      case 'x':        displayObject.x = value; break;
-      case 'y':        displayObject.y = value; break;
-      case 'pivotX':   displayObject.pivotX = value; break;
-      case 'pivotY':   displayObject.pivotY = value; break;
-      case 'scaleX':   displayObject.scaleX = value; break;
-      case 'scaleY':   displayObject.scaleY = value; break;
-      case 'skewX':    displayObject.skewX = value; break;
-      case 'skewY':    displayObject.skewY = value; break;
-      case 'rotation': displayObject.rotation = value; break;
-      case 'alpha':    displayObject.alpha = value; break;
+  void _update(num transition, bool roundToInt) {
+    if (_startValue.isFinite && _targetValue.isFinite) {
+      var value = _startValue + transition * (_targetValue - _startValue);
+      value = roundToInt ? value.roundToDouble() : value;
+
+      switch(_propertyIndex) {
+        case 0: _displayObject.x = value; break;
+        case 1: _displayObject.y = value;  break;
+        case 2: _displayObject.pivotX = value; break;
+        case 3: _displayObject.pivotY = value; break;
+        case 4: _displayObject.scaleX = value; break;
+        case 5: _displayObject.scaleY = value; break;
+        case 6: _displayObject.skewX = value; break;
+        case 7: _displayObject.skewY = value; break;
+        case 8: _displayObject.rotation = value; break;
+        case 9: _displayObject.alpha = value; break;
+      }
     }
   }
 }
@@ -98,7 +92,6 @@ class Tween implements Animatable {
   Function _onUpdate;
   Function _onComplete;
 
-  TweenPropertyFactory _tweenPropertyFactory;
   num _totalTime;
   num _currentTime;
   num _delay;
@@ -110,7 +103,10 @@ class Tween implements Animatable {
     _displayObject = displayObject,
     _transitionFunction = transitionFunction {
 
-    _tweenPropertyFactory = new TweenPropertyFactory(this);
+    if (_displayObject is! DisplayObject) {
+      throw new ArgumentError("displayObject");
+    }
+
     _currentTime = 0.0;
     _totalTime = max(0.0001, time);
     _delay = 0.0;
@@ -121,20 +117,20 @@ class Tween implements Animatable {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  TweenPropertyFactory get animate => _tweenPropertyFactory;
+  TweenPropertyFactory get animate => new TweenPropertyFactory._internal(this);
 
-  void _addTweenProperty(TweenProperty tweenProperty) {
-
-    if (_displayObject != null && _started == false) {
-      _tweenPropertyList.add(tweenProperty);
-    }
+  TweenProperty _addTweenProperty(int propertyIndex) {
+    var tweenProperty = new TweenProperty._internal(_displayObject, propertyIndex);
+    if (_started == false) _tweenPropertyList.add(tweenProperty);
+    return tweenProperty;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void complete() {
-    if (_totalTime >= _currentTime)
+    if (_totalTime >= _currentTime) {
       advanceTime(_totalTime - _currentTime);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -158,8 +154,7 @@ class Tween implements Animatable {
           _started = true;
 
           for(int i = 0; i < _tweenPropertyList.length; i++) {
-            var tp = _tweenPropertyList[i];
-            tp.startValue = tp._getPropertyValue(_displayObject);
+            _tweenPropertyList[i]._init();
           }
           if (_onStart != null) {
             _onStart();
@@ -172,13 +167,7 @@ class Tween implements Animatable {
         num transition = _transitionFunction(ratio).toDouble();
 
         for(int i = 0; i < _tweenPropertyList.length; i++) {
-          var tp = _tweenPropertyList[i];
-          if (tp.isDefined) {
-            var startValue = tp.startValue.toDouble();
-            var targetValue = tp.targetValue.toDouble();
-            var value = startValue + transition * (targetValue - startValue);
-            tp._setPropertyValue(_displayObject, _roundToInt ? value.round() : value);
-          }
+          _tweenPropertyList[i]._update(transition, _roundToInt);
         }
         if (_onUpdate != null) {
           _onUpdate();
@@ -203,10 +192,9 @@ class Tween implements Animatable {
   bool get isComplete => _currentTime >= _totalTime;
 
   set delay(num value) {
-
-    if (_started == false)
+    if (_started == false) {
       _currentTime = _currentTime + _delay - value;
-
+    }
     _delay = value;
   }
 
