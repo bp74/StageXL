@@ -146,6 +146,28 @@ class Juggler implements Animatable {
   }
 
   //-----------------------------------------------------------------------------------------------
+
+  AnimationGroup addGroup(List<Animatable> animatables) {
+    var animationGroup = new AnimationGroup();
+    for(int i = 0; i < animatables.length; i++) {
+      animationGroup.add(animatables[i]);
+    }
+    add(animationGroup);
+    return animationGroup;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  AnimationChain addChain(List<Animatable> animatables) {
+    var animationChain = new AnimationChain();
+    for(int i = 0; i < animatables.length; i++) {
+      animationChain.add(animatables[i]);
+    }
+    add(animationChain);
+    return animationChain;
+  }
+
+  //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
   bool advanceTime(num time) {
