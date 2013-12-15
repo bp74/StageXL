@@ -91,8 +91,8 @@ class TweenProperty {
  *
  * Use one of the predefined [TransitionFunction] functions to control the
  * progress of the animation (linear, easeInQuadratic, easeInCubic, ...). If
- * none of the predefined [TransitionFunction] fulfills your needs you can also
- * use a lamda like this (ratio) => (ratio * 4.0).remainder(1.0);
+ * none of the predefined [TransitionFunction] functions fulfills your needs
+ * you can also use one of your own function (see [EaseFunction]).
  *
  * See also: [Juggler]
  *
