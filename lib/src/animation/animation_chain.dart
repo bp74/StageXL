@@ -1,6 +1,9 @@
 part of stagexl;
 
-class AnimationChain extends Animatable {
+/// The AnimationChain is used to chain Animatables and
+/// offers a common onStart and onComplete callback.
+/// The other Animatables are animated in parallel.
+class AnimationChain implements Animatable {
 
   final List<Animatable> _animatables = new List<Animatable>();
 
@@ -60,13 +63,10 @@ class AnimationChain extends Animatable {
 
   //-------------------------------------------------------------------------------------------------
 
-  /**
-   * The function that is called when a [AnimationChain] starts. This happens after the specified delay.
-   **/
+  /// The function that is called when a [AnimationChain] starts.
+  /// This happens after the specified delay.
   void set onStart(void function()) { _onStart = function; }
 
-  /**
-   * The function that is called when a [AnimationChain] is completed.
-   **/
+  /// The function that is called when a [AnimationChain] is completed.
   void set onComplete(void function()) { _onComplete = function; }
 }

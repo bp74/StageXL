@@ -1,6 +1,9 @@
 part of stagexl;
 
-class AnimationGroup extends Animatable {
+/// The AnimationGroup is used to group Animatables and
+/// offers a common onStart and onComplete callback.
+/// The other Animatables are animated in a sequence.
+class AnimationGroup implements Animatable {
 
   final List<Animatable> _animatables = new List<Animatable>();
 
@@ -62,13 +65,10 @@ class AnimationGroup extends Animatable {
 
   //-------------------------------------------------------------------------------------------------
 
-  /**
-   * The function that is called when a [AnimationGroup] starts. This happens after the specified delay.
-   **/
+  /// The function that is called when a [AnimationGroup] starts.
+  /// This happens after the specified delay.
   void set onStart(void function()) { _onStart = function; }
 
-  /**
-   * The function that is called when a [AnimationGroup] is completed.
-   **/
+  /// The function that is called when a [AnimationGroup] is completed.
   void set onComplete(void function()) { _onComplete = function; }
 }
