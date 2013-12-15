@@ -16,7 +16,7 @@ part of stagexl;
  *
  */
 
-class Transition extends Animatable {
+class Transition implements Animatable {
 
   final num _startValue;
   final num _targetValue;
