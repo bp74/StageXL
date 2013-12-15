@@ -3,21 +3,23 @@ part of stagexl;
 typedef num EaseFunction(num ratio);
 
 /**
- * The [TransitionFunction] class provides common transition functions used for
+ * The [TransitionFunction] class provides common transition functions used by
  * [Transition] and [Tween] animations.
  *
  * A transition function takes the ratio argument in a range of 0.0 to 1.0
  * and calculates the progress of the transitions.
  *
  * The most simple transition function is a linear transition:
+ *
  *     var linear = (ratio) => ratio;
  *
  * Overview of all available transition types:
- * <http://www.stagexl.org/docs/transitions.html>
- **/
+ *   <http://www.stagexl.org/docs/transitions.html>
+ *
+ */
 
 class TransitionFunction {
-  
+
   // Standard
 
   static Random _random;
@@ -41,11 +43,11 @@ class TransitionFunction {
     if (ratio == 0.0 || ratio == 1.0) return ratio;
     return _random.nextDouble();
   }
-  
+
   static EaseFunction custom(num amount) {
     if (amount < -1) amount = -1;
     if (amount > 1) amount = 1;
-    
+
     num easing(num t) {
       if (amount==0) return t;
       if (amount<0) return t*(t*-amount+1+amount);

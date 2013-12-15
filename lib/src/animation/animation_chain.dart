@@ -1,8 +1,29 @@
 part of stagexl;
 
-/// The AnimationChain is used to chain Animatables and
-/// offers a common onStart and onComplete callback.
-/// The other Animatables are animated in parallel.
+/**
+ * The AnimationChain class is used to animate multiple Animatables.
+ * Those Animatables are animated one after the other and the onComplete
+ * callback is called when the last Animatable has completed.
+ *
+ * See also: [Juggler], [AnimationChain], [Animatable]
+ *
+ * Examples:
+ *
+ *     var ag = new AnimationChain();
+ *     ag.add(new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700));
+ *     ag.add(new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500));
+ *     ag.delay = 1.0;
+ *     ag.onStart = () => print("start");
+ *     ag.onComplete = () => print("complete");
+ *     juggler.add(ag);
+ *
+ *     juggler.addChain([
+ *         new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
+ *         new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
+ *         ..onComplete = () => print("complete");
+ *
+ */
+
 class AnimationChain implements Animatable {
 
   final List<Animatable> _animatables = new List<Animatable>();
@@ -63,10 +84,12 @@ class AnimationChain implements Animatable {
 
   //-------------------------------------------------------------------------------------------------
 
-  /// The function that is called when a [AnimationChain] starts.
-  /// This happens after the specified delay.
+  /* The function that is called when a [AnimationChain] starts.
+   * This happens after the specified delay.
+   */
   void set onStart(void function()) { _onStart = function; }
 
-  /// The function that is called when a [AnimationChain] is completed.
+  /* The function that is called when a [AnimationChain] is completed.
+   */
   void set onComplete(void function()) { _onComplete = function; }
 }

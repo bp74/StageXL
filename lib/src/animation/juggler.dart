@@ -5,6 +5,33 @@ class _AnimatableLink {
   _AnimatableLink nextAnimatableLink;
 }
 
+/**
+ * The Juggler controls the progress of your application by
+ * propagating the time passed between two render frames.
+ *
+ * The [RenderLoop] and [Stage] class provides Juggler instances
+ * which are driven by the browsers animation frames. You can also
+ * create your own Juggler instance and control the time by yourself.
+ * Because Juggler implements the [Animatable] interface it can be
+ * added to other Juggler instances too.
+ *
+ * See also: [Tween], [Transition], [DelayedCall]
+ *
+ * Examples:
+ *
+ *     var tween = new Tween(sprite, 1.0, TransitionFunction.easeIn);
+ *     tween.animate.x.to(1.0);
+ *     stage.juggler.add(tween);
+ *
+ *     // create a "gameJuggler" who controls all my animations.
+ *     var gameJuggler = new Juggler();
+ *     // start all animations controlled by "gameJuggler".
+ *     stage.juggler.add(gameJuggler);
+ *     // stop all animations controlled by "gameJuggler".
+ *     stage.juggler.remove(gameJuggler);
+ *
+ */
+
 class Juggler implements Animatable {
 
   _AnimatableLink _firstAnimatableLink;

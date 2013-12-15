@@ -1,8 +1,29 @@
 part of stagexl;
 
-/// The AnimationGroup is used to group Animatables and
-/// offers a common onStart and onComplete callback.
-/// The other Animatables are animated in a sequence.
+/**
+ * The AnimationGroup class is used to animate multiple Animatables.
+ * Those Animatables are animated in parallel and the onComplete
+ * callback is called when all Animatables have completed.
+ *
+ * See also: [Juggler], [AnimationGroup], [Animatable]
+ *
+ * Examples:
+ *
+ *     var ag = new AnimationGroup();
+ *     ag.add(new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700));
+ *     ag.add(new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500));
+ *     ag.delay = 1.0;
+ *     ag.onStart = () => print("start");
+ *     ag.onComplete = () => print("complete");
+ *     juggler.add(ag);
+ *
+ *     juggler.addGroup([
+ *         new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
+ *         new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
+ *         ..onComplete = () => print("complete");
+ *
+ */
+
 class AnimationGroup implements Animatable {
 
   final List<Animatable> _animatables = new List<Animatable>();

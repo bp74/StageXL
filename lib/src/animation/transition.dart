@@ -3,10 +3,18 @@ part of stagexl;
 /**
  * The [Transition] class animates a value by calling the onUpdate function continuously.
  *
+ * See also: [Juggler]
+ *
+ * Examples:
+ *
  *     var transition = new Transition(0.0, 100.0, 1.0, TransitionFunction.linear);
  *     transition.onUpdate = (value) => print('the value changed to $value');
  *     renderLoop.juggler.add(transition);
- **/
+ *
+ *     stage.juggler.transition(0.0, 100.0, 1.0, TransitionFunction.linear,
+ *         (value) => print('the value changed to $value'));
+ *
+ */
 
 class Transition extends Animatable {
 

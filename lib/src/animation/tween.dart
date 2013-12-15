@@ -85,16 +85,36 @@ class TweenProperty {
 //-------------------------------------------------------------------------------------------------
 
 /**
- * The [Tween] class animates the properties of a [DisplayObject].
- * Use one of the [TransitionFunction] functions or create your own.
- * Add the instance to the [Juggler] to start the animation.
+ * Use the [Tween] class to animate the properties of a [DisplayObject] like
+ * x, y, scaleX, scaleY, alpha, rotation etc. The animation starts with the
+ * current value of the property and ends at a given target or delta value.
+ *
+ * Use one of the predefined [TransitionFunction] functions to control the
+ * progress of the animation (linear, easeInQuadratic, easeInCubic, ...). If
+ * none of the predefined [TransitionFunction] fulfills your needs you can also
+ * use a lamda like this (ratio) => (ratio * 5) % 5;
+ *
+ * See also: [Juggler]
+ *
+ * Examples:
  *
  *     var tween = new Tween(mySprite, 1.0, TransitionFunction.easeInCubic);
  *     tween.delay = 0.5;
- *     tween.animate("alpha", 0.0);
+ *     tween.animate.alpha.to(0.0);  // target value = 0.0
+ *     tween.animate.x.by(10.0);     // delta value = 10.0;
+ *     tween.animate.y.by(-10.0);    // delta value = -10.0;
  *     tween.onComplete = () => print('completed');
- *     renderLoop.juggler.add(tween);
- **/
+ *     stage.juggler.add(tween);
+ *
+ *     var sharkTween = Tween(mySprite, 1.0, (ratio) => (ratio * 5) % 5);
+ *     sharkTween.animate.y.to(10);
+ *     stage.juggler.add(tween);
+ *
+ *     stage.juggler.tween(mySprite, 1.0, TransitionFunction.easeInCubic)
+ *         ..delay = 0.5
+ *         ..animate.alpha.to(0.0);
+ *
+ */
 
 class Tween implements Animatable {
 
