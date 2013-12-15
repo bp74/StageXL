@@ -92,7 +92,7 @@ class TweenProperty {
  * Use one of the predefined [TransitionFunction] functions to control the
  * progress of the animation (linear, easeInQuadratic, easeInCubic, ...). If
  * none of the predefined [TransitionFunction] fulfills your needs you can also
- * use a lamda like this (ratio) => (ratio * 5) % 5;
+ * use a lamda like this (ratio) => (ratio * 4.0).remainder(1.0);
  *
  * See also: [Juggler]
  *
@@ -106,13 +106,13 @@ class TweenProperty {
  *     tween.onComplete = () => print('completed');
  *     stage.juggler.add(tween);
  *
- *     var sharkTween = Tween(mySprite, 1.0, (ratio) => (ratio * 5) % 5);
- *     sharkTween.animate.y.to(10);
- *     stage.juggler.add(tween);
+ *     var sawtooth = Tween(mySprite, 1.0, (r) => (r * 4).remainder(1.0);
+ *     sawtooth.animate.y.to(10);
+ *     stage.juggler.add(sawtooth);
  *
  *     stage.juggler.tween(mySprite, 1.0, TransitionFunction.easeInCubic)
- *         ..delay = 0.5
- *         ..animate.alpha.to(0.0);
+ *       ..delay = 0.5
+ *       ..animate.alpha.to(0.0);
  *
  */
 
