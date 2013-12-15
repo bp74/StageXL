@@ -24,11 +24,18 @@ class TweenProperty {
   final int _propertyIndex;
   num _startValue = double.NAN;
   num _targetValue = double.NAN;
+  num _deltaValue =  double.NAN;
 
   TweenProperty._internal(this._displayObject, this._propertyIndex);
 
+  /// Animate the property from the current value to a given target value.
   void to(num targetValue) {
     _targetValue = targetValue.toDouble();
+  }
+
+  /// Animate the property from the current value by a given delta value.
+  void by(num deltaValue) {
+    _deltaValue = deltaValue.toDouble();
   }
 
   void _init() {
@@ -44,6 +51,13 @@ class TweenProperty {
       case 8: _startValue = _displayObject.rotation; break;
       case 9: _startValue = _displayObject.alpha; break;
       default: _startValue = 0.0;
+    }
+
+    if (_deltaValue.isNaN && _targetValue.isFinite) {
+      _deltaValue = _targetValue - _startValue;
+    }
+    if (_targetValue.isNaN && _deltaValue.isFinite) {
+      _targetValue = _startValue + _deltaValue;
     }
   }
 
@@ -92,13 +106,14 @@ class Tween implements Animatable {
   Function _onUpdate;
   Function _onComplete;
 
-  num _totalTime;
-  num _currentTime;
-  num _delay;
-  bool _roundToInt;
-  bool _started;
+  num _totalTime = 0.0;
+  num _currentTime = 0.0;
+  num _delay = 0.0;
+  bool _roundToInt = false;
+  bool _started = false;
 
-  Tween(DisplayObject displayObject, num time, [EaseFunction transitionFunction = TransitionFunction.linear]) :
+  Tween(DisplayObject displayObject, num time,
+      [EaseFunction transitionFunction = TransitionFunction.linear]) :
 
     _displayObject = displayObject,
     _transitionFunction = transitionFunction {
@@ -107,11 +122,7 @@ class Tween implements Animatable {
       throw new ArgumentError("displayObject");
     }
 
-    _currentTime = 0.0;
     _totalTime = max(0.0001, time);
-    _delay = 0.0;
-    _roundToInt = false;
-    _started = false;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -194,8 +205,8 @@ class Tween implements Animatable {
   set delay(num value) {
     if (_started == false) {
       _currentTime = _currentTime + _delay - value;
+      _delay = value;
     }
-    _delay = value;
   }
 
   set roundToInt(bool value) {

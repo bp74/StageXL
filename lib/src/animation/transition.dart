@@ -9,49 +9,46 @@ part of stagexl;
  **/
 
 class Transition extends Animatable {
-  
+
   final num _startValue;
   final num _targetValue;
   final EaseFunction _transitionFunction;
-  
+
   num _currentValue;
   Function _onStart;
   Function _onUpdate;
   Function _onComplete;
 
-  num _totalTime;
-  num _currentTime;
-  num _delay;
-  bool _roundToInt;
-  bool _started;
+  num _totalTime = 0.0;
+  num _currentTime = 0.0;
+  num _delay = 0.0;
+  bool _roundToInt = false;
+  bool _started = false;
 
-  Transition(num startValue, num targetValue, num time, [EaseFunction transitionFunction]) :
-    
+  Transition(num startValue, num targetValue, num time,
+      [EaseFunction transitionFunction = TransitionFunction.linear]) :
+
     _startValue = startValue,
     _targetValue = targetValue,
-    _transitionFunction = (transitionFunction != null) ? transitionFunction : TransitionFunction.linear {
-    
-    _currentValue = startValue;  
-    _currentTime = 0.0;
+    _transitionFunction = transitionFunction {
+
+    _currentValue = startValue;
     _totalTime = max(0.0001, time);
-    _delay = 0.0;
-    _roundToInt = false;
-    _started = false;
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   bool advanceTime(num time) {
-    
+
     if (_currentTime < _totalTime || _started == false) {
-      
+
       _currentTime = _currentTime + time;
 
       if (_currentTime > _totalTime) _currentTime = _totalTime;
 
       if (_currentTime >= 0.0) {
-        
+
         if (_started == false) {
           _started = true;
           if (_onStart != null) _onStart();
@@ -85,15 +82,14 @@ class Transition extends Animatable {
   bool get isComplete => _currentTime >= _totalTime;
 
   set delay(num value) {
-    
-    if (_started == false)
+    if (_started == false) {
       _currentTime = _currentTime + _delay - value;
-
-    _delay = value;
+      _delay = value;
+    }
   }
 
   set roundToInt(bool value) {
-    
+
     _roundToInt = value;
   }
 

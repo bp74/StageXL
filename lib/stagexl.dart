@@ -18,6 +18,8 @@ import 'dart:web_audio' show
 //-----------------------------------------------------------------------------
 
 part 'src/animation/animatable.dart';
+part 'src/animation/animation_chain.dart';
+part 'src/animation/animation_group.dart';
 part 'src/animation/delayed_call.dart';
 part 'src/animation/juggler.dart';
 part 'src/animation/transition.dart';
