@@ -14,8 +14,8 @@ part of stagexl;
  *       <div id="htmlObject">Hello World</div>
  *     </div>
  *
- * The HtmlObject will automatically set the following css properties
- * for the element to control it's position and opasity:
+ * The HtmlObject will automatically set the following CSS properties
+ * for the element to control it's position and opacity:
  *
  *     position: absolute;
  *     left: 0px;
