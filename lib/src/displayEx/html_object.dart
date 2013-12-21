@@ -21,8 +21,9 @@ part of stagexl;
  *     left: 0px;
  *     top: 0px;
  *     transformOrigin: 0% 0% 0;
- *     opacity: htmlObject.alpha;
- *     transform: htmlObject.transformationMatrix
+ *     opacity: (htmlObject.alpha)
+ *     visibility: (htmlObject.visible)
+ *     transform: (htmlObject.transformationMatrix)
  *
  * Example:
  *
@@ -46,6 +47,11 @@ class HtmlObject extends DisplayObject {
     this.element.style.left = "0px";
     this.element.style.top = "0px";
     this.element.style.transformOrigin = "0% 0% 0";
+  }
+
+  set visible(bool value) {
+    super.visible = value;
+    this.element.style.visibility = value ? "visible" : "hidden";
   }
 
   void render(RenderState renderState) {
