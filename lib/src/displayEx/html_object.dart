@@ -39,26 +39,51 @@ class HtmlObject extends DisplayObject {
 
   final html.Element element;
 
-  String _cssOpacity = "";
-  String _cssTransform = "";
+  html.CssStyleDeclaration _style;
+  String _styleOpacity = "";
+  String _styleTransform = "";
+  String _styleVisibility = "";
 
   HtmlObject(this.element) {
-    this.element.style.position = "absolute";
-    this.element.style.left = "0px";
-    this.element.style.top = "0px";
-    this.element.style.transformOrigin = "0% 0% 0";
+
+    _style = this.element.style;
+    _style.position = "absolute";
+    _style.left = "0px";
+    _style.top = "0px";
+    _style.transformOrigin = "0% 0% 0";
+    _style.visibility = "hidden";
+
+    this.onRemovedFromStage.listen(_onRemovedFromStage);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  _hideElement() {
+    _style.visibility = _styleVisibility = "hidden";
+  }
+
+  _onRemovedFromStage(Event e) {
+    _hideElement();
   }
 
   set visible(bool value) {
     super.visible = value;
-    this.element.style.visibility = value ? "visible" : "hidden";
+    if (value == false) _hideElement();
   }
+
+  set off(bool value) {
+    super.off = value;
+    if (value) _hideElement();
+  }
+
+  //-----------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
 
     var contextState = renderState._currentContextState;
     var matrix = contextState.matrix;
     var alpha = contextState.alpha;
+    var visibility = this.visible && this.off == false;
 
     var mxa = matrix.a.toStringAsFixed(4);
     var mxb = matrix.b.toStringAsFixed(4);
@@ -67,15 +92,21 @@ class HtmlObject extends DisplayObject {
     var mxtx = matrix.tx.toStringAsFixed(4);
     var mxty = matrix.ty.toStringAsFixed(4);
 
-    var cssOpacity = alpha.toStringAsFixed(4);
-    var cssTransform = "matrix($mxa,$mxb,$mxc,$mxd,$mxtx,$mxty)";
+    var styleOpacity = alpha.toStringAsFixed(4);
+    var styleTransform = "matrix($mxa,$mxb,$mxc,$mxd,$mxtx,$mxty)";
+    var styleVisibility = visibility ? "visible" : "hidden";
 
-    if (_cssOpacity != cssOpacity) {
-      this.element.style.opacity = _cssOpacity = cssOpacity;
+    if (_styleVisibility != styleVisibility) {
+      _style.visibility = _styleVisibility = styleVisibility;
     }
 
-    if (_cssTransform != cssTransform) {
-      this.element.style.transform = _cssTransform = cssTransform;
+    if (_styleOpacity != styleOpacity) {
+      _style.opacity = _styleOpacity = styleOpacity;
+    }
+
+    if (_styleTransform != styleTransform) {
+      _style.transform = _styleTransform = styleTransform;
     }
   }
+
 }
