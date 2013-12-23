@@ -9,13 +9,13 @@ part of stagexl;
  *
  * Examples:
  *
- *     var ag = new AnimationChain();
- *     ag.add(new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700));
- *     ag.add(new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500));
- *     ag.delay = 1.0;
- *     ag.onStart = () => print("start");
- *     ag.onComplete = () => print("complete");
- *     juggler.add(ag);
+ *     var ac = new AnimationChain();
+ *     ac.add(new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700));
+ *     ac.add(new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500));
+ *     ac.delay = 1.0;
+ *     ac.onStart = () => print("start");
+ *     ac.onComplete = () => print("complete");
+ *     juggler.add(ac);
  *
  *     juggler.addChain([
  *         new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
