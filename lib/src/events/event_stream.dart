@@ -21,6 +21,7 @@ class EventStream<T extends Event> extends Stream<T> {
   bool get hasSubscriptions => _subscriptions.length > 0;
 
   EventDispatcher get target => _target;
+  String get eventType => _eventType;
 
   //-----------------------------------------------------------------------------------------------
 
@@ -43,12 +44,12 @@ class EventStream<T extends Event> extends Stream<T> {
 
   EventStreamSubscription<T> capture(void onData(T event)) {
 
-    var eventStreamSubscription = new EventStreamSubscription<T>._internal(this, onData, true);
+    var subscription = new EventStreamSubscription<T>._internal(this, onData, true);
 
-    _subscriptions.add(eventStreamSubscription);
+    _subscriptions.add(subscription);
     _capturingSubscriptionCount++;
 
-    return eventStreamSubscription;
+    return subscription;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -63,6 +64,20 @@ class EventStream<T extends Event> extends Stream<T> {
   }
 
   //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+
+  _cancel(EventListener eventListener, bool useCapture) {
+
+    var subscriptions = _subscriptions;
+
+    for(var i = 0; i < subscriptions.length; i++) {
+      var subscription = subscriptions[i];
+      if (subscription.eventListener == eventListener && subscription.isCapturing == useCapture) {
+        subscription.cancel();
+      }
+    }
+  }
+
   //-----------------------------------------------------------------------------------------------
 
   _onSubscriptionCancel(EventStreamSubscription eventStreamSubscription) {
@@ -86,12 +101,11 @@ class EventStream<T extends Event> extends Stream<T> {
 
   //-----------------------------------------------------------------------------------------------
 
-  bool _hasPropagationSubscriptions(Event event) {
+  bool _hasPropagationSubscriptions(Event event) =>
+    event.captures && _capturingSubscriptionCount > 0 ||
+    event.bubbles && _subscriptions.length > _capturingSubscriptionCount;
 
-    return
-        event.captures && _capturingSubscriptionCount > 0 ||
-        event.bubbles && _subscriptions.length > _capturingSubscriptionCount;
-  }
+  //-----------------------------------------------------------------------------------------------
 
   _dispatchEventInternal(T event, EventDispatcher target, int eventPhase)  {
 

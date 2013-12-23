@@ -20,6 +20,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   bool get isCapturing => _captures;
 
   EventStream<T> get eventStream => _eventStream;
+  EventListener<T> get eventListener => _eventListener;
 
   //-----------------------------------------------------------------------------------------------
 

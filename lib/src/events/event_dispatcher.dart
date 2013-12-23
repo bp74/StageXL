@@ -35,12 +35,18 @@ class EventDispatcher {
     return eventStream.hasSubscriptions;
   }
 
-  StreamSubscription<Event> addEventListener(
-      String eventType, EventListener eventListener, { bool useCapture: false }) {
+  StreamSubscription<Event> addEventListener(String eventType, EventListener eventListener, {
+    bool useCapture: false }) {
 
     return useCapture
         ? this.on(eventType).capture(eventListener)
         : this.on(eventType).listen(eventListener);
+  }
+
+  void removeEventListener(String eventType, EventListener eventListener, {
+    bool useCapture: false }) {
+
+    this.on(eventType)._cancel(eventListener, useCapture);
   }
 
   void removeEventListeners(String eventType) {
