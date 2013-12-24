@@ -40,8 +40,10 @@ _dispatchBroadcastEvent(BroadcastEvent broadcastEvent, List<EventStreamSubscript
     if (subscription.isCanceled == false) {
       broadcastEvent._stopsPropagation = false;
       broadcastEvent._stopsImmediatePropagation = false;
-      var target = subscription.eventStream.target;
-      subscription._dispatchEventInternal(broadcastEvent, target, EventPhase.AT_TARGET);
+      broadcastEvent._target = subscription.eventStream.target;
+      broadcastEvent._currentTarget = subscription.eventStream.target;
+      broadcastEvent._eventPhase = EventPhase.AT_TARGET;
+      subscription.eventListener(broadcastEvent);
     } else {
       subscriptions.removeAt(i);
       length--;
