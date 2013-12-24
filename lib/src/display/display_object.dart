@@ -57,6 +57,9 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  /// Gets or sets user-defined data associated with the display object.
+  dynamic userData = null;
+
   num get x => _x;
   num get y => _y;
   num get pivotX => _pivotX;
