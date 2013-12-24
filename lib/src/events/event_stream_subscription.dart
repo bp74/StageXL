@@ -4,6 +4,7 @@ typedef void EventListener<T extends Event>(T event);
 
 class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
 
+  int _priority = 0;
   int _pauseCount = 0;
   bool _canceled = false;
   bool _captures = false;
@@ -11,9 +12,12 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   EventStream<T> _eventStream;
   EventListener<T> _eventListener;
 
-  EventStreamSubscription._internal(this._eventStream, this._eventListener, this._captures);
+  EventStreamSubscription._internal(
+      this._eventStream, this._eventListener, this._captures, this._priority);
 
   //-----------------------------------------------------------------------------------------------
+
+  int get priority => _priority;
 
   bool get isPaused => _pauseCount > 0;
   bool get isCanceled => _canceled;
@@ -47,8 +51,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
 
   Future cancel() {
     if (_canceled == false) {
-      _canceled = true;
-      _eventStream._onSubscriptionCancel(this);
+      _eventStream._cancelSubscription(this);
     }
     return null;
   }
@@ -67,18 +70,5 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
     _pauseCount--;
   }
 
-  //-----------------------------------------------------------------------------------------------
-
-  _dispatchEventInternal(T event, EventDispatcher target, int eventPhase) {
-
-    if (_canceled) return;
-    if (_captures != (eventPhase == EventPhase.CAPTURING_PHASE)) return;
-
-    event._target = target;
-    event._currentTarget = _eventStream.target;
-    event._eventPhase = eventPhase;
-
-    _eventListener(event);
-  }
 }
 
