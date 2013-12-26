@@ -26,21 +26,19 @@ class MouseEvent extends Event {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num _localX, _localY;
-  num _stageX, _stageY;
-  num _deltaX, _deltaY;
+  num _localX = 0.0, _localY = 0.0;
+  num _stageX = 0.0, _stageY = 0.0;
+  num _deltaX = 0.0, _deltaY = 0.0;
 
-  bool _buttonDown;
-  bool _altKey;
-  bool _controlKey;
-  bool _ctrlKey;
-  bool _shiftKey;
+  bool _buttonDown = false;
+  bool _altKey = false;
+  bool _controlKey = false;
+  bool _ctrlKey = false;
+  bool _shiftKey = false;
 
-  int _clickCount;
+  int _clickCount = 0;
 
-  MouseEvent(String type, [bool bubbles = false]):super(type, bubbles) {
-    _reset(type, bubbles);
-  }
+  MouseEvent(String type, [bool bubbles = false]) : super(type, bubbles);
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
@@ -49,9 +47,9 @@ class MouseEvent extends Event {
 
     super._reset(type, bubbles);
 
-    _localX = _localY = 0;
-    _stageX = _stageY = 0;
-    _deltaX = _deltaY = 0;
+    _localX = _localY = 0.0;
+    _stageX = _stageY = 0.0;
+    _deltaX = _deltaY = 0.0;
 
     _buttonDown = false;
     _altKey = false;

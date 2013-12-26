@@ -17,7 +17,7 @@ class KeyboardEvent extends Event {
   int _keyCode = 0;
   int _keyLocation = 0;
 
-  KeyboardEvent(String type, [bool bubbles = false]):super(type, bubbles);
+  KeyboardEvent(String type, [bool bubbles = false]) : super(type, bubbles);
 
   //-------------------------------------------------------------------------------------------------
 

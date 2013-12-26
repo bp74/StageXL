@@ -29,15 +29,13 @@ class Event {
 
   String _type;
   bool _bubbles;
-  int _eventPhase;
-  EventDispatcher _target;
-  EventDispatcher _currentTarget;
-  bool _stopsPropagation;
-  bool _stopsImmediatePropagation;
+  int _eventPhase = EventPhase.AT_TARGET;
+  EventDispatcher _target = null;
+  EventDispatcher _currentTarget = null;
+  bool _stopsPropagation = false;
+  bool _stopsImmediatePropagation = false;
 
-  Event(String type, [bool bubbles = false]) {
-    _reset(type, bubbles);
-  }
+  Event(String type, [bool bubbles = false]) : _type = type, _bubbles = bubbles;
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
