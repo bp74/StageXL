@@ -25,6 +25,7 @@ abstract class InteractiveObject extends DisplayObject {
   static const EventStreamProvider<MouseEvent> mouseRightUpEvent = const EventStreamProvider<MouseEvent>(MouseEvent.RIGHT_MOUSE_UP);
   static const EventStreamProvider<MouseEvent> mouseRightClickEvent = const EventStreamProvider<MouseEvent>(MouseEvent.RIGHT_CLICK);
   static const EventStreamProvider<MouseEvent> mouseWheelEvent = const EventStreamProvider<MouseEvent>(MouseEvent.MOUSE_WHEEL);
+  static const EventStreamProvider<MouseEvent> mouseContextMenu = const EventStreamProvider<MouseEvent>(MouseEvent.CONTEXT_MENU);
 
   EventStream<MouseEvent> get onMouseOut => InteractiveObject.mouseOutEvent.forTarget(this);
   EventStream<MouseEvent> get onMouseOver => InteractiveObject.mouseOverEvent.forTarget(this);
@@ -42,6 +43,7 @@ abstract class InteractiveObject extends DisplayObject {
   EventStream<MouseEvent> get onMouseRightUp => InteractiveObject.mouseRightUpEvent.forTarget(this);
   EventStream<MouseEvent> get onMouseRightClick => InteractiveObject.mouseRightClickEvent.forTarget(this);
   EventStream<MouseEvent> get onMouseWheel => InteractiveObject.mouseWheelEvent.forTarget(this);
+  EventStream<MouseEvent> get onMouseContextMenu => InteractiveObject.mouseContextMenu.forTarget(this);
 
   // touch events
 

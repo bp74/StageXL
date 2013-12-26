@@ -139,6 +139,7 @@ class Stage extends DisplayObjectContainer {
     _canvas.onMouseUp.listen(_onMouseEvent);
     _canvas.onMouseMove.listen(_onMouseEvent);
     _canvas.onMouseOut.listen(_onMouseEvent);
+    _canvas.onContextMenu.listen(_onMouseEvent);
     _canvas.onMouseWheel.listen(_onMouseWheelEvent);
 
     //---------------------------
@@ -515,6 +516,10 @@ class Stage extends DisplayObjectContainer {
 
     if (event.type == "mousemove") {
       mouseEventType = MouseEvent.MOUSE_MOVE;
+    }
+
+    if (event.type == "contextmenu") {
+      mouseEventType = MouseEvent.CONTEXT_MENU;
     }
 
     //-----------------------------------------------------------------
