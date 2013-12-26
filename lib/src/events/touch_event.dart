@@ -37,26 +37,6 @@ class TouchEvent extends Event {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _reset(String type, [bool bubbles = false]) {
-
-    super._reset(type, bubbles);
-
-    _touchPointID = 0;
-    _isPrimaryTouchPoint = false;
-
-    _localX = _localY = 0.0;
-    _stageX = _stageY = 0.0;
-
-    _altKey = false;
-    _controlKey = false;
-    _ctrlKey = false;
-    _shiftKey = false;
-
-    _pressure = 1.00;
-    _sizeX = 0;
-    _sizeY = 0;
-  }
-
   set _localPoint(Point point) {
     _localX = point.x;
     _localY = point.y;

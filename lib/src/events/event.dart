@@ -40,19 +40,6 @@ class Event {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _reset(String type, [bool bubbles = false]) {
-    _type = type;
-    _bubbles = bubbles;
-    _eventPhase = EventPhase.AT_TARGET;
-    _target = null;
-    _currentTarget = null;
-    _stopsPropagation = false;
-    _stopsImmediatePropagation = false;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
   void stopPropagation() {
     _stopsPropagation = true;
   }

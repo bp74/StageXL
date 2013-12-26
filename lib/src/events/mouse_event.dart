@@ -43,23 +43,6 @@ class MouseEvent extends Event {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _reset(String type, [bool bubbles = false]) {
-
-    super._reset(type, bubbles);
-
-    _localX = _localY = 0.0;
-    _stageX = _stageY = 0.0;
-    _deltaX = _deltaY = 0.0;
-
-    _buttonDown = false;
-    _altKey = false;
-    _controlKey = false;
-    _ctrlKey = false;
-    _shiftKey = false;
-
-    _clickCount = 0;
-  }
-
   set _localPoint(Point point) {
     _localX = point.x;
     _localY = point.y;
