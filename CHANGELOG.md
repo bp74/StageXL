@@ -3,6 +3,19 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.8.9
+  * Added HtmlObject class to use HTML elements as DisplayObjects (kind of). 
+  * Added BitmapData.sliceIntoFrames (better SpriteSheet support).
+  * Added RenderLoop.start and RenderLoop.stop to control rendering.
+  * Added AnimationGroup and AnimactionChain to Juggler framework.
+  * Added EventDispatcher.removeEventListener
+  * Added EventDispatcher.addEventListener optional "priority" parameter.
+  * Added EventStream.listen optional "priority" parameter.
+  * Fixed Color bug on iOS7.
+  * Fixed GraphicsPattern from BitmapData.
+  * Improved performance of BitmapFilters (~ 2x).
+  * Improved performance and smaller code for Tweens.
+  
 #### Pub version 0.8.8
   * Added new mouse event for roll over and out.
   * Removed examples in favor of StageXL_Samples.

@@ -1,8 +1,8 @@
 name: stagexl
-version: 0.8.8
 author: Bernhard Pichler <support@stagexl.org>
-description: A library for graphically rich content like games, based on the Flash API.
+version: 0.8.9
 homepage: http://www.stagexl.org
+description: A library for graphically rich content like games, based on the Flash API.
 environment:
   sdk: '>=0.8.10+6 <2.0.0'
 dependencies:
