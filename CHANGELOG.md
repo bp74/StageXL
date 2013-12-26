@@ -4,7 +4,8 @@ This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
 #### Pub version 0.8.9
-  * Added HtmlObject class to use HTML elements as DisplayObjects (kind of). 
+  * Added HtmlObject class to use HTML elements as DisplayObjects (kind of).
+  * Added DisplayObject.userData property to custom user-defined data. 
   * Added BitmapData.sliceIntoFrames (better SpriteSheet support).
   * Added RenderLoop.start and RenderLoop.stop to control rendering.
   * Added AnimationGroup and AnimactionChain to Juggler framework.
