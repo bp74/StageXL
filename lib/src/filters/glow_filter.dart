@@ -118,20 +118,20 @@ class GlowFilter extends BitmapFilter {
     // set color
 
     int aColor = (alpha * 256).toInt();
-    int rColor = (color >> 16) & 0xFF;
-    int gColor = (color >>  8) & 0xFF;
-    int bColor = (color >>  0) & 0xFF;
+    int rColor = (color & 0xFF0000) >> 16;
+    int gColor = (color & 0xFF00) >> 8;
+    int bColor = (color & 0xFF);
 
     if (_isLittleEndianSystem) {
       for(var i = 0; i <= destinationData.length - 4; i += 4) {
         destinationData[i + 0] = rColor;
         destinationData[i + 1] = gColor;
         destinationData[i + 2] = bColor;
-        destinationData[i + 3] = (destinationData[i + 3] * aColor) >> 8;
+        destinationData[i + 3] = (destinationData[i + 3] * aColor | 0) >> 8;
       }
     } else {
       for(var i = 0; i <= destinationData.length - 4; i += 4) {
-        destinationData[i + 0] = (destinationData[i + 0] * aColor) >> 8;
+        destinationData[i + 0] = (destinationData[i + 0] * aColor | 0) >> 8;
         destinationData[i + 1] = bColor;
         destinationData[i + 2] = gColor;
         destinationData[i + 3] = rColor;
