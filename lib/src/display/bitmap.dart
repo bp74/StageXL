@@ -70,7 +70,10 @@ class Bitmap extends DisplayObject {
     if (_clipRectangle == null) {
       bitmapData.render(renderState);
     } else {
-      bitmapData.renderClipped(renderState, _clipRectangle);
+
+      // TODO: WebGL
+
+      // bitmapData.renderClipped(renderState, _clipRectangle);
     }
   }
 

@@ -1,7 +1,7 @@
 part of stagexl;
 
 class Gauge extends DisplayObject {
-  
+
   static const String DIRECTION_UP = 'DIRECTION_UP';
   static const String DIRECTION_RIGHT = 'DIRECTION_RIGHT';
   static const String DIRECTION_DOWN = 'DIRECTION_DOWN';
@@ -13,7 +13,7 @@ class Gauge extends DisplayObject {
   Rectangle _clipRectangle;
 
   Gauge(BitmapData bitmapData, [String direction = DIRECTION_LEFT]) {
-    
+
     if (direction != DIRECTION_UP && direction != DIRECTION_DOWN &&
         direction != DIRECTION_LEFT && direction != DIRECTION_RIGHT) {
       throw new ArgumentError('Invalid Gauge direction!');
@@ -33,7 +33,7 @@ class Gauge extends DisplayObject {
   num get ratio => _ratio;
 
   set ratio(num value) {
-    
+
     if (value < 0.0) value = 0.0;
     if (value > 1.0) value = 1.0;
 
@@ -46,7 +46,7 @@ class Gauge extends DisplayObject {
   BitmapData get bitmapData => _bitmapData;
 
   set bitmapData(BitmapData value) {
-    
+
     _bitmapData = value;
     _updateMask();
   }
@@ -54,7 +54,7 @@ class Gauge extends DisplayObject {
   //-------------------------------------------------------------------------------------------------
 
   _updateMask() {
-    
+
     if (_bitmapData == null) {
       _clipRectangle.left = 0;
       _clipRectangle.top = 0;
@@ -103,7 +103,7 @@ class Gauge extends DisplayObject {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
-    
+
     int width = (_bitmapData != null) ? _bitmapData.width : 0;
     int height = (_bitmapData != null) ? _bitmapData.height : 0;
 
@@ -113,7 +113,7 @@ class Gauge extends DisplayObject {
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-    
+
     if (_bitmapData != null && localX >= 0.0 && localY >= 0.0 && localX < _bitmapData.width && localY < _bitmapData.height)
       return this;
 
@@ -123,9 +123,13 @@ class Gauge extends DisplayObject {
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-    
+
+    // TODO: WebGL
+
+    /*
     if (_bitmapData != null)
         _bitmapData.renderClipped(renderState, _clipRectangle);
+    */
   }
 
 }

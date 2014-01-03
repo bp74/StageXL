@@ -30,6 +30,9 @@ class BlurFilter extends BitmapFilter {
 
   void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
 
+    // TODO: WebGL
+
+    /*
     var sourceImageData = sourceBitmapData.getImageData(
         sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destinationBitmapData.pixelRatio);
     var sourceData = sourceImageData.data;
@@ -115,6 +118,7 @@ class BlurFilter extends BitmapFilter {
     _unpremultiplyAlpha(destinationImageData);
 
     destinationBitmapData.putImageData(destinationImageData, destinationPoint.x - rx1, destinationPoint.y - ry1);
+    */
   }
 
   //-------------------------------------------------------------------------------------------------

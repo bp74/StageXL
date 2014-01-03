@@ -467,16 +467,23 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
 
+    // TODO: WebGL
+
+    /*
     var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
 
     _cache = new BitmapData(width, height, true, Color.Transparent, pixelRatio);
     _cacheRectangle = new Rectangle(x, y, width, height);
     _cacheDebugBorder = debugBorder;
     refreshCache();
+    */
   }
 
   void refreshCache() {
 
+    // TODO: WebGL
+
+    /*
     if (_cache == null) return;
 
     var x = _cacheRectangle.x;
@@ -501,6 +508,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       _cache.fillRect(new Rectangle(0, height - 1, width, 1), 0xFFFF00FF);
       _cache.fillRect(new Rectangle(0, 0, 1, height), 0xFFFF00FF);
     }
+    */
   }
 
   void removeCache() {
@@ -508,8 +516,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   }
 
   void _renderCache(RenderState renderState) {
-    renderState.context.translate(_cacheRectangle.x, _cacheRectangle.y);
-    _cache.render(renderState);
+
+    // TODO: WEBGL
+
+    //renderState.context.translate(_cacheRectangle.x, _cacheRectangle.y);
+    //_cache.render(renderState);
   }
 
   //-------------------------------------------------------------------------------------------------

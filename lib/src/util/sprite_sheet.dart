@@ -7,7 +7,9 @@ class SpriteSheet {
   List<BitmapData> frames;
 
   SpriteSheet(this.source, this.width, this.height) {
-    frames = source.sliceIntoFrames(width, height);
+    // TODO: WebGL
+
+    //frames = source.sliceIntoFrames(width, height);
   }
 
   BitmapData frameAt(int index) {

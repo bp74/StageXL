@@ -58,7 +58,8 @@ class Stage extends DisplayObjectContainer {
   static num get devicePixelRatio => _devicePixelRatio;
 
   CanvasElement _canvas;
-  CanvasRenderingContext2D _context;
+  RenderContext _renderContext;
+
   int _sourceWidth, _sourceHeight;
   int _frameRate;
   int _canvasWidth, _canvasHeight;
@@ -99,7 +100,11 @@ class Stage extends DisplayObjectContainer {
 
     _name = name;
     _canvas = canvas;
-    _context = canvas.context2D;
+
+    // ToDo: WebGL
+    _renderContext = new RenderContextWebGL(canvas);
+    //_renderContext = new RenderContextCanvas(canvas);
+    _renderState = new RenderState(_renderContext);
 
     _sourceWidth = (sourceWidth != null) ? sourceWidth : canvas.width;
     _sourceHeight = (sourceHeight != null) ? sourceHeight : canvas.height;
@@ -115,7 +120,6 @@ class Stage extends DisplayObjectContainer {
     _renderLoop = null;
     _juggler = new Juggler();
 
-    _renderState = new RenderState.fromCanvasRenderingContext2D(_context);
     _stageRenderMode = StageRenderMode.AUTO;
     _stageScaleMode = StageScaleMode.SHOW_ALL;
     _stageAlign = StageAlign.NONE;
@@ -260,6 +264,7 @@ class Stage extends DisplayObjectContainer {
 
       _renderState.reset(_stageTransformation, currentTime, deltaTime);
       render(_renderState);
+      _renderState.flush();
 
       if (_stageRenderMode == StageRenderMode.ONCE)
         _stageRenderMode = StageRenderMode.STOP;

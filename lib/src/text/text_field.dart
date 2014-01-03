@@ -34,7 +34,8 @@ class TextField extends InteractiveObject {
 
   int _refreshPending = 3;   // bit 0: textLineMetrics, bit 1: cache
   bool _cacheAsBitmap = true;
-  CanvasElement _cacheAsBitmapCanvas;
+
+  RenderTexture _renderTexture;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -48,8 +49,18 @@ class TextField extends InteractiveObject {
     this.onMouseDown.listen(_onMouseDown);
   }
 
+  /*
+   * Disposes the texture memory allocated by WebGL.
+   */
+  void dispose() {
+    if (_renderTexture != null) {
+      _renderTexture.dispose();
+    }
+  }
+
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+
+  RenderTexture get renderTexture => _renderTexture;
 
   String get text => _text;
   int get textColor => _defaultTextFormat.color;
@@ -230,22 +241,23 @@ class TextField extends InteractiveObject {
 
   void render(RenderState renderState) {
 
+    // TODO: WEBGL - fix _cacheAsBitmap = false
+    // TODO: WEBGL - fix caret
+
     _refreshTextLineMetrics();
     _refreshCache();
 
     // draw text
 
-    var renderContext = renderState.context;
-
     if (_cacheAsBitmap) {
-      var canvas = _cacheAsBitmapCanvas;
-      if (canvas != null) renderContext.drawImageScaled(canvas, 0.0, 0.0, _width, _height);
+      renderState.renderQuad(_renderTexture.quad);
     } else {
-      _renderText(renderContext);
+      //_renderText(renderContext);
     }
 
     // draw cursor for INPUT text fields
 
+    /*
     _caretTime += renderState.deltaTime;
 
     if (_type == TextFieldType.INPUT) {
@@ -255,6 +267,7 @@ class TextField extends InteractiveObject {
         renderContext.fillRect(_caretX, _caretY, _caretWidth, _caretHeight);
       }
     }
+    */
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -491,26 +504,21 @@ class TextField extends InteractiveObject {
     }
 
     var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
-    var canvasWidth = (_width * pixelRatio).ceil();
-    var canvasHeight =  (_height * pixelRatio).ceil();
+    var width = max(1, (_width * pixelRatio).ceil());
+    var height =  max(1, (_height * pixelRatio).ceil());
 
-    if (canvasWidth <= 0 || canvasHeight <= 0) {
-      _cacheAsBitmapCanvas = null;
-      return;
+    if (_renderTexture == null) {
+      _renderTexture = new RenderTexture(width, height, Color.Transparent);
+    } else {
+      _renderTexture.resize(width, height);
     }
 
-    if (_cacheAsBitmapCanvas == null) {
-      _cacheAsBitmapCanvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
-    }
-
-    if (_cacheAsBitmapCanvas.width != canvasWidth) _cacheAsBitmapCanvas.width = canvasWidth;
-    if (_cacheAsBitmapCanvas.height != canvasHeight) _cacheAsBitmapCanvas.height = canvasHeight;
-
-    var context = _cacheAsBitmapCanvas.context2D;
+    var context = _renderTexture.canvas.context2D;
     context.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
     context.clearRect(0, 0, _width, _height);
 
     _renderText(context);
+    _renderTexture.update();
   }
 
   //-------------------------------------------------------------------------------------------------

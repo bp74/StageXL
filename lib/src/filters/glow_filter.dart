@@ -33,6 +33,9 @@ class GlowFilter extends BitmapFilter {
 
   void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
 
+    // TODO: WebGL
+
+    /*
     var originalBitmapData = sourceBitmapData;
 
     if (sourceBitmapData == destinationBitmapData && !hideObject) {
@@ -154,6 +157,7 @@ class GlowFilter extends BitmapFilter {
     if (this.hideObject == false) {
       destinationBitmapData.draw(originalBitmapData, new Matrix(1.0, 0.0, 0.0, 1.0, sx, sy));
     }
+    */
   }
 
   //-------------------------------------------------------------------------------------------------

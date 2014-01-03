@@ -36,6 +36,10 @@ class ColorMatrixFilter extends BitmapFilter {
 
   void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
 
+    // TODO: WebGL
+
+    /*
+
     //redResult   = (a[0]  * srcR) + (a[1]  * srcG) + (a[2]  * srcB) + (a[3]  * srcA) + a[4]
     //greenResult = (a[5]  * srcR) + (a[6]  * srcG) + (a[7]  * srcB) + (a[8]  * srcA) + a[9]
     //blueResult  = (a[10] * srcR) + (a[11] * srcG) + (a[12] * srcB) + (a[13] * srcA) + a[14]
@@ -93,6 +97,7 @@ class ColorMatrixFilter extends BitmapFilter {
     }
 
     destinationBitmapData.putImageData(imageData, destinationPoint.x, destinationPoint.y);
+    */
   }
 
   //-------------------------------------------------------------------------------------------------

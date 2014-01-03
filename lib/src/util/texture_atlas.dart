@@ -3,7 +3,7 @@ part of stagexl;
 class TextureAtlas {
 
   final List<TextureAtlasFrame> _frames = new List<TextureAtlasFrame>();
-  BitmapData _bitmapData;
+  RenderTexture _renderTexture;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -43,8 +43,8 @@ class TextureAtlas {
             }
           }
 
-          BitmapData.load(imageUrl).then((BitmapData bitmapData) {
-            textureAtlas._bitmapData = bitmapData;
+          RenderTexture.load(imageUrl).then((RenderTexture renderTexture) {
+            textureAtlas._renderTexture = renderTexture;
             completer.complete(textureAtlas);
           }).catchError((error) {
             completer.completeError(new StateError("Failed to load image."));
@@ -68,7 +68,7 @@ class TextureAtlas {
     for(int i = 0; i < _frames.length; i++) {
       var frame = _frames[i];
       if (frame.name == name) {
-        return new BitmapData.fromTextureAtlasFrame(frame);
+        return new BitmapData._fromTextureAtlasFrame(frame);
       }
     }
 
@@ -84,7 +84,7 @@ class TextureAtlas {
     for(int i = 0; i < _frames.length; i++) {
       var frame = _frames[i];
       if (frame.name.startsWith(namePrefix)) {
-        bitmapDataList.add(new BitmapData.fromTextureAtlasFrame(frame));
+        bitmapDataList.add(new BitmapData._fromTextureAtlasFrame(frame));
       }
     }
 

@@ -176,10 +176,12 @@ class FlipBook extends InteractiveObject implements Animatable {
     // type of "renderState" should have more effect on the dart2js
     // compilation anyway!?!
 
-    if (clipRectangle == null)
+    if (clipRectangle == null) {
       bitmapData.render(renderState);
-    else
-      bitmapData.renderClipped(renderState, clipRectangle);
+    } else {
+      // TODO: WebGL
+      // bitmapData.renderClipped(renderState, clipRectangle);
+    }
   }
 
 }

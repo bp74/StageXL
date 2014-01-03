@@ -201,12 +201,16 @@ class Graphics {
 
   void render(RenderState renderState) {
 
+    // TODO: WEBGL
+
+    /*
     var context = renderState.context;
     context.beginPath();
 
     for(int i = 0; i < _commands.length; i++) {
       _commands[i].render(context);
-    }
+    }*/
+
   }
 
 }

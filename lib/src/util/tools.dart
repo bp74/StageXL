@@ -158,3 +158,25 @@ Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rect
 
 //------------------------------------------------------------------------------------------------------
 
+Future<ImageElement> _loadImageElement(String url) {
+
+  Completer<ImageElement> completer = new Completer<ImageElement>();
+
+  ImageElement imageElement = new ImageElement(src: url);
+  StreamSubscription onLoadSubscription;
+  StreamSubscription onErrorSubscription;
+
+  onLoadSubscription = imageElement.onLoad.listen((event) {
+    onLoadSubscription.cancel();
+    onErrorSubscription.cancel();
+    completer.complete(imageElement);
+  });
+
+  onErrorSubscription = imageElement.onError.listen((event) {
+    onLoadSubscription.cancel();
+    onErrorSubscription.cancel();
+    completer.completeError(new StateError("Failed to load image."));
+  });
+
+  return completer.future;
+}

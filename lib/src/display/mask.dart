@@ -33,16 +33,23 @@ abstract class Mask {
 
   beginRenderMask(RenderState renderState, Matrix matrix) {
 
+    // TODO: WEBGL
+
+    /*
     _context = renderState.context;
     _context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     _context.beginPath();
     _drawMask();
     _context.save();
     _context.clip();
+    */
   }
 
   endRenderMask() {
 
+    // TODO: WEBGL
+
+    /*
     _context.restore();
 
     if (border) {
@@ -52,6 +59,7 @@ abstract class Mask {
       _context.lineJoin = "round";
       _context.stroke();
     }
+    */
   }
 
   bool hitTest(num x, num y);

@@ -15,15 +15,14 @@ class _ContextState {
 
 class RenderState {
 
-  final CanvasRenderingContext2D _context;
+  final RenderContext _renderContext;
 
   num _currentTime = 0.0;
   num _deltaTime = 0.0;
   _ContextState _firstContextState;
   _ContextState _currentContextState;
 
-  RenderState.fromCanvasRenderingContext2D(CanvasRenderingContext2D context, [Matrix matrix]) :
-    _context = context {
+  RenderState(RenderContext renderContext, [Matrix matrix]) : _renderContext = renderContext {
 
     _firstContextState = new _ContextState();
     _currentContextState = _firstContextState;
@@ -33,18 +32,18 @@ class RenderState {
     if (matrix is Matrix) {
       fcsm.copyFrom(matrix);
     }
-
-    _context.setTransform(fcsm.a, fcsm.b, fcsm.c, fcsm.d, fcsm.tx, fcsm.ty);
-    _context.globalAlpha = 1.0;
-    _context.globalCompositeOperation = CompositeOperation.SOURCE_OVER;
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  CanvasRenderingContext2D get context => _context;
+  RenderContext get renderContext => _renderContext;
   num get currentTime => _currentTime;
   num get deltaTime => _deltaTime;
+
+  Matrix get globalMatrix => _currentContextState.matrix;
+  double get globalAlpha => _currentContextState.alpha;
+  String get globalCompositeOperation => _currentContextState.compositeOperation;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -53,19 +52,11 @@ class RenderState {
     _currentTime = (currentTime is num) ? currentTime : 0.0;
     _deltaTime = (deltaTime is num) ? deltaTime : 0.0;
     _currentContextState = _firstContextState;
-
-    var fcsm = _firstContextState.matrix;
+    _renderContext.clear();
 
     if (matrix is Matrix) {
-      fcsm.copyFrom(matrix);
+      _firstContextState.matrix.copyFrom(matrix);
     }
-
-    _context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    _context.clearRect(0, 0, _context.canvas.width, _context.canvas.height);
-    _context.setTransform(fcsm.a, fcsm.b, fcsm.c, fcsm.d, fcsm.tx, fcsm.ty);
-    _context.globalAlpha = 1.0;
-    _context.globalCompositeOperation = CompositeOperation.SOURCE_OVER;
-
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -125,11 +116,6 @@ class RenderState {
 
     // render DisplayObject
 
-    var m = nextMatrix;
-    _context.setTransform(m.a, m.b, m.c, m.d, m.tx, m.ty);
-    _context.globalCompositeOperation = nextCompositeOperation;
-    _context.globalAlpha = nextAlpha;
-
     if (displayObject.cached) {
       displayObject._renderCache(this);
     } else {
@@ -151,6 +137,15 @@ class RenderState {
     _currentContextState = cs1;
   }
 
+  //-------------------------------------------------------------------------------------------------
+
+  void renderQuad(RenderTextureQuad renderTextureQuad) {
+    _renderContext.renderQuad(this, renderTextureQuad);
+  }
+
+  void flush() {
+    _renderContext.flush();
+  }
 }
 
 

@@ -1,5 +1,104 @@
 part of stagexl;
 
+// TODO: bring back the old functions that we had before WebGL.
+
+class BitmapData implements BitmapDrawable {
+
+  int _width;
+  int _height;
+  bool _transparent;
+  num _pixelRatio;
+
+  RenderTexture _renderTexture;
+  RenderTextureQuad _renderTextureQuad;
+
+  static BitmapDataLoadOptions defaultLoadOptions = new BitmapDataLoadOptions();
+
+  //-------------------------------------------------------------------------------------------------
+
+  BitmapData(int width, int height, [
+      bool transparent = true, int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
+
+    _width = _ensureInt(width);
+    _height = _ensureInt(height);
+    _transparent = _ensureBool(transparent);
+    _pixelRatio = _ensureNum(pixelRatio);
+    _renderTexture = new RenderTexture(_width, _height, fillColor | (transparent ? 0 : 0xFF000000));
+    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height);
+  }
+
+  /*
+   * Disposes the texture memory allocated by WebGL.
+   */
+  void dispose() {
+    if (_renderTexture != null) {
+      _renderTexture.dispose();
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  BitmapData._fromRenderTexture(RenderTexture renderTexture) {
+    _width = renderTexture.width;
+    _height = renderTexture.height;
+    _transparent = true;
+    _pixelRatio = 1.0;
+    _renderTexture = renderTexture;
+    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height);
+  }
+
+  BitmapData._fromTextureAtlasFrame(TextureAtlasFrame textureAtlasFrame) {
+
+    _width = textureAtlasFrame.originalWidth;
+    _height = textureAtlasFrame.originalHeight;
+    _transparent = true;
+    _pixelRatio = 1.0;
+    _renderTexture = textureAtlasFrame.textureAtlas._renderTexture;
+
+    _renderTextureQuad = new RenderTextureQuad(_renderTexture,
+        textureAtlasFrame.frameX,
+        textureAtlasFrame.frameY,
+        textureAtlasFrame.frameX + textureAtlasFrame.frameWidth,
+        textureAtlasFrame.frameY + textureAtlasFrame.frameHeight);
+
+    // TODO: Rotation for TextureAtlasFrames
+
+    _renderTextureQuad._offsetX = textureAtlasFrame.offsetX;
+    _renderTextureQuad._offsetY = textureAtlasFrame.offsetY;
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  static Future<BitmapData> load(String url, [
+      BitmapDataLoadOptions bitmapDataLoadOptions = null, num pixelRatio = 1.0]) {
+
+    // TODO: AutoHiDpi, WebP, pixelRatio
+
+    return RenderTexture.load(url).then((renderTexture) {
+      return new BitmapData._fromRenderTexture(renderTexture);
+    });
+  }
+
+  //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  int get width => _width;
+  int get height => _height;
+
+  Rectangle get rectangle => new Rectangle(0, 0, _width, _height);
+
+  num get pixelRatio => _pixelRatio;
+
+
+  //-------------------------------------------------------------------------------------------------
+
+  render(RenderState renderState) {
+    renderState.renderQuad(_renderTextureQuad);
+  }
+
+}
+
+/*
 class BitmapData implements BitmapDrawable {
 
   int _width;
@@ -577,3 +676,4 @@ class BitmapData implements BitmapDrawable {
     }
   }
 }
+*/

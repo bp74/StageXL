@@ -4,6 +4,8 @@ import 'dart:async';
 import 'dart:math' hide Point, Rectangle;
 import 'dart:convert';
 import 'dart:html' as html;
+import 'dart:web_gl' as gl;
+import 'dart:typed_data';
 
 import 'dart:html' show
   Element, ImageElement, AudioElement, HttpRequest,
@@ -57,8 +59,14 @@ part 'src/displayEx/html_object.dart';
 part 'src/displayEx/time_gauge.dart';
 part 'src/displayEx/warp.dart';
 
+part 'src/engine/render_context.dart';
+part 'src/engine/render_context_canvas.dart';
+part 'src/engine/render_context_webgl.dart';
 part 'src/engine/render_loop.dart';
+part 'src/engine/render_program.dart';
 part 'src/engine/render_state.dart';
+part 'src/engine/render_texture.dart';
+part 'src/engine/render_texture_quad.dart';
 
 part 'src/events/broadcast_event.dart';
 part 'src/events/event.dart';
