@@ -167,17 +167,14 @@ class DefaultRenderProgram extends RenderProgram {
 
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
+
     var width = renderTextureQuad.width;
     var height = renderTextureQuad.height;
     var offsetX = renderTextureQuad.offsetX;
     var offsetY = renderTextureQuad.offsetY;
+    var uvList = renderTextureQuad.uvList;
 
-    var u1 = renderTextureQuad.u1;
-    var v1 = renderTextureQuad.v1;
-    var u2 = renderTextureQuad.u2;
-    var v2 = renderTextureQuad.v2;
-
-    // x' = ty + a * x + c * y
+    // x' = tx + a * x + c * y
     // y' = ty + b * x + d * y
 
     var a = matrix.a;
@@ -200,29 +197,29 @@ class DefaultRenderProgram extends RenderProgram {
     // vertex 1
     _vertexList[index + 00] = ox;
     _vertexList[index + 01] = oy;
-    _vertexList[index + 02] = u1;
-    _vertexList[index + 03] = v1;
+    _vertexList[index + 02] = uvList[0];
+    _vertexList[index + 03] = uvList[1];
     _vertexList[index + 04] = alpha;
 
     // vertex 2
-    _vertexList[index + 05] = ax + ox;
-    _vertexList[index + 06] = bx + oy;
-    _vertexList[index + 07] = u2;
-    _vertexList[index + 08] = v1;
+    _vertexList[index + 05] = ox + ax;
+    _vertexList[index + 06] = oy + bx;
+    _vertexList[index + 07] = uvList[2];
+    _vertexList[index + 08] = uvList[3];
     _vertexList[index + 09] = alpha;
 
     // vertex 3
     _vertexList[index + 10] = ox + ax + cy;
     _vertexList[index + 11] = oy + bx + dy;
-    _vertexList[index + 12] = u2;
-    _vertexList[index + 13] = v2;
+    _vertexList[index + 12] = uvList[4];
+    _vertexList[index + 13] = uvList[5];
     _vertexList[index + 14] = alpha;
 
     // vertex 4
     _vertexList[index + 15] = ox + cy;
     _vertexList[index + 16] = oy + dy;
-    _vertexList[index + 17] = u1;
-    _vertexList[index + 18] = v2;
+    _vertexList[index + 17] = uvList[6];
+    _vertexList[index + 18] = uvList[7];
     _vertexList[index + 19] = alpha;
 
     _quadCount += 1;

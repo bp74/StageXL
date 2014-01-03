@@ -21,7 +21,6 @@ class RenderContextWebGL extends RenderContext {
         premultipliedAlpha: false, preserveDrawingBuffer: false);
 
     _renderingContext.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    //_renderingContext.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     _renderingContext.enable(gl.BLEND);
     _renderingContext.disable(gl.DEPTH_TEST);
 

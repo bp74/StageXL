@@ -55,13 +55,21 @@ class BitmapData implements BitmapDrawable {
     _pixelRatio = 1.0;
     _renderTexture = textureAtlasFrame.textureAtlas._renderTexture;
 
-    _renderTextureQuad = new RenderTextureQuad(_renderTexture,
-        textureAtlasFrame.frameX,
-        textureAtlasFrame.frameY,
-        textureAtlasFrame.frameX + textureAtlasFrame.frameWidth,
-        textureAtlasFrame.frameY + textureAtlasFrame.frameHeight);
+    var x1, y1, x3, y3;
 
-    // TODO: Rotation for TextureAtlasFrames
+    if (textureAtlasFrame.rotated == false) {
+      x1 = textureAtlasFrame.frameX;
+      y1 = textureAtlasFrame.frameY;
+      x3 = textureAtlasFrame.frameX + textureAtlasFrame.frameWidth;
+      y3 = textureAtlasFrame.frameY + textureAtlasFrame.frameHeight;
+    } else {
+      x1 = textureAtlasFrame.frameX + textureAtlasFrame.frameHeight;
+      y1 = textureAtlasFrame.frameY;
+      x3 = textureAtlasFrame.frameX;
+      y3 = textureAtlasFrame.frameY + textureAtlasFrame.frameWidth;
+    }
+
+    _renderTextureQuad = new RenderTextureQuad(_renderTexture, x1, y1, x3, y3);
 
     _renderTextureQuad._offsetX = textureAtlasFrame.offsetX;
     _renderTextureQuad._offsetY = textureAtlasFrame.offsetY;
