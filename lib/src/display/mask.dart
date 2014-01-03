@@ -31,40 +31,9 @@ abstract class Mask {
 
   //-----------------------------------------------------------------------------------------------
 
-  beginRenderMask(RenderState renderState, Matrix matrix) {
-
-    // TODO: WEBGL
-
-    /*
-    _context = renderState.context;
-    _context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-    _context.beginPath();
-    _drawMask();
-    _context.save();
-    _context.clip();
-    */
-  }
-
-  endRenderMask() {
-
-    // TODO: WEBGL
-
-    /*
-    _context.restore();
-
-    if (border) {
-      _context.strokeStyle = _color2rgba(borderColor);
-      _context.lineWidth = borderWidth;
-      _context.lineCap = "round";
-      _context.lineJoin = "round";
-      _context.stroke();
-    }
-    */
-  }
-
   bool hitTest(num x, num y);
 
-  _drawMask();
+  _drawCanvasPath(CanvasRenderingContext2D context);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -76,8 +45,8 @@ class _RectangleMask extends Mask {
 
   _RectangleMask(num x, num y, num width, num height) : _rectangle = new Rectangle(x, y, width, height);
 
-  _drawMask() {
-    _context.rect(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
+  _drawCanvasPath(CanvasRenderingContext2D context) {
+    context.rect(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
   }
 
   bool hitTest(num x, num y) {
@@ -93,8 +62,8 @@ class _CirlceMask extends Mask {
 
   _CirlceMask(num x, num y, num radius) : _circle = new Circle(x, y, radius);
 
-  _drawMask() {
-    _context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false);
+  _drawCanvasPath(CanvasRenderingContext2D context) {
+    context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false);
   }
 
   bool hitTest(num x, num y) {
@@ -132,12 +101,13 @@ class _CustomMask extends Mask {
     _bounds.bottom = maxY;
   }
 
-  _drawMask() {
+  _drawCanvasPath(CanvasRenderingContext2D context) {
+
     for(int i = 0; i < _points.length; i++) {
       var point = _points[i];
-      _context.lineTo(point.x, point.y);
+      context.lineTo(point.x, point.y);
     }
-    _context.lineTo(_points[0].x, _points[0].y);
+    context.lineTo(_points[0].x, _points[0].y);
   }
 
   bool hitTest(num x, num y) {
@@ -173,9 +143,9 @@ class _ShapeMask extends Mask {
 
   _ShapeMask(Shape shape) : _shape = shape;
 
-  _drawMask() {
+  _drawCanvasPath(CanvasRenderingContext2D context) {
     var mtx = _shape.transformationMatrix;
-    _context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+    context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
     _shape.graphics._drawPath(_context);
   }
 

@@ -63,6 +63,26 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
+  void beginRenderMask(RenderState renderState, Mask mask, Matrix matrix) {
+
+  }
+
+  void endRenderMask(Mask mask) {
+
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void beginRenderShadow(RenderState renderState, Shadow shadow, Matrix matrix) {
+
+  }
+
+  void endRenderShadow(Shadow shadow) {
+
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
   _updateViewPort() {
 
     var width = _renderingContext.drawingBufferWidth;

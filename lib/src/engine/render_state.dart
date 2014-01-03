@@ -95,7 +95,7 @@ class RenderState {
         matrix = mask.targetSpace.transformationMatrixTo(displayObject);
         if (matrix == null) matrix = _identityMatrix; else matrix.concat(cs2.matrix);
       }
-      mask.beginRenderMask(this, matrix);
+      _renderContext.beginRenderMask(this, mask, matrix);
     }
 
     // apply shadow
@@ -111,7 +111,7 @@ class RenderState {
         matrix = shadow.targetSpace.transformationMatrixTo(displayObject);
         if (matrix == null) matrix = _identityMatrix; else matrix.concat(cs2.matrix);
       }
-      shadow.beginRenderShadow(this, matrix);
+      _renderContext.beginRenderShadow(this, shadow, matrix);
     }
 
     // render DisplayObject
@@ -125,13 +125,13 @@ class RenderState {
     // restore shadow
 
     if (shadow != null) {
-      shadow.endRenderShadow();
+      _renderContext.endRenderShadow(shadow);
     }
 
     // restore mask
 
     if (mask != null) {
-      mask.endRenderMask();
+      _renderContext.endRenderMask(mask);
     }
 
     _currentContextState = cs1;

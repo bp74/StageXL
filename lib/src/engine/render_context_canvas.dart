@@ -54,4 +54,40 @@ class RenderContextCanvas extends RenderContext {
   void flush() {
 
   }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void beginRenderMask(RenderState renderState, Mask mask, Matrix matrix) {
+
+    _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    _renderingContext.beginPath();
+
+    mask._drawCanvasPath(_renderingContext);
+
+    _renderingContext.save();
+    _renderingContext.clip();
+  }
+
+  void endRenderMask(Mask mask) {
+
+    _renderingContext.restore();
+
+    if (mask.border) {
+      _renderingContext.strokeStyle = _color2rgba(mask.borderColor);
+      _renderingContext.lineWidth = mask.borderWidth;
+      _renderingContext.lineCap = "round";
+      _renderingContext.lineJoin = "round";
+      _renderingContext.stroke();
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void beginRenderShadow(RenderState renderState, Shadow shadow, Matrix matrix) {
+
+  }
+
+  void endRenderShadow(Shadow shadow) {
+
+  }
 }
