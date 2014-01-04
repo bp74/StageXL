@@ -27,6 +27,18 @@ class BitmapData implements BitmapDrawable {
     _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height);
   }
 
+  BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
+
+    var renderTexture = new RenderTexture.fromImage(imageElement);
+
+    _width = renderTexture.width;
+    _height = renderTexture.height;
+    _transparent = true;
+    _pixelRatio = _ensureNum(pixelRatio);
+    _renderTexture = renderTexture;
+    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height);
+  }
+
   /*
    * Disposes the texture memory allocated by WebGL.
    */
@@ -38,13 +50,13 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  BitmapData._fromRenderTexture(RenderTexture renderTexture) {
-    _width = renderTexture.width;
-    _height = renderTexture.height;
+  BitmapData._fromRenderTexture(RenderTexture renderTexture, RenderTextureQuad renderTextureQuad) {
+    _width = renderTextureQuad.width;
+    _height = renderTextureQuad.height;
     _transparent = true;
     _pixelRatio = 1.0;
     _renderTexture = renderTexture;
-    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height);
+    _renderTextureQuad = renderTextureQuad;
   }
 
   BitmapData._fromTextureAtlasFrame(TextureAtlasFrame textureAtlasFrame) {
@@ -83,8 +95,45 @@ class BitmapData implements BitmapDrawable {
     // TODO: AutoHiDpi, WebP, pixelRatio
 
     return RenderTexture.load(url).then((renderTexture) {
-      return new BitmapData._fromRenderTexture(renderTexture);
+      return new BitmapData._fromRenderTexture(renderTexture, renderTexture.quad);
     });
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  /*
+   * Returns an array of BitmapData based on this BitmapData's texture.
+   *
+   * This function is used to "slice" a spritesheet, tileset, or spritemap into
+   * several different frames. All BitmapData's produced by this method are linked
+   * to this BitmapData's texture for performance.
+   *
+   * The optional frameCount parameter will limit the number of frames generated,
+   * in case you have empty frames you don't care about due to the width / height
+   * of this BitmapData.
+   */
+  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, [int frameCount]) {
+
+    var cols = (width ~/ frameWidth);
+    var rows = (height ~/ frameHeight);
+    var frames = new List<BitmapData>();
+
+    if (frameCount == null) {
+      frameCount = rows * cols;
+    } else {
+      frameCount = min(frameCount, rows * cols);
+    }
+
+    for(var f = 0; f < frameCount; f++) {
+      var x = f % cols;
+      var y = f ~/ cols;
+      var rectangle = new Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
+      var renderTextureQuad = _renderTextureQuad.clip(rectangle);
+      var bitmapData = new BitmapData._fromRenderTexture(_renderTexture, renderTextureQuad);
+      frames.add(bitmapData);
+    }
+
+    return frames;
   }
 
   //-------------------------------------------------------------------------------------------------
