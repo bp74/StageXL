@@ -179,8 +179,7 @@ class FlipBook extends InteractiveObject implements Animatable {
     if (clipRectangle == null) {
       bitmapData.render(renderState);
     } else {
-      // TODO: WebGL
-      // bitmapData.renderClipped(renderState, clipRectangle);
+      bitmapData.renderClipped(renderState, clipRectangle);
     }
   }
 

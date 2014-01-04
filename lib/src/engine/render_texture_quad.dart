@@ -65,4 +65,40 @@ class RenderTextureQuad {
   int get width => _width;
   int get height => _height;
   int get rotation => _rotation;
+
+  //-----------------------------------------------------------------------------------------------
+
+  RenderTextureQuad clip(Rectangle clipRectangle) {
+
+    num x1 = 0, y1 = 0, x3 = 0, y3 = 0;
+    num offsetX = 0, offsetY = 0;
+
+    if (_rotation == 0) {
+
+      x1 = _x1 - _offsetX + max(_offsetX, clipRectangle.left);
+      y1 = _y1 - _offsetY + max(_offsetY, clipRectangle.top);
+      x3 = _x1 - _offsetX + min(_offsetX + _width, clipRectangle.right);
+      y3 = _y1 - _offsetY + min(_offsetY + _height, clipRectangle.bottom);
+
+      offsetX = _offsetX + x1 - _x1;
+      offsetY = _offsetY + y1 - _y1;
+
+    } else if (_rotation == 1) {
+
+      x1 = _x1 + _offsetY - max(_offsetY, clipRectangle.top);
+      y1 = _y1 - _offsetX + max(_offsetX, clipRectangle.left);
+      x3 = _x1 + _offsetY - min(_offsetY + _height, clipRectangle.bottom);
+      y3 = _y1 - _offsetX + min(_offsetX + _width, clipRectangle.right);
+
+      offsetX = _offsetX + y1 - _y1;
+      offsetY = _offsetY - x1 + _x1;
+    }
+
+    var renderTextureQuad = new RenderTextureQuad(_renderTexture, x1, y1, x3, y3);
+    renderTextureQuad._offsetX = offsetX;
+    renderTextureQuad._offsetY = offsetY;
+
+    return renderTextureQuad;
+  }
+
 }

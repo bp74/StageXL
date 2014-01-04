@@ -124,12 +124,8 @@ class Gauge extends DisplayObject {
 
   void render(RenderState renderState) {
 
-    // TODO: WebGL
-
-    /*
     if (_bitmapData != null)
         _bitmapData.renderClipped(renderState, _clipRectangle);
-    */
   }
 
 }

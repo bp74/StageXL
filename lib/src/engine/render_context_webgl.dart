@@ -68,16 +68,7 @@ class RenderContextWebGL extends RenderContext {
 
   void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
 
-    var renderTexture = renderTextureQuad.renderTexture;
-
-    if (identical(renderTexture, _renderTexture) == false) {
-      var texture =  renderTexture.getTexture(this);
-      _renderProgram.flush();
-      _renderingContext.activeTexture(gl.TEXTURE0);
-      _renderingContext.bindTexture(gl.TEXTURE_2D, texture);
-      _renderTexture = renderTexture;
-    }
-
+    _checkState(renderTextureQuad.renderTexture);
     _renderProgram.renderQuad(renderTextureQuad, matrix, alpha);
   }
 
@@ -159,6 +150,17 @@ class RenderContextWebGL extends RenderContext {
   }
 
   //-----------------------------------------------------------------------------------------------
+
+  _checkState(RenderTexture renderTexture) {
+
+    if (identical(renderTexture, _renderTexture) == false) {
+      var texture =  renderTexture.getTexture(this);
+      _renderProgram.flush();
+      _renderingContext.activeTexture(gl.TEXTURE0);
+      _renderingContext.bindTexture(gl.TEXTURE_2D, texture);
+      _renderTexture = renderTexture;
+    }
+  }
 
   _activateRenderProgram(RenderProgram renderProgram) {
     if (_renderProgram != null) {
