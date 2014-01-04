@@ -108,67 +108,41 @@ class _CirlceMask extends Mask {
 
 class _CustomMask extends Mask {
 
-  final List<Point> _points;
-  final Rectangle _bounds = new Rectangle.zero();
+  final Polygon _polygon;
+  Rectangle _polygonBounds;
+  List<int> _polygonTriangles;
 
-  _CustomMask(List<Point> points) : _points = points.toList(growable:false) {
-    if (points.length < 3) {
-      throw new ArgumentError("A custom mask needs at least 3 points.");
-    }
-
-    var maxX = double.NEGATIVE_INFINITY;
-    var minX = double.INFINITY;
-    var maxY = double.NEGATIVE_INFINITY;
-    var minY = double.INFINITY;
-
-    for(int i = 0; i < _points.length; i++) {
-      var point = _points[i];
-      maxX = max(maxX, point.x);
-      minX = min(minX, point.x);
-      maxY = max(maxY, point.y);
-      minY = min(minY, point.y);
-    }
-    _bounds.left = minX;
-    _bounds.right = maxX;
-    _bounds.top = minY;
-    _bounds.bottom = maxY;
+  _CustomMask(List<Point> points) : _polygon = new Polygon(points) {
+    _polygonBounds = _polygon.getBounds();
+    _polygonTriangles = _polygon.triangulate();
   }
 
   _drawCanvasPath(CanvasRenderingContext2D context) {
 
-    for(int i = 0; i < _points.length; i++) {
-      var point = _points[i];
+    var points = _polygon.points;
+
+    for(int i = 0; i < points.length; i++) {
+      var point = points[i];
       context.lineTo(point.x, point.y);
     }
-    context.lineTo(_points[0].x, _points[0].y);
+    context.lineTo(points[0].x, points[0].y);
   }
 
   _drawTriangles(RenderContext context, Matrix matrix) {
 
+    var points = _polygon.points;
+    var color = Color.Magenta;
+
+    for(int i = 0; i <= _polygonTriangles.length - 3; i += 3) {
+      var p1 = points[_polygonTriangles[i + 0]];
+      var p2 = points[_polygonTriangles[i + 1]];
+      var p3 = points[_polygonTriangles[i + 2]];
+      context.renderTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, matrix, color);
+    }
   }
 
   bool hitTest(num x, num y) {
-
-    if (_bounds.contains(x, y) == false) return false;
-
-    // PNPOLY - Point Inclusion in Polygon Test
-    // W. Randolph Franklin (WRF)
-    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-
-    var hit = false;
-    for(int i = 0, j = _points.length - 1; i < _points.length; j = i++) {
-      var pointI = _points[i];
-      var pointJ = _points[j];
-      if ((pointI.y > y) == (pointJ.y > y)) continue;
-
-      num dx = pointJ.x - pointI.x;
-      num dy = pointJ.y - pointI.y;
-      num tx = x - pointI.x;
-      num ty = y - pointI.y;
-      if ((tx < ty * dx / dy)) hit = !hit;
-    }
-
-    return hit;
+    return _polygonBounds.contains(x, y) ? _polygon.contains(x, y) : false;
   }
 }
 
