@@ -88,39 +88,40 @@ class RenderProgramPrimitive extends RenderProgram {
 
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
 
-    // TODO: optimize point transformations
-
     var colorA = ((color >> 24) & 0xFF) / 255.0;
     var colorR = ((color >> 16) & 0xFF) / 255.0;
     var colorG = ((color >>  8) & 0xFF) / 255.0;
     var colorB = ((color      ) & 0xFF) / 255.0;
 
-    var p1 = matrix.transformPoint(new Point(x1, y1));
-    var p2 = matrix.transformPoint(new Point(x2, y2));
-    var p3 = matrix.transformPoint(new Point(x3, y3));
+    var a = matrix.a;
+    var b = matrix.b;
+    var c = matrix.c;
+    var d = matrix.d;
+    var tx = matrix.tx;
+    var ty = matrix.ty;
 
     var index = _triangleCount * 18;
     if (index > _vertexList.length - 18) return; // dart2js_hint
 
     // vertex 1
-    _vertexList[index + 00] = p1.x;
-    _vertexList[index + 01] = p1.y;
+    _vertexList[index + 00] = x1 * a + y1 * c + tx;
+    _vertexList[index + 01] = x1 * b + y1 * d + ty;
     _vertexList[index + 02] = colorR;
     _vertexList[index + 03] = colorG;
     _vertexList[index + 04] = colorB;
     _vertexList[index + 05] = colorA;
 
     // vertex 2
-    _vertexList[index + 06] = p2.x;
-    _vertexList[index + 07] = p2.y;
+    _vertexList[index + 06] = x2 * a + y2 * c + tx;
+    _vertexList[index + 07] = x2 * b + y2 * d + ty;
     _vertexList[index + 08] = colorR;
     _vertexList[index + 09] = colorG;
     _vertexList[index + 10] = colorB;
     _vertexList[index + 11] = colorA;
 
     // vertex 3
-    _vertexList[index + 12] = p3.x;
-    _vertexList[index + 13] = p3.y;
+    _vertexList[index + 12] = x3 * a + y3 * c + tx;
+    _vertexList[index + 13] = x3 * b + y3 * d + ty;
     _vertexList[index + 14] = colorR;
     _vertexList[index + 15] = colorG;
     _vertexList[index + 16] = colorB;
