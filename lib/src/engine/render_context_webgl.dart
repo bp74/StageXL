@@ -136,9 +136,11 @@ class RenderContextWebGL extends RenderContext {
 
       var width = _renderingContext.drawingBufferWidth;
       var height = _renderingContext.drawingBufferHeight;
+      var matrix = _identityMatrix;
+      var color = Color.Magenta;
 
-      _renderProgram.renderTriangle(0, 0, width, 0, width, height, _identityMatrix, Color.Magenta);
-      _renderProgram.renderTriangle(0, 0, width, height, 0, height, _identityMatrix, Color.Magenta);
+      _renderProgram.renderTriangle(0, 0, width, 0, width, height, matrix, color);
+      _renderProgram.renderTriangle(0, 0, width, height, 0, height, matrix, color);
 
       _activateRenderProgram(_renderProgramDefault);
 
