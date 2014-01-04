@@ -93,6 +93,7 @@ part 'src/geom/circle.dart';
 part 'src/geom/color_transform.dart';
 part 'src/geom/matrix.dart';
 part 'src/geom/point.dart';
+part 'src/geom/polygon.dart';
 part 'src/geom/rectangle.dart';
 part 'src/geom/vector.dart';
 
