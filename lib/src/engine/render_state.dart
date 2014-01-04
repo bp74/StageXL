@@ -140,7 +140,9 @@ class RenderState {
   //-------------------------------------------------------------------------------------------------
 
   void renderQuad(RenderTextureQuad renderTextureQuad) {
-    _renderContext.renderQuad(this, renderTextureQuad);
+    var matrix = _currentContextState.matrix;
+    var alpha = _currentContextState.alpha;
+    _renderContext.renderQuad(renderTextureQuad, matrix, alpha);
   }
 
   void flush() {

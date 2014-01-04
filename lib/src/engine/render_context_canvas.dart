@@ -28,9 +28,7 @@ class RenderContextCanvas extends RenderContext {
     _renderingContext.clearRect(0, 0, _canvasElement.width, _canvasElement.height);
   }
 
-  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
-
-    var matrix = renderState.globalMatrix;
+  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
 
     var canvas = renderTextureQuad.renderTexture.canvas;
     var width = renderTextureQuad.width;
@@ -39,8 +37,7 @@ class RenderContextCanvas extends RenderContext {
     var offsetY = renderTextureQuad.offsetY;
     var rotation = renderTextureQuad.rotation;
 
-    _renderingContext.globalAlpha = renderState.globalAlpha;
-    _renderingContext.globalCompositeOperation = renderState.globalCompositeOperation;
+    _renderingContext.globalAlpha = alpha;
 
     if (rotation == 0) {
 
@@ -56,6 +53,10 @@ class RenderContextCanvas extends RenderContext {
           renderTextureQuad.x3, renderTextureQuad.y1, height, width,
           0.0 - offsetY - height, offsetX, height, width);
     }
+  }
+
+  void renderTriangle(Point p1, Point p2, Point p3, Matrix matrix, int color) {
+
   }
 
   void flush() {

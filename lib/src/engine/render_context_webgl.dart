@@ -8,8 +8,11 @@ class RenderContextWebGL extends RenderContext {
 
   CanvasElement _canvasElement;
   gl.RenderingContext _renderingContext;
-  RenderProgram _renderProgram;
+
   RenderTexture _renderTexture;
+  RenderProgram _renderProgram;
+  RenderProgram _renderProgramDefault;
+  RenderProgram _renderProgramPrimitive;
 
   RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
 
@@ -30,11 +33,17 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.enable(gl.STENCIL_TEST);
     _renderingContext.disable(gl.DEPTH_TEST);
 
-    _renderProgram = new DefaultRenderProgram(this);
-    _renderTexture = null;
+    _renderProgramDefault = new RenderProgramDefault(this);
+    _renderProgramPrimitive = new RenderProgramPrimitive(this);
 
-    _renderingContext.useProgram(_renderProgram.program);
+    _renderProgram = _renderProgramDefault;
+    _renderProgram.activate();
+
+    // ToDo: Improve this method, it's a strange mix between
+    // setting the viewport and updating the program uniform.
     _updateViewPort();
+
+    _renderTexture = null;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -46,9 +55,26 @@ class RenderContextWebGL extends RenderContext {
   void clear() {
     _renderingContext.clearColor(1.0, 1.0, 1.0, 0.0);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+    // test
+/*
+    _renderProgram = _renderProgramPrimitive;
+    _renderProgram.activate();
+    _updateViewPort();
+
+    var matrix = new Matrix.fromIdentity();
+
+    _renderProgram.renderTriangle(new Point(10, 10), new Point(600, 150), new Point(450,350), matrix, Color.Red);
+    _renderProgram.renderTriangle(new Point(600, 150), new Point(550, 590), new Point(450,350), matrix, Color.Red);
+    _renderProgram.flush();
+
+    _renderProgram = _renderProgramDefault;
+    _renderProgram.activate();
+    _updateViewPort();
+    */
   }
 
-  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
 
     var renderTexture = renderTextureQuad.renderTexture;
 
@@ -60,7 +86,12 @@ class RenderContextWebGL extends RenderContext {
       _renderTexture = renderTexture;
     }
 
-    _renderProgram.renderQuad(renderState, renderTextureQuad);
+    _renderProgram.renderQuad(renderTextureQuad, matrix, alpha);
+  }
+
+  void renderTriangle(Point p1, Point p2, Point p3, Matrix matrix, int color) {
+
+    _renderProgram.renderTriangle(p1, p2, p3, matrix, color);
   }
 
   void flush() {
