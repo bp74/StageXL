@@ -14,6 +14,8 @@ class RenderContextWebGL extends RenderContext {
   RenderProgram _renderProgramDefault;
   RenderProgram _renderProgramPrimitive;
 
+  int _maskDepth = 0;
+
   RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
 
     _canvasElement.onWebGlContextLost.listen((e) => "ToDo: Handle WebGL context lost.");
@@ -28,19 +30,26 @@ class RenderContextWebGL extends RenderContext {
     }
 
     _renderingContext = renderingContext;
-    _renderingContext.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
     _renderingContext.enable(gl.BLEND);
-    _renderingContext.enable(gl.STENCIL_TEST);
+    _renderingContext.disable(gl.STENCIL_TEST);
     _renderingContext.disable(gl.DEPTH_TEST);
+
+    _renderingContext.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    _renderingContext.colorMask(true, true, true, true);
+    _renderingContext.clearColor(1.0, 1.0, 1.0, 1.0);
+    _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
     _renderProgramDefault = new RenderProgramDefault(this);
     _renderProgramPrimitive = new RenderProgramPrimitive(this);
 
-    _renderProgram = _renderProgramDefault;
-    _renderProgram.activate();
-
-    // ToDo: Improve this method, it's a strange mix between
+    // ToDo: Replace "_updateViewPort". It's a strange mix between
     // setting the viewport and updating the program uniform.
+
+    _activateRenderProgram(_renderProgramPrimitive);
+    _updateViewPort();
+
+    _activateRenderProgram(_renderProgramDefault);
     _updateViewPort();
 
     _renderTexture = null;
@@ -53,25 +62,8 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void clear() {
-    _renderingContext.clearColor(1.0, 1.0, 1.0, 0.0);
+    _renderingContext.clearColor(1.0, 1.0, 1.0, 1.0);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-
-    // test
-/*
-    _renderProgram = _renderProgramPrimitive;
-    _renderProgram.activate();
-    _updateViewPort();
-
-    var matrix = new Matrix.fromIdentity();
-
-    _renderProgram.renderTriangle(new Point(10, 10), new Point(600, 150), new Point(450,350), matrix, Color.Red);
-    _renderProgram.renderTriangle(new Point(600, 150), new Point(550, 590), new Point(450,350), matrix, Color.Red);
-    _renderProgram.flush();
-
-    _renderProgram = _renderProgramDefault;
-    _renderProgram.activate();
-    _updateViewPort();
-    */
   }
 
   void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
@@ -89,9 +81,8 @@ class RenderContextWebGL extends RenderContext {
     _renderProgram.renderQuad(renderTextureQuad, matrix, alpha);
   }
 
-  void renderTriangle(Point p1, Point p2, Point p3, Matrix matrix, int color) {
-
-    _renderProgram.renderTriangle(p1, p2, p3, matrix, color);
+  void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
+    _renderProgram.renderTriangle(x1, y1, x2, y2, x3, y3, matrix, color);
   }
 
   void flush() {
@@ -102,10 +93,59 @@ class RenderContextWebGL extends RenderContext {
 
   void beginRenderMask(RenderState renderState, Mask mask, Matrix matrix) {
 
+    if (_maskDepth == 0) {
+      _renderProgram.flush();
+      _renderingContext.enable(gl.STENCIL_TEST);
+    }
+
+    _activateRenderProgram(_renderProgramPrimitive);
+
+    _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
+    _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
+    _renderingContext.stencilMask(0xFF);
+    _renderingContext.colorMask(false, false, false, false);
+    _maskDepth += 1;
+
+    mask._drawTriangles(this, matrix);
+
+    _activateRenderProgram(_renderProgramDefault);
+
+    _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
+    _renderingContext.stencilMask(0x00);
+    _renderingContext.colorMask(true, true, true, true);
   }
 
   void endRenderMask(Mask mask) {
 
+    if (_maskDepth == 1) {
+
+      _renderProgram.flush();
+      _maskDepth = 0;
+      _renderingContext.disable(gl.STENCIL_TEST);
+      _renderingContext.clear(gl.STENCIL_BUFFER_BIT);
+
+    } else {
+
+      _activateRenderProgram(_renderProgramPrimitive);
+
+      _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
+      _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
+      _renderingContext.stencilMask(0xFF);
+      _renderingContext.colorMask(false, false, false, false);
+      _maskDepth -= 1;
+
+      var width = _renderingContext.drawingBufferWidth;
+      var height = _renderingContext.drawingBufferHeight;
+
+      _renderProgram.renderTriangle(0, 0, width, 0, width, height, _identityMatrix, Color.Magenta);
+      _renderProgram.renderTriangle(0, 0, width, height, 0, height, _identityMatrix, Color.Magenta);
+
+      _activateRenderProgram(_renderProgramDefault);
+
+      _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
+      _renderingContext.stencilMask(0x00);
+      _renderingContext.colorMask(true, true, true, true);
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -119,6 +159,14 @@ class RenderContextWebGL extends RenderContext {
   }
 
   //-----------------------------------------------------------------------------------------------
+
+  _activateRenderProgram(RenderProgram renderProgram) {
+    if (_renderProgram != null) {
+      _renderProgram.flush();
+    }
+    _renderProgram = renderProgram;
+    _renderProgram.activate();
+  }
 
   _updateViewPort() {
 

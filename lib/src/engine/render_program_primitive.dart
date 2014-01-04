@@ -86,7 +86,7 @@ class RenderProgramPrimitive extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderTriangle(Point p1, Point p2, Point p3, Matrix matrix, int color) {
+  void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
 
     // TODO: optimize point transformations
 
@@ -95,9 +95,9 @@ class RenderProgramPrimitive extends RenderProgram {
     var colorG = ((color >>  8) & 0xFF) / 255.0;
     var colorB = ((color      ) & 0xFF) / 255.0;
 
-    p1 = matrix.transformPoint(p1);
-    p2 = matrix.transformPoint(p2);
-    p3 = matrix.transformPoint(p3);
+    var p1 = matrix.transformPoint(new Point(x1, y1));
+    var p2 = matrix.transformPoint(new Point(x2, y2));
+    var p3 = matrix.transformPoint(new Point(x3, y3));
 
     var index = _triangleCount * 18;
     if (index > _vertexList.length - 18) return; // dart2js_hint

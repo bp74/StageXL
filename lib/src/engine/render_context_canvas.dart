@@ -55,7 +55,7 @@ class RenderContextCanvas extends RenderContext {
     }
   }
 
-  void renderTriangle(Point p1, Point p2, Point p3, Matrix matrix, int color) {
+  void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
 
   }
 

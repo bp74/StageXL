@@ -34,6 +34,7 @@ abstract class Mask {
   bool hitTest(num x, num y);
 
   _drawCanvasPath(CanvasRenderingContext2D context);
+  _drawTriangles(RenderContext context, Matrix matrix);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -47,6 +48,15 @@ class _RectangleMask extends Mask {
 
   _drawCanvasPath(CanvasRenderingContext2D context) {
     context.rect(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
+  }
+
+  _drawTriangles(RenderContext context, Matrix matrix) {
+    var l = _rectangle.left;
+    var t = _rectangle.top;
+    var r = _rectangle.right;
+    var b = _rectangle.bottom;
+    context.renderTriangle(l, t, r, t, r, b, matrix, Color.Magenta);
+    context.renderTriangle(l, t, r, b, l, b, matrix, Color.Magenta);
   }
 
   bool hitTest(num x, num y) {
@@ -64,6 +74,29 @@ class _CirlceMask extends Mask {
 
   _drawCanvasPath(CanvasRenderingContext2D context) {
     context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false);
+  }
+
+  _drawTriangles(RenderContext context, Matrix matrix) {
+
+    var steps = 40;
+    var centerX = _circle.x;
+    var centerY = _circle.y;
+    var currentX = centerX + _circle.radius;
+    var currentY = centerY;
+
+    var cosR = cos(2 * PI / steps);
+    var sinR = sin(2 * PI / steps);
+    var tx = centerX - centerX * cosR + centerY * sinR;
+    var ty = centerY - centerX * sinR - centerY * cosR;
+    var color = Color.Magenta;
+
+    for(int s = 0; s <= steps; s++) {
+      var nextX = currentX * cosR - currentY * sinR + tx;
+      var nextY = currentX * sinR + currentY * cosR + ty;
+      context.renderTriangle(centerX, centerY, currentX, currentY, nextX, nextY, matrix, color);
+      currentX = nextX;
+      currentY = nextY;
+    }
   }
 
   bool hitTest(num x, num y) {
@@ -110,6 +143,10 @@ class _CustomMask extends Mask {
     context.lineTo(_points[0].x, _points[0].y);
   }
 
+  _drawTriangles(RenderContext context, Matrix matrix) {
+
+  }
+
   bool hitTest(num x, num y) {
 
     if (_bounds.contains(x, y) == false) return false;
@@ -147,6 +184,10 @@ class _ShapeMask extends Mask {
     var mtx = _shape.transformationMatrix;
     context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
     _shape.graphics._drawPath(_context);
+  }
+
+  _drawTriangles(RenderContext context, Matrix matrix) {
+
   }
 
   bool hitTest(num x, num y) {
