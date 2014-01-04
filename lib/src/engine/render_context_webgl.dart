@@ -99,7 +99,6 @@ class RenderContextWebGL extends RenderContext {
     }
 
     _activateRenderProgram(_renderProgramPrimitive);
-
     _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
     _renderingContext.stencilMask(0xFF);
@@ -109,7 +108,6 @@ class RenderContextWebGL extends RenderContext {
     mask._drawTriangles(this, matrix);
 
     _activateRenderProgram(_renderProgramDefault);
-
     _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
     _renderingContext.stencilMask(0x00);
     _renderingContext.colorMask(true, true, true, true);
@@ -121,13 +119,14 @@ class RenderContextWebGL extends RenderContext {
 
       _renderProgram.flush();
       _maskDepth = 0;
+      _renderingContext.stencilMask(0xFF);
       _renderingContext.disable(gl.STENCIL_TEST);
       _renderingContext.clear(gl.STENCIL_BUFFER_BIT);
+      _renderingContext.stencilMask(0);
 
     } else {
 
       _activateRenderProgram(_renderProgramPrimitive);
-
       _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
       _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
       _renderingContext.stencilMask(0xFF);
@@ -143,7 +142,6 @@ class RenderContextWebGL extends RenderContext {
       _renderProgram.renderTriangle(0, 0, width, height, 0, height, matrix, color);
 
       _activateRenderProgram(_renderProgramDefault);
-
       _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
       _renderingContext.stencilMask(0x00);
       _renderingContext.colorMask(true, true, true, true);
