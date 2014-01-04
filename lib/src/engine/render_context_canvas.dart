@@ -6,7 +6,14 @@ class RenderContextCanvas extends RenderContext {
   CanvasRenderingContext2D _renderingContext;
 
   RenderContextCanvas(CanvasElement canvasElement) : _canvasElement = canvasElement {
-    _renderingContext = canvasElement.context2D;
+
+    var renderingContext = _canvasElement.context2D;
+
+    if (renderingContext is! CanvasRenderingContext2D) {
+      throw new StateError("Failed to get Canvas context.");
+    }
+
+    _renderingContext = renderingContext;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -34,17 +41,17 @@ class RenderContextCanvas extends RenderContext {
 
     _renderingContext.globalAlpha = renderState.globalAlpha;
     _renderingContext.globalCompositeOperation = renderState.globalCompositeOperation;
-    _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
 
     if (rotation == 0) {
 
+      _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       _renderingContext.drawImageScaledFromSource(canvas,
           renderTextureQuad.x1, renderTextureQuad.y1, width, height,
           offsetX, offsetY, width, height);
 
     } else if (rotation == 1) {
 
-      _renderingContext.transform(0.0, -1.0, 1.0, 0.0, 0.0, 0.0);
+      _renderingContext.setTransform(matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       _renderingContext.drawImageScaledFromSource(canvas,
           renderTextureQuad.x3, renderTextureQuad.y1, height, width,
           0.0 - offsetY - height, offsetX, height, width);

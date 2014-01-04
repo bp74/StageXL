@@ -16,12 +16,18 @@ class RenderContextWebGL extends RenderContext {
     _canvasElement.onWebGlContextLost.listen((e) => "ToDo: Handle WebGL context lost.");
     _canvasElement.onWebGlContextRestored.listen((e) => "ToDo: Handle WebGL context restored.");
 
-    _renderingContext = _canvasElement.getContext3d(
+    var renderingContext = _canvasElement.getContext3d(
         alpha: false, depth: false, stencil: true, antialias: true,
         premultipliedAlpha: false, preserveDrawingBuffer: false);
 
+    if (renderingContext is! gl.RenderingContext) {
+      throw new StateError("Failed to get WebGL context.");
+    }
+
+    _renderingContext = renderingContext;
     _renderingContext.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     _renderingContext.enable(gl.BLEND);
+    _renderingContext.enable(gl.STENCIL_TEST);
     _renderingContext.disable(gl.DEPTH_TEST);
 
     _renderProgram = new DefaultRenderProgram(this);
@@ -39,7 +45,7 @@ class RenderContextWebGL extends RenderContext {
 
   void clear() {
     _renderingContext.clearColor(1.0, 1.0, 1.0, 0.0);
-    _renderingContext.clear(gl.COLOR_BUFFER_BIT);
+    _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
   }
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {

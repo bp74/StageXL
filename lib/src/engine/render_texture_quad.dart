@@ -5,14 +5,13 @@ part of stagexl;
 class RenderTextureQuad {
 
   RenderTexture _renderTexture;
+  Float32List _uvList = new Float32List(8);
 
   int _offsetX = 0, _offsetY = 0;
   int _width = 0, _height = 0;
   int _x1 = 0, _y1 = 0;
   int _x3 = 0, _y3 = 0;
   int _rotation = 0;
-
-  Float32List _uvList = new Float32List(8);
 
   RenderTextureQuad(RenderTexture renderTexture, int x1, int y1, int x3, int y3) {
 
@@ -30,13 +29,13 @@ class RenderTextureQuad {
     if (dx.sign == dy.sign) {
       x2 = x3; y2 = y1;
       x4 = x1; y4 = y3;
-      _rotation = dx > 0 ? 0 : 2;
+      _rotation = (dx > 0) ? 0 : 2;
       _width = dx.abs();
       _height = dy.abs();
     } else {
       x2 = x1; y2 = y3;
       x4 = x3; y4 = y1;
-      _rotation = dx < 0 ? 1 : 3;
+      _rotation = (dx > 0) ? 3 : 1;
       _width = dy.abs();
       _height = dx.abs();
     }
@@ -61,11 +60,9 @@ class RenderTextureQuad {
   int get x3 => _x3;
   int get y3 => _y3;
 
-  int get rotation => _rotation;
-
-  int get width => _width;
-  int get height => _height;
-
   int get offsetX => _offsetX;
   int get offsetY => _offsetY;
+  int get width => _width;
+  int get height => _height;
+  int get rotation => _rotation;
 }

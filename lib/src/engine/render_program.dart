@@ -181,11 +181,9 @@ class DefaultRenderProgram extends RenderProgram {
     var b = matrix.b;
     var c = matrix.c;
     var d = matrix.d;
-    var tx = matrix.tx;
-    var ty = matrix.ty;
 
-    var ox = tx + offsetX * a + offsetY * c;
-    var oy = ty + offsetX * b + offsetY * d;
+    var ox = matrix.tx + offsetX * a + offsetY * c;
+    var oy = matrix.ty + offsetX * b + offsetY * d;
     var ax = a * width;
     var bx = b * width;
     var cy = c * height;
