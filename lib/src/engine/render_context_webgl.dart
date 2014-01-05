@@ -22,7 +22,7 @@ class RenderContextWebGL extends RenderContext {
     _canvasElement.onWebGlContextRestored.listen((e) => "ToDo: Handle WebGL context restored.");
 
     var renderingContext = _canvasElement.getContext3d(
-        alpha: false, depth: false, stencil: true, antialias: true,
+        alpha: false, depth: false, stencil: true, antialias: false,
         premultipliedAlpha: false, preserveDrawingBuffer: false);
 
     if (renderingContext is! gl.RenderingContext) {
