@@ -88,19 +88,19 @@ class RenderProgramPrimitive extends RenderProgram {
 
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
 
-    var colorA = ((color >> 24) & 0xFF) / 255.0;
-    var colorR = ((color >> 16) & 0xFF) / 255.0;
-    var colorG = ((color >>  8) & 0xFF) / 255.0;
-    var colorB = ((color      ) & 0xFF) / 255.0;
+    num colorA = ((color >> 24) & 0xFF) / 255.0;
+    num colorR = ((color >> 16) & 0xFF) / 255.0;
+    num colorG = ((color >>  8) & 0xFF) / 255.0;
+    num colorB = ((color      ) & 0xFF) / 255.0;
 
-    var a = matrix.a;
-    var b = matrix.b;
-    var c = matrix.c;
-    var d = matrix.d;
-    var tx = matrix.tx;
-    var ty = matrix.ty;
+    num a = matrix.a;
+    num b = matrix.b;
+    num c = matrix.c;
+    num d = matrix.d;
+    num tx = matrix.tx;
+    num ty = matrix.ty;
 
-    var index = _triangleCount * 18;
+    int index = _triangleCount * 18;
     if (index > _vertexList.length - 18) return; // dart2js_hint
 
     // vertex 1
@@ -136,7 +136,7 @@ class RenderProgramPrimitive extends RenderProgram {
 
   void flush() {
 
-    var vertexUpdate = _vertexList;
+    Float32List vertexUpdate = _vertexList;
 
     if (_triangleCount == 0) {
       return;

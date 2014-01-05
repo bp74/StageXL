@@ -110,28 +110,28 @@ class RenderProgramDefault extends RenderProgram {
 
   void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
 
-    var width = renderTextureQuad.width;
-    var height = renderTextureQuad.height;
-    var offsetX = renderTextureQuad.offsetX;
-    var offsetY = renderTextureQuad.offsetY;
-    var uvList = renderTextureQuad.uvList;
+    int width = renderTextureQuad.width;
+    int height = renderTextureQuad.height;
+    int offsetX = renderTextureQuad.offsetX;
+    int offsetY = renderTextureQuad.offsetY;
+    Float32List uvList = renderTextureQuad.uvList;
 
     // x' = tx + a * x + c * y
     // y' = ty + b * x + d * y
 
-    var a = matrix.a;
-    var b = matrix.b;
-    var c = matrix.c;
-    var d = matrix.d;
+    num a = matrix.a;
+    num b = matrix.b;
+    num c = matrix.c;
+    num d = matrix.d;
 
-    var ox = matrix.tx + offsetX * a + offsetY * c;
-    var oy = matrix.ty + offsetX * b + offsetY * d;
-    var ax = a * width;
-    var bx = b * width;
-    var cy = c * height;
-    var dy = d * height;
+    num ox = matrix.tx + offsetX * a + offsetY * c;
+    num oy = matrix.ty + offsetX * b + offsetY * d;
+    num ax = a * width;
+    num bx = b * width;
+    num cy = c * height;
+    num dy = d * height;
 
-    var index = _quadCount * 20;
+    int index = _quadCount * 20;
     if (index > _vertexList.length - 20) return; // dart2js_hint
 
     // vertex 1
@@ -177,7 +177,7 @@ class RenderProgramDefault extends RenderProgram {
 
   void flush() {
 
-    var vertexUpdate = _vertexList;
+    Float32List vertexUpdate = _vertexList;
 
     if (_quadCount == 0) {
       return;

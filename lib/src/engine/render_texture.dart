@@ -15,10 +15,10 @@ class RenderTexture {
 
   RenderTexture(int width, int height, int fillColor) {
 
-    if (width == 0 && height == 0) return;
+    if (width == 0 && height == 0) throw new ArgumentError();
 
-    _width = width;
-    _height = height;
+    _width = _ensureInt(width);
+    _height = _ensureInt(height);
 
     _canvas = new CanvasElement(width: _width, height: _height);
     _texture = null;
@@ -31,8 +31,8 @@ class RenderTexture {
 
   RenderTexture.fromImage(ImageElement imageElement) {
 
-    _width = imageElement.width;
-    _height = imageElement.height;
+    _width = _ensureInt(imageElement.width);
+    _height = _ensureInt(imageElement.height);
 
     _canvas = new CanvasElement(width: _width, height: _height);
     _canvas.context2D.drawImage(imageElement, 0, 0);
@@ -76,8 +76,8 @@ class RenderTexture {
 
   void resize(int width, int height) {
     if (width != _width || height != _height) {
-      _canvas.width = _width = width;
-      _canvas.height = _height = height;
+      _canvas.width = _width = _ensureInt(width);
+      _canvas.height = _height = _ensureInt(height);
       _quad = null;
     }
   }

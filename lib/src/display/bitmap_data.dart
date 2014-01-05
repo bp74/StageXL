@@ -82,9 +82,7 @@ class BitmapData implements BitmapDrawable {
     }
 
     _renderTextureQuad = new RenderTextureQuad(_renderTexture, x1, y1, x3, y3);
-
-    _renderTextureQuad._offsetX = textureAtlasFrame.offsetX;
-    _renderTextureQuad._offsetY = textureAtlasFrame.offsetY;
+    _renderTextureQuad.setOffset(textureAtlasFrame.offsetX, textureAtlasFrame.offsetY);
   }
 
   //-------------------------------------------------------------------------------------------------
