@@ -89,7 +89,8 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
 
-  Stage(String name, CanvasElement canvas, [int sourceWidth, int sourceHeight, int frameRate]) {
+  Stage(String name, CanvasElement canvas, {
+    int sourceWidth, int sourceHeight, bool webGL:false, int frameRate:30}) {
 
     if (canvas is! CanvasElement) {
       throw new ArgumentError("The canvas argument is not a CanvasElement");
@@ -101,9 +102,10 @@ class Stage extends DisplayObjectContainer {
     _name = name;
     _canvas = canvas;
 
-    // ToDo: WebGL
-    _renderContext = new RenderContextWebGL(canvas);
-    //_renderContext = new RenderContextCanvas(canvas);
+    _renderContext = webGL && gl.RenderingContext.supported
+        ? new RenderContextWebGL(canvas)
+        : new RenderContextCanvas(canvas);
+
     _renderState = new RenderState(_renderContext);
 
     _sourceWidth = (sourceWidth != null) ? sourceWidth : canvas.width;
