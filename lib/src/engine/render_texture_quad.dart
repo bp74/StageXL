@@ -1,7 +1,5 @@
 part of stagexl;
 
-// TODO: rotated texture quads.
-
 class RenderTextureQuad {
 
   RenderTexture _renderTexture;
