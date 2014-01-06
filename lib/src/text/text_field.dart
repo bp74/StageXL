@@ -241,21 +241,26 @@ class TextField extends InteractiveObject {
 
   void render(RenderState renderState) {
 
-    // TODO: WEBGL - fix _cacheAsBitmap = false
-    // TODO: WEBGL - fix caret
-
     _refreshTextLineMetrics();
-    _refreshCache();
 
-    // draw text
+    var renderContext = renderState.renderContext;
+    var matrix = renderState.globalMatrix;
+    var alpha = renderState.globalAlpha;
 
-    if (_cacheAsBitmap) {
+    if (_cacheAsBitmap || renderContext is! RenderContextCanvas) {
+      _refreshCache();
       renderState.renderQuad(_renderTexture.quad);
     } else {
-      //_renderText(renderContext);
+      var renderContextCanvas = renderContext as RenderContextCanvas;
+      var context = renderContext.rawContext;
+      context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+      context.globalAlpha = alpha;
+      _renderText(renderContextCanvas.rawContext);
     }
 
     // draw cursor for INPUT text fields
+
+    // TODO: WEBGL - fix caret
 
     /*
     _caretTime += renderState.deltaTime;
@@ -499,13 +504,13 @@ class TextField extends InteractiveObject {
       _refreshPending &= 255 - 2;
     }
 
-    if (_cacheAsBitmap == false) {
-      return;
-    }
+    // TODO: WEBGL - pixel ratio
+    // var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
+    // var width = max(1, (_width * pixelRatio).ceil());
+    // var height =  max(1, (_height * pixelRatio).ceil());
 
-    var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
-    var width = max(1, (_width * pixelRatio).ceil());
-    var height =  max(1, (_height * pixelRatio).ceil());
+    var width = max(1, _width).ceil();
+    var height =  max(1, _height).ceil();
 
     if (_renderTexture == null) {
       _renderTexture = new RenderTexture(width, height, Color.Transparent);
@@ -514,7 +519,7 @@ class TextField extends InteractiveObject {
     }
 
     var context = _renderTexture.canvas.context2D;
-    context.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
+    context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
     context.clearRect(0, 0, _width, _height);
 
     _renderText(context);
