@@ -20,6 +20,8 @@ class RenderContextCanvas extends RenderContext {
 
   CanvasRenderingContext2D get rawContext => _renderingContext;
 
+  Matrix get viewPortMatrix => new Matrix.fromIdentity();
+
   //-----------------------------------------------------------------------------------------------
 
   void clear() {

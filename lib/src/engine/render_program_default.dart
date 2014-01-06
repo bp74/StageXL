@@ -6,14 +6,13 @@ class RenderProgramDefault extends RenderProgram {
       attribute vec2 aVertexPosition;
       attribute vec2 aVertexTextCoord;
       attribute float aVertexAlpha;
-      uniform mat3 uViewMatrix;
       varying vec2 vTextCoord;
       varying float vAlpha;
 
       void main() {
         vTextCoord = aVertexTextCoord;
         vAlpha = aVertexAlpha;
-        gl_Position = vec4(uViewMatrix * vec3(aVertexPosition, 1.0), 1.0); 
+        gl_Position = vec4(aVertexPosition, 1.0, 1.0); 
       }
       """;
 

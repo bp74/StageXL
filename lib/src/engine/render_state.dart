@@ -27,10 +27,12 @@ class RenderState {
     _firstContextState = new _ContextState();
     _currentContextState = _firstContextState;
 
-    var fcsm = _firstContextState.matrix;
+    var viewPortMatrix = _renderContext.viewPortMatrix;
 
     if (matrix is Matrix) {
-      fcsm.copyFrom(matrix);
+      _firstContextState.matrix.copyFromAndConcat(matrix, viewPortMatrix);
+    } else {
+      _firstContextState.matrix.copyFrom(viewPortMatrix);
     }
   }
 
@@ -55,8 +57,12 @@ class RenderState {
 
     _renderContext.clear();
 
+    var viewPortMatrix = _renderContext.viewPortMatrix;
+
     if (matrix is Matrix) {
-      _firstContextState.matrix.copyFrom(matrix);
+      _firstContextState.matrix.copyFromAndConcat(matrix, viewPortMatrix);
+    } else {
+      _firstContextState.matrix.copyFrom(viewPortMatrix);
     }
   }
 

@@ -52,20 +52,18 @@ class RenderContextWebGL extends RenderContext {
 
   gl.RenderingContext get rawContext => _renderingContext;
 
+  Matrix get viewPortMatrix {
+    var width = _renderingContext.drawingBufferWidth;
+    var height = _renderingContext.drawingBufferHeight;
+    return new Matrix(2.0 / width, 0.0, 0.0, - 2.0 / height, -1.0, 1.0);
+  }
+
   //-----------------------------------------------------------------------------------------------
 
   void clear() {
+
     var width = _renderingContext.drawingBufferWidth;
     var height = _renderingContext.drawingBufferHeight;
-
-    _renderProgramPrimitive.activate();
-    _renderProgramPrimitive.updateViewPort(width, height);
-
-    _renderProgramDefault.activate();
-    _renderProgramDefault.updateViewPort(width, height);
-
-    _renderProgram = null;
-    _activateRenderProgram(_renderProgramDefault);
 
     _renderingContext.viewport(0, 0, width, height);
     _renderingContext.clearColor(1.0, 1.0, 1.0, 1.0);
@@ -130,13 +128,11 @@ class RenderContextWebGL extends RenderContext {
       _renderingContext.colorMask(false, false, false, false);
       _maskDepth -= 1;
 
-      var width = _renderingContext.drawingBufferWidth;
-      var height = _renderingContext.drawingBufferHeight;
       var matrix = _identityMatrix;
       var color = Color.Magenta;
 
-      _renderProgram.renderTriangle(0, 0, width, 0, width, height, matrix, color);
-      _renderProgram.renderTriangle(0, 0, width, height, 0, height, matrix, color);
+      _renderProgram.renderTriangle(-1, -1, 1, -1, 1, 1, matrix, color);
+      _renderProgram.renderTriangle(-1, -1, 1, 1, -1, 1, matrix, color);
 
       _activateRenderProgram(_renderProgramDefault);
       _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
@@ -175,8 +171,5 @@ class RenderContextWebGL extends RenderContext {
     _renderProgram = renderProgram;
     _renderProgram.activate();
   }
-
-
-
 
 }

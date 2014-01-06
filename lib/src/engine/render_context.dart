@@ -13,4 +13,6 @@ abstract class RenderContext {
 
   void beginRenderShadow(RenderState renderState, Shadow shadow, Matrix matrix);
   void endRenderShadow(Shadow shadow);
+
+  Matrix get viewPortMatrix;
 }
