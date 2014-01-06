@@ -80,19 +80,22 @@ class HtmlObject extends DisplayObject {
 
   void render(RenderState renderState) {
 
-    var contextState = renderState._currentContextState;
-    var matrix = contextState.matrix;
-    var alpha = contextState.alpha;
+    var viewPortMatrix = renderState.renderContext.viewPortMatrix;
+    var globalMatrix = renderState.globalMatrix;
+    var globalAlpha = renderState.globalAlpha;
     var visibility = this.visible && this.off == false;
 
-    var mxa = matrix.a.toStringAsFixed(4);
-    var mxb = matrix.b.toStringAsFixed(4);
-    var mxc = matrix.c.toStringAsFixed(4);
-    var mxd = matrix.d.toStringAsFixed(4);
-    var mxtx = matrix.tx.toStringAsFixed(4);
-    var mxty = matrix.ty.toStringAsFixed(4);
+    _tmpMatrix.copyFrom(globalMatrix);
+    _tmpMatrix.concat(viewPortMatrix.cloneInvert());
 
-    var styleOpacity = alpha.toStringAsFixed(4);
+    var mxa = _tmpMatrix.a.toStringAsFixed(4);
+    var mxb = _tmpMatrix.b.toStringAsFixed(4);
+    var mxc = _tmpMatrix.c.toStringAsFixed(4);
+    var mxd = _tmpMatrix.d.toStringAsFixed(4);
+    var mxtx = _tmpMatrix.tx.toStringAsFixed(4);
+    var mxty = _tmpMatrix.ty.toStringAsFixed(4);
+
+    var styleOpacity = globalAlpha.toStringAsFixed(4);
     var styleTransform = "matrix($mxa,$mxb,$mxc,$mxd,$mxtx,$mxty)";
     var styleVisibility = visibility ? "visible" : "hidden";
 

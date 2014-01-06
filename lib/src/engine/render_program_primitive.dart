@@ -9,7 +9,7 @@ class RenderProgramPrimitive extends RenderProgram {
 
       void main() {
         vColor = aVertexColor;
-        gl_Position = vec4(aVertexPosition, 1.0, 1.0); 
+        gl_Position = vec4(aVertexPosition, 0.0, 1.0); 
       }
       """;
 

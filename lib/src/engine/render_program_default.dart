@@ -12,7 +12,7 @@ class RenderProgramDefault extends RenderProgram {
       void main() {
         vTextCoord = aVertexTextCoord;
         vAlpha = aVertexAlpha;
-        gl_Position = vec4(aVertexPosition, 1.0, 1.0); 
+        gl_Position = vec4(aVertexPosition, 0.0, 1.0); 
       }
       """;
 
