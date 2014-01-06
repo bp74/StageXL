@@ -22,15 +22,18 @@ class SoundMixer {
   }
 
   static set soundTransform(SoundTransform value) {
-    if (value == null) value = new SoundTransform();
-    _soundTransform = value;
 
-    if (_engine == "WebAudioApi") {
-      _webAudioApiMixer.applySoundTransform(value);
+    var initEngine = SoundMixer.engine;
+    var soundTransform = (value != null) ? value : new SoundTransform();
+
+    _soundTransform = soundTransform;
+
+    if (_webAudioApiMixer != null) {
+      _webAudioApiMixer.applySoundTransform(soundTransform);
     }
 
-    if (_engine == "AudioElement") {
-      _audioElementMixer.applySoundTransform(value);
+    if (_audioElementMixer != null) {
+      _audioElementMixer.applySoundTransform(soundTransform);
     }
   }
 

@@ -1,9 +1,9 @@
 part of stagexl;
 
 class MockSound extends Sound {
-  
+
   MockSound() {
-    // nothing to do
+
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -23,11 +23,11 @@ class MockSound extends Sound {
 
 
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-    
+
     if (soundTransform == null) {
       soundTransform = new SoundTransform();
     }
-    
+
     return new MockSoundChannel(this, loop, soundTransform);
   }
 }
