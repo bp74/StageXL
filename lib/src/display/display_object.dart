@@ -20,7 +20,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   bool _off = false; // disable rendering
 
   Mask _mask = null;
-  BitmapData _cache = null;
+  RenderTexture _cacheTexture = null;
   Rectangle _cacheRectangle = null;
   bool _cacheDebugBorder = false;
   List<BitmapFilter> _filters = null;
@@ -75,7 +75,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num get alpha => _alpha;
 
   Mask get mask => _mask;
-  bool get cached => _cache != null;
+  bool get cached => _cacheTexture != null;
 
   List<BitmapFilter> get filters {
     if (_filters == null) _filters = new List<BitmapFilter>();
@@ -467,33 +467,42 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
 
-    // TODO: WebGL
+    // TODO: WEBGL - pixel ratio
+    // var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
 
-    /*
-    var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
+    if (_cacheTexture == null) {
+      _cacheTexture = new RenderTexture(width, height, Color.Transparent);
+    } else {
+      _cacheTexture.resize(width, height);
+    }
 
-    _cache = new BitmapData(width, height, true, Color.Transparent, pixelRatio);
     _cacheRectangle = new Rectangle(x, y, width, height);
     _cacheDebugBorder = debugBorder;
+
     refreshCache();
-    */
   }
 
   void refreshCache() {
 
-    // TODO: WebGL
-
-    /*
-    if (_cache == null) return;
+    if (_cacheTexture == null) return;
 
     var x = _cacheRectangle.x;
     var y = _cacheRectangle.y;
     var width = _cacheRectangle.width;
     var height = _cacheRectangle.height;
 
-    _cache.clear();
-    _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y));
+    var matrix = new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y);
+    var renderContext = new RenderContextCanvas(_cacheTexture.canvas);
+    var renderState = new RenderState(renderContext, matrix);
 
+    renderContext.clear();
+    render(renderState);
+
+    //renderState.renderDisplayObject(this);
+
+    // TODO: WebGL
+
+    /*
     if (_filters != null) {
       for(int i = 0; i < _filters.length; i++) {
         var sourceRectangle = new Rectangle(0, 0, width, height);
@@ -501,26 +510,34 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
         _filters[i].apply(_cache, sourceRectangle, _cache, destinationPoint);
       }
     }
+    */
 
     if (_cacheDebugBorder) {
-      _cache.fillRect(new Rectangle(0, 0, width, 1), 0xFFFF00FF);
-      _cache.fillRect(new Rectangle(width - 1, 0, 1, height), 0xFFFF00FF);
-      _cache.fillRect(new Rectangle(0, height - 1, width, 1), 0xFFFF00FF);
-      _cache.fillRect(new Rectangle(0, 0, 1, height), 0xFFFF00FF);
+      _cacheTexture.canvas.context2D
+          ..setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+          ..lineWidth = 1
+          ..lineJoin = "miter"
+          ..lineCap = "butt"
+          ..strokeStyle = "#FF00FF"
+          ..strokeRect(0, 0, width, height);
     }
-    */
+
+    _cacheTexture.update();
   }
 
   void removeCache() {
-    _cache = null;
+    if (_cacheTexture != null) {
+      _cacheTexture.dispose();
+      _cacheTexture = null;
+    }
   }
 
   void _renderCache(RenderState renderState) {
+    var matrix = new Matrix(1.0, 0.0, 0.0, 1.0, _cacheRectangle.x, _cacheRectangle.y);
+    var alpa = renderState.globalAlpha;
 
-    // TODO: WEBGL
-
-    //renderState.context.translate(_cacheRectangle.x, _cacheRectangle.y);
-    //_cache.render(renderState);
+    matrix.concat(renderState.globalMatrix);
+    renderState.renderContext.renderQuad(_cacheTexture.quad, matrix, alpha);
   }
 
   //-------------------------------------------------------------------------------------------------
