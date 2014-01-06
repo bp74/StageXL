@@ -55,11 +55,8 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void clear() {
-
     var width = _renderingContext.drawingBufferWidth;
     var height = _renderingContext.drawingBufferHeight;
-    //var width = _canvasElement.width;
-    //var height = _canvasElement.height;
 
     _renderProgramPrimitive.activate();
     _renderProgramPrimitive.updateViewPort(width, height);
@@ -67,7 +64,9 @@ class RenderContextWebGL extends RenderContext {
     _renderProgramDefault.activate();
     _renderProgramDefault.updateViewPort(width, height);
 
+    _renderProgram = null;
     _activateRenderProgram(_renderProgramDefault);
+
     _renderingContext.viewport(0, 0, width, height);
     _renderingContext.clearColor(1.0, 1.0, 1.0, 1.0);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);

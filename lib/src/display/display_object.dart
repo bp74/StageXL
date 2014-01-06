@@ -519,7 +519,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
           ..lineJoin = "miter"
           ..lineCap = "butt"
           ..strokeStyle = "#FF00FF"
-          ..strokeRect(0, 0, width, height);
+          ..strokeRect(0.5, 0.5, width - 1, height - 1);
     }
 
     _cacheTexture.update();
