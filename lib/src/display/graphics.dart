@@ -201,16 +201,26 @@ class Graphics {
 
   void render(RenderState renderState) {
 
-    // TODO: WEBGL
+    var renderContext = renderState.renderContext;
+    var matrix = renderState.globalMatrix;
+    var alpha = renderState.globalAlpha;
 
-    /*
-    var context = renderState.context;
-    context.beginPath();
+    if (renderContext is RenderContextCanvas) {
 
-    for(int i = 0; i < _commands.length; i++) {
-      _commands[i].render(context);
-    }*/
+      var context = renderContext.rawContext;
+      context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+      context.globalAlpha = alpha;
+      context.beginPath();
 
+      for(int i = 0; i < _commands.length; i++) {
+        _commands[i].render(context);
+      }
+
+    } else {
+
+      // TODO: WebGL
+
+    }
   }
 
 }
