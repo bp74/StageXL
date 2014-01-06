@@ -498,9 +498,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     renderContext.clear();
     render(renderState);
 
-    //renderState.renderDisplayObject(this);
-
-    // TODO: WebGL
+//    TODO: WebGL - apply filters when cached
 
     /*
     if (_filters != null) {
