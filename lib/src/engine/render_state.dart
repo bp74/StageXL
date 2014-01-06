@@ -52,6 +52,7 @@ class RenderState {
     _currentTime = (currentTime is num) ? currentTime : 0.0;
     _deltaTime = (deltaTime is num) ? deltaTime : 0.0;
     _currentContextState = _firstContextState;
+
     _renderContext.clear();
 
     if (matrix is Matrix) {

@@ -47,4 +47,27 @@ abstract class RenderProgram {
 
     return program;
   }
+
+  //-----------------------------------------------------------------------------------------------
+
+  updateViewPort(int width, int height) {
+
+    var renderingContext = _renderContext.rawContext;
+    var viewTransformLocation = renderingContext.getUniformLocation(program, "uViewMatrix");
+
+    var viewMatrixList = new Float32List(9);
+    viewMatrixList[0] = 2.0 / width;
+    viewMatrixList[1] = 0.0;
+    viewMatrixList[2] = 0.0;
+    viewMatrixList[3] = 0.0;
+    viewMatrixList[4] = - 2.0 / height;
+    viewMatrixList[5] = 0.0;
+    viewMatrixList[6] = -1.0;
+    viewMatrixList[7] = 1.0;
+    viewMatrixList[8] = 1.0;
+
+    if (viewTransformLocation != null) {
+      renderingContext.uniformMatrix3fv(viewTransformLocation, false, viewMatrixList);
+    }
+  }
 }

@@ -40,19 +40,12 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.clearColor(1.0, 1.0, 1.0, 1.0);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
+    _renderTexture = null;
+    _renderProgram = null;
     _renderProgramDefault = new RenderProgramDefault(this);
     _renderProgramPrimitive = new RenderProgramPrimitive(this);
 
-    // ToDo: Replace "_updateViewPort". It's a strange mix between
-    // setting the viewport and updating the program uniform.
-
-    _activateRenderProgram(_renderProgramPrimitive);
-    _updateViewPort();
-
     _activateRenderProgram(_renderProgramDefault);
-    _updateViewPort();
-
-    _renderTexture = null;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -62,6 +55,20 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void clear() {
+
+    var width = _renderingContext.drawingBufferWidth;
+    var height = _renderingContext.drawingBufferHeight;
+    //var width = _canvasElement.width;
+    //var height = _canvasElement.height;
+
+    _renderProgramPrimitive.activate();
+    _renderProgramPrimitive.updateViewPort(width, height);
+
+    _renderProgramDefault.activate();
+    _renderProgramDefault.updateViewPort(width, height);
+
+    _activateRenderProgram(_renderProgramDefault);
+    _renderingContext.viewport(0, 0, width, height);
     _renderingContext.clearColor(1.0, 1.0, 1.0, 1.0);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
   }
@@ -170,32 +177,7 @@ class RenderContextWebGL extends RenderContext {
     _renderProgram.activate();
   }
 
-  _updateViewPort() {
 
-    var width = _renderingContext.drawingBufferWidth;
-    var height = _renderingContext.drawingBufferHeight;
-
-    _renderingContext.viewport(0, 0, width, height);
-
-    var program = _renderProgram.program;
-    var viewTransformLocation = _renderingContext.getUniformLocation(program, "uViewMatrix");
-
-    if (viewTransformLocation != null) {
-
-      var viewMatrixList = new Float32List(9);
-      viewMatrixList[0] = 2.0 / width;
-      viewMatrixList[1] = 0.0;
-      viewMatrixList[2] = 0.0;
-      viewMatrixList[3] = 0.0;
-      viewMatrixList[4] = - 2.0 / height;
-      viewMatrixList[5] = 0.0;
-      viewMatrixList[6] = -1.0;
-      viewMatrixList[7] = 1.0;
-      viewMatrixList[8] = 1.0;
-
-      _renderingContext.uniformMatrix3fv(viewTransformLocation, false, viewMatrixList);
-    }
-  }
 
 
 }
