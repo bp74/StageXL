@@ -575,17 +575,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  void _setParent(DisplayObjectContainer value) {
-
-    for(var ancestor = value; ancestor != null; ancestor = ancestor._parent)
-      if (ancestor == this)
-        throw new ArgumentError("Error #2150: An object cannot be added as a child to one of it's children (or children's children, etc.).");
-
-    _parent = value;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
   void render(RenderState renderState);
 
 }
