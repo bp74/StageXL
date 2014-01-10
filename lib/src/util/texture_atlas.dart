@@ -63,6 +63,12 @@ class TextureAtlas {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  RenderTexture get renderTexture => _renderTexture;
+
+  List<String> get frameNames  => _frames.map((f) => f.name).toList(growable: false);
+
+  //-------------------------------------------------------------------------------------------------
+
   BitmapData getBitmapData(String name) {
 
     for(int i = 0; i < _frames.length; i++) {
@@ -89,13 +95,6 @@ class TextureAtlas {
     }
 
     return bitmapDataList;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  List<String> get frameNames {
-
-    return _frames.map((f) => f.name).toList(growable: false);
   }
 
 }
