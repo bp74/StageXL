@@ -15,7 +15,8 @@ class RenderTextureQuad {
   int _height = 0;
   int _rotation = 0;
 
-  RenderTextureQuad(RenderTexture renderTexture, int x1, int y1, int x3, int y3) {
+  RenderTextureQuad(RenderTexture renderTexture,
+      int x1, int y1, int x3, int y3, int offsetX, int offsetY) {
 
     if (renderTexture is! RenderTexture) throw new ArgumentError();
 
@@ -24,12 +25,14 @@ class RenderTextureQuad {
     _y1 = _ensureInt(y1);
     _x3 = _ensureInt(x3);
     _y3 = _ensureInt(y3);
+    _offsetX = _ensureInt(offsetX);
+    _offsetY = _ensureInt(offsetY);
 
     int dx = x3 - x1;
     int dy = y3 - y1;
     bool horizontal = (dx.sign == dy.sign);
 
-    _rotation = (dx > 0) ? (horizontal ? 0 : 3) : (horizontal ? 2 : 1);
+    _rotation = horizontal ? ((dx > 0) ? 0 : 2) : ((dx < 0) ? 1 : 3);
     _width = horizontal ? dx.abs() : dy.abs();
     _height = horizontal ? dy.abs() : dx.abs();
 
@@ -66,44 +69,47 @@ class RenderTextureQuad {
   int get height => _height;
   int get rotation => _rotation;
 
-  //-----------------------------------------------------------------------------------------------
-
-  void setOffset(int offsetX, int offsetY) {
-    _offsetX = _ensureInt(offsetX);
-    _offsetY = _ensureInt(offsetY);
+  Matrix get drawMatrix {
+    num angle = _rotation * PI / 2.0;
+    num cosR = cos(angle);
+    num sinR = sin(angle);
+    num tx = x1  - offsetX * cosR + offsetY * sinR;
+    num ty = y1  - offsetX * sinR - offsetY * cosR;
+    return new Matrix(cosR, sinR, - sinR, cosR, tx, ty);
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderTextureQuad clip(Rectangle clipRectangle) {
+  RenderTextureQuad clip(Rectangle rectangle) {
 
-    num x1 = 0, y1 = 0, x3 = 0, y3 = 0;
-    num offsetX = 0, offsetY = 0;
+    int x1 = 0, y1 = 0, x3 = 0, y3 = 0, offsetX = 0, offsetY = 0;
 
     if (_rotation == 0) {
-
-      x1 = _x1 - _offsetX + max(_offsetX, clipRectangle.left);
-      y1 = _y1 - _offsetY + max(_offsetY, clipRectangle.top);
-      x3 = _x1 - _offsetX + min(_offsetX + _width, clipRectangle.right);
-      y3 = _y1 - _offsetY + min(_offsetY + _height, clipRectangle.bottom);
+      x1 = _x1 - _offsetX + max(_offsetX, rectangle.left);
+      y1 = _y1 - _offsetY + max(_offsetY, rectangle.top);
+      x3 = _x1 - _offsetX + min(_offsetX + _width, rectangle.right);
+      y3 = _y1 - _offsetY + min(_offsetY + _height, rectangle.bottom);
       offsetX = _offsetX + x1 - _x1;
       offsetY = _offsetY + y1 - _y1;
-
     } else if (_rotation == 1) {
-
-      x1 = _x1 + _offsetY - max(_offsetY, clipRectangle.top);
-      y1 = _y1 - _offsetX + max(_offsetX, clipRectangle.left);
-      x3 = _x1 + _offsetY - min(_offsetY + _height, clipRectangle.bottom);
-      y3 = _y1 - _offsetX + min(_offsetX + _width, clipRectangle.right);
+      x1 = _x1 + _offsetY - max(_offsetY, rectangle.top);
+      y1 = _y1 - _offsetX + max(_offsetX, rectangle.left);
+      x3 = _x1 + _offsetY - min(_offsetY + _height, rectangle.bottom);
+      y3 = _y1 - _offsetX + min(_offsetX + _width, rectangle.right);
       offsetX = _offsetX + y1 - _y1;
       offsetY = _offsetY - x1 + _x1;
-
     }
 
-    var renderTextureQuad = new RenderTextureQuad(_renderTexture, x1, y1, x3, y3);
-    renderTextureQuad.setOffset(offsetX, offsetY);
+    return new RenderTextureQuad(_renderTexture, x1, y1, x3, y3, offsetX, offsetY);
+  }
 
-    return renderTextureQuad;
+  //-----------------------------------------------------------------------------------------------
+
+  RenderTextureQuad cut(Rectangle rectangle) {
+      var renderTextureQuad = clip(rectangle);
+      renderTextureQuad._offsetX -= rectangle.x;
+      renderTextureQuad._offsetY -= rectangle.y;
+      return renderTextureQuad;
   }
 
 }

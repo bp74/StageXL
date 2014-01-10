@@ -156,8 +156,8 @@ class RenderContextWebGL extends RenderContext {
   _checkState(RenderTexture renderTexture) {
 
     if (identical(renderTexture, _renderTexture) == false) {
-      var texture =  renderTexture.getTexture(this);
       _renderProgram.flush();
+      var texture = renderTexture.getTexture(this);
       _renderingContext.activeTexture(gl.TEXTURE0);
       _renderingContext.bindTexture(gl.TEXTURE_2D, texture);
       _renderTexture = renderTexture;

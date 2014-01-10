@@ -6,8 +6,6 @@ class BitmapData implements BitmapDrawable {
 
   int _width;
   int _height;
-  bool _transparent;
-  num _pixelRatio;
 
   RenderTexture _renderTexture;
   RenderTextureQuad _renderTextureQuad;
@@ -21,40 +19,22 @@ class BitmapData implements BitmapDrawable {
 
     _width = _ensureInt(width);
     _height = _ensureInt(height);
-    _transparent = _ensureBool(transparent);
-    _pixelRatio = _ensureNum(pixelRatio);
     _renderTexture = new RenderTexture(_width, _height, fillColor | (transparent ? 0 : 0xFF000000));
-    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height);
+    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height, 0, 0);
   }
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
 
-    var renderTexture = new RenderTexture.fromImage(imageElement);
-
-    _width = renderTexture.width;
-    _height = renderTexture.height;
-    _transparent = true;
-    _pixelRatio = _ensureNum(pixelRatio);
-    _renderTexture = renderTexture;
-    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height);
+    _renderTexture = new RenderTexture.fromImage(imageElement);
+    _width = _renderTexture.width;
+    _height = _renderTexture.height;
+    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height, 0, 0);
   }
-
-  /*
-   * Disposes the texture memory allocated by WebGL.
-   */
-  void dispose() {
-    if (_renderTexture != null) {
-      _renderTexture.dispose();
-    }
-  }
-
-  //-------------------------------------------------------------------------------------------------
 
   BitmapData._fromRenderTexture(RenderTexture renderTexture, RenderTextureQuad renderTextureQuad) {
+
     _width = renderTextureQuad.width;
     _height = renderTextureQuad.height;
-    _transparent = true;
-    _pixelRatio = 1.0;
     _renderTexture = renderTexture;
     _renderTextureQuad = renderTextureQuad;
   }
@@ -63,11 +43,11 @@ class BitmapData implements BitmapDrawable {
 
     _width = textureAtlasFrame.originalWidth;
     _height = textureAtlasFrame.originalHeight;
-    _transparent = true;
-    _pixelRatio = 1.0;
-    _renderTexture = textureAtlasFrame.textureAtlas._renderTexture;
+    _renderTexture = textureAtlasFrame.textureAtlas.renderTexture;
 
-    var x1, y1, x3, y3;
+    int x1 = 0, y1 = 0, x3 = 0, y3 = 0;
+    int offsetX = textureAtlasFrame.offsetX;
+    int offsetY = textureAtlasFrame.offsetY;
 
     if (textureAtlasFrame.rotated == false) {
       x1 = textureAtlasFrame.frameX;
@@ -81,11 +61,14 @@ class BitmapData implements BitmapDrawable {
       y3 = textureAtlasFrame.frameY + textureAtlasFrame.frameWidth;
     }
 
-    _renderTextureQuad = new RenderTextureQuad(_renderTexture, x1, y1, x3, y3);
-    _renderTextureQuad.setOffset(textureAtlasFrame.offsetX, textureAtlasFrame.offsetY);
+    _renderTextureQuad = new RenderTextureQuad(_renderTexture, x1, y1, x3, y3, offsetX, offsetY);
   }
 
   //-------------------------------------------------------------------------------------------------
+
+  /**
+   * Loads a BitmapData from the given url.
+   */
 
   static Future<BitmapData> load(String url, [
       BitmapDataLoadOptions bitmapDataLoadOptions = null, num pixelRatio = 1.0]) {
@@ -99,7 +82,19 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  /*
+  /**
+   * Returns a new BitmapData containing a copy of this BitmapData's texture.
+   */
+
+  BitmapData clone([num pixelRatio]) {
+    // TODO: it's probably faster to use drawPixels instead of draw.
+    // pixelRatio = (pixelRatio is num) ? pixelRatio : _renderTextureQuad.pixelRatio;
+    return new BitmapData(_width, _height, true, 0, pixelRatio)..draw(this);
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  /**
    * Returns an array of BitmapData based on this BitmapData's texture.
    *
    * This function is used to "slice" a spritesheet, tileset, or spritemap into
@@ -110,6 +105,7 @@ class BitmapData implements BitmapDrawable {
    * in case you have empty frames you don't care about due to the width / height
    * of this BitmapData.
    */
+
   List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, [int frameCount]) {
 
     var cols = (width ~/ frameWidth);
@@ -126,12 +122,24 @@ class BitmapData implements BitmapDrawable {
       var x = f % cols;
       var y = f ~/ cols;
       var rectangle = new Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
-      var renderTextureQuad = _renderTextureQuad.clip(rectangle);
+      var renderTextureQuad = _renderTextureQuad.cut(rectangle);
       var bitmapData = new BitmapData._fromRenderTexture(_renderTexture, renderTextureQuad);
       frames.add(bitmapData);
     }
 
     return frames;
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  /**
+   * Disposes the texture memory allocated by WebGL.
+   */
+
+  void dispose() {
+    if (_renderTexture != null) {
+      _renderTexture.dispose();
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -141,9 +149,242 @@ class BitmapData implements BitmapDrawable {
   int get height => _height;
 
   Rectangle get rectangle => new Rectangle(0, 0, _width, _height);
+  RenderTexture get renderTexture => _renderTextureQuad.renderTexture;
+  RenderTextureQuad get renderTextureQuad => _renderTextureQuad;
 
-  num get pixelRatio => _pixelRatio;
+  //-------------------------------------------------------------------------------------------------
+/*
+  ImageData getImageData(int x, int y, int width, int height, [num pixelRatio]) {
 
+    if (pixelRatio != null && pixelRatio != _pixelRatio) {
+      var tempBitmapData = new BitmapData(width, height, true, 0, pixelRatio);
+      tempBitmapData.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, -x, -y));
+      return tempBitmapData.getImageData(x, y, width, height);
+    }
+
+    var pr = _pixelRatio;
+    var prs = _pixelRatioSource;
+
+    if (_backingStorePixelRatio > 1.0) {
+      return _context.getImageDataHD(x * pr, y * pr, width * pr, height * pr);
+    } else {
+      return _context.getImageData(x * prs, y * prs, width * prs, height * prs);
+    }
+  }
+*/
+/*
+  void putImageData(ImageData imageData, int x, int y) {
+
+    var pr = _pixelRatio;
+    var prs = _pixelRatioSource;
+
+    if (_backingStorePixelRatio > 1.0) {
+      _context.putImageDataHD(imageData, x * pr, y * pr);
+    } else {
+      _context.putImageData(imageData, x * prs, y * prs);
+    }
+  }
+*/
+/*
+  ImageData createImageData(int width, int height) {
+
+    var pr = _pixelRatio;
+    var prs = _pixelRatioSource;
+
+    return _context.createImageData(width * pr, height * pr);
+  }
+*/
+
+
+  //-------------------------------------------------------------------------------------------------
+
+/*
+  void applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, BitmapFilter filter) {
+
+    filter.apply(sourceBitmapData, sourceRect, this, destPoint);
+  }
+*/
+
+  //-------------------------------------------------------------------------------------------------
+
+  /*
+  void colorTransform(Rectangle rect, ColorTransform transform) {
+
+    int redMultiplier = (1024 * transform.redMultiplier).toInt();
+    int greenMultiplier = (1024 * transform.greenMultiplier).toInt();
+    int blueMultiplier = (1024 * transform.blueMultiplier).toInt();
+    int alphaMultiplier = (1024 * transform.alphaMultiplier).toInt();
+
+    int redOffset = transform.redOffset;
+    int greenOffset = transform.greenOffset;
+    int blueOffset = transform.blueOffset;
+    int alphaOffset = transform.alphaOffset;
+
+    var isLittleEndianSystem = _isLittleEndianSystem;
+
+    int mulitplier0 = isLittleEndianSystem ? redMultiplier : alphaMultiplier;
+    int mulitplier1 = isLittleEndianSystem ? greenMultiplier : blueMultiplier;
+    int mulitplier2 = isLittleEndianSystem ? blueMultiplier : greenMultiplier;
+    int mulitplier3 = isLittleEndianSystem ? alphaMultiplier : redMultiplier;
+
+    int offset0 = isLittleEndianSystem ? redOffset : alphaOffset;
+    int offset1 = isLittleEndianSystem ? greenOffset : blueOffset;
+    int offset2 = isLittleEndianSystem ? blueOffset : greenOffset;
+    int offset3 = isLittleEndianSystem ? alphaOffset : redOffset;
+
+    var imageData = getImageData(rect.x, rect.y, rect.width, rect.height);
+    var data = imageData.data;
+
+    for (int i = 0; i <= data.length - 4; i += 4) {
+      int c0 = data[i + 0];
+      int c1 = data[i + 1];
+      int c2 = data[i + 2];
+      int c3 = data[i + 3];
+
+      if (c0 is! num) continue; // dart2js hint
+      if (c1 is! num) continue; // dart2js hint
+      if (c2 is! num) continue; // dart2js hint
+      if (c3 is! num) continue; // dart2js hint
+
+      data[i + 0] = offset0 + (((c0 * mulitplier0) | 0) >> 10);
+      data[i + 1] = offset1 + (((c1 * mulitplier1) | 0) >> 10);
+      data[i + 2] = offset2 + (((c2 * mulitplier2) | 0) >> 10);
+      data[i + 3] = offset3 + (((c3 * mulitplier3) | 0) >> 10);
+    }
+
+    putImageData(imageData, rect.x, rect.y);
+  }
+  */
+
+  //-------------------------------------------------------------------------------------------------
+
+  /*
+  void copyPixels(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint) {
+
+    var sourceContext = sourceBitmapData._context;
+    var sourceCanvas = sourceContext.canvas;
+    var sourcePixelRatio = sourceBitmapData._pixelRatioSource;
+    var sx = sourcePixelRatio * sourceRect.x;
+    var sy = sourcePixelRatio * sourceRect.y;
+    var sw = sourcePixelRatio * sourceRect.width;
+    var sh = sourcePixelRatio * sourceRect.height;
+
+    var destinationContext = _context;
+    var destinationPixelRatio = _pixelRatioSource;
+    var dx = destinationPixelRatio * destPoint.x;
+    var dy = destinationPixelRatio * destPoint.y;
+    var dw = destinationPixelRatio * sourceRect.width;
+    var dh = destinationPixelRatio * sourceRect.height;
+
+    destinationContext.clearRect(dx, dy, dw, dh);
+    destinationContext.drawImageScaledFromSource(sourceCanvas, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+  */
+
+  //-------------------------------------------------------------------------------------------------
+
+  void clear() {
+    var matrix = _renderTextureQuad.drawMatrix;
+    var context = _renderTexture.canvas.context2D;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    context.clearRect(0, 0, _width, _height);
+    _renderTexture.update();
+  }
+
+  void fillRect(Rectangle rect, int color) {
+    var matrix = _renderTextureQuad.drawMatrix;
+    var context = _renderTexture.canvas.context2D;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    context.fillStyle = _color2rgba(color);
+    context.fillRect(0, 0, _width, _height);
+    _renderTexture.update();
+  }
+
+  void draw(BitmapDrawable source, [Matrix matrix]) {
+    var drawMatrix = _renderTextureQuad.drawMatrix;
+    if (matrix != null) drawMatrix.prepend(matrix);
+    var renderContext = new RenderContextCanvas(_renderTexture.canvas);
+    var renderState = new RenderState(renderContext, drawMatrix);
+    source.render(renderState);
+    _renderTexture.update();
+  }
+
+  void copyPixels(BitmapData source, Rectangle sourceRect, Point destPoint) {
+    var context = _renderTexture.canvas.context2D;
+    var sourceQuad = source.renderTextureQuad.cut(sourceRect);
+    var renderContext = new RenderContextCanvas(_renderTexture.canvas);
+    var matrix = new Matrix(1.0, 0.0, 0.0, 1.0, destPoint.x, destPoint.y);
+    matrix.concat(_renderTextureQuad.drawMatrix);
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    context.clearRect(0, 0, sourceRect.width, sourceRect.height);
+    renderContext.renderQuad(sourceQuad, matrix, 1.0);
+    _renderTexture.update();
+  }
+
+  void drawPixels(BitmapData source, Rectangle sourceRect, Point destPoint, [String compositeOperation]) {
+    var sourceQuad = source.renderTextureQuad.cut(sourceRect);
+    var renderContext = new RenderContextCanvas(_renderTexture.canvas);
+    var matrix = new Matrix(1.0, 0.0, 0.0, 1.0, destPoint.x, destPoint.y);
+    matrix.concat(_renderTextureQuad.drawMatrix);
+    renderContext.renderQuad(sourceQuad, matrix, 1.0);
+    _renderTexture.update();
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  /*
+  int getPixel(int x, int y) {
+    return getPixel32(x, y) & 0x00FFFFFF;
+  }
+
+  void setPixel(int x, int y, int color) {
+    setPixel32(x, y, color | 0xFF000000);
+  }
+  */
+
+  //-------------------------------------------------------------------------------------------------
+
+  /*
+  int getPixel32(int x, int y) {
+
+    var imageData = getImageData(x, y, 1, 1);
+    var pixels = imageData.width * imageData.height;
+    var data = imageData.data;
+    var r = 0, g = 0, b = 0, a = 0;
+
+    for(int p = 0; p < pixels; p++) {
+      r += _isLittleEndianSystem ? data[p * 4 + 0] : data[p * 4 + 3];
+      g += _isLittleEndianSystem ? data[p * 4 + 1] : data[p * 4 + 2];
+      b += _isLittleEndianSystem ? data[p * 4 + 2] : data[p * 4 + 1];
+      a += _isLittleEndianSystem ? data[p * 4 + 3] : data[p * 4 + 0];
+    }
+
+    return ((a ~/ pixels) << 24) + ((r ~/ pixels) << 16) + ((g ~/ pixels) << 8) + ((b ~/ pixels) << 0);
+  }
+  */
+
+  /*
+  void setPixel32(int x, int y, int color) {
+
+    var imageData = createImageData(1, 1);
+    var pixels = imageData.width * imageData.height;
+    var data = imageData.data;
+
+    var c0 = ((color | 0) >> 24) & 0xFF;
+    var c1 = ((color | 0) >> 16) & 0xFF;
+    var c2 = ((color | 0) >>  8) & 0xFF;
+    var c3 = ((color | 0)      ) & 0xFF;
+
+    for(int p = 0; p < pixels; p++) {
+      data[p * 4 + 0] = _isLittleEndianSystem ? c1 : c0;
+      data[p * 4 + 1] = _isLittleEndianSystem ? c2 : c3;
+      data[p * 4 + 2] = _isLittleEndianSystem ? c3 : c2;
+      data[p * 4 + 3] = _isLittleEndianSystem ? c0 : c1;
+    }
+
+    putImageData(imageData, x, y);
+  }
+  */
 
   //-------------------------------------------------------------------------------------------------
 
@@ -160,6 +401,13 @@ class BitmapData implements BitmapDrawable {
   }
 
 }
+
+
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 
 /*
 class BitmapData implements BitmapDrawable {
@@ -559,8 +807,6 @@ class BitmapData implements BitmapDrawable {
 
   void draw(BitmapDrawable source, [Matrix matrix = null]) {
 
-    _ensureContext();
-
     matrix = (matrix == null) ? new Matrix.fromIdentity() : matrix.clone();
     matrix.scale(_pixelRatioSource, _pixelRatioSource);
 
@@ -575,8 +821,6 @@ class BitmapData implements BitmapDrawable {
 
   void fillRect(Rectangle rect, int color) {
 
-    _ensureContext();
-
     _context.setTransform(_pixelRatioSource, 0.0, 0.0, _pixelRatioSource, 0.0, 0.0);
     _context.fillStyle = _color2rgba(color);
     _context.fillRect(rect.x, rect.y, rect.width, rect.height);
@@ -585,8 +829,6 @@ class BitmapData implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   void clear() {
-
-    _ensureContext();
 
     _context.setTransform(_pixelRatioSource, 0.0, 0.0, _pixelRatioSource, 0.0, 0.0);
     _context.clearRect(0, 0, _width, _height);

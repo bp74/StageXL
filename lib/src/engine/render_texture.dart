@@ -54,7 +54,7 @@ class RenderTexture {
   gl.Texture get texture => _texture;
 
   RenderTextureQuad get quad => _quad == null
-      ? _quad = new RenderTextureQuad(this, 0, 0, width, height)
+      ? _quad = new RenderTextureQuad(this, 0, 0, width, height, 0, 0)
       : _quad;
 
   int get width => _width;
@@ -85,7 +85,6 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   void update() {
-
     if (_texture != null) {
       _renderingContext.activeTexture(gl.TEXTURE10);
       _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
@@ -99,10 +98,8 @@ class RenderTexture {
   gl.Texture getTexture(RenderContextWebGL renderContext) {
 
     if (_texture == null) {
-
       _renderingContext = renderContext.rawContext;
       _texture = _renderingContext.createTexture();
-
       _renderingContext.activeTexture(gl.TEXTURE10);
       _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
       _renderingContext.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
@@ -115,5 +112,4 @@ class RenderTexture {
 
     return _texture;
   }
-
 }

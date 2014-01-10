@@ -1,26 +1,26 @@
 part of stagexl;
 
 class Matrix {
-  
+
   double _a, _b, _c, _d, _tx, _ty;
   double _det;
 
   Matrix(num a, num b, num c, num d, num tx, num ty) :
-    _a = a.toDouble(), 
-    _b = b.toDouble(), 
-    _c = c.toDouble(), 
-    _d = d.toDouble(), 
-    _tx = tx.toDouble(), 
-    _ty = ty.toDouble(), 
+    _a = a.toDouble(),
+    _b = b.toDouble(),
+    _c = c.toDouble(),
+    _d = d.toDouble(),
+    _tx = tx.toDouble(),
+    _ty = ty.toDouble(),
     _det = (a * d - b * c).toDouble();
 
   Matrix.fromIdentity() :
-    _a = 1.0, 
-    _b = 0.0, 
-    _c = 0.0, 
-    _d = 1.0, 
-    _tx = 0.0, 
-    _ty = 0.0, 
+    _a = 1.0,
+    _b = 0.0,
+    _c = 0.0,
+    _d = 1.0,
+    _tx = 0.0,
+    _ty = 0.0,
     _det = 1.0;
 
   //-------------------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ class Matrix {
   }
 
   Matrix cloneInvert() {
-    
+
     num a =    (_d / _det);
     num b =  - (_b / _det);
     num c =  - (_c / _det);
@@ -65,13 +65,13 @@ class Matrix {
     var y = v.y.toDouble();
     return new Vector(x * _a + y * _c + _tx, x * _b + y * _d + _ty);
   }
-  
+
   Point deltaTransformPoint(Point p) {
     var x = p.x.toDouble();
     var y = p.y.toDouble();
     return new Point(x * _a + y * _c, x * _b + y * _d);
   }
-  
+
   Point _transformHtmlPoint(html.Point p) {
     var x = p.x.toDouble();
     var y = p.y.toDouble();
@@ -108,8 +108,36 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
+  void prepend(Matrix matrix) {
+    num a1 =   _a;
+    num b1 =   _b;
+    num c1 =   _c;
+    num d1 =   _d;
+    num tx1 =  _tx;
+    num ty1 =  _ty;
+    num det1 = _det;
+
+    num a2 =   matrix.a;
+    num b2 =   matrix.b;
+    num c2 =   matrix.c;
+    num d2 =   matrix.d;
+    num tx2 =  matrix.tx;
+    num ty2 =  matrix.ty;
+    num det2 = matrix.det;
+
+    _a =   (a1 * a2 + c1 * b2).toDouble();
+    _b =   (b1 * a2 + d1 * b2).toDouble();
+    _c =   (a1 * c2 + c1 * d2).toDouble();
+    _d =   (b1 * c2 + d1 * d2).toDouble();
+    _tx =  (tx2 * a1 + ty2 * c1 + tx1).toDouble();
+    _ty =  (tx2 * b1 + ty2 * d1 + ty1).toDouble();
+    _det = (det1 * det2).toDouble();
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
   Matrix createBox(num scaleX, num scaleY, [num rotation = 0.0, num translationX = 0.0, num translationY = 0.0]) {
-    
+
     Matrix matrix = new Matrix.fromIdentity();
     matrix.scale(scaleX, scaleY);
     matrix.rotate(rotation);
@@ -121,7 +149,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void identity() {
-    
+
     _a =   1.0;
     _b =   0.0;
     _c =   0.0;
@@ -134,7 +162,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void invert() {
-    
+
     num a =   _a;
     num b =   _b;
     num c =   _c;
@@ -155,7 +183,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void rotate(num rotation) {
-    
+
     num cosR = cos(rotation);
     num sinR = sin(rotation);
 
@@ -177,19 +205,19 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void skew(num skewX, num skewY) {
-    
+
     num sinX = sin(skewX);
     num cosX = cos(skewX);
     num sinY = sin(skewY);
     num cosY = cos(skewY);
-    
+
     num a =  _a;
     num b =  _b;
     num c =  _c;
     num d =  _d;
     num tx = _tx;
     num ty = _ty;
-    
+
     _a =   (a * cosY - b * sinX).toDouble();
     _b =   (a * sinY + b * cosX).toDouble();
     _c =   (c * cosY - d * sinX).toDouble();
@@ -202,7 +230,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void scale(num scaleX, num scaleY) {
-    
+
     _a   = (  _a * scaleX).toDouble();
     _b   = (  _b * scaleY).toDouble();
     _c   = (  _c * scaleX).toDouble();
@@ -215,7 +243,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void translate(num translationX, num translationY) {
-    
+
     _tx = (_tx + translationX).toDouble();;
     _ty = (_ty + translationY).toDouble();
   }
@@ -223,7 +251,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void setTo(num a, num b, num c, num d, num tx, num ty) {
-    
+
     _a =   a.toDouble();
     _b =   b.toDouble();
     _c =   c.toDouble();
@@ -236,7 +264,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void copyFrom(Matrix matrix) {
-    
+
     _a =   matrix.a.toDouble();
     _b =   matrix.b.toDouble();
     _c =   matrix.c.toDouble();
@@ -249,7 +277,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void copyFromAndConcat(Matrix copyMatrix, Matrix concatMatrix) {
-    
+
     num a1 =   copyMatrix.a;
     num b1 =   copyMatrix.b;
     num c1 =   copyMatrix.c;
@@ -278,7 +306,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void copyFromAndInvert(Matrix matrix) {
-    
+
     num a =   matrix.a;
     num b =   matrix.b;
     num c =   matrix.c;

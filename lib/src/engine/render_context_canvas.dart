@@ -50,7 +50,7 @@ class RenderContextCanvas extends RenderContext {
 
     } else if (rotation == 1) {
 
-      _renderingContext.setTransform(matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
+      _renderingContext.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       _renderingContext.drawImageScaledFromSource(canvas,
           renderTextureQuad.x3, renderTextureQuad.y1, height, width,
           0.0 - offsetY - height, offsetX, height, width);

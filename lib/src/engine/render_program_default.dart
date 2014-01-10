@@ -180,7 +180,7 @@ class RenderProgramDefault extends RenderProgram {
 
     if (_quadCount == 0) {
       return;
-    } else  if (_quadCount == 1) {
+    } else if (_quadCount == 1) {
       vertexUpdate = _vertexListSingle;
     } else if (_quadCount < _maxQuadCount) {
       vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 5);
