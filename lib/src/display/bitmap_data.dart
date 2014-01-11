@@ -72,7 +72,7 @@ class BitmapData implements BitmapDrawable {
    */
 
   BitmapData clone([num pixelRatio]) {
-    if (pixelRatio == null) pixelRatio = _renderTexture.pixelRatio;
+    if (pixelRatio == null) pixelRatio = _renderTexture.storePixelRatio;
     var bitmapData = new BitmapData(_width, _height, true, 0, pixelRatio);
     bitmapData.drawPixels(this, this.rectangle, new Point.zero());
     return bitmapData;

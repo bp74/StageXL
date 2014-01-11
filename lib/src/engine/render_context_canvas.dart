@@ -25,35 +25,49 @@ class RenderContextCanvas extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void clear() {
-
     _renderingContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
     _renderingContext.clearRect(0, 0, _canvasElement.width, _canvasElement.height);
   }
 
   void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
 
-    var canvas = renderTextureQuad.renderTexture.canvas;
-    var width = renderTextureQuad.width;
-    var height = renderTextureQuad.height;
-    var offsetX = renderTextureQuad.offsetX;
-    var offsetY = renderTextureQuad.offsetY;
+    var source = renderTextureQuad.renderTexture.canvas;
     var rotation = renderTextureQuad.rotation;
+    var xyList = renderTextureQuad.xyList;
 
     _renderingContext.globalAlpha = alpha;
 
     if (rotation == 0) {
 
+      var sourceX = xyList[0];
+      var sourceY = xyList[1];
+      var sourceWidth = xyList[4] - sourceX;
+      var sourceHeight = xyList[5] - sourceY;
+      var destinationX = renderTextureQuad.offsetX;
+      var destinationY = renderTextureQuad.offsetY;
+      var destinationWidth= renderTextureQuad.width;
+      var destinationHeight = renderTextureQuad.height;
+
       _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-      _renderingContext.drawImageScaledFromSource(canvas,
-          renderTextureQuad.x1, renderTextureQuad.y1, width, height,
-          offsetX, offsetY, width, height);
+      _renderingContext.drawImageScaledFromSource(source,
+          sourceX, sourceY, sourceWidth, sourceHeight,
+          destinationX, destinationY, destinationWidth, destinationHeight);
 
     } else if (rotation == 1) {
 
+      var sourceX = xyList[6];
+      var sourceY = xyList[7];
+      var sourceWidth = xyList[2] - sourceX;
+      var sourceHeight = xyList[3] - sourceY;
+      var destinationX = 0.0 - renderTextureQuad.offsetY - renderTextureQuad.height;
+      var destinationY = renderTextureQuad.offsetX;
+      var destinationWidth= renderTextureQuad.height;
+      var destinationHeight = renderTextureQuad.width;
+
       _renderingContext.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
-      _renderingContext.drawImageScaledFromSource(canvas,
-          renderTextureQuad.x3, renderTextureQuad.y1, height, width,
-          0.0 - offsetY - height, offsetX, height, width);
+      _renderingContext.drawImageScaledFromSource(source,
+          sourceX, sourceY, sourceWidth, sourceHeight,
+          destinationX, destinationY, destinationWidth, destinationHeight);
     }
   }
 

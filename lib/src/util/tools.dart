@@ -179,8 +179,7 @@ Future<ImageElement> _loadImageElement(String url, bool webpAvailable) {
   });
 
   _isWebpSupported.then((bool webpSupported) {
-    var regex = new RegExp(r"(png|jpg|jpeg)$", caseSensitive:false);
-    var match = regex.firstMatch(url);
+    var match = new RegExp(r"(png|jpg|jpeg)$").firstMatch(url);
     imageElement.src = (webpAvailable && webpSupported && match != null)
         ? url.substring(0, match.start) + "webp"
         : url;

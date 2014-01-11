@@ -3,7 +3,8 @@ part of stagexl;
 class RenderTextureQuad {
 
   RenderTexture _renderTexture;
-  Float32List _uvList = new Float32List(8);
+  Float32List _uvList = new Float32List(8);   // WebGL coordinates
+  Int32List _xyList = new Int32List(8);       // Canvas coordinates
 
   int _x1 = 0;
   int _y1 = 0;
@@ -42,6 +43,7 @@ class RenderTextureQuad {
     int y4 = horizontal ? y3 : y1;
     int renderTextureWidth = _renderTexture.width;
     int renderTextureHeight = _renderTexture.height;
+    num pixelRatio = _renderTexture.storePixelRatio / _backingStorePixelRatio;
 
     uvList[0] = x1 / renderTextureWidth;
     uvList[1] = y1 / renderTextureHeight;
@@ -51,12 +53,22 @@ class RenderTextureQuad {
     uvList[5] = y3 / renderTextureHeight;
     uvList[6] = x4 / renderTextureWidth;
     uvList[7] = y4 / renderTextureHeight;
+
+    xyList[0] = (x1 * pixelRatio).round();
+    xyList[1] = (y1 * pixelRatio).round();
+    xyList[2] = (x2 * pixelRatio).round();
+    xyList[3] = (y2 * pixelRatio).round();
+    xyList[4] = (x3 * pixelRatio).round();
+    xyList[5] = (y3 * pixelRatio).round();
+    xyList[6] = (x4 * pixelRatio).round();
+    xyList[7] = (y4 * pixelRatio).round();
   }
 
   //-----------------------------------------------------------------------------------------------
 
   RenderTexture get renderTexture => _renderTexture;
   Float32List get uvList => _uvList;
+  Int32List get xyList => _xyList;
 
   int get x1 => _x1;
   int get y1 => _y1;
@@ -70,12 +82,22 @@ class RenderTextureQuad {
   int get rotation => _rotation;
 
   Matrix get drawMatrix {
+    /*
+    var scale = _renderTexture.storePixelRatio / _backingStorePixelRatio;
+    var matrix = new Matrix.fromIdentity();
+    matrix.translate(-offsetX, -offsetY);
+    matrix.rotate(_rotation * PI / 2.0);
+    matrix.translate(x1, y1);
+    matrix.scale(scale, scale);
+    return matrix;
+    */
+    num scale = _renderTexture.storePixelRatio / _backingStorePixelRatio;
     num angle = _rotation * PI / 2.0;
-    num cosR = cos(angle);
-    num sinR = sin(angle);
-    num tx = x1  - offsetX * cosR + offsetY * sinR;
-    num ty = y1  - offsetX * sinR - offsetY * cosR;
-    return new Matrix(cosR, sinR, - sinR, cosR, tx, ty);
+    num c = scale * cos(angle);
+    num s = scale * sin(angle);
+    num tx = scale * x1  - offsetX * c + offsetY * s;
+    num ty = scale * y1  - offsetX * s - offsetY * c;
+    return new Matrix(c, s, -s, c, tx, ty);
   }
 
   //-----------------------------------------------------------------------------------------------
