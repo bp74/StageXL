@@ -4,8 +4,8 @@ part of stagexl;
 
 class BitmapData implements BitmapDrawable {
 
-  int _width;
-  int _height;
+  int _width = 0;
+  int _height = 0;
 
   RenderTexture _renderTexture;
   RenderTextureQuad _renderTextureQuad;
@@ -19,7 +19,7 @@ class BitmapData implements BitmapDrawable {
 
     _width = _ensureInt(width);
     _height = _ensureInt(height);
-    _renderTexture = new RenderTexture(_width, _height, fillColor | (transparent ? 0 : 0xFF000000));
+    _renderTexture = new RenderTexture(_width, _height, transparent, fillColor);
     _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height, 0, 0);
   }
 
@@ -27,13 +27,13 @@ class BitmapData implements BitmapDrawable {
     _width = _ensureInt(imageElement.width);
     _height = _ensureInt(imageElement.height);
     _renderTexture = new RenderTexture.fromImage(imageElement);
-    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height, 0, 0);
+    _renderTextureQuad = _renderTexture.quad;
   }
 
   BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle rectangle) {
     _width = _ensureInt(rectangle.width);
     _height = _ensureInt(rectangle.height);
-    _renderTexture = bitmapData._renderTexture;
+    _renderTexture = bitmapData.renderTexture;
     _renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
   }
 
@@ -45,9 +45,6 @@ class BitmapData implements BitmapDrawable {
   }
 
   BitmapData.fromTextureAtlasFrame(TextureAtlasFrame textureAtlasFrame) {
-    _width = textureAtlasFrame.originalWidth;
-    _height = textureAtlasFrame.originalHeight;
-    _renderTexture = textureAtlasFrame.textureAtlas.renderTexture;
 
     int x1 = 0, y1 = 0, x3 = 0, y3 = 0;
     int offsetX = textureAtlasFrame.offsetX;
@@ -65,6 +62,9 @@ class BitmapData implements BitmapDrawable {
       y3 = textureAtlasFrame.frameY + textureAtlasFrame.frameWidth;
     }
 
+    _width = textureAtlasFrame.originalWidth;
+    _height = textureAtlasFrame.originalHeight;
+    _renderTexture = textureAtlasFrame.textureAtlas.renderTexture;
     _renderTextureQuad = new RenderTextureQuad(_renderTexture, x1, y1, x3, y3, offsetX, offsetY);
   }
 
@@ -85,16 +85,6 @@ class BitmapData implements BitmapDrawable {
   }
 
   //-------------------------------------------------------------------------------------------------
-
-  /**
-   * Disposes the texture memory allocated by WebGL.
-   */
-
-  void dispose() {
-    if (_renderTexture != null) {
-      _renderTexture.dispose();
-    }
-  }
 
   /**
    * Returns a new BitmapData with a copy of this BitmapData's texture.

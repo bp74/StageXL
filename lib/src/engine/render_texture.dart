@@ -4,6 +4,7 @@ class RenderTexture {
 
   int _width = 0;
   int _height = 0;
+  bool _transparent = true;
 
   CanvasElement _canvas;
   RenderTextureQuad _quad;
@@ -13,19 +14,22 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderTexture(int width, int height, int fillColor) {
+  RenderTexture(int width, int height, bool transparent, int fillColor) {
 
     if (width == 0 && height == 0) throw new ArgumentError();
 
     _width = _ensureInt(width);
     _height = _ensureInt(height);
+    _transparent = _ensureBool(transparent);
 
     _canvas = new CanvasElement(width: _width, height: _height);
+    _quad = new RenderTextureQuad(this, 0, 0, _width, _height, 0, 0);
     _texture = null;
 
     if (fillColor != 0) {
-      _canvas.context2D.fillStyle = _color2rgba(fillColor);
-      _canvas.context2D.fillRect(0, 0, _width, _height);
+      var context = _canvas.context2D;
+      context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
+      context.fillRect(0, 0, _width, _height);
     }
   }
 
@@ -33,8 +37,11 @@ class RenderTexture {
 
     _width = _ensureInt(imageElement.width);
     _height = _ensureInt(imageElement.height);
+    _transparent = true;
 
     _canvas = new CanvasElement(width: _width, height: _height);
+    _quad = new RenderTextureQuad(this, 0, 0, _width, _height, 0, 0);
+
     _canvas.context2D.drawImage(imageElement, 0, 0);
     _texture = null;
   }
@@ -51,11 +58,8 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   CanvasElement get canvas => _canvas;
+  RenderTextureQuad get quad => _quad;
   gl.Texture get texture => _texture;
-
-  RenderTextureQuad get quad => _quad == null
-      ? _quad = new RenderTextureQuad(this, 0, 0, width, height, 0, 0)
-      : _quad;
 
   int get width => _width;
   int get height => _height;

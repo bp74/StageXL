@@ -471,7 +471,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     // var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
 
     if (_cacheTexture == null) {
-      _cacheTexture = new RenderTexture(width, height, Color.Transparent);
+      _cacheTexture = new RenderTexture(width, height, true, Color.Transparent);
     } else {
       _cacheTexture.resize(width, height);
     }
