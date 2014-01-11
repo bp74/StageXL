@@ -30,16 +30,16 @@ class RenderTexture {
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
 
-    var backingStoreWidth = (_storeWidth / _backingStorePixelRatio).round();
-    var backingStoreHeight = (_storeHeight / _backingStorePixelRatio).round();
-    _canvas = new CanvasElement(width: backingStoreWidth, height: backingStoreHeight);
+    var canvasWidth = (_storeWidth / _backingStorePixelRatio).round();
+    var canvasHeight = (_storeHeight / _backingStorePixelRatio).round();
+    _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
     _quad = new RenderTextureQuad(this, 0, 0, _width, _height, 0, 0);
     _texture = null;
 
     if (fillColor != 0) {
       var context = _canvas.context2D;
       context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
-      context.fillRect(0, 0, backingStoreWidth, backingStoreHeight);
+      context.fillRect(0, 0, canvasWidth, canvasHeight);
     }
   }
 
@@ -53,15 +53,15 @@ class RenderTexture {
     _height = (_storeHeight / _storePixelRatio).round();
     _transparent = true;
 
-    var backingStoreWidth = (_storeWidth / _backingStorePixelRatio).round();
-    var backingStoreHeight = (_storeWidth / _backingStorePixelRatio).round();
-    _canvas = new CanvasElement(width: backingStoreWidth, height: backingStoreHeight);
+    var canvasWidth = (_storeWidth / _backingStorePixelRatio).round();
+    var canvasHeight = (_storeHeight / _backingStorePixelRatio).round();
+    _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
     _quad = new RenderTextureQuad(this, 0, 0, _width, _height, 0, 0);
     _texture = null;
 
     _canvas.context2D.drawImageScaledFromSource(imageElement,
         0, 0, imageElement.width, imageElement.height,
-        0, 0, backingStoreWidth, backingStoreHeight);
+        0, 0, canvasWidth, canvasHeight);
   }
 
   //-----------------------------------------------------------------------------------------------
