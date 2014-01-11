@@ -73,9 +73,7 @@ class TextureAtlas {
 
     for(int i = 0; i < _frames.length; i++) {
       var frame = _frames[i];
-      if (frame.name == name) {
-        return new BitmapData.fromTextureAtlasFrame(frame);
-      }
+      if (frame.name == name) return _getBitmapData(frame);
     }
 
     throw new ArgumentError("TextureAtlasFrame not found: '$name'");
@@ -90,11 +88,39 @@ class TextureAtlas {
     for(int i = 0; i < _frames.length; i++) {
       var frame = _frames[i];
       if (frame.name.startsWith(namePrefix)) {
-        bitmapDataList.add(new BitmapData.fromTextureAtlasFrame(frame));
+        bitmapDataList.add(_getBitmapData(frame));
       }
     }
 
     return bitmapDataList;
   }
 
+  //-------------------------------------------------------------------------------------------------
+
+  BitmapData _getBitmapData(TextureAtlasFrame textureAtlasFrame) {
+
+    int x1 = 0, y1 = 0, x3 = 0, y3 = 0;
+    int offsetX = textureAtlasFrame.offsetX;
+    int offsetY = textureAtlasFrame.offsetY;
+    int width = textureAtlasFrame.originalWidth;
+    int height = textureAtlasFrame.originalHeight;
+
+    if (textureAtlasFrame.rotated == false) {
+      x1 = textureAtlasFrame.frameX;
+      y1 = textureAtlasFrame.frameY;
+      x3 = textureAtlasFrame.frameX + textureAtlasFrame.frameWidth;
+      y3 = textureAtlasFrame.frameY + textureAtlasFrame.frameHeight;
+    } else {
+      x1 = textureAtlasFrame.frameX + textureAtlasFrame.frameHeight;
+      y1 = textureAtlasFrame.frameY;
+      x3 = textureAtlasFrame.frameX;
+      y3 = textureAtlasFrame.frameY + textureAtlasFrame.frameWidth;
+    }
+
+    var renderTextureQuad = new RenderTextureQuad(_renderTexture, x1, y1, x3, y3, 0, 0);
+    var bitmapData = new BitmapData.fromRenderTextureQuad(renderTextureQuad);
+    var rectangle = new Rectangle(-offsetX, -offsetY, width, height);
+
+    return new BitmapData.fromBitmapData(bitmapData, rectangle);
+  }
 }

@@ -44,30 +44,6 @@ class BitmapData implements BitmapDrawable {
     _renderTextureQuad = renderTextureQuad;
   }
 
-  BitmapData.fromTextureAtlasFrame(TextureAtlasFrame textureAtlasFrame) {
-
-    int x1 = 0, y1 = 0, x3 = 0, y3 = 0;
-    int offsetX = textureAtlasFrame.offsetX;
-    int offsetY = textureAtlasFrame.offsetY;
-
-    if (textureAtlasFrame.rotated == false) {
-      x1 = textureAtlasFrame.frameX;
-      y1 = textureAtlasFrame.frameY;
-      x3 = textureAtlasFrame.frameX + textureAtlasFrame.frameWidth;
-      y3 = textureAtlasFrame.frameY + textureAtlasFrame.frameHeight;
-    } else {
-      x1 = textureAtlasFrame.frameX + textureAtlasFrame.frameHeight;
-      y1 = textureAtlasFrame.frameY;
-      x3 = textureAtlasFrame.frameX;
-      y3 = textureAtlasFrame.frameY + textureAtlasFrame.frameWidth;
-    }
-
-    _width = textureAtlasFrame.originalWidth;
-    _height = textureAtlasFrame.originalHeight;
-    _renderTexture = textureAtlasFrame.textureAtlas.renderTexture;
-    _renderTextureQuad = new RenderTextureQuad(_renderTexture, x1, y1, x3, y3, offsetX, offsetY);
-  }
-
   //-------------------------------------------------------------------------------------------------
 
   /**
@@ -262,7 +238,7 @@ class BitmapData implements BitmapDrawable {
     var context = _renderTexture.canvas.context2D;
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     context.fillStyle = _color2rgba(color);
-    context.fillRect(0, 0, _width, _height);
+    context.fillRect(rect.x, rect.y, rect.width, rect.height);
     _renderTexture.update();
   }
 

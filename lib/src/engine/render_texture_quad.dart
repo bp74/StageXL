@@ -106,10 +106,10 @@ class RenderTextureQuad {
   //-----------------------------------------------------------------------------------------------
 
   RenderTextureQuad cut(Rectangle rectangle) {
-      var renderTextureQuad = clip(rectangle);
-      renderTextureQuad._offsetX -= rectangle.x;
-      renderTextureQuad._offsetY -= rectangle.y;
-      return renderTextureQuad;
+    var renderTextureQuad = clip(rectangle);
+    renderTextureQuad._offsetX -= rectangle.x;
+    renderTextureQuad._offsetY -= rectangle.y;
+    return renderTextureQuad;
   }
 
 }
