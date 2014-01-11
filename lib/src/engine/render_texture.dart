@@ -31,7 +31,7 @@ class RenderTexture {
     _storeHeight = (_height * _storePixelRatio).round();
 
     var backingStoreWidth = (_storeWidth / _backingStorePixelRatio).round();
-    var backingStoreHeight = (_storeWidth / _backingStorePixelRatio).round();
+    var backingStoreHeight = (_storeHeight / _backingStorePixelRatio).round();
     _canvas = new CanvasElement(width: backingStoreWidth, height: backingStoreHeight);
     _quad = new RenderTextureQuad(this, 0, 0, _width, _height, 0, 0);
     _texture = null;
@@ -108,8 +108,8 @@ class RenderTexture {
       _storeWidth = (_width * _storePixelRatio).round();
       _storeHeight = (_height * _storePixelRatio).round();
       _canvas.width = (_storeWidth / _backingStorePixelRatio).round();
-      _canvas.height = (_storeWidth / _backingStorePixelRatio).round();
-      _quad = null;
+      _canvas.height = (_storeHeight / _backingStorePixelRatio).round();
+      _quad = new RenderTextureQuad(this, 0, 0, _width, _height, 0, 0);
     }
   }
 

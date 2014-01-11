@@ -505,8 +505,9 @@ class TextField extends InteractiveObject {
       _renderTexture.resize(width, height);
     }
 
+    var matrix = _renderTexture.quad.drawMatrix;
     var context = _renderTexture.canvas.context2D;
-    context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     context.clearRect(0, 0, _width, _height);
 
     _renderText(context);

@@ -489,9 +489,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     var y = _cacheRectangle.y;
     var width = _cacheRectangle.width;
     var height = _cacheRectangle.height;
+    var canvas = _cacheTexture.canvas;
 
-    var matrix = new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y);
-    var renderContext = new RenderContextCanvas(_cacheTexture.canvas);
+    var matrix = _cacheTexture.quad.drawMatrix..translate(-x, -y);
+    var renderContext = new RenderContextCanvas(canvas);
     var renderState = new RenderState(renderContext, matrix);
 
     renderContext.clear();
@@ -510,13 +511,13 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     */
 
     if (_cacheDebugBorder) {
-      _cacheTexture.canvas.context2D
+      canvas.context2D
           ..setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
           ..lineWidth = 1
           ..lineJoin = "miter"
           ..lineCap = "butt"
           ..strokeStyle = "#FF00FF"
-          ..strokeRect(0.5, 0.5, width - 1, height - 1);
+          ..strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
     }
 
     _cacheTexture.update();

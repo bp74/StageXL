@@ -25,9 +25,9 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
-  Matrix clone() {
-    return new Matrix(_a, _b, _c, _d, _tx, _ty);
-  }
+  String toString() => "Matrix [a=$_a, b=$_b, c=$_c, d=$_d, tx=$_tx, ty=$_ty]";
+
+  Matrix clone() => new Matrix(_a, _b, _c, _d, _tx, _ty);
 
   Matrix cloneInvert() {
 

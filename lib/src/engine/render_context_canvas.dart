@@ -61,7 +61,7 @@ class RenderContextCanvas extends RenderContext {
       var sourceHeight = xyList[3] - sourceY;
       var destinationX = 0.0 - renderTextureQuad.offsetY - renderTextureQuad.height;
       var destinationY = renderTextureQuad.offsetX;
-      var destinationWidth= renderTextureQuad.height;
+      var destinationWidth = renderTextureQuad.height;
       var destinationHeight = renderTextureQuad.width;
 
       _renderingContext.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
