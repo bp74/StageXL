@@ -68,7 +68,7 @@ class SoundMixer {
       _engine = "Mock";
     }
 
-    print("StageXL: supported audio engine is: $engine");
+    print("StageXL audio engine  : $engine");
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ class SoundMixer {
     if (valid.indexOf(audio.canPlayType("audio/ogg", "")) != -1) supportedTypes.add("ogg");
     if (valid.indexOf(audio.canPlayType("audio/wav", "")) != -1) supportedTypes.add("wav");
 
-    print("StageXL: supported audio types are: ${supportedTypes}");
+    print("StageXL audio types   : ${supportedTypes}");
 
     return supportedTypes;
   }

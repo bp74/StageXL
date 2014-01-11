@@ -5,6 +5,8 @@ class RenderContextCanvas extends RenderContext {
   CanvasElement _canvasElement;
   CanvasRenderingContext2D _renderingContext;
 
+  String get engine => "Canvas2D";
+
   RenderContextCanvas(CanvasElement canvasElement) : _canvasElement = canvasElement {
 
     var renderingContext = _canvasElement.context2D;

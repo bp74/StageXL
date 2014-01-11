@@ -16,6 +16,8 @@ class RenderContextWebGL extends RenderContext {
 
   int _maskDepth = 0;
 
+  String get engine => "WebGL";
+
   RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
 
     _canvasElement.onWebGlContextLost.listen((e) => "ToDo: Handle WebGL context lost.");

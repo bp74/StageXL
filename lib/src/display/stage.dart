@@ -117,8 +117,9 @@ class Stage extends DisplayObjectContainer {
         : new RenderContextCanvas(canvas);
 
     _renderState = new RenderState(_renderContext);
-
     _updateCanvasSize();
+
+    print("StageXL render engine : ${_renderContext.engine}");
 
     canvas.onKeyDown.listen(_onKeyEvent);
     canvas.onKeyUp.listen(_onKeyEvent);

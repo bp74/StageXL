@@ -2,6 +2,8 @@ part of stagexl;
 
 abstract class RenderContext {
 
+  String get engine;
+
   void clear();
   void flush();
 
