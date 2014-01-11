@@ -24,23 +24,27 @@ class BitmapData implements BitmapDrawable {
   }
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
-
+    _width = _ensureInt(imageElement.width);
+    _height = _ensureInt(imageElement.height);
     _renderTexture = new RenderTexture.fromImage(imageElement);
-    _width = _renderTexture.width;
-    _height = _renderTexture.height;
     _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height, 0, 0);
   }
 
-  BitmapData._fromRenderTexture(RenderTexture renderTexture, RenderTextureQuad renderTextureQuad) {
+  BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle rectangle) {
+    _width = _ensureInt(rectangle.width);
+    _height = _ensureInt(rectangle.height);
+    _renderTexture = bitmapData._renderTexture;
+    _renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
+  }
 
-    _width = renderTextureQuad.width;
-    _height = renderTextureQuad.height;
-    _renderTexture = renderTexture;
+  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad) {
+    _width = renderTextureQuad.width + renderTextureQuad.offsetX;
+    _height = renderTextureQuad.width + renderTextureQuad.offsetY;
+    _renderTexture = renderTextureQuad.renderTexture;
     _renderTextureQuad = renderTextureQuad;
   }
 
-  BitmapData._fromTextureAtlasFrame(TextureAtlasFrame textureAtlasFrame) {
-
+  BitmapData.fromTextureAtlasFrame(TextureAtlasFrame textureAtlasFrame) {
     _width = textureAtlasFrame.originalWidth;
     _height = textureAtlasFrame.originalHeight;
     _renderTexture = textureAtlasFrame.textureAtlas.renderTexture;
@@ -76,14 +80,24 @@ class BitmapData implements BitmapDrawable {
     // TODO: AutoHiDpi, WebP, pixelRatio
 
     return RenderTexture.load(url).then((renderTexture) {
-      return new BitmapData._fromRenderTexture(renderTexture, renderTexture.quad);
+      return new BitmapData.fromRenderTextureQuad(renderTexture.quad);
     });
   }
 
   //-------------------------------------------------------------------------------------------------
 
   /**
-   * Returns a new BitmapData containing a copy of this BitmapData's texture.
+   * Disposes the texture memory allocated by WebGL.
+   */
+
+  void dispose() {
+    if (_renderTexture != null) {
+      _renderTexture.dispose();
+    }
+  }
+
+  /**
+   * Returns a new BitmapData with a copy of this BitmapData's texture.
    */
 
   BitmapData clone([num pixelRatio]) {
@@ -122,24 +136,11 @@ class BitmapData implements BitmapDrawable {
       var x = f % cols;
       var y = f ~/ cols;
       var rectangle = new Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
-      var renderTextureQuad = _renderTextureQuad.cut(rectangle);
-      var bitmapData = new BitmapData._fromRenderTexture(_renderTexture, renderTextureQuad);
+      var bitmapData = new BitmapData.fromBitmapData(this, rectangle);
       frames.add(bitmapData);
     }
 
     return frames;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  /**
-   * Disposes the texture memory allocated by WebGL.
-   */
-
-  void dispose() {
-    if (_renderTexture != null) {
-      _renderTexture.dispose();
-    }
   }
 
   //-------------------------------------------------------------------------------------------------

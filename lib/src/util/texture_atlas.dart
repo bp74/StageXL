@@ -74,7 +74,7 @@ class TextureAtlas {
     for(int i = 0; i < _frames.length; i++) {
       var frame = _frames[i];
       if (frame.name == name) {
-        return new BitmapData._fromTextureAtlasFrame(frame);
+        return new BitmapData.fromTextureAtlasFrame(frame);
       }
     }
 
@@ -90,7 +90,7 @@ class TextureAtlas {
     for(int i = 0; i < _frames.length; i++) {
       var frame = _frames[i];
       if (frame.name.startsWith(namePrefix)) {
-        bitmapDataList.add(new BitmapData._fromTextureAtlasFrame(frame));
+        bitmapDataList.add(new BitmapData.fromTextureAtlasFrame(frame));
       }
     }
 
