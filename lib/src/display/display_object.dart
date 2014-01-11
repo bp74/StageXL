@@ -467,11 +467,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
 
-    // TODO: WEBGL - pixel ratio
-    // var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
+    var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
 
     if (_cacheTexture == null) {
-      _cacheTexture = new RenderTexture(width, height, true, Color.Transparent);
+      _cacheTexture = new RenderTexture(width, height, true, Color.Transparent, pixelRatio);
     } else {
       _cacheTexture.resize(width, height);
     }

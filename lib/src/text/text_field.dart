@@ -495,16 +495,12 @@ class TextField extends InteractiveObject {
       _refreshPending &= 255 - 2;
     }
 
-    // TODO: WEBGL - pixel ratio
-    // var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
-    // var width = max(1, (_width * pixelRatio).ceil());
-    // var height =  max(1, (_height * pixelRatio).ceil());
-
+    var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
     var width = max(1, _width).ceil();
     var height =  max(1, _height).ceil();
 
     if (_renderTexture == null) {
-      _renderTexture = new RenderTexture(width, height, true, Color.Transparent);
+      _renderTexture = new RenderTexture(width, height, true, Color.Transparent, pixelRatio);
     } else {
       _renderTexture.resize(width, height);
     }

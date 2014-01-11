@@ -7,7 +7,8 @@ class TextureAtlas {
 
   //-------------------------------------------------------------------------------------------------
 
-  static Future<TextureAtlas> load(String url, String textureAtlasFormat) {
+  static Future<TextureAtlas> load(String url, String textureAtlasFormat, [
+      BitmapDataLoadOptions bitmapDataLoadOptions]) {
 
     Completer<TextureAtlas> completer = new Completer<TextureAtlas>();
     TextureAtlas textureAtlas = new TextureAtlas();
@@ -43,7 +44,15 @@ class TextureAtlas {
             }
           }
 
-          RenderTexture.load(imageUrl).then((RenderTexture renderTexture) {
+          if (bitmapDataLoadOptions == null) {
+            bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
+          }
+
+          var autoHiDpi = bitmapDataLoadOptions.autoHiDpi;
+          var webpAvailable = bitmapDataLoadOptions.webp;
+          var loader = RenderTexture.load(imageUrl, autoHiDpi, webpAvailable);
+
+          loader.then((RenderTexture renderTexture) {
             textureAtlas._renderTexture = renderTexture;
             completer.complete(textureAtlas);
           }).catchError((error) {

@@ -158,11 +158,11 @@ Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rect
 
 //------------------------------------------------------------------------------------------------------
 
-Future<ImageElement> _loadImageElement(String url) {
+Future<ImageElement> _loadImageElement(String url, bool webpAvailable) {
 
   Completer<ImageElement> completer = new Completer<ImageElement>();
 
-  ImageElement imageElement = new ImageElement(src: url);
+  ImageElement imageElement = new ImageElement();
   StreamSubscription onLoadSubscription;
   StreamSubscription onErrorSubscription;
 
@@ -176,6 +176,14 @@ Future<ImageElement> _loadImageElement(String url) {
     onLoadSubscription.cancel();
     onErrorSubscription.cancel();
     completer.completeError(new StateError("Failed to load image."));
+  });
+
+  _isWebpSupported.then((bool webpSupported) {
+    var regex = new RegExp(r"(png|jpg|jpeg)$", caseSensitive:false);
+    var match = regex.firstMatch(url);
+    imageElement.src = (webpAvailable && webpSupported && match != null)
+        ? url.substring(0, match.start) + "webp"
+        : url;
   });
 
   return completer.future;

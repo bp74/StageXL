@@ -4,6 +4,7 @@ class RenderTexture {
 
   int _width = 0;
   int _height = 0;
+  num _pixelRatio = 1.0;
   bool _transparent = true;
 
   CanvasElement _canvas;
@@ -14,12 +15,13 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderTexture(int width, int height, bool transparent, int fillColor) {
+  RenderTexture(int width, int height, bool transparent, int fillColor, num pixelRatio) {
 
     if (width == 0 && height == 0) throw new ArgumentError();
 
     _width = _ensureInt(width);
     _height = _ensureInt(height);
+    _pixelRatio = _ensureNum(pixelRatio);
     _transparent = _ensureBool(transparent);
 
     _canvas = new CanvasElement(width: _width, height: _height);
@@ -33,10 +35,11 @@ class RenderTexture {
     }
   }
 
-  RenderTexture.fromImage(ImageElement imageElement) {
+  RenderTexture.fromImage(ImageElement imageElement, num pixelRatio) {
 
     _width = _ensureInt(imageElement.width);
     _height = _ensureInt(imageElement.height);
+    _pixelRatio = _ensureNum(pixelRatio);
     _transparent = true;
 
     _canvas = new CanvasElement(width: _width, height: _height);
@@ -48,11 +51,12 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  static Future<RenderTexture> load(String url) {
+  static Future<RenderTexture> load(String url, bool autoHiDpi, bool webpAvailable) {
 
-    return _loadImageElement(url).then((imageElement) {
-        return new RenderTexture.fromImage(imageElement);
-    });
+    var hiDpi = Stage.autoHiDpi && autoHiDpi && url.contains("@1x.");
+    var loader = _loadImageElement(hiDpi ? url.replaceAll("@1x.", "@2x.") : url, webpAvailable);
+
+    return loader.then((image) => new RenderTexture.fromImage(image, hiDpi ? 2.0 : 1.0));
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -63,6 +67,7 @@ class RenderTexture {
 
   int get width => _width;
   int get height => _height;
+  num get pixelRatio => _pixelRatio;
 
   //-----------------------------------------------------------------------------------------------
 
