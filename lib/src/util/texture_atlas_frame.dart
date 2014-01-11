@@ -2,15 +2,15 @@ part of stagexl;
 
 class TextureAtlasFrame {
 
-  final TextureAtlas _textureAtlas;  
+  final TextureAtlas _textureAtlas;
   final String _name;
   final bool _rotated;
-  
+
   final int _originalWidth;
   final int _originalHeight;
   final int _offsetX;
   final int _offsetY;
-  
+
   final int _frameX;
   final int _frameY;
   final int _frameWidth;
@@ -27,14 +27,14 @@ class TextureAtlasFrame {
     _frameX = _ensureInt(frame["frame"]["x"]),
     _frameY = _ensureInt(frame["frame"]["y"]),
     _frameWidth = _ensureInt(frame["frame"]["w"]),
-    _frameHeight = _ensureInt(frame["frame"]["h"]);     
+    _frameHeight = _ensureInt(frame["frame"]["h"]);
 
   //-------------------------------------------------------------------------------------------------
 
   TextureAtlas get textureAtlas => _textureAtlas;
   String get name => _name;
   bool get rotated => _rotated;
-  
+
   int get frameX => _frameX;
   int get frameY => _frameY;
   int get frameWidth => _frameWidth;
@@ -44,4 +44,17 @@ class TextureAtlasFrame {
   int get offsetY => _offsetY;
   int get originalWidth => _originalWidth;
   int get originalHeight => _originalHeight;
+
+  //-------------------------------------------------------------------------------------------------
+
+  BitmapData getBitmapData() {
+    int x1 = _rotated ? _frameX + _frameHeight : _frameX;
+    int y1 = _rotated ? _frameY : _frameY;
+    int x3 = _rotated ? _frameX : _frameX + _frameWidth;
+    int y3 = _rotated ? _frameY + _frameWidth : _frameY + _frameHeight;
+    var renderTexture = _textureAtlas.renderTexture;
+    var quad = new RenderTextureQuad(renderTexture, x1, y1, x3, y3, _offsetX, _offsetY);
+    return new BitmapData.fromRenderTextureQuad(quad, _originalWidth, _originalHeight);
+  }
+
 }

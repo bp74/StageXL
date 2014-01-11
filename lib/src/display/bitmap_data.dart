@@ -37,9 +37,11 @@ class BitmapData implements BitmapDrawable {
     _renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
   }
 
-  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad) {
-    _width = renderTextureQuad.width + renderTextureQuad.offsetX;
-    _height = renderTextureQuad.height + renderTextureQuad.offsetY;
+  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad, [int width, int height]) {
+    if (width == null) width = renderTextureQuad.width + renderTextureQuad.offsetX;
+    if (height == null) height = renderTextureQuad.height + renderTextureQuad.offsetY;
+    _width = _ensureInt(width);
+    _height = _ensureInt(height);
     _renderTexture = renderTextureQuad.renderTexture;
     _renderTextureQuad = renderTextureQuad;
   }
