@@ -96,7 +96,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   Stage(String name, CanvasElement canvas, {
-      int sourceWidth, int sourceHeight, bool webGL: false, int frameRate: 30 }) {
+    int width, int height, bool webGL: false, int frameRate: 30 }) {
 
     if (canvas is! CanvasElement) {
       throw new ArgumentError("The canvas argument is not a CanvasElement");
@@ -108,9 +108,9 @@ class Stage extends DisplayObjectContainer {
     if (canvas.tabIndex == -1) canvas.tabIndex = 0;
     if (canvas.style.outline == "") canvas.style.outline = "none";
 
-    _sourceWidth = (sourceWidth != null) ? sourceWidth : canvas.width;
-    _sourceHeight = (sourceHeight != null) ? sourceHeight : canvas.height;
-    _frameRate = (frameRate != null) ? frameRate : 30;
+    _sourceWidth = _ensureInt((width != null) ? width : canvas.width);
+    _sourceHeight = _ensureInt((width != null) ? height : canvas.height);
+    _frameRate = _ensureInt((frameRate != null) ? frameRate : 30);
 
     _renderContext = webGL && gl.RenderingContext.supported
         ? new RenderContextWebGL(canvas)
@@ -555,7 +555,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  List<StreamSubscription<TouchEvent>> _touchEventSubscriptions = [];
+  List<StreamSubscription<html.TouchEvent>> _touchEventSubscriptions = [];
 
   _onMultitouchInputModeChanged(String inputMode) {
 
