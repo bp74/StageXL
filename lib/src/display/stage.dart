@@ -60,27 +60,33 @@ class Stage extends DisplayObjectContainer {
   CanvasElement _canvas;
   RenderContext _renderContext;
 
-  int _sourceWidth, _sourceHeight;
-  int _frameRate;
-  int _canvasWidth, _canvasHeight;
-  Rectangle _contentRectangle;
+  int _sourceWidth = 0;
+  int _sourceHeight = 0;
+  int _frameRate = 30;
+  int _canvasWidth = -1;
+  int _canvasHeight = -1;
+  Rectangle _contentRectangle = new Rectangle.zero();
 
-  Matrix _clientTransformation;
-  Matrix _stageTransformation;
-  RenderLoop _renderLoop;
-  Juggler _juggler;
+  Matrix _clientTransformation = new Matrix.fromIdentity();
+  Matrix _stageTransformation = new Matrix.fromIdentity();
+  RenderLoop _renderLoop = null;
+  Juggler _juggler = new Juggler();
 
-  InteractiveObject _focus;
-  RenderState _renderState;
-  String _stageRenderMode;
-  String _stageScaleMode;
-  String _stageAlign;
+  InteractiveObject _focus = null;
+  RenderState _renderState = null;
+  String _stageRenderMode = StageRenderMode.AUTO;
+  String _stageScaleMode = StageScaleMode.SHOW_ALL;
+  String _stageAlign = StageAlign.NONE;
 
-  String _mouseCursor;
-  Point _mousePosition;
-  InteractiveObject _mouseTarget;
-  List<_MouseButton> _mouseButtons;
-  Map<int, _Touch> _touches;
+  String _mouseCursor = MouseCursor.ARROW;
+  Point _mousePosition = new Point.zero();
+  InteractiveObject _mouseTarget = null;
+
+  Map<int, _Touch> _touches = new Map<int, _Touch>();
+  List<_MouseButton> _mouseButtons = [
+    new _MouseButton(MouseEvent.MOUSE_DOWN, MouseEvent.MOUSE_UP, MouseEvent.CLICK, MouseEvent.DOUBLE_CLICK),
+    new _MouseButton(MouseEvent.MIDDLE_MOUSE_DOWN, MouseEvent.MIDDLE_MOUSE_UP, MouseEvent.MIDDLE_CLICK, MouseEvent.MIDDLE_CLICK),
+    new _MouseButton(MouseEvent.RIGHT_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_UP, MouseEvent.RIGHT_CLICK, MouseEvent.RIGHT_CLICK)];
 
   //-------------------------------------------------------------------------------------------------
 
@@ -90,17 +96,21 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   Stage(String name, CanvasElement canvas, {
-    int sourceWidth, int sourceHeight, bool webGL:false, int frameRate:30}) {
+      int sourceWidth, int sourceHeight, bool webGL: false, int frameRate: 30 }) {
 
     if (canvas is! CanvasElement) {
       throw new ArgumentError("The canvas argument is not a CanvasElement");
     }
 
+    _name = name;
+    _canvas = canvas;
+
     if (canvas.tabIndex == -1) canvas.tabIndex = 0;
     if (canvas.style.outline == "") canvas.style.outline = "none";
 
-    _name = name;
-    _canvas = canvas;
+    _sourceWidth = (sourceWidth != null) ? sourceWidth : canvas.width;
+    _sourceHeight = (sourceHeight != null) ? sourceHeight : canvas.height;
+    _frameRate = (frameRate != null) ? frameRate : 30;
 
     _renderContext = webGL && gl.RenderingContext.supported
         ? new RenderContextWebGL(canvas)
@@ -108,60 +118,22 @@ class Stage extends DisplayObjectContainer {
 
     _renderState = new RenderState(_renderContext);
 
-    _sourceWidth = (sourceWidth != null) ? sourceWidth : canvas.width;
-    _sourceHeight = (sourceHeight != null) ? sourceHeight : canvas.height;
-    _frameRate = (frameRate != null) ? frameRate : 30;
-    _canvasWidth = -1;
-    _canvasHeight = -1;
-    _contentRectangle = new Rectangle.zero();
-
-    _clientTransformation = new Matrix.fromIdentity();
-    _stageTransformation = new Matrix.fromIdentity();
     _updateCanvasSize();
 
-    _renderLoop = null;
-    _juggler = new Juggler();
-
-    _stageRenderMode = StageRenderMode.AUTO;
-    _stageScaleMode = StageScaleMode.SHOW_ALL;
-    _stageAlign = StageAlign.NONE;
-
-    //---------------------------
-    // prepare mouse events
-
-    _mouseButtons = [
-      new _MouseButton(MouseEvent.MOUSE_DOWN, MouseEvent.MOUSE_UP, MouseEvent.CLICK, MouseEvent.DOUBLE_CLICK),
-      new _MouseButton(MouseEvent.MIDDLE_MOUSE_DOWN, MouseEvent.MIDDLE_MOUSE_UP, MouseEvent.MIDDLE_CLICK, MouseEvent.MIDDLE_CLICK),
-      new _MouseButton(MouseEvent.RIGHT_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_UP, MouseEvent.RIGHT_CLICK, MouseEvent.RIGHT_CLICK)
-    ];
-
-    _mouseCursor = MouseCursor.ARROW;
-    _mouseTarget = null;
-    _mousePosition = new Point(0, 0);
+    canvas.onKeyDown.listen(_onKeyEvent);
+    canvas.onKeyUp.listen(_onKeyEvent);
+    canvas.onKeyPress.listen(_onKeyEvent);
+    canvas.onMouseDown.listen(_onMouseEvent);
+    canvas.onMouseUp.listen(_onMouseEvent);
+    canvas.onMouseMove.listen(_onMouseEvent);
+    canvas.onMouseOut.listen(_onMouseEvent);
+    canvas.onContextMenu.listen(_onMouseEvent);
+    canvas.onMouseWheel.listen(_onMouseWheelEvent);
 
     Mouse._onMouseCursorChanged.listen(_onMouseCursorChanged);
-
-    _canvas.onMouseDown.listen(_onMouseEvent);
-    _canvas.onMouseUp.listen(_onMouseEvent);
-    _canvas.onMouseMove.listen(_onMouseEvent);
-    _canvas.onMouseOut.listen(_onMouseEvent);
-    _canvas.onContextMenu.listen(_onMouseEvent);
-    _canvas.onMouseWheel.listen(_onMouseWheelEvent);
-
-    //---------------------------
-    // prepare touch events
-
-    _touches = new Map<int, _Touch>();
-
     Multitouch._onInputModeChanged.listen(_onMultitouchInputModeChanged);
+
     _onMultitouchInputModeChanged(null);
-
-    //---------------------------
-    // prepare keyboard events
-
-    _canvas.onKeyDown.listen(_onKeyEvent);
-    _canvas.onKeyUp.listen(_onKeyEvent);
-    _canvas.onKeyPress.listen(_onKeyEvent);
   }
 
   //-------------------------------------------------------------------------------------------------
