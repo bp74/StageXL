@@ -37,11 +37,8 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.disable(gl.STENCIL_TEST);
     _renderingContext.disable(gl.DEPTH_TEST);
     _renderingContext.disable(gl.CULL_FACE);
-
-    _renderingContext.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    _renderingContext.colorMask(true, true, true, true);
-    _renderingContext.clearColor(1.0, 1.0, 1.0, 1.0);
-    _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+    _renderingContext.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+    _renderingContext.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
     _renderTexture = null;
     _renderProgram = null;
@@ -69,6 +66,7 @@ class RenderContextWebGL extends RenderContext {
     var height = _renderingContext.drawingBufferHeight;
 
     _renderingContext.viewport(0, 0, width, height);
+    _renderingContext.colorMask(true, true, true, true);
     _renderingContext.clearColor(1.0, 1.0, 1.0, 1.0);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
   }

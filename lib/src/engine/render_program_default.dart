@@ -24,8 +24,10 @@ class RenderProgramDefault extends RenderProgram {
       varying float vAlpha;
 
       void main() {
-        gl_FragColor = texture2D(uSampler, vTextCoord) * vAlpha;
-        //gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); 
+        vec4 color = texture2D(uSampler, vTextCoord);
+        gl_FragColor = color * vAlpha;
+        // gl_FragColor = vec4(color.rgb, color.a * vAlpha);
+        // gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); 
       }
       """;
 
