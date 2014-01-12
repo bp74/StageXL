@@ -6,19 +6,19 @@ part of stagexl;
 
 class RenderContextWebGL extends RenderContext {
 
-  CanvasElement _canvasElement;
-  gl.RenderingContext _renderingContext;
+  final CanvasElement _canvasElement;
+  final int _backgroundColor;
 
+  gl.RenderingContext _renderingContext;
   RenderTexture _renderTexture;
   RenderProgram _renderProgram;
   RenderProgram _renderProgramDefault;
   RenderProgram _renderProgramPrimitive;
-
   int _maskDepth = 0;
 
-  String get engine => "WebGL";
-
-  RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
+  RenderContextWebGL(CanvasElement canvasElement, int backgroundColor) :
+    _canvasElement = canvasElement,
+    _backgroundColor = _ensureInt(backgroundColor) {
 
     _canvasElement.onWebGlContextLost.listen((e) => "ToDo: Handle WebGL context lost.");
     _canvasElement.onWebGlContextRestored.listen((e) => "ToDo: Handle WebGL context restored.");
@@ -50,24 +50,28 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
+  String get renderEngine => RenderEngine.Canvas2D;
+
   gl.RenderingContext get rawContext => _renderingContext;
 
   Matrix get viewPortMatrix {
-    var width = _renderingContext.drawingBufferWidth;
-    var height = _renderingContext.drawingBufferHeight;
+    int width = _renderingContext.drawingBufferWidth;
+    int height = _renderingContext.drawingBufferHeight;
     return new Matrix(2.0 / width, 0.0, 0.0, - 2.0 / height, -1.0, 1.0);
   }
 
   //-----------------------------------------------------------------------------------------------
 
   void clear() {
-
-    var width = _renderingContext.drawingBufferWidth;
-    var height = _renderingContext.drawingBufferHeight;
+    int width = _renderingContext.drawingBufferWidth;
+    int height = _renderingContext.drawingBufferHeight;
+    num r = _colorGetR(_backgroundColor) / 255.0;
+    num g = _colorGetG(_backgroundColor) / 255.0;
+    num b = _colorGetB(_backgroundColor) / 255.0;
 
     _renderingContext.viewport(0, 0, width, height);
     _renderingContext.colorMask(true, true, true, true);
-    _renderingContext.clearColor(1.0, 1.0, 1.0, 1.0);
+    _renderingContext.clearColor(r, g, b, 1.0);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
   }
 

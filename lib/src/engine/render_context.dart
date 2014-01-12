@@ -1,8 +1,13 @@
 part of stagexl;
 
+class RenderEngine {
+  static const String WebGL = "WebGL";
+  static const String Canvas2D = "Canvas2D";
+}
+
 abstract class RenderContext {
 
-  String get engine;
+  String get renderEngine;
 
   void clear();
   void flush();

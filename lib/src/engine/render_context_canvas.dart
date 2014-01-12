@@ -2,12 +2,14 @@ part of stagexl;
 
 class RenderContextCanvas extends RenderContext {
 
-  CanvasElement _canvasElement;
+  final CanvasElement _canvasElement;
+  final int _backgroundColor;
+
   CanvasRenderingContext2D _renderingContext;
 
-  String get engine => "Canvas2D";
-
-  RenderContextCanvas(CanvasElement canvasElement) : _canvasElement = canvasElement {
+  RenderContextCanvas(CanvasElement canvasElement, int backgroundColor) :
+    _canvasElement = canvasElement,
+    _backgroundColor = _ensureInt(backgroundColor) {
 
     var renderingContext = _canvasElement.context2D;
 
@@ -20,6 +22,8 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
+  String get renderEngine => RenderEngine.WebGL;
+
   CanvasRenderingContext2D get rawContext => _renderingContext;
 
   Matrix get viewPortMatrix => new Matrix.fromIdentity();
@@ -28,16 +32,22 @@ class RenderContextCanvas extends RenderContext {
 
   void clear() {
     _renderingContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    _renderingContext.clearRect(0, 0, _canvasElement.width, _canvasElement.height);
+    if (_backgroundColor & 0xFF000000 == 0) {
+      _renderingContext.clearRect(0, 0, _canvasElement.width, _canvasElement.height);
+    } else {
+      _renderingContext.fillStyle = _color2rgb(_backgroundColor);
+      _renderingContext.fillRect(0, 0, _canvasElement.width, _canvasElement.height);
+    }
   }
 
   void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
 
+    var context = _renderingContext;
     var source = renderTextureQuad.renderTexture.canvas;
     var rotation = renderTextureQuad.rotation;
     var xyList = renderTextureQuad.xyList;
 
-    _renderingContext.globalAlpha = alpha;
+    context.globalAlpha = alpha;
 
     if (rotation == 0) {
 
@@ -50,8 +60,8 @@ class RenderContextCanvas extends RenderContext {
       var destinationWidth= renderTextureQuad.width;
       var destinationHeight = renderTextureQuad.height;
 
-      _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-      _renderingContext.drawImageScaledFromSource(source,
+      context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+      context.drawImageScaledFromSource(source,
           sourceX, sourceY, sourceWidth, sourceHeight,
           destinationX, destinationY, destinationWidth, destinationHeight);
 
@@ -66,8 +76,8 @@ class RenderContextCanvas extends RenderContext {
       var destinationWidth = renderTextureQuad.height;
       var destinationHeight = renderTextureQuad.width;
 
-      _renderingContext.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
-      _renderingContext.drawImageScaledFromSource(source,
+      context.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
+      context.drawImageScaledFromSource(source,
           sourceX, sourceY, sourceWidth, sourceHeight,
           destinationX, destinationY, destinationWidth, destinationHeight);
     }

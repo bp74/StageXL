@@ -1,5 +1,8 @@
 part of stagexl;
 
+/**
+ * The StageScaleMode defines how the Stage is scaled inside of the Canvas.
+ */
 class StageScaleMode {
   static const String EXACT_FIT = "exactFit";
   static const String NO_BORDER = "noBorder";
@@ -7,6 +10,11 @@ class StageScaleMode {
   static const String SHOW_ALL = "showAll";
 }
 
+/**
+ * The StageAlign defines how the content of the Stage is aligned inside
+ * of the Canvas. The setting controls where the origin (point 0,0) of the
+ * Stage will be placed on the Canvas.
+ */
 class StageAlign {
   static const String BOTTOM = "B";
   static const String BOTTOM_LEFT = "BL";
@@ -19,6 +27,10 @@ class StageAlign {
   static const String NONE = "";
 }
 
+/**
+ * The StageRenderMode defines how often the Stage is renderes by
+ * the [RenderLoop] where the Stage is attached to.
+ */
 class StageRenderMode {
   static const String AUTO = "auto";
   static const String STOP = "stop";
@@ -51,6 +63,16 @@ class _Touch {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
+/**
+ * The Stage is the drawing area wher all display objects are rendered to.
+ * Place a Canvas element to your HTML and use the Stage to wrap all the
+ * rendering functions to this Canvas element.
+ *
+ * Example:
+ *
+ * HTML: <canvas id="stage" width="800" height="600"></canvas>
+ * Dart: var stage = new Stage(querySelector("#stage"));
+ */
 class Stage extends DisplayObjectContainer {
 
   static bool autoHiDpi = _autoHiDpi;
@@ -95,14 +117,13 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
 
-  Stage(String name, CanvasElement canvas, {
-    int width, int height, bool webGL: false, int frameRate: 30 }) {
+  Stage(CanvasElement canvas, {int width, int height,
+    bool webGL: false, int frameRate: 30, int color: Color.White}) {
 
     if (canvas is! CanvasElement) {
       throw new ArgumentError("The canvas argument is not a CanvasElement");
     }
 
-    _name = name;
     _canvas = canvas;
 
     if (canvas.tabIndex == -1) canvas.tabIndex = 0;
@@ -113,13 +134,13 @@ class Stage extends DisplayObjectContainer {
     _frameRate = _ensureInt((frameRate != null) ? frameRate : 30);
 
     _renderContext = webGL && gl.RenderingContext.supported
-        ? new RenderContextWebGL(canvas)
-        : new RenderContextCanvas(canvas);
+        ? new RenderContextWebGL(canvas, color)
+        : new RenderContextCanvas(canvas, color);
 
     _renderState = new RenderState(_renderContext);
     _updateCanvasSize();
 
-    print("StageXL render engine : ${_renderContext.engine}");
+    print("StageXL render engine : ${_renderContext.renderEngine}");
 
     canvas.onKeyDown.listen(_onKeyEvent);
     canvas.onKeyUp.listen(_onKeyEvent);
@@ -168,41 +189,86 @@ class Stage extends DisplayObjectContainer {
   Rectangle get contentRectangle => _contentRectangle.clone();
 
   /**
+   * Gets the underlying render engine used to draw the pixels to the screen.
+   * The returned string is defined in [RenderEngine] and is either "WebGL"
+   * or "Canvas2D".
+   */
+  String get renderEngine => _renderContext.renderEngine;
+
+  /**
+   * Gets the [RenderLoop] where this Stage was added to, or
+   * NULL in case this Stage is not added to a [RenderLoop].
+   */
+  RenderLoop get renderLoop => _renderLoop;
+
+  /**
+   * Gets the [Juggler] of this Stage. The Juggler is driven by the
+   * [RenderLoop] where this Stage is added to. If this Stage is not
+   * added to a RenderLoop, the [Juggler] will not advance in time.
+   */
+  Juggler get juggler => _juggler;
+
+  /**
+   * Gets the last known mouse position in Stage coordinates.
+   */
+  Point get mousePosition => _mousePosition;
+
+  /**
    * Gets and sets the default frame rate for MovieClips. This value has no
    * impact on the frame rate of the Stage itself.
    */
   int get frameRate => _frameRate;
+
   set frameRate(int value) {
     _frameRate = value;
   }
 
-  RenderLoop get renderLoop => _renderLoop;
-  Juggler get juggler => _juggler;
-
-  Point get mousePosition => _mousePosition;
-
+  /**
+   * Gets and sets the [InteractiveObject] (a DisplayObject which can
+   * receive user input like mouse, touch or keyboard).
+   */
   InteractiveObject get focus => _focus;
+
   set focus(InteractiveObject value) {
     _focus = value;
   }
 
+  /**
+   * Gets and sets the render mode of this Stage. You can choose between
+   * three different modes defined in [StageRenderMode].
+   */
   String get renderMode => _stageRenderMode;
+
   set renderMode(String value) {
     _stageRenderMode = value;
   }
 
+  /**
+   * Gets and sets the scale mode of this Stage. You can choose between
+   * four dfferent modes defined in [StageScaleMode].
+   */
   String get scaleMode => _stageScaleMode;
+
   set scaleMode(String value) {
     _stageScaleMode = value;
     _updateCanvasSize();
   }
 
+  /**
+   * Gets and sets the alignment of this Stage inside of the Canvas element.
+   * You can choose between nine different align modes defined in [StageAlign].
+   */
   String get align => _stageAlign;
   set align(String value) {
     _stageAlign = value;
     _updateCanvasSize();
   }
 
+  /**
+   * Calling this method will cause an [RenderEvent] to be fired right before
+   * the next frame will be rendered by the render loop. To receive the render
+   * event attach a listener to [DisplayObject.onRender].
+   */
   invalidate() {
     if (_renderLoop != null) {
       _renderLoop.invalidate();
@@ -231,6 +297,11 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  /**
+   * This method is called by the [RenderLoop] where this Stage is added to.
+   * If this Stage is not added to a [RenderLoop] you could call this method
+   * on your own and therefore get full control of the rendering of this Stage.
+   */
   materialize(num currentTime, num deltaTime) {
 
     if (_stageRenderMode == StageRenderMode.AUTO || _stageRenderMode == StageRenderMode.ONCE) {
