@@ -36,6 +36,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.enable(gl.BLEND);
     _renderingContext.disable(gl.STENCIL_TEST);
     _renderingContext.disable(gl.DEPTH_TEST);
+    _renderingContext.disable(gl.CULL_FACE);
 
     _renderingContext.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     _renderingContext.colorMask(true, true, true, true);

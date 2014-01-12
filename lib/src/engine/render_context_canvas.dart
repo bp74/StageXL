@@ -111,9 +111,15 @@ class RenderContextCanvas extends RenderContext {
 
   void beginRenderShadow(RenderState renderState, Shadow shadow, Matrix matrix) {
 
+    _renderingContext.save();
+    _renderingContext.shadowColor = _color2rgba(shadow.color);
+    _renderingContext.shadowBlur = sqrt(matrix.det) * shadow.blur;
+    _renderingContext.shadowOffsetX = shadow.offsetX * matrix.a + shadow.offsetY * matrix.c;
+    _renderingContext.shadowOffsetY = shadow.offsetX * matrix.b + shadow.offsetY * matrix.d;
   }
 
   void endRenderShadow(Shadow shadow) {
 
+    _renderingContext.restore();
   }
 }
