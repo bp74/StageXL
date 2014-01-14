@@ -22,7 +22,7 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  String get renderEngine => RenderEngine.WebGL;
+  String get renderEngine => RenderEngine.Canvas2D;
 
   CanvasRenderingContext2D get rawContext => _renderingContext;
 

@@ -50,7 +50,7 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  String get renderEngine => RenderEngine.Canvas2D;
+  String get renderEngine => RenderEngine.WebGL;
 
   gl.RenderingContext get rawContext => _renderingContext;
 
