@@ -45,7 +45,6 @@ part 'src/display/interactive_object.dart';
 part 'src/display/joint_style.dart';
 part 'src/display/mask.dart';
 part 'src/display/movie_clip.dart';
-part 'src/display/pixel_snapping.dart';
 part 'src/display/shadow.dart';
 part 'src/display/shape.dart';
 part 'src/display/simple_button.dart';
