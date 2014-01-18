@@ -107,8 +107,6 @@ class RenderTextureQuad {
 
   RenderTextureQuad clip(Rectangle rectangle) {
 
-    int x1 = 0, y1 = 0, x3 = 0, y3 = 0;
-
     int left = _minInt(_offsetX + _textureWidth, _maxInt(_offsetX, rectangle.left));
     int top = _minInt(_offsetY + _textureHeight, _maxInt(_offsetY, rectangle.top));
     int right = _maxInt(_offsetX, _minInt(_offsetX + _textureWidth, rectangle.right));
