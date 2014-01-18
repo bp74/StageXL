@@ -57,8 +57,8 @@ class RenderContextCanvas extends RenderContext {
       var sourceHeight = xyList[5] - sourceY;
       var destinationX = renderTextureQuad.offsetX;
       var destinationY = renderTextureQuad.offsetY;
-      var destinationWidth= renderTextureQuad.width;
-      var destinationHeight = renderTextureQuad.height;
+      var destinationWidth= renderTextureQuad.textureWidth;
+      var destinationHeight = renderTextureQuad.textureHeight;
 
       context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
@@ -71,10 +71,10 @@ class RenderContextCanvas extends RenderContext {
       var sourceY = xyList[7];
       var sourceWidth = xyList[2] - sourceX;
       var sourceHeight = xyList[3] - sourceY;
-      var destinationX = 0.0 - renderTextureQuad.offsetY - renderTextureQuad.height;
+      var destinationX = 0.0 - renderTextureQuad.offsetY - renderTextureQuad.textureHeight;
       var destinationY = renderTextureQuad.offsetX;
-      var destinationWidth = renderTextureQuad.height;
-      var destinationHeight = renderTextureQuad.width;
+      var destinationWidth = renderTextureQuad.textureHeight;
+      var destinationHeight = renderTextureQuad.textureWidth;
 
       context.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,

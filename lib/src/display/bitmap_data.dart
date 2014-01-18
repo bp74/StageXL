@@ -20,7 +20,7 @@ class BitmapData implements BitmapDrawable {
     _width = _ensureInt(width);
     _height = _ensureInt(height);
     _renderTexture = new RenderTexture(_width, _height, transparent, fillColor, pixelRatio);
-    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, _width, _height, 0, 0);
+    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, 0, 0, 0, _width, _height);
   }
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
@@ -38,8 +38,8 @@ class BitmapData implements BitmapDrawable {
   }
 
   BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad, [int width, int height]) {
-    if (width == null) width = renderTextureQuad.width + renderTextureQuad.offsetX;
-    if (height == null) height = renderTextureQuad.height + renderTextureQuad.offsetY;
+    if (width == null) width = renderTextureQuad.textureWidth + renderTextureQuad.offsetX;
+    if (height == null) height = renderTextureQuad.textureHeight + renderTextureQuad.offsetY;
     _width = _ensureInt(width);
     _height = _ensureInt(height);
     _renderTexture = renderTextureQuad.renderTexture;
@@ -126,50 +126,6 @@ class BitmapData implements BitmapDrawable {
   RenderTextureQuad get renderTextureQuad => _renderTextureQuad;
 
   //-------------------------------------------------------------------------------------------------
-/*
-  ImageData getImageData(int x, int y, int width, int height, [num pixelRatio]) {
-
-    if (pixelRatio != null && pixelRatio != _pixelRatio) {
-      var tempBitmapData = new BitmapData(width, height, true, 0, pixelRatio);
-      tempBitmapData.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, -x, -y));
-      return tempBitmapData.getImageData(x, y, width, height);
-    }
-
-    var pr = _pixelRatio;
-    var prs = _pixelRatioSource;
-
-    if (_backingStorePixelRatio > 1.0) {
-      return _context.getImageDataHD(x * pr, y * pr, width * pr, height * pr);
-    } else {
-      return _context.getImageData(x * prs, y * prs, width * prs, height * prs);
-    }
-  }
-*/
-/*
-  void putImageData(ImageData imageData, int x, int y) {
-
-    var pr = _pixelRatio;
-    var prs = _pixelRatioSource;
-
-    if (_backingStorePixelRatio > 1.0) {
-      _context.putImageDataHD(imageData, x * pr, y * pr);
-    } else {
-      _context.putImageData(imageData, x * prs, y * prs);
-    }
-  }
-*/
-/*
-  ImageData createImageData(int width, int height) {
-
-    var pr = _pixelRatio;
-    var prs = _pixelRatioSource;
-
-    return _context.createImageData(width * pr, height * pr);
-  }
-*/
-
-
-  //-------------------------------------------------------------------------------------------------
 
 /*
   void applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, BitmapFilter filter) {
@@ -180,8 +136,9 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  /*
   void colorTransform(Rectangle rect, ColorTransform transform) {
+
+    bool isLittleEndianSystem = _isLittleEndianSystem;
 
     int redMultiplier = (1024 * transform.redMultiplier).toInt();
     int greenMultiplier = (1024 * transform.greenMultiplier).toInt();
@@ -193,8 +150,6 @@ class BitmapData implements BitmapDrawable {
     int blueOffset = transform.blueOffset;
     int alphaOffset = transform.alphaOffset;
 
-    var isLittleEndianSystem = _isLittleEndianSystem;
-
     int mulitplier0 = isLittleEndianSystem ? redMultiplier : alphaMultiplier;
     int mulitplier1 = isLittleEndianSystem ? greenMultiplier : blueMultiplier;
     int mulitplier2 = isLittleEndianSystem ? blueMultiplier : greenMultiplier;
@@ -205,10 +160,12 @@ class BitmapData implements BitmapDrawable {
     int offset2 = isLittleEndianSystem ? blueOffset : greenOffset;
     int offset3 = isLittleEndianSystem ? alphaOffset : redOffset;
 
-    var imageData = getImageData(rect.x, rect.y, rect.width, rect.height);
+    var renderTextureQuad = _renderTextureQuad.cut(rect);
+    var imageData = renderTextureQuad.getImageData();
     var data = imageData.data;
 
-    for (int i = 0; i <= data.length - 4; i += 4) {
+    for(int i = 0; i <= data.length - 4; i += 4) {
+
       int c0 = data[i + 0];
       int c1 = data[i + 1];
       int c2 = data[i + 2];
@@ -225,9 +182,9 @@ class BitmapData implements BitmapDrawable {
       data[i + 3] = offset3 + (((c3 * mulitplier3) | 0) >> 10);
     }
 
-    putImageData(imageData, rect.x, rect.y);
+    renderTextureQuad.putImageData(imageData);
+    renderTextureQuad.renderTexture.update();
   }
-  */
 
   //-------------------------------------------------------------------------------------------------
 
@@ -280,35 +237,42 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  /*
-  int getPixel(int x, int y) {
-    return getPixel32(x, y) & 0x00FFFFFF;
+  int getPixel(int x, int y) => getPixel32(x, y) & 0x00FFFFFF;
+
+  int getPixel32(int x, int y) {
+
+    int r = 0, g = 0, b = 0, a = 0;
+
+    var rectangle = new Rectangle(x, y, 1, 1);
+    var renderTextureQuad = _renderTextureQuad.clip(rectangle);
+    if (renderTextureQuad.textureWidth == 0) return 0;
+    if (renderTextureQuad.textureHeight == 0) return 0;
+
+    var isLittleEndianSystem = _isLittleEndianSystem;
+    var imageData = renderTextureQuad.getImageData();
+    var pixels = imageData.width * imageData.height;
+    var data = imageData.data;
+
+    for(int i = 0; i <= data.length - 4; i += 4) {
+      r += isLittleEndianSystem ? data[i + 0] : data[i + 3];
+      g += isLittleEndianSystem ? data[i + 1] : data[i + 2];
+      b += isLittleEndianSystem ? data[i + 2] : data[i + 1];
+      a += isLittleEndianSystem ? data[i + 3] : data[i + 0];
+    }
+
+    r = r ~/ pixels;
+    g = g ~/ pixels;
+    b = b ~/ pixels;
+    a = a ~/ pixels;
+
+    return (a << 24) + (r  << 16) + (g << 8) + b;
   }
 
-  void setPixel(int x, int y, int color) {
-    setPixel32(x, y, color | 0xFF000000);
-  }
-  */
 
   //-------------------------------------------------------------------------------------------------
 
   /*
-  int getPixel32(int x, int y) {
 
-    var imageData = getImageData(x, y, 1, 1);
-    var pixels = imageData.width * imageData.height;
-    var data = imageData.data;
-    var r = 0, g = 0, b = 0, a = 0;
-
-    for(int p = 0; p < pixels; p++) {
-      r += _isLittleEndianSystem ? data[p * 4 + 0] : data[p * 4 + 3];
-      g += _isLittleEndianSystem ? data[p * 4 + 1] : data[p * 4 + 2];
-      b += _isLittleEndianSystem ? data[p * 4 + 2] : data[p * 4 + 1];
-      a += _isLittleEndianSystem ? data[p * 4 + 3] : data[p * 4 + 0];
-    }
-
-    return ((a ~/ pixels) << 24) + ((r ~/ pixels) << 16) + ((g ~/ pixels) << 8) + ((b ~/ pixels) << 0);
-  }
   */
 
   /*
@@ -332,6 +296,11 @@ class BitmapData implements BitmapDrawable {
 
     putImageData(imageData, x, y);
   }
+
+  void setPixel(int x, int y, int color) {
+    setPixel32(x, y, color | 0xFF000000);
+  }
+
   */
 
   //-------------------------------------------------------------------------------------------------

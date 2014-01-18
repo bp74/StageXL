@@ -48,13 +48,13 @@ class TextureAtlasFrame {
   //-------------------------------------------------------------------------------------------------
 
   BitmapData getBitmapData() {
-    int x1 = _rotated ? _frameX + _frameHeight : _frameX;
-    int y1 = _rotated ? _frameY : _frameY;
-    int x3 = _rotated ? _frameX : _frameX + _frameWidth;
-    int y3 = _rotated ? _frameY + _frameWidth : _frameY + _frameHeight;
+
     var renderTexture = _textureAtlas.renderTexture;
-    var quad = new RenderTextureQuad(renderTexture, x1, y1, x3, y3, _offsetX, _offsetY);
-    return new BitmapData.fromRenderTextureQuad(quad, _originalWidth, _originalHeight);
+    var renderTextureQuad = new RenderTextureQuad(renderTexture,
+        _rotated ? 1 : 0, _offsetX, _offsetY,
+        _rotated ? _frameX + _frameHeight : _frameX, _frameY, _frameWidth, _frameHeight);
+
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad, _originalWidth, _originalHeight);
   }
 
 }

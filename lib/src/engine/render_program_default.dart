@@ -111,8 +111,8 @@ class RenderProgramDefault extends RenderProgram {
 
   void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
 
-    int width = renderTextureQuad.width;
-    int height = renderTextureQuad.height;
+    int width = renderTextureQuad.textureWidth;
+    int height = renderTextureQuad.textureHeight;
     int offsetX = renderTextureQuad.offsetX;
     int offsetY = renderTextureQuad.offsetY;
     Float32List uvList = renderTextureQuad.uvList;

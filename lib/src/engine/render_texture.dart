@@ -33,7 +33,7 @@ class RenderTexture {
     var canvasWidth = (_storeWidth / _backingStorePixelRatio).round();
     var canvasHeight = (_storeHeight / _backingStorePixelRatio).round();
     _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
-    _quad = new RenderTextureQuad(this, 0, 0, _width, _height, 0, 0);
+    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
     _texture = null;
 
     if (fillColor != 0) {
@@ -56,7 +56,7 @@ class RenderTexture {
     var canvasWidth = (_storeWidth / _backingStorePixelRatio).round();
     var canvasHeight = (_storeHeight / _backingStorePixelRatio).round();
     _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
-    _quad = new RenderTextureQuad(this, 0, 0, _width, _height, 0, 0);
+    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
     _texture = null;
 
     _canvas.context2D.drawImageScaledFromSource(imageElement,
@@ -109,7 +109,7 @@ class RenderTexture {
       _storeHeight = (_height * _storePixelRatio).round();
       _canvas.width = (_storeWidth / _backingStorePixelRatio).round();
       _canvas.height = (_storeHeight / _backingStorePixelRatio).round();
-      _quad = new RenderTextureQuad(this, 0, 0, _width, _height, 0, 0);
+      _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
     }
   }
 

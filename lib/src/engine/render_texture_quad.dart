@@ -6,41 +6,44 @@ class RenderTextureQuad {
   Float32List _uvList = new Float32List(8);   // WebGL coordinates
   Int32List _xyList = new Int32List(8);       // Canvas coordinates
 
-  int _x1 = 0;
-  int _y1 = 0;
-  int _x3 = 0;
-  int _y3 = 0;
+  int _rotation = 0;
   int _offsetX = 0;
   int _offsetY = 0;
-  int _width = 0;
-  int _height = 0;
-  int _rotation = 0;
+  int _textureX = 0;
+  int _textureY = 0;
+  int _textureWidth = 0;
+  int _textureHeight = 0;
 
   RenderTextureQuad(RenderTexture renderTexture,
-      int x1, int y1, int x3, int y3, int offsetX, int offsetY) {
-
-    if (renderTexture is! RenderTexture) throw new ArgumentError();
+      int rotation, int offsetX, int offsetY,
+      int textureX, int textureY, int textureWidth, int textureHeight) {
 
     _renderTexture = renderTexture;
-    _x1 = _ensureInt(x1);
-    _y1 = _ensureInt(y1);
-    _x3 = _ensureInt(x3);
-    _y3 = _ensureInt(y3);
+    _rotation = _ensureInt(rotation);
     _offsetX = _ensureInt(offsetX);
     _offsetY = _ensureInt(offsetY);
+    _textureX = _ensureInt(textureX);
+    _textureY = _ensureInt(textureY);
+    _textureWidth = _ensureInt(textureWidth);
+    _textureHeight = _ensureInt(textureHeight);
 
-    int dx = x3 - x1;
-    int dy = y3 - y1;
-    bool horizontal = (dx.sign == dy.sign);
+    int x1 = 0, y1 = 0;
+    int x2 = 0, y2 = 0;
+    int x3 = 0, y3 = 0;
+    int x4 = 0, y4 = 0;
 
-    _rotation = horizontal ? ((dx > 0) ? 0 : 2) : ((dx < 0) ? 1 : 3);
-    _width = horizontal ? dx.abs() : dy.abs();
-    _height = horizontal ? dy.abs() : dx.abs();
+    if (_rotation == 0) {
+      x1 = x4 = _textureX;
+      y1 = y2 = _textureY;
+      x2 = x3 = _textureX + _textureWidth;
+      y3 = y4 = _textureY + _textureHeight;
+    } else if (_rotation == 1) {
+      x1 = x2 = _textureX;
+      y1 = y4 = _textureY;
+      x3 = x4 = _textureX - _textureHeight;
+      y2 = y3 = _textureY + _textureWidth;
+    }
 
-    int x2 = horizontal ? x3 : x1;
-    int y2 = horizontal ? y1 : y3;
-    int x4 = horizontal ? x1 : x3;
-    int y4 = horizontal ? y3 : y1;
     int renderTextureWidth = _renderTexture.width;
     int renderTextureHeight = _renderTexture.height;
     num pixelRatio = _renderTexture.storePixelRatio / _backingStorePixelRatio;
@@ -70,16 +73,13 @@ class RenderTextureQuad {
   Float32List get uvList => _uvList;
   Int32List get xyList => _xyList;
 
-  int get x1 => _x1;
-  int get y1 => _y1;
-  int get x3 => _x3;
-  int get y3 => _y3;
-
+  int get rotation => _rotation;
   int get offsetX => _offsetX;
   int get offsetY => _offsetY;
-  int get width => _width;
-  int get height => _height;
-  int get rotation => _rotation;
+  int get textureX => _textureX;
+  int get textureY => _textureY;
+  int get textureWidth => _textureWidth;
+  int get textureHeight => _textureHeight;
 
   Matrix get drawMatrix {
     /*
@@ -95,34 +95,32 @@ class RenderTextureQuad {
     num angle = _rotation * PI / 2.0;
     num c = scale * cos(angle);
     num s = scale * sin(angle);
-    num tx = scale * x1  - offsetX * c + offsetY * s;
-    num ty = scale * y1  - offsetX * s - offsetY * c;
+    num tx = scale * textureX  - offsetX * c + offsetY * s;
+    num ty = scale * textureY  - offsetX * s - offsetY * c;
     return new Matrix(c, s, -s, c, tx, ty);
   }
 
   //-----------------------------------------------------------------------------------------------
 
+  int _minInt(int a, int b) => a < b ? a : b;
+  int _maxInt(int a, int b) => a > b ? a : b;
+
   RenderTextureQuad clip(Rectangle rectangle) {
 
-    int x1 = 0, y1 = 0, x3 = 0, y3 = 0, offsetX = 0, offsetY = 0;
+    int x1 = 0, y1 = 0, x3 = 0, y3 = 0;
 
-    if (_rotation == 0) {
-      x1 = _x1 - _offsetX + max(_offsetX, rectangle.left);
-      y1 = _y1 - _offsetY + max(_offsetY, rectangle.top);
-      x3 = _x1 - _offsetX + min(_offsetX + _width, rectangle.right);
-      y3 = _y1 - _offsetY + min(_offsetY + _height, rectangle.bottom);
-      offsetX = _offsetX + x1 - _x1;
-      offsetY = _offsetY + y1 - _y1;
-    } else if (_rotation == 1) {
-      x1 = _x1 + _offsetY - max(_offsetY, rectangle.top);
-      y1 = _y1 - _offsetX + max(_offsetX, rectangle.left);
-      x3 = _x1 + _offsetY - min(_offsetY + _height, rectangle.bottom);
-      y3 = _y1 - _offsetX + min(_offsetX + _width, rectangle.right);
-      offsetX = _offsetX + y1 - _y1;
-      offsetY = _offsetY - x1 + _x1;
-    }
+    int left = _minInt(_offsetX + _textureWidth, _maxInt(_offsetX, rectangle.left));
+    int top = _minInt(_offsetY + _textureHeight, _maxInt(_offsetY, rectangle.top));
+    int right = _maxInt(_offsetX, _minInt(_offsetX + _textureWidth, rectangle.right));
+    int bottom = _maxInt(_offsetY, _minInt(_offsetY + _textureHeight, rectangle.bottom));
 
-    return new RenderTextureQuad(_renderTexture, x1, y1, x3, y3, offsetX, offsetY);
+    int textureX = rotation == 0 ? _textureX - _offsetX + left : _textureX + _offsetY - top;
+    int textureY = rotation == 0 ? _textureY - _offsetY + top : _textureY - _offsetX + left;
+    int textureWidth = right - left;
+    int textureHeight = bottom - top;
+
+    return new RenderTextureQuad(
+        renderTexture, rotation, left, top, textureX, textureY, textureWidth, textureHeight);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -133,5 +131,56 @@ class RenderTextureQuad {
     renderTextureQuad._offsetY -= rectangle.y;
     return renderTextureQuad;
   }
+
+  //-----------------------------------------------------------------------------------------------
+
+  ImageData getImageData() {
+
+    num storePixelRatio = _renderTexture.storePixelRatio;
+    num backingStorePixelRatio = _backingStorePixelRatio;
+    num pixelRatio = storePixelRatio / backingStorePixelRatio;
+
+    int left = (rotation == 0) ? textureX : textureX - textureHeight;
+    int top = (rotation == 0) ? textureY : textureY;
+    int right = (rotation == 0) ? textureX + textureWidth : textureX;
+    int bottom = (rotation == 0) ? textureY + textureHeight : textureY + textureWidth;
+
+    left = (left * pixelRatio).round();
+    top = (top * pixelRatio).round();
+    right = (right * pixelRatio).round();
+    bottom = (bottom * pixelRatio).round();
+
+    var context = _renderTexture.canvas.context2D;
+
+    if (backingStorePixelRatio > 1.0) {
+      return context.getImageDataHD(left, top, right - left, bottom - top);
+    } else {
+      return context.getImageData(left, top, right - left, bottom - top);
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void putImageData(ImageData imageData) {
+
+    num storePixelRatio = _renderTexture.storePixelRatio;
+    num backingStorePixelRatio = _backingStorePixelRatio;
+    num pixelRatio = storePixelRatio / backingStorePixelRatio;
+
+    int left = (rotation == 0) ? textureX : textureX - textureHeight;
+    int top = (rotation == 0) ? textureY : textureY;
+
+    left = (left * pixelRatio).round();
+    top = (top * pixelRatio).round();
+
+    var context = _renderTexture.canvas.context2D;
+
+    if (_backingStorePixelRatio > 1.0) {
+      context.putImageDataHD(imageData, left, top);
+    } else {
+      context.putImageData(imageData, left, top);
+    }
+  }
+
 
 }
