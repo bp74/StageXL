@@ -271,37 +271,19 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  /*
-
-  */
-
-  /*
-  void setPixel32(int x, int y, int color) {
-
-    var imageData = createImageData(1, 1);
-    var pixels = imageData.width * imageData.height;
-    var data = imageData.data;
-
-    var c0 = ((color | 0) >> 24) & 0xFF;
-    var c1 = ((color | 0) >> 16) & 0xFF;
-    var c2 = ((color | 0) >>  8) & 0xFF;
-    var c3 = ((color | 0)      ) & 0xFF;
-
-    for(int p = 0; p < pixels; p++) {
-      data[p * 4 + 0] = _isLittleEndianSystem ? c1 : c0;
-      data[p * 4 + 1] = _isLittleEndianSystem ? c2 : c3;
-      data[p * 4 + 2] = _isLittleEndianSystem ? c3 : c2;
-      data[p * 4 + 3] = _isLittleEndianSystem ? c0 : c1;
-    }
-
-    putImageData(imageData, x, y);
-  }
-
   void setPixel(int x, int y, int color) {
     setPixel32(x, y, color | 0xFF000000);
   }
 
-  */
+  void setPixel32(int x, int y, int color) {
+    var matrix = _renderTextureQuad.drawMatrix;
+    var context = _renderTexture.canvas.context2D;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    context.fillStyle = _color2rgba(color);
+    context.clearRect(x, y, 1, 1);
+    context.fillRect(x, y, 1, 1);
+    _renderTexture.update();
+  }
 
   //-------------------------------------------------------------------------------------------------
 
