@@ -131,13 +131,12 @@ class RenderTextureQuad {
   }
 
   //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
-  ImageData getImageData() {
-
+  Rectangle get _imageDataRectangle {
     num storePixelRatio = _renderTexture.storePixelRatio;
     num backingStorePixelRatio = _backingStorePixelRatio;
     num pixelRatio = storePixelRatio / backingStorePixelRatio;
-
     int left = (rotation == 0) ? textureX : textureX - textureHeight;
     int top = (rotation == 0) ? textureY : textureY;
     int right = (rotation == 0) ? textureX + textureWidth : textureX;
@@ -148,35 +147,34 @@ class RenderTextureQuad {
     right = (right * pixelRatio).round();
     bottom = (bottom * pixelRatio).round();
 
-    var context = _renderTexture.canvas.context2D;
+    return new Rectangle(left, top, right - left, bottom - top);
+  }
 
+  ImageData createImageData() {
+    var rectangle = _imageDataRectangle;
+    var context = _renderTexture.canvas.context2D;
+    return context.createImageData(rectangle.width, rectangle.height);
+  }
+
+  ImageData getImageData() {
+    var rect = _imageDataRectangle;
+    var context = _renderTexture.canvas.context2D;
+    var backingStorePixelRatio = _backingStorePixelRatio;
     if (backingStorePixelRatio > 1.0) {
-      return context.getImageDataHD(left, top, right - left, bottom - top);
+      return context.getImageDataHD(rect.x, rect.y, rect.width, rect.height);
     } else {
-      return context.getImageData(left, top, right - left, bottom - top);
+      return context.getImageData(rect.x, rect.y, rect.width, rect.height);
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
-
   void putImageData(ImageData imageData) {
-
-    num storePixelRatio = _renderTexture.storePixelRatio;
-    num backingStorePixelRatio = _backingStorePixelRatio;
-    num pixelRatio = storePixelRatio / backingStorePixelRatio;
-
-    int left = (rotation == 0) ? textureX : textureX - textureHeight;
-    int top = (rotation == 0) ? textureY : textureY;
-
-    left = (left * pixelRatio).round();
-    top = (top * pixelRatio).round();
-
+    var rect = _imageDataRectangle;
     var context = _renderTexture.canvas.context2D;
-
-    if (_backingStorePixelRatio > 1.0) {
-      context.putImageDataHD(imageData, left, top);
+    var backingStorePixelRatio = _backingStorePixelRatio;
+    if (backingStorePixelRatio > 1.0) {
+      context.putImageDataHD(imageData, rect.x, rect.y);
     } else {
-      context.putImageData(imageData, left, top);
+      context.putImageData(imageData, rect.x, rect.y);
     }
   }
 

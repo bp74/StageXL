@@ -501,7 +501,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (_filters != null) {
       var cacheBitmapData = new BitmapData.fromRenderTextureQuad(_cacheTexture.quad);
       for(int i = 0; i < _filters.length; i++) {
-        _filters[i].apply(cacheBitmapData, new Rectangle(0, 0, width, height));
+        _filters[i].apply(cacheBitmapData);
       }
     }
 

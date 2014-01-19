@@ -34,7 +34,7 @@ class ColorMatrixFilter extends BitmapFilter {
 
   //-------------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, Rectangle rectangle) {
+  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
     //redResult   = (a[0]  * srcR) + (a[1]  * srcG) + (a[2]  * srcB) + (a[3]  * srcA) + a[4]
     //greenResult = (a[5]  * srcR) + (a[6]  * srcG) + (a[7]  * srcB) + (a[8]  * srcA) + a[9]
@@ -67,7 +67,10 @@ class ColorMatrixFilter extends BitmapFilter {
     int d3c3 = ((isLittleEndianSystem ? _matrix[18] : _matrix[00]) * 65536).round();
     int d3cc = ((isLittleEndianSystem ? _matrix[19] : _matrix[04]) * 65536).round();
 
-    var renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
+    var renderTextureQuad = rectangle == null
+        ? bitmapData.renderTextureQuad
+        : bitmapData.renderTextureQuad.cut(rectangle);
+
     var imageData = renderTextureQuad.getImageData();
     var data = imageData.data;
 
@@ -83,12 +86,6 @@ class ColorMatrixFilter extends BitmapFilter {
     }
 
     renderTextureQuad.putImageData(imageData);
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  Rectangle getBounds() {
-    return new Rectangle(0, 0, 0, 0);
   }
 
 }

@@ -34,7 +34,7 @@ class DropShadowFilter extends BitmapFilter {
 
   //-------------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, Rectangle rectangle) {
+  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
     // TODO: WebGL
 
@@ -164,14 +164,4 @@ class DropShadowFilter extends BitmapFilter {
     */
   }
 
-  //-------------------------------------------------------------------------------------------------
-
-  Rectangle getBounds() {
-
-    var dx = (this.distance * cos(this.angle)).round();
-    var dy = (this.distance * sin(this.angle)).round();
-    var sRect = new Rectangle(0, 0, 0, 0);
-    var dRect = new Rectangle(dx - blurX, dy - blurY, 2 * blurX, 2 * blurY);
-    return sRect.union(dRect);
-  }
 }

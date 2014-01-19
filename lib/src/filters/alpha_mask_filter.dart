@@ -17,7 +17,7 @@ class AlphaMaskFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, Rectangle rectangle) {
+  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
     // TODO: WebGL
 
@@ -50,9 +50,4 @@ class AlphaMaskFilter extends BitmapFilter {
     */
   }
 
-  //-----------------------------------------------------------------------------------------------
-
-  Rectangle getBounds() {
-    return new Rectangle.zero();
-  }
 }

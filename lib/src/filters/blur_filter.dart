@@ -13,119 +13,50 @@ class BlurFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
 
   BlurFilter([this.blurX = 4, this.blurY = 4]) {
-
-    if (blurX < 1 || blurY < 1)
+    if (blurX < 1 || blurY < 1) {
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
-
-    if (blurX > 64 || blurY > 64)
+    }
+    if (blurX > 64 || blurY > 64) {
       throw new ArgumentError("Error #9004: The maximum blur size is 64.");
+    }
   }
 
-  BitmapFilter clone() {
-
-    return new BlurFilter(blurX, blurY);
-  }
+  BitmapFilter clone() => new BlurFilter(blurX, blurY);
 
   //-------------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, Rectangle rectangle) {
+  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
     // TODO: WebGL
 
-    /*
-    var sourceImageData = sourceBitmapData.getImageData(
-        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destinationBitmapData.pixelRatio);
-    var sourceData = sourceImageData.data;
+    var renderTextureQuad = rectangle == null
+        ? bitmapData.renderTextureQuad
+        : bitmapData.renderTextureQuad.cut(rectangle);
 
-    num pixelRatio = destinationBitmapData.pixelRatio;
-    int sourceWidth = _ensureInt(sourceImageData.width);
-    int sourceHeight = _ensureInt(sourceImageData.height);
-    int weightX = (blurX * blurX * pixelRatio * pixelRatio).floor();
-    int weightY = (blurY * blurY * pixelRatio * pixelRatio).floor();
-    int weightXinv = (1 << 22) ~/ weightX;
-    int weightYinv = (1 << 22) ~/ weightY;
-    int rx1 = (blurX * pixelRatio).floor();
-    int rx2 = (blurX * pixelRatio * 2).floor();
-    int ry1 = (blurY * pixelRatio).floor();
-    int ry2 = (blurY * pixelRatio * 2).floor();
-    int destinationWidth = sourceWidth + rx2;
-    int destinationHeight = sourceHeight + ry2;
-    int sourceWidth4 = sourceWidth * 4;
-    int destinationWidth4 = destinationWidth * 4;
+    var destinationImageData = renderTextureQuad.getImageData();
+    int width = destinationImageData.width;
+    int height = destinationImageData.height;
 
-    var destinationImageData = destinationBitmapData.createImageData(destinationWidth, destinationHeight);
-    var destinationData = destinationImageData.data;
-    var buffer = new List<int>.filled(1024, 0);
+    num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
+    int blurX = (this.blurX * pixelRatio).round();
+    int blurY = (this.blurY * pixelRatio).round();
+    int alphaChannel = _isLittleEndianSystem ? 3 : 0;
+    int stride = width * 4;
 
-    _premultiplyAlpha(sourceImageData);
+    _premultiplyAlpha(destinationImageData);
 
-    //--------------------------------------------------
-    // blur vertical
-
-    for (int z = 0; z < 4; z++) {
-      for (int x = 0; x < sourceWidth; x++) {
-        int dif = 0, sum = weightY >> 1;
-        int offsetSource = x * 4 + z;
-        int offsetDestination = (x + rx1) * 4 + z;
-
-        for (int y = 0; y < destinationHeight; y++) {
-          destinationData[offsetDestination] = ((sum * weightYinv) | 0) >> 22;
-          offsetDestination += destinationWidth4;
-
-          if (y >= ry2) {
-            dif -= 2 * buffer[y & 1023] - buffer[(y - ry1) & 1023];
-          } else if (y >= ry1) {
-            dif -= 2 * buffer[y & 1023];
-          }
-
-          int color = (y < sourceHeight) ? sourceData[offsetSource] : 0;
-          buffer[(y + ry1) & 1023] = color;
-          sum += dif += color;
-          offsetSource += sourceWidth4;
-        }
+    for (int channel = 0; channel < 4; channel++) {
+      for (int x = 0; x < width; x++) {
+        _blur2(destinationImageData.data, x * 4 + channel, height, stride, blurY);
+      }
+      for (int y = 0; y < height; y++) {
+        _blur2(destinationImageData.data, y * stride + channel, width, 4, blurX);
       }
     }
-
-    //--------------------------------------------------
-    // blur horizontal
-
-    for (int z = 0; z < 4; z++) {
-      for (int y = 0; y < destinationHeight; y++) {
-        int dif = 0, sum = weightX >> 1;
-        int offsetSource = y * destinationWidth4 + rx1 * 4 + z;
-        int offsetDestination = y * destinationWidth4 + z;
-
-        for (int x = 0; x < destinationWidth; x++) {
-          destinationData[offsetDestination] = ((sum * weightXinv) | 0) >> 22;
-          offsetDestination += 4;
-
-          if (x >= rx2) {
-            dif -= 2 * buffer[x & 1023] - buffer[(x - rx1) & 1023];
-          } else if (x >= rx1) {
-            dif -= 2 * buffer[x & 1023];
-          }
-
-          int color = (x < sourceWidth) ? destinationData[offsetSource] : 0;
-          buffer[(x + rx1) & 1023] = color;
-          sum += dif += color;
-          offsetSource += 4;
-        }
-      }
-    }
-
-    //--------------------------------------------------
 
     _unpremultiplyAlpha(destinationImageData);
 
-    destinationBitmapData.putImageData(destinationImageData, destinationPoint.x - rx1, destinationPoint.y - ry1);
-    */
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  Rectangle getBounds() {
-
-    return new Rectangle(-blurX, -blurY, 2 * blurX, 2 * blurY);
+    renderTextureQuad.putImageData(destinationImageData);
   }
 
   //-------------------------------------------------------------------------------------------------
