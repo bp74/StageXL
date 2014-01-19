@@ -123,7 +123,7 @@ abstract class BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  _composite(List<int> destinationData, List<int> sourceData) {
+  _blend(List<int> destinationData, List<int> sourceData) {
 
     if (destinationData.length != sourceData.length) return;
 

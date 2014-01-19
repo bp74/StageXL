@@ -29,8 +29,8 @@ class GlowFilter extends BitmapFilter {
 
     var sourceImageData = renderTextureQuad.getImageData();
     var destinationImageData = renderTextureQuad.getImageData();
-    int width = destinationImageData.width;
-    int height = destinationImageData.height;
+    int width = _ensureInt(destinationImageData.width);
+    int height = _ensureInt(destinationImageData.height);
 
     num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
     int blurX = (this.blurX * pixelRatio).round();
@@ -46,10 +46,10 @@ class GlowFilter extends BitmapFilter {
       _blur2(destinationImageData.data, y * stride + alphaChannel, width, 4, blurX);
     }
 
-    // TODO: _setColor and _composite could be combined in one operation!
+    // TODO: _setColor and _blend could be combined in one operation!
 
     _setColor(destinationImageData.data, this.color, this.alpha);
-    _composite(destinationImageData.data, sourceImageData.data);
+    _blend(destinationImageData.data, sourceImageData.data);
 
     renderTextureQuad.putImageData(destinationImageData);
   }
