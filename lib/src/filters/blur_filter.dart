@@ -27,8 +27,6 @@ class BlurFilter extends BitmapFilter {
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
-    // TODO: WebGL
-
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -45,13 +43,18 @@ class BlurFilter extends BitmapFilter {
 
     _premultiplyAlpha(destinationImageData);
 
-    for (int channel = 0; channel < 4; channel++) {
-      for (int x = 0; x < width; x++) {
-        _blur2(destinationImageData.data, x * 4 + channel, height, stride, blurY);
-      }
-      for (int y = 0; y < height; y++) {
-        _blur2(destinationImageData.data, y * stride + channel, width, 4, blurX);
-      }
+    for (int x = 0; x < width; x++) {
+      _blur2(destinationImageData.data, x * 4 + 0, height, stride, blurY);
+      _blur2(destinationImageData.data, x * 4 + 1, height, stride, blurY);
+      _blur2(destinationImageData.data, x * 4 + 2, height, stride, blurY);
+      _blur2(destinationImageData.data, x * 4 + 3, height, stride, blurY);
+    }
+
+    for (int y = 0; y < height; y++) {
+      _blur2(destinationImageData.data, y * stride + 0, width, 4, blurX);
+      _blur2(destinationImageData.data, y * stride + 1, width, 4, blurX);
+      _blur2(destinationImageData.data, y * stride + 2, width, 4, blurX);
+      _blur2(destinationImageData.data, y * stride + 3, width, 4, blurX);
     }
 
     _unpremultiplyAlpha(destinationImageData);
