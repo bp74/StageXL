@@ -125,10 +125,8 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  void applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect,
-                   Point destPoint, BitmapFilter filter) {
-
-    filter.apply(sourceBitmapData, sourceRect, this, destPoint);
+  void applyFilter(BitmapFilter filter, Rectangle rectangle) {
+    filter.apply(this, rectangle);
     _renderTexture.update();
   }
 

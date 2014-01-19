@@ -5,7 +5,7 @@ abstract class BitmapFilter {
   BitmapFilter clone();
   Rectangle getBounds();
 
-  void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint);
+  void apply(BitmapData bitmapData, Rectangle rectangle);
 
   //-----------------------------------------------------------------------------------------------
 

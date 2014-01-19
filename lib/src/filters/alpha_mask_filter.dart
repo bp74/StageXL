@@ -17,7 +17,7 @@ class AlphaMaskFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
+  void apply(BitmapData bitmapData, Rectangle rectangle) {
 
     // TODO: WebGL
 
