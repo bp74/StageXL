@@ -36,16 +36,7 @@ class GraphicsPattern {
   Matrix get matrix => _matrix;
 
   CanvasPattern getCanvasPattern(CanvasRenderingContext2D context) {
-    // TODO: WebGL
-
-    /*
-    CanvasImageSource source = _bitmapData._source;
-    if(source is ImageElement) {
-      return context.createPatternFromImage(source, _repeatOption);
-    } else {
-      return context.createPattern(source, _repeatOption);
-    }
-    */
+    return context.createPattern(_bitmapData.renderTexture.canvas, _repeatOption);
   }
 
 }
