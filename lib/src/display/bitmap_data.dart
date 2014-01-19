@@ -1,7 +1,5 @@
 part of stagexl;
 
-// TODO: bring back the old functions that we had before WebGL.
-
 class BitmapData implements BitmapDrawable {
 
   int _width = 0;
@@ -127,12 +125,12 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-/*
-  void applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect, Point destPoint, BitmapFilter filter) {
+  void applyFilter(BitmapData sourceBitmapData, Rectangle sourceRect,
+                   Point destPoint, BitmapFilter filter) {
 
     filter.apply(sourceBitmapData, sourceRect, this, destPoint);
+    _renderTexture.update();
   }
-*/
 
   //-------------------------------------------------------------------------------------------------
 

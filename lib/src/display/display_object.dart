@@ -498,17 +498,14 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     renderContext.clear();
     render(renderState);
 
-//    TODO: WebGL - apply filters when cached
-
-    /*
     if (_filters != null) {
+      var cacheBitmapData = new BitmapData.fromRenderTextureQuad(_cacheTexture.quad);
       for(int i = 0; i < _filters.length; i++) {
         var sourceRectangle = new Rectangle(0, 0, width, height);
         var destinationPoint = new Point.zero();
-        _filters[i].apply(_cache, sourceRectangle, _cache, destinationPoint);
+        _filters[i].apply(cacheBitmapData, sourceRectangle, cacheBitmapData, destinationPoint);
       }
     }
-    */
 
     if (_cacheDebugBorder) {
       canvas.context2D

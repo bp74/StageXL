@@ -34,11 +34,8 @@ class ColorMatrixFilter extends BitmapFilter {
 
   //-------------------------------------------------------------------------------------------------
 
-  void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
-
-    // TODO: WebGL
-
-    /*
+  void apply(BitmapData sourceBitmapData, Rectangle sourceRect,
+             BitmapData destinationBitmapData, Point destinationPoint) {
 
     //redResult   = (a[0]  * srcR) + (a[1]  * srcG) + (a[2]  * srcB) + (a[3]  * srcA) + a[4]
     //greenResult = (a[5]  * srcR) + (a[6]  * srcG) + (a[7]  * srcB) + (a[8]  * srcA) + a[9]
@@ -68,8 +65,7 @@ class ColorMatrixFilter extends BitmapFilter {
     int a18 = (_matrix[18] * 65536).round();
     int a19 = (_matrix[19] * 65536).round();
 
-    var imageData = sourceBitmapData.getImageData(
-        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destinationBitmapData.pixelRatio);
+    var imageData = sourceBitmapData.renderTextureQuad.cut(sourceRect).getImageData();
     var data = imageData.data;
 
     if (_isLittleEndianSystem) {
@@ -96,8 +92,11 @@ class ColorMatrixFilter extends BitmapFilter {
       }
     }
 
-    destinationBitmapData.putImageData(imageData, destinationPoint.x, destinationPoint.y);
-    */
+    var destinationRect = new Rectangle(
+        destinationPoint.x, destinationPoint.y,
+        sourceRect.width, sourceRect.height);
+
+    destinationBitmapData.renderTextureQuad.cut(destinationRect).putImageData(imageData);
   }
 
   //-------------------------------------------------------------------------------------------------
