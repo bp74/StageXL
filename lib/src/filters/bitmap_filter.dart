@@ -12,52 +12,46 @@ abstract class BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  _premultiplyAlpha(ImageData imageData) {
+  _premultiplyAlpha(List<int> data) {
 
-    var data = imageData.data;
-    var isLittleEndianSystem = _isLittleEndianSystem;
-
-    for(var i = 0; i <= data.length - 4; i += 4) {
-      int c0 = data[i + 0];
-      int c1 = data[i + 1];
-      int c2 = data[i + 2];
-      int c3 = data[i + 3];
-
-      if (isLittleEndianSystem) {
-        data[i + 0] = (c0 * c3) ~/ 255;
-        data[i + 1] = (c1 * c3) ~/ 255;
-        data[i + 2] = (c2 * c3) ~/ 255;
-      } else {
-        data[i + 1] = (c1 * c0) ~/ 255;
-        data[i + 2] = (c2 * c0) ~/ 255;
-        data[i + 3] = (c3 * c0) ~/ 255;
+    if (_isLittleEndianSystem) {
+      for(int i = 0; i <= data.length - 4; i += 4) {
+        int alpha = data[i + 3];
+        data[i + 0] = (data[i + 0] * alpha) ~/ 255;
+        data[i + 1] = (data[i + 1] * alpha) ~/ 255;
+        data[i + 2] = (data[i + 2] * alpha) ~/ 255;
+      }
+    } else {
+      for(int i = 0; i <= data.length - 4; i += 4) {
+        int alpha = data[i + 0];
+        data[i + 1] = (data[i + 1] * alpha) ~/ 255;
+        data[i + 2] = (data[i + 2] * alpha) ~/ 255;
+        data[i + 3] = (data[i + 3] * alpha) ~/ 255;
       }
     }
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  _unpremultiplyAlpha(ImageData imageData) {
+  _unpremultiplyAlpha(List<int> data) {
 
-    var data = imageData.data;
-    var isLittleEndianSystem = _isLittleEndianSystem;
-
-    for(var i = 0; i <= data.length - 4; i += 4) {
-      int c0 = data[i + 0];
-      int c1 = data[i + 1];
-      int c2 = data[i + 2];
-      int c3 = data[i + 3];
-
-      if (isLittleEndianSystem) {
-        if (c3 == 0) continue;
-        data[i + 0] = (c0 * 255) ~/ c3;
-        data[i + 1] = (c1 * 255) ~/ c3;
-        data[i + 2] = (c2 * 255) ~/ c3;
-      } else {
-        if (c0 == 0) continue;
-        data[i + 1] = (c1 * 255) ~/ c0;
-        data[i + 2] = (c2 * 255) ~/ c0;
-        data[i + 3] = (c3 * 255) ~/ c0;
+    if (_isLittleEndianSystem) {
+      for(int i = 0; i <= data.length - 4; i += 4) {
+        int alpha = data[i + 3];
+        if (alpha > 0) {
+          data[i + 0] = (data[i + 0] * 255) ~/ alpha;
+          data[i + 1] = (data[i + 1] * 255) ~/ alpha;
+          data[i + 2] = (data[i + 2] * 255) ~/ alpha;
+        }
+      }
+    } else {
+      for(int i = 0; i <= data.length - 4; i += 4) {
+        int alpha = data[i + 0];
+        if (alpha > 0) {
+          data[i + 1] = (data[i + 1] * 255) ~/ alpha;
+          data[i + 2] = (data[i + 2] * 255) ~/ alpha;
+          data[i + 3] = (data[i + 3] * 255) ~/ alpha;
+        }
       }
     }
   }
@@ -129,36 +123,38 @@ abstract class BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  _blend(List<int> destinationData, List<int> sourceData) {
+  _blend(List<int> dstData, List<int> srcData) {
 
-    if (destinationData.length != sourceData.length) return;
-
-    // TODO: This needs optimization!
+    if (dstData.length != srcData.length) return;
 
     if (_isLittleEndianSystem) {
-      for(int i = 0; i <= destinationData.length - 4; i += 4) {
-        int srcA = sourceData[i + 3];
-        int dstA = destinationData[i + 3];
+      for(int i = 0; i <= dstData.length - 4; i += 4) {
+        int srcA = srcData[i + 3];
+        int dstA = dstData[i + 3];
         int srcAX = srcA * 255;
         int dstAX = dstA * (255 - srcA);
-        int outA = srcAX + dstAX;
-        if (outA > 0) {
-          int srcR = sourceData[i + 0];
-          int srcG = sourceData[i + 1];
-          int srcB = sourceData[i + 2];
-          int dstR = destinationData[i + 0];
-          int dstG = destinationData[i + 1];
-          int dstB = destinationData[i + 2];
-          destinationData[i + 0] = (srcR * srcAX + dstR * dstAX) ~/ outA;
-          destinationData[i + 1] = (srcG * srcAX + dstG * dstAX) ~/ outA;
-          destinationData[i + 2] = (srcB * srcAX + dstB * dstAX) ~/ outA;
-          destinationData[i + 3] = outA ~/ 255;
+        int outAX = srcAX + dstAX;
+        if (outAX > 0) {
+          dstData[i + 0] = (srcData[i + 0] * srcAX + dstData[i + 0] * dstAX) ~/ outAX;
+          dstData[i + 1] = (srcData[i + 1] * srcAX + dstData[i + 1] * dstAX) ~/ outAX;
+          dstData[i + 2] = (srcData[i + 2] * srcAX + dstData[i + 2] * dstAX) ~/ outAX;
+          dstData[i + 3] = outAX ~/ 255;
         }
       }
     } else {
-
-      // TODO: composite for big endian systems
-
+      for(int i = 0; i <= dstData.length - 4; i += 4) {
+        int srcA = srcData[i + 0];
+        int dstA = dstData[i + 0];
+        int srcAX = srcA * 255;
+        int dstAX = dstA * (255 - srcA);
+        int outAX = srcAX + dstAX;
+        if (outAX > 0) {
+          dstData[i + 0] = outAX ~/ 255;
+          dstData[i + 1] = (srcData[i + 1] * srcAX + dstData[i + 1] * dstAX) ~/ outAX;
+          dstData[i + 2] = (srcData[i + 2] * srcAX + dstData[i + 2] * dstAX) ~/ outAX;
+          dstData[i + 3] = (srcData[i + 3] * srcAX + dstData[i + 3] * dstAX) ~/ outAX;
+        }
+      }
     }
   }
 

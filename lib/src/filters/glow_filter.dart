@@ -28,9 +28,10 @@ class GlowFilter extends BitmapFilter {
         : bitmapData.renderTextureQuad.cut(rectangle);
 
     var sourceImageData = renderTextureQuad.getImageData();
-    var destinationImageData = renderTextureQuad.getImageData();
-    int width = _ensureInt(destinationImageData.width);
-    int height = _ensureInt(destinationImageData.height);
+    var imageData = renderTextureQuad.getImageData();
+    var data = imageData.data;
+    int width = _ensureInt(imageData.width);
+    int height = _ensureInt(imageData.height);
 
     num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
     int blurX = (this.blurX * pixelRatio).round();
@@ -39,19 +40,19 @@ class GlowFilter extends BitmapFilter {
     int stride = width * 4;
 
     for (int x = 0; x < width; x++) {
-      _blur2(destinationImageData.data, x * 4 + alphaChannel, height, stride, blurY);
+      _blur2(data, x * 4 + alphaChannel, height, stride, blurY);
     }
 
     for (int y = 0; y < height; y++) {
-      _blur2(destinationImageData.data, y * stride + alphaChannel, width, 4, blurX);
+      _blur2(data, y * stride + alphaChannel, width, 4, blurX);
     }
 
     // TODO: _setColor and _blend could be combined in one operation!
 
-    _setColor(destinationImageData.data, this.color, this.alpha);
-    _blend(destinationImageData.data, sourceImageData.data);
+    _setColor(data, this.color, this.alpha);
+    _blend(data, sourceImageData.data);
 
-    renderTextureQuad.putImageData(destinationImageData);
+    renderTextureQuad.putImageData(imageData);
   }
 
 

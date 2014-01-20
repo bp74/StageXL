@@ -31,34 +31,35 @@ class BlurFilter extends BitmapFilter {
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var destinationImageData = renderTextureQuad.getImageData();
-    int width = _ensureInt(destinationImageData.width);
-    int height = _ensureInt(destinationImageData.height);
+    var imageData = renderTextureQuad.getImageData();
+    var data = imageData.data;
+    int width = _ensureInt(imageData.width);
+    int height = _ensureInt(imageData.height);
 
     num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
     int blurX = (this.blurX * pixelRatio).round();
     int blurY = (this.blurY * pixelRatio).round();
     int stride = width * 4;
 
-    _premultiplyAlpha(destinationImageData);
+    _premultiplyAlpha(data);
 
     for (int x = 0; x < width; x++) {
-      _blur2(destinationImageData.data, x * 4 + 0, height, stride, blurY);
-      _blur2(destinationImageData.data, x * 4 + 1, height, stride, blurY);
-      _blur2(destinationImageData.data, x * 4 + 2, height, stride, blurY);
-      _blur2(destinationImageData.data, x * 4 + 3, height, stride, blurY);
+      _blur2(data, x * 4 + 0, height, stride, blurY);
+      _blur2(data, x * 4 + 1, height, stride, blurY);
+      _blur2(data, x * 4 + 2, height, stride, blurY);
+      _blur2(data, x * 4 + 3, height, stride, blurY);
     }
 
     for (int y = 0; y < height; y++) {
-      _blur2(destinationImageData.data, y * stride + 0, width, 4, blurX);
-      _blur2(destinationImageData.data, y * stride + 1, width, 4, blurX);
-      _blur2(destinationImageData.data, y * stride + 2, width, 4, blurX);
-      _blur2(destinationImageData.data, y * stride + 3, width, 4, blurX);
+      _blur2(data, y * stride + 0, width, 4, blurX);
+      _blur2(data, y * stride + 1, width, 4, blurX);
+      _blur2(data, y * stride + 2, width, 4, blurX);
+      _blur2(data, y * stride + 3, width, 4, blurX);
     }
 
-    _unpremultiplyAlpha(destinationImageData);
+    _unpremultiplyAlpha(data);
 
-    renderTextureQuad.putImageData(destinationImageData);
+    renderTextureQuad.putImageData(imageData);
   }
 
   //-------------------------------------------------------------------------------------------------
