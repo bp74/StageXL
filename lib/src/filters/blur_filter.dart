@@ -22,6 +22,7 @@ class BlurFilter extends BitmapFilter {
   }
 
   BitmapFilter clone() => new BlurFilter(blurX, blurY);
+  Rectangle get overlap => new Rectangle(-blurX, -blurY, 2 * blurX, 2 * blurY);
 
   //-------------------------------------------------------------------------------------------------
 

@@ -17,6 +17,7 @@ class GlowFilter extends BitmapFilter {
   }
 
   BitmapFilter clone() => new GlowFilter(color, alpha, blurX, blurY);
+  Rectangle get overlap => new Rectangle(-blurX, -blurY, 2 * blurX, 2 * blurY);
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

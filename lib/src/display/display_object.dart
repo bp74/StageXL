@@ -500,8 +500,13 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     if (_filters != null) {
       var cacheBitmapData = new BitmapData.fromRenderTextureQuad(_cacheTexture.quad);
-      for(int i = 0; i < _filters.length; i++) {
-        _filters[i].apply(cacheBitmapData);
+      var bounds = this.getBoundsTransformed(_identityMatrix)..offset(-x, -y);
+      for(var filter in _filters) {
+        var filterOverlap = filter.overlap;
+        var filterBounds = bounds.clone();
+        filterBounds.offset(filterOverlap.x, filterOverlap.y);
+        filterBounds.inflate(filterOverlap.width, filterOverlap.height);
+        filter.apply(cacheBitmapData, filterBounds.align());
       }
     }
 

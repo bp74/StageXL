@@ -28,9 +28,8 @@ class ColorMatrixFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  BitmapFilter clone() {
-    return new ColorMatrixFilter(_matrix);
-  }
+  BitmapFilter clone() => new ColorMatrixFilter(_matrix);
+  Rectangle get overlap => new Rectangle(0, 0, 0, 0);
 
   //-------------------------------------------------------------------------------------------------
 

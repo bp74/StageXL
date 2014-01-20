@@ -11,43 +11,32 @@ class AlphaMaskFilter extends BitmapFilter {
 
   Matrix get matrix => _matrix;
 
-  BitmapFilter clone() {
-    return new AlphaMaskFilter(_alphaBitmapData, _matrix.clone());
-  }
+  BitmapFilter clone() => new AlphaMaskFilter(_alphaBitmapData, _matrix.clone());
+  Rectangle get overlap => new Rectangle.zero();
 
   //-----------------------------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
-    // TODO: WebGL
+    var renderTextureQuad = rectangle == null
+        ? bitmapData.renderTextureQuad
+        : bitmapData.renderTextureQuad.cut(rectangle);
 
-    /*
-    var destinationRect = new Rectangle(destinationPoint.x, destinationPoint.y, sourceRect.width, sourceRect.height);
-    var destinationBounds = new Rectangle(0, 0, destinationBitmapData.width, destinationBitmapData.height);
+    int width = renderTextureQuad.textureWidth;
+    int height = renderTextureQuad.textureHeight;
+    Matrix matrix = renderTextureQuad.drawMatrix;
+    CanvasElement canvas = renderTextureQuad.renderTexture.canvas;
+    RenderContextCanvas renderContext = new RenderContextCanvas(canvas, Color.Transparent);
+    CanvasRenderingContext2D context = renderContext.rawContext;
 
-    var alphaRoot = new Sprite();
-    var alphaWarp = new Warp();
-    var alphaBitmap = new Bitmap(_alphaBitmapData);
-
-    alphaRoot.x = destinationPoint.x;
-    alphaRoot.y = destinationPoint.y;
-    alphaRoot.addChild(alphaWarp);
-
-    alphaWarp.matrix = _matrix;
-    alphaWarp.compositeOperation = CompositeOperation.DESTINATION_IN;
-    alphaWarp.addChild(alphaBitmap);
-
-    if (!destinationRect.containsRect(destinationBounds)) {
-      alphaWarp.mask = new Mask.rectangle(0, 0, sourceRect.width, sourceRect.height);
-      alphaWarp.mask.targetSpace = alphaRoot;
-    }
-
-    if (!identical(sourceBitmapData, destinationBitmapData) || !sourceRect.topLeft.equals(destinationPoint)) {
-      destinationBitmapData.copyPixels(sourceBitmapData, sourceRect, destinationPoint);
-    }
-
-    destinationBitmapData.draw(alphaRoot, alphaRoot.transformationMatrix);
-    */
+    context.save();
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    context.rect(0, 0, width, height);
+    context.clip();
+    context.globalCompositeOperation = CompositeOperation.DESTINATION_IN;
+    matrix.prepend(this.matrix);
+    renderContext.renderQuad(_alphaBitmapData.renderTextureQuad, matrix, 1.0);
+    context.restore();
   }
 
 }

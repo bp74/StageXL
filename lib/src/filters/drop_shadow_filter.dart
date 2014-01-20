@@ -28,8 +28,15 @@ class DropShadowFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
 
   BitmapFilter clone() {
-
     return new DropShadowFilter(distance, angle, color, alpha, blurX, blurY, strength, inner, knockout, hideObject);
+  }
+
+  Rectangle get overlap {
+    var dx = (this.distance * cos(this.angle)).round();
+    var dy = (this.distance * sin(this.angle)).round();
+    var sRect = new Rectangle(0, 0, 0, 0);
+    var dRect = new Rectangle(dx - blurX, dy - blurY, 2 * blurX, 2 * blurY);
+    return sRect.union(dRect);
   }
 
   //-------------------------------------------------------------------------------------------------

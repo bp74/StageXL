@@ -3,6 +3,7 @@ part of stagexl;
 abstract class BitmapFilter {
 
   BitmapFilter clone();
+  Rectangle get overlap;
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]);
 
