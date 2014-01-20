@@ -66,10 +66,10 @@ abstract class BitmapFilter {
 
   _blur2(List<int> data, int offset, int length, int stride, int radius) {
 
-    int dif = 0;
     int weight = radius * radius;
     int weightInv = (1 << 22) ~/ weight;
     int sum = weight ~/ 2;
+    int dif = 0;
     int offsetSource = offset;
     int offsetDestination = offset;
     int radius1 = radius * 1;
@@ -82,16 +82,22 @@ abstract class BitmapFilter {
       if (i >= radius1) {
         data[offsetDestination] = ((sum * weightInv) | 0) >> 22;
         offsetDestination += stride;
-        dif -= 2 * buffer[i & 1023];
         if (i >= radius2) {
-          dif += buffer[(i - radius1) & 1023];
+          dif -= 2 * buffer[i & 1023] - buffer[(i - radius1) & 1023];
+        } else {
+          dif -= 2 * buffer[i & 1023];
         }
       }
 
-      int value = (i < length) ? data[offsetSource] : 0;
-      buffer[(i + radius1) & 1023] = value;
-      sum += dif += value;
-      offsetSource += stride;
+      if (i < length) {
+        int value = data[offsetSource];
+        offsetSource += stride;
+        buffer[(i + radius1) & 1023] = value;
+        sum += dif += value;
+      } else {
+        buffer[(i + radius1) & 1023] = 0;
+        sum += dif;
+      }
     }
   }
 

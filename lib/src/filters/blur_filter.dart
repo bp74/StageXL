@@ -38,7 +38,6 @@ class BlurFilter extends BitmapFilter {
     num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
     int blurX = (this.blurX * pixelRatio).round();
     int blurY = (this.blurY * pixelRatio).round();
-    int alphaChannel = _isLittleEndianSystem ? 3 : 0;
     int stride = width * 4;
 
     _premultiplyAlpha(destinationImageData);
