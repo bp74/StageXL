@@ -28,12 +28,12 @@ class BlurFilter extends BitmapFilter {
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
-    var renderTextureQuad = rectangle == null
+    RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var imageData = renderTextureQuad.getImageData();
-    var data = imageData.data;
+    ImageData imageData = renderTextureQuad.getImageData();
+    List<int> data = imageData.data;
     int width = _ensureInt(imageData.width);
     int height = _ensureInt(imageData.height);
 

@@ -6,8 +6,11 @@ class GlowFilter extends BitmapFilter {
   num alpha;
   int blurX;
   int blurY;
+  bool hideObject;
 
-  GlowFilter([this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4]) {
+  GlowFilter([this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4,
+              this.hideObject = false]) {
+
     if (blurX < 1 || blurY < 1) {
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
     }
@@ -24,13 +27,13 @@ class GlowFilter extends BitmapFilter {
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
-    var renderTextureQuad = rectangle == null
+    RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var sourceImageData = renderTextureQuad.getImageData();
-    var imageData = renderTextureQuad.getImageData();
-    var data = imageData.data;
+    ImageData sourceImageData = this.hideObject ? null : renderTextureQuad.getImageData();
+    ImageData imageData = renderTextureQuad.getImageData();
+    List<int> data = imageData.data;
     int width = _ensureInt(imageData.width);
     int height = _ensureInt(imageData.height);
 
@@ -48,10 +51,11 @@ class GlowFilter extends BitmapFilter {
       _blur2(data, y * stride + alphaChannel, width, 4, blurX);
     }
 
-    //_setColor(data, this.color, this.alpha);
-    //_blend(data, sourceImageData.data);
-
-    _setColorBlend(data, this.color, this.alpha, sourceImageData.data);
+    if (this.hideObject) {
+      _setColor(data, this.color, this.alpha);
+    } else {
+      _setColorBlend(data, this.color, this.alpha, sourceImageData.data);
+    }
 
     renderTextureQuad.putImageData(imageData);
   }

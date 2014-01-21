@@ -66,12 +66,12 @@ class ColorMatrixFilter extends BitmapFilter {
     int d3c3 = ((isLittleEndianSystem ? _matrix[18] : _matrix[00]) * 65536).round();
     int d3cc = ((isLittleEndianSystem ? _matrix[19] : _matrix[04]) * 65536).round();
 
-    var renderTextureQuad = rectangle == null
+    RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var imageData = renderTextureQuad.getImageData();
-    var data = imageData.data;
+    ImageData imageData = renderTextureQuad.getImageData();
+    List<int> data = imageData.data;
 
     for(int index = 0 ; index <= data.length - 4; index += 4) {
       int c0 = data[index + 0];

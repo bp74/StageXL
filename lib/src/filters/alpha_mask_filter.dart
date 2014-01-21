@@ -18,7 +18,7 @@ class AlphaMaskFilter extends BitmapFilter {
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
-    var renderTextureQuad = rectangle == null
+    RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
