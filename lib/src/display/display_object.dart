@@ -531,11 +531,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   }
 
   void _renderCache(RenderState renderState) {
-    var matrix = new Matrix(1.0, 0.0, 0.0, 1.0, _cacheRectangle.x, _cacheRectangle.y);
-    var alpa = renderState.globalAlpha;
-
-    matrix.concat(renderState.globalMatrix);
-    renderState.renderContext.renderQuad(_cacheTexture.quad, matrix, alpha);
+    _tmpMatrix.setTo(1.0, 0.0, 0.0, 1.0, _cacheRectangle.x, _cacheRectangle.y);
+    _tmpMatrix.concat(renderState.globalMatrix);
+    num alpha = renderState.globalAlpha;
+    renderState.renderContext.renderQuad(_cacheTexture.quad, _tmpMatrix, alpha);
   }
 
   //-------------------------------------------------------------------------------------------------
