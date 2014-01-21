@@ -186,6 +186,8 @@ abstract class BitmapFilter {
           dstData[i + 1] = (srcData[i + 1] * srcAX + gColor * dstAX) ~/ outAX;
           dstData[i + 2] = (srcData[i + 2] * srcAX + bColor * dstAX) ~/ outAX;
           dstData[i + 3] = outAX ~/ 255;
+        } else {
+          dstData[i + 3] = 0;
         }
       }
     } else {
@@ -200,6 +202,8 @@ abstract class BitmapFilter {
           dstData[i + 1] = (srcData[i + 1] * srcAX + bColor * dstAX) ~/ outAX;
           dstData[i + 2] = (srcData[i + 2] * srcAX + gColor * dstAX) ~/ outAX;
           dstData[i + 3] = (srcData[i + 3] * srcAX + rColor * dstAX) ~/ outAX;
+        } else {
+          dstData[i + 0] = 0;
         }
       }
     }
