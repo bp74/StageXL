@@ -48,10 +48,10 @@ class GlowFilter extends BitmapFilter {
       _blur2(data, y * stride + alphaChannel, width, 4, blurX);
     }
 
-    // TODO: _setColor and _blend could be combined in one operation!
+    //_setColor(data, this.color, this.alpha);
+    //_blend(data, sourceImageData.data);
 
-    _setColor(data, this.color, this.alpha);
-    _blend(data, sourceImageData.data);
+    _setColorBlend(data, this.color, this.alpha, sourceImageData.data);
 
     renderTextureQuad.putImageData(imageData);
   }

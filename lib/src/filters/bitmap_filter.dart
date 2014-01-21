@@ -159,4 +159,51 @@ abstract class BitmapFilter {
     }
   }
 
+  //-----------------------------------------------------------------------------------------------
+
+  _setColorBlend(List<int> dstData, int color, num alpha, List<int> srcData) {
+
+    // optimized version for:
+    //   _setColor(data, this.color, this.alpha);
+    //   _blend(data, sourceImageData.data);
+
+    if (dstData.length != srcData.length) return;
+
+    int rColor = _colorGetR(color);
+    int gColor = _colorGetG(color);
+    int bColor = _colorGetB(color);
+    int alpha256 = (alpha * 256).toInt();
+
+    if (_isLittleEndianSystem) {
+      for(int i = 0; i <= dstData.length - 4; i += 4) {
+        int srcA = srcData[i + 3];
+        int dstA = dstData[i + 3];
+        int srcAX = (srcA * 255);
+        int dstAX = (dstA * (255 - srcA) * alpha256 | 0) >> 8;
+        int outAX = (srcAX + dstAX);
+        if (outAX > 0) {
+          dstData[i + 0] = (srcData[i + 0] * srcAX + rColor * dstAX) ~/ outAX;
+          dstData[i + 1] = (srcData[i + 1] * srcAX + gColor * dstAX) ~/ outAX;
+          dstData[i + 2] = (srcData[i + 2] * srcAX + bColor * dstAX) ~/ outAX;
+          dstData[i + 3] = outAX ~/ 255;
+        }
+      }
+    } else {
+      for(int i = 0; i <= dstData.length - 4; i += 4) {
+        int srcA = srcData[i + 0];
+        int dstA = dstData[i + 0];
+        int srcAX = (srcA * 255);
+        int dstAX = (dstA * (255 - srcA) * alpha256 | 0) >> 8;
+        int outAX = (srcAX + dstAX);
+        if (outAX > 0) {
+          dstData[i + 0] = outAX ~/ 255;
+          dstData[i + 1] = (srcData[i + 1] * srcAX + bColor * dstAX) ~/ outAX;
+          dstData[i + 2] = (srcData[i + 2] * srcAX + gColor * dstAX) ~/ outAX;
+          dstData[i + 3] = (srcData[i + 3] * srcAX + rColor * dstAX) ~/ outAX;
+        }
+      }
+    }
+  }
+
+
 }
