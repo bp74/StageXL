@@ -8,14 +8,10 @@ class DropShadowFilter extends BitmapFilter {
   num alpha;
   int blurX;
   int blurY;
-  num strength;
-  bool inner;
-  bool knockout;
   bool hideObject;
 
   DropShadowFilter([this.distance = 4.0, this.angle = PI / 4, this.color = 0, this.alpha = 1.0,
-      this.blurX = 4, this.blurY = 4, this.strength = 1.0, this.inner = false,
-      this.knockout = false, this.hideObject = false]) {
+                    this.blurX = 4, this.blurY = 4, this.hideObject = false]) {
 
     if (blurX < 1 || blurY < 1)
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
@@ -27,15 +23,14 @@ class DropShadowFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  BitmapFilter clone() {
-    return new DropShadowFilter(distance, angle, color, alpha, blurX, blurY, strength, inner, knockout, hideObject);
-  }
+  BitmapFilter clone() =>
+      new DropShadowFilter(distance, angle, color, alpha, blurX, blurY, hideObject);
 
   Rectangle get overlap {
-    var dx = (this.distance * cos(this.angle)).round();
-    var dy = (this.distance * sin(this.angle)).round();
+    var shiftX = (this.distance * cos(this.angle)).round();
+    var shiftY = (this.distance * sin(this.angle)).round();
     var sRect = new Rectangle(0, 0, 0, 0);
-    var dRect = new Rectangle(dx - blurX, dy - blurY, 2 * blurX, 2 * blurY);
+    var dRect = new Rectangle(shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
     return sRect.union(dRect);
   }
 
@@ -43,132 +38,41 @@ class DropShadowFilter extends BitmapFilter {
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
-    // TODO: WebGL
+    RenderTextureQuad renderTextureQuad = rectangle == null
+        ? bitmapData.renderTextureQuad
+        : bitmapData.renderTextureQuad.cut(rectangle);
 
-    /*
+    ImageData sourceImageData = this.hideObject ? null : renderTextureQuad.getImageData();
+    ImageData imageData = renderTextureQuad.getImageData();
+    List<int> data = imageData.data;
+    int width = _ensureInt(imageData.width);
+    int height = _ensureInt(imageData.height);
+    int shiftX = (this.distance * cos(this.angle)).round();
+    int shiftY = (this.distance * sin(this.angle)).round();
 
-    var originalBitmapData = sourceBitmapData;
-
-    if (sourceBitmapData == destinationBitmapData && !hideObject) {
-      originalBitmapData = sourceBitmapData.clone(destinationBitmapData.pixelRatio);
-    }
-
-    var sourceImageData = sourceBitmapData.getImageData(
-        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destinationBitmapData.pixelRatio);
-    var sourceData = sourceImageData.data;
-
-    num pixelRatio = destinationBitmapData.pixelRatio;
-    int sourceWidth = _ensureInt(sourceRect.width);
-    int sourceHeight = _ensureInt(sourceRect.height);
-    int weightX = (blurX * blurX * pixelRatio * pixelRatio).floor();
-    int weightY = (blurY * blurY * pixelRatio * pixelRatio).floor();
-    int weightXinv = (1 << 22) ~/ weightX;
-    int weightYinv = (1 << 22) ~/ weightY;
-    int rx1 = (blurX * pixelRatio).floor();
-    int rx2 = (blurX * pixelRatio * 2).floor();
-    int ry1 = (blurY * pixelRatio).floor();
-    int ry2 = (blurY * pixelRatio * 2).floor();
-    int destinationWidth = sourceWidth + rx2;
-    int destinationHeight = sourceHeight + ry2;
-    int sourceWidth4 = sourceWidth * 4;
-    int destinationWidth4 = destinationWidth * 4;
+    num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
+    int blurX = (this.blurX * pixelRatio).round();
+    int blurY = (this.blurY * pixelRatio).round();
     int alphaChannel = _isLittleEndianSystem ? 3 : 0;
+    int stride = width * 4;
 
-    var destinationImageData = destinationBitmapData.createImageData(destinationWidth, destinationHeight);
-    var destinationData = destinationImageData.data;
-    var buffer = new List<int>.filled(1024, 0);
+    _shiftChannel(data, 3, width, height, shiftX, shiftY);
 
-    //--------------------------------------------------
-    // blur vertical
-
-    for (int x = 0; x < sourceWidth; x++) {
-      int dif = 0, sum = weightY >> 1;
-      int offsetSource = x * 4 + alphaChannel;
-      int offsetDestination = (x + rx1) * 4 + alphaChannel;
-
-      for (int y = 0; y < destinationHeight; y++) {
-        destinationData[offsetDestination] = ((sum * weightYinv) | 0) >> 22;
-        offsetDestination += destinationWidth4;
-
-        if (y >= ry2) {
-          dif -= 2 * buffer[y & 1023] - buffer[(y - ry1) & 1023];
-        } else if (y >= ry1) {
-          dif -= 2 * buffer[y & 1023];
-        }
-
-        int alpha = (y < sourceHeight) ? sourceData[offsetSource] : 0;
-        buffer[(y + ry1) & 1023] = alpha;
-        sum += dif += alpha;
-        offsetSource += sourceWidth4;
-      }
+    for (int x = 0; x < width; x++) {
+      _blur2(data, x * 4 + alphaChannel, height, stride, blurY);
     }
 
-    //--------------------------------------------------
-    // blur horizontal
-
-    for (int y = 0; y < destinationHeight; y++) {
-      int dif = 0, sum = weightX >> 1;
-      int offsetSource = y * destinationWidth4 + rx1 * 4 + alphaChannel;
-      int offsetDestination = y * destinationWidth4 + alphaChannel;
-
-      for (int x = 0; x < destinationWidth; x++) {
-        destinationData[offsetDestination] = ((sum * weightXinv) | 0) >> 22;
-        offsetDestination += 4;
-
-        if (x >= rx2) {
-          dif -= 2 * buffer[x & 1023] - buffer[(x - rx1) & 1023];
-        } else if (x >= rx1) {
-          dif -= 2 * buffer[x & 1023];
-        }
-
-        int alpha = (x < sourceWidth) ? destinationData[offsetSource] : 0;
-        buffer[(x + rx1) & 1023] = alpha;
-        sum += dif += alpha;
-        offsetSource += 4;
-      }
+    for (int y = 0; y < height; y++) {
+      _blur2(data, y * stride + alphaChannel, width, 4, blurX);
     }
 
-    //--------------------------------------------------
-    // set color
-
-    int aColor = (alpha * 256).toInt();
-    int rColor = (color & 0xFF0000) >> 16;
-    int gColor = (color & 0xFF00) >> 8;
-    int bColor = (color & 0xFF);
-
-    if (_isLittleEndianSystem) {
-      for(var i = 0; i <= destinationData.length - 4; i += 4) {
-        destinationData[i + 0] = rColor;
-        destinationData[i + 1] = gColor;
-        destinationData[i + 2] = bColor;
-        destinationData[i + 3] = (destinationData[i + 3] * aColor | 0) >> 8;
-      }
+    if (this.hideObject) {
+      _setColor(data, this.color, this.alpha);
     } else {
-      for(var i = 0; i <= destinationData.length - 4; i += 4) {
-        destinationData[i + 0] = (destinationData[i + 0] * aColor | 0) >> 8;
-        destinationData[i + 1] = bColor;
-        destinationData[i + 2] = gColor;
-        destinationData[i + 3] = rColor;
-      }
+      _setColorBlend(data, this.color, this.alpha, sourceImageData.data);
     }
 
-    //--------------------------------------------------
-
-    var sx = destinationPoint.x;
-    var sy = destinationPoint.y;
-    var dx = destinationPoint.x - rx1 + (this.distance * cos(this.angle)).round();
-    var dy = destinationPoint.y - ry1 + (this.distance * sin(this.angle)).round();
-    var sRect = new Rectangle(sx, sy, sourceWidth, sourceHeight);
-    var dRect = new Rectangle(dx, dy, destinationWidth, destinationHeight);
-    var uRect = sRect.union(dRect);
-
-    destinationBitmapData.fillRect(uRect, Color.Transparent);
-    destinationBitmapData.putImageData(destinationImageData, dx, dy);
-
-    if (this.hideObject == false) {
-      destinationBitmapData.draw(originalBitmapData, new Matrix(1.0, 0.0, 0.0, 1.0, sx, sy));
-    }
-    */
+    renderTextureQuad.putImageData(imageData);
   }
 
 }

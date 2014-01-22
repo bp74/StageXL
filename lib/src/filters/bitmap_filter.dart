@@ -59,6 +59,52 @@ abstract class BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
+  _clearChannel(List<int> data, int offset, int length) {
+    int offsetStart = offset;
+    int offsetEnd = offset + length * 4 - 4;
+    if (offsetStart < 0) throw new RangeError(offsetStart);
+    if (offsetEnd >= data.length) throw new RangeError(offsetEnd);
+    for(int i = offsetStart; i <= offsetEnd; i += 4) {
+      data[i] = 0;
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  _shiftChannel(List<int> data, int channel, int width, int height, int shiftX, int shiftY) {
+
+    if (channel < 0) throw new ArgumentError();
+    if (channel > 3) throw new ArgumentError();
+    if (shiftX == 0 && shiftY == 0) return;
+
+    if (shiftX.abs() >= width || shiftY.abs() >= height) {
+      _clearChannel(data, channel, width * height);
+      return;
+    }
+
+    if (shiftX + width * shiftY < 0) {
+      int dst = channel;
+      int src = channel - 4 * (shiftX + width * shiftY);
+      for(; src < data.length; src += 4, dst += 4) data[dst] = data[src];
+    } else {
+      int dst = data.length + channel - 4;
+      int src = data.length + channel - 4 * (shiftX + width * shiftY);
+      for(; src >= 0; src -= 4, dst -= 4) data[dst] = data[src];
+    }
+
+    for(int y = 0; y < height; y++) {
+      if (y < shiftY || y >= height + shiftY) {
+        _clearChannel(data, (y * width) * 4 + channel, width);
+      } else if (shiftX > 0) {
+        _clearChannel(data, (y * width) * 4 + channel, shiftX);
+      } else if (shiftX < 0) {
+        _clearChannel(data, (y * width + width + shiftX) * 4 + channel, 0 - shiftX);
+      }
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
   _blur2(List<int> data, int offset, int length, int stride, int radius) {
 
     int weight = radius * radius;
