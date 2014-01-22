@@ -9,9 +9,8 @@ class GlowFilter extends BitmapFilter {
   bool knockout;
   bool hideObject;
 
-  GlowFilter([this.color = 0, this.alpha = 1.0,
-              this.blurX = 4, this.blurY = 4,
-              this.knockout = false, this.hideObject = false]) {
+  GlowFilter(this.color, this.alpha, this.blurX, this.blurY, {
+             this.knockout: false, this.hideObject: false}) {
 
     if (blurX < 1 || blurY < 1) {
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
@@ -21,7 +20,9 @@ class GlowFilter extends BitmapFilter {
     }
   }
 
-  BitmapFilter clone() => new GlowFilter(color, alpha, blurX, blurY);
+  BitmapFilter clone() => new GlowFilter(color, alpha, blurX, blurY,
+      knockout: knockout, hideObject: hideObject);
+
   Rectangle get overlap => new Rectangle(-blurX, -blurY, 2 * blurX, 2 * blurY);
 
   //-------------------------------------------------------------------------------------------------

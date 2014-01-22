@@ -11,10 +11,8 @@ class DropShadowFilter extends BitmapFilter {
   bool knockout;
   bool hideObject;
 
-  DropShadowFilter([this.distance = 4.0, this.angle = PI / 4,
-                    this.color = 0, this.alpha = 1.0,
-                    this.blurX = 4, this.blurY = 4,
-                    this.knockout = false, this.hideObject = false]) {
+  DropShadowFilter(this.distance, this.angle, this.color, this.alpha, this.blurX, this.blurY, {
+                   this.knockout: false, this.hideObject: false }) {
 
     if (blurX < 1 || blurY < 1)
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
@@ -26,8 +24,8 @@ class DropShadowFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  BitmapFilter clone() =>
-      new DropShadowFilter(distance, angle, color, alpha, blurX, blurY, hideObject);
+  BitmapFilter clone() => new DropShadowFilter(distance, angle, color, alpha, blurX, blurY,
+      knockout: knockout, hideObject: hideObject);
 
   Rectangle get overlap {
     var shiftX = (this.distance * cos(this.angle)).round();
