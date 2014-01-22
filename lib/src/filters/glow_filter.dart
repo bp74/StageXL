@@ -6,10 +6,12 @@ class GlowFilter extends BitmapFilter {
   num alpha;
   int blurX;
   int blurY;
+  bool knockout;
   bool hideObject;
 
-  GlowFilter([this.color = 0, this.alpha = 1.0, this.blurX = 4, this.blurY = 4,
-              this.hideObject = false]) {
+  GlowFilter([this.color = 0, this.alpha = 1.0,
+              this.blurX = 4, this.blurY = 4,
+              this.knockout = false, this.hideObject = false]) {
 
     if (blurX < 1 || blurY < 1) {
       throw new ArgumentError("Error #9004: The minimum blur size is 1.");
@@ -31,7 +33,9 @@ class GlowFilter extends BitmapFilter {
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    ImageData sourceImageData = this.hideObject ? null : renderTextureQuad.getImageData();
+    ImageData sourceImageData =
+        this.hideObject == false || this.knockout ? renderTextureQuad.getImageData() : null;
+
     ImageData imageData = renderTextureQuad.getImageData();
     List<int> data = imageData.data;
     int width = _ensureInt(imageData.width);
@@ -51,7 +55,9 @@ class GlowFilter extends BitmapFilter {
       _blur2(data, y * stride + alphaChannel, width, 4, blurX);
     }
 
-    if (this.hideObject) {
+    if (this.knockout) {
+      _setColorKnockout(data, this.color, this.alpha, sourceImageData.data);
+    } else if (this.hideObject) {
       _setColor(data, this.color, this.alpha);
     } else {
       _setColorBlend(data, this.color, this.alpha, sourceImageData.data);

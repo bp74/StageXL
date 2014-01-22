@@ -207,6 +207,23 @@ abstract class BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
+  _knockout(List<int> dstData, List<int> srcData) {
+
+    if (dstData.length != srcData.length) return;
+
+    if (_isLittleEndianSystem) {
+      for(int i = 0; i <= dstData.length - 4; i += 4) {
+        dstData[i + 3] = dstData[i + 3] * (255 - srcData[i + 3]) ~/ 255;
+      }
+    } else {
+      for(int i = 0; i <= dstData.length - 4; i += 4) {
+        dstData[i + 0] = dstData[i + 0] * (255 - srcData[i + 0]) ~/ 255;
+      }
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
   _setColorBlend(List<int> dstData, int color, num alpha, List<int> srcData) {
 
     // optimized version for:
@@ -255,5 +272,36 @@ abstract class BitmapFilter {
     }
   }
 
+  //-----------------------------------------------------------------------------------------------
+
+  _setColorKnockout(List<int> dstData, int color, num alpha, List<int> srcData) {
+
+    // optimized version for:
+    //   _setColor(data, this.color, this.alpha);
+    //   _knockout(data, sourceImageData.data);
+
+    if (dstData.length != srcData.length) return;
+
+    int rColor = _colorGetR(color);
+    int gColor = _colorGetG(color);
+    int bColor = _colorGetB(color);
+    int alpha256 = (alpha * 256).toInt();
+
+    if (_isLittleEndianSystem) {
+      for(var i = 0; i <= dstData.length - 4; i += 4) {
+        dstData[i + 0] = rColor;
+        dstData[i + 1] = gColor;
+        dstData[i + 2] = bColor;
+        dstData[i + 3] = (alpha256 * dstData[i + 3] * (255 - srcData[i + 3]) | 0) ~/ (255 * 256);
+      }
+    } else {
+      for(var i = 0; i <= dstData.length - 4; i += 4) {
+        dstData[i + 0] = (alpha256 * dstData[i + 0] * (255 - srcData[i + 0]) | 0) ~/ (255 * 256);
+        dstData[i + 1] = bColor;
+        dstData[i + 2] = gColor;
+        dstData[i + 3] = rColor;
+      }
+    }
+  }
 
 }
