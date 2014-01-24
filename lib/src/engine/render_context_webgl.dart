@@ -28,9 +28,6 @@ class RenderContextWebGL extends RenderContext {
     }
 
     _renderingContext = renderingContext;
-    _renderTexture = null;
-    _renderProgram = null;
-
     _renderingContext.enable(gl.BLEND);
     _renderingContext.disable(gl.STENCIL_TEST);
     _renderingContext.disable(gl.DEPTH_TEST);
@@ -40,8 +37,8 @@ class RenderContextWebGL extends RenderContext {
 
     _renderProgramQuad = new RenderProgramQuad(this);
     _renderProgramTriangle = new RenderProgramTriangle(this);
-
-    _activateRenderProgram(_renderProgramQuad);
+    _renderProgram = _renderProgramQuad;
+    _renderProgram.activate();
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -70,18 +67,18 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(true, true, true, true);
     _renderingContext.clearColor(r, g, b, 1.0);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-    _renderTexture = null;
-    _renderProgram = null;
 
-    _activateRenderProgram(_renderProgramQuad);
+    _renderProgram = _renderProgramQuad;
+    _renderProgram.activate();
   }
 
   void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
-    _updateState(renderTextureQuad.renderTexture);
+    _updateState(_renderProgramQuad, renderTextureQuad.renderTexture);
     _renderProgramQuad.renderQuad(renderTextureQuad, matrix, alpha);
   }
 
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
+    _updateState(_renderProgramTriangle, _renderTexture);
     _renderProgramTriangle.renderTriangle(x1, y1, x2, y2, x3, y3, matrix, color);
   }
 
@@ -98,7 +95,7 @@ class RenderContextWebGL extends RenderContext {
       _renderingContext.enable(gl.STENCIL_TEST);
     }
 
-    _activateRenderProgram(_renderProgramTriangle);
+    _updateState(_renderProgramTriangle, null);
     _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
     _renderingContext.stencilMask(0xFF);
@@ -107,7 +104,7 @@ class RenderContextWebGL extends RenderContext {
 
     mask._drawTriangles(this, matrix);
 
-    _activateRenderProgram(_renderProgramQuad);
+    _updateState(_renderProgramQuad, null);
     _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
     _renderingContext.stencilMask(0x00);
     _renderingContext.colorMask(true, true, true, true);
@@ -126,7 +123,7 @@ class RenderContextWebGL extends RenderContext {
 
     } else {
 
-      _activateRenderProgram(_renderProgramTriangle);
+      _updateState(_renderProgramTriangle, null);
       _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
       _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
       _renderingContext.stencilMask(0xFF);
@@ -139,7 +136,7 @@ class RenderContextWebGL extends RenderContext {
       _renderProgramTriangle.renderTriangle(-1, -1, 1, -1, 1, 1, matrix, color);
       _renderProgramTriangle.renderTriangle(-1, -1, 1, 1, -1, 1, matrix, color);
 
-      _activateRenderProgram(_renderProgramQuad);
+      _updateState(_renderProgramQuad, null);
       _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
       _renderingContext.stencilMask(0x00);
       _renderingContext.colorMask(true, true, true, true);
@@ -158,20 +155,25 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  _updateState(RenderTexture renderTexture) {
-    if (_renderTexture != renderTexture) {
-      _renderProgram.flush();
-      var texture = renderTexture._getTexture(this);
-      _renderingContext.activeTexture(gl.TEXTURE0);
-      _renderingContext.bindTexture(gl.TEXTURE_2D, texture);
-      _renderTexture = renderTexture;
-    }
-  }
+  _updateState(RenderProgram renderProgram, RenderTexture renderTexture) {
 
-  _activateRenderProgram(RenderProgram renderProgram) {
-    if (_renderProgram != null) _renderProgram.flush();
-    _renderProgram = renderProgram;
-    _renderProgram.activate();
+    if (renderProgram != null) {
+      if (identical(renderProgram, _renderProgram) == false) {
+        _renderProgram.flush();
+        _renderProgram = renderProgram;
+        _renderProgram.activate();
+      }
+    }
+
+    if (renderTexture != null) {
+      if (identical(renderTexture, _renderTexture) == false) {
+        _renderProgram.flush();
+        var texture = renderTexture._getTexture(this);
+        _renderingContext.activeTexture(gl.TEXTURE0);
+        _renderingContext.bindTexture(gl.TEXTURE_2D, texture);
+        _renderTexture = renderTexture;
+      }
+    }
   }
 
   _onContextLost(gl.ContextEvent contextEvent) {

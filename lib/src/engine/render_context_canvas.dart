@@ -84,7 +84,15 @@ class RenderContextCanvas extends RenderContext {
   }
 
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
-
+    var context = _renderingContext;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    context.beginPath();
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.lineTo(x3, y3);
+    context.closePath();
+    context.fillStyle = _color2rgba(color);
+    context.fill();
   }
 
   void flush() {
