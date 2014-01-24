@@ -5,15 +5,14 @@ abstract class RenderProgram {
   RenderContextWebGL _renderContext;
   gl.Program _program;
 
+  RenderProgram(RenderContextWebGL renderContext) : _renderContext = renderContext;
+
   //-----------------------------------------------------------------------------------------------
 
   gl.Program get program => _program;
 
   void activate();
   void flush();
-
-  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha);
-  void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color);
 
   //-----------------------------------------------------------------------------------------------
 
@@ -26,7 +25,10 @@ abstract class RenderProgram {
     renderingContext.compileShader(shader);
 
     var vertexShaderStatus = renderingContext.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (vertexShaderStatus == false) throw renderingContext.getShaderInfoLog(shader);
+    var isContextLost = renderingContext.isContextLost();
+    if (vertexShaderStatus == false && isContextLost == false) {
+      throw renderingContext.getShaderInfoLog(shader);
+    }
 
     return shader;
   }
@@ -43,7 +45,10 @@ abstract class RenderProgram {
     renderingContext.linkProgram(program);
 
     var programStatus = renderingContext.getProgramParameter(program, gl.LINK_STATUS);
-    if (programStatus == false) throw renderingContext.getProgramInfoLog(program);
+    var isContextLost = renderingContext.isContextLost();
+    if (programStatus == false && isContextLost == false) {
+      throw renderingContext.getProgramInfoLog(program);
+    }
 
     return program;
   }

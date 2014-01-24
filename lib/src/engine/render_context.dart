@@ -5,7 +5,13 @@ class RenderEngine {
   static const String Canvas2D = "Canvas2D";
 }
 
-abstract class RenderContext {
+abstract class RenderContext extends EventDispatcher {
+
+  static const EventStreamProvider<Event> contextLostEvent = const EventStreamProvider<Event>("contextLost");
+  static const EventStreamProvider<Event> contextRestoredEvent = const EventStreamProvider<Event>("contextRestored");
+
+  EventStream<Event> get onContextLost => RenderContext.contextLostEvent.forTarget(this);
+  EventStream<Event> get onContextRestored => RenderContext.contextRestoredEvent.forTarget(this);
 
   String get renderEngine;
 

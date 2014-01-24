@@ -42,6 +42,8 @@ class RenderTextureQuad {
       y1 = y4 = _textureY;
       x3 = x4 = _textureX - _textureHeight;
       y2 = y3 = _textureY + _textureWidth;
+    } else {
+      throw new ArgumentError("rotation not supported.");
     }
 
     int renderTextureWidth = _renderTexture.width;

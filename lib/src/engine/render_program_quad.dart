@@ -1,6 +1,6 @@
 part of stagexl;
 
-class RenderProgramDefault extends RenderProgram {
+class RenderProgramQuad extends RenderProgram {
 
   var vertexShaderSource = """
       attribute vec2 aVertexPosition;
@@ -45,56 +45,18 @@ class RenderProgramDefault extends RenderProgram {
 
   Int16List _indexList = new Int16List(_maxQuadCount * 6);
   Float32List _vertexList = new Float32List(_maxQuadCount * 4 * 5);
-  Float32List _vertexListSingle = null;
 
   int _aVertexPositionLocation = 0;
   int _aVertexTextCoordLocation = 0;
   int _aVertexAlphaLocation = 0;
-
   int _quadCount = 0;
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderProgramDefault(RenderContextWebGL renderContext) {
-
-    _renderContext = renderContext;
+  RenderProgramQuad(RenderContextWebGL renderContext) : super(renderContext) {
+    _renderContext.onContextRestored.listen(_onContextRestored);
     _renderingContext = _renderContext.rawContext;
-
-    var vertexShader = _createShader(vertexShaderSource, gl.VERTEX_SHADER);
-    var fragmentShader = _createShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
-
-    _program = _createProgram(vertexShader, fragmentShader);
-
-    //----------------------------------
-
-    _aVertexPositionLocation = _renderingContext.getAttribLocation(_program, "aVertexPosition");
-    _aVertexTextCoordLocation = _renderingContext.getAttribLocation(_program, "aVertexTextCoord");
-    _aVertexAlphaLocation = _renderingContext.getAttribLocation(_program, "aVertexAlpha");
-
-    _renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-    _renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
-    _renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
-
-    //----------------------------------
-
-    _vertexListSingle = new Float32List.view(_vertexList.buffer, 0, 5 * 4);
-
-    for(int i = 0, j = 0; i <= _indexList.length - 6; i += 6, j +=4 ) {
-      _indexList[i + 0] = j + 0;
-      _indexList[i + 1] = j + 1;
-      _indexList[i + 2] = j + 2;
-      _indexList[i + 3] = j + 0;
-      _indexList[i + 4] = j + 2;
-      _indexList[i + 5] = j + 3;
-    }
-
-    _indexBuffer = _renderingContext.createBuffer();
-    _renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    _renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
-
-    _vertexBuffer = _renderingContext.createBuffer();
-    _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+    _createResources();
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -170,20 +132,12 @@ class RenderProgramDefault extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
-
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
   void flush() {
 
     Float32List vertexUpdate = _vertexList;
 
     if (_quadCount == 0) {
       return;
-    } else if (_quadCount == 1) {
-      vertexUpdate = _vertexListSingle;
     } else if (_quadCount < _maxQuadCount) {
       vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 5);
     }
@@ -191,5 +145,46 @@ class RenderProgramDefault extends RenderProgram {
     _renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, vertexUpdate);
     _renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
     _quadCount = 0;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  _createResources() {
+
+    var vertexShader = _createShader(vertexShaderSource, gl.VERTEX_SHADER);
+    var fragmentShader = _createShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
+
+    _program = _createProgram(vertexShader, fragmentShader);
+
+    _aVertexPositionLocation = _renderingContext.getAttribLocation(_program, "aVertexPosition");
+    _aVertexTextCoordLocation = _renderingContext.getAttribLocation(_program, "aVertexTextCoord");
+    _aVertexAlphaLocation = _renderingContext.getAttribLocation(_program, "aVertexAlpha");
+
+    _renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
+    _renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
+    _renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
+
+    for(int i = 0, j = 0; i <= _indexList.length - 6; i += 6, j +=4 ) {
+      _indexList[i + 0] = j + 0;
+      _indexList[i + 1] = j + 1;
+      _indexList[i + 2] = j + 2;
+      _indexList[i + 3] = j + 0;
+      _indexList[i + 4] = j + 2;
+      _indexList[i + 5] = j + 3;
+    }
+
+    _indexBuffer = _renderingContext.createBuffer();
+    _renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
+    _renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
+
+    _vertexBuffer = _renderingContext.createBuffer();
+    _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+    _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  _onContextRestored(Event e) {
+    _createResources();
   }
 }

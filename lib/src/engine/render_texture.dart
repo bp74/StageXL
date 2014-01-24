@@ -2,6 +2,7 @@ part of stagexl;
 
 class RenderTexture {
 
+  int _instanceID = 0;
   int _width = 0;
   int _height = 0;
   bool _transparent = true;
@@ -15,6 +16,7 @@ class RenderTexture {
 
   gl.Texture _texture;
   gl.RenderingContext _renderingContext;
+  StreamSubscription _contextRestoredSubscription;
 
   //-----------------------------------------------------------------------------------------------
 
@@ -25,7 +27,6 @@ class RenderTexture {
     _width = _ensureInt(width);
     _height = _ensureInt(height);
     _transparent = _ensureBool(transparent);
-
     _storePixelRatio = _ensureNum(storePixelRatio);
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
@@ -36,9 +37,9 @@ class RenderTexture {
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
     _texture = null;
 
-    if (fillColor != 0) {
+    if (fillColor != 0 || transparent == false) {
       var context = _canvas.context2D;
-      context.fillStyle = _transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
+      context.fillStyle = transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
       context.fillRect(0, 0, canvasWidth, canvasHeight);
     }
   }
@@ -48,7 +49,6 @@ class RenderTexture {
     _storePixelRatio = _ensureNum(imagePixelRatio);
     _storeWidth = _ensureInt(imageElement.width);
     _storeHeight = _ensureInt(imageElement.height);
-
     _width = (_storeWidth / _storePixelRatio).round();
     _height = (_storeHeight / _storePixelRatio).round();
     _transparent = true;
@@ -89,14 +89,18 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  /*
-   * Disposes the texture memory allocated by WebGL.
+  /**
+   * Call the dispose method the release memory allocated by WebGL.
    */
+
   void dispose() {
-    if (_texture != null) {
-      _renderingContext.deleteTexture(_texture);
-      _texture = null;
-    }
+
+    if (_renderingContext != null && _texture != null) _renderingContext.deleteTexture(_texture);
+    if (_contextRestoredSubscription != null) _contextRestoredSubscription.cancel();
+
+    _texture = null;
+    _renderingContext = null;
+    _contextRestoredSubscription = null;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -126,10 +130,15 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  gl.Texture getTexture(RenderContextWebGL renderContext) {
+  gl.Texture _getTexture(RenderContextWebGL renderContext) {
 
     if (_texture == null) {
-      _renderingContext = renderContext.rawContext;
+
+      if (_renderingContext == null) {
+        _renderingContext = renderContext.rawContext;
+        _contextRestoredSubscription = renderContext.onContextRestored.listen(_onContextRestored);
+      }
+
       _texture = _renderingContext.createTexture();
       _renderingContext.activeTexture(gl.TEXTURE10);
       _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
@@ -142,5 +151,11 @@ class RenderTexture {
     }
 
     return _texture;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  _onContextRestored(Event e) {
+    _texture = null;
   }
 }
