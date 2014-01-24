@@ -129,7 +129,7 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  gl.Texture _getTexture(RenderContextWebGL renderContext) {
+  void activate(RenderContextWebGL renderContext, int textureSlot) {
 
     if (_texture == null) {
 
@@ -139,17 +139,19 @@ class RenderTexture {
       }
 
       _texture = _renderingContext.createTexture();
-      _renderingContext.activeTexture(gl.TEXTURE10);
+      _renderingContext.activeTexture(textureSlot);
       _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
       _renderingContext.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      _renderingContext.bindTexture(gl.TEXTURE_2D, null);
-    }
 
-    return _texture;
+    } else {
+
+      _renderingContext.activeTexture(textureSlot);
+      _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
+    }
   }
 
   //-----------------------------------------------------------------------------------------------

@@ -157,6 +157,8 @@ class RenderContextWebGL extends RenderContext {
 
   _updateState(RenderProgram renderProgram, RenderTexture renderTexture) {
 
+    // dartbug.com/16286
+
     if (renderProgram != null) {
       if (identical(renderProgram, _renderProgram) == false) {
         _renderProgram.flush();
@@ -168,13 +170,13 @@ class RenderContextWebGL extends RenderContext {
     if (renderTexture != null) {
       if (identical(renderTexture, _renderTexture) == false) {
         _renderProgram.flush();
-        var texture = renderTexture._getTexture(this);
-        _renderingContext.activeTexture(gl.TEXTURE0);
-        _renderingContext.bindTexture(gl.TEXTURE_2D, texture);
         _renderTexture = renderTexture;
+        _renderTexture.activate(this, gl.TEXTURE0);
       }
     }
   }
+
+  //-----------------------------------------------------------------------------------------------
 
   _onContextLost(gl.ContextEvent contextEvent) {
     contextEvent.preventDefault();
