@@ -5,11 +5,12 @@ class RenderContextWebGL extends RenderContext {
   final CanvasElement _canvasElement;
   final int _backgroundColor;
 
+  final RenderProgramQuad _renderProgramQuad = new RenderProgramQuad();
+  final RenderProgramTriangle _renderProgramTriangle = new RenderProgramTriangle();
+
   gl.RenderingContext _renderingContext;
   RenderTexture _renderTexture;
   RenderProgram _renderProgram;
-  RenderProgramQuad _renderProgramQuad;
-  RenderProgramTriangle _renderProgramTriangle;
   int _maskDepth = 0;
 
   RenderContextWebGL(CanvasElement canvasElement, int backgroundColor) :
@@ -35,10 +36,8 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
     _renderingContext.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-    _renderProgramQuad = new RenderProgramQuad(this);
-    _renderProgramTriangle = new RenderProgramTriangle(this);
     _renderProgram = _renderProgramQuad;
-    _renderProgram.activate();
+    _renderProgram.activate(this);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -67,9 +66,6 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(true, true, true, true);
     _renderingContext.clearColor(r, g, b, 1.0);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-
-    _renderProgram = _renderProgramQuad;
-    _renderProgram.activate();
   }
 
   void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
@@ -163,7 +159,7 @@ class RenderContextWebGL extends RenderContext {
       if (identical(renderProgram, _renderProgram) == false) {
         _renderProgram.flush();
         _renderProgram = renderProgram;
-        _renderProgram.activate();
+        _renderProgram.activate(this);
       }
     }
 

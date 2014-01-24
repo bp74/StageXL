@@ -2,7 +2,7 @@ part of stagexl;
 
 class RenderProgramTriangle extends RenderProgram {
 
-  var vertexShaderSource = """
+  var _vertexShaderSource = """
       attribute vec2 aVertexPosition;
       attribute vec4 aVertexColor;
       varying vec4 vColor;
@@ -13,9 +13,8 @@ class RenderProgramTriangle extends RenderProgram {
       }
       """;
 
-  var fragmentShaderSource = """
+  var _fragmentShaderSource = """
       precision mediump float;
-
       varying vec4 vColor;
 
       void main() {
@@ -32,8 +31,10 @@ class RenderProgramTriangle extends RenderProgram {
   static const int _maxTriangleCount = 256;
 
   gl.RenderingContext _renderingContext;
+  gl.Program _program;
   gl.Buffer _vertexBuffer;
 
+  StreamSubscription _contextRestoredSubscription;
   Float32List _vertexList = new Float32List(_maxTriangleCount * 3 * 6);
 
   int _aVertexPositionLocation = 0;
@@ -42,15 +43,28 @@ class RenderProgramTriangle extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderProgramTriangle(RenderContextWebGL renderContext) : super(renderContext) {
-    _renderContext.onContextRestored.listen(_onContextRestored);
-    _renderingContext = _renderContext.rawContext;
-    _createResources();
-  }
+  void activate(RenderContextWebGL renderContext) {
 
-  //-----------------------------------------------------------------------------------------------
+    if (_program == null) {
 
-  void activate() {
+      if (_renderingContext == null) {
+        _renderingContext = renderContext.rawContext;
+        _contextRestoredSubscription = renderContext.onContextRestored.listen(_onContextRestored);
+      }
+
+      _program = createProgram(_renderingContext, _vertexShaderSource, _fragmentShaderSource);
+
+      _aVertexPositionLocation = _renderingContext.getAttribLocation(_program, "aVertexPosition");
+      _aVertexColorLocation = _renderingContext.getAttribLocation(_program, "aVertexColor");
+
+      _renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
+      _renderingContext.enableVertexAttribArray(_aVertexColorLocation);
+
+      _vertexBuffer = _renderingContext.createBuffer();
+      _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+      _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+    }
+
     _renderingContext.useProgram(_program);
     _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
     _renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 24, 0);
@@ -124,27 +138,7 @@ class RenderProgramTriangle extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  _createResources() {
-
-    var vertexShader = _createShader(vertexShaderSource, gl.VERTEX_SHADER);
-    var fragmentShader = _createShader(fragmentShaderSource, gl.FRAGMENT_SHADER);
-
-    _program = _createProgram(vertexShader, fragmentShader);
-
-    _aVertexPositionLocation = _renderingContext.getAttribLocation(_program, "aVertexPosition");
-    _aVertexColorLocation = _renderingContext.getAttribLocation(_program, "aVertexColor");
-
-    _renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-    _renderingContext.enableVertexAttribArray(_aVertexColorLocation);
-
-    _vertexBuffer = _renderingContext.createBuffer();
-    _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
   _onContextRestored(Event e) {
-    _createResources();
+    _program = null;
   }
 }

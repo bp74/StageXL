@@ -2,23 +2,15 @@ part of stagexl;
 
 abstract class RenderProgram {
 
-  RenderContextWebGL _renderContext;
-  gl.Program _program;
+  RenderProgram();
 
-  RenderProgram(RenderContextWebGL renderContext) : _renderContext = renderContext;
-
-  //-----------------------------------------------------------------------------------------------
-
-  gl.Program get program => _program;
-
-  void activate();
+  void activate(RenderContextWebGL renderContext);
   void flush();
 
   //-----------------------------------------------------------------------------------------------
 
-  gl.Shader _createShader(String source, int shaderType) {
+  gl.Shader _createShader(gl.RenderingContext renderingContext, String source, int shaderType) {
 
-    var renderingContext = _renderContext.rawContext;
     var shader = renderingContext.createShader(shaderType);
 
     renderingContext.shaderSource(shader, source);
@@ -35,10 +27,12 @@ abstract class RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  gl.Program _createProgram(gl.Shader vertexShader, gl.Shader fragmentShader) {
+  gl.Program createProgram(gl.RenderingContext renderingContext,
+                           String vertexShaderSource, String fragmentShaderSource) {
 
-    var renderingContext = _renderContext.rawContext;
     var program = renderingContext.createProgram();
+    var vertexShader = _createShader(renderingContext, vertexShaderSource, gl.VERTEX_SHADER);
+    var fragmentShader = _createShader(renderingContext, fragmentShaderSource, gl.FRAGMENT_SHADER);
 
     renderingContext.attachShader(program, vertexShader);
     renderingContext.attachShader(program, fragmentShader);
