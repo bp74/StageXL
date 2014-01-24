@@ -218,7 +218,8 @@ class Graphics {
 
     } else {
 
-      // TODO: WebGL
+      // TODO: Native support for Graphics in WebGL will be added later.
+      // For now please use the applyCache feature of DisplayObject.
 
     }
   }

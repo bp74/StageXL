@@ -251,19 +251,20 @@ class TextField extends InteractiveObject {
 
     // draw cursor for INPUT text fields
 
-    // TODO: WEBGL - fix caret
-
-    /*
     _caretTime += renderState.deltaTime;
 
     if (_type == TextFieldType.INPUT) {
       var stage = this.stage;
       if (stage != null && stage.focus == this && _caretTime.remainder(0.8) < 0.4) {
-        renderContext.fillStyle = _color2rgb(_defaultTextFormat.color);
-        renderContext.fillRect(_caretX, _caretY, _caretWidth, _caretHeight);
+        var x1 = _caretX;
+        var y1 = _caretY;
+        var x3 = _caretX + _caretWidth;
+        var y3 = _caretY + _caretHeight;
+        var color = _defaultTextFormat.color;
+        renderContext.renderTriangle(x1, y1, x3, y1, x3, y3, matrix, color);
+        renderContext.renderTriangle(x1, y1, x3, y3, x1, y3, matrix, color);
       }
     }
-    */
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -458,7 +459,7 @@ class TextField extends InteractiveObject {
           _caretLine = line;
           _caretX = textLineMetrics.x + canvasContext.measureText(text).width.toDouble();
           _caretY = textLineMetrics.y - fontStyleMetricsAscent * 0.9;
-          _caretWidth = 1.0;
+          _caretWidth = 2.0;
           _caretHeight = textFormatSize;
           break;
         }

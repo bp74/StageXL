@@ -2,7 +2,6 @@ part of stagexl;
 
 class RenderTexture {
 
-  int _instanceID = 0;
   int _width = 0;
   int _height = 0;
   bool _transparent = true;
