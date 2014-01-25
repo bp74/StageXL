@@ -32,6 +32,7 @@ class RenderContextCanvas extends RenderContext {
 
   void clear() {
     _renderingContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    _renderingContext.globalAlpha = 1.0;
     if (_backgroundColor & 0xFF000000 == 0) {
       _renderingContext.clearRect(0, 0, _canvasElement.width, _canvasElement.height);
     } else {
