@@ -3,6 +3,19 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.9.0
+  * Added WebGL renderer (opt-in with Stage constructor).
+  * Added fallback to Canvas renderer.
+  * Added Texture atlas optimizations.
+  * BREAKING CHANGE: Simplified Stage constructor
+  * BREAKING CHANGE: Simplified BitmapFilter.apply method
+  
+  This version contains major changes in the internal render code.
+  The WebGL renderer is highly optimized to draw textures (BitmapDatas) but
+  does not support vector graphics yet. If you want to draw Graphics display
+  objects please use the applyCache method which renders the vector graphics 
+  to a texture or do not opt-in for the WebGL renderer.
+
 #### Pub version 0.8.9
   * Added HtmlObject class to use HTML elements as DisplayObjects (kind of).
   * Added DisplayObject.userData property to custom user-defined data. 
