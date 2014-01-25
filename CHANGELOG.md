@@ -6,7 +6,7 @@ package. This file is normally updated whenever we push a new version to pub.
 #### Pub version 0.9.0
   * Added WebGL renderer (opt-in with Stage constructor).
   * Added fallback to Canvas renderer.
-  * Added Texture atlas optimizations.
+  * Added texture atlas optimizations.
   * BREAKING CHANGE: Simplified Stage constructor
   * BREAKING CHANGE: Simplified BitmapFilter.apply method
   
