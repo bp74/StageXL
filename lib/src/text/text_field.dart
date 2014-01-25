@@ -235,17 +235,16 @@ class TextField extends InteractiveObject {
     _refreshTextLineMetrics();
 
     var renderContext = renderState.renderContext;
-    var matrix = renderState.globalMatrix;
-    var alpha = renderState.globalAlpha;
 
     if (_cacheAsBitmap || renderContext is! RenderContextCanvas) {
       _refreshCache();
       renderState.renderQuad(_renderTexture.quad);
     } else {
-      var renderContextCanvas = renderContext as RenderContextCanvas;
-      var context = renderContext.rawContext;
+      var renderContextCanvas = renderState.renderContext as RenderContextCanvas;
+      var context = renderContextCanvas.rawContext;
+      var matrix = renderState.globalMatrix;
       context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-      context.globalAlpha = alpha;
+      context.globalAlpha = renderState.globalAlpha;
       _renderText(renderContextCanvas.rawContext);
     }
 
