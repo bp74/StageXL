@@ -261,8 +261,8 @@ class TextField extends InteractiveObject {
         var x3 = _caretX + _caretWidth;
         var y3 = _caretY + _caretHeight;
         var color = _defaultTextFormat.color;
-        renderContext.renderTriangle(x1, y1, x3, y1, x3, y3, matrix, color);
-        renderContext.renderTriangle(x1, y1, x3, y3, x1, y3, matrix, color);
+        renderState.renderTriangle(x1, y1, x3, y1, x3, y3, color);
+        renderState.renderTriangle(x1, y1, x3, y3, x1, y3, color);
       }
     }
   }

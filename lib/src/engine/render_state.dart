@@ -152,6 +152,13 @@ class RenderState {
     _renderContext.renderQuad(renderTextureQuad, matrix, alpha);
   }
 
+  void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, int color) {
+    var matrix = _currentContextState.matrix;
+    var alpha = _currentContextState.alpha;
+    var colorAlpha = (color & 0x00FFFFFF) + ((alpha * 255).round() << 24);
+    _renderContext.renderTriangle(x1, y1, x2, y2, x3, y3, matrix, colorAlpha);
+  }
+
   void flush() {
     _renderContext.flush();
   }
