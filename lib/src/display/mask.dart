@@ -31,32 +31,10 @@ abstract class Mask {
 
   //-----------------------------------------------------------------------------------------------
 
-  beginRenderMask(RenderState renderState, Matrix matrix) {
-
-    _context = renderState.context;
-    _context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-    _context.beginPath();
-    _drawMask();
-    _context.save();
-    _context.clip();
-  }
-
-  endRenderMask() {
-
-    _context.restore();
-
-    if (border) {
-      _context.strokeStyle = _color2rgba(borderColor);
-      _context.lineWidth = borderWidth;
-      _context.lineCap = "round";
-      _context.lineJoin = "round";
-      _context.stroke();
-    }
-  }
-
   bool hitTest(num x, num y);
 
-  _drawMask();
+  _drawCanvasPath(CanvasRenderingContext2D context);
+  _drawTriangles(RenderContext context, Matrix matrix);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -68,8 +46,17 @@ class _RectangleMask extends Mask {
 
   _RectangleMask(num x, num y, num width, num height) : _rectangle = new Rectangle(x, y, width, height);
 
-  _drawMask() {
-    _context.rect(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
+  _drawCanvasPath(CanvasRenderingContext2D context) {
+    context.rect(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
+  }
+
+  _drawTriangles(RenderContext context, Matrix matrix) {
+    var l = _rectangle.left;
+    var t = _rectangle.top;
+    var r = _rectangle.right;
+    var b = _rectangle.bottom;
+    context.renderTriangle(l, t, r, t, r, b, matrix, Color.Magenta);
+    context.renderTriangle(l, t, r, b, l, b, matrix, Color.Magenta);
   }
 
   bool hitTest(num x, num y) {
@@ -85,8 +72,31 @@ class _CirlceMask extends Mask {
 
   _CirlceMask(num x, num y, num radius) : _circle = new Circle(x, y, radius);
 
-  _drawMask() {
-    _context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false);
+  _drawCanvasPath(CanvasRenderingContext2D context) {
+    context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false);
+  }
+
+  _drawTriangles(RenderContext context, Matrix matrix) {
+
+    var steps = 40;
+    var centerX = _circle.x;
+    var centerY = _circle.y;
+    var currentX = centerX + _circle.radius;
+    var currentY = centerY;
+
+    var cosR = cos(2 * PI / steps);
+    var sinR = sin(2 * PI / steps);
+    var tx = centerX - centerX * cosR + centerY * sinR;
+    var ty = centerY - centerX * sinR - centerY * cosR;
+    var color = Color.Magenta;
+
+    for(int s = 0; s <= steps; s++) {
+      var nextX = currentX * cosR - currentY * sinR + tx;
+      var nextY = currentX * sinR + currentY * cosR + ty;
+      context.renderTriangle(centerX, centerY, currentX, currentY, nextX, nextY, matrix, color);
+      currentX = nextX;
+      currentY = nextY;
+    }
   }
 
   bool hitTest(num x, num y) {
@@ -98,62 +108,41 @@ class _CirlceMask extends Mask {
 
 class _CustomMask extends Mask {
 
-  final List<Point> _points;
-  final Rectangle _bounds = new Rectangle.zero();
+  final Polygon _polygon;
+  Rectangle _polygonBounds;
+  List<int> _polygonTriangles;
 
-  _CustomMask(List<Point> points) : _points = points.toList(growable:false) {
-    if (points.length < 3) {
-      throw new ArgumentError("A custom mask needs at least 3 points.");
-    }
-
-    var maxX = double.NEGATIVE_INFINITY;
-    var minX = double.INFINITY;
-    var maxY = double.NEGATIVE_INFINITY;
-    var minY = double.INFINITY;
-
-    for(int i = 0; i < _points.length; i++) {
-      var point = _points[i];
-      maxX = max(maxX, point.x);
-      minX = min(minX, point.x);
-      maxY = max(maxY, point.y);
-      minY = min(minY, point.y);
-    }
-    _bounds.left = minX;
-    _bounds.right = maxX;
-    _bounds.top = minY;
-    _bounds.bottom = maxY;
+  _CustomMask(List<Point> points) : _polygon = new Polygon(points) {
+    _polygonBounds = _polygon.getBounds();
+    _polygonTriangles = _polygon.triangulate();
   }
 
-  _drawMask() {
-    for(int i = 0; i < _points.length; i++) {
-      var point = _points[i];
-      _context.lineTo(point.x, point.y);
+  _drawCanvasPath(CanvasRenderingContext2D context) {
+
+    var points = _polygon.points;
+
+    for(int i = 0; i < points.length; i++) {
+      var point = points[i];
+      context.lineTo(point.x, point.y);
     }
-    _context.lineTo(_points[0].x, _points[0].y);
+    context.lineTo(points[0].x, points[0].y);
+  }
+
+  _drawTriangles(RenderContext context, Matrix matrix) {
+
+    var points = _polygon.points;
+    var color = Color.Magenta;
+
+    for(int i = 0; i <= _polygonTriangles.length - 3; i += 3) {
+      var p1 = points[_polygonTriangles[i + 0]];
+      var p2 = points[_polygonTriangles[i + 1]];
+      var p3 = points[_polygonTriangles[i + 2]];
+      context.renderTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, matrix, color);
+    }
   }
 
   bool hitTest(num x, num y) {
-
-    if (_bounds.contains(x, y) == false) return false;
-
-    // PNPOLY - Point Inclusion in Polygon Test
-    // W. Randolph Franklin (WRF)
-    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-
-    var hit = false;
-    for(int i = 0, j = _points.length - 1; i < _points.length; j = i++) {
-      var pointI = _points[i];
-      var pointJ = _points[j];
-      if ((pointI.y > y) == (pointJ.y > y)) continue;
-
-      num dx = pointJ.x - pointI.x;
-      num dy = pointJ.y - pointI.y;
-      num tx = x - pointI.x;
-      num ty = y - pointI.y;
-      if ((tx < ty * dx / dy)) hit = !hit;
-    }
-
-    return hit;
+    return _polygonBounds.contains(x, y) ? _polygon.contains(x, y) : false;
   }
 }
 
@@ -165,10 +154,14 @@ class _ShapeMask extends Mask {
 
   _ShapeMask(Shape shape) : _shape = shape;
 
-  _drawMask() {
+  _drawCanvasPath(CanvasRenderingContext2D context) {
     var mtx = _shape.transformationMatrix;
-    _context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+    context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
     _shape.graphics._drawPath(_context);
+  }
+
+  _drawTriangles(RenderContext context, Matrix matrix) {
+
   }
 
   bool hitTest(num x, num y) {

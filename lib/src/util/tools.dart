@@ -2,23 +2,24 @@ part of stagexl;
 
 //-------------------------------------------------------------------------------------------------
 
+int _colorGetA(int color) => (color >> 24) & 0xFF;
+int _colorGetR(int color) => (color >> 16) & 0xFF;
+int _colorGetG(int color) => (color >>  8) & 0xFF;
+int _colorGetB(int color) => (color      ) & 0xFF;
+
 String _color2rgb(int color) {
-
-  int r = (color >> 16) & 0xFF;
-  int g = (color >>  8) & 0xFF;
-  int b = color & 0xFF;
-
+  int r = _colorGetR(color);
+  int g = _colorGetG(color);
+  int b = _colorGetB(color);
   return "rgb($r,$g,$b)";
 }
 
 String _color2rgba(int color) {
-
-  int a = (color >> 24) & 0xFF;
-  int r = (color >> 16) & 0xFF;
-  int g = (color >>  8) & 0xFF;
-  int b = color & 0xFF;
-
-  return "rgba($r,$g,$b,${a / 255.0})";
+  int r = _colorGetR(color);
+  int g = _colorGetG(color);
+  int b = _colorGetB(color);
+  num a = _colorGetA(color) / 255.0;
+  return "rgba($r,$g,$b,$a)";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -158,3 +159,32 @@ Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rect
 
 //------------------------------------------------------------------------------------------------------
 
+Future<ImageElement> _loadImageElement(String url, bool webpAvailable) {
+
+  Completer<ImageElement> completer = new Completer<ImageElement>();
+
+  ImageElement imageElement = new ImageElement();
+  StreamSubscription onLoadSubscription;
+  StreamSubscription onErrorSubscription;
+
+  onLoadSubscription = imageElement.onLoad.listen((event) {
+    onLoadSubscription.cancel();
+    onErrorSubscription.cancel();
+    completer.complete(imageElement);
+  });
+
+  onErrorSubscription = imageElement.onError.listen((event) {
+    onLoadSubscription.cancel();
+    onErrorSubscription.cancel();
+    completer.completeError(new StateError("Failed to load image."));
+  });
+
+  _isWebpSupported.then((bool webpSupported) {
+    var match = new RegExp(r"(png|jpg|jpeg)$").firstMatch(url);
+    imageElement.src = (webpAvailable && webpSupported && match != null)
+        ? url.substring(0, match.start) + "webp"
+        : url;
+  });
+
+  return completer.future;
+}

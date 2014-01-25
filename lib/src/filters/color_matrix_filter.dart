@@ -28,77 +28,63 @@ class ColorMatrixFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  BitmapFilter clone() {
-    return new ColorMatrixFilter(_matrix);
-  }
+  BitmapFilter clone() => new ColorMatrixFilter(_matrix);
+  Rectangle get overlap => new Rectangle(0, 0, 0, 0);
 
   //-------------------------------------------------------------------------------------------------
 
-  void apply(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint) {
+  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
     //redResult   = (a[0]  * srcR) + (a[1]  * srcG) + (a[2]  * srcB) + (a[3]  * srcA) + a[4]
     //greenResult = (a[5]  * srcR) + (a[6]  * srcG) + (a[7]  * srcB) + (a[8]  * srcA) + a[9]
     //blueResult  = (a[10] * srcR) + (a[11] * srcG) + (a[12] * srcB) + (a[13] * srcA) + a[14]
     //alphaResult = (a[15] * srcR) + (a[16] * srcG) + (a[17] * srcB) + (a[18] * srcA) + a[19]
 
-    if (_matrix.length < 20) throw "dart2js_hint";
+    bool isLittleEndianSystem = _isLittleEndianSystem;
 
-    int a00 = (_matrix[00] * 65536).round();
-    int a01 = (_matrix[01] * 65536).round();
-    int a02 = (_matrix[02] * 65536).round();
-    int a03 = (_matrix[03] * 65536).round();
-    int a04 = (_matrix[04] * 65536).round();
-    int a05 = (_matrix[05] * 65536).round();
-    int a06 = (_matrix[06] * 65536).round();
-    int a07 = (_matrix[07] * 65536).round();
-    int a08 = (_matrix[08] * 65536).round();
-    int a09 = (_matrix[09] * 65536).round();
-    int a10 = (_matrix[10] * 65536).round();
-    int a11 = (_matrix[11] * 65536).round();
-    int a12 = (_matrix[12] * 65536).round();
-    int a13 = (_matrix[13] * 65536).round();
-    int a14 = (_matrix[14] * 65536).round();
-    int a15 = (_matrix[15] * 65536).round();
-    int a16 = (_matrix[16] * 65536).round();
-    int a17 = (_matrix[17] * 65536).round();
-    int a18 = (_matrix[18] * 65536).round();
-    int a19 = (_matrix[19] * 65536).round();
+    int d0c0 = ((isLittleEndianSystem ? _matrix[00] : _matrix[18]) * 65536).round();
+    int d0c1 = ((isLittleEndianSystem ? _matrix[01] : _matrix[17]) * 65536).round();
+    int d0c2 = ((isLittleEndianSystem ? _matrix[02] : _matrix[16]) * 65536).round();
+    int d0c3 = ((isLittleEndianSystem ? _matrix[03] : _matrix[15]) * 65536).round();
+    int d0cc = ((isLittleEndianSystem ? _matrix[04] : _matrix[19]) * 65536).round();
 
-    var imageData = sourceBitmapData.getImageData(
-        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, destinationBitmapData.pixelRatio);
-    var data = imageData.data;
+    int d1c0 = ((isLittleEndianSystem ? _matrix[05] : _matrix[13]) * 65536).round();
+    int d1c1 = ((isLittleEndianSystem ? _matrix[06] : _matrix[12]) * 65536).round();
+    int d1c2 = ((isLittleEndianSystem ? _matrix[07] : _matrix[11]) * 65536).round();
+    int d1c3 = ((isLittleEndianSystem ? _matrix[08] : _matrix[10]) * 65536).round();
+    int d1cc = ((isLittleEndianSystem ? _matrix[09] : _matrix[14]) * 65536).round();
 
-    if (_isLittleEndianSystem) {
-      for(int index = 0 ; index <= data.length - 4; index += 4) {
-        int srcR = data[index + 0];
-        int srcG = data[index + 1];
-        int srcB = data[index + 2];
-        int srcA = data[index + 3];
-        data[index + 0] = ((a00 * srcR + a01 * srcG + a02 * srcB + a03 * srcA + a04) | 0) >> 16;
-        data[index + 1] = ((a05 * srcR + a06 * srcG + a07 * srcB + a08 * srcA + a09) | 0) >> 16;
-        data[index + 2] = ((a10 * srcR + a11 * srcG + a12 * srcB + a13 * srcA + a14) | 0) >> 16;
-        data[index + 3] = ((a15 * srcR + a16 * srcG + a17 * srcB + a18 * srcA + a19) | 0) >> 16;
-      }
-    } else {
-      for(int index = 0 ; index <= data.length - 4; index += 4) {
-        int srcA = data[index + 0];
-        int srcB = data[index + 1];
-        int srcG = data[index + 2];
-        int srcR = data[index + 3];
-        data[index + 0] = ((a15 * srcR + a16 * srcG + a17 * srcB + a18 * srcA + a19) | 0) >> 16;
-        data[index + 1] = ((a10 * srcR + a11 * srcG + a12 * srcB + a13 * srcA + a14) | 0) >> 16;
-        data[index + 2] = ((a05 * srcR + a06 * srcG + a07 * srcB + a08 * srcA + a09) | 0) >> 16;
-        data[index + 3] = ((a00 * srcR + a01 * srcG + a02 * srcB + a03 * srcA + a04) | 0) >> 16;
-      }
+    int d2c0 = ((isLittleEndianSystem ? _matrix[10] : _matrix[08]) * 65536).round();
+    int d2c1 = ((isLittleEndianSystem ? _matrix[11] : _matrix[07]) * 65536).round();
+    int d2c2 = ((isLittleEndianSystem ? _matrix[12] : _matrix[06]) * 65536).round();
+    int d2c3 = ((isLittleEndianSystem ? _matrix[13] : _matrix[05]) * 65536).round();
+    int d2cc = ((isLittleEndianSystem ? _matrix[14] : _matrix[09]) * 65536).round();
+
+    int d3c0 = ((isLittleEndianSystem ? _matrix[15] : _matrix[03]) * 65536).round();
+    int d3c1 = ((isLittleEndianSystem ? _matrix[16] : _matrix[02]) * 65536).round();
+    int d3c2 = ((isLittleEndianSystem ? _matrix[17] : _matrix[01]) * 65536).round();
+    int d3c3 = ((isLittleEndianSystem ? _matrix[18] : _matrix[00]) * 65536).round();
+    int d3cc = ((isLittleEndianSystem ? _matrix[19] : _matrix[04]) * 65536).round();
+
+    RenderTextureQuad renderTextureQuad = rectangle == null
+        ? bitmapData.renderTextureQuad
+        : bitmapData.renderTextureQuad.cut(rectangle);
+
+    ImageData imageData = renderTextureQuad.getImageData();
+    List<int> data = imageData.data;
+
+    for(int index = 0 ; index <= data.length - 4; index += 4) {
+      int c0 = data[index + 0];
+      int c1 = data[index + 1];
+      int c2 = data[index + 2];
+      int c3 = data[index + 3];
+      data[index + 0] = ((d0c0 * c0 + d0c1 * c1 + d0c2 * c2 + d0c3 * c3 + d0cc) | 0) >> 16;
+      data[index + 1] = ((d1c0 * c0 + d1c1 * c1 + d1c2 * c2 + d1c3 * c3 + d1cc) | 0) >> 16;
+      data[index + 2] = ((d2c0 * c0 + d2c1 * c1 + d2c2 * c2 + d2c3 * c3 + d2cc) | 0) >> 16;
+      data[index + 3] = ((d3c0 * c0 + d3c1 * c1 + d3c2 * c2 + d3c3 * c3 + d3cc) | 0) >> 16;
     }
 
-    destinationBitmapData.putImageData(imageData, destinationPoint.x, destinationPoint.y);
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  Rectangle getBounds() {
-    return new Rectangle(0, 0, 0, 0);
+    renderTextureQuad.putImageData(imageData);
   }
 
 }

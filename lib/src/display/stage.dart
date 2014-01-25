@@ -1,5 +1,8 @@
 part of stagexl;
 
+/**
+ * The StageScaleMode defines how the Stage is scaled inside of the Canvas.
+ */
 class StageScaleMode {
   static const String EXACT_FIT = "exactFit";
   static const String NO_BORDER = "noBorder";
@@ -7,6 +10,11 @@ class StageScaleMode {
   static const String SHOW_ALL = "showAll";
 }
 
+/**
+ * The StageAlign defines how the content of the Stage is aligned inside
+ * of the Canvas. The setting controls where the origin (point 0,0) of the
+ * Stage will be placed on the Canvas.
+ */
 class StageAlign {
   static const String BOTTOM = "B";
   static const String BOTTOM_LEFT = "BL";
@@ -19,6 +27,10 @@ class StageAlign {
   static const String NONE = "";
 }
 
+/**
+ * The StageRenderMode defines how often the Stage is renderes by
+ * the [RenderLoop] where the Stage is attached to.
+ */
 class StageRenderMode {
   static const String AUTO = "auto";
   static const String STOP = "stop";
@@ -51,6 +63,16 @@ class _Touch {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
+/**
+ * The Stage is the drawing area wher all display objects are rendered to.
+ * Place a Canvas element to your HTML and use the Stage to wrap all the
+ * rendering functions to this Canvas element.
+ *
+ * Example:
+ *
+ * HTML: <canvas id="stage" width="800" height="600"></canvas>
+ * Dart: var stage = new Stage(querySelector("#stage"));
+ */
 class Stage extends DisplayObjectContainer {
 
   static bool autoHiDpi = _autoHiDpi;
@@ -58,28 +80,35 @@ class Stage extends DisplayObjectContainer {
   static num get devicePixelRatio => _devicePixelRatio;
 
   CanvasElement _canvas;
-  CanvasRenderingContext2D _context;
-  int _sourceWidth, _sourceHeight;
-  int _frameRate;
-  int _canvasWidth, _canvasHeight;
-  Rectangle _contentRectangle;
+  RenderContext _renderContext;
 
-  Matrix _clientTransformation;
-  Matrix _stageTransformation;
-  RenderLoop _renderLoop;
-  Juggler _juggler;
+  int _sourceWidth = 0;
+  int _sourceHeight = 0;
+  int _frameRate = 30;
+  int _canvasWidth = -1;
+  int _canvasHeight = -1;
+  Rectangle _contentRectangle = new Rectangle.zero();
 
-  InteractiveObject _focus;
-  RenderState _renderState;
-  String _stageRenderMode;
-  String _stageScaleMode;
-  String _stageAlign;
+  Matrix _clientTransformation = new Matrix.fromIdentity();
+  Matrix _stageTransformation = new Matrix.fromIdentity();
+  RenderLoop _renderLoop = null;
+  Juggler _juggler = new Juggler();
 
-  String _mouseCursor;
-  Point _mousePosition;
-  InteractiveObject _mouseTarget;
-  List<_MouseButton> _mouseButtons;
-  Map<int, _Touch> _touches;
+  InteractiveObject _focus = null;
+  RenderState _renderState = null;
+  String _stageRenderMode = StageRenderMode.AUTO;
+  String _stageScaleMode = StageScaleMode.SHOW_ALL;
+  String _stageAlign = StageAlign.NONE;
+
+  String _mouseCursor = MouseCursor.ARROW;
+  Point _mousePosition = new Point.zero();
+  InteractiveObject _mouseTarget = null;
+
+  Map<int, _Touch> _touches = new Map<int, _Touch>();
+  List<_MouseButton> _mouseButtons = [
+    new _MouseButton(MouseEvent.MOUSE_DOWN, MouseEvent.MOUSE_UP, MouseEvent.CLICK, MouseEvent.DOUBLE_CLICK),
+    new _MouseButton(MouseEvent.MIDDLE_MOUSE_DOWN, MouseEvent.MIDDLE_MOUSE_UP, MouseEvent.MIDDLE_CLICK, MouseEvent.MIDDLE_CLICK),
+    new _MouseButton(MouseEvent.RIGHT_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_UP, MouseEvent.RIGHT_CLICK, MouseEvent.RIGHT_CLICK)];
 
   //-------------------------------------------------------------------------------------------------
 
@@ -88,74 +117,45 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
 
-  Stage(String name, CanvasElement canvas, [int sourceWidth, int sourceHeight, int frameRate]) {
+  Stage(CanvasElement canvas, {int width, int height,
+    bool webGL: false, int frameRate: 30, int color: Color.White}) {
 
     if (canvas is! CanvasElement) {
       throw new ArgumentError("The canvas argument is not a CanvasElement");
     }
 
+    _canvas = canvas;
+
     if (canvas.tabIndex == -1) canvas.tabIndex = 0;
     if (canvas.style.outline == "") canvas.style.outline = "none";
 
-    _name = name;
-    _canvas = canvas;
-    _context = canvas.context2D;
+    _sourceWidth = _ensureInt((width != null) ? width : canvas.width);
+    _sourceHeight = _ensureInt((width != null) ? height : canvas.height);
+    _frameRate = _ensureInt((frameRate != null) ? frameRate : 30);
 
-    _sourceWidth = (sourceWidth != null) ? sourceWidth : canvas.width;
-    _sourceHeight = (sourceHeight != null) ? sourceHeight : canvas.height;
-    _frameRate = (frameRate != null) ? frameRate : 30;
-    _canvasWidth = -1;
-    _canvasHeight = -1;
-    _contentRectangle = new Rectangle.zero();
+    _renderContext = webGL && gl.RenderingContext.supported
+        ? new RenderContextWebGL(canvas, color)
+        : new RenderContextCanvas(canvas, color);
 
-    _clientTransformation = new Matrix.fromIdentity();
-    _stageTransformation = new Matrix.fromIdentity();
+    _renderState = new RenderState(_renderContext);
     _updateCanvasSize();
 
-    _renderLoop = null;
-    _juggler = new Juggler();
+    print("StageXL render engine : ${_renderContext.renderEngine}");
 
-    _renderState = new RenderState.fromCanvasRenderingContext2D(_context);
-    _stageRenderMode = StageRenderMode.AUTO;
-    _stageScaleMode = StageScaleMode.SHOW_ALL;
-    _stageAlign = StageAlign.NONE;
-
-    //---------------------------
-    // prepare mouse events
-
-    _mouseButtons = [
-      new _MouseButton(MouseEvent.MOUSE_DOWN, MouseEvent.MOUSE_UP, MouseEvent.CLICK, MouseEvent.DOUBLE_CLICK),
-      new _MouseButton(MouseEvent.MIDDLE_MOUSE_DOWN, MouseEvent.MIDDLE_MOUSE_UP, MouseEvent.MIDDLE_CLICK, MouseEvent.MIDDLE_CLICK),
-      new _MouseButton(MouseEvent.RIGHT_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_UP, MouseEvent.RIGHT_CLICK, MouseEvent.RIGHT_CLICK)
-    ];
-
-    _mouseCursor = MouseCursor.ARROW;
-    _mouseTarget = null;
-    _mousePosition = new Point(0, 0);
+    canvas.onKeyDown.listen(_onKeyEvent);
+    canvas.onKeyUp.listen(_onKeyEvent);
+    canvas.onKeyPress.listen(_onKeyEvent);
+    canvas.onMouseDown.listen(_onMouseEvent);
+    canvas.onMouseUp.listen(_onMouseEvent);
+    canvas.onMouseMove.listen(_onMouseEvent);
+    canvas.onMouseOut.listen(_onMouseEvent);
+    canvas.onContextMenu.listen(_onMouseEvent);
+    canvas.onMouseWheel.listen(_onMouseWheelEvent);
 
     Mouse._onMouseCursorChanged.listen(_onMouseCursorChanged);
-
-    _canvas.onMouseDown.listen(_onMouseEvent);
-    _canvas.onMouseUp.listen(_onMouseEvent);
-    _canvas.onMouseMove.listen(_onMouseEvent);
-    _canvas.onMouseOut.listen(_onMouseEvent);
-    _canvas.onContextMenu.listen(_onMouseEvent);
-    _canvas.onMouseWheel.listen(_onMouseWheelEvent);
-
-    //---------------------------
-    // prepare touch events
-
-    _touches = new Map<int, _Touch>();
-
     Multitouch._onInputModeChanged.listen(_onMultitouchInputModeChanged);
+
     _onMultitouchInputModeChanged(null);
-
-    //---------------------------
-    // prepare keyboard events
-
-    _canvas.onKeyDown.listen(_onKeyEvent);
-    _canvas.onKeyUp.listen(_onKeyEvent);
-    _canvas.onKeyPress.listen(_onKeyEvent);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -189,41 +189,86 @@ class Stage extends DisplayObjectContainer {
   Rectangle get contentRectangle => _contentRectangle.clone();
 
   /**
+   * Gets the underlying render engine used to draw the pixels to the screen.
+   * The returned string is defined in [RenderEngine] and is either "WebGL"
+   * or "Canvas2D".
+   */
+  String get renderEngine => _renderContext.renderEngine;
+
+  /**
+   * Gets the [RenderLoop] where this Stage was added to, or
+   * NULL in case this Stage is not added to a [RenderLoop].
+   */
+  RenderLoop get renderLoop => _renderLoop;
+
+  /**
+   * Gets the [Juggler] of this Stage. The Juggler is driven by the
+   * [RenderLoop] where this Stage is added to. If this Stage is not
+   * added to a RenderLoop, the [Juggler] will not advance in time.
+   */
+  Juggler get juggler => _juggler;
+
+  /**
+   * Gets the last known mouse position in Stage coordinates.
+   */
+  Point get mousePosition => _mousePosition;
+
+  /**
    * Gets and sets the default frame rate for MovieClips. This value has no
    * impact on the frame rate of the Stage itself.
    */
   int get frameRate => _frameRate;
+
   set frameRate(int value) {
     _frameRate = value;
   }
 
-  RenderLoop get renderLoop => _renderLoop;
-  Juggler get juggler => _juggler;
-
-  Point get mousePosition => _mousePosition;
-
+  /**
+   * Gets and sets the [InteractiveObject] (a DisplayObject which can
+   * receive user input like mouse, touch or keyboard).
+   */
   InteractiveObject get focus => _focus;
+
   set focus(InteractiveObject value) {
     _focus = value;
   }
 
+  /**
+   * Gets and sets the render mode of this Stage. You can choose between
+   * three different modes defined in [StageRenderMode].
+   */
   String get renderMode => _stageRenderMode;
+
   set renderMode(String value) {
     _stageRenderMode = value;
   }
 
+  /**
+   * Gets and sets the scale mode of this Stage. You can choose between
+   * four dfferent modes defined in [StageScaleMode].
+   */
   String get scaleMode => _stageScaleMode;
+
   set scaleMode(String value) {
     _stageScaleMode = value;
     _updateCanvasSize();
   }
 
+  /**
+   * Gets and sets the alignment of this Stage inside of the Canvas element.
+   * You can choose between nine different align modes defined in [StageAlign].
+   */
   String get align => _stageAlign;
   set align(String value) {
     _stageAlign = value;
     _updateCanvasSize();
   }
 
+  /**
+   * Calling this method will cause an [RenderEvent] to be fired right before
+   * the next frame will be rendered by the render loop. To receive the render
+   * event attach a listener to [DisplayObject.onRender].
+   */
   invalidate() {
     if (_renderLoop != null) {
       _renderLoop.invalidate();
@@ -252,6 +297,11 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  /**
+   * This method is called by the [RenderLoop] where this Stage is added to.
+   * If this Stage is not added to a [RenderLoop] you could call this method
+   * on your own and therefore get full control of the rendering of this Stage.
+   */
   materialize(num currentTime, num deltaTime) {
 
     if (_stageRenderMode == StageRenderMode.AUTO || _stageRenderMode == StageRenderMode.ONCE) {
@@ -260,6 +310,7 @@ class Stage extends DisplayObjectContainer {
 
       _renderState.reset(_stageTransformation, currentTime, deltaTime);
       render(_renderState);
+      _renderState.flush();
 
       if (_stageRenderMode == StageRenderMode.ONCE)
         _stageRenderMode = StageRenderMode.STOP;
@@ -576,7 +627,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  List<StreamSubscription<TouchEvent>> _touchEventSubscriptions = [];
+  List<StreamSubscription<html.TouchEvent>> _touchEventSubscriptions = [];
 
   _onMultitouchInputModeChanged(String inputMode) {
 

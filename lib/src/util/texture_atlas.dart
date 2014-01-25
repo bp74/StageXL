@@ -3,11 +3,12 @@ part of stagexl;
 class TextureAtlas {
 
   final List<TextureAtlasFrame> _frames = new List<TextureAtlasFrame>();
-  BitmapData _bitmapData;
+  RenderTexture _renderTexture;
 
   //-------------------------------------------------------------------------------------------------
 
-  static Future<TextureAtlas> load(String url, String textureAtlasFormat) {
+  static Future<TextureAtlas> load(String url, String textureAtlasFormat, [
+      BitmapDataLoadOptions bitmapDataLoadOptions]) {
 
     Completer<TextureAtlas> completer = new Completer<TextureAtlas>();
     TextureAtlas textureAtlas = new TextureAtlas();
@@ -43,8 +44,16 @@ class TextureAtlas {
             }
           }
 
-          BitmapData.load(imageUrl).then((BitmapData bitmapData) {
-            textureAtlas._bitmapData = bitmapData;
+          if (bitmapDataLoadOptions == null) {
+            bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
+          }
+
+          var autoHiDpi = bitmapDataLoadOptions.autoHiDpi;
+          var webpAvailable = bitmapDataLoadOptions.webp;
+          var loader = RenderTexture.load(imageUrl, autoHiDpi, webpAvailable);
+
+          loader.then((RenderTexture renderTexture) {
+            textureAtlas._renderTexture = renderTexture;
             completer.complete(textureAtlas);
           }).catchError((error) {
             completer.completeError(new StateError("Failed to load image."));
@@ -63,13 +72,18 @@ class TextureAtlas {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  RenderTexture get renderTexture => _renderTexture;
+
+  List<TextureAtlasFrame> get frames => _frames.toList(growable: false);
+  List<String> get frameNames => _frames.map((f) => f.name).toList(growable: false);
+
+  //-------------------------------------------------------------------------------------------------
+
   BitmapData getBitmapData(String name) {
 
     for(int i = 0; i < _frames.length; i++) {
       var frame = _frames[i];
-      if (frame.name == name) {
-        return new BitmapData.fromTextureAtlasFrame(frame);
-      }
+      if (frame.name == name) return frame.getBitmapData();
     }
 
     throw new ArgumentError("TextureAtlasFrame not found: '$name'");
@@ -84,18 +98,11 @@ class TextureAtlas {
     for(int i = 0; i < _frames.length; i++) {
       var frame = _frames[i];
       if (frame.name.startsWith(namePrefix)) {
-        bitmapDataList.add(new BitmapData.fromTextureAtlasFrame(frame));
+        bitmapDataList.add(frame.getBitmapData());
       }
     }
 
     return bitmapDataList;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  List<String> get frameNames {
-
-    return _frames.map((f) => f.name).toList(growable: false);
   }
 
 }

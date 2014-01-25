@@ -20,7 +20,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   bool _off = false; // disable rendering
 
   Mask _mask = null;
-  BitmapData _cache = null;
+  RenderTexture _cacheTexture = null;
   Rectangle _cacheRectangle = null;
   bool _cacheDebugBorder = false;
   List<BitmapFilter> _filters = null;
@@ -75,7 +75,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num get alpha => _alpha;
 
   Mask get mask => _mask;
-  bool get cached => _cache != null;
+  bool get cached => _cacheTexture != null;
 
   List<BitmapFilter> get filters {
     if (_filters == null) _filters = new List<BitmapFilter>();
@@ -469,47 +469,72 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
 
-    _cache = new BitmapData(width, height, true, Color.Transparent, pixelRatio);
+    if (_cacheTexture == null) {
+      _cacheTexture = new RenderTexture(width, height, true, Color.Transparent, pixelRatio);
+    } else {
+      _cacheTexture.resize(width, height);
+    }
+
     _cacheRectangle = new Rectangle(x, y, width, height);
     _cacheDebugBorder = debugBorder;
+
     refreshCache();
   }
 
   void refreshCache() {
 
-    if (_cache == null) return;
+    if (_cacheTexture == null) return;
 
     var x = _cacheRectangle.x;
     var y = _cacheRectangle.y;
     var width = _cacheRectangle.width;
     var height = _cacheRectangle.height;
+    var canvas = _cacheTexture.canvas;
 
-    _cache.clear();
-    _cache.draw(this, new Matrix(1.0, 0.0, 0.0, 1.0, - x, - y));
+    var matrix = _cacheTexture.quad.drawMatrix..translate(-x, -y);
+    var renderContext = new RenderContextCanvas(canvas, Color.Transparent);
+    var renderState = new RenderState(renderContext, matrix);
+
+    renderContext.clear();
+    render(renderState);
 
     if (_filters != null) {
-      for(int i = 0; i < _filters.length; i++) {
-        var sourceRectangle = new Rectangle(0, 0, width, height);
-        var destinationPoint = new Point.zero();
-        _filters[i].apply(_cache, sourceRectangle, _cache, destinationPoint);
+      var cacheBitmapData = new BitmapData.fromRenderTextureQuad(_cacheTexture.quad);
+      var bounds = this.getBoundsTransformed(_identityMatrix)..offset(-x, -y);
+      for(var filter in _filters) {
+        var filterOverlap = filter.overlap;
+        var filterBounds = bounds.clone();
+        filterBounds.offset(filterOverlap.x, filterOverlap.y);
+        filterBounds.inflate(filterOverlap.width, filterOverlap.height);
+        filter.apply(cacheBitmapData, filterBounds.align());
       }
     }
 
     if (_cacheDebugBorder) {
-      _cache.fillRect(new Rectangle(0, 0, width, 1), 0xFFFF00FF);
-      _cache.fillRect(new Rectangle(width - 1, 0, 1, height), 0xFFFF00FF);
-      _cache.fillRect(new Rectangle(0, height - 1, width, 1), 0xFFFF00FF);
-      _cache.fillRect(new Rectangle(0, 0, 1, height), 0xFFFF00FF);
+      canvas.context2D
+          ..setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+          ..lineWidth = 1
+          ..lineJoin = "miter"
+          ..lineCap = "butt"
+          ..strokeStyle = "#FF00FF"
+          ..strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
     }
+
+    _cacheTexture.update();
   }
 
   void removeCache() {
-    _cache = null;
+    if (_cacheTexture != null) {
+      _cacheTexture.dispose();
+      _cacheTexture = null;
+    }
   }
 
   void _renderCache(RenderState renderState) {
-    renderState.context.translate(_cacheRectangle.x, _cacheRectangle.y);
-    _cache.render(renderState);
+    _tmpMatrix.setTo(1.0, 0.0, 0.0, 1.0, _cacheRectangle.x, _cacheRectangle.y);
+    _tmpMatrix.concat(renderState.globalMatrix);
+    num alpha = renderState.globalAlpha;
+    renderState.renderContext.renderQuad(_cacheTexture.quad, _tmpMatrix, alpha);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -547,17 +572,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  void _setParent(DisplayObjectContainer value) {
-
-    for(var ancestor = value; ancestor != null; ancestor = ancestor._parent)
-      if (ancestor == this)
-        throw new ArgumentError("Error #2150: An object cannot be added as a child to one of it's children (or children's children, etc.).");
-
-    _parent = value;
-  }
-
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState);

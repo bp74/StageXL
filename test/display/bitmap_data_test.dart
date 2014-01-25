@@ -6,25 +6,19 @@ import 'package:stagexl/stagexl.dart';
 void main() {
 
   ResourceManager resourceManager = new ResourceManager();
-  resourceManager.addBitmapData('monster', '/StageXL/test/assets/brainmonster.png');
-  var monster;
+  BitmapData monster;
+  List<BitmapData> bitmapDatas;
 
-  compareRawData(frame, source, sourceX, sourceY) {
-    // It is almost impossible to test this the way things are now...
-    // ...right?
-    //expect(false, isTrue);
-    // See TODO in spritesheet_test.dart#27 (ish).
-  }
+  resourceManager.addBitmapData('monster', '/StageXL/test/assets/brainmonster.png');
 
   setUp(() {
     return resourceManager.load().then((_) {
       monster = resourceManager.getBitmapData('monster');
+      bitmapDatas = monster.sliceIntoFrames(32, 64);
     });
   });
 
   group('sliceSpriteSheet', () {
-    List<BitmapData> bitmapDatas;
-    setUp(() => bitmapDatas = monster.sliceIntoFrames(32, 64));
 
     test('creates the expected number of BitmapDatas', () {
       expect(bitmapDatas.length, equals(12));
@@ -36,14 +30,12 @@ void main() {
     });
 
     test('has created the expected BitmapDatas', () {
-      var width = 32, height = 64, rows = 4, cols = 3;
-
-      for(var i = 0; i < bitmapDatas.length; i++) {
-        var bitmapData = bitmapDatas[i];
-        var x = i < cols ? (i * width) : (i - cols) * width;
-        var y = i < rows ? (i * height) : (i - rows) * height;
-
-        compareRawData(bitmapData, monster, x, y);
+      for(var index = 0; index < bitmapDatas.length; index++) {
+        var x = index % 3;
+        var y = index ~/ 3;
+        var id1 = bitmapDatas[index].renderTextureQuad.getImageData();
+        var id2 = monster.renderTexture.canvas.context2D.getImageData(x * 32, y * 64, 32, 64);
+        expect(id1.data, equals(id2.data), reason: "@frame $index");
       }
     });
   });

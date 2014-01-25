@@ -34,7 +34,8 @@ class TextField extends InteractiveObject {
 
   int _refreshPending = 3;   // bit 0: textLineMetrics, bit 1: cache
   bool _cacheAsBitmap = true;
-  CanvasElement _cacheAsBitmapCanvas;
+
+  RenderTexture _renderTexture;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -49,7 +50,8 @@ class TextField extends InteractiveObject {
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+
+  RenderTexture get renderTexture => _renderTexture;
 
   String get text => _text;
   int get textColor => _defaultTextFormat.color;
@@ -231,17 +233,19 @@ class TextField extends InteractiveObject {
   void render(RenderState renderState) {
 
     _refreshTextLineMetrics();
-    _refreshCache();
 
-    // draw text
+    var renderContext = renderState.renderContext;
 
-    var renderContext = renderState.context;
-
-    if (_cacheAsBitmap) {
-      var canvas = _cacheAsBitmapCanvas;
-      if (canvas != null) renderContext.drawImageScaled(canvas, 0.0, 0.0, _width, _height);
+    if (_cacheAsBitmap || renderContext is! RenderContextCanvas) {
+      _refreshCache();
+      renderState.renderQuad(_renderTexture.quad);
     } else {
-      _renderText(renderContext);
+      var renderContextCanvas = renderState.renderContext as RenderContextCanvas;
+      var context = renderContextCanvas.rawContext;
+      var matrix = renderState.globalMatrix;
+      context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+      context.globalAlpha = renderState.globalAlpha;
+      _renderText(renderContextCanvas.rawContext);
     }
 
     // draw cursor for INPUT text fields
@@ -251,8 +255,13 @@ class TextField extends InteractiveObject {
     if (_type == TextFieldType.INPUT) {
       var stage = this.stage;
       if (stage != null && stage.focus == this && _caretTime.remainder(0.8) < 0.4) {
-        renderContext.fillStyle = _color2rgb(_defaultTextFormat.color);
-        renderContext.fillRect(_caretX, _caretY, _caretWidth, _caretHeight);
+        var x1 = _caretX;
+        var y1 = _caretY;
+        var x3 = _caretX + _caretWidth;
+        var y3 = _caretY + _caretHeight;
+        var color = _defaultTextFormat.color;
+        renderState.renderTriangle(x1, y1, x3, y1, x3, y3, color);
+        renderState.renderTriangle(x1, y1, x3, y3, x1, y3, color);
       }
     }
   }
@@ -449,7 +458,7 @@ class TextField extends InteractiveObject {
           _caretLine = line;
           _caretX = textLineMetrics.x + canvasContext.measureText(text).width.toDouble();
           _caretY = textLineMetrics.y - fontStyleMetricsAscent * 0.9;
-          _caretWidth = 1.0;
+          _caretWidth = 2.0;
           _caretHeight = textFormatSize;
           break;
         }
@@ -486,31 +495,23 @@ class TextField extends InteractiveObject {
       _refreshPending &= 255 - 2;
     }
 
-    if (_cacheAsBitmap == false) {
-      return;
+    var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
+    var width = max(1, _width).ceil();
+    var height =  max(1, _height).ceil();
+
+    if (_renderTexture == null) {
+      _renderTexture = new RenderTexture(width, height, true, Color.Transparent, pixelRatio);
+    } else {
+      _renderTexture.resize(width, height);
     }
 
-    var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
-    var canvasWidth = (_width * pixelRatio).ceil();
-    var canvasHeight =  (_height * pixelRatio).ceil();
-
-    if (canvasWidth <= 0 || canvasHeight <= 0) {
-      _cacheAsBitmapCanvas = null;
-      return;
-    }
-
-    if (_cacheAsBitmapCanvas == null) {
-      _cacheAsBitmapCanvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
-    }
-
-    if (_cacheAsBitmapCanvas.width != canvasWidth) _cacheAsBitmapCanvas.width = canvasWidth;
-    if (_cacheAsBitmapCanvas.height != canvasHeight) _cacheAsBitmapCanvas.height = canvasHeight;
-
-    var context = _cacheAsBitmapCanvas.context2D;
-    context.setTransform(pixelRatio, 0.0, 0.0, pixelRatio, 0.0, 0.0);
+    var matrix = _renderTexture.quad.drawMatrix;
+    var context = _renderTexture.canvas.context2D;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     context.clearRect(0, 0, _width, _height);
 
     _renderText(context);
+    _renderTexture.update();
   }
 
   //-------------------------------------------------------------------------------------------------

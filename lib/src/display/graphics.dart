@@ -201,11 +201,26 @@ class Graphics {
 
   void render(RenderState renderState) {
 
-    var context = renderState.context;
-    context.beginPath();
+    var renderContext = renderState.renderContext;
+    var matrix = renderState.globalMatrix;
+    var alpha = renderState.globalAlpha;
 
-    for(int i = 0; i < _commands.length; i++) {
-      _commands[i].render(context);
+    if (renderContext is RenderContextCanvas) {
+
+      var context = renderContext.rawContext;
+      context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+      context.globalAlpha = alpha;
+      context.beginPath();
+
+      for(int i = 0; i < _commands.length; i++) {
+        _commands[i].render(context);
+      }
+
+    } else {
+
+      // TODO: Native support for Graphics in WebGL will be added later.
+      // For now please use the applyCache feature of DisplayObject.
+
     }
   }
 

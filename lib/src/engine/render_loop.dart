@@ -2,31 +2,18 @@ part of stagexl;
 
 class RenderLoop {
 
-  Juggler _juggler;
-  List<Stage> _stages;
-  num _renderTime;
-  Function _requestAnimationFrameCallback; // Cached closure to pass to requestAnimationFrame.
-  bool _invalidate;
-  int _requestId;
+  Juggler _juggler = new Juggler();
+  List<Stage> _stages = new List<Stage>();
+  num _renderTime = -1;
+  int _requestId = null;
+  bool _invalidate = false;
 
-  EnterFrameEvent _enterFrameEvent;
-  ExitFrameEvent _exitFrameEvent;
-  RenderEvent _renderEvent;
+  EnterFrameEvent _enterFrameEvent = new EnterFrameEvent(0);
+  ExitFrameEvent _exitFrameEvent = new ExitFrameEvent();
+  RenderEvent _renderEvent = new RenderEvent();
 
   RenderLoop() {
-
-    _juggler = new Juggler();
-    _stages = new List<Stage>();
-    _renderTime = -1;
-    _invalidate = false;
-
-    _enterFrameEvent = new EnterFrameEvent(0);
-    _exitFrameEvent = new ExitFrameEvent();
-    _renderEvent = new RenderEvent();
-
-    _requestId = null;
-    _requestAnimationFrameCallback = _onAnimationFrame;
-    _requestAnimationFrame();
+    start();
   }
 
   Juggler get juggler => _juggler;
@@ -70,7 +57,7 @@ class RenderLoop {
 
   _requestAnimationFrame() {
     if (_requestId == null) {
-      _requestId = html.window.requestAnimationFrame(_requestAnimationFrameCallback);
+      _requestId = html.window.requestAnimationFrame(_onAnimationFrame);
     }
   }
 

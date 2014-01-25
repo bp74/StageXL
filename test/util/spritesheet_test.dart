@@ -2,12 +2,14 @@ library spritesheet_test;
 
 import 'package:unittest/unittest.dart';
 import 'package:stagexl/stagexl.dart';
-import 'dart:async';
 
 void main() {
+
   ResourceManager resourceManager = new ResourceManager();
+  BitmapData spiders;
+  SpriteSheet spritesheet;
+
   resourceManager.addBitmapData('spiders', '/StageXL/test/assets/spider.png');
-  var spiders, spritesheet;
 
   setUp(() {
     return resourceManager.load().then((_) {
@@ -24,15 +26,19 @@ void main() {
     expect(spritesheet.frames.length, equals(28));
   });
 
-  // TODO: I tested the below "manually" because Dart's testing
-  // sucks ATM.
+  test('SpriteSheet.frames calls BitmapData.sliceSpriteSheet correctly', () {
+    for(var index = 0; index < spritesheet.frames.length; index++) {
+      var x = index % 7;
+      var y = index ~/ 7;
+      var id1 = spritesheet.frames[index].renderTextureQuad.getImageData();
+      var id2 = spiders.renderTexture.canvas.context2D.getImageData(x * 32, y * 32, 32, 32);
+      expect(id1.data, equals(id2.data), reason: "@frame $index");
+    }
+  });
 
-  // Not going to bother testing whether spritesheet.frames has the
-  // correct contents or not, or if its at least called
-  // BitmapData.sliceSpriteSheet with the correct parameters.
-  // Testing these basic things in Dart is highly
-  // unpleasant at the moment. Maybe in the future.
-  // There's no "pending" concept, either...
-  test('SpriteSheet.frames calls BitmapData.sliceSpriteSheet correctly', () {});
-  test('SpriteSheet.frameAt uses SpriteSheet.frames', () {});
+  test('SpriteSheet.frameAt uses SpriteSheet.frames', () {
+    for(var index = 0; index < spritesheet.frames.length; index++) {
+      expect(spritesheet.frameAt(index), equals(spritesheet.frames[index]));
+    }
+  });
 }
