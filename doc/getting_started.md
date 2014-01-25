@@ -28,7 +28,7 @@ The following code shows how to initialize the main drawing area (Stage) and how
 
       // The Stage is a wrapper over the HTML canvas element.
       CanvasElement canvas = html.querySelector('#stageCanvas')
-      Stage stage = new Stage('myStage', canvas);
+      Stage stage = new Stage(canvas);
 
       // The RenderLoop controls the flow of the program
       RenderLoop renderLoop = new RenderLoop();
