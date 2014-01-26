@@ -465,6 +465,13 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
+  /**
+   * Caches a rectangular area of the display object for better performance.
+   *
+   * If the cached area changes, the cache must be refreshed using [refreshCache] or
+   * removed using [removeCache]. Calling [applyCache] again with the same parameters
+   * will refresh the cache.
+   */
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
 
     var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
