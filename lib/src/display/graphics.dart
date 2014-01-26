@@ -13,7 +13,7 @@ part of stagexl;
  *
  * **Note:** Stroke and fill operations act on the *preceding* vector drawing operations.
  *
- * **Warning:** The WebGL does not support vector graphics yet.
+ * **Warning:** The WebGL backend does not support vector graphics yet.
  * If you want to draw Graphics display
  * objects please use the [DisplayObject.applyCache] method which renders the vector graphics
  * to a texture or do not opt-in for the WebGL renderer.
