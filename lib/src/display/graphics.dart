@@ -1,5 +1,24 @@
 part of stagexl;
 
+/**
+ * A vector graphics drawing surface.
+ *
+ * Example:
+ *
+ *     // draw a red circle
+ *     var shape = new Shape();
+ *     shape.graphics.circle(100, 100, 60);
+ *     shape.graphics.fillColor(Color.Red);
+ *     stage.addChild(shape);
+ *
+ * **Note:** Stroke and fill operations act on the *preceding* vector drawing operations.
+ *
+ * **Warning:** The WebGL backend does not support vector graphics yet.
+ * If you want to draw Graphics display
+ * objects please use the [DisplayObject.applyCache] method which renders the vector graphics
+ * to a texture or do not opt-in for the WebGL renderer.
+ *
+ */
 class Graphics {
 
   static final Map _BASE_64 = {"A":0,"B":1,"C":2,"D":3,"E":4,"F":5,"G":6,"H":7,"I":8,"J":9,"K":10,"L":11,"M":12,"N":13,"O":14,"P":15,"Q":16,"R":17,"S":18,"T":19,"U":20,"V":21,"W":22,"X":23,"Y":24,"Z":25,"a":26,"b":27,"c":28,"d":29,"e":30,"f":31,"g":32,"h":33,"i":34,"j":35,"k":36,"l":37,"m":38,"n":39,"o":40,"p":41,"q":42,"r":43,"s":44,"t":45,"u":46,"v":47,"w":48,"x":49,"y":50,"z":51,"0":52,"1":53,"2":54,"3":55,"4":56,"5":57,"6":58,"7":59,"8":60,"9":61,"+":62,"/":63};
@@ -21,53 +40,102 @@ class Graphics {
 
   //-------------------------------------------------------------------------------------------------
 
+  /**
+   * Start drawing a freeform path.
+   *
+   */
   beginPath() =>
     _addCommand(new _GraphicsCommandBeginPath());
 
+  /**
+   * Stop drawing a freeform path.
+   */
   closePath() =>
     _addCommand(new _GraphicsCommandClosePath());
 
+  /**
+   * Moves the next point in the path to [x] and [y]
+   */
   moveTo(num x, num y) =>
     _addCommand(new _GraphicsCommandMoveTo(x, y));
 
+  /**
+   * From the current point in the path, draw a line to [x] and [y]
+   */
   lineTo(num x, num y) =>
     _addCommand(new _GraphicsCommandLineTo(x, y));
 
+  /**
+   * From the current point in the path, draw an arc to [endX] and [endY]
+   */
   arcTo(num controlX, num controlY, num endX, num endY, num radius) =>
     _addCommand(new _GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
 
+  /**
+   * From the current point in the path, draw a quadratic curve to [endX] and [endY]
+   */
   quadraticCurveTo(num controlX, num controlY, num endX, num endY) =>
     _addCommand(new _GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
 
+  /**
+   * From the current point in the path, draw a bezier curve to [endX] and [endY]
+   */
   bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) =>
     _addCommand(new _GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
 
+  /**
+   * Draw an arc at [x] and [y].
+   */
   arc(num x, num y, num radius, num startAngle, num endAngle, bool antiClockwise) =>
     _addCommand(new _GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
 
+  /**
+   * Draw a rectangle at [x] and [y]
+   */
   rect(num x, num y, num width, num height) =>
     _addCommand(new _GraphicsCommandRect(x,y, width, height));
 
+  /**
+   * Apply a stroke color to the **previously drawn** vector object.
+   */
   strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
     _addCommand(new _GraphicsCommandStrokeColor(_color2rgba(color), width, joints, caps));
 
+  /**
+   * Apply a stroke color to the **previously drawn** vector object.
+   */
   strokeGradient(GraphicsGradient gradient, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
     _addCommand(new _GraphicsCommandStrokeGradient(gradient, width, joints, caps));
 
+  /**
+   * Apply a stroke pattern to the **previously drawn** vector object.
+   */
   strokePattern(GraphicsPattern pattern, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
     _addCommand(new _GraphicsCommandStrokePattern(pattern, width, joints, caps));
 
+  /**
+   * Apply a fill color to the **previously drawn** vector object.
+   */
   fillColor(int color) =>
     _addCommand(new _GraphicsCommandFillColor(_color2rgba(color)));
 
+  /**
+   * Apply a fill gradient to the **previously drawn** vector object.
+   */
   fillGradient(GraphicsGradient gradient) =>
     _addCommand(new _GraphicsCommandFillGradient(gradient));
 
+  /**
+   * Apply a fill pattern to the **previously drawn** vector object.
+   */
   fillPattern(GraphicsPattern pattern) =>
     _addCommand(new _GraphicsCommandFillPattern(pattern));
 
   //-------------------------------------------------------------------------------------------------
 
+  /**
+   * Draw a rounded rectangle at [x] and [y].
+   */
   rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
 
     _addCommand(new _GraphicsCommandMoveTo(x + ellipseWidth, y));
@@ -83,6 +151,9 @@ class Graphics {
 
   //-------------------------------------------------------------------------------------------------
 
+  /**
+   * Draw a circle at [x] and [y]
+   */
   circle(num x, num y, num radius) {
 
     _addCommand(new _GraphicsCommandMoveTo(x + radius, y));
@@ -91,6 +162,9 @@ class Graphics {
 
   //-------------------------------------------------------------------------------------------------
 
+  /**
+   * Draw an ellipse at [x] and [y]
+   */
   ellipse(num x, num y, num width, num height) {
 
     num kappa = 0.5522848;
