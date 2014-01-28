@@ -4,3 +4,4 @@ Bernhard Pichler \<bernhard.robert.pichler@gmail.com\>
 Philippe Elsass \<elsass@adobe.com\>  
 Arron Washington \<arron@theradicaledwards.com\>
 Michael Randolph \<mrand01@gmail.com\>
+Xavier Hainaux \<xavier.hainaux@produweb.be\>
