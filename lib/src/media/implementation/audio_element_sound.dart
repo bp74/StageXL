@@ -35,11 +35,11 @@ class AudioElementSound extends Sound {
       return MockSound.load(url, soundLoadOptions);
     }
 
-    StreamSubscription onCanPlayThroughSubscription;
+    StreamSubscription onCanPlaySubscription;
     StreamSubscription onErrorSubscription;
 
-    onCanPlayThrough(event) {
-      onCanPlayThroughSubscription.cancel();
+    onCanPlay(event) {
+      onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
       loadCompleter.complete(sound);
     };
@@ -49,7 +49,7 @@ class AudioElementSound extends Sound {
         audio.src = audioUrls.removeAt(0);
         audio.load();
       } else {
-        onCanPlayThroughSubscription.cancel();
+        onCanPlaySubscription.cancel();
         onErrorSubscription.cancel();
 
         if (soundLoadOptions.ignoreErrors) {
@@ -60,7 +60,7 @@ class AudioElementSound extends Sound {
       }
     };
 
-    onCanPlayThroughSubscription = audio.onCanPlayThrough.listen(onCanPlayThrough);
+    onCanPlaySubscription = audio.onCanPlay.listen(onCanPlay);
     onErrorSubscription = audio.onError.listen(onError);
 
     audio.src = audioUrls.removeAt(0);
