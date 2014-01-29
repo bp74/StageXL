@@ -7,8 +7,6 @@ abstract class Mask {
   int borderColor = 0xFF000000;
   int borderWidth = 1;
 
-  CanvasRenderingContext2D _context;
-
   Mask();
 
   //-----------------------------------------------------------------------------------------------
@@ -157,7 +155,7 @@ class _ShapeMask extends Mask {
   _drawCanvasPath(CanvasRenderingContext2D context) {
     var mtx = _shape.transformationMatrix;
     context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-    _shape.graphics._drawPath(_context);
+    _shape.graphics._drawPath(context);
   }
 
   _drawTriangles(RenderContext context, Matrix matrix) {
