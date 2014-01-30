@@ -14,11 +14,18 @@ abstract class RenderContext extends EventDispatcher {
   EventStream<Event> get onContextRestored => RenderContext.contextRestoredEvent.forTarget(this);
 
   String get renderEngine;
+  Matrix get viewPortMatrix;
+
+  String get globalCompositeOperation;
+  set globalCompositeOperation(String value);
+
+  num get globalAlpha;
+  set globalAlpha(num value);
 
   void clear();
   void flush();
 
-  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha);
+  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix);
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color);
 
   void beginRenderMask(RenderState renderState, Mask mask, Matrix matrix);
@@ -26,6 +33,4 @@ abstract class RenderContext extends EventDispatcher {
 
   void beginRenderShadow(RenderState renderState, Shadow shadow, Matrix matrix);
   void endRenderShadow(Shadow shadow);
-
-  Matrix get viewPortMatrix;
 }

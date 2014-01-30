@@ -8,6 +8,9 @@ class RenderContextWebGL extends RenderContext {
   final RenderProgramQuad _renderProgramQuad = new RenderProgramQuad();
   final RenderProgramTriangle _renderProgramTriangle = new RenderProgramTriangle();
 
+  String _globalCompositeOperation = CompositeOperation.SOURCE_OVER;
+  num _globalAlpha = 1.0;
+
   gl.RenderingContext _renderingContext;
   RenderTexture _renderTexture;
   RenderProgram _renderProgram;
@@ -42,14 +45,29 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  String get renderEngine => RenderEngine.WebGL;
-
   gl.RenderingContext get rawContext => _renderingContext;
+
+  String get renderEngine => RenderEngine.WebGL;
 
   Matrix get viewPortMatrix {
     int width = _renderingContext.drawingBufferWidth;
     int height = _renderingContext.drawingBufferHeight;
     return new Matrix(2.0 / width, 0.0, 0.0, - 2.0 / height, -1.0, 1.0);
+  }
+
+  String get globalCompositeOperation => _globalCompositeOperation;
+  set globalCompositeOperation(String value){
+    if (_globalCompositeOperation != value) {
+      _globalCompositeOperation = value;
+      // TODO: Map compositeOperation to blend function.
+    }
+  }
+
+  num get globalAlpha => _globalAlpha;
+  set globalAlpha(num value) {
+    if (_globalAlpha != value) {
+      _globalAlpha = value;
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -68,9 +86,9 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
   }
 
-  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
+  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix) {
     _updateState(_renderProgramQuad, renderTextureQuad.renderTexture);
-    _renderProgramQuad.renderQuad(renderTextureQuad, matrix, alpha);
+    _renderProgramQuad.renderQuad(renderTextureQuad, matrix, _globalAlpha);
   }
 
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {

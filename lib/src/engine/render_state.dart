@@ -123,6 +123,9 @@ class RenderState {
 
     // render DisplayObject
 
+    _renderContext.globalAlpha = nextAlpha;
+    _renderContext.globalCompositeOperation = nextCompositeOperation;
+
     if (displayObject.cached) {
       displayObject._renderCache(this);
     } else {
@@ -148,8 +151,7 @@ class RenderState {
 
   void renderQuad(RenderTextureQuad renderTextureQuad) {
     var matrix = _currentContextState.matrix;
-    var alpha = _currentContextState.alpha;
-    _renderContext.renderQuad(renderTextureQuad, matrix, alpha);
+    _renderContext.renderQuad(renderTextureQuad, matrix);
   }
 
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, int color) {

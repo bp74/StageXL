@@ -5,6 +5,9 @@ class RenderContextCanvas extends RenderContext {
   final CanvasElement _canvasElement;
   final int _backgroundColor;
 
+  String _globalCompositeOperation = CompositeOperation.SOURCE_OVER;
+  num _globalAlpha = 1.0;
+
   CanvasRenderingContext2D _renderingContext;
 
   RenderContextCanvas(CanvasElement canvasElement, int backgroundColor) :
@@ -18,15 +21,32 @@ class RenderContextCanvas extends RenderContext {
     }
 
     _renderingContext = renderingContext;
+    _renderingContext.globalCompositeOperation = _globalCompositeOperation;
+    _renderingContext.globalAlpha = _globalAlpha;
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  String get renderEngine => RenderEngine.Canvas2D;
-
   CanvasRenderingContext2D get rawContext => _renderingContext;
 
+  String get renderEngine => RenderEngine.Canvas2D;
   Matrix get viewPortMatrix => new Matrix.fromIdentity();
+
+  String get globalCompositeOperation => _globalCompositeOperation;
+  set globalCompositeOperation(String value){
+    if (_globalCompositeOperation != value) {
+      _globalCompositeOperation = value;
+      _renderingContext.globalCompositeOperation = value;
+    }
+  }
+
+  num get globalAlpha => _globalAlpha;
+  set globalAlpha(num value) {
+    if (_globalAlpha != value) {
+      _globalAlpha = value;
+      _renderingContext.globalAlpha = value;
+    }
+  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -41,14 +61,12 @@ class RenderContextCanvas extends RenderContext {
     }
   }
 
-  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix, num alpha) {
+  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix) {
 
     var context = _renderingContext;
     var source = renderTextureQuad.renderTexture.canvas;
     var rotation = renderTextureQuad.rotation;
     var xyList = renderTextureQuad.xyList;
-
-    context.globalAlpha = alpha;
 
     if (rotation == 0) {
 

@@ -35,7 +35,7 @@ class AlphaMaskFilter extends BitmapFilter {
     context.clip();
     context.globalCompositeOperation = CompositeOperation.DESTINATION_IN;
     matrix.prepend(this.matrix);
-    renderContext.renderQuad(_alphaBitmapData.renderTextureQuad, matrix, 1.0);
+    renderContext.renderQuad(_alphaBitmapData.renderTextureQuad, matrix);
     context.restore();
   }
 

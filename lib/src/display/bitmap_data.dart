@@ -218,7 +218,7 @@ class BitmapData implements BitmapDrawable {
     matrix.concat(_renderTextureQuad.drawMatrix);
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     context.clearRect(0, 0, sourceRect.width, sourceRect.height);
-    renderContext.renderQuad(sourceQuad, matrix, 1.0);
+    renderContext.renderQuad(sourceQuad, matrix);
     _renderTexture.update();
   }
 
@@ -227,7 +227,7 @@ class BitmapData implements BitmapDrawable {
     var renderContext = new RenderContextCanvas(_renderTexture.canvas, Color.Transparent);
     var matrix = new Matrix(1.0, 0.0, 0.0, 1.0, destPoint.x, destPoint.y);
     matrix.concat(_renderTextureQuad.drawMatrix);
-    renderContext.renderQuad(sourceQuad, matrix, 1.0);
+    renderContext.renderQuad(sourceQuad, matrix);
     _renderTexture.update();
   }
 
