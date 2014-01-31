@@ -83,7 +83,7 @@ class RenderState {
 
     var nextMatrix = cs2.matrix;
     var nextAlpha = cs1.alpha.toDouble() * alpha;
-    var nextCompositeOperation = (composite != null) ? composite : cs1.compositeOperation;
+    var nextCompositeOperation = (composite is String) ? composite : cs1.compositeOperation;
 
     nextMatrix.copyFromAndConcat(matrix, cs1.matrix);
     cs2.alpha = nextAlpha;

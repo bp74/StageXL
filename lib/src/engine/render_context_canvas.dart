@@ -34,7 +34,7 @@ class RenderContextCanvas extends RenderContext {
 
   String get globalCompositeOperation => _globalCompositeOperation;
   set globalCompositeOperation(String value){
-    if (_globalCompositeOperation != value) {
+    if (value is String && value != _globalCompositeOperation) {
       _globalCompositeOperation = value;
       _renderingContext.globalCompositeOperation = value;
     }
@@ -42,7 +42,7 @@ class RenderContextCanvas extends RenderContext {
 
   num get globalAlpha => _globalAlpha;
   set globalAlpha(num value) {
-    if (_globalAlpha != value) {
+    if (value is num && value != _globalAlpha) {
       _globalAlpha = value;
       _renderingContext.globalAlpha = value;
     }

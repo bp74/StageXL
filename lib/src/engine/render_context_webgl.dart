@@ -56,16 +56,17 @@ class RenderContextWebGL extends RenderContext {
   }
 
   String get globalCompositeOperation => _globalCompositeOperation;
+
   set globalCompositeOperation(String value){
-    if (_globalCompositeOperation != value) {
-      _globalCompositeOperation = value;
-      // TODO: Map compositeOperation to blend function.
+    if (value is String && value != _globalCompositeOperation) {
+      _updateCompositeOperation(value);
     }
   }
 
   num get globalAlpha => _globalAlpha;
+
   set globalAlpha(num value) {
-    if (_globalAlpha != value) {
+    if (value is num && value != _globalAlpha) {
       _globalAlpha = value;
     }
   }
@@ -188,6 +189,13 @@ class RenderContextWebGL extends RenderContext {
         _renderTexture.activate(this, gl.TEXTURE0);
       }
     }
+  }
+
+  _updateCompositeOperation(String compositeOperation) {
+    _globalCompositeOperation = compositeOperation;
+    _renderProgram.flush();
+
+    // TODO: Set blendFunc
   }
 
   //-----------------------------------------------------------------------------------------------
