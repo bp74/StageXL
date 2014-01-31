@@ -3,6 +3,12 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.9.0+1
+  * Added dartdoc comments for Graphics class (thanks Arron).
+  * Enabled audio on IE Mobile 10 (thanks Xavier).
+  * Fixed Mask.shape for Canvas2D renderer (thanks Alain).
+  * Fixed DisplayObject.compositeOperation.
+
 #### Pub version 0.9.0
   * Added WebGL renderer (opt-in with Stage constructor).
   * Added fallback to Canvas renderer.
