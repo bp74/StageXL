@@ -19,7 +19,6 @@ class RenderProgramTriangle extends RenderProgram {
 
       void main() {
         gl_FragColor = vColor; 
-        //gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0); 
       }
       """;
 
@@ -73,12 +72,15 @@ class RenderProgramTriangle extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
+  void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color) {
 
-    num colorA = ((color >> 24) & 0xFF) / 255.0;
-    num colorR = ((color >> 16) & 0xFF) / 255.0;
-    num colorG = ((color >>  8) & 0xFF) / 255.0;
-    num colorB = ((color      ) & 0xFF) / 255.0;
+    Matrix matrix = renderState.globalMatrix;
+    num alpha = renderState.globalAlpha;
+
+    num colorA = _colorGetA(color) / 255.0 * alpha;
+    num colorR = _colorGetR(color) / 255.0;
+    num colorG = _colorGetG(color) / 255.0;
+    num colorB = _colorGetB(color) / 255.0;
 
     num a = matrix.a;
     num b = matrix.b;

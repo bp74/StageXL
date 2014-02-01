@@ -5,9 +5,6 @@ class RenderContextCanvas extends RenderContext {
   final CanvasElement _canvasElement;
   final int _backgroundColor;
 
-  String _globalCompositeOperation = CompositeOperation.SOURCE_OVER;
-  num _globalAlpha = 1.0;
-
   CanvasRenderingContext2D _renderingContext;
 
   RenderContextCanvas(CanvasElement canvasElement, int backgroundColor) :
@@ -21,8 +18,6 @@ class RenderContextCanvas extends RenderContext {
     }
 
     _renderingContext = renderingContext;
-    _renderingContext.globalCompositeOperation = _globalCompositeOperation;
-    _renderingContext.globalAlpha = _globalAlpha;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -31,22 +26,6 @@ class RenderContextCanvas extends RenderContext {
 
   String get renderEngine => RenderEngine.Canvas2D;
   Matrix get viewPortMatrix => new Matrix.fromIdentity();
-
-  String get globalCompositeOperation => _globalCompositeOperation;
-  set globalCompositeOperation(String value){
-    if (value is String && value != _globalCompositeOperation) {
-      _globalCompositeOperation = value;
-      _renderingContext.globalCompositeOperation = value;
-    }
-  }
-
-  num get globalAlpha => _globalAlpha;
-  set globalAlpha(num value) {
-    if (value is num && value != _globalAlpha) {
-      _globalAlpha = value;
-      _renderingContext.globalAlpha = value;
-    }
-  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -61,12 +40,16 @@ class RenderContextCanvas extends RenderContext {
     }
   }
 
-  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix) {
+  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
 
     var context = _renderingContext;
     var source = renderTextureQuad.renderTexture.canvas;
     var rotation = renderTextureQuad.rotation;
     var xyList = renderTextureQuad.xyList;
+    var matrix = renderState.globalMatrix;
+
+    context.globalAlpha = renderState.globalAlpha;
+    context.globalCompositeOperation = renderState.globalCompositeOperation;
 
     if (rotation == 0) {
 
@@ -102,9 +85,14 @@ class RenderContextCanvas extends RenderContext {
     }
   }
 
-  void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
+  void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color) {
     var context = _renderingContext;
+    var matrix = renderState.globalMatrix;
+
+    context.globalAlpha = renderState.globalAlpha;
+    context.globalCompositeOperation = renderState.globalCompositeOperation;
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+
     context.beginPath();
     context.moveTo(x1, y1);
     context.lineTo(x2, y2);
@@ -120,21 +108,17 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void beginRenderMask(RenderState renderState, Mask mask, Matrix matrix) {
-
+  void beginRenderMask(RenderState renderState, Mask mask) {
+    var matrix = renderState.globalMatrix;
     _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     _renderingContext.beginPath();
-
-    mask._drawCanvasPath(_renderingContext);
-
+    mask._renderMask(renderState);
     _renderingContext.save();
     _renderingContext.clip();
   }
 
-  void endRenderMask(Mask mask) {
-
+  void endRenderMask(RenderState renderState, Mask mask) {
     _renderingContext.restore();
-
     if (mask.border) {
       _renderingContext.strokeStyle = _color2rgba(mask.borderColor);
       _renderingContext.lineWidth = mask.borderWidth;
@@ -146,8 +130,8 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void beginRenderShadow(RenderState renderState, Shadow shadow, Matrix matrix) {
-
+  void beginRenderShadow(RenderState renderState, Shadow shadow) {
+    var matrix = renderState.globalMatrix;
     _renderingContext.save();
     _renderingContext.shadowColor = _color2rgba(shadow.color);
     _renderingContext.shadowBlur = sqrt(matrix.det) * shadow.blur;
@@ -155,8 +139,7 @@ class RenderContextCanvas extends RenderContext {
     _renderingContext.shadowOffsetY = shadow.offsetX * matrix.b + shadow.offsetY * matrix.d;
   }
 
-  void endRenderShadow(Shadow shadow) {
-
+  void endRenderShadow(RenderState renderState, Shadow shadow) {
     _renderingContext.restore();
   }
 }

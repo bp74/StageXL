@@ -211,23 +211,22 @@ class BitmapData implements BitmapDrawable {
   }
 
   void copyPixels(BitmapData source, Rectangle sourceRect, Point destPoint) {
-    var context = _renderTexture.canvas.context2D;
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderContext = new RenderContextCanvas(_renderTexture.canvas, Color.Transparent);
-    var matrix = new Matrix(1.0, 0.0, 0.0, 1.0, destPoint.x, destPoint.y);
-    matrix.concat(_renderTextureQuad.drawMatrix);
-    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-    context.clearRect(0, 0, sourceRect.width, sourceRect.height);
-    renderContext.renderQuad(sourceQuad, matrix);
+    var matrix = _renderTextureQuad.drawMatrix..prependTranslation(destPoint.x, destPoint.y);
+    var renderState = new RenderState(renderContext, matrix);
+    renderContext.rawContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    renderContext.rawContext.clearRect(0, 0, sourceRect.width, sourceRect.height);
+    renderContext.renderQuad(renderState, sourceQuad);
     _renderTexture.update();
   }
 
   void drawPixels(BitmapData source, Rectangle sourceRect, Point destPoint, [String compositeOperation]) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderContext = new RenderContextCanvas(_renderTexture.canvas, Color.Transparent);
-    var matrix = new Matrix(1.0, 0.0, 0.0, 1.0, destPoint.x, destPoint.y);
-    matrix.concat(_renderTextureQuad.drawMatrix);
-    renderContext.renderQuad(sourceQuad, matrix);
+    var matrix = _renderTextureQuad.drawMatrix..prependTranslation(destPoint.x, destPoint.y);
+    var renderState = new RenderState(renderContext, matrix, 1.0, compositeOperation);
+    renderContext.renderQuad(renderState, sourceQuad);
     _renderTexture.update();
   }
 

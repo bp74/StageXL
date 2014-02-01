@@ -143,7 +143,7 @@ class Stage extends DisplayObjectContainer {
       _renderContext = new RenderContextCanvas(canvas, color);
     }
 
-    _renderState = new RenderState(_renderContext);
+    _renderState = new RenderState(_renderContext, _renderContext.viewPortMatrix);
     _updateCanvasSize();
 
     print("StageXL render engine : ${_renderContext.renderEngine}");

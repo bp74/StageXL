@@ -63,6 +63,21 @@ class RenderTexture {
         0, 0, canvasWidth, canvasHeight);
   }
 
+  RenderTexture.fromRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer, num storePixelRatio) {
+
+    _storePixelRatio = _ensureNum(storePixelRatio);
+    _storeWidth = _ensureInt(renderFrameBuffer.width);
+    _storeHeight = _ensureInt(renderFrameBuffer.height);
+    _width = (_storeWidth / _storePixelRatio).round();
+    _height = (_storeHeight / _storePixelRatio).round();
+    _transparent = true;
+
+    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
+    _texture = renderFrameBuffer.texture;
+    _renderingContext = renderFrameBuffer.renderingContext;
+    _canvas = null;
+  }
+
   //-----------------------------------------------------------------------------------------------
 
   static Future<RenderTexture> load(String url, bool autoHiDpi, bool webpAvailable) {
@@ -122,7 +137,7 @@ class RenderTexture {
     if (_texture != null) {
       _renderingContext.activeTexture(gl.TEXTURE10);
       _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
-      _renderingContext.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
+      _renderingContext.texImage2DCanvas(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
       _renderingContext.bindTexture(gl.TEXTURE_2D, null);
     }
   }
@@ -141,7 +156,7 @@ class RenderTexture {
       _texture = _renderingContext.createTexture();
       _renderingContext.activeTexture(textureSlot);
       _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
-      _renderingContext.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
+      _renderingContext.texImage2DCanvas(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);

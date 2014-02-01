@@ -312,6 +312,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   Matrix transformationMatrixTo(DisplayObject targetSpace) {
 
+    if (targetSpace == this) {
+      return new Matrix.fromIdentity();
+    }
+
     if (targetSpace == _parent) {
       return this.transformationMatrix.clone();
     }
@@ -335,8 +339,9 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       resultObject = null;
     }
 
-    if (resultObject == targetSpace)
+    if (resultObject == targetSpace) {
       return resultMatrix;
+    }
 
     //------------------------------------------------
 
@@ -538,9 +543,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   }
 
   void _renderCache(RenderState renderState) {
-    _tmpMatrix.setTo(1.0, 0.0, 0.0, 1.0, _cacheRectangle.x, _cacheRectangle.y);
-    _tmpMatrix.concat(renderState.globalMatrix);
-    renderState.renderContext.renderQuad(_cacheTexture.quad, _tmpMatrix);
+    renderState.globalMatrix.prependTranslation(_cacheRectangle.x, _cacheRectangle.y);
+    renderState.renderQuad(_cacheTexture.quad);
   }
 
   //-------------------------------------------------------------------------------------------------

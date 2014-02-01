@@ -31,8 +31,7 @@ abstract class Mask {
 
   bool hitTest(num x, num y);
 
-  _drawCanvasPath(CanvasRenderingContext2D context);
-  _drawTriangles(RenderContext context, Matrix matrix);
+  _renderMask(RenderState renderState);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -44,17 +43,20 @@ class _RectangleMask extends Mask {
 
   _RectangleMask(num x, num y, num width, num height) : _rectangle = new Rectangle(x, y, width, height);
 
-  _drawCanvasPath(CanvasRenderingContext2D context) {
-    context.rect(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
-  }
+  _renderMask(RenderState renderState) {
 
-  _drawTriangles(RenderContext context, Matrix matrix) {
-    var l = _rectangle.left;
-    var t = _rectangle.top;
-    var r = _rectangle.right;
-    var b = _rectangle.bottom;
-    context.renderTriangle(l, t, r, t, r, b, matrix, Color.Magenta);
-    context.renderTriangle(l, t, r, b, l, b, matrix, Color.Magenta);
+    if (renderState.renderContext is RenderContextCanvas) {
+      var renderContext = renderState.renderContext as RenderContextCanvas;
+      var context = renderContext.rawContext;
+      context.rect(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
+    } else {
+      var l = _rectangle.left;
+      var t = _rectangle.top;
+      var r = _rectangle.right;
+      var b = _rectangle.bottom;
+      renderState.renderTriangle(l, t, r, t, r, b, Color.Magenta);
+      renderState.renderTriangle(l, t, r, b, l, b, Color.Magenta);
+    }
   }
 
   bool hitTest(num x, num y) {
@@ -70,30 +72,30 @@ class _CirlceMask extends Mask {
 
   _CirlceMask(num x, num y, num radius) : _circle = new Circle(x, y, radius);
 
-  _drawCanvasPath(CanvasRenderingContext2D context) {
-    context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false);
-  }
+  _renderMask(RenderState renderState) {
 
-  _drawTriangles(RenderContext context, Matrix matrix) {
+    if (renderState.renderContext is RenderContextCanvas) {
+      var renderContext = renderState.renderContext as RenderContextCanvas;
+      var context = renderContext.rawContext;
+      context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false);
+    } else {
+      var steps = 40;
+      var centerX = _circle.x;
+      var centerY = _circle.y;
+      var currentX = centerX + _circle.radius;
+      var currentY = centerY;
+      var cosR = cos(2 * PI / steps);
+      var sinR = sin(2 * PI / steps);
+      var tx = centerX - centerX * cosR + centerY * sinR;
+      var ty = centerY - centerX * sinR - centerY * cosR;
 
-    var steps = 40;
-    var centerX = _circle.x;
-    var centerY = _circle.y;
-    var currentX = centerX + _circle.radius;
-    var currentY = centerY;
-
-    var cosR = cos(2 * PI / steps);
-    var sinR = sin(2 * PI / steps);
-    var tx = centerX - centerX * cosR + centerY * sinR;
-    var ty = centerY - centerX * sinR - centerY * cosR;
-    var color = Color.Magenta;
-
-    for(int s = 0; s <= steps; s++) {
-      var nextX = currentX * cosR - currentY * sinR + tx;
-      var nextY = currentX * sinR + currentY * cosR + ty;
-      context.renderTriangle(centerX, centerY, currentX, currentY, nextX, nextY, matrix, color);
-      currentX = nextX;
-      currentY = nextY;
+      for(int s = 0; s <= steps; s++) {
+        var nextX = currentX * cosR - currentY * sinR + tx;
+        var nextY = currentX * sinR + currentY * cosR + ty;
+        renderState.renderTriangle(centerX, centerY, currentX, currentY, nextX, nextY, Color.Magenta);
+        currentX = nextX;
+        currentY = nextY;
+      }
     }
   }
 
@@ -115,27 +117,24 @@ class _CustomMask extends Mask {
     _polygonTriangles = _polygon.triangulate();
   }
 
-  _drawCanvasPath(CanvasRenderingContext2D context) {
-
+  _renderMask(RenderState renderState) {
     var points = _polygon.points;
+    var triangles = _polygonTriangles;
 
-    for(int i = 0; i < points.length; i++) {
-      var point = points[i];
-      context.lineTo(point.x, point.y);
-    }
-    context.lineTo(points[0].x, points[0].y);
-  }
-
-  _drawTriangles(RenderContext context, Matrix matrix) {
-
-    var points = _polygon.points;
-    var color = Color.Magenta;
-
-    for(int i = 0; i <= _polygonTriangles.length - 3; i += 3) {
-      var p1 = points[_polygonTriangles[i + 0]];
-      var p2 = points[_polygonTriangles[i + 1]];
-      var p3 = points[_polygonTriangles[i + 2]];
-      context.renderTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, matrix, color);
+    if (renderState.renderContext is RenderContextCanvas) {
+      var renderContext = renderState.renderContext as RenderContextCanvas;
+      var context = renderContext.rawContext;
+      for(int i = 0; i < points.length; i++) {
+        context.lineTo(points[i].x, points[i].y);
+      }
+      context.lineTo(points[0].x, points[0].y);
+    } else {
+      for(int i = 0; i <= triangles.length - 3; i += 3) {
+        var p1 = points[triangles[i + 0]];
+        var p2 = points[triangles[i + 1]];
+        var p3 = points[triangles[i + 2]];
+        renderState.renderTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, Color.Magenta);
+      }
     }
   }
 
@@ -152,14 +151,16 @@ class _ShapeMask extends Mask {
 
   _ShapeMask(Shape shape) : _shape = shape;
 
-  _drawCanvasPath(CanvasRenderingContext2D context) {
-    var mtx = _shape.transformationMatrix;
-    context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-    _shape.graphics._drawPath(context);
-  }
-
-  _drawTriangles(RenderContext context, Matrix matrix) {
-
+  _renderMask(RenderState renderState) {
+    if (renderState.renderContext is RenderContextCanvas) {
+      var renderContext = renderState.renderContext as RenderContextCanvas;
+      var context = renderContext.rawContext;
+      var mtx = _shape.transformationMatrix;
+      context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+      _shape.graphics._drawPath(context);
+    } else {
+      // TODO: ShapeMask for WebGL
+    }
   }
 
   bool hitTest(num x, num y) {

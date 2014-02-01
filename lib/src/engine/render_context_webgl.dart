@@ -8,9 +8,6 @@ class RenderContextWebGL extends RenderContext {
   final RenderProgramQuad _renderProgramQuad = new RenderProgramQuad();
   final RenderProgramTriangle _renderProgramTriangle = new RenderProgramTriangle();
 
-  String _globalCompositeOperation = CompositeOperation.SOURCE_OVER;
-  num _globalAlpha = 1.0;
-
   gl.RenderingContext _renderingContext;
   RenderTexture _renderTexture;
   RenderProgram _renderProgram;
@@ -55,22 +52,6 @@ class RenderContextWebGL extends RenderContext {
     return new Matrix(2.0 / width, 0.0, 0.0, - 2.0 / height, -1.0, 1.0);
   }
 
-  String get globalCompositeOperation => _globalCompositeOperation;
-
-  set globalCompositeOperation(String value){
-    if (value is String && value != _globalCompositeOperation) {
-      _updateCompositeOperation(value);
-    }
-  }
-
-  num get globalAlpha => _globalAlpha;
-
-  set globalAlpha(num value) {
-    if (value is num && value != _globalAlpha) {
-      _globalAlpha = value;
-    }
-  }
-
   //-----------------------------------------------------------------------------------------------
 
   void clear() {
@@ -87,14 +68,14 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
   }
 
-  void renderQuad(RenderTextureQuad renderTextureQuad, Matrix matrix) {
+  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
     _updateState(_renderProgramQuad, renderTextureQuad.renderTexture);
-    _renderProgramQuad.renderQuad(renderTextureQuad, matrix, _globalAlpha);
+    _renderProgramQuad.renderQuad(renderState, renderTextureQuad);
   }
 
-  void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, Matrix matrix, int color) {
+  void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color) {
     _updateState(_renderProgramTriangle, _renderTexture);
-    _renderProgramTriangle.renderTriangle(x1, y1, x2, y2, x3, y3, matrix, color);
+    _renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
   }
 
   void flush() {
@@ -103,7 +84,7 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void beginRenderMask(RenderState renderState, Mask mask, Matrix matrix) {
+  void beginRenderMask(RenderState renderState, Mask mask) {
 
     if (_maskDepth == 0) {
       _renderProgram.flush();
@@ -117,7 +98,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(false, false, false, false);
     _maskDepth += 1;
 
-    mask._drawTriangles(this, matrix);
+    mask._renderMask(renderState);
 
     _updateState(_renderProgramQuad, null);
     _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
@@ -125,7 +106,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(true, true, true, true);
   }
 
-  void endRenderMask(Mask mask) {
+  void endRenderMask(RenderState renderState, Mask mask) {
 
     if (_maskDepth == 1) {
 
@@ -145,11 +126,9 @@ class RenderContextWebGL extends RenderContext {
       _renderingContext.colorMask(false, false, false, false);
       _maskDepth -= 1;
 
-      var matrix = _identityMatrix;
-      var color = Color.Magenta;
-
-      _renderProgramTriangle.renderTriangle(-1, -1, 1, -1, 1, 1, matrix, color);
-      _renderProgramTriangle.renderTriangle(-1, -1, 1, 1, -1, 1, matrix, color);
+      renderState.globalMatrix.copyFrom(_identityMatrix);
+      _renderProgramTriangle.renderTriangle(renderState, -1, -1, 1, -1, 1, 1, Color.Magenta);
+      _renderProgramTriangle.renderTriangle(renderState, -1, -1, 1, 1, -1, 1, Color.Magenta);
 
       _updateState(_renderProgramQuad, null);
       _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
@@ -160,11 +139,35 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void beginRenderShadow(RenderState renderState, Shadow shadow, Matrix matrix) {
+  void beginRenderShadow(RenderState renderState, Shadow shadow) {
     // TODO: We will add this once we have WebGL filters.
   }
 
-  void endRenderShadow(Shadow shadow) {
+  void endRenderShadow(RenderState renderState, Shadow shadow) {
+
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  RenderFrameBuffer beginFrameBuffer(int width, int height) {
+    // TODO: get from pool, use stack
+    var renderFrameBuffer = new RenderFrameBuffer(_renderingContext, width, height);
+    _renderProgram.flush();
+    _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
+    _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
+    renderFrameBuffer.clear();
+    return renderFrameBuffer;
+  }
+
+  void endFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
+    // TODO: release to pool, use stack
+    _renderProgram.flush();
+
+    int width = _renderingContext.drawingBufferWidth;
+    int height = _renderingContext.drawingBufferHeight;
+
+    _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
+    _renderingContext.viewport(0, 0, width, height);
 
   }
 
@@ -189,13 +192,6 @@ class RenderContextWebGL extends RenderContext {
         _renderTexture.activate(this, gl.TEXTURE0);
       }
     }
-  }
-
-  _updateCompositeOperation(String compositeOperation) {
-    _globalCompositeOperation = compositeOperation;
-    _renderProgram.flush();
-
-    // TODO: Set blendFunc
   }
 
   //-----------------------------------------------------------------------------------------------

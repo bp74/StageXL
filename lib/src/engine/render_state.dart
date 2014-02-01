@@ -22,18 +22,15 @@ class RenderState {
   _ContextState _firstContextState;
   _ContextState _currentContextState;
 
-  RenderState(RenderContext renderContext, [Matrix matrix]) : _renderContext = renderContext {
+  RenderState(RenderContext renderContext, [Matrix matrix, num alpha, String compositeOperation]) :
+    _renderContext = renderContext {
 
     _firstContextState = new _ContextState();
     _currentContextState = _firstContextState;
 
-    var viewPortMatrix = _renderContext.viewPortMatrix;
-
-    if (matrix is Matrix) {
-      _firstContextState.matrix.copyFromAndConcat(matrix, viewPortMatrix);
-    } else {
-      _firstContextState.matrix.copyFrom(viewPortMatrix);
-    }
+    if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
+    if (alpha is num) _firstContextState.alpha = alpha;
+    if (compositeOperation is String) _firstContextState.compositeOperation = compositeOperation;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -75,6 +72,8 @@ class RenderState {
     var mask = displayObject.mask;
     var shadow = displayObject.shadow;
     var composite = displayObject.compositeOperation;
+    var maskRenderState = null;
+    var shadowRenderState = null;
 
     var cs1 = _currentContextState;
     var cs2 = _currentContextState.nextContextState;
@@ -93,38 +92,37 @@ class RenderState {
 
     if (mask != null) {
       if (mask.targetSpace == null) {
-        matrix = cs2.matrix;
+        maskRenderState = new RenderState(_renderContext, cs2.matrix);
       } else if (identical(mask.targetSpace, displayObject)) {
-        matrix = cs2.matrix;
+        maskRenderState = new RenderState(_renderContext, cs2.matrix);
       } else if (identical(mask.targetSpace, displayObject.parent)) {
-        matrix = cs1.matrix;
+        maskRenderState = new RenderState(_renderContext, cs1.matrix);
       } else {
         matrix = mask.targetSpace.transformationMatrixTo(displayObject);
-        if (matrix == null) matrix = _identityMatrix; else matrix.concat(cs2.matrix);
+        maskRenderState = new RenderState(_renderContext, matrix);
+        maskRenderState.globalMatrix.concat(cs2.matrix);
       }
-      _renderContext.beginRenderMask(this, mask, matrix);
+      _renderContext.beginRenderMask(maskRenderState, mask);
     }
 
     // apply shadow
 
     if (shadow != null) {
       if (shadow.targetSpace == null) {
-        matrix = cs2.matrix;
+        shadowRenderState = new RenderState(_renderContext, cs2.matrix);
       } else if (identical(shadow.targetSpace, displayObject)) {
-        matrix = cs2.matrix;
+        shadowRenderState = new RenderState(_renderContext, cs2.matrix);
       } else if (identical(shadow.targetSpace, displayObject.parent)) {
-        matrix = cs1.matrix;
+        shadowRenderState = new RenderState(_renderContext, cs1.matrix);
       } else {
         matrix = shadow.targetSpace.transformationMatrixTo(displayObject);
-        if (matrix == null) matrix = _identityMatrix; else matrix.concat(cs2.matrix);
+        shadowRenderState = new RenderState(_renderContext, matrix);
+        shadowRenderState.globalMatrix.concat(cs2.matrix);
       }
-      _renderContext.beginRenderShadow(this, shadow, matrix);
+      _renderContext.beginRenderShadow(shadowRenderState, shadow);
     }
 
     // render DisplayObject
-
-    _renderContext.globalAlpha = nextAlpha;
-    _renderContext.globalCompositeOperation = nextCompositeOperation;
 
     if (displayObject.cached) {
       displayObject._renderCache(this);
@@ -135,13 +133,13 @@ class RenderState {
     // restore shadow
 
     if (shadow != null) {
-      _renderContext.endRenderShadow(shadow);
+      _renderContext.endRenderShadow(shadowRenderState, shadow);
     }
 
     // restore mask
 
     if (mask != null) {
-      _renderContext.endRenderMask(mask);
+      _renderContext.endRenderMask(maskRenderState, mask);
     }
 
     _currentContextState = cs1;
@@ -150,15 +148,11 @@ class RenderState {
   //-------------------------------------------------------------------------------------------------
 
   void renderQuad(RenderTextureQuad renderTextureQuad) {
-    var matrix = _currentContextState.matrix;
-    _renderContext.renderQuad(renderTextureQuad, matrix);
+    _renderContext.renderQuad(this, renderTextureQuad);
   }
 
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, int color) {
-    var matrix = _currentContextState.matrix;
-    var alpha = _currentContextState.alpha;
-    var colorAlpha = (color & 0x00FFFFFF) + ((alpha * 255).round() << 24);
-    _renderContext.renderTriangle(x1, y1, x2, y2, x3, y3, matrix, colorAlpha);
+    _renderContext.renderTriangle(this, x1, y1, x2, y2, x3, y3, color);
   }
 
   void flush() {

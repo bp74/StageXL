@@ -81,6 +81,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void concat(Matrix matrix) {
+
     num a1 =   _a;
     num b1 =   _b;
     num c1 =   _c;
@@ -109,6 +110,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void prepend(Matrix matrix) {
+
     num a1 =   _a;
     num b1 =   _b;
     num c1 =   _c;
@@ -235,8 +237,8 @@ class Matrix {
     _b   = (  _b * scaleY).toDouble();
     _c   = (  _c * scaleX).toDouble();
     _d   = (  _d * scaleY).toDouble();
-    _tx  = ( _tx * scaleX).toDouble();;
-    _ty  = ( _ty * scaleY).toDouble();;
+    _tx  = ( _tx * scaleX).toDouble();
+    _ty  = ( _ty * scaleY).toDouble();
     _det = (_det * scaleX * scaleY).toDouble();
   }
 
@@ -244,8 +246,14 @@ class Matrix {
 
   void translate(num translationX, num translationY) {
 
-    _tx = (_tx + translationX).toDouble();;
+    _tx = (_tx + translationX).toDouble();
     _ty = (_ty + translationY).toDouble();
+  }
+
+  void prependTranslation(num translationX, num translationY) {
+
+    _tx =  (translationX * _a + translationY * _c + _tx).toDouble();
+    _ty =  (translationX * _b + translationY * _d + _ty).toDouble();
   }
 
   //-------------------------------------------------------------------------------------------------
