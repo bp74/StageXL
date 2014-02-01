@@ -133,9 +133,15 @@ class Stage extends DisplayObjectContainer {
     _sourceHeight = _ensureInt((width != null) ? height : canvas.height);
     _frameRate = _ensureInt((frameRate != null) ? frameRate : 30);
 
-    _renderContext = webGL && gl.RenderingContext.supported
-        ? new RenderContextWebGL(canvas, color)
-        : new RenderContextCanvas(canvas, color);
+    if (webGL && gl.RenderingContext.supported) {
+      try {
+        _renderContext = new RenderContextWebGL(canvas, color);
+      } catch(e) {
+        _renderContext = new RenderContextCanvas(canvas, color);
+      }
+    } else {
+      _renderContext = new RenderContextCanvas(canvas, color);
+    }
 
     _renderState = new RenderState(_renderContext);
     _updateCanvasSize();
