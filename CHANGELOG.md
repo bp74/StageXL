@@ -3,6 +3,9 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.9.0+2
+  * Fixed fallback for WebGL on iOS.
+
 #### Pub version 0.9.0+1
   * Added dartdoc comments for Graphics class (thanks Arron).
   * Enabled audio on IE Mobile 10 (thanks Xavier).
