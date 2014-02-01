@@ -112,7 +112,7 @@ class RenderContextCanvas extends RenderContext {
     var matrix = renderState.globalMatrix;
     _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     _renderingContext.beginPath();
-    mask._renderMask(renderState);
+    mask.renderMask(renderState);
     _renderingContext.save();
     _renderingContext.clip();
   }

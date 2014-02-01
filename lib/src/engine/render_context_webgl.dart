@@ -98,7 +98,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(false, false, false, false);
     _maskDepth += 1;
 
-    mask._renderMask(renderState);
+    mask.renderMask(renderState);
 
     _updateState(_renderProgramQuad, null);
     _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
@@ -127,10 +127,10 @@ class RenderContextWebGL extends RenderContext {
       _maskDepth -= 1;
 
       renderState.globalMatrix.copyFrom(_identityMatrix);
-      _renderProgramTriangle.renderTriangle(renderState, -1, -1, 1, -1, 1, 1, Color.Magenta);
-      _renderProgramTriangle.renderTriangle(renderState, -1, -1, 1, 1, -1, 1, Color.Magenta);
+      renderState.renderTriangle(-1, -1, 1, -1, 1, 1, Color.Magenta);
+      renderState.renderTriangle(-1, -1, 1, 1, -1, 1, Color.Magenta);
+      renderState.flush();
 
-      _updateState(_renderProgramQuad, null);
       _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
       _renderingContext.stencilMask(0x00);
       _renderingContext.colorMask(true, true, true, true);

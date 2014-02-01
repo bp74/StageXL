@@ -31,7 +31,7 @@ abstract class Mask {
 
   bool hitTest(num x, num y);
 
-  _renderMask(RenderState renderState);
+  renderMask(RenderState renderState);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -43,7 +43,9 @@ class _RectangleMask extends Mask {
 
   _RectangleMask(num x, num y, num width, num height) : _rectangle = new Rectangle(x, y, width, height);
 
-  _renderMask(RenderState renderState) {
+  bool hitTest(num x, num y) => _rectangle.contains(x, y);
+
+  void renderMask(RenderState renderState) {
 
     if (renderState.renderContext is RenderContextCanvas) {
       var renderContext = renderState.renderContext as RenderContextCanvas;
@@ -58,10 +60,6 @@ class _RectangleMask extends Mask {
       renderState.renderTriangle(l, t, r, b, l, b, Color.Magenta);
     }
   }
-
-  bool hitTest(num x, num y) {
-    return _rectangle.contains(x, y);
-  }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -72,7 +70,9 @@ class _CirlceMask extends Mask {
 
   _CirlceMask(num x, num y, num radius) : _circle = new Circle(x, y, radius);
 
-  _renderMask(RenderState renderState) {
+  bool hitTest(num x, num y) => _circle.contains(x, y);
+
+  void renderMask(RenderState renderState) {
 
     if (renderState.renderContext is RenderContextCanvas) {
       var renderContext = renderState.renderContext as RenderContextCanvas;
@@ -98,10 +98,6 @@ class _CirlceMask extends Mask {
       }
     }
   }
-
-  bool hitTest(num x, num y) {
-    return _circle.contains(x, y);
-  }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -117,7 +113,9 @@ class _CustomMask extends Mask {
     _polygonTriangles = _polygon.triangulate();
   }
 
-  _renderMask(RenderState renderState) {
+  bool hitTest(num x, num y) => _polygonBounds.contains(x, y) ? _polygon.contains(x, y) : false;
+
+  void renderMask(RenderState renderState) {
     var points = _polygon.points;
     var triangles = _polygonTriangles;
 
@@ -137,10 +135,6 @@ class _CustomMask extends Mask {
       }
     }
   }
-
-  bool hitTest(num x, num y) {
-    return _polygonBounds.contains(x, y) ? _polygon.contains(x, y) : false;
-  }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -151,7 +145,16 @@ class _ShapeMask extends Mask {
 
   _ShapeMask(Shape shape) : _shape = shape;
 
-  _renderMask(RenderState renderState) {
+  bool hitTest(num x, num y) {
+    var context = _dummyCanvasContext;
+    var mtx = _shape.transformationMatrix;
+    context.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+    context.beginPath();
+    _shape.graphics._drawPath(context);
+    return context.isPointInPath(x, y);
+  }
+
+  void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
       var renderContext = renderState.renderContext as RenderContextCanvas;
       var context = renderContext.rawContext;
@@ -161,14 +164,5 @@ class _ShapeMask extends Mask {
     } else {
       // TODO: ShapeMask for WebGL
     }
-  }
-
-  bool hitTest(num x, num y) {
-    var context = _dummyCanvasContext;
-    var mtx = _shape.transformationMatrix;
-    context.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-    context.beginPath();
-    _shape.graphics._drawPath(context);
-    return context.isPointInPath(x, y);
   }
 }
