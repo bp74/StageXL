@@ -157,7 +157,8 @@ class Polygon {
 
     result.addAll([available[0], available[1], available[2]]);
 
-    return result;
+    // http://dartbug.com/10489
+    return result.toList(growable: false);
   }
 
   //-----------------------------------------------------------------------------------------------

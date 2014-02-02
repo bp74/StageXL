@@ -122,10 +122,10 @@ class _CustomMask extends Mask {
     if (renderState.renderContext is RenderContextCanvas) {
       var renderContext = renderState.renderContext as RenderContextCanvas;
       var context = renderContext.rawContext;
-      for(int i = 0; i < points.length; i++) {
-        context.lineTo(points[i].x, points[i].y);
+      for(int i = 0; i <= points.length; i++) {
+        var point =  points[i % points.length];
+        context.lineTo(point.x, point.y);
       }
-      context.lineTo(points[0].x, points[0].y);
     } else {
       for(int i = 0; i <= triangles.length - 3; i += 3) {
         var p1 = points[triangles[i + 0]];
