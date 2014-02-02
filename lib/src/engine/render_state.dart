@@ -67,26 +67,22 @@ class RenderState {
 
   void renderDisplayObject(DisplayObject displayObject) {
 
-    var matrix = displayObject.transformationMatrix;
-    var alpha = displayObject.alpha;
-    var mask = displayObject.mask;
-    var shadow = displayObject.shadow;
-    var composite = displayObject.compositeOperation;
+    var cs1 = _currentContextState;
+    var cs2 = _currentContextState.nextContextState;
     var maskRenderState = null;
     var shadowRenderState = null;
 
-    var cs1 = _currentContextState;
-    var cs2 = _currentContextState.nextContextState;
+    var matrix = displayObject.transformationMatrix;
+    var composite = displayObject.compositeOperation;
+    var alpha = displayObject.alpha;
+    var mask = displayObject.mask;
+    var shadow = displayObject.shadow;
+
+    cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
+    cs2.compositeOperation = (composite is String) ? composite : cs1.compositeOperation;
+    cs2.alpha = alpha * cs1.alpha.toDouble();
 
     _currentContextState = cs2;
-
-    var nextMatrix = cs2.matrix;
-    var nextAlpha = cs1.alpha.toDouble() * alpha;
-    var nextCompositeOperation = (composite is String) ? composite : cs1.compositeOperation;
-
-    nextMatrix.copyFromAndConcat(matrix, cs1.matrix);
-    cs2.alpha = nextAlpha;
-    cs2.compositeOperation = nextCompositeOperation;
 
     // apply mask
 
