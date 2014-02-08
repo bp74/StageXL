@@ -581,5 +581,96 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void render(RenderState renderState);
 
+  //-------------------------------------------------------------------------------------------------
+
+  void _renderInternal(RenderState renderState) {
+    if (_cacheTexture != null) {
+      _renderCached(renderState);
+    } else if (_filters != null && _filters.length > 0) {
+      _renderFiltered(renderState);
+    } else {
+      render(renderState);
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  void _renderCached(RenderState renderState) {
+    renderState.globalMatrix.prependTranslation(_cacheRectangle.x, _cacheRectangle.y);
+    renderState.renderQuad(_cacheTexture.quad);
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  void _renderFiltered(RenderState renderState) {
+
+    RenderContext renderContext = renderState.renderContext;
+    List<BitmapFilter> filters = this.filters;
+
+    if (renderContext is! RenderContextWebGL) {
+
+      this.render(renderState);
+
+    } else {
+
+      RenderContextWebGL renderContextWebGL = renderContext;
+      Rectangle bounds = this.getBoundsTransformed(_identityMatrix);
+
+      num overlapLeft = 0;
+      num overlapTop = 0;
+      num overlapRight = 0;
+      num overlapBottom = 0;
+      int passCount = 0;
+
+      for(int i = 0; i < filters.length; i++) {
+        BitmapFilter filter = filters[i];
+        Rectangle overlap = filter.overlap;
+        overlapLeft = min(overlapLeft, overlap.left);
+        overlapTop = min(overlapTop , overlap.top);
+        overlapRight = max(overlapRight, overlap.right);
+        overlapBottom = max(overlapBottom, overlap.bottom);
+      }
+
+      int boundsLeft = (bounds.left - overlapLeft).floor();
+      int boundsTop = (bounds.top - overlapTop).floor();
+      int boundsRight = (bounds.right + overlapRight).ceil();
+      int boundsBottom = (bounds.bottom + overlapBottom).ceil();
+      int boundsWidth = boundsRight - boundsLeft;
+      int boundsHeight = boundsBottom - boundsTop;
+
+      //-----------------
+
+      // TODO: use a pool of RenderFrameBuffers
+      var renderFrameBuffer = new RenderFrameBuffer(renderContext, boundsWidth, boundsHeight);
+
+      var renderStateDisplayObject = new RenderState(renderContext);
+      renderStateDisplayObject.globalMatrix.translate(-boundsLeft, -boundsTop);
+      renderStateDisplayObject.globalMatrix.scale(2.0 / boundsWidth, 2.0 / boundsHeight);
+      renderStateDisplayObject.globalMatrix.translate(-1, -1);
+
+      renderContextWebGL.flush();
+      renderContextWebGL.pushFrameBuffer(renderFrameBuffer);
+      renderContextWebGL.clear(Color.Transparent);
+
+      this.render(renderStateDisplayObject);
+
+      renderContextWebGL.flush();
+      renderContextWebGL.popFrameBuffer();
+
+      var renderTextureQuad = renderFrameBuffer.renderTexture.quad;
+      renderTextureQuad._offsetX = boundsLeft;
+      renderTextureQuad._offsetY = boundsTop;
+
+      for(int i = 0; i < filters.length; i++) {
+        BitmapFilter filter = filters[i];
+        filter.renderFilter(renderState, renderFrameBuffer.renderTexture.quad);
+      }
+
+      // TODO: release to pool of RenderFrameBuffers
+      renderFrameBuffer.dispose();
+    }
+  }
+
+
 }
 

@@ -1,6 +1,7 @@
 library example02;
 
 import 'dart:html' as html;
+import 'dart:math' as math;
 //import 'package:stagexl/stagexl.dart';
 import '../lib/stagexl.dart';
 
@@ -11,9 +12,6 @@ void main() {
   var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
-  //var bitmap = new Bitmap(new BitmapData(500,400, false, Color.Gray));
-  //stage.addChild(bitmap);
-
   var resourceManager = new ResourceManager()
     ..addBitmapData("house", "images/House.png")
     ..addBitmapData("sun", "images/Sun.png")
@@ -21,16 +19,22 @@ void main() {
 
   resourceManager.load().then((result) {
 
-    var colorMatrixFilter = new ColorMatrixFilter.identity();
-    var world = new Sprite();
+    var colorMatrixFilter = new ColorMatrixFilter.invert();
+    var blurFilter = new BlurFilter(4, 4);
+    var dropShadowFilter = new DropShadowFilter(10, math.PI / 4, Color.Black,  1.0, 5, 5);
 
-    //var fragment = new Fragment(world);
-    //fragment.alpha = 0.5;
-    //fragment.addTo(stage);
+    var world = new Sprite();
     world.addTo(stage);
-    //world.alpha = 0.5;
     world.filters= [colorMatrixFilter];
-    //world.mask = new Mask.rectangle(250, 140, 100, 150);
+    //world.filters= [blurFilter];
+    //world.filters= [dropShadowFilter];
+    //world.filters= [colorMatrixFilter, dropShadowFilter];
+
+    /*
+    stage.juggler.transition(-1, 1, 3, (x) => x, (value) {
+      world.filters= [new ColorMatrixFilter.adjust(saturation: value)];
+    });
+    */
 
     var sun = new Bitmap(resourceManager.getBitmapData("sun"));
     sun.x = 260;
@@ -45,11 +49,7 @@ void main() {
     tree.y = 200;
     tree.addTo(world);
 
-    stage.juggler.transition(-1, 1, 3, (x) => x, (value) {
-      world.filters= [new ColorMatrixFilter.adjust(saturation: value)];
-    });
-
-    //world.applyCache(250, 140, 200, 200, debugBorder: true);
+   // world.applyCache(250, 140, 200, 200, debugBorder: true);
 
   }).catchError((e) => print(e));
 }

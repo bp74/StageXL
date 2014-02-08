@@ -72,9 +72,7 @@ class RenderState {
     var composite = displayObject.compositeOperation;
     var alpha = displayObject.alpha;
     var mask = displayObject.mask;
-    var shadow = displayObject.shadow;
-    var cached = displayObject.cached;
-    var filters = displayObject._filters;
+    var shadow = displayObject.shadow;  // TODO: try to render the shadow as a filter.
 
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
     cs2.compositeOperation = (composite is String) ? composite : cs1.compositeOperation;
@@ -118,52 +116,7 @@ class RenderState {
 
     // render DisplayObject (cached / filtered / standard)
 
-    if (cached) {
-
-      var cacheTexture = displayObject._cacheTexture;
-      var cacheRectangle = displayObject._cacheRectangle;
-      _currentContextState.matrix.prependTranslation(cacheRectangle.x, cacheRectangle.y);
-      _renderContext.renderQuad(this, cacheTexture.quad);
-
-    } else if (filters != null && filters.length > 0 && _renderContext is RenderContextWebGL) {
-
-      RenderContextWebGL renderContext = _renderContext;
-
-      var filterOverlap = new Rectangle.zero();
-      for(var filter in filters) {
-        filterOverlap = filterOverlap.union(filter.overlap);
-      }
-
-      var bounds = displayObject.getBoundsTransformed(_identityMatrix).align();
-      var renderFrameBuffer = new RenderFrameBuffer(renderContext, bounds.width, bounds.height);
-      var renderState = new RenderState(renderContext);
-
-      renderState.globalMatrix.translate(-bounds.x, -bounds.y);
-      renderState.globalMatrix.scale(2.0 / bounds.width, 2.0 / bounds.height);
-      renderState.globalMatrix.translate(-1, -1);
-
-      renderContext.flush();
-      renderContext.pushFrameBuffer(renderFrameBuffer);
-      renderContext.clear(Color.Transparent);
-      displayObject.render(renderState);
-      renderContext.flush();
-      renderContext.popFrameBuffer();
-
-      var renderTextureQuad = renderFrameBuffer.renderTexture.quad;
-      renderTextureQuad._offsetX = bounds.x;
-      renderTextureQuad._offsetY = bounds.y;
-
-      for(var filter in filters) {
-        filter.renderFilter(this, renderFrameBuffer.renderTexture.quad);
-      }
-
-      renderFrameBuffer.dispose();
-
-    } else {
-
-      displayObject.render(this);
-
-    }
+    displayObject._renderInternal(this);
 
     // restore shadow
 
@@ -193,6 +146,8 @@ class RenderState {
   void flush() {
     _renderContext.flush();
   }
+
+
 }
 
 

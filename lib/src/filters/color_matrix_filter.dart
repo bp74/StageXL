@@ -137,10 +137,10 @@ class ColorMatrixFilter extends BitmapFilter {
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
-    //redResult   = (m[ 0] * srcR) + (m[ 1] * srcG) + (m[ 2] * srcB) + (m[ 3] * srcA) + o[0]
-    //greenResult = (m[ 4] * srcR) + (m[ 5] * srcG) + (m[ 6] * srcB) + (m[ 7] * srcA) + o[1]
-    //blueResult  = (m[ 8] * srcR) + (m[ 9] * srcG) + (m[10] * srcB) + (m[11] * srcA) + o[2]
-    //alphaResult = (m[12] * srcR) + (m[13] * srcG) + (m[14] * srcB) + (m[15] * srcA) + o[3]
+    //dstR = (m[ 0] * srcR) + (m[ 1] * srcG) + (m[ 2] * srcB) + (m[ 3] * srcA) + o[0]
+    //dstG = (m[ 4] * srcR) + (m[ 5] * srcG) + (m[ 6] * srcB) + (m[ 7] * srcA) + o[1]
+    //dstB = (m[ 8] * srcR) + (m[ 9] * srcG) + (m[10] * srcB) + (m[11] * srcA) + o[2]
+    //dstA = (m[12] * srcR) + (m[13] * srcG) + (m[14] * srcB) + (m[15] * srcA) + o[3]
 
     bool isLittleEndianSystem = _isLittleEndianSystem;
 
@@ -187,19 +187,22 @@ class ColorMatrixFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
+  //-------------------------------------------------------------------------------------------------
+
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad) {
     RenderContextWebGL renderContext = renderState.renderContext;
-    renderContext._updateState(_colorMatrixRenderProgram, renderTextureQuad.renderTexture);
-    _colorMatrixRenderProgram.renderFilter(renderState, renderTextureQuad, this);
+    renderContext._updateState(_colorMatrixProgram, renderTextureQuad.renderTexture);
+    _colorMatrixProgram.updateRenderingContext(this);
+    _colorMatrixProgram.renderQuad(renderState, renderTextureQuad);
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-var _colorMatrixRenderProgram = new _ColorMatrixRenderProgram();
+var _colorMatrixProgram = new _ColorMatrixProgram();
 
-class _ColorMatrixRenderProgram extends _BitmapFilterRenderProgram {
+class _ColorMatrixProgram extends _BitmapFilterProgram {
 
   String get fragmentShaderSource => """
       precision mediump float;
@@ -214,18 +217,12 @@ class _ColorMatrixRenderProgram extends _BitmapFilterRenderProgram {
       }
       """;
 
-  void renderFilter(RenderState renderState,
-                    RenderTextureQuad renderTextureQuad,
-                    ColorMatrixFilter colorMatrixFilter) {
-
+  void updateRenderingContext(ColorMatrixFilter colorMatrixFilter) {
     var colorMatrixList = colorMatrixFilter._colorMatrixList;
     var colorOffsetList = colorMatrixFilter._colorOffsetList;
     var uColorMatrixLocation = _uniformLocations["uColorMatrix"];
     var uColorOffsetLocation = _uniformLocations["uColorOffset"];
-
     _renderingContext.uniformMatrix4fv(uColorMatrixLocation, false, colorMatrixList);
     _renderingContext.uniform4fv(uColorOffsetLocation, colorOffsetList);
-
-    super.renderQuad(renderState, renderTextureQuad);
   }
 }
