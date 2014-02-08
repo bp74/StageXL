@@ -3,19 +3,17 @@ part of stagexl;
 class RenderContextWebGL extends RenderContext {
 
   final CanvasElement _canvasElement;
-  final int _backgroundColor;
 
   final RenderProgramQuad _renderProgramQuad = new RenderProgramQuad();
   final RenderProgramTriangle _renderProgramTriangle = new RenderProgramTriangle();
+  final List<RenderFrameBuffer> _renderFrameBuffers = new List<RenderFrameBuffer>();
 
   gl.RenderingContext _renderingContext;
   RenderTexture _renderTexture;
   RenderProgram _renderProgram;
   int _maskDepth = 0;
 
-  RenderContextWebGL(CanvasElement canvasElement, int backgroundColor) :
-    _canvasElement = canvasElement,
-    _backgroundColor = _ensureInt(backgroundColor) {
+  RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
 
     _canvasElement.onWebGlContextLost.listen(_onContextLost);
     _canvasElement.onWebGlContextRestored.listen(_onContextRestored);
@@ -54,19 +52,32 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void clear() {
-
+  void reset() {
     int width = _renderingContext.drawingBufferWidth;
     int height = _renderingContext.drawingBufferHeight;
-    num r = _colorGetR(_backgroundColor) / 255.0;
-    num g = _colorGetG(_backgroundColor) / 255.0;
-    num b = _colorGetB(_backgroundColor) / 255.0;
-
     _renderingContext.viewport(0, 0, width, height);
-    _renderingContext.colorMask(true, true, true, true);
-    _renderingContext.clearColor(r, g, b, 1.0);
-    _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+    _renderFrameBuffers.clear();
   }
+
+  void clear(int color) {
+    num r = _colorGetR(color) / 255.0;
+    num g = _colorGetG(color) / 255.0;
+    num b = _colorGetB(color) / 255.0;
+    num a = _colorGetA(color) / 255.0;
+
+    _renderingContext.colorMask(true, true, true, true);
+    _renderingContext.clearColor(r, g, b, a);
+    _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+    // TODO: maskDepth for RenderFrameBuffer!
+    _maskDepth = 0;
+  }
+
+  void flush() {
+    _renderProgram.flush();
+  }
+
+  //-----------------------------------------------------------------------------------------------
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
     _updateState(_renderProgramQuad, renderTextureQuad.renderTexture);
@@ -78,16 +89,13 @@ class RenderContextWebGL extends RenderContext {
     _renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
   }
 
-  void flush() {
-    _renderProgram.flush();
-  }
-
   //-----------------------------------------------------------------------------------------------
 
   void beginRenderMask(RenderState renderState, Mask mask) {
 
+    _renderProgram.flush();
+
     if (_maskDepth == 0) {
-      _renderProgram.flush();
       _renderingContext.enable(gl.STENCIL_TEST);
     }
 
@@ -99,8 +107,8 @@ class RenderContextWebGL extends RenderContext {
     _maskDepth += 1;
 
     mask.renderMask(renderState);
+    renderState.flush();
 
-    _updateState(_renderProgramQuad, null);
     _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
     _renderingContext.stencilMask(0x00);
     _renderingContext.colorMask(true, true, true, true);
@@ -108,14 +116,15 @@ class RenderContextWebGL extends RenderContext {
 
   void endRenderMask(RenderState renderState, Mask mask) {
 
+    _renderProgram.flush();
+
     if (_maskDepth == 1) {
 
-      _renderProgram.flush();
       _maskDepth = 0;
       _renderingContext.stencilMask(0xFF);
       _renderingContext.disable(gl.STENCIL_TEST);
       _renderingContext.clear(gl.STENCIL_BUFFER_BIT);
-      _renderingContext.stencilMask(0);
+      _renderingContext.stencilMask(0x00);
 
     } else {
 
@@ -149,26 +158,26 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderFrameBuffer beginFrameBuffer(int width, int height) {
-    // TODO: get from pool, use stack
-    var renderFrameBuffer = new RenderFrameBuffer(_renderingContext, width, height);
-    _renderProgram.flush();
+  void pushFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
     _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
-    renderFrameBuffer.clear();
-    return renderFrameBuffer;
+    _renderFrameBuffers.add(renderFrameBuffer);
   }
 
-  void endFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    // TODO: release to pool, use stack
-    _renderProgram.flush();
-
-    int width = _renderingContext.drawingBufferWidth;
-    int height = _renderingContext.drawingBufferHeight;
-
-    _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
-    _renderingContext.viewport(0, 0, width, height);
-
+  void popFrameBuffer() {
+    if (_renderFrameBuffers.length > 0) {
+      _renderFrameBuffers.removeLast();
+    }
+    if (_renderFrameBuffers.length > 0) {
+      RenderFrameBuffer renderFrameBuffer = _renderFrameBuffers.last;
+      _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
+      _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
+    } else {
+      int width = _renderingContext.drawingBufferWidth;
+      int height = _renderingContext.drawingBufferHeight;
+      _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
+      _renderingContext.viewport(0, 0, width, height);
+    }
   }
 
   //-----------------------------------------------------------------------------------------------

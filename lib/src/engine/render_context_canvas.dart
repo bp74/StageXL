@@ -3,13 +3,10 @@ part of stagexl;
 class RenderContextCanvas extends RenderContext {
 
   final CanvasElement _canvasElement;
-  final int _backgroundColor;
 
   CanvasRenderingContext2D _renderingContext;
 
-  RenderContextCanvas(CanvasElement canvasElement, int backgroundColor) :
-    _canvasElement = canvasElement,
-    _backgroundColor = _ensureInt(backgroundColor) {
+  RenderContextCanvas(CanvasElement canvasElement) : _canvasElement = canvasElement {
 
     var renderingContext = _canvasElement.context2D;
 
@@ -29,16 +26,26 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void clear() {
+  void reset() {
+
+  }
+
+  void clear(int color) {
     _renderingContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
     _renderingContext.globalAlpha = 1.0;
-    if (_backgroundColor & 0xFF000000 == 0) {
+    if (color & 0xFF000000 == 0) {
       _renderingContext.clearRect(0, 0, _canvasElement.width, _canvasElement.height);
     } else {
-      _renderingContext.fillStyle = _color2rgb(_backgroundColor);
+      _renderingContext.fillStyle = _color2rgb(color);
       _renderingContext.fillRect(0, 0, _canvasElement.width, _canvasElement.height);
     }
   }
+
+  void flush() {
+
+  }
+
+  //-----------------------------------------------------------------------------------------------
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
 
@@ -100,10 +107,6 @@ class RenderContextCanvas extends RenderContext {
     context.closePath();
     context.fillStyle = _color2rgba(color);
     context.fill();
-  }
-
-  void flush() {
-
   }
 
   //-----------------------------------------------------------------------------------------------

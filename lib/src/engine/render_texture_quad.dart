@@ -97,8 +97,8 @@ class RenderTextureQuad {
     num angle = _rotation * PI / 2.0;
     num c = scale * cos(angle);
     num s = scale * sin(angle);
-    num tx = scale * textureX  - offsetX * c + offsetY * s;
-    num ty = scale * textureY  - offsetX * s - offsetY * c;
+    num tx = scale * textureX - offsetX * c + offsetY * s;
+    num ty = scale * textureY - offsetX * s - offsetY * c;
     return new Matrix(c, s, -s, c, tx, ty);
   }
 

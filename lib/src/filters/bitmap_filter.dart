@@ -305,3 +305,138 @@ abstract class BitmapFilter {
   }
 
 }
+
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
+class _BitmapFilterRenderProgram extends RenderProgram {
+
+  var _vertexShaderSource = """
+      attribute vec2 aVertexPosition;
+      attribute vec2 aVertexTextCoord;
+      varying vec2 vTextCoord;
+      void main() {
+        vTextCoord = aVertexTextCoord;
+        gl_Position = vec4(aVertexPosition, 0.0, 1.0);
+      }
+      """;
+
+  var _fragmentShaderSource = """
+      precision mediump float;
+      uniform sampler2D uSampler;
+      varying vec2 vTextCoord;
+      void main() {
+        gl_FragColor = texture2D(uSampler, vTextCoord);
+      }
+      """;
+
+  gl.RenderingContext _renderingContext;
+  gl.Program _program;
+  gl.Buffer _vertexBuffer;
+
+  StreamSubscription _contextRestoredSubscription;
+
+  final Float32List _vertexList = new Float32List(4 * 4);
+  final Map<String, gl.UniformLocation> _uniformLocations = new Map<String, gl.UniformLocation>();
+  final Map<String, int> _attribLocations = new Map<String, int>();
+
+  //-----------------------------------------------------------------------------------------------
+
+  void activate(RenderContextWebGL renderContext) {
+
+    if (_program == null) {
+
+      if (_renderingContext == null) {
+        _renderingContext = renderContext.rawContext;
+        _contextRestoredSubscription = renderContext.onContextRestored.listen(_onContextRestored);
+      }
+
+      _program = createProgram(_renderingContext, _vertexShaderSource, _fragmentShaderSource);
+
+      int activeAttributes = _renderingContext.getProgramParameter(_program, gl.ACTIVE_ATTRIBUTES);
+
+      for(int index = 0; index < activeAttributes; index++) {
+        var activeInfo = _renderingContext.getActiveAttrib(_program, index);
+        var location = _renderingContext.getAttribLocation(_program, activeInfo.name);
+        _attribLocations[activeInfo.name] = location;
+      }
+
+      int activeUniforms = _renderingContext.getProgramParameter(_program, gl.ACTIVE_UNIFORMS);
+
+      for(int index = 0; index < activeUniforms; index++) {
+        var activeInfo = _renderingContext.getActiveUniform(_program, index);
+        var location = _renderingContext.getUniformLocation(_program, activeInfo.name);
+        _uniformLocations[activeInfo.name] = location;
+      }
+
+      _renderingContext.enableVertexAttribArray(_attribLocations["aVertexPosition"]);
+      _renderingContext.enableVertexAttribArray(_attribLocations["aVertexTextCoord"]);
+
+      _vertexBuffer = _renderingContext.createBuffer();
+      _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+      _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+    }
+
+    _renderingContext.useProgram(_program);
+    _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+    _renderingContext.vertexAttribPointer(_attribLocations["aVertexPosition"], 2, gl.FLOAT, false, 16, 0);
+    _renderingContext.vertexAttribPointer(_attribLocations["aVertexTextCoord"], 2, gl.FLOAT, false, 16, 8);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+
+    Matrix matrix = renderState.globalMatrix;
+    num alpha = renderState.globalAlpha;
+
+    int width = renderTextureQuad.textureWidth;
+    int height = renderTextureQuad.textureHeight;
+    int offsetX = renderTextureQuad.offsetX;
+    int offsetY = renderTextureQuad.offsetY;
+    Float32List uvList = renderTextureQuad.uvList;
+
+    // x' = tx + a * x + c * y
+    // y' = ty + b * x + d * y
+
+    num a = matrix.a;
+    num b = matrix.b;
+    num c = matrix.c;
+    num d = matrix.d;
+
+    num ox = matrix.tx + offsetX * a + offsetY * c;
+    num oy = matrix.ty + offsetX * b + offsetY * d;
+    num ax = a * width;
+    num bx = b * width;
+    num cy = c * height;
+    num dy = d * height;
+
+    _vertexList[00] = ox;
+    _vertexList[01] = oy;
+    _vertexList[02] = uvList[0];
+    _vertexList[03] = uvList[1];
+    _vertexList[04] = ox + ax;
+    _vertexList[05] = oy + bx;
+    _vertexList[06] = uvList[2];
+    _vertexList[07] = uvList[3];
+    _vertexList[08] = ox + ax + cy;
+    _vertexList[09] = oy + bx + dy;
+    _vertexList[10] = uvList[4];
+    _vertexList[11] = uvList[5];
+    _vertexList[12] = ox + cy;
+    _vertexList[13] = oy + dy;
+    _vertexList[14] = uvList[6];
+    _vertexList[15] = uvList[7];
+
+    _renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, _vertexList);
+    _renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+  }
+
+  void flush() {
+  }
+
+  _onContextRestored(Event e) {
+    _program = null;
+  }
+}
+

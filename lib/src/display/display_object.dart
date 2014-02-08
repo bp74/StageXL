@@ -504,10 +504,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     var canvas = _cacheTexture.canvas;
 
     var matrix = _cacheTexture.quad.drawMatrix..translate(-x, -y);
-    var renderContext = new RenderContextCanvas(canvas, Color.Transparent);
+    var renderContext = new RenderContextCanvas(canvas);
     var renderState = new RenderState(renderContext, matrix);
 
-    renderContext.clear();
+    renderContext.clear(Color.Transparent);
     render(renderState);
 
     if (_filters != null) {
@@ -540,11 +540,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       _cacheTexture.dispose();
       _cacheTexture = null;
     }
-  }
-
-  void _renderCache(RenderState renderState) {
-    renderState.globalMatrix.prependTranslation(_cacheRectangle.x, _cacheRectangle.y);
-    renderState.renderQuad(_cacheTexture.quad);
   }
 
   //-------------------------------------------------------------------------------------------------

@@ -2,8 +2,6 @@ part of stagexl;
 
 abstract class RenderProgram {
 
-  RenderProgram();
-
   void activate(RenderContextWebGL renderContext);
   void flush();
 

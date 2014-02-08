@@ -204,7 +204,7 @@ class BitmapData implements BitmapDrawable {
   void draw(BitmapDrawable source, [Matrix matrix]) {
     var drawMatrix = _renderTextureQuad.drawMatrix;
     if (matrix != null) drawMatrix.prepend(matrix);
-    var renderContext = new RenderContextCanvas(_renderTexture.canvas, Color.Transparent);
+    var renderContext = new RenderContextCanvas(_renderTexture.canvas);
     var renderState = new RenderState(renderContext, drawMatrix);
     source.render(renderState);
     _renderTexture.update();
@@ -212,7 +212,7 @@ class BitmapData implements BitmapDrawable {
 
   void copyPixels(BitmapData source, Rectangle sourceRect, Point destPoint) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
-    var renderContext = new RenderContextCanvas(_renderTexture.canvas, Color.Transparent);
+    var renderContext = new RenderContextCanvas(_renderTexture.canvas);
     var matrix = _renderTextureQuad.drawMatrix..prependTranslation(destPoint.x, destPoint.y);
     var renderState = new RenderState(renderContext, matrix);
     renderContext.rawContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
@@ -223,7 +223,7 @@ class BitmapData implements BitmapDrawable {
 
   void drawPixels(BitmapData source, Rectangle sourceRect, Point destPoint, [String compositeOperation]) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
-    var renderContext = new RenderContextCanvas(_renderTexture.canvas, Color.Transparent);
+    var renderContext = new RenderContextCanvas(_renderTexture.canvas);
     var matrix = _renderTextureQuad.drawMatrix..prependTranslation(destPoint.x, destPoint.y);
     var renderState = new RenderState(renderContext, matrix, 1.0, compositeOperation);
     renderContext.renderQuad(renderState, sourceQuad);

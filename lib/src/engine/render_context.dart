@@ -16,7 +16,8 @@ abstract class RenderContext extends EventDispatcher {
   String get renderEngine;
   Matrix get viewPortMatrix;
 
-  void clear();
+  void reset();
+  void clear(int color);
   void flush();
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad);

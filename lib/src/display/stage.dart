@@ -82,6 +82,7 @@ class Stage extends DisplayObjectContainer {
   CanvasElement _canvas;
   RenderContext _renderContext;
 
+  int _color = 0;
   int _sourceWidth = 0;
   int _sourceHeight = 0;
   int _frameRate = 30;
@@ -129,18 +130,19 @@ class Stage extends DisplayObjectContainer {
     if (canvas.tabIndex == -1) canvas.tabIndex = 0;
     if (canvas.style.outline == "") canvas.style.outline = "none";
 
+    _color = _ensureInt(color);
     _sourceWidth = _ensureInt((width != null) ? width : canvas.width);
     _sourceHeight = _ensureInt((width != null) ? height : canvas.height);
     _frameRate = _ensureInt((frameRate != null) ? frameRate : 30);
 
     if (webGL && gl.RenderingContext.supported) {
       try {
-        _renderContext = new RenderContextWebGL(canvas, color);
+        _renderContext = new RenderContextWebGL(canvas);
       } catch(e) {
-        _renderContext = new RenderContextCanvas(canvas, color);
+        _renderContext = new RenderContextCanvas(canvas);
       }
     } else {
-      _renderContext = new RenderContextCanvas(canvas, color);
+      _renderContext = new RenderContextCanvas(canvas);
     }
 
     _renderState = new RenderState(_renderContext, _renderContext.viewPortMatrix);
@@ -313,9 +315,14 @@ class Stage extends DisplayObjectContainer {
     if (_stageRenderMode == StageRenderMode.AUTO || _stageRenderMode == StageRenderMode.ONCE) {
 
       _updateCanvasSize();
+      _renderContext.reset();
+      _renderContext.clear(_color);
 
-      _renderState.reset(_stageTransformation, currentTime, deltaTime);
+      _tmpMatrix.copyFromAndConcat(_renderContext.viewPortMatrix, _stageTransformation);
+      _renderState.reset(_tmpMatrix, currentTime, deltaTime);
+
       render(_renderState);
+
       _renderState.flush();
 
       if (_stageRenderMode == StageRenderMode.ONCE)

@@ -9,7 +9,7 @@ class ColorMatrixFilter extends BitmapFilter {
       throw new ArgumentError("The supplied matrix needs to be a 4 x 5 matrix.");
     }
     for(int i = 0; i < matrix.length; i++) {
-      _matrix[i] = _ensureNum(matrix[i]);
+      _matrix[i] = _ensureNum(matrix[i]).toDouble();
     }
   }
 
@@ -87,4 +87,70 @@ class ColorMatrixFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
+  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+    RenderContextWebGL renderContext = renderState.renderContext;
+    renderContext._updateState(_colorMatrixRenderProgram, renderTextureQuad.renderTexture);
+    _colorMatrixRenderProgram.renderFilter(renderState, renderTextureQuad, this);
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
+var _colorMatrixRenderProgram = new _ColorMatrixRenderProgram();
+
+class _ColorMatrixRenderProgram extends _BitmapFilterRenderProgram {
+
+  var _fragmentShaderSource = """
+      precision mediump float;
+      uniform sampler2D uSampler;
+      uniform mat4 uColorMatrix;
+      uniform vec4 uColorOffset;
+      varying vec2 vTextCoord;
+      void main() {
+        gl_FragColor = uColorOffset + texture2D(uSampler, vTextCoord) * uColorMatrix;
+      }
+      """;
+
+  Float32List _colorMatrixList = new Float32List(16);
+  Float32List _colorOffsetList = new Float32List(4);
+
+  //-----------------------------------------------------------------------------------------------
+
+  void renderFilter(RenderState renderState,
+                    RenderTextureQuad renderTextureQuad,
+                    ColorMatrixFilter colorMatrixFilter) {
+
+    List<num> colorMatrix = colorMatrixFilter._matrix;
+
+    _colorMatrixList[00] = colorMatrix[00];
+    _colorMatrixList[01] = colorMatrix[01];
+    _colorMatrixList[02] = colorMatrix[02];
+    _colorMatrixList[03] = colorMatrix[03];
+    _colorMatrixList[04] = colorMatrix[05];
+    _colorMatrixList[05] = colorMatrix[06];
+    _colorMatrixList[06] = colorMatrix[07];
+    _colorMatrixList[07] = colorMatrix[08];
+    _colorMatrixList[08] = colorMatrix[10];
+    _colorMatrixList[09] = colorMatrix[11];
+    _colorMatrixList[10] = colorMatrix[12];
+    _colorMatrixList[11] = colorMatrix[13];
+    _colorMatrixList[12] = colorMatrix[15];
+    _colorMatrixList[13] = colorMatrix[16];
+    _colorMatrixList[14] = colorMatrix[17];
+    _colorMatrixList[15] = colorMatrix[18];
+
+    _colorOffsetList[00] = colorMatrix[04] / 255.0;
+    _colorOffsetList[01] = colorMatrix[09] / 255.0;
+    _colorOffsetList[02] = colorMatrix[14] / 255.0;
+    _colorOffsetList[03] = colorMatrix[19] / 255.0;
+
+    var uColorMatrixLocation = _uniformLocations["uColorMatrix"];
+    var uColorOffsetLocation = _uniformLocations["uColorOffset"];
+
+    _renderingContext.uniformMatrix4fv(uColorMatrixLocation, false, _colorMatrixList);
+    _renderingContext.uniform4fv(uColorOffsetLocation, _colorOffsetList);
+
+    super.renderQuad(renderState, renderTextureQuad);
+  }
 }

@@ -26,7 +26,7 @@ class AlphaMaskFilter extends BitmapFilter {
     int height = renderTextureQuad.textureHeight;
     Matrix matrix = renderTextureQuad.drawMatrix;
     CanvasElement canvas = renderTextureQuad.renderTexture.canvas;
-    RenderContextCanvas renderContext = new RenderContextCanvas(canvas, Color.Transparent);
+    RenderContextCanvas renderContext = new RenderContextCanvas(canvas);
     RenderState renderState = new RenderState(renderContext, matrix, 1.0, CompositeOperation.DESTINATION_IN);
     CanvasRenderingContext2D context = renderContext.rawContext;
 

@@ -65,6 +65,8 @@ class RenderTexture {
 
   RenderTexture.fromRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer, num storePixelRatio) {
 
+    // TODO: mark RenderTexture as read only in some way.
+
     _storePixelRatio = _ensureNum(storePixelRatio);
     _storeWidth = _ensureInt(renderFrameBuffer.width);
     _storeHeight = _ensureInt(renderFrameBuffer.height);
