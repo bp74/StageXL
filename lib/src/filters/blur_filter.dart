@@ -13,8 +13,8 @@ class BlurFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
 
   BlurFilter([this.blurX = 4, this.blurY = 4]) {
-    if (blurX < 1 || blurY < 1) {
-      throw new ArgumentError("Error #9004: The minimum blur size is 1.");
+    if (blurX < 0 || blurY < 0) {
+      throw new ArgumentError("Error #9004: The minimum blur size is 0.");
     }
     if (blurX > 64 || blurY > 64) {
       throw new ArgumentError("Error #9004: The maximum blur size is 64.");
@@ -23,6 +23,7 @@ class BlurFilter extends BitmapFilter {
 
   BitmapFilter clone() => new BlurFilter(blurX, blurY);
   Rectangle get overlap => new Rectangle(-blurX, -blurY, 2 * blurX, 2 * blurY);
+  int get passCount => 2;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -62,6 +63,56 @@ class BlurFilter extends BitmapFilter {
 
     renderTextureQuad.putImageData(imageData);
   }
+
+  //-------------------------------------------------------------------------------------------------
+
+  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+    RenderContextWebGL renderContext = renderState.renderContext;
+    RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    renderContext._updateState(_blurProgram, renderTexture);
+
+    if (pass == 0) {
+      _blurProgram.updateRenderingContext(1 / renderTexture.width, 0.0);
+    } else {
+      _blurProgram.updateRenderingContext(0.0, 1 / renderTexture.height);
+    }
+
+    _blurProgram.renderQuad(renderState, renderTextureQuad);
+  }
 }
 
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 
+final _blurProgram = new _BlurProgram();
+
+class _BlurProgram extends _BitmapFilterProgram {
+
+  String get fragmentShaderSource => """
+      precision mediump float;
+      uniform sampler2D uSampler;
+      uniform vec2 uBlur;
+      varying vec2 vTextCoord;
+      varying float vAlpha;
+      void main() {
+        vec4 color = vec4(0);
+        color += texture2D(uSampler, vec2(vTextCoord - 4.0 * uBlur)) * 0.050;
+        color += texture2D(uSampler, vec2(vTextCoord - 3.0 * uBlur)) * 0.090;
+        color += texture2D(uSampler, vec2(vTextCoord - 2.0 * uBlur)) * 0.120;
+        color += texture2D(uSampler, vec2(vTextCoord - 1.0 * uBlur)) * 0.155;
+        color += texture2D(uSampler, vec2(vTextCoord +       uBlur)) * 0.170;
+        color += texture2D(uSampler, vec2(vTextCoord + 1.0 * uBlur)) * 0.155;
+        color += texture2D(uSampler, vec2(vTextCoord + 2.0 * uBlur)) * 0.120;
+        color += texture2D(uSampler, vec2(vTextCoord + 3.0 * uBlur)) * 0.090;
+        color += texture2D(uSampler, vec2(vTextCoord + 4.0 * uBlur)) * 0.050;
+        gl_FragColor = color * vAlpha;
+      }
+      """;
+
+   void updateRenderingContext(num blurX, num blurY) {
+     // either blurX or blurY must be zero!
+     var uBlurLocation = _uniformLocations["uBlur"];
+     _renderingContext.uniform2f(uBlurLocation, blurX, blurY);
+   }
+
+}

@@ -3,13 +3,15 @@ part of stagexl;
 abstract class BitmapFilter {
 
   BitmapFilter clone();
-  Rectangle get overlap;
+
+  Rectangle get overlap => new Rectangle.zero();
+  int get passCount => 1;
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
   }
 
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     renderState.renderQuad(renderTextureQuad);
     renderState.flush();
   }
@@ -114,7 +116,7 @@ abstract class BitmapFilter {
 
   _blur2(List<int> data, int offset, int length, int stride, int radius) {
 
-    int weight = radius * radius;
+    int weight = radius * radius + 1;
     int weightInv = (1 << 22) ~/ weight;
     int sum = weight ~/ 2;
     int dif = 0;

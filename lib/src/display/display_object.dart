@@ -620,7 +620,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       num overlapTop = 0;
       num overlapRight = 0;
       num overlapBottom = 0;
-      int passCount = 0;
+      int totalPassCount = 0;
 
       for(int i = 0; i < filters.length; i++) {
         BitmapFilter filter = filters[i];
@@ -629,10 +629,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
         overlapTop = min(overlapTop , overlap.top);
         overlapRight = max(overlapRight, overlap.right);
         overlapBottom = max(overlapBottom, overlap.bottom);
+        totalPassCount += filter.passCount;
       }
 
-      int boundsLeft = (bounds.left - overlapLeft).floor();
-      int boundsTop = (bounds.top - overlapTop).floor();
+      int boundsLeft = (bounds.left + overlapLeft).floor();
+      int boundsTop = (bounds.top + overlapTop).floor();
       int boundsRight = (bounds.right + overlapRight).ceil();
       int boundsBottom = (bounds.bottom + overlapBottom).ceil();
       int boundsWidth = boundsRight - boundsLeft;
@@ -641,33 +642,51 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       //-----------------
 
       // TODO: use a pool of RenderFrameBuffers
-      var renderFrameBuffer = new RenderFrameBuffer(renderContext, boundsWidth, boundsHeight);
 
-      var renderStateDisplayObject = new RenderState(renderContext);
-      renderStateDisplayObject.globalMatrix.translate(-boundsLeft, -boundsTop);
-      renderStateDisplayObject.globalMatrix.scale(2.0 / boundsWidth, 2.0 / boundsHeight);
-      renderStateDisplayObject.globalMatrix.translate(-1, -1);
+      List<RenderFrameBuffer> renderFrameBuffers = new List.generate(totalPassCount <= 1 ? 1 : 2, (i) =>
+          new RenderFrameBuffer(renderContext, boundsWidth, boundsHeight), growable: false);
+
+      var flattenRenderFrameBuffer = renderFrameBuffers[0];
+      var flattenRenderState = new RenderState(renderContext, flattenRenderFrameBuffer.renderMatrix);
+      flattenRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
 
       renderContextWebGL.flush();
-      renderContextWebGL.pushFrameBuffer(renderFrameBuffer);
-      renderContextWebGL.clear(Color.Transparent);
+      renderContextWebGL.pushFrameBuffer(flattenRenderFrameBuffer);
+      renderContextWebGL.clear(0);
 
-      this.render(renderStateDisplayObject);
+      this.render(flattenRenderState);
 
       renderContextWebGL.flush();
       renderContextWebGL.popFrameBuffer();
 
-      var renderTextureQuad = renderFrameBuffer.renderTexture.quad;
-      renderTextureQuad._offsetX = boundsLeft;
-      renderTextureQuad._offsetY = boundsTop;
+      //-----------------
+
+      int passCount = 0;
 
       for(int i = 0; i < filters.length; i++) {
         BitmapFilter filter = filters[i];
-        filter.renderFilter(renderState, renderFrameBuffer.renderTexture.quad);
+        for(int pass = 0; pass < filter.passCount; pass++) {
+          var passRenderTexture = renderFrameBuffers[passCount % 2].renderTexture;
+          var passRemderTextureQuad = passRenderTexture.quad;
+          if (++passCount < totalPassCount) {
+            var passRenderFrameBuffer = renderFrameBuffers[passCount % 2];
+            var passRenderState = new RenderState(renderContext, passRenderFrameBuffer.renderMatrix);
+            renderContextWebGL.pushFrameBuffer(passRenderFrameBuffer);
+            renderContextWebGL.clear(0);
+            filter.renderFilter(passRenderState, passRemderTextureQuad, pass);
+            renderContextWebGL.popFrameBuffer();
+          } else {
+            passRemderTextureQuad._offsetX = boundsLeft;
+            passRemderTextureQuad._offsetY = boundsTop;
+            filter.renderFilter(renderState, passRemderTextureQuad, pass);
+          }
+        }
       }
 
+      //-----------------
+
       // TODO: release to pool of RenderFrameBuffers
-      renderFrameBuffer.dispose();
+      renderFrameBuffers.forEach((rfb) => rfb.dispose());
     }
   }
 

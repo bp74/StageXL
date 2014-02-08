@@ -8,7 +8,7 @@ import '../lib/stagexl.dart';
 void main() {
 
   var canvas = html.querySelector('#stage');
-  var stage = new Stage(canvas, webGL: true);
+  var stage = new Stage(canvas, webGL: true, color: Color.White);
   var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
@@ -19,22 +19,24 @@ void main() {
 
   resourceManager.load().then((result) {
 
-    var colorMatrixFilter = new ColorMatrixFilter.invert();
+    var colorMatrixFilter = new ColorMatrixFilter.grayscale();
+    //var colorMatrixFilter = new ColorMatrixFilter.invert();
     var blurFilter = new BlurFilter(4, 4);
     var dropShadowFilter = new DropShadowFilter(10, math.PI / 4, Color.Black,  1.0, 5, 5);
 
     var world = new Sprite();
     world.addTo(stage);
-    world.filters= [colorMatrixFilter];
+    //world.alpha = 0.5;
+    //world.filters= [colorMatrixFilter];
     //world.filters= [blurFilter];
-    //world.filters= [dropShadowFilter];
+    world.filters= [colorMatrixFilter, blurFilter];
     //world.filters= [colorMatrixFilter, dropShadowFilter];
 
     /*
-    stage.juggler.transition(-1, 1, 3, (x) => x, (value) {
-      world.filters= [new ColorMatrixFilter.adjust(saturation: value)];
+    stage.juggler.transition(-1, 1, 10, (x) => x, (value) {
+      world.filters= [new ColorMatrixFilter.adjust(hue: value)];
     });
-    */
+*/
 
     var sun = new Bitmap(resourceManager.getBitmapData("sun"));
     sun.x = 260;

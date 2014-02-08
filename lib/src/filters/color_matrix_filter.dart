@@ -48,7 +48,6 @@ class ColorMatrixFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
 
   BitmapFilter clone() => new ColorMatrixFilter(_colorMatrixList, _colorOffsetList);
-  Rectangle get overlap => new Rectangle(0, 0, 0, 0);
 
   //-------------------------------------------------------------------------------------------------
 
@@ -189,7 +188,7 @@ class ColorMatrixFilter extends BitmapFilter {
 
   //-------------------------------------------------------------------------------------------------
 
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     renderContext._updateState(_colorMatrixProgram, renderTextureQuad.renderTexture);
     _colorMatrixProgram.updateRenderingContext(this);
@@ -200,7 +199,7 @@ class ColorMatrixFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-var _colorMatrixProgram = new _ColorMatrixProgram();
+final _colorMatrixProgram = new _ColorMatrixProgram();
 
 class _ColorMatrixProgram extends _BitmapFilterProgram {
 
@@ -212,7 +211,10 @@ class _ColorMatrixProgram extends _BitmapFilterProgram {
       varying vec2 vTextCoord;
       varying float vAlpha;
       void main() {
-        vec4 color = (uColorOffset / 255.0) + texture2D(uSampler, vTextCoord) * uColorMatrix;
+        vec4 color = texture2D(uSampler, vTextCoord);
+        color = vec4(color.rgb / (color.a + 0.001), color.a);
+        color = (uColorOffset / 255.0) + color * uColorMatrix;
+        color = vec4(color.rgb * color.a, color.a);
         gl_FragColor = color * vAlpha;
       }
       """;
