@@ -21,14 +21,15 @@ void main() {
 
   resourceManager.load().then((result) {
 
+    var colorMatrixFilter = new ColorMatrixFilter.identity();
     var world = new Sprite();
+
     //var fragment = new Fragment(world);
     //fragment.alpha = 0.5;
     //fragment.addTo(stage);
     world.addTo(stage);
-    world.alpha = 0.5;
-    world.filters= [new ColorMatrixFilter.grayscale()];
-    //world.filters= [new ColorMatrixFilter.invert()];
+    //world.alpha = 0.5;
+    world.filters= [colorMatrixFilter];
     //world.mask = new Mask.rectangle(250, 140, 100, 150);
 
     var sun = new Bitmap(resourceManager.getBitmapData("sun"));
@@ -43,6 +44,12 @@ void main() {
     tree.x = 300;
     tree.y = 200;
     tree.addTo(world);
+
+    stage.juggler.transition(-1, 1, 3, (x) => x, (value) {
+      world.filters= [new ColorMatrixFilter.adjust(saturation: value)];
+    });
+
+    //world.applyCache(250, 140, 200, 200, debugBorder: true);
 
   }).catchError((e) => print(e));
 }
