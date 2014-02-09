@@ -609,11 +609,12 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     if (renderContext is! RenderContextWebGL) {
 
-      this.render(renderState);
+      render(renderState);
 
     } else {
 
       RenderContextWebGL renderContextWebGL = renderContext;
+      RenderState tempRenderState = new RenderState(renderContext);
       Rectangle bounds = this.getBoundsTransformed(_identityMatrix);
 
       num overlapLeft = 0;
@@ -641,52 +642,57 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
       //-----------------
 
-      // TODO: use a pool of RenderFrameBuffers
+      var renderFrameBuffers = new List<RenderFrameBuffer>(totalPassCount <= 1 ? 1 : 2);
 
-      List<RenderFrameBuffer> renderFrameBuffers = new List.generate(totalPassCount <= 1 ? 1 : 2, (i) =>
-          new RenderFrameBuffer(renderContext, boundsWidth, boundsHeight), growable: false);
+      for(int i = 0; i < renderFrameBuffers.length; i++) {
+        // TODO: use a pool of RenderFrameBuffers
+        renderFrameBuffers[i] = new RenderFrameBuffer(renderContext, boundsWidth, boundsHeight);
+      }
 
-      var flattenRenderFrameBuffer = renderFrameBuffers[0];
-      var flattenRenderState = new RenderState(renderContext, flattenRenderFrameBuffer.renderMatrix);
+      RenderFrameBuffer flattenRenderFrameBuffer = renderFrameBuffers[0];
+      RenderState flattenRenderState = tempRenderState;
+      flattenRenderState.reset(flattenRenderFrameBuffer.renderMatrix);
       flattenRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
 
       renderContextWebGL.flush();
       renderContextWebGL.pushFrameBuffer(flattenRenderFrameBuffer);
       renderContextWebGL.clear(0);
-
-      this.render(flattenRenderState);
-
+      render(flattenRenderState);
       renderContextWebGL.flush();
       renderContextWebGL.popFrameBuffer();
 
       //-----------------
 
+      RenderFrameBuffer filterRenderFrameBuffer;
+      RenderTexture filterRenderTexture;
+      RenderState filterRenderState = tempRenderState;
       int passCount = 0;
 
       for(int i = 0; i < filters.length; i++) {
         BitmapFilter filter = filters[i];
         for(int pass = 0; pass < filter.passCount; pass++) {
-          var passRenderTexture = renderFrameBuffers[passCount % 2].renderTexture;
-          var passRemderTextureQuad = passRenderTexture.quad;
+          filterRenderTexture = renderFrameBuffers[passCount & 1].renderTexture;
           if (++passCount < totalPassCount) {
-            var passRenderFrameBuffer = renderFrameBuffers[passCount % 2];
-            var passRenderState = new RenderState(renderContext, passRenderFrameBuffer.renderMatrix);
-            renderContextWebGL.pushFrameBuffer(passRenderFrameBuffer);
+            filterRenderFrameBuffer = renderFrameBuffers[passCount & 1];
+            filterRenderState.reset(filterRenderFrameBuffer.renderMatrix);
+            renderContextWebGL.pushFrameBuffer(filterRenderFrameBuffer);
             renderContextWebGL.clear(0);
-            filter.renderFilter(passRenderState, passRemderTextureQuad, pass);
+            filter.renderFilter(filterRenderState, filterRenderTexture.quad, pass);
             renderContextWebGL.popFrameBuffer();
           } else {
-            passRemderTextureQuad._offsetX = boundsLeft;
-            passRemderTextureQuad._offsetY = boundsTop;
-            filter.renderFilter(renderState, passRemderTextureQuad, pass);
+            renderState.globalMatrix.prependTranslation(boundsLeft, boundsTop);
+            filter.renderFilter(renderState, filterRenderTexture.quad, pass);
           }
         }
       }
 
       //-----------------
 
-      // TODO: release to pool of RenderFrameBuffers
-      renderFrameBuffers.forEach((rfb) => rfb.dispose());
+      for(int i = 0; i < renderFrameBuffers.length; i++) {
+        // TODO: release to pool of RenderFrameBuffers
+        renderFrameBuffers[i].dispose();
+      }
+
     }
   }
 

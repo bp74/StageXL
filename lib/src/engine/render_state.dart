@@ -50,7 +50,10 @@ class RenderState {
 
     _currentTime = (currentTime is num) ? currentTime : 0.0;
     _deltaTime = (deltaTime is num) ? deltaTime : 0.0;
+
     _currentContextState = _firstContextState;
+    _currentContextState.alpha = 1.0;
+    _currentContextState.compositeOperation = CompositeOperation.SOURCE_OVER;
 
     if (matrix is Matrix) {
       _firstContextState.matrix.copyFrom(matrix);

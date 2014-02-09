@@ -28,7 +28,7 @@ class ColorMatrixFilter extends BitmapFilter {
       [0, 0, 0, 0]);
 
   ColorMatrixFilter.invert() : this(
-      [-1,  0,  0, 0, 0, -1,  0, 0, 0,  0, -1, 0, 0,  0,  0, 1],
+      [-1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1],
       [255, 255, 255, 0]);
 
   ColorMatrixFilter.identity() : this(
@@ -83,7 +83,7 @@ class ColorMatrixFilter extends BitmapFilter {
     num g = i * _lumaG;
     num b = i * _lumaB;
 
-    _concat( [r + v, g, b, 0, r, g + v, b, 0,  r, g, b + v, 0, 0, 0, 0, 1], [0, 0, 0, 0]);
+    _concat( [r + v, g, b, 0, r, g + v, b, 0, r, g, b + v, 0, 0, 0, 0, 1], [0, 0, 0, 0]);
   }
 
   void adjustContrast(num value) {
@@ -191,7 +191,7 @@ class ColorMatrixFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     renderContext._updateState(_colorMatrixProgram, renderTextureQuad.renderTexture);
-    _colorMatrixProgram.updateRenderingContext(this);
+    _colorMatrixProgram.configureProgram(this);
     _colorMatrixProgram.renderQuad(renderState, renderTextureQuad);
   }
 }
@@ -219,7 +219,7 @@ class _ColorMatrixProgram extends _BitmapFilterProgram {
       }
       """;
 
-  void updateRenderingContext(ColorMatrixFilter colorMatrixFilter) {
+  void configureProgram(ColorMatrixFilter colorMatrixFilter) {
     var colorMatrixList = colorMatrixFilter._colorMatrixList;
     var colorOffsetList = colorMatrixFilter._colorOffsetList;
     var uColorMatrixLocation = _uniformLocations["uColorMatrix"];

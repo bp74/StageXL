@@ -8,7 +8,7 @@ import '../lib/stagexl.dart';
 void main() {
 
   var canvas = html.querySelector('#stage');
-  var stage = new Stage(canvas, webGL: true, color: Color.White);
+  var stage = new Stage(canvas, webGL: true, color: Color.DarkBlue);
   var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);
 
@@ -21,6 +21,8 @@ void main() {
 
     var colorMatrixFilter = new ColorMatrixFilter.grayscale();
     //var colorMatrixFilter = new ColorMatrixFilter.invert();
+    //var colorMatrixFilter = new ColorMatrixFilter.identity();
+    //var colorMatrixFilter = new ColorMatrixFilter.adjust(contrast: 1);
     var blurFilter = new BlurFilter(4, 4);
     var dropShadowFilter = new DropShadowFilter(10, math.PI / 4, Color.Black,  1.0, 5, 5);
 
@@ -36,11 +38,13 @@ void main() {
     stage.juggler.transition(-1, 1, 10, (x) => x, (value) {
       world.filters= [new ColorMatrixFilter.adjust(hue: value)];
     });
-*/
+    */
 
     var sun = new Bitmap(resourceManager.getBitmapData("sun"));
-    sun.x = 260;
-    sun.y = 140;
+    sun.pivotX = 65;
+    sun.pivotY = 62;
+    sun.x = 320;
+    sun.y = 200;
     sun.addTo(world);
     var house = new Bitmap(resourceManager.getBitmapData("house"));
     house.x = 250;
@@ -50,6 +54,9 @@ void main() {
     tree.x = 300;
     tree.y = 200;
     tree.addTo(world);
+
+    stage.juggler.tween(sun, 60.0, (x) => x).animate.rotation.to(20 * math.PI);
+
 
    // world.applyCache(250, 140, 200, 200, debugBorder: true);
 
