@@ -315,18 +315,22 @@ class Stage extends DisplayObjectContainer {
     if (_stageRenderMode == StageRenderMode.AUTO || _stageRenderMode == StageRenderMode.ONCE) {
 
       _updateCanvasSize();
+
       _renderContext.reset();
       _renderContext.clear(_color);
 
-      _tmpMatrix.copyFromAndConcat(_renderContext.viewPortMatrix, _stageTransformation);
-      _renderState.reset(_tmpMatrix, currentTime, deltaTime);
+      _renderState.reset(_renderContext.viewPortMatrix);
+      _renderState.globalMatrix.concat(_stageTransformation);
+      _renderState._currentTime = _ensureNum(currentTime);
+      _renderState._deltaTime = _ensureNum(deltaTime);
 
       render(_renderState);
 
       _renderState.flush();
 
-      if (_stageRenderMode == StageRenderMode.ONCE)
+      if (_stageRenderMode == StageRenderMode.ONCE) {
         _stageRenderMode = StageRenderMode.STOP;
+      }
     }
   }
 

@@ -46,20 +46,16 @@ class RenderState {
 
   //-------------------------------------------------------------------------------------------------
 
-  void reset([Matrix matrix, num currentTime, num deltaTime]) {
-
-    _currentTime = (currentTime is num) ? currentTime : 0.0;
-    _deltaTime = (deltaTime is num) ? deltaTime : 0.0;
+  void reset([Matrix matrix, num alpha, String compositeOperation]) {
 
     _currentContextState = _firstContextState;
+    _currentContextState.matrix.identity();
     _currentContextState.alpha = 1.0;
     _currentContextState.compositeOperation = CompositeOperation.SOURCE_OVER;
 
-    if (matrix is Matrix) {
-      _firstContextState.matrix.copyFrom(matrix);
-    } else {
-      _firstContextState.matrix.identity();
-    }
+    if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
+    if (alpha is num) _firstContextState.alpha = alpha;
+    if (compositeOperation is String) _firstContextState.compositeOperation = compositeOperation;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -81,6 +77,8 @@ class RenderState {
     _currentContextState = cs1;
   }
 
+  //-------------------------------------------------------------------------------------------------
+
   void renderQuad(RenderTextureQuad renderTextureQuad) {
     _renderContext.renderQuad(this, renderTextureQuad);
   }
@@ -92,7 +90,6 @@ class RenderState {
   void flush() {
     _renderContext.flush();
   }
-
 
 }
 
