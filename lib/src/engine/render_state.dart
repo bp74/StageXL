@@ -68,75 +68,18 @@ class RenderState {
 
     var cs1 = _currentContextState;
     var cs2 = _currentContextState.nextContextState;
-    var maskRenderState = null;
-    var shadowRenderState = null;
-
     var matrix = displayObject.transformationMatrix;
     var composite = displayObject.compositeOperation;
     var alpha = displayObject.alpha;
-    var mask = displayObject.mask;
-    var shadow = displayObject.shadow;  // TODO: try to render the shadow as a filter.
 
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
     cs2.compositeOperation = (composite is String) ? composite : cs1.compositeOperation;
     cs2.alpha = alpha * cs1.alpha.toDouble();
 
     _currentContextState = cs2;
-
-    // apply mask
-
-    if (mask != null) {
-      if (mask.targetSpace == null) {
-        maskRenderState = new RenderState(_renderContext, cs2.matrix);
-      } else if (identical(mask.targetSpace, displayObject)) {
-        maskRenderState = new RenderState(_renderContext, cs2.matrix);
-      } else if (identical(mask.targetSpace, displayObject.parent)) {
-        maskRenderState = new RenderState(_renderContext, cs1.matrix);
-      } else {
-        matrix = mask.targetSpace.transformationMatrixTo(displayObject);
-        maskRenderState = new RenderState(_renderContext, matrix);
-        maskRenderState.globalMatrix.concat(cs2.matrix);
-      }
-      _renderContext.beginRenderMask(maskRenderState, mask);
-    }
-
-    // apply shadow
-
-    if (shadow != null) {
-      if (shadow.targetSpace == null) {
-        shadowRenderState = new RenderState(_renderContext, cs2.matrix);
-      } else if (identical(shadow.targetSpace, displayObject)) {
-        shadowRenderState = new RenderState(_renderContext, cs2.matrix);
-      } else if (identical(shadow.targetSpace, displayObject.parent)) {
-        shadowRenderState = new RenderState(_renderContext, cs1.matrix);
-      } else {
-        matrix = shadow.targetSpace.transformationMatrixTo(displayObject);
-        shadowRenderState = new RenderState(_renderContext, matrix);
-        shadowRenderState.globalMatrix.concat(cs2.matrix);
-      }
-      _renderContext.beginRenderShadow(shadowRenderState, shadow);
-    }
-
-    // render DisplayObject (cached / filtered / standard)
-
     displayObject._renderInternal(this);
-
-    // restore shadow
-
-    if (shadow != null) {
-      _renderContext.endRenderShadow(shadowRenderState, shadow);
-    }
-
-    // restore mask
-
-    if (mask != null) {
-      _renderContext.endRenderMask(maskRenderState, mask);
-    }
-
     _currentContextState = cs1;
   }
-
-  //-------------------------------------------------------------------------------------------------
 
   void renderQuad(RenderTextureQuad renderTextureQuad) {
     _renderContext.renderQuad(this, renderTextureQuad);

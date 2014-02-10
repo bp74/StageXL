@@ -584,12 +584,48 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   void _renderInternal(RenderState renderState) {
+
+    RenderState maskRenderState;
+    RenderState shadowRenderState;
+    Mask mask = _mask;
+    Shadow shadow = _shadow;
+
+    // render mask and shadow (begin)
+
+    if (mask != null) {
+      maskRenderState = new RenderState(renderState.renderContext, renderState.globalMatrix);
+      if (mask.targetSpace != null && identical(this, mask.targetSpace) == false) {
+        maskRenderState.globalMatrix.prepend(mask.targetSpace.transformationMatrixTo(this));
+      }
+      maskRenderState.renderContext.beginRenderMask(maskRenderState, mask);
+    }
+
+    if (shadow != null) {
+      shadowRenderState = new RenderState(renderState.renderContext, renderState.globalMatrix);
+      if (shadow.targetSpace != null && identical(this, shadow.targetSpace) == false) {
+        shadowRenderState.globalMatrix.prepend(shadow.targetSpace.transformationMatrixTo(this));
+      }
+      shadowRenderState.renderContext.beginRenderShadow(shadowRenderState, shadow);
+    }
+
+    // render DisplayObject
+
     if (_cacheTexture != null) {
       _renderCached(renderState);
     } else if (_filters != null && _filters.length > 0) {
       _renderFiltered(renderState);
     } else {
       render(renderState);
+    }
+
+    // render mask and shadow (end)
+
+    if (shadow != null) {
+      shadowRenderState.renderContext.endRenderShadow(shadowRenderState, shadow);
+    }
+
+    if (mask != null) {
+      maskRenderState.renderContext.endRenderMask(maskRenderState, mask);
     }
   }
 
