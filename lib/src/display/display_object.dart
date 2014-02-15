@@ -736,12 +736,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
           // release obsolete source RenderFrameBuffer
 
-          bool obsoleteSource = true;
-          for(int p = pass + 1; p < renderPassSources.length && obsoleteSource; p++) {
-            if (renderPassSources[p] == renderPassSource) obsoleteSource = false;
-          }
-
-          if (obsoleteSource) {
+          if (renderPassSources.skip(pass + 1).every((rps) => rps != renderPassSource)) {
             renderFrameBufferMap.remove(renderPassSource);
             renderContextWebGL.releaseRenderFrameBuffer(sourceRenderFrameBuffer);
           }
