@@ -49,14 +49,20 @@ void main() {
     //world1.filters= [glowFilter];
     //world2.filters= [glowFilter];
 
-    world1.filters= [dropShadowFilter];
-    world2.filters= [dropShadowFilter];
+    //world1.filters= [dropShadowFilter];
+    //world2.filters= [dropShadowFilter];
 
     //world1.filters= [colorMatrixFilter, blurFilter];
     //world2.filters= [colorMatrixFilter, blurFilter];
 
     //world1.filters= [glowFilter, colorMatrixFilter];
     //world2.filters= [glowFilter, colorMatrixFilter];
+
+    world1.filters= [dropShadowFilter, colorMatrixFilter];
+    world2.filters= [dropShadowFilter, colorMatrixFilter];
+
+    //world1.filters= [colorMatrixFilter, dropShadowFilter];
+    //world2.filters= [colorMatrixFilter, dropShadowFilter];
 
     world2.applyCache(220, 120, 240, 240, debugBorder: false);
 

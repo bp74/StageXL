@@ -503,7 +503,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     var height = _cacheRectangle.height;
     var canvas = _cacheTexture.canvas;
 
-    var matrix = _cacheTexture.quad.drawMatrix..translate(-x, -y);
+    var matrix = _cacheTexture.quad.drawMatrix..prependTranslation(-x, -y);
     var renderContext = new RenderContextCanvas(canvas);
     var renderState = new RenderState(renderContext, matrix);
 
@@ -514,11 +514,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       var cacheBitmapData = new BitmapData.fromRenderTextureQuad(_cacheTexture.quad);
       var bounds = this.getBoundsTransformed(_identityMatrix)..offset(-x, -y);
       for(var filter in _filters) {
-        var filterOverlap = filter.overlap;
-        var filterBounds = bounds.clone();
-        filterBounds.offset(filterOverlap.x, filterOverlap.y);
-        filterBounds.inflate(filterOverlap.width, filterOverlap.height);
-        filter.apply(cacheBitmapData, filterBounds.align());
+        var overlap = filter.overlap;
+        bounds.offset(overlap.left, overlap.top);
+        bounds.inflate(overlap.width, overlap.height);
+        filter.apply(cacheBitmapData, bounds.align());
       }
     }
 
@@ -760,7 +759,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       }
     }
   }
-
 
 }
 
