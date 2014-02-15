@@ -5,7 +5,8 @@ abstract class BitmapFilter {
   BitmapFilter clone();
 
   Rectangle get overlap => new Rectangle.zero();
-  int get passCount => 1;
+  List<int> get renderPassSources => [0];
+  List<int> get renderPassTargets => [1];
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
@@ -116,7 +117,8 @@ abstract class BitmapFilter {
 
   _blur2(List<int> data, int offset, int length, int stride, int radius) {
 
-    int weight = radius * radius + 1;
+    radius += 1;
+    int weight = radius * radius;
     int weightInv = (1 << 22) ~/ weight;
     int sum = weight ~/ 2;
     int dif = 0;
@@ -153,23 +155,23 @@ abstract class BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  _setColor(List<int> data, int color, num alpha) {
+  _setColor(List<int> data, int color) {
 
     int rColor = _colorGetR(color);
     int gColor = _colorGetG(color);
     int bColor = _colorGetB(color);
-    int alpha256 = (alpha * 256).toInt();
+    int aColor = _colorGetA(color);
 
     if (_isLittleEndianSystem) {
       for(var i = 0; i <= data.length - 4; i += 4) {
         data[i + 0] = rColor;
         data[i + 1] = gColor;
         data[i + 2] = bColor;
-        data[i + 3] = (data[i + 3] * alpha256 | 0) >> 8;
+        data[i + 3] = (aColor * data[i + 3] | 0) >> 8;
       }
     } else {
       for(var i = 0; i <= data.length - 4; i += 4) {
-        data[i + 0] = (data[i + 0] * alpha256 | 0) >> 8;
+        data[i + 0] = (aColor * data[i + 0] | 0) >> 8;
         data[i + 1] = bColor;
         data[i + 2] = gColor;
         data[i + 3] = rColor;
@@ -233,7 +235,7 @@ abstract class BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  _setColorBlend(List<int> dstData, int color, num alpha, List<int> srcData) {
+  _setColorBlend(List<int> dstData, int color, List<int> srcData) {
 
     // optimized version for:
     //   _setColor(data, this.color, this.alpha);
@@ -244,14 +246,14 @@ abstract class BitmapFilter {
     int rColor = _colorGetR(color);
     int gColor = _colorGetG(color);
     int bColor = _colorGetB(color);
-    int alpha256 = (alpha * 256).toInt();
+    int aColor = _colorGetA(color);
 
     if (_isLittleEndianSystem) {
       for(int i = 0; i <= dstData.length - 4; i += 4) {
         int srcA = srcData[i + 3];
         int dstA = dstData[i + 3];
         int srcAX = (srcA * 255);
-        int dstAX = (dstA * (255 - srcA) * alpha256 | 0) >> 8;
+        int dstAX = (dstA * (255 - srcA) * aColor | 0) >> 8;
         int outAX = (srcAX + dstAX);
         if (outAX > 0) {
           dstData[i + 0] = (srcData[i + 0] * srcAX + rColor * dstAX) ~/ outAX;
@@ -267,7 +269,7 @@ abstract class BitmapFilter {
         int srcA = srcData[i + 0];
         int dstA = dstData[i + 0];
         int srcAX = (srcA * 255);
-        int dstAX = (dstA * (255 - srcA) * alpha256 | 0) >> 8;
+        int dstAX = (dstA * (255 - srcA) * aColor | 0) >> 8;
         int outAX = (srcAX + dstAX);
         if (outAX > 0) {
           dstData[i + 0] = outAX ~/ 255;
@@ -283,7 +285,7 @@ abstract class BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  _setColorKnockout(List<int> dstData, int color, num alpha, List<int> srcData) {
+  _setColorKnockout(List<int> dstData, int color, List<int> srcData) {
 
     // optimized version for:
     //   _setColor(data, this.color, this.alpha);
@@ -294,18 +296,18 @@ abstract class BitmapFilter {
     int rColor = _colorGetR(color);
     int gColor = _colorGetG(color);
     int bColor = _colorGetB(color);
-    int alpha256 = (alpha * 256).toInt();
+    int aColor = _colorGetA(color);
 
     if (_isLittleEndianSystem) {
       for(var i = 0; i <= dstData.length - 4; i += 4) {
         dstData[i + 0] = rColor;
         dstData[i + 1] = gColor;
         dstData[i + 2] = bColor;
-        dstData[i + 3] = (alpha256 * dstData[i + 3] * (255 - srcData[i + 3]) | 0) ~/ (255 * 256);
+        dstData[i + 3] = (aColor * dstData[i + 3] * (255 - srcData[i + 3]) | 0) ~/ (255 * 256);
       }
     } else {
       for(var i = 0; i <= dstData.length - 4; i += 4) {
-        dstData[i + 0] = (alpha256 * dstData[i + 0] * (255 - srcData[i + 0]) | 0) ~/ (255 * 256);
+        dstData[i + 0] = (aColor * dstData[i + 0] * (255 - srcData[i + 0]) | 0) ~/ (255 * 256);
         dstData[i + 1] = bColor;
         dstData[i + 2] = gColor;
         dstData[i + 3] = rColor;

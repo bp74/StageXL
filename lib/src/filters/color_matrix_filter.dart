@@ -191,7 +191,7 @@ class ColorMatrixFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     renderContext._updateState(_colorMatrixProgram, renderTextureQuad.renderTexture);
-    _colorMatrixProgram.configureProgram(this);
+    _colorMatrixProgram.configure(this);
     _colorMatrixProgram.renderQuad(renderState, renderTextureQuad);
   }
 }
@@ -219,7 +219,7 @@ class _ColorMatrixProgram extends _BitmapFilterProgram {
       }
       """;
 
-  void configureProgram(ColorMatrixFilter colorMatrixFilter) {
+  void configure(ColorMatrixFilter colorMatrixFilter) {
     var colorMatrixList = colorMatrixFilter._colorMatrixList;
     var colorOffsetList = colorMatrixFilter._colorOffsetList;
     var uColorMatrixLocation = _uniformLocations["uColorMatrix"];

@@ -14,9 +14,9 @@ abstract class RenderProgram {
     renderingContext.shaderSource(shader, source);
     renderingContext.compileShader(shader);
 
-    var vertexShaderStatus = renderingContext.getShaderParameter(shader, gl.COMPILE_STATUS);
+    var shaderStatus = renderingContext.getShaderParameter(shader, gl.COMPILE_STATUS);
     var isContextLost = renderingContext.isContextLost();
-    if (vertexShaderStatus == false && isContextLost == false) {
+    if (shaderStatus == false && isContextLost == false) {
       throw renderingContext.getShaderInfoLog(shader);
     }
 

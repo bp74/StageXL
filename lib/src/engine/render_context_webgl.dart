@@ -158,6 +158,16 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
+  RenderFrameBuffer requestRenderFrameBuffer(int width, int height) {
+    // TODO: use pool
+    return new RenderFrameBuffer(this, width, height);
+  }
+
+  void releaseRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
+    // TODO: use pool
+    renderFrameBuffer.dispose();
+  }
+
   void pushFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
     _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
