@@ -755,7 +755,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       renderState.flush();
 
       for(var renderFrameBuffer in renderFrameBufferMap.values) {
-        renderContextWebGL.releaseRenderFrameBuffer(sourceRenderFrameBuffer);
+        renderContextWebGL.releaseRenderFrameBuffer(renderFrameBuffer);
       }
     }
   }

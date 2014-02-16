@@ -7,6 +7,7 @@ class RenderContextWebGL extends RenderContext {
   final RenderProgramQuad _renderProgramQuad = new RenderProgramQuad();
   final RenderProgramTriangle _renderProgramTriangle = new RenderProgramTriangle();
   final List<RenderFrameBuffer> _renderFrameBuffers = new List<RenderFrameBuffer>();
+  final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
 
   gl.RenderingContext _renderingContext;
   RenderTexture _renderTexture;
@@ -159,13 +160,18 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   RenderFrameBuffer requestRenderFrameBuffer(int width, int height) {
-    // TODO: use pool
-    return new RenderFrameBuffer(this, width, height);
+    if (_renderFrameBufferPool.length > 0) {
+      // TODO: Maybe we can make it faster and smarter if we don't resize
+      // the existing RenderFrameBuffer and work with slightly bigger buffers.
+      // Also get the best matching RenderFrameBuffer in terms of size.
+      return _renderFrameBufferPool.removeLast()..resize(width, height);
+    } else {
+      return new RenderFrameBuffer(this, width, height);
+    }
   }
 
   void releaseRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    // TODO: use pool
-    renderFrameBuffer.dispose();
+    _renderFrameBufferPool.add(renderFrameBuffer);
   }
 
   void pushFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
