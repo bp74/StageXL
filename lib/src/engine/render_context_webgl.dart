@@ -6,7 +6,7 @@ class RenderContextWebGL extends RenderContext {
 
   final RenderProgramQuad _renderProgramQuad = new RenderProgramQuad();
   final RenderProgramTriangle _renderProgramTriangle = new RenderProgramTriangle();
-  final List<RenderFrameBuffer> _renderFrameBuffers = new List<RenderFrameBuffer>();
+  final List<RenderFrameBuffer> _renderFrameBufferStack = new List<RenderFrameBuffer>();
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
 
   gl.RenderingContext _renderingContext;
@@ -57,7 +57,7 @@ class RenderContextWebGL extends RenderContext {
     int width = _renderingContext.drawingBufferWidth;
     int height = _renderingContext.drawingBufferHeight;
     _renderingContext.viewport(0, 0, width, height);
-    _renderFrameBuffers.clear();
+    _renderFrameBufferStack.clear();
   }
 
   void clear(int color) {
@@ -177,15 +177,15 @@ class RenderContextWebGL extends RenderContext {
   void pushFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
     _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
-    _renderFrameBuffers.add(renderFrameBuffer);
+    _renderFrameBufferStack.add(renderFrameBuffer);
   }
 
   void popFrameBuffer() {
-    if (_renderFrameBuffers.length > 0) {
-      _renderFrameBuffers.removeLast();
+    if (_renderFrameBufferStack.length > 0) {
+      _renderFrameBufferStack.removeLast();
     }
-    if (_renderFrameBuffers.length > 0) {
-      RenderFrameBuffer renderFrameBuffer = _renderFrameBuffers.last;
+    if (_renderFrameBufferStack.length > 0) {
+      RenderFrameBuffer renderFrameBuffer = _renderFrameBufferStack.last;
       _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
       _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
     } else {
