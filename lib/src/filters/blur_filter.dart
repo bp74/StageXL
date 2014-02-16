@@ -98,15 +98,15 @@ class _BlurProgram extends _BitmapFilterProgram {
       varying float vAlpha;
       void main() {
         vec4 color = vec4(0);
-        color += texture2D(uSampler, vec2(vTextCoord - uPixel * 4.0)) * 0.045;
-        color += texture2D(uSampler, vec2(vTextCoord - uPixel * 3.0)) * 0.090;
-        color += texture2D(uSampler, vec2(vTextCoord - uPixel * 2.0)) * 0.125;
-        color += texture2D(uSampler, vec2(vTextCoord - uPixel      )) * 0.155;
-        color += texture2D(uSampler, vec2(vTextCoord               )) * 0.170;
-        color += texture2D(uSampler, vec2(vTextCoord + uPixel      )) * 0.155;
-        color += texture2D(uSampler, vec2(vTextCoord + uPixel * 2.0)) * 0.125;
-        color += texture2D(uSampler, vec2(vTextCoord + uPixel * 3.0)) * 0.090;
-        color += texture2D(uSampler, vec2(vTextCoord + uPixel * 4.0)) * 0.045;
+        color += texture2D(uSampler, vTextCoord - uPixel * 4.0) * 0.045;
+        color += texture2D(uSampler, vTextCoord - uPixel * 3.0) * 0.090;
+        color += texture2D(uSampler, vTextCoord - uPixel * 2.0) * 0.125;
+        color += texture2D(uSampler, vTextCoord - uPixel      ) * 0.155;
+        color += texture2D(uSampler, vTextCoord               ) * 0.170;
+        color += texture2D(uSampler, vTextCoord + uPixel      ) * 0.155;
+        color += texture2D(uSampler, vTextCoord + uPixel * 2.0) * 0.125;
+        color += texture2D(uSampler, vTextCoord + uPixel * 3.0) * 0.090;
+        color += texture2D(uSampler, vTextCoord + uPixel * 4.0) * 0.045;
         gl_FragColor = color * vAlpha;
       }
       """;

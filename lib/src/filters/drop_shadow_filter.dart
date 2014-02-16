@@ -125,15 +125,15 @@ class _DropShadowProgram extends _BitmapFilterProgram {
       varying float vAlpha;
       void main() {
         float alpha = 0.0;
-        alpha += texture2D(uSampler, vec2(vTextCoord - uShift - uPixel * 4.0)).a * 0.045;
-        alpha += texture2D(uSampler, vec2(vTextCoord - uShift - uPixel * 3.0)).a * 0.090;
-        alpha += texture2D(uSampler, vec2(vTextCoord - uShift - uPixel * 2.0)).a * 0.125;
-        alpha += texture2D(uSampler, vec2(vTextCoord - uShift - uPixel      )).a * 0.155;
-        alpha += texture2D(uSampler, vec2(vTextCoord - uShift               )).a * 0.170;
-        alpha += texture2D(uSampler, vec2(vTextCoord - uShift + uPixel      )).a * 0.155;
-        alpha += texture2D(uSampler, vec2(vTextCoord - uShift + uPixel * 2.0)).a * 0.125;
-        alpha += texture2D(uSampler, vec2(vTextCoord - uShift + uPixel * 3.0)).a * 0.090;
-        alpha += texture2D(uSampler, vec2(vTextCoord - uShift + uPixel * 4.0)).a * 0.045;
+        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel * 4.0).a * 0.045;
+        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel * 3.0).a * 0.090;
+        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel * 2.0).a * 0.125;
+        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel      ).a * 0.155;
+        alpha += texture2D(uSampler, vTextCoord - uShift               ).a * 0.170;
+        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel      ).a * 0.155;
+        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 2.0).a * 0.125;
+        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 3.0).a * 0.090;
+        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 4.0).a * 0.045;
         alpha *= vAlpha;
         gl_FragColor = vec4(uColor.rgb * alpha, alpha);
       }
