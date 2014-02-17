@@ -14,7 +14,6 @@ abstract class BitmapFilter {
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     renderState.renderQuad(renderTextureQuad);
-    renderState.flush();
   }
 
   //-----------------------------------------------------------------------------------------------

@@ -675,26 +675,28 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
       //-----------------
 
+      var originalRenderFrameBuffer = renderContextWebGL.currrentFrameBufferStack;
       var flattenRenderFrameBuffer = renderContextWebGL.requestRenderFrameBuffer(boundsWidth, boundsHeight);
       var flattenRenderState = tempRenderState;
       flattenRenderState.reset(flattenRenderFrameBuffer.renderMatrix);
       flattenRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
 
       renderContextWebGL.flush();
-      renderContextWebGL.pushFrameBuffer(flattenRenderFrameBuffer);
+      renderContextWebGL.activateRenderFrameBuffer(flattenRenderFrameBuffer);
       renderContextWebGL.clear(0);
       render(flattenRenderState);
       renderContextWebGL.flush();
-      renderContextWebGL.popFrameBuffer();
 
       var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
       renderFrameBufferMap[0] = flattenRenderFrameBuffer;
+      renderState.globalMatrix.prependTranslation(boundsLeft, boundsTop);
 
       //-----------------
 
-      RenderFrameBuffer sourceRenderFrameBuffer;
-      RenderFrameBuffer targetRenderFrameBuffer;
+      RenderFrameBuffer sourceRenderFrameBuffer = null;
+      RenderFrameBuffer targetRenderFrameBuffer = null;
       RenderState targetRenderState = tempRenderState;
+
 
       for(int i = 0; i < filters.length; i++) {
 
@@ -717,21 +719,25 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
           // get target RenderFrameBuffer
 
-          if (renderFrameBufferMap.containsKey(renderPassTarget)) {
+          if (i == filters.length - 1 && renderPassTargets.skip(pass).every((rpt) => rpt == renderPassTarget)) {
+            targetRenderFrameBuffer = originalRenderFrameBuffer;
+            targetRenderState = renderState;
+            renderContextWebGL.activateRenderFrameBuffer(targetRenderFrameBuffer);
+          } else if (renderFrameBufferMap.containsKey(renderPassTarget)) {
             targetRenderFrameBuffer = renderFrameBufferMap[renderPassTarget];
-            renderContextWebGL.pushFrameBuffer(targetRenderFrameBuffer);
+            targetRenderState.reset(targetRenderFrameBuffer.renderMatrix);
+            renderContextWebGL.activateRenderFrameBuffer(targetRenderFrameBuffer);
           } else {
             targetRenderFrameBuffer = renderContextWebGL.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+            targetRenderState.reset(targetRenderFrameBuffer.renderMatrix);
             renderFrameBufferMap[renderPassTarget] = targetRenderFrameBuffer;
-            renderContextWebGL.pushFrameBuffer(targetRenderFrameBuffer);
+            renderContextWebGL.activateRenderFrameBuffer(targetRenderFrameBuffer);
             renderContextWebGL.clear(0);
           }
 
           // render filter
 
-          targetRenderState.reset(targetRenderFrameBuffer.renderMatrix);
           filter.renderFilter(targetRenderState, sourceRenderFrameBuffer.renderTexture.quad, pass);
-          renderContextWebGL.popFrameBuffer();
 
           // release obsolete source RenderFrameBuffer
 
@@ -746,13 +752,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       }
 
       //-----------------
-
-      // TODO: Optimize last render pass!
-      // Don't render to FrameBuffer, instead render directly to screen.
-
-      renderState.globalMatrix.prependTranslation(boundsLeft, boundsTop);
-      renderState.renderQuad(renderFrameBufferMap[0].renderTexture.quad);
-      renderState.flush();
 
       for(var renderFrameBuffer in renderFrameBufferMap.values) {
         renderContextWebGL.releaseRenderFrameBuffer(renderFrameBuffer);

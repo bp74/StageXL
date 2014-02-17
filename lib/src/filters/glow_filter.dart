@@ -84,7 +84,6 @@ class GlowFilter extends BitmapFilter {
       // TODO: render the knockout effect!
       if (this.knockout || this.hideObject) return;
       renderState.renderQuad(renderTextureQuad);
-      renderState.flush();
     }
   }
 }

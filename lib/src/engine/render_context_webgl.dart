@@ -6,12 +6,12 @@ class RenderContextWebGL extends RenderContext {
 
   final RenderProgramQuad _renderProgramQuad = new RenderProgramQuad();
   final RenderProgramTriangle _renderProgramTriangle = new RenderProgramTriangle();
-  final List<RenderFrameBuffer> _renderFrameBufferStack = new List<RenderFrameBuffer>();
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
 
   gl.RenderingContext _renderingContext;
   RenderTexture _renderTexture;
   RenderProgram _renderProgram;
+  RenderFrameBuffer _renderFrameBuffer;
   int _maskDepth = 0;
 
   RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
@@ -37,6 +37,8 @@ class RenderContextWebGL extends RenderContext {
 
     _renderProgram = _renderProgramQuad;
     _renderProgram.activate(this);
+
+    _renderFrameBuffer = null;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -56,8 +58,8 @@ class RenderContextWebGL extends RenderContext {
   void reset() {
     int width = _renderingContext.drawingBufferWidth;
     int height = _renderingContext.drawingBufferHeight;
+    _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, width, height);
-    _renderFrameBufferStack.clear();
   }
 
   void clear(int color) {
@@ -171,30 +173,25 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void releaseRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    _renderFrameBufferPool.add(renderFrameBuffer);
-  }
-
-  void pushFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
-    _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
-    _renderFrameBufferStack.add(renderFrameBuffer);
-  }
-
-  void popFrameBuffer() {
-    if (_renderFrameBufferStack.length > 0) {
-      _renderFrameBufferStack.removeLast();
+    if (renderFrameBuffer != null) {
+      _renderFrameBufferPool.add(renderFrameBuffer);
     }
-    if (_renderFrameBufferStack.length > 0) {
-      RenderFrameBuffer renderFrameBuffer = _renderFrameBufferStack.last;
-      _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
-      _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
-    } else {
+  }
+
+  void activateRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
+    if (renderFrameBuffer == null) {
       int width = _renderingContext.drawingBufferWidth;
       int height = _renderingContext.drawingBufferHeight;
       _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
       _renderingContext.viewport(0, 0, width, height);
+    } else {
+      _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
+      _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
     }
+    _renderFrameBuffer = renderFrameBuffer;
   }
+
+  RenderFrameBuffer get currrentFrameBufferStack => _renderFrameBuffer;
 
   //-----------------------------------------------------------------------------------------------
 
