@@ -697,7 +697,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       RenderFrameBuffer targetRenderFrameBuffer = null;
       RenderState targetRenderState = tempRenderState;
 
-
       for(int i = 0; i < filters.length; i++) {
 
         BitmapFilter filter = filters[i];
@@ -738,6 +737,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
           // render filter
 
           filter.renderFilter(targetRenderState, sourceRenderFrameBuffer.renderTexture.quad, pass);
+          renderContextWebGL.flush();
 
           // release obsolete source RenderFrameBuffer
 
@@ -749,12 +749,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
         renderFrameBufferMap.clear();
         renderFrameBufferMap[0] = targetRenderFrameBuffer;
-      }
-
-      //-----------------
-
-      for(var renderFrameBuffer in renderFrameBufferMap.values) {
-        renderContextWebGL.releaseRenderFrameBuffer(renderFrameBuffer);
       }
     }
   }
