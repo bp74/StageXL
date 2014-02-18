@@ -47,6 +47,10 @@ class RenderContextWebGL extends RenderContext {
 
   String get renderEngine => RenderEngine.WebGL;
 
+  RenderTexture get activeRenderTexture => _renderTexture;
+  RenderProgram get activeRenderProgram => _renderProgram;
+  RenderFrameBuffer get activeRenderFrameBuffer => _renderFrameBuffer;
+
   Matrix get viewPortMatrix {
     int width = _renderingContext.drawingBufferWidth;
     int height = _renderingContext.drawingBufferHeight;
@@ -179,6 +183,8 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
+    _renderProgram.flush();
+    _renderFrameBuffer = renderFrameBuffer;
     if (renderFrameBuffer == null) {
       int width = _renderingContext.drawingBufferWidth;
       int height = _renderingContext.drawingBufferHeight;
@@ -188,10 +194,7 @@ class RenderContextWebGL extends RenderContext {
       _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
       _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
     }
-    _renderFrameBuffer = renderFrameBuffer;
   }
-
-  RenderFrameBuffer get currrentFrameBufferStack => _renderFrameBuffer;
 
   //-----------------------------------------------------------------------------------------------
 

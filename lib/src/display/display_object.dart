@@ -675,7 +675,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
       //-----------------
 
-      var originalRenderFrameBuffer = renderContextWebGL.currrentFrameBufferStack;
+      var originalRenderFrameBuffer = renderContextWebGL.activeRenderFrameBuffer;
       var flattenRenderFrameBuffer = renderContextWebGL.requestRenderFrameBuffer(boundsWidth, boundsHeight);
       var flattenRenderState = tempRenderState;
       flattenRenderState.reset(flattenRenderFrameBuffer.renderMatrix);
@@ -737,7 +737,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
           // render filter
 
           filter.renderFilter(targetRenderState, sourceRenderFrameBuffer.renderTexture.quad, pass);
-          renderContextWebGL.flush();
 
           // release obsolete source RenderFrameBuffer
 
