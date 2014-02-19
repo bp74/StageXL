@@ -58,6 +58,14 @@ class RenderState {
     if (compositeOperation is String) _firstContextState.compositeOperation = compositeOperation;
   }
 
+  void copyFrom(RenderState renderState) {
+
+    _currentContextState = _firstContextState;
+    _currentContextState.matrix.copyFrom(renderState.globalMatrix);
+    _currentContextState.alpha = renderState.globalAlpha;
+    _currentContextState.compositeOperation = renderState.globalCompositeOperation;
+  }
+
   //-------------------------------------------------------------------------------------------------
 
   void renderDisplayObject(DisplayObject displayObject) {

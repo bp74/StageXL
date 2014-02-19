@@ -87,13 +87,112 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+
     _updateState(_renderProgramQuad, renderTextureQuad.renderTexture);
     _renderProgramQuad.renderQuad(renderState, renderTextureQuad);
   }
 
-  void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color) {
+  void renderTriangle(RenderState renderState,
+                      num x1, num y1, num x2, num y2, num x3, num y3, int color) {
+
     _updateState(_renderProgramTriangle, _renderTexture);
     _renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void renderQuadFiltered(RenderState renderState,
+                          RenderTextureQuad renderTextureQuad,
+                          List<BitmapFilter> filters) {
+
+    int boundsLeft = renderTextureQuad.offsetX;
+    int boundsTop = renderTextureQuad.offsetY;
+    int boundsRight = boundsLeft + renderTextureQuad.textureWidth;
+    int boundsBottom = boundsTop + renderTextureQuad.textureHeight;
+
+    for(int i = 0; i < filters.length; i++) {
+      Rectangle overlap = filters[i].overlap;
+      boundsLeft += overlap.left;
+      boundsTop += overlap.top;
+      boundsRight += overlap.right;
+      boundsBottom += overlap.bottom;
+    }
+
+    int boundsWidth = boundsRight - boundsLeft;
+    int boundsHeight = boundsBottom - boundsTop;
+
+    //----------------------------------------------
+
+    var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
+    var renderFrameBuffer = _renderFrameBuffer;
+
+    RenderTextureQuad sourceRenderTextureQuad = null;
+    RenderFrameBuffer sourceRenderFrameBuffer = null;
+    RenderFrameBuffer targetRenderFrameBuffer = null;
+    RenderState filterRenderState = new RenderState(this);
+    Matrix sourceTransformation = new Matrix.fromIdentity();
+
+    for(int i = 0; i < filters.length; i++) {
+
+      BitmapFilter filter = filters[i];
+      List<int> renderPassSources = filter.renderPassSources;
+      List<int> renderPassTargets = filter.renderPassTargets;
+
+      for(int pass = 0; pass < renderPassSources.length; pass++) {
+
+        int renderPassSource = renderPassSources[pass];
+        int renderPassTarget = renderPassTargets[pass];
+
+        // get sourceRenderTextureQuad
+
+        if (renderFrameBufferMap.containsKey(renderPassSource)) {
+          sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
+          sourceRenderTextureQuad = sourceRenderFrameBuffer.renderTexture.quad;
+          sourceTransformation.identity();
+        } else if (renderPassSource == 0) {
+          sourceRenderFrameBuffer = null;
+          sourceRenderTextureQuad = renderTextureQuad;
+          sourceTransformation.setTo(1, 0, 0, 1, -boundsLeft, -boundsTop);
+        } else {
+          throw new StateError("Invalid renderPassSource!");
+        }
+
+        // get targetRenderFrameBuffer
+
+        if (i == filters.length - 1 && renderPassTarget == renderPassTargets.last) {
+          targetRenderFrameBuffer = renderFrameBuffer;
+          filterRenderState.copyFrom(renderState);
+          filterRenderState.globalMatrix.prependTranslation(boundsLeft, boundsTop);
+          activateRenderFrameBuffer(targetRenderFrameBuffer);
+        } else if (renderFrameBufferMap.containsKey(renderPassTarget)) {
+          targetRenderFrameBuffer = renderFrameBufferMap[renderPassTarget];
+          filterRenderState.reset(targetRenderFrameBuffer.renderMatrix);
+          activateRenderFrameBuffer(targetRenderFrameBuffer);
+        } else {
+          targetRenderFrameBuffer = requestRenderFrameBuffer(boundsWidth, boundsHeight);
+          filterRenderState.reset(targetRenderFrameBuffer.renderMatrix);
+          renderFrameBufferMap[renderPassTarget] = targetRenderFrameBuffer;
+          activateRenderFrameBuffer(targetRenderFrameBuffer);
+          clear(0);
+        }
+
+        // render filter
+
+        filterRenderState.globalMatrix.prepend(sourceTransformation);
+        filter.renderFilter(filterRenderState, sourceRenderTextureQuad, pass);
+
+        // release obsolete source RenderFrameBuffer
+
+        if (renderPassSources.skip(pass + 1).every((rps) => rps != renderPassSource)) {
+          renderFrameBufferMap.remove(renderPassSource);
+          releaseRenderFrameBuffer(sourceRenderFrameBuffer);
+        }
+      }
+
+      renderFrameBufferMap.clear();
+      renderFrameBufferMap[0] = targetRenderFrameBuffer;
+    }
+
   }
 
   //-----------------------------------------------------------------------------------------------
