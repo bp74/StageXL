@@ -87,7 +87,8 @@ class DropShadowFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    renderContext._updateState(_dropShadowProgram, renderTexture);
+    renderContext.activateRenderProgram(_dropShadowProgram);
+    renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
       var shift = this.distance * cos(this.angle) / renderTexture.width;

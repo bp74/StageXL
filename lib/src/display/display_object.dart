@@ -654,8 +654,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       var currentRenderFrameBuffer = renderContext.activeRenderFrameBuffer;
       var flattenRenderFrameBuffer = renderContext.requestRenderFrameBuffer(boundsWidth, boundsHeight);
       var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
-      var flattenRenderState = new RenderState(renderContext);
-      flattenRenderState.reset(flattenRenderFrameBuffer.renderMatrix);
+      var flattenRenderState = new RenderState(renderContext, flattenRenderFrameBuffer.renderMatrix);
       flattenRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
 
       renderContext.activateRenderFrameBuffer(flattenRenderFrameBuffer);
@@ -669,7 +668,9 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       renderContext.releaseRenderFrameBuffer(flattenRenderFrameBuffer);
 
     } else {
+
       render(renderState);
+
     }
   }
 

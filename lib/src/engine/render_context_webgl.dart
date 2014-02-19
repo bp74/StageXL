@@ -88,14 +88,15 @@ class RenderContextWebGL extends RenderContext {
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
 
-    _updateState(_renderProgramQuad, renderTextureQuad.renderTexture);
+    activateRenderProgram(_renderProgramQuad);
+    activateRenderTexture(renderTextureQuad.renderTexture);
     _renderProgramQuad.renderQuad(renderState, renderTextureQuad);
   }
 
   void renderTriangle(RenderState renderState,
                       num x1, num y1, num x2, num y2, num x3, num y3, int color) {
 
-    _updateState(_renderProgramTriangle, _renderTexture);
+    activateRenderProgram(_renderProgramTriangle);
     _renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
   }
 
@@ -124,13 +125,14 @@ class RenderContextWebGL extends RenderContext {
     //----------------------------------------------
 
     var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
-    var renderFrameBuffer = _renderFrameBuffer;
+    var renderFrameBuffer = this.activeRenderFrameBuffer;
+    var originBounds = new Rectangle(boundsLeft, boundsTop, boundsWidth, boundsHeight);
+    var originRenderTextureQuad = renderTextureQuad.cut(originBounds);
 
     RenderTextureQuad sourceRenderTextureQuad = null;
     RenderFrameBuffer sourceRenderFrameBuffer = null;
     RenderFrameBuffer targetRenderFrameBuffer = null;
     RenderState filterRenderState = new RenderState(this);
-    Matrix sourceTransformation = new Matrix.fromIdentity();
 
     for(int i = 0; i < filters.length; i++) {
 
@@ -148,11 +150,9 @@ class RenderContextWebGL extends RenderContext {
         if (renderFrameBufferMap.containsKey(renderPassSource)) {
           sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
           sourceRenderTextureQuad = sourceRenderFrameBuffer.renderTexture.quad;
-          sourceTransformation.identity();
         } else if (renderPassSource == 0) {
           sourceRenderFrameBuffer = null;
-          sourceRenderTextureQuad = renderTextureQuad;
-          sourceTransformation.setTo(1, 0, 0, 1, -boundsLeft, -boundsTop);
+          sourceRenderTextureQuad = originRenderTextureQuad;
         } else {
           throw new StateError("Invalid renderPassSource!");
         }
@@ -178,7 +178,6 @@ class RenderContextWebGL extends RenderContext {
 
         // render filter
 
-        filterRenderState.globalMatrix.prepend(sourceTransformation);
         filter.renderFilter(filterRenderState, sourceRenderTextureQuad, pass);
 
         // release obsolete source RenderFrameBuffer
@@ -205,7 +204,7 @@ class RenderContextWebGL extends RenderContext {
       _renderingContext.enable(gl.STENCIL_TEST);
     }
 
-    _updateState(_renderProgramTriangle, null);
+    activateRenderProgram(_renderProgramTriangle);
     _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
     _renderingContext.stencilMask(0xFF);
@@ -234,7 +233,7 @@ class RenderContextWebGL extends RenderContext {
 
     } else {
 
-      _updateState(_renderProgramTriangle, null);
+      activateRenderProgram(_renderProgramTriangle);
       _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
       _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
       _renderingContext.stencilMask(0xFF);
@@ -281,40 +280,37 @@ class RenderContextWebGL extends RenderContext {
     }
   }
 
+  //-----------------------------------------------------------------------------------------------
+
   void activateRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    _renderProgram.flush();
-    _renderFrameBuffer = renderFrameBuffer;
-    if (renderFrameBuffer == null) {
-      int width = _renderingContext.drawingBufferWidth;
-      int height = _renderingContext.drawingBufferHeight;
-      _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
-      _renderingContext.viewport(0, 0, width, height);
-    } else {
-      _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
-      _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
+    if (identical(renderFrameBuffer, _renderFrameBuffer) == false) {
+      _renderProgram.flush();
+      _renderFrameBuffer = renderFrameBuffer;
+      if (renderFrameBuffer == null) {
+        int width = _renderingContext.drawingBufferWidth;
+        int height = _renderingContext.drawingBufferHeight;
+        _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
+        _renderingContext.viewport(0, 0, width, height);
+      } else {
+        _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
+        _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
+      }
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
-
-  _updateState(RenderProgram renderProgram, RenderTexture renderTexture) {
-
-    // dartbug.com/16286
-
-    if (renderProgram != null) {
-      if (identical(renderProgram, _renderProgram) == false) {
-        _renderProgram.flush();
-        _renderProgram = renderProgram;
-        _renderProgram.activate(this);
-      }
+  void activateRenderProgram(RenderProgram renderProgram) {
+    if (identical(renderProgram, _renderProgram) == false) {
+      _renderProgram.flush();
+      _renderProgram = renderProgram;
+      _renderProgram.activate(this);
     }
+  }
 
-    if (renderTexture != null) {
-      if (identical(renderTexture, _renderTexture) == false) {
-        _renderProgram.flush();
-        _renderTexture = renderTexture;
-        _renderTexture.activate(this, gl.TEXTURE0);
-      }
+  void activateRenderTexture(RenderTexture renderTexture) {
+    if (identical(renderTexture, _renderTexture) == false) {
+      _renderProgram.flush();
+      _renderTexture = renderTexture;
+      _renderTexture.activate(this, gl.TEXTURE0);
     }
   }
 

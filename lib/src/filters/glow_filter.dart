@@ -72,7 +72,8 @@ class GlowFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    renderContext._updateState(_glowProgram, renderTexture);
+    renderContext.activateRenderProgram(_glowProgram);
+    renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
       _glowProgram.configure(color, 0.250 * blurX / renderTexture.width, 0.0);

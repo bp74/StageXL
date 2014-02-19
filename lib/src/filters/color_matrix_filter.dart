@@ -190,7 +190,9 @@ class ColorMatrixFilter extends BitmapFilter {
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
-    renderContext._updateState(_colorMatrixProgram, renderTextureQuad.renderTexture);
+    RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    renderContext.activateRenderProgram(_colorMatrixProgram);
+    renderContext.activateRenderTexture(renderTexture);
     _colorMatrixProgram.configure(this);
     _colorMatrixProgram.renderQuad(renderState, renderTextureQuad);
   }

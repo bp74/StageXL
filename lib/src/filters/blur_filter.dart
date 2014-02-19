@@ -71,7 +71,8 @@ class BlurFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    renderContext._updateState(_blurProgram, renderTexture);
+    renderContext.activateRenderProgram(_blurProgram);
+    renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
       _blurProgram.configure(0.250 * blurX / renderTexture.width, 0.0);
