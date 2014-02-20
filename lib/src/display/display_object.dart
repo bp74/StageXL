@@ -580,6 +580,43 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void render(RenderState renderState);
 
+  void renderFiltered(RenderState renderState) {
+
+    RenderContext renderContext = renderState.renderContext;
+
+    if (renderContext is RenderContextWebGL) {
+
+      var bounds = this.getBoundsTransformed(_identityMatrix);
+      var boundsLeft = bounds.left.floor();
+      var boundsTop = bounds.top.floor();
+      var boundsRight = bounds.right.ceil();
+      var boundsBottom = bounds.bottom.ceil();
+      var boundsWidth = boundsRight - boundsLeft;
+      var boundsHeight = boundsBottom - boundsTop;
+
+      var currentRenderFrameBuffer = renderContext.activeRenderFrameBuffer;
+      var flattenRenderFrameBuffer = renderContext.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+      var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
+      var flattenRenderState = new RenderState(renderContext, flattenRenderFrameBuffer.renderMatrix);
+      flattenRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
+
+      renderContext.activateRenderFrameBuffer(flattenRenderFrameBuffer);
+      renderContext.clear(0);
+      render(flattenRenderState);
+      renderContext.activateRenderFrameBuffer(currentRenderFrameBuffer);
+      renderState.globalMatrix.prependTranslation(boundsLeft, boundsTop);
+
+      renderContext.renderQuadFiltered(renderState, flattenRenderTexture.quad, this.filters);
+      renderContext.flush();
+      renderContext.releaseRenderFrameBuffer(flattenRenderFrameBuffer);
+
+    } else {
+
+      render(renderState);
+
+    }
+  }
+
   //-------------------------------------------------------------------------------------------------
 
   void _renderInternal(RenderState renderState) {
@@ -610,9 +647,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     // render DisplayObject
 
     if (_cacheTexture != null) {
-      _renderCached(renderState);
+      // TODO: we should use a cacheTextureQuad with offsets instead of matrix translation!
+      renderState.globalMatrix.prependTranslation(_cacheRectangle.x, _cacheRectangle.y);
+      renderState.renderQuad(_cacheTexture.quad);
     } else if (_filters != null && _filters.length > 0) {
-      _renderFiltered(renderState);
+      renderFiltered(renderState);
     } else {
       render(renderState);
     }
@@ -628,51 +667,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
-
-  void _renderCached(RenderState renderState) {
-    renderState.globalMatrix.prependTranslation(_cacheRectangle.x, _cacheRectangle.y);
-    renderState.renderQuad(_cacheTexture.quad);
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  void _renderFiltered(RenderState renderState) {
-
-    RenderContext renderContext = renderState.renderContext;
-
-    if (renderContext is RenderContextWebGL) {
-
-      var bounds = this.getBoundsTransformed(_identityMatrix);
-      var boundsLeft = bounds.left.floor();
-      var boundsTop = bounds.top.floor();
-      var boundsRight = bounds.right.ceil();
-      var boundsBottom = bounds.bottom.ceil();
-      var boundsWidth = boundsRight - boundsLeft;
-      var boundsHeight = boundsBottom - boundsTop;
-
-      var currentRenderFrameBuffer = renderContext.activeRenderFrameBuffer;
-      var flattenRenderFrameBuffer = renderContext.requestRenderFrameBuffer(boundsWidth, boundsHeight);
-      var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
-      var flattenRenderState = new RenderState(renderContext, flattenRenderFrameBuffer.renderMatrix);
-      flattenRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
-
-      renderContext.activateRenderFrameBuffer(flattenRenderFrameBuffer);
-      renderContext.clear(0);
-      render(flattenRenderState);
-      renderContext.activateRenderFrameBuffer(currentRenderFrameBuffer);
-
-      renderState.globalMatrix.prependTranslation(boundsLeft, boundsTop);
-      renderContext.renderQuadFiltered(renderState, flattenRenderTexture.quad, this.filters);
-      renderContext.flush();
-      renderContext.releaseRenderFrameBuffer(flattenRenderFrameBuffer);
-
-    } else {
-
-      render(renderState);
-
-    }
-  }
 
 }
 
