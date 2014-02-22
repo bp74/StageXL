@@ -103,15 +103,6 @@ class RenderContextWebGL extends RenderContext {
     int boundsTop = renderTextureQuad.offsetY;
     int boundsRight = boundsLeft + renderTextureQuad.textureWidth;
     int boundsBottom = boundsTop + renderTextureQuad.textureHeight;
-
-    for(int i = 0; i < filters.length; i++) {
-      Rectangle overlap = filters[i].overlap;
-      boundsLeft += overlap.left;
-      boundsTop += overlap.top;
-      boundsRight += overlap.right;
-      boundsBottom += overlap.bottom;
-    }
-
     int boundsWidth = boundsRight - boundsLeft;
     int boundsHeight = boundsBottom - boundsTop;
 
