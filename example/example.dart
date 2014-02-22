@@ -29,7 +29,8 @@ void main() {
 
     var alphaMaskMatrix = new Matrix.fromIdentity();
     alphaMaskMatrix.translate(-50, -50);
-    alphaMaskMatrix.skew(0.5, 0.0);
+    alphaMaskMatrix.skew(-0.3, 0.0);
+    alphaMaskMatrix.scale(1.5, 1.5);
     alphaMaskMatrix.translate(350, 250);
 
     //var colorMatrixFilter = new ColorMatrixFilter.grayscale();

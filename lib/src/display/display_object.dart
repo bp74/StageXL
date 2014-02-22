@@ -568,52 +568,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void render(RenderState renderState);
 
-  void renderFiltered(RenderState renderState) {
-
-    RenderContext renderContext = renderState.renderContext;
-
-    if (renderContext is RenderContextWebGL) {
-
-      var bounds = this.getBoundsTransformed(_identityMatrix);
-      var boundsLeft = bounds.left.floor();
-      var boundsTop = bounds.top.floor();
-      var boundsRight = bounds.right.ceil();
-      var boundsBottom = bounds.bottom.ceil();
-
-      for(int i = 0; i < filters.length; i++) {
-        Rectangle overlap = filters[i].overlap;
-        boundsLeft += overlap.left;
-        boundsTop += overlap.top;
-        boundsRight += overlap.right;
-        boundsBottom += overlap.bottom;
-      }
-
-      var boundsWidth = boundsRight - boundsLeft;
-      var boundsHeight = boundsBottom - boundsTop;
-
-      var currentRenderFrameBuffer = renderContext.activeRenderFrameBuffer;
-      var flattenRenderFrameBuffer = renderContext.requestRenderFrameBuffer(boundsWidth, boundsHeight);
-      var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
-      var flattenRenderTextureQuad = new RenderTextureQuad(
-          flattenRenderTexture, 0, boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
-      var flattenRenderState = new RenderState(renderContext, flattenRenderTextureQuad.bufferMatrix);
-
-      renderContext.activateRenderFrameBuffer(flattenRenderFrameBuffer);
-      renderContext.clear(0);
-      render(flattenRenderState);
-      renderContext.activateRenderFrameBuffer(currentRenderFrameBuffer);
-
-      renderContext.renderQuadFiltered(renderState, flattenRenderTextureQuad, this.filters);
-      renderContext.flush();
-      renderContext.releaseRenderFrameBuffer(flattenRenderFrameBuffer);
-
-    } else {
-
-      render(renderState);
-
-    }
-  }
-
   //-------------------------------------------------------------------------------------------------
 
   void _renderInternal(RenderState renderState) {
@@ -646,7 +600,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (_cacheTextureQuad != null) {
       renderState.renderQuad(_cacheTextureQuad);
     } else if (_filters != null && _filters.length > 0) {
-      renderFiltered(renderState);
+      _renderFiltered(renderState);
     } else {
       render(renderState);
     }
@@ -662,6 +616,116 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     }
   }
 
+  //-------------------------------------------------------------------------------------------------
+
+  void _renderFiltered(RenderState renderState) {
+
+    RenderContext renderContext = renderState.renderContext;
+
+    if (renderContext is RenderContextWebGL) {
+
+      var bounds = this.getBoundsTransformed(_identityMatrix);
+      var boundsLeft = bounds.left.floor();
+      var boundsTop = bounds.top.floor();
+      var boundsRight = bounds.right.ceil();
+      var boundsBottom = bounds.bottom.ceil();
+
+      for(int i = 0; i < filters.length; i++) {
+        Rectangle overlap = filters[i].overlap;
+        boundsLeft += overlap.left;
+        boundsTop += overlap.top;
+        boundsRight += overlap.right;
+        boundsBottom += overlap.bottom;
+      }
+
+      var boundsWidth = boundsRight - boundsLeft;
+      var boundsHeight = boundsBottom - boundsTop;
+
+      var currentRenderFrameBuffer = renderContext.activeRenderFrameBuffer;
+      var flattenRenderFrameBuffer = renderContext.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+      var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
+      var flattenRenderTextureQuad = new RenderTextureQuad(
+          flattenRenderTexture, 0, boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
+      var flattenRenderState = new RenderState(renderContext, flattenRenderTextureQuad.bufferMatrix);
+
+      renderContext.activateRenderFrameBuffer(flattenRenderFrameBuffer);
+      renderContext.clear(0);
+      render(flattenRenderState);
+
+      //----------------------------------------------
+
+      var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
+      renderFrameBufferMap[0] = flattenRenderFrameBuffer;
+
+      RenderTextureQuad sourceRenderTextureQuad = null;
+      RenderFrameBuffer sourceRenderFrameBuffer = null;
+      RenderFrameBuffer targetRenderFrameBuffer = null;
+      RenderState filterRenderState = new RenderState(renderContext);
+
+      for(int i = 0; i < filters.length; i++) {
+
+        BitmapFilter filter = filters[i];
+        List<int> renderPassSources = filter.renderPassSources;
+        List<int> renderPassTargets = filter.renderPassTargets;
+
+        for(int pass = 0; pass < renderPassSources.length; pass++) {
+
+          int renderPassSource = renderPassSources[pass];
+          int renderPassTarget = renderPassTargets[pass];
+
+          // get sourceRenderTextureQuad
+
+          if (renderFrameBufferMap.containsKey(renderPassSource)) {
+            sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
+            sourceRenderTextureQuad = new RenderTextureQuad(
+                sourceRenderFrameBuffer.renderTexture, 0,
+                boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
+          } else {
+            throw new StateError("Invalid renderPassSource!");
+          }
+
+          // get targetRenderFrameBuffer
+
+          if (i == filters.length - 1 && renderPassTarget == renderPassTargets.last) {
+            targetRenderFrameBuffer = currentRenderFrameBuffer;
+            filterRenderState.copyFrom(renderState);
+            renderContext.activateRenderFrameBuffer(targetRenderFrameBuffer);
+          } else if (renderFrameBufferMap.containsKey(renderPassTarget)) {
+            targetRenderFrameBuffer = renderFrameBufferMap[renderPassTarget];
+            filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
+            filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
+            renderContext.activateRenderFrameBuffer(targetRenderFrameBuffer);
+          } else {
+            targetRenderFrameBuffer = renderContext.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+            filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
+            filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
+            renderFrameBufferMap[renderPassTarget] = targetRenderFrameBuffer;
+            renderContext.activateRenderFrameBuffer(targetRenderFrameBuffer);
+            renderContext.clear(0);
+          }
+
+          // render filter
+
+          filter.renderFilter(filterRenderState, sourceRenderTextureQuad, pass);
+
+          // release obsolete source RenderFrameBuffer
+
+          if (renderPassSources.skip(pass + 1).every((rps) => rps != renderPassSource)) {
+            renderFrameBufferMap.remove(renderPassSource);
+            renderContext.releaseRenderFrameBuffer(sourceRenderFrameBuffer);
+          }
+        }
+
+        renderFrameBufferMap.clear();
+        renderFrameBufferMap[0] = targetRenderFrameBuffer;
+      }
+
+    } else {
+
+      render(renderState);
+
+    }
+  }
 
 }
 

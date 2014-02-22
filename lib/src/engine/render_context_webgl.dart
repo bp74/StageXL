@@ -96,91 +96,6 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderQuadFiltered(RenderState renderState,
-                          RenderTextureQuad renderTextureQuad, List<BitmapFilter> filters) {
-
-    int boundsLeft = renderTextureQuad.offsetX;
-    int boundsTop = renderTextureQuad.offsetY;
-    int boundsRight = boundsLeft + renderTextureQuad.textureWidth;
-    int boundsBottom = boundsTop + renderTextureQuad.textureHeight;
-    int boundsWidth = boundsRight - boundsLeft;
-    int boundsHeight = boundsBottom - boundsTop;
-
-    //----------------------------------------------
-
-    var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
-    var renderFrameBuffer = this.activeRenderFrameBuffer;
-
-    RenderTextureQuad sourceRenderTextureQuad = null;
-    RenderTextureQuad targetRenderTextureQuad = null;
-    RenderFrameBuffer sourceRenderFrameBuffer = null;
-    RenderFrameBuffer targetRenderFrameBuffer = null;
-    RenderState filterRenderState = new RenderState(this);
-
-    for(int i = 0; i < filters.length; i++) {
-
-      BitmapFilter filter = filters[i];
-      List<int> renderPassSources = filter.renderPassSources;
-      List<int> renderPassTargets = filter.renderPassTargets;
-
-      for(int pass = 0; pass < renderPassSources.length; pass++) {
-
-        int renderPassSource = renderPassSources[pass];
-        int renderPassTarget = renderPassTargets[pass];
-
-        // get sourceRenderTextureQuad
-
-        if (renderFrameBufferMap.containsKey(renderPassSource)) {
-          sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
-          sourceRenderTextureQuad = new RenderTextureQuad(
-              sourceRenderFrameBuffer.renderTexture, 0,
-              boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
-        } else if (renderPassSource == 0) {
-          sourceRenderFrameBuffer = null;
-          sourceRenderTextureQuad = renderTextureQuad;
-        } else {
-          throw new StateError("Invalid renderPassSource!");
-        }
-
-        // get targetRenderFrameBuffer
-
-        if (i == filters.length - 1 && renderPassTarget == renderPassTargets.last) {
-          targetRenderFrameBuffer = renderFrameBuffer;
-          filterRenderState.copyFrom(renderState);
-          activateRenderFrameBuffer(targetRenderFrameBuffer);
-        } else if (renderFrameBufferMap.containsKey(renderPassTarget)) {
-          targetRenderFrameBuffer = renderFrameBufferMap[renderPassTarget];
-          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
-          filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
-          activateRenderFrameBuffer(targetRenderFrameBuffer);
-        } else {
-          targetRenderFrameBuffer = requestRenderFrameBuffer(boundsWidth, boundsHeight);
-          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
-          filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
-          renderFrameBufferMap[renderPassTarget] = targetRenderFrameBuffer;
-          activateRenderFrameBuffer(targetRenderFrameBuffer);
-          clear(0);
-        }
-
-        // render filter
-
-        filter.renderFilter(filterRenderState, sourceRenderTextureQuad, pass);
-
-        // release obsolete source RenderFrameBuffer
-
-        if (renderPassSources.skip(pass + 1).every((rps) => rps != renderPassSource)) {
-          renderFrameBufferMap.remove(renderPassSource);
-          releaseRenderFrameBuffer(sourceRenderFrameBuffer);
-        }
-      }
-
-      renderFrameBufferMap.clear();
-      renderFrameBufferMap[0] = targetRenderFrameBuffer;
-    }
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
   void renderTriangle(RenderState renderState,
                       num x1, num y1, num x2, num y2, num x3, num y3, int color) {
 
@@ -259,10 +174,8 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   RenderFrameBuffer requestRenderFrameBuffer(int width, int height) {
+    _renderProgram.flush();
     if (_renderFrameBufferPool.length > 0) {
-      // TODO: Maybe we can make it faster and smarter if we don't resize
-      // the existing RenderFrameBuffer and work with slightly bigger buffers.
-      // Also get the best matching RenderFrameBuffer in terms of size.
       return _renderFrameBufferPool.removeLast()..resize(width, height);
     } else {
       return new RenderFrameBuffer(this, width, height);

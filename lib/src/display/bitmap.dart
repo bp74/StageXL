@@ -24,10 +24,4 @@ class Bitmap extends DisplayObject {
     if (bitmapData != null) bitmapData.render(renderState);
   }
 
-  /*
-  void renderFiltered(RenderState renderState) {
-    if (bitmapData != null) bitmapData.renderFiltered(renderState, this.filters);
-  }
-  */
-
 }
