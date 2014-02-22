@@ -13,8 +13,6 @@ class FlipBook extends InteractiveObject implements Animatable {
   Event _progressEvent;
   Event _completeEvent;
 
-  Rectangle clipRectangle;
-
   //-------------------------------------------------------------------------------------------------
 
   FlipBook(List<BitmapData> bitmapDatas, [int frameRate = 30, bool loop = true]) {
@@ -28,8 +26,6 @@ class FlipBook extends InteractiveObject implements Animatable {
     _loop = loop;
     _progressEvent = new Event(Event.PROGRESS);
     _completeEvent = new Event(Event.COMPLETE);
-
-    clipRectangle = null;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -166,21 +162,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-
-    var bitmapData = _bitmapDatas[_currentFrame];
-    if (bitmapData is! BitmapData) return; // dart2js_hint
-
-    // ToDo: The dart2js hint above is necessary to get a good translation
-    // of "BitmapData.render". The type check is a little bit expensive,
-    // so maybe we can find a better solution. It is strange because the
-    // type of "renderState" should have more effect on the dart2js
-    // compilation anyway!?!
-
-    if (clipRectangle == null) {
-      bitmapData.render(renderState);
-    } else {
-      bitmapData.renderClipped(renderState, clipRectangle);
-    }
+    _bitmapDatas[_currentFrame].render(renderState);
   }
 
 }

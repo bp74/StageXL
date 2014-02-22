@@ -286,10 +286,4 @@ class BitmapData implements BitmapDrawable {
     renderState.renderQuad(_renderTextureQuad);
   }
 
-  renderClipped(RenderState renderState, Rectangle clipRectangle) {
-    var quad = _renderTextureQuad.clip(clipRectangle);
-    if (quad.textureWidth > 0 && quad.textureHeight > 0) {
-      renderState.renderQuad(quad);
-    }
-  }
 }

@@ -10,7 +10,7 @@ class Gauge extends DisplayObject {
   String _direction;
   num _ratio;
   BitmapData _bitmapData;
-  Rectangle _clipRectangle;
+  RenderTextureQuad _renderTextureQuad;
 
   Gauge(BitmapData bitmapData, [String direction = DIRECTION_LEFT]) {
 
@@ -20,11 +20,8 @@ class Gauge extends DisplayObject {
     }
 
     _direction = direction;
-    _ratio = 1.0;
     _bitmapData = bitmapData;
-    _clipRectangle = new Rectangle.zero();
-
-    _updateMask();
+    _ratio = 1.0;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -33,12 +30,9 @@ class Gauge extends DisplayObject {
   num get ratio => _ratio;
 
   set ratio(num value) {
-
     if (value < 0.0) value = 0.0;
     if (value > 1.0) value = 1.0;
-
     _ratio = value;
-    _updateMask();
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -46,57 +40,7 @@ class Gauge extends DisplayObject {
   BitmapData get bitmapData => _bitmapData;
 
   set bitmapData(BitmapData value) {
-
     _bitmapData = value;
-    _updateMask();
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  _updateMask() {
-
-    if (_bitmapData == null) {
-      _clipRectangle.left = 0;
-      _clipRectangle.top = 0;
-      _clipRectangle.right = 0;
-      _clipRectangle.bottom = 0;
-
-    } else {
-
-      int bdWidth = _bitmapData.width;
-      int bdHeight = _bitmapData.height;
-
-      switch (_direction)
-      {
-        case DIRECTION_LEFT:
-          _clipRectangle.left = ((1.0 - _ratio) * bdWidth).toInt();
-          _clipRectangle.top = 0;
-          _clipRectangle.right = bdWidth;
-          _clipRectangle.bottom = bdHeight;
-          break;
-
-        case DIRECTION_UP:
-          _clipRectangle.left = 0;
-          _clipRectangle.top = ((1.0 - _ratio) * bdHeight).toInt();
-          _clipRectangle.right = bdWidth;
-          _clipRectangle.bottom = bdHeight;
-          break;
-
-        case DIRECTION_RIGHT:
-          _clipRectangle.left = 0;
-          _clipRectangle.top = 0;
-          _clipRectangle.right = (_ratio * bdWidth).toInt();
-          _clipRectangle.bottom = bdHeight;
-          break;
-
-        case DIRECTION_DOWN:
-          _clipRectangle.left = 0;
-          _clipRectangle.top = 0;
-          _clipRectangle.right = bdWidth;
-          _clipRectangle.bottom = (_ratio * bdHeight).toInt();
-          break;
-      }
-    }
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -114,18 +58,31 @@ class Gauge extends DisplayObject {
 
   DisplayObject hitTestInput(num localX, num localY) {
 
-    if (_bitmapData != null && localX >= 0.0 && localY >= 0.0 && localX < _bitmapData.width && localY < _bitmapData.height)
-      return this;
-
-    return null;
+    return bitmapData != null &&
+      localX >= 0.0 && localY >= 0.0 &&
+      localX < _bitmapData.width && localY < _bitmapData.height ? this : null;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
 
-    if (_bitmapData != null)
-        _bitmapData.renderClipped(renderState, _clipRectangle);
+    if (_bitmapData != null) {
+
+      var width = _bitmapData.width;
+      var height = _bitmapData.height;
+      var left = 0, top = 0;
+      var right = width, bottom = height;
+
+      if (_direction == DIRECTION_LEFT) left = ((1.0 - _ratio) * width).round();
+      if (_direction == DIRECTION_UP) top = ((1.0 - _ratio) * height).round();
+      if (_direction == DIRECTION_RIGHT) right = (_ratio * width).round();
+      if (_direction == DIRECTION_DOWN) bottom = (_ratio * height).round();
+
+      var rectangle = new Rectangle(left, top, right - left, bottom - top);
+      var quad = _bitmapData.renderTextureQuad.clip(rectangle);
+      renderState.renderQuad(quad);
+    }
   }
 
 }
