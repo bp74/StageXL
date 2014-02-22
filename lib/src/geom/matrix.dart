@@ -313,6 +313,33 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
+  void invertAndConcat(Matrix concatMatrix) {
+
+    num a1 =    _d / _det;
+    num b1 =  - _b / _det;
+    num c1 =  - _c / _det;
+    num d1 =    _a / _det;
+    num tx1 = - a1 * _tx - c1 * _ty;
+    num ty1 = - b1 * _tx - d1 * _ty;
+
+    num a2 =   concatMatrix.a;
+    num b2 =   concatMatrix.b;
+    num c2 =   concatMatrix.c;
+    num d2 =   concatMatrix.d;
+    num tx2 =  concatMatrix.tx;
+    num ty2 =  concatMatrix.ty;
+
+    _a =   (a1 * a2 + b1 * c2).toDouble();
+    _b =   (a1 * b2 + b1 * d2).toDouble();
+    _c =   (c1 * a2 + d1 * c2).toDouble();
+    _d =   (c1 * b2 + d1 * d2).toDouble();
+    _tx =  (tx1 * a2 + ty1 * c2 + tx2).toDouble();
+    _ty =  (tx1 * b2 + ty1 * d2 + ty2).toDouble();
+    _det = (_a * _d - _b * _c).toDouble();
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
   void copyFromAndInvert(Matrix matrix) {
 
     num a =   matrix.a;

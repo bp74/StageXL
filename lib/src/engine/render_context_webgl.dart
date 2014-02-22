@@ -166,12 +166,12 @@ class RenderContextWebGL extends RenderContext {
           activateRenderFrameBuffer(targetRenderFrameBuffer);
         } else if (renderFrameBufferMap.containsKey(renderPassTarget)) {
           targetRenderFrameBuffer = renderFrameBufferMap[renderPassTarget];
-          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.renderMatrix);
+          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
           filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
           activateRenderFrameBuffer(targetRenderFrameBuffer);
         } else {
           targetRenderFrameBuffer = requestRenderFrameBuffer(boundsWidth, boundsHeight);
-          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.renderMatrix);
+          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
           filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
           renderFrameBufferMap[renderPassTarget] = targetRenderFrameBuffer;
           activateRenderFrameBuffer(targetRenderFrameBuffer);

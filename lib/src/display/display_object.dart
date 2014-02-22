@@ -587,7 +587,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
       var flattenRenderTextureQuad = new RenderTextureQuad(
           flattenRenderTexture, 0, boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
-      var flattenRenderState = new RenderState(renderContext, flattenRenderTextureQuad.renderMatrix);
+      var flattenRenderState = new RenderState(renderContext, flattenRenderTextureQuad.bufferMatrix);
 
       renderContext.activateRenderFrameBuffer(flattenRenderFrameBuffer);
       renderContext.clear(0);
