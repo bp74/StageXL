@@ -1,4 +1,4 @@
-library example02;
+library example;
 
 import 'dart:html' as html;
 import 'dart:math' as math;
@@ -21,13 +21,26 @@ void main() {
 
   resourceManager.load().then((result) {
 
+    var alphaMaskBitmapData = new BitmapData(100, 100, true, Color.Transparent);
+    var shape = new Shape();
+    shape.graphics.circle(50, 50, 49);
+    shape.graphics.fillColor(0xFFFF00FF);
+    alphaMaskBitmapData.draw(shape);
+
+    var alphaMaskMatrix = new Matrix.fromIdentity();
+    alphaMaskMatrix.translate(-50, -50);
+    alphaMaskMatrix.skew(0.5, 0.0);
+    alphaMaskMatrix.translate(350, 250);
+
     //var colorMatrixFilter = new ColorMatrixFilter.grayscale();
     var colorMatrixFilter = new ColorMatrixFilter.invert();
     //var colorMatrixFilter = new ColorMatrixFilter.identity();
     //var colorMatrixFilter = new ColorMatrixFilter.adjust(contrast: 1);
+
     var blurFilter = new BlurFilter(8, 8);
     var glowFilter = new GlowFilter(Color.Red, 16, 16);
     var dropShadowFilter = new DropShadowFilter(10, math.PI / 4, Color.Red, 8, 8);
+    var alphaMaskFilter = new AlphaMaskFilter(alphaMaskBitmapData, alphaMaskMatrix);
 
     var world1 = new World();
     world1.addTo(stage);
@@ -52,17 +65,20 @@ void main() {
     //world1.filters= [dropShadowFilter];
     //world2.filters= [dropShadowFilter];
 
+    //world1.filters= [alphaMaskFilter];
+    //world2.filters= [alphaMaskFilter];
+
     //world1.filters= [colorMatrixFilter, blurFilter];
     //world2.filters= [colorMatrixFilter, blurFilter];
 
     //world1.filters= [glowFilter, colorMatrixFilter];
     //world2.filters= [glowFilter, colorMatrixFilter];
 
-    world1.filters= [dropShadowFilter, colorMatrixFilter];
-    world2.filters= [dropShadowFilter, colorMatrixFilter];
+    //world1.filters= [dropShadowFilter, colorMatrixFilter];
+    //world2.filters= [dropShadowFilter, colorMatrixFilter];
 
-    //world1.filters= [colorMatrixFilter, dropShadowFilter];
-    //world2.filters= [colorMatrixFilter, dropShadowFilter];
+    world1.filters= [alphaMaskFilter, colorMatrixFilter, dropShadowFilter];
+    world2.filters= [alphaMaskFilter, colorMatrixFilter, dropShadowFilter];
 
     world2.applyCache(220, 120, 240, 240, debugBorder: false);
 
@@ -91,6 +107,8 @@ class World extends Sprite {
     tree.x = 300;
     tree.y = 200;
     tree.addTo(this);
+
+   // this.addChild(new Bitmap(new BitmapData(500, 500, true, 0x80FF00FF)));
 
     stage.juggler.tween(sun, 60.0, (x) => x).animate.rotation.to(20 * math.PI);
   }

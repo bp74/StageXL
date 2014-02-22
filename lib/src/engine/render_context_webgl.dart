@@ -85,6 +85,7 @@ class RenderContextWebGL extends RenderContext {
   }
 
   //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
 
@@ -93,18 +94,10 @@ class RenderContextWebGL extends RenderContext {
     _renderProgramQuad.renderQuad(renderState, renderTextureQuad);
   }
 
-  void renderTriangle(RenderState renderState,
-                      num x1, num y1, num x2, num y2, num x3, num y3, int color) {
-
-    activateRenderProgram(_renderProgramTriangle);
-    _renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
-  }
-
   //-----------------------------------------------------------------------------------------------
 
   void renderQuadFiltered(RenderState renderState,
-                          RenderTextureQuad renderTextureQuad,
-                          List<BitmapFilter> filters) {
+                          RenderTextureQuad renderTextureQuad, List<BitmapFilter> filters) {
 
     int boundsLeft = renderTextureQuad.offsetX;
     int boundsTop = renderTextureQuad.offsetY;
@@ -193,9 +186,18 @@ class RenderContextWebGL extends RenderContext {
       renderFrameBufferMap.clear();
       renderFrameBufferMap[0] = targetRenderFrameBuffer;
     }
-
   }
 
+  //-----------------------------------------------------------------------------------------------
+
+  void renderTriangle(RenderState renderState,
+                      num x1, num y1, num x2, num y2, num x3, num y3, int color) {
+
+    activateRenderProgram(_renderProgramTriangle);
+    _renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
+  }
+
+  //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
   void beginRenderMask(RenderState renderState, Mask mask) {

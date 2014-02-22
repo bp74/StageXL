@@ -286,4 +286,8 @@ class BitmapData implements BitmapDrawable {
     renderState.renderQuad(_renderTextureQuad);
   }
 
+  renderFiltered(RenderState renderState, List<BitmapFilter> filters) {
+    renderState.renderQuadFiltered(_renderTextureQuad, filters);
+  }
+
 }

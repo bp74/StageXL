@@ -20,8 +20,14 @@ abstract class RenderContext extends EventDispatcher {
   void clear(int color);
   void flush();
 
-  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad);
-  void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color);
+  void renderQuad(RenderState renderState,
+                  RenderTextureQuad renderTextureQuad);
+
+  void renderQuadFiltered(RenderState renderState,
+                          RenderTextureQuad renderTextureQuad, List<BitmapFilter> filters);
+
+  void renderTriangle(RenderState renderState,
+                      num x1, num y1, num x2, num y2, num x3, num y3, int color);
 
   void beginRenderMask(RenderState renderState, Mask mask);
   void endRenderMask(RenderState renderState, Mask mask);

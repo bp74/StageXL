@@ -91,6 +91,10 @@ class RenderState {
     _renderContext.renderQuad(this, renderTextureQuad);
   }
 
+  void renderQuadFiltered(RenderTextureQuad renderTextureQuad, List<BitmapFilter> filters) {
+    _renderContext.renderQuadFiltered(this, renderTextureQuad, filters);
+  }
+
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, int color) {
     _renderContext.renderTriangle(this, x1, y1, x2, y2, x3, y3, color);
   }

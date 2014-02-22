@@ -92,7 +92,14 @@ class RenderContextCanvas extends RenderContext {
     }
   }
 
+  void renderQuadFiltered(RenderState renderState, RenderTextureQuad renderTextureQuad,
+                          List<BitmapFilter> filters) {
+
+    this.renderQuad(renderState, renderTextureQuad);
+  }
+
   void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color) {
+
     var context = _renderingContext;
     var matrix = renderState.globalMatrix;
 
