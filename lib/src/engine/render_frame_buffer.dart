@@ -58,8 +58,6 @@ class RenderFrameBuffer {
   int get width => _width;
   int get height => _height;
 
-  Matrix get renderMatrix => new Matrix(2.0 / _width, 0, 0, 2.0 / _height, -1, -1);
-
   //-----------------------------------------------------------------------------------------------
 
   /**

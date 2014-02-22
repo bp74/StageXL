@@ -126,10 +126,9 @@ class RenderContextWebGL extends RenderContext {
 
     var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
     var renderFrameBuffer = this.activeRenderFrameBuffer;
-    var originBounds = new Rectangle(boundsLeft, boundsTop, boundsWidth, boundsHeight);
-    var originRenderTextureQuad = renderTextureQuad.cut(originBounds);
 
     RenderTextureQuad sourceRenderTextureQuad = null;
+    RenderTextureQuad targetRenderTextureQuad = null;
     RenderFrameBuffer sourceRenderFrameBuffer = null;
     RenderFrameBuffer targetRenderFrameBuffer = null;
     RenderState filterRenderState = new RenderState(this);
@@ -149,10 +148,12 @@ class RenderContextWebGL extends RenderContext {
 
         if (renderFrameBufferMap.containsKey(renderPassSource)) {
           sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
-          sourceRenderTextureQuad = sourceRenderFrameBuffer.renderTexture.quad;
+          sourceRenderTextureQuad = new RenderTextureQuad(
+              sourceRenderFrameBuffer.renderTexture, 0,
+              boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
         } else if (renderPassSource == 0) {
           sourceRenderFrameBuffer = null;
-          sourceRenderTextureQuad = originRenderTextureQuad;
+          sourceRenderTextureQuad = renderTextureQuad;
         } else {
           throw new StateError("Invalid renderPassSource!");
         }
@@ -162,15 +163,16 @@ class RenderContextWebGL extends RenderContext {
         if (i == filters.length - 1 && renderPassTarget == renderPassTargets.last) {
           targetRenderFrameBuffer = renderFrameBuffer;
           filterRenderState.copyFrom(renderState);
-          filterRenderState.globalMatrix.prependTranslation(boundsLeft, boundsTop);
           activateRenderFrameBuffer(targetRenderFrameBuffer);
         } else if (renderFrameBufferMap.containsKey(renderPassTarget)) {
           targetRenderFrameBuffer = renderFrameBufferMap[renderPassTarget];
-          filterRenderState.reset(targetRenderFrameBuffer.renderMatrix);
+          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.renderMatrix);
+          filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
           activateRenderFrameBuffer(targetRenderFrameBuffer);
         } else {
           targetRenderFrameBuffer = requestRenderFrameBuffer(boundsWidth, boundsHeight);
-          filterRenderState.reset(targetRenderFrameBuffer.renderMatrix);
+          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.renderMatrix);
+          filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
           renderFrameBufferMap[renderPassTarget] = targetRenderFrameBuffer;
           activateRenderFrameBuffer(targetRenderFrameBuffer);
           clear(0);
@@ -240,7 +242,7 @@ class RenderContextWebGL extends RenderContext {
       _renderingContext.colorMask(false, false, false, false);
       _maskDepth -= 1;
 
-      renderState.globalMatrix.copyFrom(_identityMatrix);
+      renderState.globalMatrix.identity();
       renderState.renderTriangle(-1, -1, 1, -1, 1, 1, Color.Magenta);
       renderState.renderTriangle(-1, -1, 1, 1, -1, 1, Color.Magenta);
       renderState.flush();
