@@ -29,7 +29,7 @@ class DropShadowFilter extends BitmapFilter {
   Rectangle get overlap {
     var shiftX = (this.distance * cos(this.angle)).round();
     var shiftY = (this.distance * sin(this.angle)).round();
-    var sRect = new Rectangle(0, 0, 0, 0);
+    var sRect = new Rectangle(-1, -1, 2, 2);
     var dRect = new Rectangle(shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
     return sRect.union(dRect);
   }
@@ -91,12 +91,12 @@ class DropShadowFilter extends BitmapFilter {
     renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
-      var shift = this.distance * cos(this.angle) / renderTexture.width;
+      var shift = (this.distance * cos(this.angle)).round() / renderTexture.width;
       var pixel = 0.250 * blurX / renderTexture.width;
       _dropShadowProgram.configure(color, shift, 0.0, pixel, 0.0);
       _dropShadowProgram.renderQuad(renderState, renderTextureQuad);
     } else if (pass == 1) {
-      var shift = this.distance * sin(this.angle) / renderTexture.height;
+      var shift = (this.distance * sin(this.angle)).round() / renderTexture.height;
       var pixel = 0.250 * blurY / renderTexture.height;
       _dropShadowProgram.configure(color, 0.0, shift, 0.0, pixel);
       _dropShadowProgram.renderQuad(renderState, renderTextureQuad);

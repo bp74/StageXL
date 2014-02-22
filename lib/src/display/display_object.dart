@@ -575,10 +575,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     if (renderContext is RenderContextWebGL) {
 
       var bounds = this.getBoundsTransformed(_identityMatrix);
-      var boundsLeft = bounds.left.floor() - 1;
-      var boundsTop = bounds.top.floor() - 1;
-      var boundsRight = bounds.right.ceil() + 1;
-      var boundsBottom = bounds.bottom.ceil() + 1;
+      var boundsLeft = bounds.left.floor();
+      var boundsTop = bounds.top.floor();
+      var boundsRight = bounds.right.ceil();
+      var boundsBottom = bounds.bottom.ceil();
 
       for(int i = 0; i < filters.length; i++) {
         Rectangle overlap = filters[i].overlap;
