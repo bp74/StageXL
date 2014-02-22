@@ -92,6 +92,7 @@ class RenderProgramQuad extends RenderProgram {
     }
 
     _renderingContext.useProgram(_program);
+    _renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
     _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
     _renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 20, 0);
     _renderingContext.vertexAttribPointer(_aVertexTextCoordLocation, 2, gl.FLOAT, false, 20, 8);

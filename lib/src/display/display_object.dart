@@ -20,12 +20,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   bool _off = false; // disable rendering
 
   Mask _mask = null;
-  RenderTexture _cacheTexture = null;
-  Rectangle _cacheRectangle = null;
-  bool _cacheDebugBorder = false;
-  List<BitmapFilter> _filters = null;
   Shadow _shadow = null;
   String _compositeOperation = null;
+  List<BitmapFilter> _filters = null;
+  RenderTextureQuad _cacheTextureQuad = null;
+  bool _cacheDebugBorder = false;
 
   String _name = "";
   DisplayObjectContainer _parent = null;
@@ -75,7 +74,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   num get alpha => _alpha;
 
   Mask get mask => _mask;
-  bool get cached => _cacheTexture != null;
+  bool get cached => _cacheTextureQuad != null;
 
   List<BitmapFilter> get filters {
     if (_filters == null) _filters = new List<BitmapFilter>();
@@ -481,13 +480,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
 
-    if (_cacheTexture == null) {
-      _cacheTexture = new RenderTexture(width, height, true, Color.Transparent, pixelRatio);
-    } else {
-      _cacheTexture.resize(width, height);
-    }
+    var renderTexture = _cacheTextureQuad == null
+        ? new RenderTexture(width, height, true, Color.Transparent, pixelRatio)
+        : _cacheTextureQuad.renderTexture..resize(width, height);
 
-    _cacheRectangle = new Rectangle(x, y, width, height);
+    _cacheTextureQuad = new RenderTextureQuad(renderTexture, 0, x, y, 0, 0, width, height);
     _cacheDebugBorder = debugBorder;
 
     refreshCache();
@@ -495,30 +492,20 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   void refreshCache() {
 
-    if (_cacheTexture == null) return;
+    if (_cacheTextureQuad == null) return;
 
-    var x = _cacheRectangle.x;
-    var y = _cacheRectangle.y;
-    var width = _cacheRectangle.width;
-    var height = _cacheRectangle.height;
-    var canvas = _cacheTexture.canvas;
-
-    var matrix = _cacheTexture.quad.drawMatrix..translate(-x, -y);
-    var renderContext = new RenderContextCanvas(canvas, Color.Transparent);
+    var canvas = _cacheTextureQuad.renderTexture.canvas;
+    var matrix = _cacheTextureQuad.drawMatrix;
+    var renderContext = new RenderContextCanvas(canvas);
     var renderState = new RenderState(renderContext, matrix);
 
-    renderContext.clear();
+    renderContext.clear(Color.Transparent);
     render(renderState);
 
     if (_filters != null) {
-      var cacheBitmapData = new BitmapData.fromRenderTextureQuad(_cacheTexture.quad);
-      var bounds = this.getBoundsTransformed(_identityMatrix)..offset(-x, -y);
-      for(var filter in _filters) {
-        var filterOverlap = filter.overlap;
-        var filterBounds = bounds.clone();
-        filterBounds.offset(filterOverlap.x, filterOverlap.y);
-        filterBounds.inflate(filterOverlap.width, filterOverlap.height);
-        filter.apply(cacheBitmapData, filterBounds.align());
+      var cacheBitmapData = new BitmapData.fromRenderTextureQuad(_cacheTextureQuad);
+      for(int i = 0; i < _filters.length; i++) {
+        _filters[i].apply(cacheBitmapData);
       }
     }
 
@@ -532,19 +519,14 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
           ..strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
     }
 
-    _cacheTexture.update();
+    _cacheTextureQuad.renderTexture.update();
   }
 
   void removeCache() {
-    if (_cacheTexture != null) {
-      _cacheTexture.dispose();
-      _cacheTexture = null;
+    if (_cacheTextureQuad != null) {
+      _cacheTextureQuad.renderTexture.dispose();
+      _cacheTextureQuad = null;
     }
-  }
-
-  void _renderCache(RenderState renderState) {
-    renderState.globalMatrix.prependTranslation(_cacheRectangle.x, _cacheRectangle.y);
-    renderState.renderQuad(_cacheTexture.quad);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -585,6 +567,92 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState);
+
+  void renderFiltered(RenderState renderState) {
+
+    RenderContext renderContext = renderState.renderContext;
+
+    if (renderContext is RenderContextWebGL) {
+
+      var bounds = this.getBoundsTransformed(_identityMatrix);
+      var boundsLeft = bounds.left.floor();
+      var boundsTop = bounds.top.floor();
+      var boundsRight = bounds.right.ceil();
+      var boundsBottom = bounds.bottom.ceil();
+      var boundsWidth = boundsRight - boundsLeft;
+      var boundsHeight = boundsBottom - boundsTop;
+
+      var currentRenderFrameBuffer = renderContext.activeRenderFrameBuffer;
+      var flattenRenderFrameBuffer = renderContext.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+      var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
+      var flattenRenderTextureQuad = new RenderTextureQuad(
+          flattenRenderTexture, 0, boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
+      var flattenRenderState = new RenderState(renderContext, flattenRenderTextureQuad.bufferMatrix);
+
+      renderContext.activateRenderFrameBuffer(flattenRenderFrameBuffer);
+      renderContext.clear(0);
+      render(flattenRenderState);
+      renderContext.activateRenderFrameBuffer(currentRenderFrameBuffer);
+
+      renderContext.renderQuadFiltered(renderState, flattenRenderTextureQuad, this.filters);
+      renderContext.flush();
+      renderContext.releaseRenderFrameBuffer(flattenRenderFrameBuffer);
+
+    } else {
+
+      render(renderState);
+
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  void _renderInternal(RenderState renderState) {
+
+    RenderState maskRenderState;
+    RenderState shadowRenderState;
+    Mask mask = _mask;
+    Shadow shadow = _shadow;
+
+    // render mask and shadow (begin)
+
+    if (mask != null) {
+      maskRenderState = new RenderState(renderState.renderContext, renderState.globalMatrix);
+      if (mask.targetSpace != null && identical(this, mask.targetSpace) == false) {
+        maskRenderState.globalMatrix.prepend(mask.targetSpace.transformationMatrixTo(this));
+      }
+      maskRenderState.renderContext.beginRenderMask(maskRenderState, mask);
+    }
+
+    if (shadow != null) {
+      shadowRenderState = new RenderState(renderState.renderContext, renderState.globalMatrix);
+      if (shadow.targetSpace != null && identical(this, shadow.targetSpace) == false) {
+        shadowRenderState.globalMatrix.prepend(shadow.targetSpace.transformationMatrixTo(this));
+      }
+      shadowRenderState.renderContext.beginRenderShadow(shadowRenderState, shadow);
+    }
+
+    // render DisplayObject
+
+    if (_cacheTextureQuad != null) {
+      renderState.renderQuad(_cacheTextureQuad);
+    } else if (_filters != null && _filters.length > 0) {
+      renderFiltered(renderState);
+    } else {
+      render(renderState);
+    }
+
+    // render mask and shadow (end)
+
+    if (shadow != null) {
+      shadowRenderState.renderContext.endRenderShadow(shadowRenderState, shadow);
+    }
+
+    if (mask != null) {
+      maskRenderState.renderContext.endRenderMask(maskRenderState, mask);
+    }
+  }
+
 
 }
 

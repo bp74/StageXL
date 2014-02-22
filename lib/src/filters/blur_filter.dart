@@ -13,8 +13,9 @@ class BlurFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
 
   BlurFilter([this.blurX = 4, this.blurY = 4]) {
-    if (blurX < 1 || blurY < 1) {
-      throw new ArgumentError("Error #9004: The minimum blur size is 1.");
+
+    if (blurX < 0 || blurY < 0) {
+      throw new ArgumentError("Error #9004: The minimum blur size is 0.");
     }
     if (blurX > 64 || blurY > 64) {
       throw new ArgumentError("Error #9004: The maximum blur size is 64.");
@@ -23,6 +24,8 @@ class BlurFilter extends BitmapFilter {
 
   BitmapFilter clone() => new BlurFilter(blurX, blurY);
   Rectangle get overlap => new Rectangle(-blurX, -blurY, 2 * blurX, 2 * blurY);
+  List<int> get renderPassSources => [0, 1];
+  List<int> get renderPassTargets => [1, 2];
 
   //-------------------------------------------------------------------------------------------------
 
@@ -64,292 +67,52 @@ class BlurFilter extends BitmapFilter {
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
 
-  /*
-  void _applyLow(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
-  {
-    var sourceContext = sourceBitmapData._getContext();
-    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-    var sourceData = sourceImageData.data;
+  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+    RenderContextWebGL renderContext = renderState.renderContext;
+    RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    renderContext.activateRenderProgram(_blurProgram);
+    renderContext.activateRenderTexture(renderTexture);
 
-    var destinationContext = destinationBitmapData._getContext();
-    var destinationImageData = destinationContext.createImageData(sourceImageData.width, sourceImageData.height);
-    var destinationData = destinationImageData.data;
-
-    int width = sourceImageData.width;
-    int height = sourceImageData.height;
-
-    int radiusX = sqrt(5 * blurX * blurX + 1).toInt();
-    int radiusY = sqrt(5 * blurY * blurY + 1).toInt();
-    int weightX = radiusX * radiusX;
-    int weightY = radiusY * radiusY;
-
-    int width4 = width * 4;
-    int rx1 = radiusX;
-    int rx2 = radiusX * 2;
-    int ry1 = radiusY;
-    int ry2 = radiusY * 2;
-
-    List<int> buffer = new List<int>(1024);
-
-    for (int z = 0; z < 4; z++) {
-
-      // blur vertical
-      for (int x = 0; x < width; x++) {
-        int dif = 0, sum = weightY >> 1;
-        int offsetBase = x * 4 + z;
-        int offsetLoop = offsetBase;
-
-        for (int y = 0 - ry2; y < height; y++) {
-          if (y >= 0) {
-            destinationData[offsetLoop] = sum ~/ weightY;
-            offsetLoop += width4;
-            dif -= 2 * buffer[y & 1023] - buffer[(y - ry1) & 1023];
-          } else if (y + ry1 >= 0) {
-            dif -= 2 * buffer[y & 1023];
-          }
-
-          int ty = y + ry1;
-
-          if (ty < 0) {
-            ty = 0;
-          } else if (ty >= height) {
-            ty = height - 1;
-          }
-
-          sum += dif += (buffer[(y + ry1) & 1023] = sourceData[offsetBase + ty * width4]);
-        }
-      }
-
-      // blur horizontal
-      for (int y = 0; y < height; y++) {
-        int dif = 0, sum = weightX >> 1;
-        int offsetBase = y * width4 + z;
-        int offsetLoop = offsetBase;
-
-        for (int x = 0 - rx2; x < width; x++) {
-          if (x >= 0) {
-            destinationData[offsetLoop] = sum ~/ weightX;
-            offsetLoop += 4;
-            dif -= 2 * buffer[x & 1023] - buffer[(x - rx1) & 1023];
-          } else if (x + rx1 >= 0) {
-            dif -= 2 * buffer[x & 1023];
-          }
-
-          int tx = x + rx1;
-
-          if (tx < 0) {
-            tx = 0;
-          } else if (tx >= width) {
-            tx = width - 1;
-          }
-
-          sum += dif += (buffer[(x + rx1) & 1023] = destinationData[offsetBase + (tx << 2)]);
-        }
-      }
+    if (pass == 0) {
+      _blurProgram.configure(0.250 * blurX / renderTexture.width, 0.0);
+      _blurProgram.renderQuad(renderState, renderTextureQuad);
+    } else {
+      _blurProgram.configure(0.0, 0.250 * blurY / renderTexture.height);
+      _blurProgram.renderQuad(renderState, renderTextureQuad);
     }
-
-    destinationContext.putImageData(destinationImageData, destinationPoint.x, destinationPoint.y);
   }
-
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  void _applyMedium(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
-  {
-    var sourceContext = sourceBitmapData._getContext();
-    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-    var sourceData = sourceImageData.data;
-
-    var destinationContext = destinationBitmapData._getContext();
-    var destinationImageData = destinationContext.createImageData(sourceImageData.width, sourceImageData.height);
-    var destinationData = destinationImageData.data;
-
-    int width = sourceImageData.width;
-    int height = sourceImageData.height;
-
-    int radiusX = sqrt(4 * blurX * blurX + 1).toInt();
-    int radiusY = sqrt(4 * blurY * blurY + 1).toInt();
-    int weightX = radiusX * radiusX * radiusX;
-    int weightY = radiusY * radiusY * radiusY;
-
-    int width4 = width * 4;
-    int rx1 = radiusX;
-    int rx2 = radiusX * 2;
-    int rx3 = radiusX * 3;
-    int ry1 = radiusY;
-    int ry2 = radiusY * 2;
-    int ry3 = radiusY * 3;
-    int rx3h = (rx3 / 2).round().toInt();
-    int ry3h = (ry3 / 2).round().toInt();
-
-    List<int> buffer = new List<int>(1024);
-
-    for (int z = 0; z < 4; z++) {
-
-      // blur vertical
-      for (int x = 0; x < width; x++) {
-        int dif = 0, der = 0, sum = 0;
-        int offsetBase = x * 4 + z;
-        int offsetLoop = offsetBase;
-
-        for (int y = 0 - ry3; y < height; y++) {
-          if (y >= 0) {
-            destinationData[offsetLoop] = sum ~/ weightY;
-            offsetLoop += width4;
-            dif -= 3 * buffer[(y + ry1) & 1023] - 3 * buffer[y & 1023] + buffer[(y - ry1) & 1023];
-          } else if (y + ry1 >= 0) {
-            dif -= 3 * buffer[(y + ry1) & 1023] - 3 * buffer[y & 1023];
-          } else if (y + ry2 >= 0) {
-            dif -= 3 * buffer[(y + ry1) & 1023];
-          }
-
-          int ty = y + ry3h;
-
-          if (ty < 0) {
-            ty = 0;
-          } else if (ty >= height) {
-            ty = height - 1;
-          }
-
-          sum += der += dif += (buffer[(y + ry2) & 1023] = sourceData[offsetBase + ty * width4]);
-        }
-      }
-
-      // blur horizontal
-      for (int y = 0; y < height; y++) {
-        int dif = 0, der = 0, sum = 0;
-        int offsetBase = y * width4 + z;
-        int offsetLoop = offsetBase;
-
-        for (int x = 0 - rx3; x < width; x++) {
-          if (x >= 0) {
-            destinationData[offsetLoop] = sum ~/ weightX;
-            offsetLoop += 4;
-            dif -= 3 * buffer[(x + rx1) & 1023] - 3 * buffer[x & 1023] + buffer[(x - rx1) & 1023];
-          } else if (x + rx1 >= 0) {
-            dif -= 3 * buffer[(x + rx1) & 1023] - 3 * buffer[x & 1023];
-          } else if (x + rx2 >= 0) {
-            dif -= 3 * buffer[(x + rx1) & 1023];
-          }
-
-          int tx = x + rx3h;
-
-          if (tx < 0) {
-            tx = 0;
-          } else if (tx >= width) {
-            tx = width - 1;
-          }
-
-          sum += der += dif += (buffer[(x + rx2) & 1023] = destinationData[offsetBase + (tx << 2)]);
-        }
-      }
-    }
-
-    destinationContext.putImageData(destinationImageData, destinationPoint.x, destinationPoint.y);
-  }
-
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  void _applyHigh(BitmapData sourceBitmapData, Rectangle sourceRect, BitmapData destinationBitmapData, Point destinationPoint)
-  {
-    var sourceContext = sourceBitmapData._getContext();
-    var sourceImageData = sourceContext.getImageData(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-    var sourceData = sourceImageData.data;
-
-    var destinationContext = destinationBitmapData._getContext();
-    var destinationImageData = destinationContext.createImageData(sourceImageData.width, sourceImageData.height);
-    var destinationData = destinationImageData.data;
-
-    int width = sourceImageData.width;
-    int height = sourceImageData.height;
-
-    int radiusX = sqrt(3 * blurX * blurX + 1).toInt();
-    int radiusY = sqrt(3 * blurY * blurY + 1).toInt();
-    int weightX = radiusX * radiusX * radiusX * radiusX;
-    int weightY = radiusY * radiusY * radiusY * radiusY;
-
-    int width4 = width * 4;
-    int rx1 = radiusX;
-    int rx2 = radiusX * 2;
-    int rx3 = radiusX * 3;
-    int rx4 = radiusX * 4;
-    int ry1 = radiusY;
-    int ry2 = radiusY * 2;
-    int ry3 = radiusY * 3;
-    int ry4 = radiusY * 4;
-
-    List<int> buffer = new List<int>(1024);
-
-    for (int z = 0; z < 4; z++) {
-
-      // blur vertical
-      for (int x = 0; x < width; x++) {
-        int dif = 0, der1 = 0, der2 = 0, sum = 0;
-        int offsetBase = x * 4 + z;
-        int offsetLoop = offsetBase;
-
-        for (int y = 0 - ry4; y < height; y++) {
-          if (y >= 0) {
-            destinationData[offsetLoop] = sum ~/ weightY;
-            offsetLoop += width4;
-            dif -= 4 * buffer[(y + ry1) & 1023] - 6 * buffer[y & 1023] + 4 * buffer[(y - ry1) & 1023] - buffer[(y - ry2) & 1023];
-          } else if (y + ry1 >= 0) {
-            dif -= 4 * buffer[(y + ry1) & 1023] - 6 * buffer[y & 1023] + 4 * buffer[(y - ry1) & 1023];
-          } else if (y + ry2 >= 0) {
-            dif -= 4 * buffer[(y + ry1) & 1023] - 6 * buffer[y & 1023];
-          } else if (y + ry3 >= 0) {
-            dif -= 4 * buffer[(y + ry1) & 1023];
-          }
-
-          int ty = y + ry2 - 1;
-
-          if (ty < 0) {
-            ty = 0;
-          } else if (ty >= height) {
-            ty = height - 1;
-          }
-
-          sum += der1 += der2 += dif += (buffer[(y + ry2) & 1023] = sourceData[offsetBase + ty * width4]);
-        }
-      }
-
-      // blur horizontal
-      for (int y = 0; y < height; y++) {
-        int dif = 0, der1 = 0, der2 = 0, sum = 0;
-        int offsetBase = y * width4 + z;
-        int offsetLoop = offsetBase;
-
-        for (int x = 0 - rx4; x < width; x++) {
-          if (x >= 0) {
-            destinationData[offsetLoop] = sum ~/ weightX;
-            offsetLoop += 4;
-            dif -= 4 * buffer[(x + rx1) & 1023] - 6 * buffer[x & 1023] + 4 * buffer[(x - rx1) & 1023] - buffer[(x - rx2) & 1023];
-          } else if (x + rx1 >= 0) {
-            dif -= 4 * buffer[(x + rx1) & 1023] - 6 * buffer[x & 1023] + 4 * buffer[(x - rx1) & 1023];
-          } else if (x + rx2 >= 0) {
-            dif -= 4 * buffer[(x + rx1) & 1023] - 6 * buffer[x & 1023];
-          } else if (x + rx3 >= 0) {
-            dif -= 4 * buffer[(x + rx1) & 1023];
-          }
-
-          int tx = x + rx2 - 1;
-
-          if (tx < 0) {
-            tx = 0;
-          } else if (tx >= width) {
-            tx = width - 1;
-          }
-
-          sum += der1 += der2 += dif += (buffer[(x + rx2) & 1023] = destinationData[offsetBase + (tx << 2)]);
-        }
-      }
-    }
-
-    destinationContext.putImageData(destinationImageData, destinationPoint.x, destinationPoint.y);
-  }
-  */
 }
 
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
+final _blurProgram = new _BlurProgram();
+
+class _BlurProgram extends _BitmapFilterProgram {
+
+  String get fragmentShaderSource => """
+      precision mediump float;
+      uniform sampler2D uSampler;
+      uniform vec2 uPixel;
+      varying vec2 vTextCoord;
+      varying float vAlpha;
+      void main() {
+        vec4 color = vec4(0);
+        color += texture2D(uSampler, vTextCoord - uPixel * 4.0) * 0.045;
+        color += texture2D(uSampler, vTextCoord - uPixel * 3.0) * 0.090;
+        color += texture2D(uSampler, vTextCoord - uPixel * 2.0) * 0.125;
+        color += texture2D(uSampler, vTextCoord - uPixel      ) * 0.155;
+        color += texture2D(uSampler, vTextCoord               ) * 0.170;
+        color += texture2D(uSampler, vTextCoord + uPixel      ) * 0.155;
+        color += texture2D(uSampler, vTextCoord + uPixel * 2.0) * 0.125;
+        color += texture2D(uSampler, vTextCoord + uPixel * 3.0) * 0.090;
+        color += texture2D(uSampler, vTextCoord + uPixel * 4.0) * 0.045;
+        gl_FragColor = color * vAlpha;
+      }
+      """;
+
+   void configure(num pixelX, num pixelY) {
+     _renderingContext.uniform2f(_uniformLocations["uPixel"], pixelX, pixelY);
+   }
+}

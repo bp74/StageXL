@@ -46,10 +46,10 @@ class RenderTexture {
   RenderTexture.fromImage(ImageElement imageElement, num imagePixelRatio) {
 
     _storePixelRatio = _ensureNum(imagePixelRatio);
-    _storeWidth = _ensureInt(imageElement.width);
-    _storeHeight = _ensureInt(imageElement.height);
-    _width = (_storeWidth / _storePixelRatio).round();
-    _height = (_storeHeight / _storePixelRatio).round();
+    _width = (_ensureNum(imageElement.width) / _storePixelRatio).floor();
+    _height = (_ensureNum(imageElement.height) / _storePixelRatio).floor();
+    _storeWidth = (_width * _storePixelRatio).round();
+    _storeHeight = (_height * _storePixelRatio).round();
     _transparent = true;
 
     var canvasWidth = (_storeWidth / _backingStorePixelRatio).round();
@@ -64,6 +64,8 @@ class RenderTexture {
   }
 
   RenderTexture.fromRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer, num storePixelRatio) {
+
+    // TODO: mark RenderTexture as read only in some way.
 
     _storePixelRatio = _ensureNum(storePixelRatio);
     _storeWidth = _ensureInt(renderFrameBuffer.width);

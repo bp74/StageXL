@@ -2,69 +2,168 @@ part of stagexl;
 
 class ColorMatrixFilter extends BitmapFilter {
 
-  final List<num> _matrix = new List.filled(20, 0.0);
+  Float32List _colorMatrixList = new Float32List(16);
+  Float32List _colorOffsetList = new Float32List(4);
 
-  ColorMatrixFilter(List<num> matrix) {
-    if (matrix.length != 20) {
-      throw new ArgumentError("The supplied matrix needs to be a 4 x 5 matrix.");
+  final num _lumaR = 0.213;
+  final num _lumaG = 0.715;
+  final num _lumaB = 0.072;
+
+  ColorMatrixFilter(List<num> colorMatrix, List<num> colorOffset) {
+
+    if (colorMatrix.length != 16) throw new ArgumentError("colorMatrix");
+    if (colorOffset.length != 4) throw new ArgumentError("colorOffset");
+
+    for(int i = 0; i < colorMatrix.length; i++) {
+      _colorMatrixList[i] = colorMatrix[i].toDouble();
     }
-    for(int i = 0; i < matrix.length; i++) {
-      _matrix[i] = _ensureNum(matrix[i]);
+
+    for(int i = 0; i < colorOffset.length; i++) {
+      _colorOffsetList[i] = colorOffset[i].toDouble();
     }
   }
 
-  ColorMatrixFilter.grayscale() : this([
-    0.212671, 0.715160, 0.072169, 0, 0,
-    0.212671, 0.715160, 0.072169, 0, 0,
-    0.212671, 0.715160, 0.072169, 0, 0,
-    0, 0, 0, 1, 0]);
+  ColorMatrixFilter.grayscale() : this(
+      [0.213, 0.715, 0.072, 0, 0.213, 0.715, 0.072, 0, 0.213, 0.715, 0.072, 0, 0, 0, 0, 1],
+      [0, 0, 0, 0]);
 
-  ColorMatrixFilter.invert() : this([
-    -1,  0,  0, 0, 255,
-     0, -1,  0, 0, 255,
-     0,  0, -1, 0, 255,
-     0,  0,  0, 1, 0]);
+  ColorMatrixFilter.invert() : this(
+      [-1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1],
+      [255, 255, 255, 0]);
+
+  ColorMatrixFilter.identity() : this(
+      [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+      [0, 0, 0, 0]);
+
+  factory ColorMatrixFilter.adjust({num brightness: 0, num contrast: 0, num saturation: 0, num hue: 0}) {
+    var colorMatrixFilter = new ColorMatrixFilter.identity();
+    colorMatrixFilter.adjustHue(hue);
+    colorMatrixFilter.adjustSaturation(saturation);
+    colorMatrixFilter.adjustBrightness(brightness);
+    colorMatrixFilter.adjustContrast(contrast);
+    return colorMatrixFilter;
+  }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  BitmapFilter clone() => new ColorMatrixFilter(_matrix);
-  Rectangle get overlap => new Rectangle(0, 0, 0, 0);
+  BitmapFilter clone() => new ColorMatrixFilter(_colorMatrixList, _colorOffsetList);
+
+  //-------------------------------------------------------------------------------------------------
+
+  void adjustInversion(num value) {
+
+    _concat([-1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1], [255, 255, 255, 0]);
+  }
+
+  void adjustHue(num value) {
+
+    num v = min(max(value, -1), 1) * PI;
+    num cv = cos(v);
+    num sv = sin(v);
+
+    _concat([
+        _lumaR - cv * _lumaR - sv * _lumaR + cv,
+        _lumaG - cv * _lumaG - sv * _lumaG,
+        _lumaB - cv * _lumaB - sv * _lumaB + sv, 0,
+        _lumaR - cv * _lumaR + sv * 0.143,
+        _lumaG - cv * _lumaG + sv * 0.140 + cv,
+        _lumaB - cv * _lumaB - sv * 0.283, 0,
+        _lumaR - cv * _lumaR + sv * _lumaR - sv,
+        _lumaG - cv * _lumaG + sv * _lumaG,
+        _lumaB - cv * _lumaB + sv * _lumaB + cv, 0,
+        0, 0, 0, 1], [0, 0, 0, 0]);
+  }
+
+  void adjustSaturation(num value) {
+
+    num v = min(max(value, -1), 1) + 1;
+    num i = 1 - v;
+    num r = i * _lumaR;
+    num g = i * _lumaG;
+    num b = i * _lumaB;
+
+    _concat( [r + v, g, b, 0, r, g + v, b, 0, r, g, b + v, 0, 0, 0, 0, 1], [0, 0, 0, 0]);
+  }
+
+  void adjustContrast(num value) {
+
+    num v = min(max(value, -1), 1) + 1;
+    num o = 128 * (1 - v);
+
+    _concat([v, 0, 0, 0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0, v], [o, o, o, 0]);
+  }
+
+  void adjustBrightness(num value) {
+
+    num v = 255 * min(max(value, -1), 1);
+
+    _concat([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], [v, v, v, 0]);
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  void _concat(List<num> colorMatrix, List<num> colorOffset) {
+
+    var newColorMatrix = new Float32List(16);
+    var newColorOffset = new Float32List(4);
+
+    for (var y = 0, i = 0; y < 4; y++, i += 4) {
+
+      if (i > 12) continue; // dart2js_hint
+
+      for (var x = 0; x < 4; ++x) {
+        newColorMatrix[i + x] =
+          colorMatrix[i + 0] * _colorMatrixList[x +  0] +
+          colorMatrix[i + 1] * _colorMatrixList[x +  4] +
+          colorMatrix[i + 2] * _colorMatrixList[x +  8] +
+          colorMatrix[i + 3] * _colorMatrixList[x + 12];
+      }
+
+      newColorOffset[y] =
+          colorOffset[y    ] +
+          colorMatrix[i + 0] * _colorOffsetList[0] +
+          colorMatrix[i + 1] * _colorOffsetList[1] +
+          colorMatrix[i + 2] * _colorOffsetList[2] +
+          colorMatrix[i + 3] * _colorOffsetList[3];
+    }
+
+    _colorMatrixList = newColorMatrix;
+    _colorOffsetList = newColorOffset;
+  }
 
   //-------------------------------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
 
-    //redResult   = (a[0]  * srcR) + (a[1]  * srcG) + (a[2]  * srcB) + (a[3]  * srcA) + a[4]
-    //greenResult = (a[5]  * srcR) + (a[6]  * srcG) + (a[7]  * srcB) + (a[8]  * srcA) + a[9]
-    //blueResult  = (a[10] * srcR) + (a[11] * srcG) + (a[12] * srcB) + (a[13] * srcA) + a[14]
-    //alphaResult = (a[15] * srcR) + (a[16] * srcG) + (a[17] * srcB) + (a[18] * srcA) + a[19]
+    //dstR = (m[ 0] * srcR) + (m[ 1] * srcG) + (m[ 2] * srcB) + (m[ 3] * srcA) + o[0]
+    //dstG = (m[ 4] * srcR) + (m[ 5] * srcG) + (m[ 6] * srcB) + (m[ 7] * srcA) + o[1]
+    //dstB = (m[ 8] * srcR) + (m[ 9] * srcG) + (m[10] * srcB) + (m[11] * srcA) + o[2]
+    //dstA = (m[12] * srcR) + (m[13] * srcG) + (m[14] * srcB) + (m[15] * srcA) + o[3]
 
     bool isLittleEndianSystem = _isLittleEndianSystem;
 
-    int d0c0 = ((isLittleEndianSystem ? _matrix[00] : _matrix[18]) * 65536).round();
-    int d0c1 = ((isLittleEndianSystem ? _matrix[01] : _matrix[17]) * 65536).round();
-    int d0c2 = ((isLittleEndianSystem ? _matrix[02] : _matrix[16]) * 65536).round();
-    int d0c3 = ((isLittleEndianSystem ? _matrix[03] : _matrix[15]) * 65536).round();
-    int d0cc = ((isLittleEndianSystem ? _matrix[04] : _matrix[19]) * 65536).round();
+    int d0c0 = (_colorMatrixList[isLittleEndianSystem ? 00 : 15] * 65536).round();
+    int d0c1 = (_colorMatrixList[isLittleEndianSystem ? 01 : 14] * 65536).round();
+    int d0c2 = (_colorMatrixList[isLittleEndianSystem ? 02 : 13] * 65536).round();
+    int d0c3 = (_colorMatrixList[isLittleEndianSystem ? 03 : 12] * 65536).round();
+    int d1c0 = (_colorMatrixList[isLittleEndianSystem ? 04 : 11] * 65536).round();
+    int d1c1 = (_colorMatrixList[isLittleEndianSystem ? 05 : 10] * 65536).round();
+    int d1c2 = (_colorMatrixList[isLittleEndianSystem ? 06 : 09] * 65536).round();
+    int d1c3 = (_colorMatrixList[isLittleEndianSystem ? 07 : 08] * 65536).round();
+    int d2c0 = (_colorMatrixList[isLittleEndianSystem ? 08 : 07] * 65536).round();
+    int d2c1 = (_colorMatrixList[isLittleEndianSystem ? 09 : 06] * 65536).round();
+    int d2c2 = (_colorMatrixList[isLittleEndianSystem ? 10 : 05] * 65536).round();
+    int d2c3 = (_colorMatrixList[isLittleEndianSystem ? 11 : 04] * 65536).round();
+    int d3c0 = (_colorMatrixList[isLittleEndianSystem ? 12 : 03] * 65536).round();
+    int d3c1 = (_colorMatrixList[isLittleEndianSystem ? 13 : 02] * 65536).round();
+    int d3c2 = (_colorMatrixList[isLittleEndianSystem ? 14 : 01] * 65536).round();
+    int d3c3 = (_colorMatrixList[isLittleEndianSystem ? 15 : 00] * 65536).round();
 
-    int d1c0 = ((isLittleEndianSystem ? _matrix[05] : _matrix[13]) * 65536).round();
-    int d1c1 = ((isLittleEndianSystem ? _matrix[06] : _matrix[12]) * 65536).round();
-    int d1c2 = ((isLittleEndianSystem ? _matrix[07] : _matrix[11]) * 65536).round();
-    int d1c3 = ((isLittleEndianSystem ? _matrix[08] : _matrix[10]) * 65536).round();
-    int d1cc = ((isLittleEndianSystem ? _matrix[09] : _matrix[14]) * 65536).round();
-
-    int d2c0 = ((isLittleEndianSystem ? _matrix[10] : _matrix[08]) * 65536).round();
-    int d2c1 = ((isLittleEndianSystem ? _matrix[11] : _matrix[07]) * 65536).round();
-    int d2c2 = ((isLittleEndianSystem ? _matrix[12] : _matrix[06]) * 65536).round();
-    int d2c3 = ((isLittleEndianSystem ? _matrix[13] : _matrix[05]) * 65536).round();
-    int d2cc = ((isLittleEndianSystem ? _matrix[14] : _matrix[09]) * 65536).round();
-
-    int d3c0 = ((isLittleEndianSystem ? _matrix[15] : _matrix[03]) * 65536).round();
-    int d3c1 = ((isLittleEndianSystem ? _matrix[16] : _matrix[02]) * 65536).round();
-    int d3c2 = ((isLittleEndianSystem ? _matrix[17] : _matrix[01]) * 65536).round();
-    int d3c3 = ((isLittleEndianSystem ? _matrix[18] : _matrix[00]) * 65536).round();
-    int d3cc = ((isLittleEndianSystem ? _matrix[19] : _matrix[04]) * 65536).round();
+    int d0cc = (_colorOffsetList[isLittleEndianSystem ? 00 : 03] * 65536).round();
+    int d1cc = (_colorOffsetList[isLittleEndianSystem ? 01 : 02] * 65536).round();
+    int d2cc = (_colorOffsetList[isLittleEndianSystem ? 02 : 01] * 65536).round();
+    int d3cc = (_colorOffsetList[isLittleEndianSystem ? 03 : 00] * 65536).round();
 
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
@@ -87,4 +186,47 @@ class ColorMatrixFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
+  //-------------------------------------------------------------------------------------------------
+
+  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+    RenderContextWebGL renderContext = renderState.renderContext;
+    RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    renderContext.activateRenderProgram(_colorMatrixProgram);
+    renderContext.activateRenderTexture(renderTexture);
+    _colorMatrixProgram.configure(this);
+    _colorMatrixProgram.renderQuad(renderState, renderTextureQuad);
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
+final _colorMatrixProgram = new _ColorMatrixProgram();
+
+class _ColorMatrixProgram extends _BitmapFilterProgram {
+
+  String get fragmentShaderSource => """
+      precision mediump float;
+      uniform sampler2D uSampler;
+      uniform mat4 uColorMatrix;
+      uniform vec4 uColorOffset;
+      varying vec2 vTextCoord;
+      varying float vAlpha;
+      void main() {
+        vec4 color = texture2D(uSampler, vTextCoord);
+        color = vec4(color.rgb / (color.a + 0.001), color.a);
+        color = (uColorOffset / 255.0) + color * uColorMatrix;
+        color = vec4(color.rgb * color.a, color.a);
+        gl_FragColor = color * vAlpha;
+      }
+      """;
+
+  void configure(ColorMatrixFilter colorMatrixFilter) {
+    var colorMatrixList = colorMatrixFilter._colorMatrixList;
+    var colorOffsetList = colorMatrixFilter._colorOffsetList;
+    var uColorMatrixLocation = _uniformLocations["uColorMatrix"];
+    var uColorOffsetLocation = _uniformLocations["uColorOffset"];
+    _renderingContext.uniformMatrix4fv(uColorMatrixLocation, false, colorMatrixList);
+    _renderingContext.uniform4fv(uColorOffsetLocation, colorOffsetList);
+  }
 }

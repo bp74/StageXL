@@ -83,23 +83,78 @@ class RenderTextureQuad {
   int get textureWidth => _textureWidth;
   int get textureHeight => _textureHeight;
 
+  //-----------------------------------------------------------------------------------------------
+
+  /**
+   * The matrix transformation for this RenderTextureQuad to
+   * transform texture coordinates to canvas coordinates.
+   *
+   * Canvas coordinates are in the range from (0, 0) to (width, height).
+   */
+
   Matrix get drawMatrix {
-    /*
-    var scale = _renderTexture.storePixelRatio / _backingStorePixelRatio;
-    var matrix = new Matrix.fromIdentity();
-    matrix.translate(-offsetX, -offsetY);
-    matrix.rotate(_rotation * PI / 2.0);
-    matrix.translate(x1, y1);
-    matrix.scale(scale, scale);
-    return matrix;
-    */
-    num scale = _renderTexture.storePixelRatio / _backingStorePixelRatio;
-    num angle = _rotation * PI / 2.0;
-    num c = scale * cos(angle);
-    num s = scale * sin(angle);
-    num tx = scale * textureX  - offsetX * c + offsetY * s;
-    num ty = scale * textureY  - offsetX * s - offsetY * c;
-    return new Matrix(c, s, -s, c, tx, ty);
+
+    // var scale = _renderTexture.storePixelRatio / _backingStorePixelRatio;
+    // var matrix = new Matrix.fromIdentity();
+    // matrix.translate(-offsetX, -offsetY);
+    // matrix.rotate(_rotation * PI / 2.0);
+    // matrix.translate(textureX, textureY);
+    // matrix.scale(scale, scale);
+    // return matrix;
+
+    num s = _renderTexture.storePixelRatio / _backingStorePixelRatio;
+
+    return (_rotation == 0)
+        ? new Matrix(s, 0.0, 0.0, s, s * (textureX - offsetX), s * (textureY - offsetY))
+        : new Matrix(0.0, s, -s, 0.0, s * (textureX + offsetY), s * (textureY - offsetX));
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  /**
+   * The matrix transformation for this RenderTextureQuad to
+   * transform texture coordinates to framebuffer coordinates.
+   *
+   * Framebuffer coordinates are in the range from (-1, -1) to (+1, +1).
+   */
+
+  Matrix get bufferMatrix {
+
+    // var scaleWidth = 2.0 / _renderTexture.width;
+    // var scaleHeight = 2.0 / _renderTexture.height;
+    // var matrix = new Matrix.fromIdentity();
+    // matrix.translate(-offsetX, -offsetY);
+    // matrix.rotate(_rotation * PI / 2.0);
+    // matrix.translate(textureX, textureY);
+    // matrix.scale(scaleWidth, scaleHeight);
+    // matrix.translate(-1.0, -1.0);
+    // return matrix;
+
+    num sx = 2.0 / _renderTexture.width;
+    num sy = 2.0 / _renderTexture.height;
+
+    return (_rotation == 0)
+        ? new Matrix(sx, 0.0, 0.0, sy, sx * (textureX - offsetX) - 1.0, sy * (textureY - offsetY) - 1.0)
+        : new Matrix(0.0, sy, -sx, 0.0, sx * (textureX + offsetY) - 1.0, sy * (textureY - offsetX) - 1.0);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  /**
+   * The matrix transformation for this RenderTextureQuad to
+   * transform texture coordinates to sampler coordinates.
+   *
+   * Sampler coordinate are in the range from (0, 0) to (1, 1).
+   */
+
+  Matrix get samplerMatrix {
+
+    num sx = 1.0 / _renderTexture.width;
+    num sy = 1.0 / _renderTexture.height;
+
+    return (_rotation == 0)
+        ? new Matrix(sx, 0.0, 0.0, sy, sx * (textureX - offsetX), sy * (textureY - offsetY))
+        : new Matrix(0.0, sy, -sx, 0.0, sx * (textureX + offsetY), sy * (textureY - offsetX));
   }
 
   //-----------------------------------------------------------------------------------------------

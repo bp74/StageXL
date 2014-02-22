@@ -3,7 +3,6 @@ part of stagexl;
 class Bitmap extends DisplayObject {
 
   BitmapData bitmapData;
-  Rectangle clipRectangle = null;
 
   Bitmap([this.bitmapData = null]);
 
@@ -22,13 +21,11 @@ class Bitmap extends DisplayObject {
   }
 
   void render(RenderState renderState) {
-    if (bitmapData != null) {
-      if (clipRectangle == null) {
-        bitmapData.render(renderState);
-      } else {
-        bitmapData.renderClipped(renderState, clipRectangle);
-      }
-    }
+    if (bitmapData != null) bitmapData.render(renderState);
+  }
+
+  void renderFiltered(RenderState renderState) {
+    if (bitmapData != null) bitmapData.renderFiltered(renderState, this.filters);
   }
 
 }

@@ -84,6 +84,7 @@ part 'src/events/touch_event.dart';
 
 part 'src/filters/alpha_mask_filter.dart';
 part 'src/filters/bitmap_filter.dart';
+part 'src/filters/bitmap_filter_program.dart';
 part 'src/filters/blur_filter.dart';
 part 'src/filters/color_matrix_filter.dart';
 part 'src/filters/drop_shadow_filter.dart';
