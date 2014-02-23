@@ -24,7 +24,7 @@ abstract class BitmapFilter {
 
   _premultiplyAlpha(List<int> data) {
 
-    if (_isLittleEndianSystem) {
+    if (BitmapDataChannel.isLittleEndianSystem) {
       for(int i = 0; i <= data.length - 4; i += 4) {
         int alpha = data[i + 3];
         data[i + 0] = (data[i + 0] * alpha) ~/ 255;
@@ -45,7 +45,7 @@ abstract class BitmapFilter {
 
   _unpremultiplyAlpha(List<int> data) {
 
-    if (_isLittleEndianSystem) {
+    if (BitmapDataChannel.isLittleEndianSystem) {
       for(int i = 0; i <= data.length - 4; i += 4) {
         int alpha = data[i + 3];
         if (alpha > 0) {
@@ -161,7 +161,7 @@ abstract class BitmapFilter {
     int bColor = _colorGetB(color);
     int aColor = _colorGetA(color);
 
-    if (_isLittleEndianSystem) {
+    if (BitmapDataChannel.isLittleEndianSystem) {
       for(var i = 0; i <= data.length - 4; i += 4) {
         data[i + 0] = rColor;
         data[i + 1] = gColor;
@@ -184,7 +184,7 @@ abstract class BitmapFilter {
 
     if (dstData.length != srcData.length) return;
 
-    if (_isLittleEndianSystem) {
+    if (BitmapDataChannel.isLittleEndianSystem) {
       for(int i = 0; i <= dstData.length - 4; i += 4) {
         int srcA = srcData[i + 3];
         int dstA = dstData[i + 3];
@@ -221,7 +221,7 @@ abstract class BitmapFilter {
 
     if (dstData.length != srcData.length) return;
 
-    if (_isLittleEndianSystem) {
+    if (BitmapDataChannel.isLittleEndianSystem) {
       for(int i = 0; i <= dstData.length - 4; i += 4) {
         dstData[i + 3] = dstData[i + 3] * (255 - srcData[i + 3]) ~/ 255;
       }
@@ -247,7 +247,7 @@ abstract class BitmapFilter {
     int bColor = _colorGetB(color);
     int aColor = _colorGetA(color);
 
-    if (_isLittleEndianSystem) {
+    if (BitmapDataChannel.isLittleEndianSystem) {
       for(int i = 0; i <= dstData.length - 4; i += 4) {
         int srcA = srcData[i + 3];
         int dstA = dstData[i + 3];
@@ -297,7 +297,7 @@ abstract class BitmapFilter {
     int bColor = _colorGetB(color);
     int aColor = _colorGetA(color);
 
-    if (_isLittleEndianSystem) {
+    if (BitmapDataChannel.isLittleEndianSystem) {
       for(var i = 0; i <= dstData.length - 4; i += 4) {
         dstData[i + 0] = rColor;
         dstData[i + 1] = gColor;

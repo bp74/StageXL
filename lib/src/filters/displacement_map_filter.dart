@@ -1,51 +1,51 @@
 part of stagexl;
 
-class AlphaMaskFilter extends BitmapFilter {
+/**
+ *
+ *
+ * dstPixel[x, y] = srcPixel[
+ *     x + ((componentX(x, y) - 128) * scaleX) / 256,
+ *     y + ((componentY(x, y) - 128) * scaleY) / 256)];
+ *
+ */
+
+class DisplacementMapFilter extends BitmapFilter {
 
   final BitmapData bitmapData;
   final Matrix matrix;
+  final num scaleX;
+  final num scaleY;
+  final int componentX;
+  final int componentY;
   final int componentAlpha;
 
-  AlphaMaskFilter(BitmapData bitmapData, [
-                  Matrix matrix = null,
-                  int componentAlpha = BitmapDataChannel.ALPHA]) :
+  DisplacementMapFilter(BitmapData bitmapData, [
+                        Matrix matrix = null,
+                        num scaleX = 1.0,
+                        num scaleY = 1.0,
+                        int componentX = BitmapDataChannel.RED,
+                        int componentY = BitmapDataChannel.GREEN,
+                        int componentAlpha = BitmapDataChannel.ALPHA]) :
 
     bitmapData = bitmapData,
     matrix = (matrix != null) ? matrix : new Matrix.fromIdentity(),
+    scaleX = scaleX,
+    scaleY = scaleY,
+    componentX = componentX,
+    componentY = componentY,
     componentAlpha = componentAlpha;
-
-  //TODO: Add componentAlpha logic!
 
   //-----------------------------------------------------------------------------------------------
 
-  BitmapFilter clone() => new AlphaMaskFilter(bitmapData, matrix.clone(), componentAlpha);
+  BitmapFilter clone() => new DisplacementMapFilter(bitmapData, matrix.clone(),
+      scaleX, scaleY, componentX, componentY, componentAlpha);
+
   Rectangle get overlap => new Rectangle.zero();
 
   //-----------------------------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle rectangle]) {
-
-    RenderTextureQuad renderTextureQuad = rectangle == null
-        ? bitmapData.renderTextureQuad
-        : bitmapData.renderTextureQuad.cut(rectangle);
-
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    Matrix matrix = renderTextureQuad.drawMatrix;
-    CanvasElement canvas = renderTextureQuad.renderTexture.canvas;
-    RenderContextCanvas renderContext = new RenderContextCanvas(canvas);
-    RenderState renderState = new RenderState(renderContext, matrix, 1.0, CompositeOperation.DESTINATION_IN);
-    CanvasRenderingContext2D context = renderContext.rawContext;
-
-    context.save();
-    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-    context.rect(offsetX, offsetY, width, height);
-    context.clip();
-    renderState.globalMatrix.prepend(this.matrix);
-    renderState.renderQuad(bitmapData.renderTextureQuad);
-    context.restore();
+    // TODO: implement DisplacementMapFilter for Canvas2D
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -64,9 +64,9 @@ class AlphaMaskFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-final _alphaMaskProgram = new _AlphaMaskProgram();
+final _displacementMapProgram = new _DisplacementMapProgram();
 
-class _AlphaMaskProgram extends _BitmapFilterProgram {
+class _DisplacementMapProgram extends _BitmapFilterProgram {
 
   String get fragmentShaderSource => """
       precision mediump float;
@@ -83,15 +83,15 @@ class _AlphaMaskProgram extends _BitmapFilterProgram {
       }
       """;
 
-  void configure(AlphaMaskFilter alphaMaskFilter, RenderTextureQuad renderTextureQuad) {
+  void configure(DisplacementMapFilter displacementMapFilter, RenderTextureQuad renderTextureQuad) {
 
     //var matrix = renderTextureQuad.samplerMatrix.cloneInvert();
-    //matrix.concat(alphaMaskFilter.matrix.cloneInvert());
-    //matrix.concat(alphaMaskFilter.bitmapData.renderTextureQuad.samplerMatrix);
+    //matrix.concat(displacementMapFilter.matrix.cloneInvert());
+    //matrix.concat(displacementMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
 
     var matrix = new Matrix.fromIdentity();
-    matrix.copyFromAndConcat(alphaMaskFilter.matrix, renderTextureQuad.samplerMatrix);
-    matrix.invertAndConcat(alphaMaskFilter.bitmapData.renderTextureQuad.samplerMatrix);
+    matrix.copyFromAndConcat(displacementMapFilter.matrix, renderTextureQuad.samplerMatrix);
+    matrix.invertAndConcat(displacementMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
 
     var uMaskMatrix = new Float32List.fromList([
         matrix.a, matrix.c, matrix.tx,

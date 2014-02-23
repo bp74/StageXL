@@ -30,6 +30,7 @@ part 'src/animation/tween.dart';
 
 part 'src/display/bitmap.dart';
 part 'src/display/bitmap_data.dart';
+part 'src/display/bitmap_data_channel.dart';
 part 'src/display/bitmap_data_load_options.dart';
 part 'src/display/bitmap_drawable.dart';
 part 'src/display/button_helper.dart';
@@ -87,6 +88,7 @@ part 'src/filters/bitmap_filter.dart';
 part 'src/filters/bitmap_filter_program.dart';
 part 'src/filters/blur_filter.dart';
 part 'src/filters/color_matrix_filter.dart';
+part 'src/filters/displacement_map_filter.dart';
 part 'src/filters/drop_shadow_filter.dart';
 part 'src/filters/glow_filter.dart';
 
@@ -136,8 +138,6 @@ part 'src/util/texture_atlas_frame.dart';
 part 'src/util/tools.dart';
 
 //-----------------------------------------------------------------------------
-
-final bool _isLittleEndianSystem = _checkLittleEndianSystem();
 
 final Future<bool> _isWebpSupported = _checkWebpSupport();
 

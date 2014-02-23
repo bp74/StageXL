@@ -77,20 +77,6 @@ String _replaceFilename(String url, String filename) {
 
 //-------------------------------------------------------------------------------------------------
 
-bool _checkLittleEndianSystem() {
-
-  var canvas = new CanvasElement(width: 1, height: 1);
-  canvas.context2D.fillStyle = "#000000";
-  canvas.context2D.fillRect(0, 0, 1, 1);
-
-  var data = canvas.context2D.getImageData(0, 0, 1, 1).data;
-  var littleEndian = (data[0] == 0);
-
-  return littleEndian;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 Future<bool> _checkWebpSupport() {
 
   var completer = new Completer<bool>();

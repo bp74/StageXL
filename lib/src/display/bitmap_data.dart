@@ -134,7 +134,7 @@ class BitmapData implements BitmapDrawable {
 
   void colorTransform(Rectangle rect, ColorTransform transform) {
 
-    bool isLittleEndianSystem = _isLittleEndianSystem;
+    bool isLittleEndianSystem = BitmapDataChannel.isLittleEndianSystem;
 
     int redMultiplier = (1024 * transform.redMultiplier).toInt();
     int greenMultiplier = (1024 * transform.greenMultiplier).toInt();
@@ -243,7 +243,7 @@ class BitmapData implements BitmapDrawable {
     if (renderTextureQuad.textureWidth == 0) return 0;
     if (renderTextureQuad.textureHeight == 0) return 0;
 
-    var isLittleEndianSystem = _isLittleEndianSystem;
+    var isLittleEndianSystem = BitmapDataChannel.isLittleEndianSystem;
     var imageData = renderTextureQuad.getImageData();
     var pixels = imageData.width * imageData.height;
     var data = imageData.data;
