@@ -660,7 +660,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       RenderTextureQuad sourceRenderTextureQuad = null;
       RenderFrameBuffer sourceRenderFrameBuffer = null;
       RenderFrameBuffer targetRenderFrameBuffer = null;
-      RenderState filterRenderState = new RenderState(renderContext);
+      RenderState filterRenderState = flattenRenderState;
 
       for(int i = 0; i < filters.length; i++) {
 

@@ -11,7 +11,7 @@ class RenderFrameBuffer {
 
   int _width;
   int _height;
-  int _maskDepth = 0;
+  int _stencilDepth = 0;
 
   RenderFrameBuffer(RenderContextWebGL renderContext, int width, int height) :
 
@@ -57,6 +57,7 @@ class RenderFrameBuffer {
 
   int get width => _width;
   int get height => _height;
+  int get stencilDepth => _stencilDepth;
 
   //-----------------------------------------------------------------------------------------------
 

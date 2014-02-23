@@ -12,7 +12,7 @@ class RenderContextWebGL extends RenderContext {
   RenderTexture _renderTexture;
   RenderProgram _renderProgram;
   RenderFrameBuffer _renderFrameBuffer;
-  int _maskDepth = 0;
+  int _stencilDepth = 0;
 
   RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
 
@@ -75,9 +75,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(true, true, true, true);
     _renderingContext.clearColor(r, g, b, a);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-
-    // TODO: maskDepth for RenderFrameBuffer!
-    _maskDepth = 0;
+    _updateStencilDepth(0);
   }
 
   void flush() {
@@ -110,21 +108,19 @@ class RenderContextWebGL extends RenderContext {
 
     _renderProgram.flush();
 
-    if (_maskDepth == 0) {
-      _renderingContext.enable(gl.STENCIL_TEST);
-    }
+    int stencilDepth = _getStencilDepth() + 1;
+    _updateStencilDepth(stencilDepth);
 
     activateRenderProgram(_renderProgramTriangle);
-    _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
+    _renderingContext.stencilFunc(gl.EQUAL, stencilDepth - 1, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
     _renderingContext.stencilMask(0xFF);
     _renderingContext.colorMask(false, false, false, false);
-    _maskDepth += 1;
 
     mask.renderMask(renderState);
     renderState.flush();
 
-    _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
+    _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
     _renderingContext.stencilMask(0x00);
     _renderingContext.colorMask(true, true, true, true);
   }
@@ -133,29 +129,29 @@ class RenderContextWebGL extends RenderContext {
 
     _renderProgram.flush();
 
-    if (_maskDepth == 1) {
+    int stencilDepth = _getStencilDepth() - 1;
+    _updateStencilDepth(stencilDepth);
 
-      _maskDepth = 0;
+    if (stencilDepth == 0) {
+
       _renderingContext.stencilMask(0xFF);
-      _renderingContext.disable(gl.STENCIL_TEST);
       _renderingContext.clear(gl.STENCIL_BUFFER_BIT);
       _renderingContext.stencilMask(0x00);
 
     } else {
 
       activateRenderProgram(_renderProgramTriangle);
-      _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
+      _renderingContext.stencilFunc(gl.EQUAL, stencilDepth + 1, 0xFF);
       _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
       _renderingContext.stencilMask(0xFF);
       _renderingContext.colorMask(false, false, false, false);
-      _maskDepth -= 1;
 
       renderState.globalMatrix.identity();
       renderState.renderTriangle(-1, -1, 1, -1, 1, 1, Color.Magenta);
       renderState.renderTriangle(-1, -1, 1, 1, -1, 1, Color.Magenta);
       renderState.flush();
 
-      _renderingContext.stencilFunc(gl.EQUAL, _maskDepth, 0xFF);
+      _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
       _renderingContext.stencilMask(0x00);
       _renderingContext.colorMask(true, true, true, true);
     }
@@ -194,15 +190,25 @@ class RenderContextWebGL extends RenderContext {
     if (identical(renderFrameBuffer, _renderFrameBuffer) == false) {
       _renderProgram.flush();
       _renderFrameBuffer = renderFrameBuffer;
-      if (renderFrameBuffer == null) {
-        int width = _renderingContext.drawingBufferWidth;
-        int height = _renderingContext.drawingBufferHeight;
-        _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
-        _renderingContext.viewport(0, 0, width, height);
+
+      int width, height, stencilDepth;
+      gl.Framebuffer framebuffer;
+
+      if (renderFrameBuffer != null) {
+        width = renderFrameBuffer.width;
+        height = renderFrameBuffer.height;
+        framebuffer = renderFrameBuffer.framebuffer;
+        stencilDepth = renderFrameBuffer.stencilDepth;
       } else {
-        _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, renderFrameBuffer.framebuffer);
-        _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
+        width = _renderingContext.drawingBufferWidth;
+        height = _renderingContext.drawingBufferHeight;
+        framebuffer = null;
+        stencilDepth = _stencilDepth;
       }
+
+      _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+      _renderingContext.viewport(0, 0, width, height);
+      _updateStencilState(stencilDepth);
     }
   }
 
@@ -231,6 +237,37 @@ class RenderContextWebGL extends RenderContext {
 
   _onContextRestored(gl.ContextEvent contextEvent) {
     this.dispatchEvent(new Event("contextRestored"));
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  int _getStencilDepth() {
+    return _renderFrameBuffer != null
+        ? _renderFrameBuffer._stencilDepth
+        : _stencilDepth;
+  }
+
+  _updateStencilDepth(int stencilDepth) {
+    if (_renderFrameBuffer != null) {
+      if (_renderFrameBuffer._stencilDepth != stencilDepth) {
+        _renderFrameBuffer._stencilDepth = stencilDepth;
+        _updateStencilState(stencilDepth);
+      }
+    } else {
+      if (_stencilDepth != stencilDepth) {
+        _stencilDepth = stencilDepth;
+        _updateStencilState(stencilDepth);
+      }
+    }
+  }
+
+  _updateStencilState(int stencilDepth) {
+    if (stencilDepth == 0) {
+      _renderingContext.disable(gl.STENCIL_TEST);
+    } else {
+      _renderingContext.enable(gl.STENCIL_TEST);
+      _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
+    }
   }
 
 }
