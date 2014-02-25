@@ -289,6 +289,7 @@ class TextField extends InteractiveObject {
     var lineIndent = 0;
 
     var textFormatSize = _ensureNum(_defaultTextFormat.size);
+    num strokeWidth = _ensureNum(defaultTextFormat.strokeWidth);
     var textFormatLeftMargin = _ensureNum(_defaultTextFormat.leftMargin);
     var textFormatRightMargin = _ensureNum(_defaultTextFormat.rightMargin);
     var textFormatTopMargin = _ensureNum(_defaultTextFormat.topMargin);
@@ -393,6 +394,9 @@ class TextField extends InteractiveObject {
       _textWidth = max(_textWidth, textFormatLeftMargin + indent + width + textFormatRightMargin);
       _textHeight = offsetY + fontStyleMetricsDescent + textFormatBottomMargin;
     }
+    
+    _textWidth += strokeWidth * 2;
+    _textHeight += strokeWidth * 2;
 
     //-----------------------------------
     // calculate TextField autoSize
@@ -439,6 +443,8 @@ class TextField extends InteractiveObject {
         case TextFormatAlign.END:
           textLineMetrics._x += (availableWidth - textLineMetrics.width);
           break;
+        default:
+          textLineMetrics._x += strokeWidth;
       }
     }
 
@@ -536,6 +542,23 @@ class TextField extends InteractiveObject {
     context.textBaseline = "alphabetic";
     context.fillStyle = context.strokeStyle = _color2rgb(textFormat.color);
     context.lineCap = context.lineJoin = "round";
+    
+    if(textFormat.fillGradient != null) {
+      context.fillStyle = textFormat.fillGradient.getCanvasGradient(context);
+    } else {
+      context.fillStyle = _color2rgb(textFormat.color);
+    }
+    
+    if(textFormat.strokeWidth > 0) {
+      context.lineWidth = textFormat.strokeWidth * 2;
+      context.strokeStyle = _color2rgb(textFormat.strokeColor);
+      
+      for(TextLineMetrics lm in _textLineMetrics) {
+        context.strokeText(lm._text, lm.x, lm.y);
+      }
+    }
+    
+    context.strokeStyle = _color2rgb(textFormat.color);
     context.lineWidth = lineWidth;
 
     for(int i = 0; i < _textLineMetrics.length; i++) {
