@@ -446,6 +446,8 @@ class TextField extends InteractiveObject {
         default:
           textLineMetrics._x += strokeWidth;
       }
+      
+      textLineMetrics._y += strokeWidth;
     }
 
     //-----------------------------------
@@ -540,7 +542,6 @@ class TextField extends InteractiveObject {
     context.font = textFormat._cssFontStyle;
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
-    context.fillStyle = context.strokeStyle = _color2rgb(textFormat.color);
     context.lineCap = context.lineJoin = "round";
     
     if(textFormat.fillGradient != null) {
