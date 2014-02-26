@@ -5,6 +5,9 @@ class TextFormat {
   String font;
   num size;
   int color;
+  num strokeWidth;
+  int strokeColor;
+  GraphicsGradient fillGradient;
 
   bool bold;
   bool italic;
@@ -21,6 +24,9 @@ class TextFormat {
   //-------------------------------------------------------------------------------------------------
 
   TextFormat(this.font, this.size, this.color, {
+    this.strokeWidth  : 0.0,
+    this.strokeColor  : Color.Black,
+    this.fillGradient : null,
     this.bold         : false,
     this.italic       : false,
     this.underline    : false,
@@ -37,6 +43,7 @@ class TextFormat {
 
   TextFormat clone() {
     return new TextFormat(font, size, color,
+        strokeWidth: strokeWidth, strokeColor: strokeColor, fillGradient: fillGradient,
         bold: bold, italic: italic, underline: underline, align: align,
         topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin,
         indent: indent, leading: leading);
