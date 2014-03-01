@@ -135,6 +135,7 @@ class _DropShadowProgram extends _BitmapFilterProgram {
         alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 3.0).a * 0.090;
         alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 4.0).a * 0.045;
         alpha *= vAlpha;
+        alpha *= uColor.a;
         gl_FragColor = vec4(uColor.rgb * alpha, alpha);
       }
       """;
