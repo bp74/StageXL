@@ -3,6 +3,11 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.9.1
+  * Added WebGL filters.
+  * Enable CORS when loading BitmapDatas.
+  * BREAKING CHANGE: Removed Bitmap.clipRectangle.
+
 #### Pub version 0.9.0+2
   * Fixed fallback for WebGL on iOS.
 
