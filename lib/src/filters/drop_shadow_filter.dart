@@ -58,7 +58,7 @@ class DropShadowFilter extends BitmapFilter {
     num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
     int blurX = (this.blurX * pixelRatio).round();
     int blurY = (this.blurY * pixelRatio).round();
-    int alphaChannel = BitmapDataChannel.indexAlpha;
+    int alphaChannel = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.ALPHA);
     int stride = width * 4;
 
     _shiftChannel(data, 3, width, height, shiftX, shiftY);

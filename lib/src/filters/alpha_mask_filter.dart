@@ -4,21 +4,16 @@ class AlphaMaskFilter extends BitmapFilter {
 
   final BitmapData bitmapData;
   final Matrix matrix;
-  final int componentAlpha;
 
   AlphaMaskFilter(BitmapData bitmapData, [
-                  Matrix matrix = null,
-                  int componentAlpha = BitmapDataChannel.ALPHA]) :
+                  Matrix matrix = null]) :
 
     bitmapData = bitmapData,
-    matrix = (matrix != null) ? matrix : new Matrix.fromIdentity(),
-    componentAlpha = componentAlpha;
-
-  //TODO: Add componentAlpha logic!
+    matrix = (matrix != null) ? matrix : new Matrix.fromIdentity();
 
   //-----------------------------------------------------------------------------------------------
 
-  BitmapFilter clone() => new AlphaMaskFilter(bitmapData, matrix.clone(), componentAlpha);
+  BitmapFilter clone() => new AlphaMaskFilter(bitmapData, matrix.clone());
   Rectangle get overlap => new Rectangle.zero();
 
   //-----------------------------------------------------------------------------------------------
@@ -44,7 +39,7 @@ class AlphaMaskFilter extends BitmapFilter {
     context.rect(offsetX, offsetY, width, height);
     context.clip();
     renderState.globalMatrix.prepend(this.matrix);
-    renderState.renderQuad(bitmapData.renderTextureQuad);
+    renderState.renderQuad(this.bitmapData.renderTextureQuad);
     context.restore();
   }
 
