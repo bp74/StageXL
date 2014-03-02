@@ -319,8 +319,8 @@ class Stage extends DisplayObjectContainer {
       _renderContext.reset();
       _renderContext.clear(_color);
 
-      _renderState.reset(_renderContext.viewPortMatrix);
-      _renderState.globalMatrix.concat(_stageTransformation);
+      _renderState.reset(_stageTransformation);
+      _renderState.globalMatrix.concat(_renderContext.viewPortMatrix);
       _renderState._currentTime = _ensureNum(currentTime);
       _renderState._deltaTime = _ensureNum(deltaTime);
 

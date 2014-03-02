@@ -64,6 +64,7 @@ class RenderContextWebGL extends RenderContext {
     int height = _renderingContext.drawingBufferHeight;
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, width, height);
+    _renderFrameBuffer = null;
   }
 
   void clear(int color) {

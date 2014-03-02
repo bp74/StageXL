@@ -5,6 +5,7 @@ package. This file is normally updated whenever we push a new version to pub.
 
 #### Pub version 0.9.1
   * Added WebGL filters.
+  * Added TextField stroke and gradients.
   * Enable CORS when loading BitmapDatas.
   * BREAKING CHANGE: Removed Bitmap.clipRectangle.
 
