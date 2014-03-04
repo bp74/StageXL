@@ -271,6 +271,14 @@ class Stage extends DisplayObjectContainer {
     _stageAlign = value;
     _updateCanvasSize();
   }
+  
+  /**
+   * Gets and sets the background color of this Stage.
+   */
+  int get backgroundColor => _color;
+  set backgroundColor(int value) {
+    _color = value;
+  }
 
   /**
    * Calling this method will cause an [RenderEvent] to be fired right before
