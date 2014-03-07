@@ -2,7 +2,7 @@ part of stagexl;
 
 class _ContextState {
   final Matrix matrix = new Matrix.fromIdentity();
-  double alpha = 1.0;
+  num alpha = 1.0;
   String compositeOperation = CompositeOperation.SOURCE_OVER;
 
   _ContextState _nextContextState;
