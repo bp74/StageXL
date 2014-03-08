@@ -42,12 +42,12 @@ class MouseEvent extends Event {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  set _localPoint(Point point) {
+  set _localPoint(Point<num> point) {
     _localX = point.x;
     _localY = point.y;
   }
 
-  set _stagePoint(Point point) {
+  set _stagePoint(Point<num> point) {
     _stageX = point.x;
     _stageY = point.y;
   }

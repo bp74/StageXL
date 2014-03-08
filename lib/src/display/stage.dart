@@ -88,7 +88,7 @@ class Stage extends DisplayObjectContainer {
   int _frameRate = 30;
   int _canvasWidth = -1;
   int _canvasHeight = -1;
-  Rectangle _contentRectangle = new Rectangle.zero();
+  Rectangle<num> _contentRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
 
   Matrix _clientTransformation = new Matrix.fromIdentity();
   Matrix _stageTransformation = new Matrix.fromIdentity();
@@ -102,7 +102,7 @@ class Stage extends DisplayObjectContainer {
   String _stageAlign = StageAlign.NONE;
 
   String _mouseCursor = MouseCursor.ARROW;
-  Point _mousePosition = new Point.zero();
+  Point<num> _mousePosition = new Point<num>(0.0, 0.0);
   InteractiveObject _mouseTarget = null;
 
   Map<int, _Touch> _touches = new Map<int, _Touch>();
@@ -194,7 +194,7 @@ class Stage extends DisplayObjectContainer {
    * changes with the scaleMode and the alignment of the stage, as well as the size
    * of the underlying Canvas element.
    */
-  Rectangle get contentRectangle => _contentRectangle.clone();
+  Rectangle<num> get contentRectangle => _contentRectangle.clone();
 
   /**
    * Gets the underlying render engine used to draw the pixels to the screen.
@@ -219,7 +219,7 @@ class Stage extends DisplayObjectContainer {
   /**
    * Gets the last known mouse position in Stage coordinates.
    */
-  Point get mousePosition => _mousePosition;
+  Point<num> get mousePosition => _mousePosition;
 
   /**
    * Gets and sets the default frame rate for MovieClips. This value has no
@@ -713,7 +713,7 @@ class Stage extends DisplayObjectContainer {
 
         touch.target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true)
           .._localPoint = (touch.target.stage != null)
-              ? touch.target.globalToLocal(stagePoint) : new Point.zero()
+              ? touch.target.globalToLocal(stagePoint) : new Point<num>(0, 0)
           .._stagePoint = stagePoint
           .._touchPointID = touch.touchPointID
           .._isPrimaryTouchPoint = touch.primaryTouchPoint

@@ -21,15 +21,15 @@ class DisplacementMapFilter extends BitmapFilter {
 
   BitmapFilter clone() => new DisplacementMapFilter(bitmapData, matrix.clone(), scaleX, scaleY);
 
-  Rectangle get overlap {
-    var x = (0.5 * scaleX).abs().ceil();
-    var y = (0.5 * scaleY).abs().ceil();
-    return new Rectangle(-x, -y, x + x, y + y);
+  Rectangle<int> get overlap {
+    int x = (0.5 * scaleX).abs().ceil();
+    int y = (0.5 * scaleY).abs().ceil();
+    return new Rectangle<int>(-x, -y, x + x, y + y);
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad

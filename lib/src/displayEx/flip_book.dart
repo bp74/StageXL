@@ -141,8 +141,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
-
+  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
     var bitmapData = _bitmapDatas[_currentFrame];
     return _getBoundsTransformedHelper(matrix, bitmapData.width, bitmapData.height, returnRectangle);
   }
@@ -150,13 +149,9 @@ class FlipBook extends InteractiveObject implements Animatable {
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-
     var bitmapData = _bitmapDatas[_currentFrame];
-
-    if (localX >= 0 && localY >= 0 && localX < bitmapData.width && localY < bitmapData.height)
-      return this;
-
-    return null;
+    return localX >= 0.0 && localY >= 0.0 &&
+           localX < bitmapData.width && localY < bitmapData.height ? this : null;
   }
 
   //-------------------------------------------------------------------------------------------------

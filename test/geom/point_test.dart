@@ -9,12 +9,6 @@ void main() {
     testPoint(p, x: 1, y: 2);
   });
 
-  test('new zero point', () {
-    Point p = new Point.zero();
-
-    testPoint(p, x: 0, y: 0);
-  });
-
   test('new from point', () {
     Point source = point12();
     Point p = new Point.from(source);
@@ -38,7 +32,7 @@ void main() {
   test('#toString', () {
     Point p = point12();
 
-    expect(p.toString(), equals('Point [x=1, y=2]'));
+    expect(p.toString(), equals('Point<num> [x=1, y=2]'));
   });
 
   List<List<num>> distanceTestTable = [
@@ -87,7 +81,7 @@ void main() {
 
   test('#copyFrom', () {
     Point source = point12();
-    Point p = new Point.zero();
+    Point p = point00();
     p.copyFrom(source);
 
     p.x = 3;
@@ -97,7 +91,7 @@ void main() {
   });
 
   test('#setTo', () {
-    Point p = new Point.zero();
+    Point p = point00();
     p.setTo(1, 2);
 
     testPoint(p, x: 1, y: 2);
@@ -105,7 +99,7 @@ void main() {
 
   test('#equals', () {
     expect(point12().equals(point12()), isTrue);
-    expect(point12().equals(new Point.zero()), isFalse);
+    expect(point12().equals(point00()), isFalse);
   });
 
   test('#normalize', () {
@@ -131,7 +125,8 @@ void main() {
   });
 }
 
-Point point12() => new Point(1, 2);
+Point point12() => new Point<num>(1, 2);
+Point point00() => new Point<num>(0, 0);
 
 void testPoint(Point point, {num x, num y}) {
   if (x != null) expect(point.x, closeTo(x, 0.001));

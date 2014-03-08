@@ -214,18 +214,14 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
+  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
     return _getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-
-    if (localX >= 0 && localY >= 0 && localX < _width && localY < _height)
-      return this;
-
-    return null;
+    return localX >= 0 && localY >= 0 && localX < _width && localY < _height ? this : null;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -394,7 +390,7 @@ class TextField extends InteractiveObject {
       _textWidth = max(_textWidth, textFormatLeftMargin + indent + width + textFormatRightMargin);
       _textHeight = offsetY + fontStyleMetricsDescent + textFormatBottomMargin;
     }
-    
+
     _textWidth += strokeWidth * 2;
     _textHeight += strokeWidth * 2;
 
@@ -446,7 +442,7 @@ class TextField extends InteractiveObject {
         default:
           textLineMetrics._x += strokeWidth;
       }
-      
+
       textLineMetrics._y += strokeWidth;
     }
 
@@ -543,22 +539,22 @@ class TextField extends InteractiveObject {
     context.textAlign = "start";
     context.textBaseline = "alphabetic";
     context.lineCap = context.lineJoin = "round";
-    
+
     if(textFormat.fillGradient != null) {
       context.fillStyle = textFormat.fillGradient.getCanvasGradient(context);
     } else {
       context.fillStyle = _color2rgb(textFormat.color);
     }
-    
+
     if(textFormat.strokeWidth > 0) {
       context.lineWidth = textFormat.strokeWidth * 2;
       context.strokeStyle = _color2rgb(textFormat.strokeColor);
-      
+
       for(TextLineMetrics lm in _textLineMetrics) {
         context.strokeText(lm._text, lm.x, lm.y);
       }
     }
-    
+
     context.strokeStyle = _color2rgb(textFormat.color);
     context.lineWidth = lineWidth;
 

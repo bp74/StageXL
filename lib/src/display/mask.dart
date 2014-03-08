@@ -19,7 +19,7 @@ abstract class Mask {
     return new _CirlceMask(x, y, radius);
   }
 
-  factory Mask.custom(List<Point> points) {
+  factory Mask.custom(List<Point<num>> points) {
     return new _CustomMask(points);
   }
 
@@ -39,9 +39,10 @@ abstract class Mask {
 
 class _RectangleMask extends Mask {
 
-  final Rectangle _rectangle;
+  final Rectangle<num> _rectangle;
 
-  _RectangleMask(num x, num y, num width, num height) : _rectangle = new Rectangle(x, y, width, height);
+  _RectangleMask(num x, num y, num width, num height) :
+    _rectangle = new Rectangle<num>(x, y, width, height);
 
   bool hitTest(num x, num y) => _rectangle.contains(x, y);
 
@@ -66,9 +67,9 @@ class _RectangleMask extends Mask {
 
 class _CirlceMask extends Mask {
 
-  final Circle _circle;
+  final Circle<num> _circle;
 
-  _CirlceMask(num x, num y, num radius) : _circle = new Circle(x, y, radius);
+  _CirlceMask(num x, num y, num radius) : _circle = new Circle<num>(x, y, radius);
 
   bool hitTest(num x, num y) => _circle.contains(x, y);
 
@@ -105,10 +106,10 @@ class _CirlceMask extends Mask {
 class _CustomMask extends Mask {
 
   final Polygon _polygon;
-  Rectangle _polygonBounds;
+  Rectangle<num> _polygonBounds;
   List<int> _polygonTriangles;
 
-  _CustomMask(List<Point> points) : _polygon = new Polygon(points) {
+  _CustomMask(List<Point<num>> points) : _polygon = new Polygon(points) {
     _polygonBounds = _polygon.getBounds();
     _polygonTriangles = _polygon.triangulate();
   }

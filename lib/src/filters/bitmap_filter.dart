@@ -4,11 +4,11 @@ abstract class BitmapFilter {
 
   BitmapFilter clone();
 
-  Rectangle get overlap => new Rectangle.zero();
+  Rectangle<int> get overlap => new Rectangle<int>(0, 0, 0, 0);
   List<int> get renderPassSources => [0];
   List<int> get renderPassTargets => [1];
 
-  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
   }
 

@@ -28,7 +28,7 @@ class BitmapData implements BitmapDrawable {
     _height = _ensureInt(_renderTexture.height);
   }
 
-  BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle rectangle) {
+  BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
     _width = _ensureInt(rectangle.width);
     _height = _ensureInt(rectangle.height);
     _renderTexture = bitmapData.renderTexture;
@@ -72,7 +72,7 @@ class BitmapData implements BitmapDrawable {
   BitmapData clone([num pixelRatio]) {
     if (pixelRatio == null) pixelRatio = _renderTexture.storePixelRatio;
     var bitmapData = new BitmapData(_width, _height, true, 0, pixelRatio);
-    bitmapData.drawPixels(this, this.rectangle, new Point.zero());
+    bitmapData.drawPixels(this, this.rectangle, new Point<int>(0, 0));
     return bitmapData;
   }
 
@@ -105,7 +105,7 @@ class BitmapData implements BitmapDrawable {
     for(var f = 0; f < frameCount; f++) {
       var x = f % cols;
       var y = f ~/ cols;
-      var rectangle = new Rectangle(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
+      var rectangle = new Rectangle<int>(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
       var bitmapData = new BitmapData.fromBitmapData(this, rectangle);
       frames.add(bitmapData);
     }
@@ -119,20 +119,20 @@ class BitmapData implements BitmapDrawable {
   int get width => _width;
   int get height => _height;
 
-  Rectangle get rectangle => new Rectangle(0, 0, _width, _height);
+  Rectangle<int> get rectangle => new Rectangle<int>(0, 0, _width, _height);
   RenderTexture get renderTexture => _renderTextureQuad.renderTexture;
   RenderTextureQuad get renderTextureQuad => _renderTextureQuad;
 
   //-------------------------------------------------------------------------------------------------
 
-  void applyFilter(BitmapFilter filter, [Rectangle rectangle]) {
+  void applyFilter(BitmapFilter filter, [Rectangle<int> rectangle]) {
     filter.apply(this, rectangle);
     _renderTexture.update();
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  void colorTransform(Rectangle rect, ColorTransform transform) {
+  void colorTransform(Rectangle<int> rect, ColorTransform transform) {
 
     bool isLittleEndianSystem = BitmapDataChannel.isLittleEndianSystem;
 
@@ -192,7 +192,7 @@ class BitmapData implements BitmapDrawable {
     _renderTexture.update();
   }
 
-  void fillRect(Rectangle rect, int color) {
+  void fillRect(Rectangle<int> rect, int color) {
     var matrix = _renderTextureQuad.drawMatrix;
     var context = _renderTexture.canvas.context2D;
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
@@ -210,7 +210,7 @@ class BitmapData implements BitmapDrawable {
     _renderTexture.update();
   }
 
-  void copyPixels(BitmapData source, Rectangle sourceRect, Point destPoint) {
+  void copyPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderContext = new RenderContextCanvas(_renderTexture.canvas);
     var matrix = _renderTextureQuad.drawMatrix..prependTranslation(destPoint.x, destPoint.y);
@@ -221,7 +221,8 @@ class BitmapData implements BitmapDrawable {
     _renderTexture.update();
   }
 
-  void drawPixels(BitmapData source, Rectangle sourceRect, Point destPoint, [String compositeOperation]) {
+  void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint,
+                  [String compositeOperation]) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderContext = new RenderContextCanvas(_renderTexture.canvas);
     var matrix = _renderTextureQuad.drawMatrix..prependTranslation(destPoint.x, destPoint.y);
@@ -238,7 +239,7 @@ class BitmapData implements BitmapDrawable {
 
     int r = 0, g = 0, b = 0, a = 0;
 
-    var rectangle = new Rectangle(x, y, 1, 1);
+    var rectangle = new Rectangle<int>(x, y, 1, 1);
     var renderTextureQuad = _renderTextureQuad.clip(rectangle);
     if (renderTextureQuad.textureWidth == 0) return 0;
     if (renderTextureQuad.textureHeight == 0) return 0;

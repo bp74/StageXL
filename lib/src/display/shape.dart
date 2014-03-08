@@ -1,15 +1,15 @@
 part of stagexl;
 
 class Shape extends DisplayObject {
-  
+
   Graphics _graphics = new Graphics();
 
   Graphics get graphics => _graphics;
   set graphics(Graphics value) => _graphics = value;
-  
+
   //-----------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
+  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
     if (_graphics == null) {
       return super.getBoundsTransformed(matrix, returnRectangle);
     } else {

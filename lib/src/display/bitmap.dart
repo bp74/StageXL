@@ -8,7 +8,7 @@ class Bitmap extends DisplayObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
+  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
     var width = bitmapData != null ? bitmapData.width : 0;
     var height = bitmapData != null ? bitmapData.height : 0;
     return _getBoundsTransformedHelper(matrix, width, height, returnRectangle);

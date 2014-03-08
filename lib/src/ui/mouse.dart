@@ -1,14 +1,14 @@
 part of stagexl;
 
 class Mouse {
-  
+
   static String _customCursor = MouseCursor.AUTO;
   static bool _isCursorHidden = false;
-  
+
   static Sprite _dragSprite = null;
-  static Point _dragSpriteCenter = null;
-  static Rectangle _dragSpriteBounds = null;
-  
+  static Point<num> _dragSpriteCenter = null;
+  static Rectangle<num> _dragSpriteBounds = null;
+
   static StreamController<String> _mouseCursorChangedEvent = new StreamController<String>();
   static Stream<String> _onMouseCursorChanged = _mouseCursorChangedEvent.stream.asBroadcastStream();
 
@@ -37,14 +37,14 @@ class Mouse {
   //-------------------------------------------------------------------------------------------------
 
   static String _getCssStyle(String mouseCursor) {
-    
+
     String cursor = mouseCursor;
     String style = "auto";
 
     if (_customCursor != MouseCursor.AUTO) {
       cursor = _customCursor;
     }
-    
+
     switch(cursor) {
       case MouseCursor.AUTO: style = "auto"; break;
       case MouseCursor.ARROW: style = "default"; break;
@@ -59,7 +59,7 @@ class Mouse {
     if (_isCursorHidden) {
       style = "none";
     }
-    
+
     return style;
   }
 

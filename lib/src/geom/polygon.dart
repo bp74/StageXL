@@ -29,9 +29,9 @@ part of stagexl;
 
 class Polygon {
 
-  final List<Point> points;
+  final List<Point<num>> points;
 
-  Polygon(List<Point> points) : points = points.toList(growable: false) {
+  Polygon(List<Point<num>> points) : points = points.toList(growable: false) {
 
     if (this.points.length < 3) {
       throw new ArgumentError("Please provide three or more points.");
@@ -48,8 +48,8 @@ class Polygon {
 
     for(int i = 0; i < length; i++) {
 
-      Point a1 = points[i];
-      Point a2 = points[(i == length - 1) ? 0 : i];
+      Point<num> a1 = points[i];
+      Point<num> a2 = points[(i == length - 1) ? 0 : i];
 
       for(int j = 0; j < length; j++) {
 
@@ -57,8 +57,8 @@ class Polygon {
         if (j == length - 1 && i == 0) continue;
         if (i == length - 1 && j == 0) continue;
 
-        Point b1 = points[j];
-        Point b2 = points[(j == length - 1) ? 0 : j];
+        Point<num> b1 = points[j];
+        Point<num> b2 = points[(j == length - 1) ? 0 : j];
 
         if(_getLineIntersection(a1, a2, b1, b2) != null) return false;
       }
@@ -75,9 +75,9 @@ class Polygon {
     if (length <= 3) return true;
 
     for(int i = 0; i < length; i++) {
-      Point p1 = points[(i + 0) % length];
-      Point p2 = points[(i + 1) % length];
-      Point p3 = points[(i + 2) % length];
+      Point<num> p1 = points[(i + 0) % length];
+      Point<num> p2 = points[(i + 1) % length];
+      Point<num> p3 = points[(i + 2) % length];
       if(!_convex(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)) return false;
     }
 
@@ -86,7 +86,7 @@ class Polygon {
 
   //-----------------------------------------------------------------------------------------------
 
-  Rectangle getBounds() {
+  Rectangle<num> getBounds() {
 
     num maxX = double.NEGATIVE_INFINITY;
     num minX = double.INFINITY;
@@ -94,14 +94,14 @@ class Polygon {
     num minY = double.INFINITY;
 
     for(int i = 0; i < points.length; i++) {
-      Point point = points[i];
+      Point<num> point = points[i];
       maxX = max(maxX, point.x);
       minX = min(minX, point.x);
       maxY = max(maxY, point.y);
       minY = min(minY, point.y);
     }
 
-    return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+    return new Rectangle<num>(minX, minY, maxX - minX, maxY - minY);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ class Polygon {
 
   //-----------------------------------------------------------------------------------------------
 
-  bool _inRect(Point point, Point a1, Point a2) {
+  bool _inRect(Point<num> point, Point<num> a1, Point<num> a2) {
 
     if  (a1.x == a2.x) return point.y >= min(a1.y, a2.y) && point.y <= max(a1.y, a2.y);
     if  (a1.y == a2.y) return point.x >= min(a1.x, a2.x) && point.x <= max(a1.x, a2.x);
@@ -205,7 +205,7 @@ class Polygon {
 
   //-----------------------------------------------------------------------------------------------
 
-  Point _getLineIntersection(Point a1, Point a2, Point b1, Point b2) {
+  Point<num> _getLineIntersection(Point<num> a1, Point<num> a2, Point<num> b1, Point<num> b2) {
 
     num dax = (a1.x - a2.x);
     num dbx = (b1.x - b2.x);
@@ -220,7 +220,7 @@ class Polygon {
 
     num x = (a * dbx - dax * b ) / den;
     num y = (a * dby - day * b ) / den;
-    Point point = new Point(x, y);
+    Point<num> point = new Point<num>(x, y);
 
     return _inRect(point, a1, a2) && _inRect(point, b1, b2) ? point : null;
   }

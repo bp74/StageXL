@@ -1,7 +1,7 @@
 part of stagexl;
 
 class GlassPlate extends InteractiveObject {
-  
+
   num width;
   num height;
 
@@ -10,19 +10,14 @@ class GlassPlate extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
-    
+  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
     return _getBoundsTransformedHelper(matrix, width, height, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-    
-    if (localX >= 0.0 && localY >= 0.0  && localX < width && localY < height)
-      return this;
-
-    return null;
+    return localX >= 0.0 && localY >= 0.0  && localX < width && localY < height ? this : null;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -30,5 +25,5 @@ class GlassPlate extends InteractiveObject {
   void render(RenderState renderState) {
 
   }
-  
+
 }

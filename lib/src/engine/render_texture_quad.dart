@@ -162,7 +162,7 @@ class RenderTextureQuad {
   int _minInt(int a, int b) => a < b ? a : b;
   int _maxInt(int a, int b) => a > b ? a : b;
 
-  RenderTextureQuad clip(Rectangle rectangle) {
+  RenderTextureQuad clip(Rectangle<int> rectangle) {
 
     int left = _minInt(_offsetX + _textureWidth, _maxInt(_offsetX, rectangle.left));
     int top = _minInt(_offsetY + _textureHeight, _maxInt(_offsetY, rectangle.top));
@@ -180,7 +180,7 @@ class RenderTextureQuad {
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderTextureQuad cut(Rectangle rectangle) {
+  RenderTextureQuad cut(Rectangle<int> rectangle) {
     var renderTextureQuad = clip(rectangle);
     renderTextureQuad._offsetX -= rectangle.x;
     renderTextureQuad._offsetY -= rectangle.y;
@@ -190,7 +190,7 @@ class RenderTextureQuad {
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
-  Rectangle get _imageDataRectangle {
+  Rectangle<int> get _imageDataRectangle {
     num storePixelRatio = _renderTexture.storePixelRatio;
     num backingStorePixelRatio = _backingStorePixelRatio;
     num pixelRatio = storePixelRatio / backingStorePixelRatio;
@@ -204,7 +204,7 @@ class RenderTextureQuad {
     right = (right * pixelRatio).round();
     bottom = (bottom * pixelRatio).round();
 
-    return new Rectangle(left, top, right - left, bottom - top);
+    return new Rectangle<int>(left, top, right - left, bottom - top);
   }
 
   ImageData createImageData() {

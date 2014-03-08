@@ -10,12 +10,6 @@ void main() {
     testRectangle(rect, x: 1, y: 2, width: 3, height: 4);
   });
 
-  test('new zero rectangle', () {
-    Rectangle rect = new Rectangle.zero();
-
-    testRectangle(rect, x: 0, y: 0, width: 0, height: 0);
-  });
-
   test('new from rectangle', () {
     Rectangle rect = rect1234();
     Rectangle rect2 = new Rectangle.from(rect);
@@ -43,7 +37,7 @@ void main() {
   });
 
   test('#left=', () {
-    Rectangle rect = new Rectangle.zero();
+    Rectangle rect = new Rectangle(0, 0, 0, 0);
     rect.left = 10;
 
     expect(rect.x, 10);
@@ -189,7 +183,7 @@ void main() {
     Rectangle rect = rect1234();
 
     expect(rect.equals(rect1234()), isTrue);
-    expect(rect.equals(new Rectangle.zero()), isFalse);
+    expect(rect.equals(rect0000()), isFalse);
   });
 
   group('#intersects', () {
@@ -261,13 +255,6 @@ void main() {
     testRectangle(rect, x: 2, y: 4, width: 3, height: 4);
   });
 
-  test('#setEmpty', () {
-    Rectangle rect = rect1234();
-    rect.setEmpty();
-
-    testRectangle(rect, x: 0, y: 0, width: 0, height: 0);
-  });
-
   test('#setTo', () {
     Rectangle rect = rect1234();
     rect.setTo(4, 3, 2, 1);
@@ -276,12 +263,12 @@ void main() {
   });
 
   group('#intersection', () {
-    test('return blank rectangle when there is no intersection', () {
+    test('return rectangle with negative width/height if there is no intersection', () {
       Rectangle r1 = new Rectangle(0, 0, 2, 2);
-      Rectangle r2 = new Rectangle(2, 2, 2, 2);
+      Rectangle r2 = new Rectangle(3, 3, 2, 2);
       Rectangle rect = r1.intersection(r2);
 
-      testRectangle(rect, x: 0, y: 0, width: 0, height: 0);
+      testRectangle(rect, x: 3, y: 3, width: -1, height: -1);
     });
 
     test('with rectangles intersecting', () {
@@ -289,7 +276,7 @@ void main() {
       Rectangle r2 = new Rectangle(1, 1, 2, 2);
       Rectangle rect = r1.intersection(r2);
 
-      testRectangle(rect, x: 1, y: 2, width: 1, height: 1);
+      testRectangle(rect, x: 1, y: 1, width: 1, height: 1);
     });
   });
 
@@ -309,6 +296,7 @@ void main() {
 }
 
 Rectangle rect1234() => new Rectangle(1, 2, 3, 4);
+Rectangle rect0000() => new Rectangle(0, 0, 0, 0);
 
 void testRectangle(Rectangle rect, {num x, num y, num width, num height}) {
   if (x != null) expect(rect.x, equals(x));

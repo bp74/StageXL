@@ -46,7 +46,7 @@ class Gauge extends DisplayObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
+  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
 
     int width = (_bitmapData != null) ? _bitmapData.width : 0;
     int height = (_bitmapData != null) ? _bitmapData.height : 0;

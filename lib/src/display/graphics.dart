@@ -25,7 +25,7 @@ class Graphics {
 
   final List<_GraphicsCommand> _commands = new List<_GraphicsCommand>();
 
-  Rectangle _identityRectangle = new Rectangle.zero();
+  Rectangle<int> _identityRectangle = new Rectangle<int>(0, 0, 0, 0);
   bool _identityRectangleRefresh = true;
 
   clear() {
@@ -226,7 +226,7 @@ class Graphics {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle _getBoundsTransformed(Matrix matrix) {
+  Rectangle<int> _getBoundsTransformed(Matrix matrix) {
 
     var bounds = new _GraphicsBounds(matrix);
 
@@ -243,7 +243,7 @@ class Graphics {
 
     if (_identityRectangleRefresh) {
       _identityRectangleRefresh = false;
-      _identityRectangle = _getBoundsTransformed(new Matrix.fromIdentity());
+      _identityRectangle = _getBoundsTransformed(_identityMatrix);
     }
 
     if (_identityRectangle.contains(localX, localY)) {

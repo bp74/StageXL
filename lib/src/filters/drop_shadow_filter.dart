@@ -23,14 +23,15 @@ class DropShadowFilter extends BitmapFilter {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  BitmapFilter clone() => new DropShadowFilter(distance, angle, color, blurX, blurY,
+  BitmapFilter clone() => new DropShadowFilter(
+      distance, angle, color, blurX, blurY,
       knockout: knockout, hideObject: hideObject);
 
-  Rectangle get overlap {
-    var shiftX = (this.distance * cos(this.angle)).round();
-    var shiftY = (this.distance * sin(this.angle)).round();
-    var sRect = new Rectangle(-1, -1, 2, 2);
-    var dRect = new Rectangle(shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
+  Rectangle<int> get overlap {
+    int shiftX = (this.distance * cos(this.angle)).round();
+    int shiftY = (this.distance * sin(this.angle)).round();
+    var sRect = new Rectangle<int>(-1, -1, 2, 2);
+    var dRect = new Rectangle<int>(shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
     return sRect.union(dRect);
   }
 
@@ -39,7 +40,7 @@ class DropShadowFilter extends BitmapFilter {
 
   //-------------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad

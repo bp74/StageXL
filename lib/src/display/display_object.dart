@@ -89,7 +89,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  Point get mousePosition {
+  Point<num> get mousePosition {
     var stage = this.stage;
     return (stage != null) ? this.globalToLocal(stage._mousePosition) : null;
   }
@@ -179,8 +179,9 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   set alpha(num value) {
     if (value is num) {
-      if (value <= 0.0) value = 0.0;
-      if (value >= 1.0) value = 1.0;
+      // Clamp values and convert possible integers to double.
+      if (value <= 0) value = 0.0;
+      if (value >= 1) value = 1.0;
       _alpha = value;
     }
   }
@@ -369,24 +370,23 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
+  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
 
-    if (returnRectangle == null) returnRectangle = new Rectangle.zero();
-
-    returnRectangle.x = matrix.tx;
-    returnRectangle.y = matrix.ty;
-    returnRectangle.width = 0;
-    returnRectangle.height = 0;
+    if (returnRectangle != null) {
+      returnRectangle.setTo(matrix.tx, matrix.ty, 0, 0);
+    } else {
+      returnRectangle = new Rectangle<num>(matrix.tx, matrix.ty, 0, 0);
+    }
 
     return returnRectangle;
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBounds(DisplayObject targetSpace) {
+  Rectangle<num> getBounds(DisplayObject targetSpace) {
 
-    Rectangle returnRectangle = new Rectangle.zero();
-    Matrix matrix = (targetSpace == null) ? transformationMatrix : transformationMatrixTo(targetSpace);
+    var returnRectangle = new Rectangle<num>(0, 0, 0, 0);
+    var matrix = (targetSpace == null) ? transformationMatrix : transformationMatrixTo(targetSpace);
 
     return (matrix != null) ? getBoundsTransformed(matrix, returnRectangle) : returnRectangle;
   }
@@ -417,7 +417,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       var matrix = stage.transformationMatrixTo(this);
       if (matrix == null) return false;
 
-      var stagePoint = new Point(x, y);
+      var stagePoint = new Point<num>(x, y);
       var localPoint = matrix.transformPoint(stagePoint);
 
       return this.hitTestInput(localPoint.x, localPoint.y) != null;
@@ -432,16 +432,12 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   //-------------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
-
-    if (getBoundsTransformed(_identityMatrix).contains(localX, localY))
-      return this;
-
-    return null;
+    return getBoundsTransformed(_identityMatrix).contains(localX, localY) ? this : null;
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  Point localToGlobal(Point localPoint) {
+  Point<num> localToGlobal(Point<num> localPoint) {
 
     _tmpMatrix.identity();
 
@@ -454,7 +450,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
-  Point globalToLocal(Point globalPoint) {
+  Point<num> globalToLocal(Point<num> globalPoint) {
 
     _tmpMatrix.identity();
 
@@ -631,7 +627,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       var boundsBottom = bounds.bottom.ceil();
 
       for(int i = 0; i < filters.length; i++) {
-        Rectangle overlap = filters[i].overlap;
+        var overlap = filters[i].overlap;
         boundsLeft += overlap.left;
         boundsTop += overlap.top;
         boundsRight += overlap.right;

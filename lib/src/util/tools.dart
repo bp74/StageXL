@@ -95,7 +95,8 @@ Future<bool> _checkWebpSupport() {
 
 //-------------------------------------------------------------------------------------------------
 
-Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rectangle returnRectangle) {
+Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height,
+                                      Rectangle<num> returnRectangle) {
 
   width = width.toDouble();
   height = height.toDouble();
@@ -132,13 +133,13 @@ Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height, Rect
   if (bottom < y3 ) bottom = y3;
   if (bottom < y4 ) bottom = y4;
 
-  if (returnRectangle == null)
-    returnRectangle = new Rectangle.zero();
-
-  returnRectangle.x = matrix.tx + left;
-  returnRectangle.y = matrix.ty + top;
-  returnRectangle.width = right - left;
-  returnRectangle.height = bottom - top;
+  if (returnRectangle != null) {
+    returnRectangle.setTo(
+        matrix.tx + left, matrix.ty + top, right - left, bottom - top);
+  } else {
+    returnRectangle = new Rectangle<num>(
+        matrix.tx + left, matrix.ty + top, right - left, bottom - top);
+  }
 
   return returnRectangle;
 }

@@ -23,13 +23,13 @@ class BlurFilter extends BitmapFilter {
   }
 
   BitmapFilter clone() => new BlurFilter(blurX, blurY);
-  Rectangle get overlap => new Rectangle(-blurX, -blurY, 2 * blurX, 2 * blurY);
+  Rectangle<int> get overlap => new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
   List<int> get renderPassSources => [0, 1];
   List<int> get renderPassTargets => [1, 2];
 
   //-------------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad

@@ -207,10 +207,10 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle returnRectangle]) {
+  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
 
     if (returnRectangle == null) {
-      returnRectangle = new Rectangle.zero();
+      returnRectangle = new Rectangle<num>(0, 0, 0, 0);
     }
 
     if (_children.length == 0) {
@@ -229,7 +229,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       DisplayObject child = _children[i];
 
       _tmpMatrix.copyFromAndConcat(child.transformationMatrix, matrix);
-      Rectangle rectangle = child.getBoundsTransformed(_tmpMatrix, returnRectangle);
+      Rectangle<num> rectangle = child.getBoundsTransformed(_tmpMatrix, returnRectangle);
 
       if (rectangle.left < left) left = rectangle.left;
       if (rectangle.top < top ) top = rectangle.top;

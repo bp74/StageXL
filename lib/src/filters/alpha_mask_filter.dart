@@ -14,11 +14,10 @@ class AlphaMaskFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   BitmapFilter clone() => new AlphaMaskFilter(bitmapData, matrix.clone());
-  Rectangle get overlap => new Rectangle.zero();
 
   //-----------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, [Rectangle rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad

@@ -1,16 +1,16 @@
 part of stagexl;
 
-class Circle {
+class Circle<T extends num> {
 
-  num x;
-  num y;
-  num radius;
+  T x;
+  T y;
+  T radius;
 
   Circle(this.x, this.y, this.radius);
 
   Circle clone() => new Circle(x, y, radius);
 
-  String toString() => "Circle [x=$x, y=$y, radius=$radius]";
+  String toString() => "Circle<$T> [x=$x, y=$y, radius=$radius]";
 
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ class Circle {
     return dx * dx + dy * dy < radius * radius;
   }
 
-  bool containsPoint(Point p) {
+  bool containsPoint(Point<num> p) {
     var dx = this.x - p.x;
     var dy = this.y - p.y;
     return dx * dx + dy * dy < radius * radius;
