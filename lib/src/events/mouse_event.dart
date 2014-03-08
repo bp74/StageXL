@@ -32,7 +32,6 @@ class MouseEvent extends Event {
 
   bool _buttonDown = false;
   bool _altKey = false;
-  bool _controlKey = false;
   bool _ctrlKey = false;
   bool _shiftKey = false;
 
@@ -65,7 +64,6 @@ class MouseEvent extends Event {
 
   bool get buttonDown => _buttonDown;
   bool get altKey => _altKey;
-  bool get controlKey => _controlKey;
   bool get ctrlKey => _ctrlKey;
   bool get shiftKey => _shiftKey;
 

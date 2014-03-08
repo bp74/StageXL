@@ -271,7 +271,7 @@ class Stage extends DisplayObjectContainer {
     _stageAlign = value;
     _updateCanvasSize();
   }
-  
+
   /**
    * Gets and sets the background color of this Stage.
    */
@@ -460,8 +460,8 @@ class Stage extends DisplayObjectContainer {
 
     event.preventDefault();
 
-    var time = new DateTime.now().millisecondsSinceEpoch;
-    var button = event.button;
+    int time = new DateTime.now().millisecondsSinceEpoch;
+    int button = event.button;
 
     InteractiveObject target = null;
     Point stagePoint = _clientTransformation._transformHtmlPoint(event.client);
@@ -532,7 +532,10 @@ class Stage extends DisplayObjectContainer {
         oldTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT, true)
             .._localPoint = oldTarget.globalToLocal(stagePoint)
             .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown);
+            .._buttonDown = mouseButton.buttonDown
+            .._altKey = event.altKey
+            .._ctrlKey = event.ctrlKey
+            .._shiftKey = event.shiftKey);
       }
 
       for(int i = 0; i < oldTargetList.length - commonCount; i++) {
@@ -540,7 +543,10 @@ class Stage extends DisplayObjectContainer {
         target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT, false)
             .._localPoint = target.globalToLocal(stagePoint)
             .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown);
+            .._buttonDown = mouseButton.buttonDown
+            .._altKey = event.altKey
+            .._ctrlKey = event.ctrlKey
+            .._shiftKey = event.shiftKey);
       }
 
       for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
@@ -548,14 +554,20 @@ class Stage extends DisplayObjectContainer {
         target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER, false)
             .._localPoint = target.globalToLocal(stagePoint)
             .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown);
+            .._buttonDown = mouseButton.buttonDown
+            .._altKey = event.altKey
+            .._ctrlKey = event.ctrlKey
+            .._shiftKey = event.shiftKey);
       }
 
       if (newTarget != null) {
         newTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER, true)
             .._localPoint = newTarget.globalToLocal(stagePoint)
             .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown);
+            .._buttonDown = mouseButton.buttonDown
+            .._altKey = event.altKey
+            .._ctrlKey = event.ctrlKey
+            .._shiftKey = event.shiftKey);
       }
 
       _mouseTarget = newTarget;
@@ -608,7 +620,10 @@ class Stage extends DisplayObjectContainer {
           .._localPoint = localPoint
           .._stagePoint = stagePoint
           .._buttonDown = mouseButton.buttonDown
-          .._clickCount = mouseButton.clickCount);
+          .._clickCount = mouseButton.clickCount
+          .._altKey = event.altKey
+          .._ctrlKey = event.ctrlKey
+          .._shiftKey = event.shiftKey);
 
       if (isClick) {
 
@@ -617,14 +632,20 @@ class Stage extends DisplayObjectContainer {
           target.dispatchEvent(new MouseEvent(mouseButton.mouseDoubleClickEventType, true)
               .._localPoint = localPoint
               .._stagePoint = stagePoint
-              .._buttonDown = mouseButton.buttonDown);
+              .._buttonDown = mouseButton.buttonDown
+              .._altKey = event.altKey
+              .._ctrlKey = event.ctrlKey
+              .._shiftKey = event.shiftKey);
 
         } else {
 
           target.dispatchEvent(new MouseEvent(mouseButton.mouseClickEventType, true)
               .._localPoint = localPoint
               .._stagePoint = stagePoint
-              .._buttonDown = mouseButton.buttonDown);
+              .._buttonDown = mouseButton.buttonDown
+              .._altKey = event.altKey
+              .._ctrlKey = event.ctrlKey
+              .._shiftKey = event.shiftKey);
         }
       }
     }
@@ -642,7 +663,10 @@ class Stage extends DisplayObjectContainer {
           .._localPoint = target.globalToLocal(stagePoint)
           .._stagePoint = stagePoint
           .._deltaX = event.deltaX
-          .._deltaY = event.deltaY;
+          .._deltaY = event.deltaY
+          .._altKey = event.altKey
+          .._ctrlKey = event.ctrlKey
+          .._shiftKey = event.shiftKey;
 
       target.dispatchEvent(mouseEvent);
       if (mouseEvent.stopsPropagation) event.preventDefault();
@@ -692,7 +716,10 @@ class Stage extends DisplayObjectContainer {
               ? touch.target.globalToLocal(stagePoint) : new Point.zero()
           .._stagePoint = stagePoint
           .._touchPointID = touch.touchPointID
-          .._isPrimaryTouchPoint = touch.primaryTouchPoint);
+          .._isPrimaryTouchPoint = touch.primaryTouchPoint
+          .._altKey = event.altKey
+          .._ctrlKey = event.ctrlKey
+          .._shiftKey = event.shiftKey);
 
         touch.target = null;
       }
@@ -703,7 +730,10 @@ class Stage extends DisplayObjectContainer {
           .._localPoint = target.globalToLocal(stagePoint)
           .._stagePoint = stagePoint
           .._touchPointID = touch.touchPointID
-          .._isPrimaryTouchPoint = touch.primaryTouchPoint);
+          .._isPrimaryTouchPoint = touch.primaryTouchPoint
+          .._altKey = event.altKey
+          .._ctrlKey = event.ctrlKey
+          .._shiftKey = event.shiftKey);
 
         touch.target = target;
       }
@@ -738,7 +768,10 @@ class Stage extends DisplayObjectContainer {
           .._localPoint = target.globalToLocal(stagePoint)
           .._stagePoint = stagePoint
           .._touchPointID = touch.touchPointID
-          .._isPrimaryTouchPoint = touch.primaryTouchPoint);
+          .._isPrimaryTouchPoint = touch.primaryTouchPoint
+          .._altKey = event.altKey
+          .._ctrlKey = event.ctrlKey
+          .._shiftKey = event.shiftKey);
       }
     }
   }

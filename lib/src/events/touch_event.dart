@@ -24,7 +24,6 @@ class TouchEvent extends Event {
   num _stageX = 0.0, _stageY = 0.0;
 
   bool _altKey = false;
-  bool _controlKey = false;
   bool _ctrlKey = false;
   bool _shiftKey = false;
 
@@ -59,7 +58,6 @@ class TouchEvent extends Event {
   num get stageY => _stageY;
 
   bool get altKey => _altKey;
-  bool get controlKey => _controlKey;
   bool get ctrlKey => _ctrlKey;
   bool get shiftKey => _shiftKey;
 
