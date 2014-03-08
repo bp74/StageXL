@@ -102,13 +102,6 @@ void main() {
     expect(point12().equals(point00()), isFalse);
   });
 
-  test('#normalize', () {
-    Point p = point12();
-    p.normalize(10);
-
-    testPoint(p, x: 4.472, y: 8.944);
-  });
-
   test('#offset', () {
     Point p = point12();
     p.offset(2, 3);
@@ -116,13 +109,6 @@ void main() {
     testPoint(p, x: 3, y: 5);
   });
 
-  test('#transform', () {
-    // TODO
-  });
-
-  test('#copyFromAndTransform', () {
-    // TODO
-  });
 }
 
 Point point12() => new Point<num>(1, 2);
