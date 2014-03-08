@@ -88,19 +88,21 @@ class DropShadowFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    renderContext.activateRenderProgram(_dropShadowProgram);
+    _DropShadowProgram dropShadowProgram = _DropShadowProgram.instance;
+
+    renderContext.activateRenderProgram(dropShadowProgram);
     renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
       var shift = (this.distance * cos(this.angle)).round() / renderTexture.width;
       var pixel = 0.250 * blurX / renderTexture.width;
-      _dropShadowProgram.configure(color, shift, 0.0, pixel, 0.0);
-      _dropShadowProgram.renderQuad(renderState, renderTextureQuad);
+      dropShadowProgram.configure(color, shift, 0.0, pixel, 0.0);
+      dropShadowProgram.renderQuad(renderState, renderTextureQuad);
     } else if (pass == 1) {
       var shift = (this.distance * sin(this.angle)).round() / renderTexture.height;
       var pixel = 0.250 * blurY / renderTexture.height;
-      _dropShadowProgram.configure(color, 0.0, shift, 0.0, pixel);
-      _dropShadowProgram.renderQuad(renderState, renderTextureQuad);
+      dropShadowProgram.configure(color, 0.0, shift, 0.0, pixel);
+      dropShadowProgram.renderQuad(renderState, renderTextureQuad);
     } else if (pass == 2) {
       // TODO: render the knockout effect!
       if (this.knockout || this.hideObject) return;
@@ -112,9 +114,9 @@ class DropShadowFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-final _dropShadowProgram = new _DropShadowProgram();
-
 class _DropShadowProgram extends _BitmapFilterProgram {
+
+  static final _DropShadowProgram instance = new _DropShadowProgram();
 
   String get fragmentShaderSource => """
       precision mediump float;

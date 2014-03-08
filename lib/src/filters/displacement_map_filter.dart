@@ -96,20 +96,22 @@ class DisplacementMapFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    renderContext.activateRenderProgram(_displacementMapProgram);
+    _DisplacementMapProgram displacementMapProgram = _DisplacementMapProgram.instance;
+
+    renderContext.activateRenderProgram(displacementMapProgram);
     renderContext.activateRenderTexture(renderTexture);
     bitmapData.renderTexture.activate(renderContext, gl.TEXTURE1);
-    _displacementMapProgram.configure(this, renderTextureQuad);
-    _displacementMapProgram.renderQuad(renderState, renderTextureQuad);
+    displacementMapProgram.configure(this, renderTextureQuad);
+    displacementMapProgram.renderQuad(renderState, renderTextureQuad);
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-final _displacementMapProgram = new _DisplacementMapProgram();
-
 class _DisplacementMapProgram extends _BitmapFilterProgram {
+
+  static final _DisplacementMapProgram instance = new _DisplacementMapProgram();
 
   String get fragmentShaderSource => """
       precision mediump float;

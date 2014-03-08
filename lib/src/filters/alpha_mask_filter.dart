@@ -47,20 +47,22 @@ class AlphaMaskFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    renderContext.activateRenderProgram(_alphaMaskProgram);
+    _AlphaMaskProgram alphaMaskProgram = _AlphaMaskProgram.instance;
+
+    renderContext.activateRenderProgram(alphaMaskProgram);
     renderContext.activateRenderTexture(renderTexture);
     bitmapData.renderTexture.activate(renderContext, gl.TEXTURE1);
-    _alphaMaskProgram.configure(this, renderTextureQuad);
-    _alphaMaskProgram.renderQuad(renderState, renderTextureQuad);
+    alphaMaskProgram.configure(this, renderTextureQuad);
+    alphaMaskProgram.renderQuad(renderState, renderTextureQuad);
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-final _alphaMaskProgram = new _AlphaMaskProgram();
-
 class _AlphaMaskProgram extends _BitmapFilterProgram {
+
+  static final _AlphaMaskProgram instance = new _AlphaMaskProgram();
 
   String get fragmentShaderSource => """
       precision mediump float;

@@ -71,15 +71,17 @@ class BlurFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    renderContext.activateRenderProgram(_blurProgram);
+    _BlurProgram blurProgram = _BlurProgram.instance;
+
+    renderContext.activateRenderProgram(blurProgram);
     renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
-      _blurProgram.configure(0.250 * blurX / renderTexture.width, 0.0);
-      _blurProgram.renderQuad(renderState, renderTextureQuad);
+      blurProgram.configure(0.250 * blurX / renderTexture.width, 0.0);
+      blurProgram.renderQuad(renderState, renderTextureQuad);
     } else {
-      _blurProgram.configure(0.0, 0.250 * blurY / renderTexture.height);
-      _blurProgram.renderQuad(renderState, renderTextureQuad);
+      blurProgram.configure(0.0, 0.250 * blurY / renderTexture.height);
+      blurProgram.renderQuad(renderState, renderTextureQuad);
     }
   }
 }
@@ -87,9 +89,9 @@ class BlurFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-final _blurProgram = new _BlurProgram();
-
 class _BlurProgram extends _BitmapFilterProgram {
+
+  static final _BlurProgram instance = new _BlurProgram();
 
   String get fragmentShaderSource => """
       precision mediump float;

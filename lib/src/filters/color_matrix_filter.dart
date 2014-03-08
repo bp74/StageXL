@@ -191,19 +191,21 @@ class ColorMatrixFilter extends BitmapFilter {
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    renderContext.activateRenderProgram(_colorMatrixProgram);
+    _ColorMatrixProgram colorMatrixProgram = _ColorMatrixProgram.instance;
+
+    renderContext.activateRenderProgram(colorMatrixProgram);
     renderContext.activateRenderTexture(renderTexture);
-    _colorMatrixProgram.configure(this);
-    _colorMatrixProgram.renderQuad(renderState, renderTextureQuad);
+    colorMatrixProgram.configure(this);
+    colorMatrixProgram.renderQuad(renderState, renderTextureQuad);
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-final _colorMatrixProgram = new _ColorMatrixProgram();
-
 class _ColorMatrixProgram extends _BitmapFilterProgram {
+
+  static final _ColorMatrixProgram instance = new _ColorMatrixProgram();
 
   String get fragmentShaderSource => """
       precision mediump float;
