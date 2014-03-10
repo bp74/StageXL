@@ -22,7 +22,7 @@ class AudioElementSound extends Sound {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
+  static Future<Sound> load(dynamic url, [SoundLoadOptions soundLoadOptions = null]) {
 
     if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
 
@@ -74,10 +74,10 @@ class AudioElementSound extends Sound {
 
   num get length => _audio.duration;
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-
+  SoundChannel play([bool loop = false, SoundTransform soundTransform, List<num> segment]) {
     if (soundTransform == null) soundTransform = new SoundTransform();
-    return new AudioElementSoundChannel(this, loop, soundTransform);
+    if (segment == null) segment = [0.0, length];
+    return new AudioElementSoundChannel(this, loop, soundTransform, segment);
   }
 
   //-------------------------------------------------------------------------------------------------

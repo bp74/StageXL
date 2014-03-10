@@ -6,7 +6,7 @@ abstract class Sound {
     var initEngine = SoundMixer.engine;
   }
 
-  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
+  static Future<Sound> load(dynamic url, [SoundLoadOptions soundLoadOptions = null]) {
 
     switch(SoundMixer.engine) {
       case "WebAudioApi" : return WebAudioApiSound.load(url, soundLoadOptions);
@@ -20,6 +20,6 @@ abstract class Sound {
   //-------------------------------------------------------------------------------------------------
 
   num get length;
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]);
+  SoundChannel play([bool loop = false, SoundTransform soundTransform, List<num> segment]);
 
 }

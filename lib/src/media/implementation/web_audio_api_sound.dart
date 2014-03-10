@@ -13,23 +13,24 @@ class WebAudioApiSound extends Sound {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
+  static Future<Sound> load(dynamic url, [SoundLoadOptions soundLoadOptions = null]) {
 
     if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
-
+    
     var sound = new WebAudioApiSound();
     var loadCompleter = new Completer<Sound>();
     var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
     var audioContext = WebAudioApiMixer.audioContext;
-
+    
     if (audioUrls.length == 0) {
       return MockSound.load(url, soundLoadOptions);
     }
-
+    
     audioRequestFinished(request) {
       audioContext.decodeAudioData(request.response).then((AudioBuffer buffer) {
         sound._buffer = buffer;
         loadCompleter.complete(sound);
+        
       }).catchError((error) {
         if (soundLoadOptions.ignoreErrors) {
           MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
@@ -52,7 +53,7 @@ class WebAudioApiSound extends Sound {
         }
       }
     }
-
+    
     audioRequestNext(null);
 
     return loadCompleter.future;
@@ -65,9 +66,10 @@ class WebAudioApiSound extends Sound {
     return _buffer.duration;
   }
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
+  SoundChannel play([bool loop = false, SoundTransform soundTransform, List<num> segment]) {
     if (soundTransform == null) soundTransform = new SoundTransform();
-    return new WebAudioApiSoundChannel(this, loop, soundTransform);
+    if (segment == null) segment = [0.0, length];
+    return new WebAudioApiSoundChannel(this, loop, soundTransform, segment);
   }
 
 }

@@ -85,6 +85,10 @@ class ResourceManager extends EventDispatcher {
   void addSound(String name, String url, [SoundLoadOptions soundFileSupport = null]) {
     _addResource("Sound", name, url, Sound.load(url, soundFileSupport));
   }
+  
+  void addSoundSprite(String name, String url) {
+      _addResource("SoundSprite", name, url, SoundSprite.load(url));
+    }
 
   void addTextureAtlas(String name, String url, String textureAtlasFormat) {
     _addResource("TextureAtlas", name, url, TextureAtlas.load(url, textureAtlasFormat));
@@ -116,6 +120,12 @@ class ResourceManager extends EventDispatcher {
   Sound getSound(String name) {
     var value = _getResourceValue("Sound", name);
     if (value is! Sound) throw "dart2js_hint";
+    return value;
+  }
+  
+  SoundSprite getSoundSprite(String name) {
+    var value = _getResourceValue("SoundSprite", name);
+    if (value is! SoundSprite) throw "dart2js_hint";
     return value;
   }
 
