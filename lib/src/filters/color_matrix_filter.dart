@@ -35,7 +35,7 @@ class ColorMatrixFilter extends BitmapFilter {
       [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
       [0, 0, 0, 0]);
 
-  factory ColorMatrixFilter.adjust({num brightness: 0, num contrast: 0, num saturation: 0, num hue: 0}) {
+  factory ColorMatrixFilter.adjust({num hue: 0, num saturation: 0, num brightness: 0, num contrast: 0}) {
     var colorMatrixFilter = new ColorMatrixFilter.identity();
     colorMatrixFilter.adjustHue(hue);
     colorMatrixFilter.adjustSaturation(saturation);
@@ -99,6 +99,20 @@ class ColorMatrixFilter extends BitmapFilter {
     num v = 255 * min(max(value, -1), 1);
 
     _concat([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], [v, v, v, 0]);
+  }
+
+  void adjustColoration(int color, [num strength = 1.0]) {
+
+    num r = _colorGetR(color) * strength / 255.0;
+    num g = _colorGetG(color) * strength / 255.0;
+    num b = _colorGetB(color) * strength / 255.0;
+    num i = 1.0 - strength;
+
+    _concat([
+        r * _lumaR + i, r * _lumaG, r * _lumaB, 0.0,
+        g * _lumaR, g * _lumaG + i, g * _lumaB, 0.0,
+        b * _lumaR, b * _lumaG, b * _lumaB + i, 0.0,
+        0.0, 0.0, 0.0, 1.0], [0, 0, 0, 0]);
   }
 
   //-------------------------------------------------------------------------------------------------
