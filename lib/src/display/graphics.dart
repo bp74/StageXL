@@ -25,7 +25,7 @@ class Graphics {
 
   final List<_GraphicsCommand> _commands = new List<_GraphicsCommand>();
 
-  Rectangle<int> _identityRectangle = new Rectangle<int>(0, 0, 0, 0);
+  Rectangle<num> _identityRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
   bool _identityRectangleRefresh = true;
 
   clear() {
@@ -226,7 +226,7 @@ class Graphics {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle<int> _getBoundsTransformed(Matrix matrix) {
+  Rectangle<num> _getBoundsTransformed(Matrix matrix) {
 
     var bounds = new _GraphicsBounds(matrix);
 

@@ -95,15 +95,13 @@ class _GraphicsBounds {
     }
   }
 
-  Rectangle<int> getRectangle() {
+  Rectangle<num> getRectangle() {
     if (hasBounds) {
-      var left = boundsLeft.floor();
-      var right = boundsRight.ceil();
-      var top = boundsTop.floor();
-      var bottom = boundsBottom.ceil();
-      return new Rectangle<int>(left, top, right - left, bottom - top);
+      var boundsWidth = boundsRight - boundsLeft;
+      var boundsHeight = boundsBottom - boundsTop;
+      return new Rectangle<num>(boundsLeft, boundsTop, boundsWidth, boundsHeight);
     } else {
-      return new Rectangle<int>(0, 0, 0, 0);
+      return new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
     }
   }
 }
