@@ -91,35 +91,43 @@ class SoundMixer {
 
   //-------------------------------------------------------------------------------------------------
 
-  static List<String> _getOptimalAudioUrls(String originalUrl, SoundLoadOptions soundLoadOptions) {
+  static List<String> _getOptimalAudioUrls(dynamic originalUrl, SoundLoadOptions soundLoadOptions) {
 
-    var regex = new RegExp(r"(mp3|mp4|ogg|wav)$", multiLine:false, caseSensitive:true);
     var availableTypes = _supportedTypes.toList();
-    var match = regex.firstMatch(originalUrl);
-    var urls = new List<String>();
-
-    if (match == null) {
-      throw new ArgumentError("Unsupported file extension.");
-    }
-
     if (availableTypes.length == 0) {
-      throw new UnsupportedError("This browser supports no known audio codec.");
+          throw new UnsupportedError("This browser supports no known audio codec.");
     }
-
+    
     if (!soundLoadOptions.mp3) availableTypes.remove("mp3");
     if (!soundLoadOptions.mp4) availableTypes.remove("mp4");
     if (!soundLoadOptions.ogg) availableTypes.remove("ogg");
     if (!soundLoadOptions.wav) availableTypes.remove("wav");
-
-    var fileType = match.group(1);
-
-    if (availableTypes.contains(fileType)) {
-      urls.add(originalUrl);
-      availableTypes.remove(fileType);
-    }
-
-    for(var availableType in availableTypes) {
-      urls.add(originalUrl.replaceAll(regex, availableType));
+    
+    var urls = new List<String>();
+    
+    if(originalUrl is String) {
+      var regex = new RegExp(r"(mp3|mp4|ogg|wav)$", multiLine:false, caseSensitive:true);
+      var match = regex.firstMatch(originalUrl);
+      
+      if (match == null) {
+        throw new ArgumentError("Unsupported file extension.");
+      }
+      
+      var fileType = match.group(1);
+    
+      if (availableTypes.contains(fileType)) {
+            urls.add(originalUrl);
+            availableTypes.remove(fileType);
+      }
+    
+      for(var availableType in availableTypes) {
+            urls.add(originalUrl.replaceAll(regex, availableType));
+      }
+    } else if(originalUrl is List){
+      for(var url in originalUrl) {
+        var ext = url.toLowerCase().substring(url.length-3);
+        if(availableTypes.contains(ext)) urls.add(url);  
+      }
     }
 
     return urls;

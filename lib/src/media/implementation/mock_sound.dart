@@ -22,13 +22,12 @@ class MockSound extends Sound {
   }
 
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
+  SoundChannel play([bool loop = false, SoundTransform soundTransform, List<num> segment]) {
 
-    if (soundTransform == null) {
-      soundTransform = new SoundTransform();
-    }
+    if (soundTransform == null) soundTransform = new SoundTransform();
+    if(segment == null) segment = [0.0, length];
 
-    return new MockSoundChannel(this, loop, soundTransform);
+    return new MockSoundChannel(this, loop, soundTransform, segment);
   }
 }
 

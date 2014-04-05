@@ -131,6 +131,8 @@ part 'src/ui/multitouch.dart';
 part 'src/util/object_pool.dart';
 part 'src/util/resource_manager.dart';
 part 'src/util/resource_manager_resource.dart';
+part 'src/util/sound_sprite.dart';
+part 'src/util/sound_sprite_segment.dart';
 part 'src/util/sprite_sheet.dart';
 part 'src/util/texture_atlas.dart';
 part 'src/util/texture_atlas_format.dart';
