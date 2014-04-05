@@ -9,7 +9,7 @@ void main() {
   BitmapData spiders;
   SpriteSheet spritesheet;
 
-  resourceManager.addBitmapData('spiders', '/StageXL/test/assets/spider.png');
+  resourceManager.addBitmapData('spiders', 'common/images/spider.png');
 
   setUp(() {
     return resourceManager.load().then((_) {

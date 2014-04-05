@@ -9,7 +9,7 @@ void main() {
   BitmapData monster;
   List<BitmapData> bitmapDatas;
 
-  resourceManager.addBitmapData('monster', '/StageXL/test/assets/brainmonster.png');
+  resourceManager.addBitmapData('monster', 'common/images/brainmonster.png');
 
   setUp(() {
     return resourceManager.load().then((_) {
