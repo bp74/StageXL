@@ -7,7 +7,7 @@ class SoundSprite {
 
   //-------------------------------------------------------------------------------------------------
 
-  static Future<SoundSprite> load(String url) {
+  static Future<SoundSprite> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
 
     Completer<SoundSprite> completer = new Completer<SoundSprite>();
     SoundSprite soundSprite = new SoundSprite();
@@ -29,18 +29,16 @@ class SoundSprite {
         }
       }
 
-      // TODO: implement list of available audio urls.
+      var soundUrls = urls.map((u) => _replaceFilename(url, u)).toList();
+      var soundUrl = soundUrls[0];
 
-      /*
-      for (var i = 0; i < urls.length; i++) {
-        var u = urls[i];
-        urls[i] = _replaceFilename(url, u);
-      }
-      */
+      soundLoadOptions = (soundLoadOptions == null)
+          ? Sound.defaultLoadOptions.clone()
+          : soundLoadOptions.clone();
 
-      var soundUrl = _replaceFilename(url, urls[0]);
+      soundLoadOptions.alternativeUrls = soundUrls.skip(1).toList();
 
-      Sound.load(soundUrl).then((Sound sound) {
+      Sound.load(soundUrl, soundLoadOptions).then((Sound sound) {
         soundSprite._sound = sound;
         completer.complete(soundSprite);
       }).catchError((error) {

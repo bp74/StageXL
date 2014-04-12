@@ -92,7 +92,7 @@ class SoundMixer {
 
   //-------------------------------------------------------------------------------------------------
 
-  static List<String> _getOptimalAudioUrls(String originalUrl, SoundLoadOptions soundLoadOptions) {
+  static List<String> _getOptimalAudioUrls(String primaryUrl, SoundLoadOptions soundLoadOptions) {
 
     var availableTypes = _supportedTypes.toList();
     if (!soundLoadOptions.mp3) availableTypes.remove("mp3");
@@ -101,19 +101,22 @@ class SoundMixer {
     if (!soundLoadOptions.ac3) availableTypes.remove("ac3");
     if (!soundLoadOptions.wav) availableTypes.remove("wav");
 
-    var regex = new RegExp(r"(mp3|mp4|ogg|ac3|wav)$", multiLine:false, caseSensitive:true);
-    var match = regex.firstMatch(originalUrl);
-    if (match == null) return new List<String>(0);
-
-    var fileType = match.group(1);
     var urls = new List<String>();
+    var regex = new RegExp(r"(mp3|mp4|ogg|ac3|wav)$", multiLine:false, caseSensitive:true);
+    var primaryMatch = regex.firstMatch(primaryUrl);
+    if (primaryMatch == null) return urls;
+    if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
 
-    if (availableTypes.remove(fileType)) {
-      urls.add(originalUrl);
-    }
-
-    for(var availableType in availableTypes) {
-      urls.add(originalUrl.replaceAll(regex, availableType));
+    if (soundLoadOptions.alternativeUrls != null) {
+      for(var alternativeUrl in soundLoadOptions.alternativeUrls) {
+        var alternativeMatch = regex.firstMatch(alternativeUrl);
+        if (alternativeMatch == null) continue;
+        if (availableTypes.contains(alternativeMatch.group(1))) urls.add(alternativeUrl);
+      }
+    } else {
+      for(var availableType in availableTypes) {
+        urls.add(primaryUrl.replaceAll(regex, availableType));
+      }
     }
 
     return urls;
