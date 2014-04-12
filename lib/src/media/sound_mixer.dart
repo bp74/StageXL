@@ -82,6 +82,7 @@ class SoundMixer {
     if (valid.indexOf(audio.canPlayType("audio/mpeg", "")) != -1) supportedTypes.add("mp3");
     if (valid.indexOf(audio.canPlayType("audio/mp4", "")) != -1) supportedTypes.add("mp4");
     if (valid.indexOf(audio.canPlayType("audio/ogg", "")) != -1) supportedTypes.add("ogg");
+    if (valid.indexOf(audio.canPlayType("audio/ac3", "")) != -1) supportedTypes.add("ac3");
     if (valid.indexOf(audio.canPlayType("audio/wav", "")) != -1) supportedTypes.add("wav");
 
     print("StageXL audio types   : ${supportedTypes}");
@@ -93,29 +94,22 @@ class SoundMixer {
 
   static List<String> _getOptimalAudioUrls(String originalUrl, SoundLoadOptions soundLoadOptions) {
 
-    var regex = new RegExp(r"(mp3|mp4|ogg|wav)$", multiLine:false, caseSensitive:true);
     var availableTypes = _supportedTypes.toList();
-    var match = regex.firstMatch(originalUrl);
-    var urls = new List<String>();
-
-    if (match == null) {
-      throw new ArgumentError("Unsupported file extension.");
-    }
-
-    if (availableTypes.length == 0) {
-      throw new UnsupportedError("This browser supports no known audio codec.");
-    }
-
     if (!soundLoadOptions.mp3) availableTypes.remove("mp3");
     if (!soundLoadOptions.mp4) availableTypes.remove("mp4");
     if (!soundLoadOptions.ogg) availableTypes.remove("ogg");
+    if (!soundLoadOptions.ac3) availableTypes.remove("ac3");
     if (!soundLoadOptions.wav) availableTypes.remove("wav");
 
-    var fileType = match.group(1);
+    var regex = new RegExp(r"(mp3|mp4|ogg|ac3|wav)$", multiLine:false, caseSensitive:true);
+    var match = regex.firstMatch(originalUrl);
+    if (match == null) return new List<String>(0);
 
-    if (availableTypes.contains(fileType)) {
+    var fileType = match.group(1);
+    var urls = new List<String>();
+
+    if (availableTypes.remove(fileType)) {
       urls.add(originalUrl);
-      availableTypes.remove(fileType);
     }
 
     for(var availableType in availableTypes) {

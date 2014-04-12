@@ -16,7 +16,7 @@ abstract class Sound {
   }
 
   static SoundLoadOptions defaultLoadOptions= new SoundLoadOptions(
-      mp3:true, mp4:true, ogg:true, wav:true);
+      mp3:true, mp4:true, ogg:true, ac3: true, wav:true);
 
   //-------------------------------------------------------------------------------------------------
 
