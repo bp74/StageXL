@@ -33,10 +33,8 @@ class AudioElementSoundChannel extends SoundChannel {
   SoundTransform get soundTransform => _soundTransform;
 
   void set soundTransform(SoundTransform value) {
-    _soundTransform = (value != null) ? value : new SoundTransform();
-
     var audioElementMixer = SoundMixer._audioElementMixer;
-    var soundVolume = _soundTransform.volume;
+    _soundTransform = (value != null) ? value : new SoundTransform();
     _audio.volume = _soundTransform.volume * audioElementMixer.volume;
   }
 
