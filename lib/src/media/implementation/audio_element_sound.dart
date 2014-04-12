@@ -2,21 +2,13 @@ part of stagexl;
 
 class AudioElementSound extends Sound {
 
-  AudioElement _audio;
-  List<AudioElement> _audioPool;
-  List<AudioElementSoundChannel> _soundChannels;
+  AudioElement _audio = new AudioElement();
+  List<AudioElement> _audioPool = new List<AudioElement>();
+  List<AudioElementSoundChannel> _soundChannels = new List<AudioElementSoundChannel>();
 
   AudioElementSound() {
-
-    _soundChannels = new List<AudioElementSoundChannel>();
-
-    _audio = new AudioElement();
     _audio.onEnded.listen(_onAudioEnded);
-
-    _audioPool = new List<AudioElement>();
     _audioPool.add(_audio);
-
-    html.document.body.children.add(_audio);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -75,53 +67,46 @@ class AudioElementSound extends Sound {
   num get length => _audio.duration;
 
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
+    if (soundTransform == null) soundTransform = new SoundTransform();
+    return new AudioElementSoundChannel(this, 0, 3600, loop, soundTransform);
+  }
+
+  SoundChannel playSegment(num startTime, num duration, [
+                           bool loop = false, SoundTransform soundTransform]) {
 
     if (soundTransform == null) soundTransform = new SoundTransform();
-    return new AudioElementSoundChannel(this, loop, soundTransform);
+    return new AudioElementSoundChannel(this, startTime, duration, loop, soundTransform);
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  AudioElement _getAudioElement(AudioElementSoundChannel soundChannel) {
+  Future<AudioElement> _requestAudioElement(AudioElementSoundChannel soundChannel) {
 
-    AudioElement audio;
-
-    if (_audioPool.length == 0) {
-      audio = _audio.clone(true);
-      audio.onEnded.listen(_onAudioEnded);
-    } else {
-      audio = _audioPool.removeAt(0);
-    }
-
-    SoundMixer._audioElementMixer._addSoundChannel(soundChannel);
     _soundChannels.add(soundChannel);
 
-    return audio;
-  }
-
-  void _releaseAudioElement(AudioElementSoundChannel soundChannel) {
-
-    SoundMixer._audioElementMixer._removeSoundChannel(soundChannel);
-    _soundChannels.remove(soundChannel);
-
-    AudioElement audio = soundChannel._audio;
-    _audioPool.add(audio);
-
-    if (audio.currentTime > 0 && audio.ended == false) {
-      audio.currentTime = 0;
+    if (_audioPool.length > 0) {
+      return new Future.value(_audioPool.removeAt(0));
     }
+
+    var audio = _audio.clone(true);
+    audio.onEnded.listen(_onAudioEnded);
+
+    return audio.readyState == 0
+        ? audio.onCanPlay.first.then((_) => audio)
+        : new Future.value(audio);
   }
+
+  void _releaseAudioElement(AudioElementSoundChannel soundChannel, AudioElement audio) {
+    _soundChannels.remove(soundChannel);
+    _audioPool.add(audio);
+  }
+
+  //-------------------------------------------------------------------------------------------------
 
   void _onAudioEnded(html.Event event) {
-    var audio = event.target;
-
-    for(var i = 0; i < _soundChannels.length; i++) {
-      if (identical(_soundChannels[i]._audio, audio)) {
-        _soundChannels[i].stop();
-        break;
-      }
-    }
+    var soundChannel = _soundChannels.firstWhere((sc) => identical(sc._audio, event.target));
+    if (soundChannel != null) soundChannel.stop();
   }
 
 }

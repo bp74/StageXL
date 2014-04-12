@@ -15,11 +15,15 @@ abstract class Sound {
     }
   }
 
-  static SoundLoadOptions defaultLoadOptions = new SoundLoadOptions(mp3:true, mp4:true, ogg:true, wav:true);
+  static SoundLoadOptions defaultLoadOptions= new SoundLoadOptions(
+      mp3:true, mp4:true, ogg:true, wav:true);
 
   //-------------------------------------------------------------------------------------------------
 
   num get length;
+
   SoundChannel play([bool loop = false, SoundTransform soundTransform]);
 
+  SoundChannel playSegment(num startTime, num duration, [
+                           bool loop = false, SoundTransform soundTransform]);
 }

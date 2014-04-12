@@ -21,14 +21,17 @@ class MockSound extends Sound {
     return double.NAN;
   }
 
-
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-
-    if (soundTransform == null) {
-      soundTransform = new SoundTransform();
-    }
-
-    return new MockSoundChannel(this, loop, soundTransform);
+    if (soundTransform == null) soundTransform = new SoundTransform();
+    return new MockSoundChannel(this, 0, this.length, loop, soundTransform);
   }
+
+  SoundChannel playSegment(num startTime, num duration, [
+                           bool loop = false, SoundTransform soundTransform]) {
+
+    if (soundTransform == null) soundTransform = new SoundTransform();
+    return new MockSoundChannel(this, startTime, duration, loop, soundTransform);
+  }
+
 }
 

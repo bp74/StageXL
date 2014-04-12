@@ -2,31 +2,16 @@ part of stagexl;
 
 class AudioElementMixer {
 
-  List<AudioElementSoundChannel> _soundChannels = new List<AudioElementSoundChannel>();
-  num _mixerVolume = 1.0;
+  num _volume = 1.0;
+
+  static StreamController<num> _volumeChangedEvent = new StreamController<num>();
+  Stream<num> onVolumeChanged = _volumeChangedEvent.stream.asBroadcastStream();
+
+  num get volume => _volume;
 
   applySoundTransform(SoundTransform value) {
-    _mixerVolume = value.volume;
-    _soundChannels.forEach(_updateSoundChannel);
+    _volume = value.volume;
+    _volumeChangedEvent.add(_volume);
   }
 
-  //-----------------------------------------------------------------------------------------------
-
-  _addSoundChannel(AudioElementSoundChannel audioElementSoundChannel) {
-    _soundChannels.add(audioElementSoundChannel);
-  }
-
-  _removeSoundChannel(AudioElementSoundChannel audioElementSoundChannel) {
-    _soundChannels.remove(audioElementSoundChannel);
-  }
-
-  _updateSoundChannel(AudioElementSoundChannel audioElementSoundChannel) {
-
-    var audio = audioElementSoundChannel._audio;
-    var channelVolume = audioElementSoundChannel._soundTransform.volume;
-
-    if (audio != null) {
-      audio.volume = _mixerVolume * channelVolume;
-    }
-  }
 }

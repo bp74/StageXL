@@ -6,19 +6,25 @@ class AudioElementSoundChannel extends SoundChannel {
   AudioElement _audio;
 
   bool _loop;
+  bool _stopped = false;
+
   SoundTransform _soundTransform;
+  StreamSubscription _volumeChangedSubscription;
 
-  AudioElementSoundChannel(AudioElementSound audioElementSound, bool loop, SoundTransform soundTransform) {
+  num _segmentStartTime;
+  Duration _segmentDuration;
+  Timer _segmentTimer;
 
-    _audioElementSound = audioElementSound;
-    _soundTransform = (soundTransform != null) ? soundTransform : new SoundTransform();
-    _loop = loop;
+  AudioElementSoundChannel(AudioElementSound audioElementSound,
+      num startTime, num duration, bool loop, SoundTransform soundTransform) :
 
-    _audio = audioElementSound._getAudioElement(this);
-    SoundMixer._audioElementMixer._updateSoundChannel(this);
+      _audioElementSound = audioElementSound,
+      _segmentStartTime = startTime,
+      _segmentDuration = new Duration(milliseconds: (duration * 1000).round()),
+      _loop = loop,
+      _soundTransform = (soundTransform != null) ? soundTransform : new SoundTransform() {
 
-    _audio.loop = _loop;
-    _audio.play();
+    audioElementSound._requestAudioElement(this).then(_onAudioElement);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -27,20 +33,70 @@ class AudioElementSoundChannel extends SoundChannel {
   SoundTransform get soundTransform => _soundTransform;
 
   void set soundTransform(SoundTransform value) {
-
     _soundTransform = (value != null) ? value : new SoundTransform();
-    SoundMixer._audioElementMixer._updateSoundChannel(this);
+
+    var audioElementMixer = SoundMixer._audioElementMixer;
+    var soundVolume = _soundTransform.volume;
+    _audio.volume = _soundTransform.volume * audioElementMixer.volume;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void stop() {
 
-    if (_audio != null) {
-      if (_audio.ended == false) _audio.pause();
-      _audioElementSound._releaseAudioElement(this);
-      _audio = null;
+    _stopped = true;
+
+    if (_audio == null) return;
+    if (_audio.ended == false) _audio.pause();
+    if (_volumeChangedSubscription != null) _volumeChangedSubscription.cancel();
+    if (_segmentTimer != null) _segmentTimer.cancel();
+
+    _audioElementSound._releaseAudioElement(this, _audio);
+    _audio = null;
+    _volumeChangedSubscription = null;
+    _segmentTimer = null;
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  _onAudioElement(AudioElement audio) {
+
+    var audioElementMixer = SoundMixer._audioElementMixer;
+
+    if (_stopped) {
+
+      _audioElementSound._releaseAudioElement(this, audio);
+
+    } else {
+
+      _audio = audio;
+      _audio.loop = _loop;
+      _audio.currentTime = _segmentStartTime;
+      _audio.volume = _soundTransform.volume * audioElementMixer.volume;
+      _audio.play();
+
+      if (_segmentStartTime != 0 || _segmentDuration.inSeconds != 3600) {
+        _segmentTimer = new Timer(_segmentDuration, _onSegmentTimer);
+      }
+
+      _volumeChangedSubscription = audioElementMixer.onVolumeChanged.listen(_onMixerVolume);
     }
   }
 
+  //-------------------------------------------------------------------------------------------------
+
+  _onSegmentTimer() {
+
+    if (_loop == false) this.stop();
+    if (_loop == false) return;
+
+    _audio.currentTime = _segmentStartTime;
+    _segmentTimer = new Timer(_segmentDuration, _onSegmentTimer);
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  _onMixerVolume(num volume) {
+    _audio.volume = _soundTransform.volume * volume;
+  }
 }

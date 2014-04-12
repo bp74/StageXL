@@ -67,7 +67,14 @@ class WebAudioApiSound extends Sound {
 
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
     if (soundTransform == null) soundTransform = new SoundTransform();
-    return new WebAudioApiSoundChannel(this, loop, soundTransform);
+    return new WebAudioApiSoundChannel(this, 0, this.length, loop, soundTransform);
+  }
+
+  SoundChannel playSegment(num startTime, num duration, [
+                           bool loop = false, SoundTransform soundTransform]) {
+
+    if (soundTransform == null) soundTransform = new SoundTransform();
+    return new WebAudioApiSoundChannel(this, startTime, duration, loop, soundTransform);
   }
 
 }
