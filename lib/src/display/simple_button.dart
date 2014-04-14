@@ -7,13 +7,14 @@ class SimpleButton extends InteractiveObject {
   DisplayObject downState;
   DisplayObject hitTestState;
 
-  bool useHandCursor = true;
   bool enabled = true;
 
   DisplayObject _currentState;
 
   SimpleButton([this.upState, this.overState, this.downState, this.hitTestState]) {
 
+    useHandCursor = true;
+    
     addEventListener(MouseEvent.MOUSE_OVER, _onMouseEvent);
     addEventListener(MouseEvent.MOUSE_OUT, _onMouseEvent);
     addEventListener(MouseEvent.MOUSE_DOWN, _onMouseEvent);

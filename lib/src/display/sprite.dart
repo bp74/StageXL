@@ -3,7 +3,6 @@ part of stagexl;
 class Sprite extends DisplayObjectContainer {
 
   bool buttonMode = false;
-  bool useHandCursor = false;
   Sprite hitArea = null;
 
   Graphics _graphics = null;
