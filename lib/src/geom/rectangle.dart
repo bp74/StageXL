@@ -75,7 +75,7 @@ class Rectangle<T extends num> {
   }
 
   bool get isEmpty {
-    return width == 0 && height == 0;
+    return width <= 0 || height <= 0;
   }
 
   //-----------------------------------------------------------------------------------------------

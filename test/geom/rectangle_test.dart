@@ -213,8 +213,10 @@ void main() {
 
   test('#isEmpty', () {
     expect(new Rectangle(0, 0, 0, 0).isEmpty, isTrue);
-    expect(new Rectangle(0, 0, 1, 0).isEmpty, isFalse);
-    expect(new Rectangle(0, 0, 0, 1).isEmpty, isFalse);
+    expect(new Rectangle(0, 0, 1, 0).isEmpty, isTrue);
+    expect(new Rectangle(0, 0, 0, 1).isEmpty, isTrue);
+    expect(new Rectangle(0, 0, -1, 5).isEmpty, isTrue);
+    expect(new Rectangle(0, 0, 5, -1).isEmpty, isTrue);
     expect(new Rectangle(0, 0, 1, 1).isEmpty, isFalse);
   });
 
