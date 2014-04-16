@@ -102,7 +102,7 @@ class SoundMixer {
     if (!soundLoadOptions.wav) availableTypes.remove("wav");
 
     var urls = new List<String>();
-    var regex = new RegExp(r"(mp3|mp4|ogg|ac3|wav)$", multiLine:false, caseSensitive:true);
+    var regex = new RegExp(r"([A-Za-z0-9]+)$", multiLine:false, caseSensitive:true);
     var primaryMatch = regex.firstMatch(primaryUrl);
     if (primaryMatch == null) return urls;
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
