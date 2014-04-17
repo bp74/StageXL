@@ -15,7 +15,7 @@ void main() {
     expect(rtq.textureHeight, equals(100));
     expect(rtq.offsetX, equals(0));
     expect(rtq.offsetY, equals(0));
-    expect(rtq.xyList, equals([0,0,50,0,50,100,0,100]));
+    expect(rtq.xyList, equals([0, 0, 50, 0, 50, 100, 0, 100]));
   });
 
   test('CreateRenderTextureQuadRotated', () {
@@ -26,7 +26,7 @@ void main() {
     expect(rtq.textureHeight, equals(50));
     expect(rtq.offsetX, equals(0));
     expect(rtq.offsetY, equals(0));
-    expect(rtq.xyList, equals([50,0,50,100,0,100,0,0]));
+    expect(rtq.xyList, equals([50, 0, 50, 100, 0, 100, 0, 0]));
   });
 
   //---------------------------------------------------------------------------
@@ -97,7 +97,7 @@ void main() {
     expect(quad.textureHeight, equals(27));
     expect(quad.offsetX, equals(0));
     expect(quad.offsetY, equals(10));
-    expect(quad.xyList, equals([0,10, 33, 10, 33, 37, 0, 37]));
+    expect(quad.xyList, equals([0, 10, 33, 10, 33, 37, 0, 37]));
   });
 
   test('LeftOverlapClipRotated', () {
@@ -510,7 +510,7 @@ void main() {
     expect(quad.textureHeight, equals(27));
     expect(quad.offsetX, equals(20));
     expect(quad.offsetY, equals(0));
-    expect(quad.xyList, equals([0,10, 33, 10, 33, 37, 0, 37]));
+    expect(quad.xyList, equals([0, 10, 33, 10, 33, 37, 0, 37]));
   });
 
   test('LeftOverlapCutRotated', () {

@@ -30,7 +30,7 @@ void main() {
     });
 
     test('has created the expected BitmapDatas', () {
-      for(var index = 0; index < bitmapDatas.length; index++) {
+      for (var index = 0; index < bitmapDatas.length; index++) {
         var x = index % 3;
         var y = index ~/ 3;
         var id1 = bitmapDatas[index].renderTextureQuad.getImageData();

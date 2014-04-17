@@ -54,7 +54,8 @@ class Juggler implements Animatable {
   void add(Animatable animatable) {
 
     if (animatable is! Animatable) {
-      throw new ArgumentError("The supplied animatable does not extend type Animatable.");
+      throw new ArgumentError(
+          "The supplied animatable does not extend type Animatable.");
     }
 
     if (this.contains(animatable) == false) {
@@ -71,7 +72,7 @@ class Juggler implements Animatable {
 
     if (animatable != null) {
       var link = _firstAnimatableLink;
-      while(identical(link, _lastAnimatableLink) == false) {
+      while (identical(link, _lastAnimatableLink) == false) {
         if (identical(link.animatable, animatable)) {
           link.animatable = null;
           break;
@@ -87,7 +88,7 @@ class Juggler implements Animatable {
 
     if (animatable != null) {
       var link = _firstAnimatableLink;
-      while(identical(link, _lastAnimatableLink) == false) {
+      while (identical(link, _lastAnimatableLink) == false) {
         if (identical(link.animatable, animatable)) return true;
         link = link.nextAnimatableLink;
       }
@@ -101,7 +102,7 @@ class Juggler implements Animatable {
   void removeTweens(DisplayObject displayObject) {
 
     var link = _firstAnimatableLink;
-    while(identical(link, _lastAnimatableLink) == false) {
+    while (identical(link, _lastAnimatableLink) == false) {
       var animatable = link.animatable;
       if (animatable is Tween && identical(animatable.displayObject, displayObject)) {
         link.animatable = null;
@@ -131,7 +132,7 @@ class Juggler implements Animatable {
   void purge() {
 
     var link = _firstAnimatableLink;
-    while(identical(link, _lastAnimatableLink) == false) {
+    while (identical(link, _lastAnimatableLink) == false) {
       link.animatable = null;
     }
 
@@ -176,7 +177,7 @@ class Juggler implements Animatable {
 
   AnimationGroup addGroup(List<Animatable> animatables) {
     var animationGroup = new AnimationGroup();
-    for(int i = 0; i < animatables.length; i++) {
+    for (int i = 0; i < animatables.length; i++) {
       animationGroup.add(animatables[i]);
     }
     add(animationGroup);
@@ -187,7 +188,7 @@ class Juggler implements Animatable {
 
   AnimationChain addChain(List<Animatable> animatables) {
     var animationChain = new AnimationChain();
-    for(int i = 0; i < animatables.length; i++) {
+    for (int i = 0; i < animatables.length; i++) {
       animationChain.add(animatables[i]);
     }
     add(animationChain);
@@ -207,7 +208,7 @@ class Juggler implements Animatable {
     var link = _firstAnimatableLink;
     var lastLink = _lastAnimatableLink;
 
-    while(identical(link, lastLink) == false) {
+    while (identical(link, lastLink) == false) {
 
       var animatable = link.animatable;
       if (animatable == null) {

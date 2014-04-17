@@ -1,7 +1,7 @@
 part of stagexl;
 
 class ButtonHelper {
-  
+
   MovieClip target;
   var upLabel;
   var overLabel;
@@ -19,7 +19,7 @@ class ButtonHelper {
     target.addEventListener(MouseEvent.MOUSE_OUT, _onMouseEvent);
     target.addEventListener(MouseEvent.MOUSE_DOWN, _onMouseEvent);
     target.addEventListener(MouseEvent.MOUSE_UP, _onMouseEvent);
-    
+
     if (hitArea != null) {
       if (hitArea is MovieClip) {
         var mc = hitArea;
@@ -33,12 +33,12 @@ class ButtonHelper {
       target.hitArea = hitArea;
     }
   }
-  
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   void _onMouseEvent(MouseEvent mouseEvent) {
-    
+
     if (mouseEvent.type == MouseEvent.MOUSE_OUT) {
       target.gotoAndStop(upLabel);
     } else {

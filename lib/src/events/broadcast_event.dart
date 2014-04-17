@@ -1,22 +1,24 @@
 part of stagexl;
 
 class BroadcastEvent extends Event {
-  BroadcastEvent(String type):super(type, false);
+  BroadcastEvent(String type) : super(type, false);
   bool get captures => false;
 }
 
 class EnterFrameEvent extends BroadcastEvent {
   num _passedTime;
   num get passedTime => _passedTime;
-  EnterFrameEvent(num passedTime):super(Event.ENTER_FRAME), _passedTime = passedTime;
+  EnterFrameEvent(num passedTime)
+      : super(Event.ENTER_FRAME),
+        _passedTime = passedTime;
 }
 
 class ExitFrameEvent extends BroadcastEvent {
-  ExitFrameEvent():super(Event.EXIT_FRAME);
+  ExitFrameEvent() : super(Event.EXIT_FRAME);
 }
 
 class RenderEvent extends BroadcastEvent {
-  RenderEvent():super(Event.RENDER);
+  RenderEvent() : super(Event.RENDER);
 }
 
 //-------------------------------------------------------------------------------------------------

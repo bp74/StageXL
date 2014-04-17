@@ -46,7 +46,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
       child.removeFromParent();
 
-      for(var ancestor = this; ancestor != null; ancestor = ancestor.parent) {
+      for (var ancestor = this; ancestor != null; ancestor = ancestor.parent) {
         if (ancestor == child) {
           throw new ArgumentError("Error #2150: An object cannot be added as "
               "a child to one of it's children (or children's children, etc.).");
@@ -108,11 +108,13 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       endIndex = length - 1;
     }
 
-    if (beginIndex < 0 || endIndex < 0 || beginIndex >= length || endIndex >= length) {
-      throw new ArgumentError("Error #2006: The supplied index is out of bounds.");
+    if (beginIndex < 0 || endIndex < 0 || beginIndex >= length || endIndex >=
+        length) {
+      throw new ArgumentError(
+          "Error #2006: The supplied index is out of bounds.");
     }
 
-    for(int i = beginIndex; i <= endIndex; i++) {
+    for (int i = beginIndex; i <= endIndex; i++) {
       if (beginIndex >= _children.length) break;
       removeChildAt(beginIndex);
     }
@@ -132,7 +134,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   dynamic getChildByName(String name) {
 
-    for(int i = 0; i < _children.length; i++) {
+    for (int i = 0; i < _children.length; i++) {
       DisplayObject child = _children[i];
       if (child.name == name) return child;
     }
@@ -197,7 +199,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   bool contains(DisplayObject child) {
 
-    while(child != null) {
+    while (child != null) {
       if (child == this) return true;
       child = child.parent;
     }
@@ -232,7 +234,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       Rectangle<num> rectangle = child.getBoundsTransformed(_tmpMatrix, returnRectangle);
 
       if (rectangle.left < left) left = rectangle.left;
-      if (rectangle.top < top ) top = rectangle.top;
+      if (rectangle.top < top) top = rectangle.top;
       if (rectangle.right > right) right = rectangle.right;
       if (rectangle.bottom > bottom) bottom = rectangle.bottom;
     }
@@ -306,7 +308,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   void render(RenderState renderState) {
 
-    for(int i = 0; i < _children.length; i++) {
+    for (int i = 0; i < _children.length; i++) {
       DisplayObject child = _children[i];
       if (child.visible && child.off == false) {
         renderState.renderDisplayObject(child);
@@ -323,7 +325,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
     if (displayObject is DisplayObjectContainer) {
       var children = displayObject._children;
-      for(int i = 0; i < children.length; i++) {
+      for (int i = 0; i < children.length; i++) {
         _collectDescendants(children[i], descendants);
       }
     }
@@ -334,7 +336,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     List descendants = [];
     _collectDescendants(displayObject, descendants);
 
-    for(int i = 0; i < descendants.length; i++) {
+    for (int i = 0; i < descendants.length; i++) {
       descendants[i].dispatchEvent(event);
     }
   }

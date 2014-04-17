@@ -184,7 +184,7 @@ class Tween implements Animatable {
         if (_started == false) {
           _started = true;
 
-          for(int i = 0; i < _tweenPropertyList.length; i++) {
+          for (int i = 0; i < _tweenPropertyList.length; i++) {
             _tweenPropertyList[i]._init();
           }
           if (_onStart != null) {
@@ -197,7 +197,7 @@ class Tween implements Animatable {
         num ratio = _currentTime / _totalTime;
         num transition = _transitionFunction(ratio).toDouble();
 
-        for(int i = 0; i < _tweenPropertyList.length; i++) {
+        for (int i = 0; i < _tweenPropertyList.length; i++) {
           _tweenPropertyList[i]._update(transition, _roundToInt);
         }
         if (_onUpdate != null) {

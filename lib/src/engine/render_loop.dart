@@ -90,7 +90,7 @@ class RenderLoop {
 
       _juggler.advanceTime(deltaTimeSec);
 
-      for(int i = 0; i < _stages.length; i++) {
+      for (int i = 0; i < _stages.length; i++) {
         _stages[i].juggler.advanceTime(deltaTimeSec);
       }
 
@@ -99,7 +99,7 @@ class RenderLoop {
         _dispatchBroadcastEvent(_renderEvent, _renderSubscriptions);
       }
 
-      for(int i = 0; i < _stages.length; i++) {
+      for (int i = 0; i < _stages.length; i++) {
         _stages[i].materialize(currentTimeSec, deltaTimeSec);
       }
 

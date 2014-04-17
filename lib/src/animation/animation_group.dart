@@ -55,7 +55,7 @@ class AnimationGroup implements Animatable {
       }
     }
 
-    for(int i = 0; i < _animatables.length; ) {
+    for (int i = 0; i < _animatables.length; ) {
       if (_animatables[i].advanceTime(time) == false) {
         _animatables.removeAt(i);
       } else {
@@ -88,8 +88,12 @@ class AnimationGroup implements Animatable {
 
   /// The function that is called when a [AnimationGroup] starts.
   /// This happens after the specified delay.
-  void set onStart(void function()) { _onStart = function; }
+  void set onStart(void function()) {
+    _onStart = function;
+  }
 
   /// The function that is called when a [AnimationGroup] is completed.
-  void set onComplete(void function()) { _onComplete = function; }
+  void set onComplete(void function()) {
+    _onComplete = function;
+  }
 }

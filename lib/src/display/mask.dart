@@ -90,7 +90,7 @@ class _CirlceMask extends Mask {
       var tx = centerX - centerX * cosR + centerY * sinR;
       var ty = centerY - centerX * sinR - centerY * cosR;
 
-      for(int s = 0; s <= steps; s++) {
+      for (int s = 0; s <= steps; s++) {
         var nextX = currentX * cosR - currentY * sinR + tx;
         var nextY = currentX * sinR + currentY * cosR + ty;
         renderState.renderTriangle(centerX, centerY, currentX, currentY, nextX, nextY, Color.Magenta);
@@ -123,12 +123,12 @@ class _CustomMask extends Mask {
     if (renderState.renderContext is RenderContextCanvas) {
       var renderContext = renderState.renderContext as RenderContextCanvas;
       var context = renderContext.rawContext;
-      for(int i = 0; i <= points.length; i++) {
-        var point =  points[i % points.length];
+      for (int i = 0; i <= points.length; i++) {
+        var point = points[i % points.length];
         context.lineTo(point.x, point.y);
       }
     } else {
-      for(int i = 0; i <= triangles.length - 3; i += 3) {
+      for (int i = 0; i <= triangles.length - 3; i += 3) {
         var p1 = points[triangles[i + 0]];
         var p2 = points[triangles[i + 1]];
         var p3 = points[triangles[i + 2]];

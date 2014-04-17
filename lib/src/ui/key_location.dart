@@ -1,7 +1,7 @@
 part of stagexl;
 
 class KeyLocation {
-  
+
   static const int STANDARD = 0;
   static const int LEFT = 1;
   static const int RIGHT = 2;

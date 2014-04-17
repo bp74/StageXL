@@ -87,9 +87,13 @@ class AnimationChain implements Animatable {
   /* The function that is called when a [AnimationChain] starts.
    * This happens after the specified delay.
    */
-  void set onStart(void function()) { _onStart = function; }
+  void set onStart(void function()) {
+    _onStart = function;
+  }
 
   /* The function that is called when a [AnimationChain] is completed.
    */
-  void set onComplete(void function()) { _onComplete = function; }
+  void set onComplete(void function()) {
+    _onComplete = function;
+  }
 }

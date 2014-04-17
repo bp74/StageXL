@@ -11,5 +11,5 @@ class SoundTransform {
 
   SoundTransform([this.volume = 1, this.pan = 0]);
 
-  SoundTransform.mute():this(0, 0);
+  SoundTransform.mute() : this(0, 0);
 }
