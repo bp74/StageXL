@@ -197,7 +197,7 @@ class BitmapData implements BitmapDrawable {
     var context = _renderTexture.canvas.context2D;
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     context.fillStyle = _color2rgba(color);
-    context.fillRect(rect.x, rect.y, rect.width, rect.height);
+    context.fillRect(rect.left, rect.top, rect.width, rect.height);
     _renderTexture.update();
   }
 

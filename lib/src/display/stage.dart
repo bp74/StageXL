@@ -416,8 +416,8 @@ class Stage extends DisplayObjectContainer {
     //----------------------------
 
     var contentRectangle = _contentRectangle;
-    contentRectangle.x = - pivotX / scaleX;
-    contentRectangle.y = - pivotY / scaleY;
+    contentRectangle.left = - pivotX / scaleX;
+    contentRectangle.top = - pivotY / scaleY;
     contentRectangle.width = clientWidth / scaleX;
     contentRectangle.height = clientHeight / scaleY;
 

@@ -182,8 +182,8 @@ class RenderTextureQuad {
 
   RenderTextureQuad cut(Rectangle<int> rectangle) {
     var renderTextureQuad = clip(rectangle);
-    renderTextureQuad._offsetX -= rectangle.x;
-    renderTextureQuad._offsetY -= rectangle.y;
+    renderTextureQuad._offsetX -= rectangle.left;
+    renderTextureQuad._offsetY -= rectangle.top;
     return renderTextureQuad;
   }
 
@@ -218,9 +218,9 @@ class RenderTextureQuad {
     var context = _renderTexture.canvas.context2D;
     var backingStorePixelRatio = _backingStorePixelRatio;
     if (backingStorePixelRatio > 1.0) {
-      return context.getImageDataHD(rect.x, rect.y, rect.width, rect.height);
+      return context.getImageDataHD(rect.left, rect.top, rect.width, rect.height);
     } else {
-      return context.getImageData(rect.x, rect.y, rect.width, rect.height);
+      return context.getImageData(rect.left, rect.top, rect.width, rect.height);
     }
   }
 
@@ -229,9 +229,9 @@ class RenderTextureQuad {
     var context = _renderTexture.canvas.context2D;
     var backingStorePixelRatio = _backingStorePixelRatio;
     if (backingStorePixelRatio > 1.0) {
-      context.putImageDataHD(imageData, rect.x, rect.y);
+      context.putImageDataHD(imageData, rect.left, rect.top);
     } else {
-      context.putImageData(imageData, rect.x, rect.y);
+      context.putImageData(imageData, rect.left, rect.top);
     }
   }
 

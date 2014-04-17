@@ -51,7 +51,7 @@ class _RectangleMask extends Mask {
     if (renderState.renderContext is RenderContextCanvas) {
       var renderContext = renderState.renderContext as RenderContextCanvas;
       var context = renderContext.rawContext;
-      context.rect(_rectangle.x, _rectangle.y, _rectangle.width, _rectangle.height);
+      context.rect(_rectangle.left, _rectangle.top, _rectangle.width, _rectangle.height);
     } else {
       var l = _rectangle.left;
       var t = _rectangle.top;

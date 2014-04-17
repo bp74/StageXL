@@ -239,8 +239,8 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       if (rectangle.bottom > bottom) bottom = rectangle.bottom;
     }
 
-    returnRectangle.x = left;
-    returnRectangle.y = top;
+    returnRectangle.left = left;
+    returnRectangle.top = top;
     returnRectangle.width = right - left;
     returnRectangle.height = bottom - top;
 
