@@ -168,15 +168,15 @@ void main() {
   test('#containsRect', () {
     Rectangle rect = new Rectangle(1, 1, 2, 2);
 
-    expect(rect.containsRect(new Rectangle(0, 0, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(1, 0, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(2, 0, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(0, 1, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(1, 1, 2, 2)), isTrue);
-    expect(rect.containsRect(new Rectangle(2, 1, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(0, 2, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(1, 2, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(2, 2, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(0, 0, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(1, 0, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(2, 0, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(0, 1, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(1, 1, 2, 2)), isTrue);
+    expect(rect.containsRectangle(new Rectangle(2, 1, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(0, 2, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(1, 2, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(2, 2, 2, 2)), isFalse);
   });
 
   test('#equals', () {
