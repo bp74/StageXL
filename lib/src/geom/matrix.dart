@@ -72,12 +72,6 @@ class Matrix {
     return new Point<num>(x * _a + y * _c, x * _b + y * _d);
   }
 
-  Point<num> transformDartPoint(m.Point p) {
-    var x = p.x.toDouble();
-    var y = p.y.toDouble();
-    return new Point<num>(x * _a + y * _c + _tx, x * _b + y * _d + _ty);
-  }
-
   //-------------------------------------------------------------------------------------------------
 
   void concat(Matrix matrix) {

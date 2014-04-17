@@ -1,13 +1,13 @@
 part of stagexl.geom;
 
-class Point<T extends num> {
+class Point<T extends num> implements m.Point<T> {
 
   T x;
   T y;
 
   Point(this.x, this.y);
 
-  Point.from(Point<T> p) : this(p.x, p.y);
+  Point.from(m.Point<T> p) : this(p.x, p.y);
 
   Point<T> clone() => new Point<T>(x, y);
 
@@ -16,9 +16,9 @@ class Point<T extends num> {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static num distance(Point<num> p1, Point<num> p2) => p1.distanceTo(p2);
+  static num distance(m.Point<num> p1, m.Point<num> p2) => p1.distanceTo(p2);
 
-  static Point<num> interpolate(Point<num> p1, Point<num> p2, num f) =>
+  static Point<num> interpolate(m.Point<num> p1, m.Point<num> p2, num f) =>
     new Point<num>(p2.x + (p1.x - p2.x) * f, p2.y + (p1.y - p2.y) * f);
 
   static Point<num> polar(num len, num angle) =>
@@ -27,44 +27,60 @@ class Point<T extends num> {
   //-------------------------------------------------------------------------------------------------
 
   /// The distance from the origin (0, 0) coordinates to this Point.
+  ///
+  /// This property is deprecated. Use [magnitude] instead.
+  @deprecated
+  num get length => magnitude;
 
-  num get length => sqrt(x * x + y * y);
+  /**
+   * Get the straight line (Euclidean) distance between the origin (0, 0) and
+   * this point.
+   */
+  double get magnitude => sqrt(x * x + y * y);
 
-  Point<T> operator +(Point<T> point) => add(point);
-  Point<T> operator -(Point<T> point) => subtract(point);
+  Point<T> operator +(m.Point<T> point) => add(point);
+  Point<T> operator -(m.Point<T> point) => subtract(point);
+
+  /**
+   * Scale this point by [factor] as if it were a vector.
+   *
+   * *Important* *Note*: This function accepts a `num` as its argument only so
+   * that you can scale Point<double> objects by an `int` factor. Because the
+   * star operator always returns the same type of Point that originally called
+   * it, passing in a double [factor] on a `Point<int>` _causes_ _a_
+   * _runtime_ _error_ in checked mode.
+   */
+  Point<T> operator *(num factor) {
+    return new Point<T>(x * factor, y * factor);
+  }
 
   //-------------------------------------------------------------------------------------------------
 
   /// Adds the coordinates of another Point to the coordinates of this Point
   /// and returns a new Point.
-
-  Point<T> add(Point<T> point) => new Point<T>(x + point.x, y + point.y);
+  Point<T> add(m.Point<T> point) => new Point<T>(x + point.x, y + point.y);
 
   /// Subtracts the coordinates of another Point from the coordinates of this
   /// Point to returns a new Point.
-
-  Point<T> subtract(Point<T> point) => new Point<T>(x - point.x, y - point.y);
+  Point<T> subtract(m.Point<T> point) => new Point<T>(x - point.x, y - point.y);
 
   /// Determines whether another points are equal this Point.
 
   bool equals(Point point) => x == point.x && y == point.y;
 
   /// Copies the coordinates from another Point into this Point.
-
-  void copyFrom(Point<T> point) {
+  void copyFrom(m.Point<T> point) {
     x = point.x;
     y = point.y;
   }
 
   /// Sets the coordinates of this Point to the specified values.
-
   void setTo(T px, T py) {
     x = px;
     y = py;
   }
 
   /// Offsets this Point by the specified amount.
-
   void offset(T dx, T dy) {
     x += dx;
     y += dy;
@@ -72,10 +88,19 @@ class Point<T extends num> {
 
   /// Calculates the distance from this Point to another Point.
 
-  num distanceTo(Point<num> point) {
-    num dx = x - point.x;
-    num dy = y - point.y;
-    return sqrt(dx * dx + dy * dy);
+  num distanceTo(m.Point<num> point) {
+    return sqrt(squaredDistanceTo(point));
   }
 
+  /**
+   * Returns the squared distance between `this` and [other].
+   *
+   * Squared distances can be used for comparisons when the actual value is not
+   * required.
+   */
+  T squaredDistanceTo(m.Point<T> other) {
+    var dx = x - other.x;
+    var dy = y - other.y;
+    return dx * dx + dy * dy;
+  }
 }
