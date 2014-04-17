@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.geom;
 
 class Point<T extends num> {
 

@@ -464,7 +464,7 @@ class Stage extends DisplayObjectContainer {
     int button = event.button;
 
     InteractiveObject target = null;
-    Point stagePoint = _clientTransformation._transformHtmlPoint(event.client);
+    Point stagePoint = _clientTransformation.transformDartPoint(event.client);
     Point localPoint = null;
 
     if (button < 0 || button > 2) return;
@@ -651,7 +651,7 @@ class Stage extends DisplayObjectContainer {
 
   _onMouseWheelEvent(html.WheelEvent event) {
 
-    var stagePoint = _clientTransformation._transformHtmlPoint(event.client);
+    var stagePoint = _clientTransformation.transformDartPoint(event.client);
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
 
     if (target != null) {
@@ -699,7 +699,7 @@ class Stage extends DisplayObjectContainer {
     for(var changedTouch in event.changedTouches) {
 
       var identifier = changedTouch.identifier;
-      var stagePoint = _clientTransformation._transformHtmlPoint(changedTouch.client);
+      var stagePoint = _clientTransformation.transformDartPoint(changedTouch.client);
       var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
       var touch = _touches.containsKey(identifier) ? _touches[identifier] : new _Touch(target, _touches.length == 0);
 
