@@ -23,7 +23,7 @@ class ColorTransform {
 
   void set color(int value) {
 
-    value = ensureInt(value);
+    value = _ensureInt(value);
 
     redOffset =   (value & 0x00FF0000) >> 16;
     greenOffset = (value & 0x0000FF00) >> 8;
