@@ -36,15 +36,9 @@ void main() {
     expect(rect.left, equals(1));
   });
 
-  test('#x', () {
-    Rectangle rect = rect1234();
-
-    expect(rect.x, 1);
-  });
-
-  test('#x=', () {
+  test('#left=', () {
     Rectangle rect = new Rectangle(0, 0, 0, 0);
-    rect.x = 10;
+    rect.left = 10;
 
     expect(rect.left, 10);
   });
@@ -62,15 +56,15 @@ void main() {
     expect(rect.width, 9);
   });
 
-  test('#y', () {
+  test('#top', () {
     Rectangle rect = rect1234();
 
-    expect(rect.y, equals(2));
+    expect(rect.top, equals(2));
   });
 
-  test('#y=', () {
+  test('#top=', () {
     Rectangle rect = rect1234();
-    rect.y = 10;
+    rect.top = 10;
 
     expect(rect.top, equals(10));
   });
