@@ -40,6 +40,7 @@ part 'src/display/bitmap_data_load_options.dart';
 part 'src/display/bitmap_drawable.dart';
 part 'src/display/button_helper.dart';
 part 'src/display/caps_style.dart';
+part 'src/display/color_transform.dart';
 part 'src/display/composite_operation.dart';
 part 'src/display/display_object.dart';
 part 'src/display/display_object_container.dart';

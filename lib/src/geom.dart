@@ -6,7 +6,6 @@ import 'dart:math' as m;
 import 'tools.dart';
 
 part 'geom/circle.dart';
-part 'geom/color_transform.dart';
 part 'geom/matrix.dart';
 part 'geom/point.dart';
 part 'geom/polygon.dart';
