@@ -9,6 +9,11 @@ class ResourceManager extends EventDispatcher {
 
   //-----------------------------------------------------------------------------------------------
 
+  bool _containsResource(String kind, String name) {
+    var key = "$kind.$name";
+    return _resources.containsKey(key);
+  }
+
   _addResource(String kind, String name, String url, Future loader) {
 
     var key = "$kind.$name";
@@ -75,6 +80,16 @@ class ResourceManager extends EventDispatcher {
   List<ResourceManagerResource> get resources {
     return _resources.values.toList();
   }
+
+  //-----------------------------------------------------------------------------------------------
+
+  bool containsBitmapData(String name) => _containsResource("BitmapData", name);
+  bool containsSound(String name) => _containsResource("Sound", name);
+  bool containsSoundSprite(String name) => _containsResource("SoundSprite", name);
+  bool containsTextureAtlas(String name) => _containsResource("TextureAtlas", name);
+  bool containsTextFile(String name) => _containsResource("TextFile", name);
+  bool containsText(String name) => _containsResource("Text", name);
+  bool containsCustomObject(String name) => _containsResource("CustomObject", name);
 
   //-----------------------------------------------------------------------------------------------
 
