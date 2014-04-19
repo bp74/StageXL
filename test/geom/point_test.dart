@@ -67,8 +67,8 @@ void main() {
     testPoint(Point.polar(10, 1), x: 5.403, y: 8.414);
   });
 
-  test('#length', () {
-    expect(point12().length, closeTo(2.236, 0.001));
+  test('#magnitude', () {
+    expect(point12().magnitude, closeTo(2.236, 0.001));
   });
 
   test('#add', () {

@@ -32,13 +32,7 @@ bool _ensureBool(bool value) {
   }
 }
 
-int _ensureInt(int value) {
-  if (value is int) {
-    return value;
-  } else {
-    throw new ArgumentError("The supplied value ($value) is not an int.");
-  }
-}
+int _ensureInt(int value) => tools.ensureInt(value);
 
 num _ensureNum(num value) {
   if (value is num) {

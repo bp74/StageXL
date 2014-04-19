@@ -27,7 +27,7 @@ void main() {
   });
 
   test('SpriteSheet.frames calls BitmapData.sliceSpriteSheet correctly', () {
-    for(var index = 0; index < spritesheet.frames.length; index++) {
+    for (var index = 0; index < spritesheet.frames.length; index++) {
       var x = index % 7;
       var y = index ~/ 7;
       var id1 = spritesheet.frames[index].renderTextureQuad.getImageData();
@@ -37,7 +37,7 @@ void main() {
   });
 
   test('SpriteSheet.frameAt uses SpriteSheet.frames', () {
-    for(var index = 0; index < spritesheet.frames.length; index++) {
+    for (var index = 0; index < spritesheet.frames.length; index++) {
       expect(spritesheet.frameAt(index), equals(spritesheet.frames[index]));
     }
   });

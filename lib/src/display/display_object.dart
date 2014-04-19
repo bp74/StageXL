@@ -329,7 +329,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     Matrix resultMatrix = new Matrix.fromIdentity();
     DisplayObject resultObject = this;
 
-    while(resultObject != targetSpace && resultObject._parent != null) {
+    while (resultObject != targetSpace && resultObject._parent != null) {
       resultMatrix.concat(resultObject.transformationMatrix);
       resultObject = resultObject._parent;
     }
@@ -348,7 +348,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     Matrix targetMatrix = new Matrix.fromIdentity();
     DisplayObject targetObject = targetSpace;
 
-    while(targetObject != this && targetObject._parent != null) {
+    while (targetObject != this && targetObject._parent != null) {
       targetMatrix.concat(targetObject.transformationMatrix);
       targetObject = targetObject._parent;
     }
@@ -441,7 +441,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     _tmpMatrix.identity();
 
-    for(var current = this; current != null; current = current._parent) {
+    for (var current = this; current != null; current = current._parent) {
       _tmpMatrix.concat(current.transformationMatrix);
     }
 
@@ -454,7 +454,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
     _tmpMatrix.identity();
 
-    for(var current = this; current != null; current = current._parent) {
+    for (var current = this; current != null; current = current._parent) {
       _tmpMatrix.concat(current.transformationMatrix);
     }
 
@@ -626,7 +626,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       var boundsRight = bounds.right.ceil();
       var boundsBottom = bounds.bottom.ceil();
 
-      for(int i = 0; i < filters.length; i++) {
+      for (int i = 0; i < filters.length; i++) {
         var overlap = filters[i].overlap;
         boundsLeft += overlap.left;
         boundsTop += overlap.top;
@@ -658,13 +658,13 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       RenderFrameBuffer targetRenderFrameBuffer = null;
       RenderState filterRenderState = flattenRenderState;
 
-      for(int i = 0; i < filters.length; i++) {
+      for (int i = 0; i < filters.length; i++) {
 
         BitmapFilter filter = filters[i];
         List<int> renderPassSources = filter.renderPassSources;
         List<int> renderPassTargets = filter.renderPassTargets;
 
-        for(int pass = 0; pass < renderPassSources.length; pass++) {
+        for (int pass = 0; pass < renderPassSources.length; pass++) {
 
           int renderPassSource = renderPassSources[pass];
           int renderPassTarget = renderPassTargets[pass];

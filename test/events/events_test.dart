@@ -40,14 +40,17 @@ void main() {
 
     dispatcher.addEventListener(eventType, listener1);
     dispatcher.addEventListener(eventType, listener2);
-    dispatcher.addEventListener(eventType, (Event event) => actual.add("listener3"));
+    dispatcher.addEventListener(eventType, (Event event) => actual.add(
+        "listener3"));
     dispatcher.removeEventListener(eventType, listener2);
 
     dispatcher.dispatchEvent(new Event(eventType));
     expect(actual, equals(expected));
   });
 
-  test("EventDispatcher.addEventListener - test with priorities and correct fire order", () {
+  test(
+      "EventDispatcher.addEventListener - test with priorities and correct fire order",
+      () {
     List actual = new List();
     List expected = [1, 2, 3, 4];
 
@@ -86,7 +89,8 @@ void main() {
 
     var sub1 = dispatcher.on(eventType).listen(listener1);
     var sub2 = dispatcher.on(eventType).listen(listener2);
-    var sub3 = dispatcher.on(eventType).listen((Event event) => actual.add("listener3"));
+    var sub3 = dispatcher.on(eventType).listen((Event event) => actual.add(
+        "listener3"));
 
     sub2.cancel();
 

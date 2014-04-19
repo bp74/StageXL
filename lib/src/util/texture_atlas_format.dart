@@ -1,7 +1,7 @@
 part of stagexl;
 
 class TextureAtlasFormat {
-  
+
   static const String JSON = "json";
   static const String JSONARRAY = "jsonarray";
   //static const String STARLING = "starling";

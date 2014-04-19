@@ -1,9 +1,9 @@
 library vector_test;
 
 import 'dart:math';
+
 import 'package:unittest/unittest.dart';
 import 'package:stagexl/stagexl.dart';
-
 
 void main() {
 
@@ -31,7 +31,7 @@ void main() {
     expect(vDiv.x, equals(10 / 30));
     expect(vDiv.y, equals(20 / 40));
 
-    expect(v1 == new Vector(10,20), isTrue);
+    expect(v1 == new Vector(10, 20), isTrue);
   });
 
   test('VectorScale', () {
@@ -52,10 +52,10 @@ void main() {
     expect(v1.length, equals(22.360679774997898));
     expect(v1.lengthSqr, equals(10 * 10 + 20 * 20));
 
-    expect((v2-v3).isNear(v1), isTrue);
-    expect((v2-v3).isNearXY(10, 20), isTrue);
-    expect((v2-v2).isNear(v1), isFalse);
-    expect((v2-v2).isNearXY(0, 0.1), isFalse);
+    expect((v2 - v3).isNear(v1), isTrue);
+    expect((v2 - v3).isNearXY(10, 20), isTrue);
+    expect((v2 - v2).isNear(v1), isFalse);
+    expect((v2 - v2).isNearXY(0, 0.1), isFalse);
 
     expect(v1.distance(v2), equals(28.284271247461902));
     expect(v1.distanceSqr(v2), equals(800.0));
@@ -68,15 +68,15 @@ void main() {
     expect(new Vector(1, 0).normalRight().isNearXY(0, 1), isTrue);
     expect(new Vector(-13, 3).negate().isNearXY(13, -3), isTrue);
     expect(new Vector(1, 0).rotate(PI * 0.5).isNearXY(0, 1), isTrue);
-    expect(new Vector(1,1).rads, closeTo(PI / 4, Vector.Epsilon));
-    expect(new Vector(1,1).degrees, closeTo(45, Vector.Epsilon));
+    expect(new Vector(1, 1).rads, closeTo(PI / 4, Vector.Epsilon));
+    expect(new Vector(1, 1).degrees, closeTo(45, Vector.Epsilon));
   });
 
   test('VectorDot', () {
     expect(new Vector(1, 0).dotXY(1, 0), equals(1.0));
-    expect(new Vector(1, 0).dotXY( -1, 0), equals(-1.0));
+    expect(new Vector(1, 0).dotXY(-1, 0), equals(-1.0));
     expect(new Vector(1, 0).dotXY(0, 1), equals(0.0));
-    expect(new Vector(1, 1).normalize().dot(new Vector(1,-1)), equals(0.0));
+    expect(new Vector(1, 1).normalize().dot(new Vector(1, -1)), equals(0.0));
   });
 
   test('VectorCross', () {
@@ -89,12 +89,15 @@ void main() {
   });
 
   test('VectorLerp', () {
-    expect(new Vector(1, 0).lerp(new Vector(0, -1), 0.5).isWithinXY(0.5, -0.5, 0.01), isTrue);
-    expect(new Vector(1, 0).lerp(new Vector(-1, 0), 0.5).isWithinXY(0, 0, 0.01), isTrue);
+    expect(new Vector(1, 0).lerp(new Vector(0, -1), 0.5).isWithinXY(0.5, -0.5,
+        0.01), isTrue);
+    expect(new Vector(1, 0).lerp(new Vector(-1, 0), 0.5).isWithinXY(0, 0, 0.01),
+        isTrue);
   });
 
   test('VectorSlerp', () {
-    expect(new Vector(1, 0).slerp(new Vector(0, -1), 0.5).isWithinXY(0.7, -0.7, 0.1), isTrue);
+    expect(new Vector(1, 0).slerp(new Vector(0, -1), 0.5).isWithinXY(0.7, -0.7,
+        0.1), isTrue);
   });
 
 }

@@ -1,7 +1,7 @@
 part of stagexl;
 
 class MouseCursor {
-  
+
   static const String AUTO = "auto";
   static const String ARROW = "arrow";
   static const String BUTTON = "button";

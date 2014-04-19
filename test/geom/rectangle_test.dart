@@ -14,7 +14,7 @@ void main() {
     Rectangle rect = rect1234();
     Rectangle rect2 = new Rectangle.from(rect);
 
-    rect2.x = 5;
+    rect2.left = 5;
 
     testRectangle(rect, x: 1, y: 2, width: 3, height: 4);
     testRectangle(rect2, x: 5, y: 2, width: 3, height: 4);
@@ -24,7 +24,7 @@ void main() {
     Rectangle rect = rect1234();
     Rectangle rect2 = rect.clone();
 
-    rect2.x = 5;
+    rect2.left = 5;
 
     testRectangle(rect, x: 1, y: 2, width: 3, height: 4);
     testRectangle(rect2, x: 5, y: 2, width: 3, height: 4);
@@ -36,11 +36,17 @@ void main() {
     expect(rect.left, equals(1));
   });
 
-  test('#left=', () {
-    Rectangle rect = new Rectangle(0, 0, 0, 0);
-    rect.left = 10;
+  test('#x', () {
+    Rectangle rect = rect1234();
 
-    expect(rect.x, 10);
+    expect(rect.x, 1);
+  });
+
+  test('#x=', () {
+    Rectangle rect = new Rectangle(0, 0, 0, 0);
+    rect.x = 10;
+
+    expect(rect.left, 10);
   });
 
   test('#right', () {
@@ -56,17 +62,17 @@ void main() {
     expect(rect.width, 9);
   });
 
-  test('#top', () {
+  test('#y', () {
     Rectangle rect = rect1234();
 
-    expect(rect.top, equals(2));
+    expect(rect.y, equals(2));
   });
 
-  test('#top=', () {
+  test('#y=', () {
     Rectangle rect = rect1234();
-    rect.top = 10;
+    rect.y = 10;
 
-    expect(rect.y, equals(10));
+    expect(rect.top, equals(10));
   });
 
   test('#bottom', () {
@@ -168,15 +174,15 @@ void main() {
   test('#containsRect', () {
     Rectangle rect = new Rectangle(1, 1, 2, 2);
 
-    expect(rect.containsRect(new Rectangle(0, 0, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(1, 0, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(2, 0, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(0, 1, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(1, 1, 2, 2)), isTrue);
-    expect(rect.containsRect(new Rectangle(2, 1, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(0, 2, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(1, 2, 2, 2)), isFalse);
-    expect(rect.containsRect(new Rectangle(2, 2, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(0, 0, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(1, 0, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(2, 0, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(0, 1, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(1, 1, 2, 2)), isTrue);
+    expect(rect.containsRectangle(new Rectangle(2, 1, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(0, 2, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(1, 2, 2, 2)), isFalse);
+    expect(rect.containsRectangle(new Rectangle(2, 2, 2, 2)), isFalse);
   });
 
   test('#equals', () {
@@ -301,8 +307,8 @@ Rectangle rect1234() => new Rectangle(1, 2, 3, 4);
 Rectangle rect0000() => new Rectangle(0, 0, 0, 0);
 
 void testRectangle(Rectangle rect, {num x, num y, num width, num height}) {
-  if (x != null) expect(rect.x, equals(x));
-  if (y != null) expect(rect.y, equals(y));
+  if (x != null) expect(rect.left, equals(x));
+  if (y != null) expect(rect.top, equals(y));
   if (width != null) expect(rect.width, equals(width));
   if (height != null) expect(rect.height, equals(height));
 }

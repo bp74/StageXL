@@ -19,6 +19,11 @@ import 'dart:web_audio' show
 
 //-----------------------------------------------------------------------------
 
+import 'src/geom.dart';
+export 'src/geom.dart';
+
+import 'src/tools.dart' as tools;
+
 part 'src/animation/animatable.dart';
 part 'src/animation/animation_chain.dart';
 part 'src/animation/animation_group.dart';
@@ -91,14 +96,6 @@ part 'src/filters/color_matrix_filter.dart';
 part 'src/filters/displacement_map_filter.dart';
 part 'src/filters/drop_shadow_filter.dart';
 part 'src/filters/glow_filter.dart';
-
-part 'src/geom/circle.dart';
-part 'src/geom/color_transform.dart';
-part 'src/geom/matrix.dart';
-part 'src/geom/point.dart';
-part 'src/geom/polygon.dart';
-part 'src/geom/rectangle.dart';
-part 'src/geom/vector.dart';
 
 part 'src/media/sound.dart';
 part 'src/media/sound_channel.dart';

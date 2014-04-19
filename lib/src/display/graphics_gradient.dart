@@ -1,7 +1,7 @@
 part of stagexl;
 
 class GraphicsGradient {
-  
+
   String _kind;
   num _startX;
   num _startY;
@@ -42,7 +42,7 @@ class GraphicsGradient {
   //-------------------------------------------------------------------------------------------------
 
   CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
-    
+
     // ToDo: Maybe we should cache the CanvasGradient for a given context.
     // This could improve performance!
 

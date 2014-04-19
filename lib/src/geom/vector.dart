@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.geom;
 
 class Vector {
 

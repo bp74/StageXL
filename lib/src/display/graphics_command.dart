@@ -212,7 +212,7 @@ class _GraphicsCommandArcTo extends _GraphicsCommand {
 
       var rads = v01.rads - v12.rads;
       var tn = tan(rads / 2);
-      var ra = (tn > 0) ? _radius : - _radius;
+      var ra = (tn > 0) ? _radius : -_radius;
       var tangent1 = v1 - v01.scaleLength(tn * ra);
       var tangent2 = v1 + v12.scaleLength(tn * ra);
       var center = tangent1 + v01.normalLeft().scaleLength(ra);
@@ -232,7 +232,7 @@ class _GraphicsCommandArcTo extends _GraphicsCommand {
 
       bounds.updatePath(bounds.cursorX, bounds.cursorY);
 
-      for(var i = 0; i <= arcSteps; i++) {
+      for (var i = 0; i <= arcSteps; i++) {
         var v = center + arc.rotate(i * arcAngle / arcSteps);
         bounds.updatePath(v.x, v.y);
       }
@@ -478,7 +478,7 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
 
     try {
       return context.isPointInStroke(localX, localY);
-    } catch(e) {
+    } catch (e) {
       return false;
     }
   }

@@ -24,8 +24,7 @@ class DelayedCall implements Animatable {
   num _totalTime = 0.0;
   int _repeatCount = 1;
 
-  DelayedCall(Function action, num delay) :
-    _action = action {
+  DelayedCall(Function action, num delay) : _action = action {
     _totalTime = max(delay, 0.0001);
   }
 

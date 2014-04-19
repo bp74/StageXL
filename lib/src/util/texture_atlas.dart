@@ -13,7 +13,7 @@ class TextureAtlas {
     Completer<TextureAtlas> completer = new Completer<TextureAtlas>();
     TextureAtlas textureAtlas = new TextureAtlas();
 
-    switch(textureAtlasFormat) {
+    switch (textureAtlasFormat) {
 
       case TextureAtlasFormat.JSON:
       case TextureAtlasFormat.JSONARRAY:
@@ -26,7 +26,7 @@ class TextureAtlas {
           var imageUrl = _replaceFilename(url, meta["image"]);
 
           if (frames is List) {
-            for(var frame in frames) {
+            for (var frame in frames) {
               var frameMap = frame as Map;
               var fileName = frameMap["filename"] as String;
               var frameName = _getFilenameWithoutExtension(fileName);

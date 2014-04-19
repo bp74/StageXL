@@ -41,7 +41,7 @@ class TransitionFunction {
   }
 
   static num sine(num ratio) {
-    return 0.5 - 0.5 * cos(ratio * 2.0 * PI) ;
+    return 0.5 - 0.5 * cos(ratio * 2.0 * PI);
   }
 
   static num cosine(num ratio) {
@@ -58,9 +58,9 @@ class TransitionFunction {
     if (amount > 1) amount = 1;
 
     num easing(num t) {
-      if (amount==0) return t;
-      if (amount<0) return t*(t*-amount+1+amount);
-      return t*((2-t)*amount+(1-amount));
+      if (amount == 0) return t;
+      if (amount < 0) return t * (t * -amount + 1 + amount);
+      return t * ((2 - t) * amount + (1 - amount));
     }
     return easing;
   }
@@ -199,7 +199,7 @@ class TransitionFunction {
 
   static num easeOutExponential(num ratio) {
     if (ratio == 1.0) return 1.0;
-    return 1.0 - pow(2.0, - 10.0 * ratio);
+    return 1.0 - pow(2.0, -10.0 * ratio);
   }
 
   static num easeInOutExponential(num ratio) {

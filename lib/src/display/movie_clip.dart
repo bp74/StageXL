@@ -27,36 +27,35 @@ part of stagexl;
 * OTHER DEALINGS IN THE SOFTWARE.
 */
 
-class MovieClip extends Sprite
-{
+class MovieClip extends Sprite {
   /**
    * Read-only. The MovieClip will advance independently of its parent, even if its parent is paused.
    * This is the default mode.
    **/
   static const String INDEPENDENT = "independent";
-  
+
   /**
    * Read-only. The MovieClip will only display a single frame (as determined by the startPosition property).
    **/
   static const String SINGLE_FRAME = "single";
-  
+
   /**
    * Read-only. The MovieClip will be advanced only when it's parent advances and will be synched to the position of
    * the parent MovieClip.
    **/
   static const String SYNCHED = "synched";
-  
+
   /**
    * Controls how this MovieClip advances its time. Must be one of 0 (INDEPENDENT), 1 (SINGLE_FRAME), or 2 (SYNCHED).
    * See each constant for a description of the behaviour.
    **/
   String mode;
-  
+
   /**
    * Specifies what the first frame to play in this movieclip, or the only frame to display if mode is SINGLE_FRAME.
    */
   int startPosition = 0;
-  
+
   /**
    * Specifies the timeline progression speed.
    * If =0, uses the stage's frameRate
@@ -67,7 +66,7 @@ class MovieClip extends Sprite
    * Indicates whether this MovieClip should loop when it reaches the end of its timeline.
    */
   bool loop = true;
-  
+
   /**
    * Read-Only. The current frame of the movieclip.
    */
@@ -979,9 +978,10 @@ class TimelineTween
     return s(props, target);
   }
   TimelineTween s(Map<String, dynamic> props, [dynamic target]) {
-    return _addAction(new TimelineAction(_set, [props, target != null ? target : _target]));
+    return _addAction(new TimelineAction(_set, [props, target != null ? target :
+        _target]));
   }
-  
+
   /** 
    * Queues an action to to play (unpause) the specified tween. This enables you to sequence multiple tweens.
    * @example 
@@ -1004,7 +1004,7 @@ class TimelineTween
     if (tween == null) return call(this.setPaused, [true]);
     return call(tween.setPaused, [true]);
   }
-  
+
   /** 
    * Advances the tween to a specified position.
    * @method setPosition
@@ -1127,23 +1127,21 @@ class TimelineTween
       if (v0 is num/*typeof number*/) {
         dv0 = v0.toDouble();
         dv1 = v1.toDouble();
-        
+
         if (dv0 == dv1 || ratio == 0 || ratio == 1) {
           dv = ratio == 1 ? dv1 : dv0;
         } else {
-          dv = dv0+(dv1-dv0)*ratio;
+          dv = dv0 + (dv1 - dv0) * ratio;
         }
-      }
-      else {
+      } else {
         // no interpolation for non-numeric
         v = ratio == 1 ? v1 : v0;
         dv = 0;
       }
-      
+
       //_target[n] = v;
       //print("newValue $n = $v");
-      if (_target is DisplayObject)
-      {
+      if (_target is DisplayObject) {
         DisplayObject d = _target as DisplayObject;
         switch(n)
         {
@@ -1195,8 +1193,8 @@ class TimelineTween
    * @protected
    **/
   void _runActions(int curPos) {
-    
-    for(var i=0; i<_actions.length; i++) {
+
+    for (var i = 0; i < _actions.length; i++) {
       var action = _actions[i];
       if (action.t == curPos) {
         //if (action.p != null) Function.apply(action.f, action.p);
@@ -1303,7 +1301,7 @@ class TimelineTween
     }
     return this;
   }
-  
+
   /**
    * @method _addAction
    * @param {Object} o

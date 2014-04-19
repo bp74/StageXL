@@ -8,5 +8,5 @@ class Shadow {
   num blur;
   DisplayObject targetSpace;
 
-  Shadow(this.color, this.offsetX , this.offsetY, this.blur);
+  Shadow(this.color, this.offsetX, this.offsetY, this.blur);
 }
