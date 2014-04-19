@@ -1,4 +1,4 @@
-part of stagexl.geom;
+part of stagexl;
 
 // PolyK library
 // url: http://polyk.ivank.net

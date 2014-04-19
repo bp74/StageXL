@@ -1,4 +1,4 @@
-part of stagexl.geom;
+part of stagexl;
 
 class Matrix {
 
@@ -54,13 +54,13 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
-  Point<num> deltaTransformPoint(m.Point<num> p) {
+  Point<num> deltaTransformPoint(math.Point<num> p) {
     var x = p.x.toDouble();
     var y = p.y.toDouble();
     return new Point<num>(x * _a + y * _c, x * _b + y * _d);
   }
 
-  Point<num> transformPoint(m.Point<num> p) {
+  Point<num> transformPoint(math.Point<num> p) {
     var x = p.x.toDouble();
     var y = p.y.toDouble();
     return new Point<num>(x * _a + y * _c + _tx, x * _b + y * _d + _ty);

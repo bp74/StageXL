@@ -1,13 +1,13 @@
-part of stagexl.geom;
+part of stagexl;
 
-class Point<T extends num> implements m.Point<T> {
+class Point<T extends num> implements math.Point<T> {
 
   T x;
   T y;
 
   Point(this.x, this.y);
 
-  Point.from(m.Point<T> p) : this(p.x, p.y);
+  Point.from(math.Point<T> p) : this(p.x, p.y);
 
   Point<T> clone() => new Point<T>(x, y);
 
@@ -16,9 +16,9 @@ class Point<T extends num> implements m.Point<T> {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static num distance(m.Point<num> p1, m.Point<num> p2) => p1.distanceTo(p2);
+  static num distance(math.Point<num> p1, math.Point<num> p2) => p1.distanceTo(p2);
 
-  static Point<num> interpolate(m.Point<num> p1, m.Point<num> p2, num f) =>
+  static Point<num> interpolate(math.Point<num> p1, math.Point<num> p2, num f) =>
     new Point<num>(p2.x + (p1.x - p2.x) * f, p2.y + (p1.y - p2.y) * f);
 
   static Point<num> polar(num len, num angle) =>
@@ -38,8 +38,8 @@ class Point<T extends num> implements m.Point<T> {
    */
   double get magnitude => sqrt(x * x + y * y);
 
-  Point<T> operator +(m.Point<T> point) => add(point);
-  Point<T> operator -(m.Point<T> point) => subtract(point);
+  Point<T> operator +(math.Point<T> point) => add(point);
+  Point<T> operator -(math.Point<T> point) => subtract(point);
 
   /**
    * Scale this point by [factor] as if it were a vector.
@@ -58,18 +58,18 @@ class Point<T extends num> implements m.Point<T> {
 
   /// Adds the coordinates of another Point to the coordinates of this Point
   /// and returns a new Point.
-  Point<T> add(m.Point<T> point) => new Point<T>(x + point.x, y + point.y);
+  Point<T> add(math.Point<T> point) => new Point<T>(x + point.x, y + point.y);
 
   /// Subtracts the coordinates of another Point from the coordinates of this
   /// Point to returns a new Point.
-  Point<T> subtract(m.Point<T> point) => new Point<T>(x - point.x, y - point.y);
+  Point<T> subtract(math.Point<T> point) => new Point<T>(x - point.x, y - point.y);
 
   /// Determines whether another points are equal this Point.
 
   bool equals(Point point) => x == point.x && y == point.y;
 
   /// Copies the coordinates from another Point into this Point.
-  void copyFrom(m.Point<T> point) {
+  void copyFrom(math.Point<T> point) {
     x = point.x;
     y = point.y;
   }
@@ -88,7 +88,7 @@ class Point<T extends num> implements m.Point<T> {
 
   /// Calculates the distance from this Point to another Point.
 
-  num distanceTo(m.Point<num> point) {
+  num distanceTo(math.Point<num> point) {
     return sqrt(squaredDistanceTo(point));
   }
 
@@ -98,7 +98,7 @@ class Point<T extends num> implements m.Point<T> {
    * Squared distances can be used for comparisons when the actual value is not
    * required.
    */
-  T squaredDistanceTo(m.Point<T> other) {
+  T squaredDistanceTo(math.Point<T> other) {
     var dx = x - other.x;
     var dy = y - other.y;
     return dx * dx + dy * dy;

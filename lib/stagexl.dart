@@ -3,6 +3,7 @@ library stagexl;
 import 'dart:async';
 import 'dart:math' hide Point, Rectangle;
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:html' as html;
 import 'dart:web_gl' as gl;
 import 'dart:typed_data';
@@ -18,9 +19,6 @@ import 'dart:web_audio' show
   ChannelSplitterNode, ChannelMergerNode;
 
 //-----------------------------------------------------------------------------
-
-import 'src/geom.dart';
-export 'src/geom.dart';
 
 part 'src/animation/animatable.dart';
 part 'src/animation/animation_chain.dart';
@@ -95,6 +93,13 @@ part 'src/filters/color_matrix_filter.dart';
 part 'src/filters/displacement_map_filter.dart';
 part 'src/filters/drop_shadow_filter.dart';
 part 'src/filters/glow_filter.dart';
+
+part 'src/geom/circle.dart';
+part 'src/geom/matrix.dart';
+part 'src/geom/point.dart';
+part 'src/geom/polygon.dart';
+part 'src/geom/rectangle.dart';
+part 'src/geom/vector.dart';
 
 part 'src/media/sound.dart';
 part 'src/media/sound_channel.dart';

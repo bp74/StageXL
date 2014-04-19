@@ -1,6 +1,6 @@
-part of stagexl.geom;
+part of stagexl;
 
-class Rectangle<T extends num> implements m.MutableRectangle<T> {
+class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   T left;
   T top;
@@ -9,7 +9,7 @@ class Rectangle<T extends num> implements m.MutableRectangle<T> {
 
   Rectangle(this.left, this.top, this.width, this.height);
 
-  Rectangle.from(m.Rectangle<T> r) : this(r.left, r.top, r.width, r.height);
+  Rectangle.from(math.Rectangle<T> r) : this(r.left, r.top, r.width, r.height);
 
   Rectangle<T> clone() => new Rectangle<T>(left, top, width, height);
 
@@ -77,19 +77,19 @@ class Rectangle<T extends num> implements m.MutableRectangle<T> {
     return left <= px && top <= py && right > px && bottom > py;
   }
 
-  bool containsPoint(m.Point<num> p) {
+  bool containsPoint(math.Point<num> p) {
     return contains(p.x, p.y);
   }
 
   /// Use [containsRectangle] instead.
   @deprecated
-  bool containsRect(m.Rectangle<num> r) => containsRectangle(r);
+  bool containsRect(math.Rectangle<num> r) => containsRectangle(r);
 
-  bool equals(m.Rectangle<num> r) {
+  bool equals(math.Rectangle<num> r) {
     return left == r.left && top == r.top && width == r.width && height == r.height;
   }
 
-  bool intersects(m.Rectangle<num> r) {
+  bool intersects(math.Rectangle<num> r) {
     return this.left < r.right && this.right > r.left && this.top < r.bottom && this.bottom > r.top;
   }
 
@@ -100,19 +100,19 @@ class Rectangle<T extends num> implements m.MutableRectangle<T> {
   /**
    * Returns a new rectangle which completely contains `this` and [other].
    */
-  Rectangle<T> boundingBox(m.Rectangle<T> other) => union(other);
+  Rectangle<T> boundingBox(math.Rectangle<T> other) => union(other);
 
   /**
    * Tests whether `this` entirely contains [another].
    */
-  bool containsRectangle(m.Rectangle<num> r) {
+  bool containsRectangle(math.Rectangle<num> r) {
     return left <= r.left && top <= r.top && left + width >= r.right &&
         top + height >= r.bottom;
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  void copyFrom(m.Rectangle<T> r) {
+  void copyFrom(math.Rectangle<T> r) {
     setTo(r.left, r.top, r.width, r.height);
   }
 
@@ -121,7 +121,7 @@ class Rectangle<T extends num> implements m.MutableRectangle<T> {
     height += dy;
   }
 
-  void inflatePoint(m.Point<T> p) {
+  void inflatePoint(math.Point<T> p) {
     inflate(p.x, p.y);
   }
 
@@ -141,7 +141,7 @@ class Rectangle<T extends num> implements m.MutableRectangle<T> {
     height = rheight;
   }
 
-  Rectangle<T> intersection(m.Rectangle<T> rect) {
+  Rectangle<T> intersection(math.Rectangle<T> rect) {
     T rLeft = max(left, rect.left);
     T rTop = max(top, rect.top);
     T rRight = min(right, rect.right);
@@ -150,7 +150,7 @@ class Rectangle<T extends num> implements m.MutableRectangle<T> {
   }
 
   // TODO: Consider deprecating this method in favor of the dart:core `boundingBox`
-  Rectangle<T> union(m.Rectangle<T> rect) {
+  Rectangle<T> union(math.Rectangle<T> rect) {
     T rLeft = min(left, rect.left);
     T rTop = min(top, rect.top);
     T rRight = max(right, rect.right);
