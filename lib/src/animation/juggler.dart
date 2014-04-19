@@ -129,11 +129,12 @@ class Juggler implements Animatable {
 
   //-----------------------------------------------------------------------------------------------
 
-  void purge() {
+  void clear() {
 
     var link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
       link.animatable = null;
+      link = link.nextAnimatableLink;
     }
 
     _lastAnimatableLink = _firstAnimatableLink;
