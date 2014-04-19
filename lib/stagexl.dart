@@ -22,8 +22,6 @@ import 'dart:web_audio' show
 import 'src/geom.dart';
 export 'src/geom.dart';
 
-import 'src/tools.dart' as tools;
-
 part 'src/animation/animatable.dart';
 part 'src/animation/animation_chain.dart';
 part 'src/animation/animation_group.dart';
