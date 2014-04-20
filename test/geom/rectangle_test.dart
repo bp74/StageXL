@@ -282,10 +282,10 @@ void main() {
     });
   });
 
-  test('#union', () {
+  test('#boundingBox', () {
     Rectangle r1 = new Rectangle(0, 0, 2, 2);
     Rectangle r2 = new Rectangle(1, 1, 2, 2);
-    Rectangle rect = r1.union(r2);
+    Rectangle rect = r1.boundingBox(r2);
 
     testRectangle(rect, x: 0, y: 0, width: 3, height: 3);
   });

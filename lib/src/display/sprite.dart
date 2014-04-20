@@ -80,10 +80,11 @@ class Sprite extends DisplayObjectContainer {
     returnRectangle = super.getBoundsTransformed(matrix, returnRectangle);
 
     if (_graphics != null) {
-      returnRectangle = _graphics._getBoundsTransformed(matrix).union(returnRectangle);
+      var graphicsBounds = _graphics._getBoundsTransformed(matrix);
+      return returnRectangle.boundingBox(graphicsBounds);
+    } else {
+      return returnRectangle;
     }
-
-    return returnRectangle;
   }
 
   //-----------------------------------------------------------------------------------------------

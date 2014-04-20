@@ -32,7 +32,7 @@ class DropShadowFilter extends BitmapFilter {
     int shiftY = (this.distance * sin(this.angle)).round();
     var sRect = new Rectangle<int>(-1, -1, 2, 2);
     var dRect = new Rectangle<int>(shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
-    return sRect.union(dRect);
+    return sRect.boundingBox(dRect);
   }
 
   List<int> get renderPassSources => [0, 1, 0];
