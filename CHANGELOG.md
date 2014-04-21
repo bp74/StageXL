@@ -3,6 +3,15 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.9.2
+  * Added support for Sound Sprits (thanks Alex).
+  * Added Stage.backgroundColor property (thanks Xavier).
+  * Added ColorMatrixFilter.adjustColoration method (thanks Emmanuel).
+  * Added ResourceManager.contains methods.  
+  * Refactored Point and Rectangle classes (thanks Kevin).
+  * Fixed MouseEvent/TouchEvent ctrl/alt/shift getters.
+  * Fixed Juggler.clear method.
+
 #### Pub version 0.9.1
   * Added WebGL filters.
   * Added TextField stroke and gradients.
