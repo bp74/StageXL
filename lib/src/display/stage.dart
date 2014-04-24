@@ -332,7 +332,7 @@ class Stage extends DisplayObjectContainer {
       _renderState._currentTime = _ensureNum(currentTime);
       _renderState._deltaTime = _ensureNum(deltaTime);
 
-      render(_renderState);
+      _renderInternal(_renderState);
 
       _renderState.flush();
 
