@@ -39,7 +39,7 @@ class ColorTransform {
   void concat(ColorTransform second) {
 
     // ToDo
-    throw new UnimplementedError("Error #2014: Feature is not available at this time.");
+    throw new UnimplementedError("Feature is not available at this time.");
   }
 
 }

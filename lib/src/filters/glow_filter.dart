@@ -12,10 +12,10 @@ class GlowFilter extends BitmapFilter {
              this.knockout: false, this.hideObject: false}) {
 
     if (blurX < 0 || blurY < 0) {
-      throw new ArgumentError("Error #9004: The minimum blur size is 0.");
+      throw new ArgumentError("The minimum blur size is 0.");
     }
     if (blurX > 64 || blurY > 64) {
-      throw new ArgumentError("Error #9004: The maximum blur size is 64.");
+      throw new ArgumentError("The maximum blur size is 64.");
     }
   }
 

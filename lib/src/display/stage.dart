@@ -290,7 +290,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   _throwStageException() {
-    throw new UnsupportedError("Error #2071: The Stage class does not implement this property or method.");
+    throw new UnsupportedError("The Stage class does not implement this property or method.");
   }
 
   void set x(num value) { _throwStageException(); }
