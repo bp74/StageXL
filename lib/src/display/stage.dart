@@ -170,33 +170,6 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   /**
-   * Gets the original source width of the Stage as defined in the constructor.
-   */
-  int get sourceWidth => _sourceWidth;
-
-  /**
-   * Gets the original source height of the Stage as defined in the constructor.
-   */
-  int get sourceHeight => _sourceHeight;
-
-  /**
-   * Gets the current width of the Stage in pixels on the screen.
-   */
-  int get stageWidth => _canvasWidth;
-
-  /**
-   * Gets the current height of the Stage in pixels on the screen.
-   */
-  int get stageHeight => _canvasHeight;
-
-  /**
-   * Gets the available content area on the stage. The value of this rectangle
-   * changes with the scaleMode and the alignment of the stage, as well as the size
-   * of the underlying Canvas element.
-   */
-  Rectangle<num> get contentRectangle => _contentRectangle.clone();
-
-  /**
    * Gets the underlying render engine used to draw the pixels to the screen.
    * The returned string is defined in [RenderEngine] and is either "WebGL"
    * or "Canvas2D".
@@ -220,6 +193,47 @@ class Stage extends DisplayObjectContainer {
    * Gets the last known mouse position in Stage coordinates.
    */
   Point<num> get mousePosition => _mousePosition;
+
+  /**
+   * Gets the available content area on the stage. The value of this rectangle
+   * changes with the scaleMode and the alignment of the stage, as well as the
+   * size of the underlying Canvas element.
+   */
+  Rectangle<num> get contentRectangle => _contentRectangle.clone();
+
+  /**
+   * Gets the width of the Stage in screen coordinates/pixels.
+   */
+  int get stageWidth => _canvasWidth;
+
+  /**
+   * Gets the height of the Stage in screen coordinates/pixels.
+   */
+  int get stageHeight => _canvasHeight;
+
+  /**
+   * Gets and sets the width of the Stage in world coordinates.
+   * The initial value of [sourceWidth] is the width of the canvas
+   * element or the width provided in the constructor of the Stage.
+   */
+  int get sourceWidth => _sourceWidth;
+
+  void set sourceWidth(int value) {
+    _sourceWidth = _ensureInt(value);
+    _updateCanvasSize();
+  }
+
+  /**
+   * Gets and sets the height of the Stage in world coordinates.
+   * The initial value of [sourceHeight] is the height of the canvas
+   * element or the height provided in the constructor of the Stage.
+   */
+  int get sourceHeight => _sourceHeight;
+
+  void set sourceHeight(int value) {
+    _sourceHeight = _ensureInt(value);
+    _updateCanvasSize();
+  }
 
   /**
    * Gets and sets the default frame rate for MovieClips. This value has no
