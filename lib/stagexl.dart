@@ -58,6 +58,7 @@ part 'src/displayEx/flip_book.dart';
 part 'src/displayEx/gauge.dart';
 part 'src/displayEx/glass_plate.dart';
 part 'src/displayEx/html_object.dart';
+part 'src/displayEx/scale9_bitmap.dart';
 part 'src/displayEx/time_gauge.dart';
 part 'src/displayEx/warp.dart';
 
