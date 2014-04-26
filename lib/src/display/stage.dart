@@ -1,8 +1,7 @@
 part of stagexl;
 
-/**
- * The StageScaleMode defines how the Stage is scaled inside of the Canvas.
- */
+/// The StageScaleMode defines how the Stage is scaled inside of the Canvas.
+
 class StageScaleMode {
   static const String EXACT_FIT = "exactFit";
   static const String NO_BORDER = "noBorder";
@@ -10,11 +9,10 @@ class StageScaleMode {
   static const String SHOW_ALL = "showAll";
 }
 
-/**
- * The StageAlign defines how the content of the Stage is aligned inside
- * of the Canvas. The setting controls where the origin (point 0,0) of the
- * Stage will be placed on the Canvas.
- */
+/// The StageAlign defines how the content of the Stage is aligned inside
+/// of the Canvas. The setting controls where the origin (point 0,0) of the
+/// Stage will be placed on the Canvas.
+
 class StageAlign {
   static const String BOTTOM = "B";
   static const String BOTTOM_LEFT = "BL";
@@ -27,10 +25,9 @@ class StageAlign {
   static const String NONE = "";
 }
 
-/**
- * The StageRenderMode defines how often the Stage is renderes by
- * the [RenderLoop] where the Stage is attached to.
- */
+/// The StageRenderMode defines how often the Stage is renderes by
+/// the [RenderLoop] where the Stage is attached to.
+
 class StageRenderMode {
   static const String AUTO = "auto";
   static const String STOP = "stop";
@@ -63,16 +60,15 @@ class _Touch {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-/**
- * The Stage is the drawing area wher all display objects are rendered to.
- * Place a Canvas element to your HTML and use the Stage to wrap all the
- * rendering functions to this Canvas element.
- *
- * Example:
- *
- * HTML: <canvas id="stage" width="800" height="600"></canvas>
- * Dart: var stage = new Stage(querySelector("#stage"));
- */
+/// The Stage is the drawing area wher all display objects are rendered to.
+/// Place a Canvas element to your HTML and use the Stage to wrap all the
+/// rendering functions to this Canvas element.
+///
+/// Example:
+///
+/// HTML: <canvas id="stage" width="800" height="600"></canvas>
+/// Dart: var stage = new Stage(querySelector("#stage"));
+
 class Stage extends DisplayObjectContainer {
 
   static bool autoHiDpi = _autoHiDpi;
@@ -169,53 +165,45 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  /**
-   * Gets the underlying render engine used to draw the pixels to the screen.
-   * The returned string is defined in [RenderEngine] and is either "WebGL"
-   * or "Canvas2D".
-   */
+  /// Gets the underlying render engine used to draw the pixels to the screen.
+  /// The returned string is defined in [RenderEngine] and is either "WebGL"
+  /// or "Canvas2D".
+
   String get renderEngine => _renderContext.renderEngine;
 
-  /**
-   * Gets the [RenderLoop] where this Stage was added to, or
-   * NULL in case this Stage is not added to a [RenderLoop].
-   */
+  /// Gets the [RenderLoop] where this Stage was added to, or
+  /// NULL in case this Stage is not added to a [RenderLoop].
+
   RenderLoop get renderLoop => _renderLoop;
 
-  /**
-   * Gets the [Juggler] of this Stage. The Juggler is driven by the
-   * [RenderLoop] where this Stage is added to. If this Stage is not
-   * added to a RenderLoop, the [Juggler] will not advance in time.
-   */
+  /// Gets the [Juggler] of this Stage. The Juggler is driven by the
+  /// [RenderLoop] where this Stage is added to. If this Stage is not
+  /// added to a RenderLoop, the [Juggler] will not advance in time.
+
   Juggler get juggler => _juggler;
 
-  /**
-   * Gets the last known mouse position in Stage coordinates.
-   */
+  /// Gets the last known mouse position in Stage coordinates.
+
   Point<num> get mousePosition => _mousePosition;
 
-  /**
-   * Gets the available content area on the stage. The value of this rectangle
-   * changes with the scaleMode and the alignment of the stage, as well as the
-   * size of the underlying Canvas element.
-   */
+  /// Gets the available content area on the stage. The value of this rectangle
+  /// changes with the scaleMode and the alignment of the stage, as well as the
+  /// size of the underlying Canvas element.
+
   Rectangle<num> get contentRectangle => _contentRectangle.clone();
 
-  /**
-   * Gets the width of the Stage in screen coordinates/pixels.
-   */
+  /// Gets the width of the Stage in screen coordinates/pixels.
+
   int get stageWidth => _canvasWidth;
 
-  /**
-   * Gets the height of the Stage in screen coordinates/pixels.
-   */
+  /// Gets the height of the Stage in screen coordinates/pixels.
+
   int get stageHeight => _canvasHeight;
 
-  /**
-   * Gets and sets the width of the Stage in world coordinates.
-   * The initial value of [sourceWidth] is the width of the canvas
-   * element or the width provided in the constructor of the Stage.
-   */
+  /// Gets and sets the width of the Stage in world coordinates.
+  /// The initial value of [sourceWidth] is the width of the canvas
+  /// element or the width provided in the constructor of the Stage.
+
   int get sourceWidth => _sourceWidth;
 
   void set sourceWidth(int value) {
@@ -223,11 +211,10 @@ class Stage extends DisplayObjectContainer {
     _updateCanvasSize();
   }
 
-  /**
-   * Gets and sets the height of the Stage in world coordinates.
-   * The initial value of [sourceHeight] is the height of the canvas
-   * element or the height provided in the constructor of the Stage.
-   */
+  /// Gets and sets the height of the Stage in world coordinates.
+  /// The initial value of [sourceHeight] is the height of the canvas
+  /// element or the height provided in the constructor of the Stage.
+
   int get sourceHeight => _sourceHeight;
 
   void set sourceHeight(int value) {
@@ -235,40 +222,36 @@ class Stage extends DisplayObjectContainer {
     _updateCanvasSize();
   }
 
-  /**
-   * Gets and sets the default frame rate for MovieClips. This value has no
-   * impact on the frame rate of the Stage itself.
-   */
+  /// Gets and sets the default frame rate for MovieClips. This value has no
+  /// impact on the frame rate of the Stage itself.
+
   int get frameRate => _frameRate;
 
   set frameRate(int value) {
     _frameRate = value;
   }
 
-  /**
-   * Gets and sets the [InteractiveObject] (a DisplayObject which can
-   * receive user input like mouse, touch or keyboard).
-   */
+  /// Gets and sets the [InteractiveObject] (a DisplayObject which can
+  /// receive user input like mouse, touch or keyboard).
+
   InteractiveObject get focus => _focus;
 
   set focus(InteractiveObject value) {
     _focus = value;
   }
 
-  /**
-   * Gets and sets the render mode of this Stage. You can choose between
-   * three different modes defined in [StageRenderMode].
-   */
+  /// Gets and sets the render mode of this Stage. You can choose between
+  /// three different modes defined in [StageRenderMode].
+
   String get renderMode => _stageRenderMode;
 
   set renderMode(String value) {
     _stageRenderMode = value;
   }
 
-  /**
-   * Gets and sets the scale mode of this Stage. You can choose between
-   * four dfferent modes defined in [StageScaleMode].
-   */
+  /// Gets and sets the scale mode of this Stage. You can choose between
+  /// four dfferent modes defined in [StageScaleMode].
+
   String get scaleMode => _stageScaleMode;
 
   set scaleMode(String value) {
@@ -276,29 +259,26 @@ class Stage extends DisplayObjectContainer {
     _updateCanvasSize();
   }
 
-  /**
-   * Gets and sets the alignment of this Stage inside of the Canvas element.
-   * You can choose between nine different align modes defined in [StageAlign].
-   */
+  /// Gets and sets the alignment of this Stage inside of the Canvas element.
+  /// You can choose between nine different align modes defined in [StageAlign].
+
   String get align => _stageAlign;
   set align(String value) {
     _stageAlign = value;
     _updateCanvasSize();
   }
 
-  /**
-   * Gets and sets the background color of this Stage.
-   */
+  /// Gets and sets the background color of this Stage.
+
   int get backgroundColor => _color;
   set backgroundColor(int value) {
     _color = value;
   }
 
-  /**
-   * Calling this method will cause an [RenderEvent] to be fired right before
-   * the next frame will be rendered by the render loop. To receive the render
-   * event attach a listener to [DisplayObject.onRender].
-   */
+  /// Calling this method will cause an [RenderEvent] to be fired right before
+  /// the next frame will be rendered by the render loop. To receive the render
+  /// event attach a listener to [DisplayObject.onRender].
+
   invalidate() {
     if (_renderLoop != null) {
       _renderLoop.invalidate();
@@ -327,11 +307,10 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  /**
-   * This method is called by the [RenderLoop] where this Stage is added to.
-   * If this Stage is not added to a [RenderLoop] you could call this method
-   * on your own and therefore get full control of the rendering of this Stage.
-   */
+  /// This method is called by the [RenderLoop] where this Stage is added to.
+  /// If this Stage is not added to a [RenderLoop] you could call this method
+  /// on your own and therefore get full control of the rendering of this Stage.
+
   materialize(num currentTime, num deltaTime) {
 
     if (_stageRenderMode == StageRenderMode.AUTO || _stageRenderMode == StageRenderMode.ONCE) {
