@@ -227,7 +227,7 @@ class Stage extends DisplayObjectContainer {
 
   int get frameRate => _frameRate;
 
-  set frameRate(int value) {
+  void set frameRate(int value) {
     _frameRate = value;
   }
 
@@ -236,7 +236,7 @@ class Stage extends DisplayObjectContainer {
 
   InteractiveObject get focus => _focus;
 
-  set focus(InteractiveObject value) {
+  void set focus(InteractiveObject value) {
     _focus = value;
   }
 
@@ -245,7 +245,7 @@ class Stage extends DisplayObjectContainer {
 
   String get renderMode => _stageRenderMode;
 
-  set renderMode(String value) {
+  void set renderMode(String value) {
     _stageRenderMode = value;
   }
 
@@ -254,7 +254,7 @@ class Stage extends DisplayObjectContainer {
 
   String get scaleMode => _stageScaleMode;
 
-  set scaleMode(String value) {
+  void set scaleMode(String value) {
     _stageScaleMode = value;
     _updateCanvasSize();
   }
@@ -263,7 +263,8 @@ class Stage extends DisplayObjectContainer {
   /// You can choose between nine different align modes defined in [StageAlign].
 
   String get align => _stageAlign;
-  set align(String value) {
+
+  void set align(String value) {
     _stageAlign = value;
     _updateCanvasSize();
   }
@@ -271,7 +272,8 @@ class Stage extends DisplayObjectContainer {
   /// Gets and sets the background color of this Stage.
 
   int get backgroundColor => _color;
-  set backgroundColor(int value) {
+
+  void set backgroundColor(int value) {
     _color = value;
   }
 
@@ -291,18 +293,18 @@ class Stage extends DisplayObjectContainer {
     throw new UnsupportedError("Error #2071: The Stage class does not implement this property or method.");
   }
 
-  set x(num value) { _throwStageException(); }
-  set y(num value) { _throwStageException(); }
-  set pivotX(num value) { _throwStageException(); }
-  set pivotY(num value) { _throwStageException(); }
-  set scaleX(num value) { _throwStageException(); }
-  set scaleY(num value) { _throwStageException(); }
-  set skewX(num value) { _throwStageException(); }
-  set skewY(num value) { _throwStageException(); }
-  set rotation(num value) { _throwStageException(); }
-  set alpha(num value) { _throwStageException(); }
-  set width(num value) { _throwStageException(); }
-  set height(num value) { _throwStageException(); }
+  void set x(num value) { _throwStageException(); }
+  void set y(num value) { _throwStageException(); }
+  void set pivotX(num value) { _throwStageException(); }
+  void set pivotY(num value) { _throwStageException(); }
+  void set scaleX(num value) { _throwStageException(); }
+  void set scaleY(num value) { _throwStageException(); }
+  void set skewX(num value) { _throwStageException(); }
+  void set skewY(num value) { _throwStageException(); }
+  void set rotation(num value) { _throwStageException(); }
+  void set alpha(num value) { _throwStageException(); }
+  void set width(num value) { _throwStageException(); }
+  void set height(num value) { _throwStageException(); }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
@@ -311,7 +313,7 @@ class Stage extends DisplayObjectContainer {
   /// If this Stage is not added to a [RenderLoop] you could call this method
   /// on your own and therefore get full control of the rendering of this Stage.
 
-  materialize(num currentTime, num deltaTime) {
+  void materialize(num currentTime, num deltaTime) {
 
     if (_stageRenderMode == StageRenderMode.AUTO || _stageRenderMode == StageRenderMode.ONCE) {
 
