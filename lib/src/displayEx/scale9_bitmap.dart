@@ -71,34 +71,31 @@ class Scale9Bitmap extends Bitmap {
 
   void render(RenderState renderState) {
 
-    var x0 = 0;
     var x1 = _grid.left;
     var x2 = _grid.right;
-    var x3 = bitmapData.width;
-    var y0 = 0;
+    var x3 = _ensureInt(bitmapData.width);
     var y1 = _grid.top;
     var y2 = _grid.bottom;
-    var y3 = bitmapData.height;
+    var y3 = _ensureInt(bitmapData.height);
     var width = _width;
     var height = _height;
 
-    var renderMatrix = renderState.globalMatrix.clone();
+    var globalMatrix = renderState.globalMatrix;
+    var renderMatrix = globalMatrix.clone();
 
     for(int x = 0; x < 3; x++) {
+      var a = (x == 1) ? (width - x2 + x1) / (x2 - x1) : 1.0;
+      var tx = (x == 1) ? x1 : ((x == 2) ? width - x3 + x2 : 0);
       for(int y = 0; y < 3; y++) {
-        _tmpMatrix.identity();
-        if (x == 1) _tmpMatrix.scale((width - x2 + x1) / (x2 - x1), 1.0);
-        if (y == 1) _tmpMatrix.scale(1.0 , (height - y2 + y1) / (y2 - y1));
-        if (x == 1) _tmpMatrix.translate(x1, 0);
-        if (x == 2) _tmpMatrix.translate(width - x3 + x2, 0);
-        if (y == 1) _tmpMatrix.translate(0, y1);
-        if (y == 2) _tmpMatrix.translate(0, height - y3 + y2);
-        renderState.globalMatrix.copyFromAndConcat(_tmpMatrix, renderMatrix);
+        var d = (y == 1) ? (height - y2 + y1) / (y2 - y1) : 1.0;
+        var ty = (y == 1) ? y1 : ((y == 2) ? height - y3 + y2 : 0);
+        globalMatrix.setTo(a, 0, 0, d, tx, ty);
+        globalMatrix.concat(renderMatrix);
         renderState.renderQuad(_renderTextureQuads[x + y * 3]);
       }
     }
 
-    renderState.globalMatrix.copyFrom(renderMatrix);
+    globalMatrix.copyFrom(renderMatrix);
   }
 
   //-------------------------------------------------------------------------------------------------
