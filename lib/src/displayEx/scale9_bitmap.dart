@@ -81,7 +81,9 @@ class Scale9Bitmap extends Bitmap {
     var height = _height;
 
     var globalMatrix = renderState.globalMatrix;
-    var renderMatrix = globalMatrix.clone();
+    var renderContext = renderState.renderContext;
+
+    _tmpMatrix.copyFrom(globalMatrix);
 
     for(int x = 0; x < 3; x++) {
       var a = (x == 1) ? (width - x2 + x1) / (x2 - x1) : 1.0;
@@ -90,12 +92,12 @@ class Scale9Bitmap extends Bitmap {
         var d = (y == 1) ? (height - y2 + y1) / (y2 - y1) : 1.0;
         var ty = (y == 1) ? y1 : ((y == 2) ? height - y3 + y2 : 0);
         globalMatrix.setTo(a, 0, 0, d, tx, ty);
-        globalMatrix.concat(renderMatrix);
-        renderState.renderQuad(_renderTextureQuads[x + y * 3]);
+        globalMatrix.concat(_tmpMatrix);
+        renderContext.renderQuad(renderState, _renderTextureQuads[x + y * 3]);
       }
     }
 
-    globalMatrix.copyFrom(renderMatrix);
+    globalMatrix.copyFrom(_tmpMatrix);
   }
 
   //-------------------------------------------------------------------------------------------------
