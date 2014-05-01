@@ -18,7 +18,7 @@ class BitmapData implements BitmapDrawable {
     _width = _ensureInt(width);
     _height = _ensureInt(height);
     _renderTexture = new RenderTexture(_width, _height, transparent, fillColor, pixelRatio);
-    _renderTextureQuad = new RenderTextureQuad(_renderTexture, 0, 0, 0, 0, 0, _width, _height);
+    _renderTextureQuad = _renderTexture.quad;
   }
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
@@ -74,6 +74,18 @@ class BitmapData implements BitmapDrawable {
     var bitmapData = new BitmapData(_width, _height, true, 0, pixelRatio);
     bitmapData.drawPixels(this, this.rectangle, new Point<int>(0, 0));
     return bitmapData;
+  }
+
+  /**
+   * Return a dataUrl for this BitmapData.
+   */
+
+  String toDataUrl([String type = 'image/png', num quality]) {
+    if (identical(_renderTextureQuad, _renderTexture.quad)) {
+      return _renderTexture.canvas.toDataUrl(type, quality);
+    } else {
+      return clone().toDataUrl(type, quality);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
