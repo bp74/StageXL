@@ -9,3 +9,10 @@ class MouseCursor {
   static const String IBEAM = "ibeam";
   static const String WAIT = "wait";
 }
+
+class MouseCursorData {
+
+  String url;
+  Point<int> hotSpot;
+  MouseCursorData(this.url, this.hotSpot);
+}

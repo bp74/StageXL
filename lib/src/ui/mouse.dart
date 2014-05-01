@@ -2,8 +2,9 @@ part of stagexl;
 
 class Mouse {
 
-  static String _customCursor = MouseCursor.AUTO;
-  static bool _isCursorHidden = false;
+  static bool _cursorHidden = false;
+  static String _cursorName = MouseCursor.AUTO;
+  static Map<String, MouseCursorData> _cursorDatas = new Map<String, MouseCursorData>();
 
   static Sprite _dragSprite = null;
   static Point<num> _dragSpriteCenter = null;
@@ -15,37 +16,48 @@ class Mouse {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static String get cursor => _customCursor;
+  static String get cursor => _cursorName;
 
   static void set cursor(String value) {
-    _customCursor = value;
+    _cursorName = value;
     _mouseCursorChangedEvent.add("cursor");
   }
 
   //-------------------------------------------------------------------------------------------------
 
+  static void registerCursor(String cursorName, MouseCursorData cursorData) {
+    _cursorDatas[cursorName] = cursorData;
+    _mouseCursorChangedEvent.add("registerCursor");
+  }
+
+  static void unregisterCursor(String cursorName) {
+    _cursorDatas.remove(cursorName);
+    _mouseCursorChangedEvent.add("unregisterCursor");
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
   static void hide() {
-    _isCursorHidden = true;
+    _cursorHidden = true;
     _mouseCursorChangedEvent.add("hide");
   }
 
   static void show() {
-    _isCursorHidden = false;
+    _cursorHidden = false;
     _mouseCursorChangedEvent.add("show");
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  static String _getCssStyle(String mouseCursor) {
+  static String _getCssStyle(String cursorName) {
 
-    String cursor = mouseCursor;
     String style = "auto";
 
-    if (_customCursor != MouseCursor.AUTO) {
-      cursor = _customCursor;
+    if (_cursorName != MouseCursor.AUTO) {
+      cursorName = _cursorName;
     }
 
-    switch(cursor) {
+    switch(cursorName) {
       case MouseCursor.AUTO: style = "auto"; break;
       case MouseCursor.ARROW: style = "default"; break;
       case MouseCursor.BUTTON: style = "pointer"; break;
@@ -54,9 +66,15 @@ class Mouse {
       case MouseCursor.WAIT: style = "wait"; break;
     }
 
-    // The cursor style "none" is not standardized, but works quite well.
+    if (_cursorDatas.containsKey(cursorName)) {
+      var cursorData = _cursorDatas[cursorName];
+      var cursorDataUrl = cursorData.url;
+      var cursorDataX = cursorData.hotSpot.x;
+      var cursorDataY = cursorData.hotSpot.y;
+      style = "url('$cursorDataUrl') $cursorDataX $cursorDataY, $style";
+    }
 
-    if (_isCursorHidden) {
+    if (_cursorHidden) {
       style = "none";
     }
 
