@@ -11,6 +11,7 @@ class Event {
   static const String REMOVED_FROM_STAGE = "removedFromStage";
   static const String RESIZE = "resize";
   static const String RENDER = "render";
+  static const String MOUSE_LEAVE = "mouseLeave";
 
   // Common events
   static const String OKAY = "okay";

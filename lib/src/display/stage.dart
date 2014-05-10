@@ -112,6 +112,9 @@ class Stage extends DisplayObjectContainer {
   static const EventStreamProvider<Event> resizeEvent = const EventStreamProvider<Event>(Event.RESIZE);
   EventStream<Event> get onResize => Stage.resizeEvent.forTarget(this);
 
+  static const EventStreamProvider<Event> mouseLeaveEvent = const EventStreamProvider<Event>(Event.MOUSE_LEAVE);
+  EventStream<Event> get onMouseLeave => Stage.mouseLeaveEvent.forTarget(this);
+
   //-------------------------------------------------------------------------------------------------
 
   Stage(CanvasElement canvas, {int width, int height,
@@ -474,6 +477,8 @@ class Stage extends DisplayObjectContainer {
 
     if (event.type != "mouseout") {
       target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
+    } else {
+      this.dispatchEvent(new Event(Event.MOUSE_LEAVE));
     }
 
     //-----------------------------------------------------------------
