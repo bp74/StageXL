@@ -9,6 +9,8 @@ class AudioElementSound extends Sound {
   AudioElementSound() {
     _audio.onEnded.listen(_onAudioEnded);
     _audioPool.add(_audio);
+
+    html.document.body.children.add(_audio);
   }
 
   //-------------------------------------------------------------------------------------------------
