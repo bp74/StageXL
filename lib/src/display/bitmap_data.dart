@@ -104,7 +104,8 @@ class BitmapData implements BitmapDrawable {
    * margin for each frame, you can specify this with the spacing or margin parameter (in pixel).
    */
 
-  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, [int frameCount,int spacing=0,int margin=0]) {
+  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, {
+       int frameCount: null,int spacing: 0,int margin: 0}){
 
     var cols = _width ~/ (frameWidth+spacing);
     var rows = _height ~/ (frameHeight+spacing);
