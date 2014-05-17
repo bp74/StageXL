@@ -25,7 +25,7 @@ void main() {
     });
 
     test('optionally only parses the number of tiles specified by frameCount', () {
-    bitmapDatas = monster.sliceIntoFrames(32, 64, 1);
+    bitmapDatas = monster.sliceIntoFrames(32, 64, frameCount:1);
       expect(bitmapDatas.length, equals(1));
     });
 
