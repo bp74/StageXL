@@ -280,16 +280,6 @@ class Stage extends DisplayObjectContainer {
     _color = value;
   }
 
-  /// Calling this method will cause an [RenderEvent] to be fired right before
-  /// the next frame will be rendered by the render loop. To receive the render
-  /// event attach a listener to [DisplayObject.onRender].
-
-  invalidate() {
-    if (_renderLoop != null) {
-      _renderLoop.invalidate();
-    }
-  }
-
   //-------------------------------------------------------------------------------------------------
 
   _throwStageException() {
@@ -310,6 +300,25 @@ class Stage extends DisplayObjectContainer {
   void set height(num value) { _throwStageException(); }
 
   //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
+
+  DisplayObject hitTestInput(num localX, num localY) {
+    var target = super.hitTestInput(localX, localY);
+    return target != null ? target : this;
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  /// Calling this method will cause an [RenderEvent] to be fired right before
+  /// the next frame will be rendered by the render loop. To receive the render
+  /// event attach a listener to [DisplayObject.onRender].
+
+  invalidate() {
+    if (_renderLoop != null) {
+      _renderLoop.invalidate();
+    }
+  }
+
   //-------------------------------------------------------------------------------------------------
 
   /// This method is called by the [RenderLoop] where this Stage is added to.
