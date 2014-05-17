@@ -58,7 +58,8 @@ class BitmapData implements BitmapDrawable {
 
     var autoHiDpi = bitmapDataLoadOptions.autoHiDpi;
     var webpAvailable = bitmapDataLoadOptions.webp;
-    var loader = RenderTexture.load(url, autoHiDpi, webpAvailable);
+    var corsEnabled = bitmapDataLoadOptions.corsEnabled;
+    var loader = RenderTexture.load(url, autoHiDpi, webpAvailable, corsEnabled);
 
     return loader.then((renderTexture) => new BitmapData.fromRenderTextureQuad(renderTexture.quad));
   }

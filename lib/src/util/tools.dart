@@ -146,7 +146,7 @@ Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height,
 
 //------------------------------------------------------------------------------------------------------
 
-Future<ImageElement> _loadImageElement(String url, bool webpAvailable) {
+Future<ImageElement> _loadImageElement(String url, bool webpAvailable, bool corsEnabled) {
 
   Completer<ImageElement> completer = new Completer<ImageElement>();
 
@@ -168,7 +168,7 @@ Future<ImageElement> _loadImageElement(String url, bool webpAvailable) {
 
   _isWebpSupported.then((bool webpSupported) {
     var match = new RegExp(r"(png|jpg|jpeg)$").firstMatch(url);
-    imageElement.crossOrigin = 'anonymous';
+    if (corsEnabled) imageElement.crossOrigin = 'anonymous';
     imageElement.src = (webpAvailable && webpSupported && match != null)
         ? url.substring(0, match.start) + "webp"
         : url;
