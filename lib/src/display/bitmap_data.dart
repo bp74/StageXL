@@ -115,14 +115,12 @@ class BitmapData implements BitmapDrawable {
       frameCount = min(frameCount, rows * cols);
     }
 
-    var i=0;
     for(var f = 0; f < frameCount; f++) {
       var x = f % cols;
       var y = f ~/ cols;
       var rectangle = new Rectangle<int>(x*frameWidth+x*spacing+margin , y*frameHeight+y*spacing+margin , frameWidth, frameHeight);
       var bitmapData = new BitmapData.fromBitmapData(this, rectangle);
       frames.add(bitmapData);
-      i=i+spacing;
     }
 
     return frames;
