@@ -119,7 +119,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  dynamic getChildAt(int index) {
+  DisplayObject getChildAt(int index) {
 
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -129,7 +129,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  dynamic getChildByName(String name) {
+  DisplayObject getChildByName(String name) {
 
     for (int i = 0; i < _children.length; i++) {
       DisplayObject child = _children[i];
