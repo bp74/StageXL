@@ -82,10 +82,12 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  static Future<RenderTexture> load(String url, bool autoHiDpi, bool webpAvailable) {
+  static Future<RenderTexture> load(
+      String url, bool autoHiDpi, bool webpAvailable, bool corsEnabled) {
 
     var hiDpi = Stage.autoHiDpi && autoHiDpi && url.contains("@1x.");
-    var loader = _loadImageElement(hiDpi ? url.replaceAll("@1x.", "@2x.") : url, webpAvailable);
+    var hiDpiUrl = hiDpi ? url.replaceAll("@1x.", "@2x.") : url;
+    var loader = _loadImageElement(hiDpiUrl, webpAvailable, corsEnabled);
 
     return loader.then((image) => new RenderTexture.fromImage(image, hiDpi ? 2.0 : 1.0));
   }

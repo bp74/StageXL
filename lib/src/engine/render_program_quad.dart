@@ -110,7 +110,7 @@ class RenderProgramQuad extends RenderProgram {
     int height = renderTextureQuad.textureHeight;
     int offsetX = renderTextureQuad.offsetX;
     int offsetY = renderTextureQuad.offsetY;
-    Float32List uvList = renderTextureQuad.uvList;
+    List<num> uvList = renderTextureQuad.uvList;
 
     // x' = tx + a * x + c * y
     // y' = ty + b * x + d * y
