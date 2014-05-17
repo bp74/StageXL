@@ -100,25 +100,26 @@ class BitmapData implements BitmapDrawable {
    *
    * The optional frameCount parameter will limit the number of frames generated,
    * in case you have empty frames you don't care about due to the width / height
-   * of this BitmapData.
+   * of this BitmapData. If your frames are also separated by space or have an
+   * additional margin for each frame, you can specify this with the spacing or
+   * margin parameter (in pixel).
    */
 
-  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, [int frameCount]) {
+  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, {
+    int frameCount: null, int frameSpacing: 0, int frameMargin: 0 }) {
 
-    var cols = _width ~/ frameWidth;
-    var rows = _height ~/ frameHeight;
+    var cols = (_width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
+    var rows = (_height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
     var frames = new List<BitmapData>();
 
-    if (frameCount == null) {
-      frameCount = rows * cols;
-    } else {
-      frameCount = min(frameCount, rows * cols);
-    }
+    frameCount = (frameCount == null) ? rows * cols : min(frameCount, rows * cols);
 
     for(var f = 0; f < frameCount; f++) {
       var x = f % cols;
       var y = f ~/ cols;
-      var rectangle = new Rectangle<int>(x * frameWidth, y * frameHeight, frameWidth, frameHeight);
+      var frameLeft = frameMargin + x * (frameWidth + frameSpacing);
+      var frameTop = frameMargin + y * (frameHeight + frameSpacing);
+      var rectangle = new Rectangle<int>(frameLeft, frameTop, frameWidth, frameHeight);
       var bitmapData = new BitmapData.fromBitmapData(this, rectangle);
       frames.add(bitmapData);
     }
