@@ -29,11 +29,11 @@ class RenderProgramTriangle extends RenderProgram {
 
   static const int _maxTriangleCount = 256;
 
-  gl.RenderingContext _renderingContext;
-  gl.Program _program;
-  gl.Buffer _vertexBuffer;
+  int _contextIdentifier = -1;
+  gl.RenderingContext _renderingContext = null;
+  gl.Program _program = null;
+  gl.Buffer _vertexBuffer = null;
 
-  StreamSubscription _contextRestoredSubscription;
   Float32List _vertexList = new Float32List(_maxTriangleCount * 3 * 6);
 
   int _aVertexPositionLocation = 0;
@@ -44,14 +44,12 @@ class RenderProgramTriangle extends RenderProgram {
 
   void activate(RenderContextWebGL renderContext) {
 
-    if (_program == null) {
+    if (_contextIdentifier != renderContext.contextIdentifier) {
 
-      if (_renderingContext == null) {
-        _renderingContext = renderContext.rawContext;
-        _contextRestoredSubscription = renderContext.onContextRestored.listen(_onContextRestored);
-      }
-
+      _contextIdentifier = renderContext.contextIdentifier;
+      _renderingContext = renderContext.rawContext;
       _program = createProgram(_renderingContext, _vertexShaderSource, _fragmentShaderSource);
+      _vertexBuffer = _renderingContext.createBuffer();
 
       _aVertexPositionLocation = _renderingContext.getAttribLocation(_program, "aVertexPosition");
       _aVertexColorLocation = _renderingContext.getAttribLocation(_program, "aVertexColor");
@@ -59,7 +57,6 @@ class RenderProgramTriangle extends RenderProgram {
       _renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
       _renderingContext.enableVertexAttribArray(_aVertexColorLocation);
 
-      _vertexBuffer = _renderingContext.createBuffer();
       _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }
@@ -138,9 +135,4 @@ class RenderProgramTriangle extends RenderProgram {
     _triangleCount = 0;
   }
 
-  //-----------------------------------------------------------------------------------------------
-
-  _onContextRestored(Event e) {
-    _program = null;
-  }
 }

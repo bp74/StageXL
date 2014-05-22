@@ -2,16 +2,20 @@ part of stagexl;
 
 class RenderContextWebGL extends RenderContext {
 
+  static int _globalContextIdentifier = 0;
+
   final CanvasElement _canvasElement;
 
   final RenderProgramQuad _renderProgramQuad = new RenderProgramQuad();
   final RenderProgramTriangle _renderProgramTriangle = new RenderProgramTriangle();
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
 
-  gl.RenderingContext _renderingContext;
-  RenderTexture _renderTexture;
-  RenderProgram _renderProgram;
-  RenderFrameBuffer _renderFrameBuffer;
+  gl.RenderingContext _renderingContext = null;
+  RenderTexture _renderTexture = null;
+  RenderProgram _renderProgram = null;
+  RenderFrameBuffer _renderFrameBuffer = null;
+  bool _contextValid = true;
+  int _contextIdentifier = 0;
   int _stencilDepth = 0;
 
   RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
@@ -38,7 +42,8 @@ class RenderContextWebGL extends RenderContext {
     _renderProgram = _renderProgramQuad;
     _renderProgram.activate(this);
 
-    _renderFrameBuffer = null;
+    _contextValid = true;
+    _contextIdentifier = ++_globalContextIdentifier;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -50,6 +55,9 @@ class RenderContextWebGL extends RenderContext {
   RenderTexture get activeRenderTexture => _renderTexture;
   RenderProgram get activeRenderProgram => _renderProgram;
   RenderFrameBuffer get activeRenderFrameBuffer => _renderFrameBuffer;
+
+  bool get contextValid => _contextValid;
+  int get contextIdentifier => _contextIdentifier;
 
   Matrix get viewPortMatrix {
     int width = _renderingContext.drawingBufferWidth;
@@ -233,10 +241,13 @@ class RenderContextWebGL extends RenderContext {
 
   _onContextLost(gl.ContextEvent contextEvent) {
     contextEvent.preventDefault();
+    _contextValid = false;
     this.dispatchEvent(new Event("contextLost"));
   }
 
   _onContextRestored(gl.ContextEvent contextEvent) {
+    _contextValid = true;
+    _contextIdentifier = ++_globalContextIdentifier;
     this.dispatchEvent(new Event("contextRestored"));
   }
 

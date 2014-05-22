@@ -36,12 +36,12 @@ class RenderProgramQuad extends RenderProgram {
 
   static const int _maxQuadCount = 256;
 
-  gl.RenderingContext _renderingContext;
-  gl.Program _program;
-  gl.Buffer _vertexBuffer;
-  gl.Buffer _indexBuffer;
+  int _contextIdentifier = -1;
+  gl.RenderingContext _renderingContext = null;
+  gl.Program _program = null;
+  gl.Buffer _vertexBuffer = null;
+  gl.Buffer _indexBuffer = null;
 
-  StreamSubscription _contextRestoredSubscription;
   Int16List _indexList = new Int16List(_maxQuadCount * 6);
   Float32List _vertexList = new Float32List(_maxQuadCount * 4 * 5);
 
@@ -65,14 +65,13 @@ class RenderProgramQuad extends RenderProgram {
 
   void activate(RenderContextWebGL renderContext) {
 
-    if (_program == null) {
+    if (_contextIdentifier != renderContext.contextIdentifier) {
 
-      if (_renderingContext == null) {
-        _renderingContext = renderContext.rawContext;
-        _contextRestoredSubscription = renderContext.onContextRestored.listen(_onContextRestored);
-      }
-
+      _contextIdentifier = renderContext.contextIdentifier;
+      _renderingContext = renderContext.rawContext;
       _program = createProgram(_renderingContext, _vertexShaderSource, _fragmentShaderSource);
+      _indexBuffer = _renderingContext.createBuffer();
+      _vertexBuffer = _renderingContext.createBuffer();
 
       _aVertexPositionLocation = _renderingContext.getAttribLocation(_program, "aVertexPosition");
       _aVertexTextCoordLocation = _renderingContext.getAttribLocation(_program, "aVertexTextCoord");
@@ -82,11 +81,9 @@ class RenderProgramQuad extends RenderProgram {
       _renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
       _renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
 
-      _indexBuffer = _renderingContext.createBuffer();
       _renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
       _renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
 
-      _vertexBuffer = _renderingContext.createBuffer();
       _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }
@@ -180,9 +177,4 @@ class RenderProgramQuad extends RenderProgram {
     _quadCount = 0;
   }
 
-  //-----------------------------------------------------------------------------------------------
-
-  _onContextRestored(Event e) {
-    _program = null;
-  }
 }

@@ -13,9 +13,9 @@ class RenderTexture {
   CanvasElement _canvas;
   RenderTextureQuad _quad;
 
-  gl.Texture _texture;
-  gl.RenderingContext _renderingContext;
-  StreamSubscription _contextRestoredSubscription;
+  int _contextIdentifier = -1;
+  gl.RenderingContext _renderingContext = null;
+  gl.Texture _texture = null;
 
   //-----------------------------------------------------------------------------------------------
 
@@ -34,7 +34,6 @@ class RenderTexture {
     var canvasHeight = (_storeHeight / _backingStorePixelRatio).round();
     _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
-    _texture = null;
 
     if (fillColor != 0 || transparent == false) {
       var context = _canvas.context2D;
@@ -108,17 +107,18 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   /**
-   * Call the dispose method the release memory allocated by WebGL.
+   * Call the dispose method to release memory allocated by WebGL.
    */
 
   void dispose() {
 
-    if (_renderingContext != null && _texture != null) _renderingContext.deleteTexture(_texture);
-    if (_contextRestoredSubscription != null) _contextRestoredSubscription.cancel();
+    if (_contextIdentifier != -1) {
+      _contextIdentifier = -1;
+      _renderingContext.deleteTexture(_texture);
+    }
 
     _texture = null;
     _renderingContext = null;
-    _contextRestoredSubscription = null;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -150,14 +150,12 @@ class RenderTexture {
 
   void activate(RenderContextWebGL renderContext, int textureSlot) {
 
-    if (_texture == null) {
+    if (_contextIdentifier != renderContext.contextIdentifier) {
 
-      if (_renderingContext == null) {
-        _renderingContext = renderContext.rawContext;
-        _contextRestoredSubscription = renderContext.onContextRestored.listen(_onContextRestored);
-      }
-
+      _contextIdentifier = renderContext.contextIdentifier;
+      _renderingContext = renderContext.rawContext;
       _texture = _renderingContext.createTexture();
+
       _renderingContext.activeTexture(textureSlot);
       _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
       _renderingContext.texImage2DCanvas(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
@@ -173,9 +171,4 @@ class RenderTexture {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
-
-  _onContextRestored(Event e) {
-    _texture = null;
-  }
 }
