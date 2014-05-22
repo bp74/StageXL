@@ -7,6 +7,7 @@ class RenderFrameBuffer {
   gl.Renderbuffer _renderbuffer;
   gl.Texture _texture;
 
+  RenderContextWebGL _renderContext;
   RenderTexture _renderTexture;
 
   int _width;
@@ -17,6 +18,7 @@ class RenderFrameBuffer {
 
     _width = width,
     _height = height,
+    _renderContext = renderContext,
     _renderingContext = renderContext.rawContext,
     _framebuffer = renderContext.rawContext.createFramebuffer(),
     _renderbuffer = renderContext.rawContext.createRenderbuffer(),
@@ -53,6 +55,7 @@ class RenderFrameBuffer {
   gl.Renderbuffer get renderbuffer => _renderbuffer;
   gl.Texture get texture => _texture;
 
+  RenderContextWebGL get renderContext => _renderContext;
   RenderTexture get renderTexture => _renderTexture;
 
   int get width => _width;

@@ -74,8 +74,10 @@ class RenderTexture {
     _transparent = true;
 
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
-    _texture = renderFrameBuffer.texture;
+
+    _contextIdentifier = renderFrameBuffer.renderContext.contextIdentifier;
     _renderingContext = renderFrameBuffer.renderingContext;
+    _texture = renderFrameBuffer.texture;
     _canvas = null;
   }
 
