@@ -286,7 +286,7 @@ class TextField extends InteractiveObject {
 
     var textFormat = _defaultTextFormat;
     var textFormatSize = _ensureNum(textFormat.size);
-    num strokeWidth = _ensureNum(textFormat.strokeWidth);
+    num textFormatStrokeWidth = _ensureNum(textFormat.strokeWidth);
     var textFormatLeftMargin = _ensureNum(textFormat.leftMargin);
     var textFormatRightMargin = _ensureNum(textFormat.rightMargin);
     var textFormatTopMargin = _ensureNum(textFormat.topMargin);
@@ -392,8 +392,8 @@ class TextField extends InteractiveObject {
       _textHeight = offsetY + fontStyleMetricsDescent + textFormatBottomMargin;
     }
 
-    _textWidth += strokeWidth * 2;
-    _textHeight += strokeWidth * 2;
+    _textWidth += textFormatStrokeWidth * 2;
+    _textHeight += textFormatStrokeWidth * 2;
 
     //-----------------------------------
     // calculate TextField autoSize
@@ -441,10 +441,10 @@ class TextField extends InteractiveObject {
           textLineMetrics._x += (availableWidth - textLineMetrics.width);
           break;
         default:
-          textLineMetrics._x += strokeWidth;
+          textLineMetrics._x += textFormatStrokeWidth;
       }
 
-      textLineMetrics._y += strokeWidth;
+      textLineMetrics._y += textFormatStrokeWidth;
     }
 
     //-----------------------------------
