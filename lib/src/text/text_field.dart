@@ -284,17 +284,18 @@ class TextField extends InteractiveObject {
     var lineWidth = 0;
     var lineIndent = 0;
 
-    var textFormatSize = _ensureNum(_defaultTextFormat.size);
-    num strokeWidth = _ensureNum(defaultTextFormat.strokeWidth);
-    var textFormatLeftMargin = _ensureNum(_defaultTextFormat.leftMargin);
-    var textFormatRightMargin = _ensureNum(_defaultTextFormat.rightMargin);
-    var textFormatTopMargin = _ensureNum(_defaultTextFormat.topMargin);
-    var textFormatBottomMargin = _ensureNum(_defaultTextFormat.bottomMargin);
-    var textFormatIndent = _ensureNum(_defaultTextFormat.indent);
-    var textFormatLeading = _ensureNum(defaultTextFormat.leading);
-    var textFormatAlign = _ensureString(_defaultTextFormat.align);
+    var textFormat = _defaultTextFormat;
+    var textFormatSize = _ensureNum(textFormat.size);
+    num strokeWidth = _ensureNum(textFormat.strokeWidth);
+    var textFormatLeftMargin = _ensureNum(textFormat.leftMargin);
+    var textFormatRightMargin = _ensureNum(textFormat.rightMargin);
+    var textFormatTopMargin = _ensureNum(textFormat.topMargin);
+    var textFormatBottomMargin = _ensureNum(textFormat.bottomMargin);
+    var textFormatIndent = _ensureNum(textFormat.indent);
+    var textFormatLeading = _ensureNum(textFormat.leading);
+    var textFormatAlign = _ensureString(textFormat.align);
 
-    var fontStyle = _defaultTextFormat._cssFontStyle;
+    var fontStyle = textFormat._cssFontStyle;
     var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
     var fontStyleMetricsAscent = _ensureNum(fontStyleMetrics.ascent);
     var fontStyleMetricsDescent = _ensureNum(fontStyleMetrics.descent);
@@ -304,7 +305,7 @@ class TextField extends InteractiveObject {
     var paragraphLines = new List<int>();
     var paragraphs = _text.split('\n');
 
-    canvasContext.font = fontStyle;
+    canvasContext.font = fontStyle + " "; // IE workaround
     canvasContext.textAlign = "start";
     canvasContext.textBaseline = "alphabetic";
     canvasContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
@@ -530,38 +531,35 @@ class TextField extends InteractiveObject {
     context.rect(0, 0, _width, _height);
     context.clip();
 
+    context.font = textFormat._cssFontStyle + " "; // IE workaround
+    context.textAlign = "start";
+    context.textBaseline = "alphabetic";
+    context.lineCap = "round";
+    context.lineJoin = "round";
+
     if (_background) {
       context.fillStyle = _color2rgb(_backgroundColor);
       context.fillRect(0, 0, _width, _height);
     }
 
-    context.font = textFormat._cssFontStyle;
-    context.textAlign = "start";
-    context.textBaseline = "alphabetic";
-    context.lineCap = context.lineJoin = "round";
-
-    if(textFormat.fillGradient != null) {
-      context.fillStyle = textFormat.fillGradient.getCanvasGradient(context);
-    } else {
-      context.fillStyle = _color2rgb(textFormat.color);
-    }
-
     if(textFormat.strokeWidth > 0) {
       context.lineWidth = textFormat.strokeWidth * 2;
       context.strokeStyle = _color2rgb(textFormat.strokeColor);
-
-      for(TextLineMetrics lm in _textLineMetrics) {
+      for(int i = 0; i < _textLineMetrics.length; i++) {
+        var lm = _textLineMetrics[i];
         context.strokeText(lm._text, lm.x, lm.y);
       }
     }
 
-    context.strokeStyle = _color2rgb(textFormat.color);
     context.lineWidth = lineWidth;
+    context.strokeStyle = _color2rgb(textFormat.color);
+    context.fillStyle = textFormat.fillGradient != null
+        ? textFormat.fillGradient.getCanvasGradient(context)
+        : _color2rgb(textFormat.color);
 
     for(int i = 0; i < _textLineMetrics.length; i++) {
       var lm = _textLineMetrics[i];
       context.fillText(lm._text, lm.x, lm.y);
-
       if(textFormat.underline) {
         num underlineY = (lm.y + lineWidth).round();
         if (lineWidth % 2 != 0) underlineY += 0.5;
