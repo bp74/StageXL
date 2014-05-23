@@ -3,6 +3,19 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.9.3
+  * Added Scale9Bitmap DisplayObject.
+  * Added Mouse.registerCursor for custom cursor styles.
+  * Added Bitmap.toDataUrl method.  
+  * Added Stage.sourceWidht and Stage.sourceHeight setters.
+  * Added Stage.onMouseLeave event.
+  * Added BitmapData.sliceIntoFrames margin and spacing parameters.
+  * Make CORS for BitmapData loader optional (see BitmapDataLoadOptions).
+  * Enabled Stage as mouse and touch event target.
+  * Enabled Stage.filters setter (thanks Xavier).
+  * Fixed GC issues with WebGL resources.
+  * Fixed IE9 render and sound issues.
+
 #### Pub version 0.9.2
   * Added support for Sound Sprits (thanks Alex).
   * Added Stage.backgroundColor property (thanks Xavier).
