@@ -6,7 +6,7 @@ package. This file is normally updated whenever we push a new version to pub.
 #### Pub version 0.9.3
   * Added Scale9Bitmap DisplayObject.
   * Added Mouse.registerCursor for custom cursor styles.
-  * Added Bitmap.toDataUrl method.  
+  * Added BitmapData.toDataUrl method.  
   * Added Stage.sourceWidht and Stage.sourceHeight setters.
   * Added Stage.onMouseLeave event.
   * Added BitmapData.sliceIntoFrames margin and spacing parameters.
