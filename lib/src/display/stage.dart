@@ -714,81 +714,109 @@ class Stage extends DisplayObjectContainer {
 
   _onTouchEvent(html.TouchEvent event) {
 
-    event.preventDefault();
+    if (_isCocoonJS) {
 
-    for(var changedTouch in event.changedTouches) {
+      var eventJS = new js.JsObject.fromBrowserObject(event);
+      var touchesJS = new js.JsArray.from(eventJS["changedTouches"]);
+      var eventType = _ensureString(eventJS["type"]);
 
-      var identifier = changedTouch.identifier;
-      var stagePoint = _clientTransformation.transformPoint(changedTouch.client);
-      var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
-      var touch = _touches.containsKey(identifier) ? _touches[identifier] : new _Touch(target, _touches.length == 0);
+      eventJS.callMethod("preventDefault");
 
-      //-----------------------------------------------------------------
-
-      if (touch.target != null && touch.target != target) {
-
-        touch.target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true)
-          .._localPoint = (touch.target.stage != null)
-              ? touch.target.globalToLocal(stagePoint) : new Point<num>(0, 0)
-          .._stagePoint = stagePoint
-          .._touchPointID = touch.touchPointID
-          .._isPrimaryTouchPoint = touch.primaryTouchPoint
-          .._altKey = event.altKey
-          .._ctrlKey = event.ctrlKey
-          .._shiftKey = event.shiftKey);
-
-        touch.target = null;
+      for(var touch in touchesJS) {
+        var touchJS = new js.JsObject.fromBrowserObject(touch);
+        var identifier = _ensureInt(touchJS["identifier"]);
+        var clientX = _ensureNum(touchJS["clientX"]);
+        var clientY = _ensureNum(touchJS["clientY"]);
+        var client = new math.Point(clientX, clientY);
+        _onTouchEventProcessor(eventType, identifier, client, false, false, false);
       }
 
-      if (target != null && target != touch.target) {
+    } else {
 
-        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true)
-          .._localPoint = target.globalToLocal(stagePoint)
-          .._stagePoint = stagePoint
-          .._touchPointID = touch.touchPointID
-          .._isPrimaryTouchPoint = touch.primaryTouchPoint
-          .._altKey = event.altKey
-          .._ctrlKey = event.ctrlKey
-          .._shiftKey = event.shiftKey);
+      event.preventDefault();
 
-        touch.target = target;
+      var eventType = event.type;
+      var altKey = event.altKey;
+      var ctrlKey = event.ctrlKey;
+      var shiftKey = event.shiftKey;
+
+      for(var changedTouch in event.changedTouches) {
+        var identifier = changedTouch.identifier;
+        var client = changedTouch.client;
+        _onTouchEventProcessor(eventType, identifier, client, altKey, ctrlKey, shiftKey);
       }
+    }
+  }
 
-      //-----------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
 
-      String touchEventType = null;
+  _onTouchEventProcessor(String eventType, int identifier, Point client,
+                         bool altKey, bool ctrlKey, bool shiftKey) {
 
-      if (event.type == "touchstart") {
-        _canvas.focus();
-        _touches[identifier] = touch;
-        touchEventType = TouchEvent.TOUCH_BEGIN;
-      }
+    var stagePoint = _clientTransformation.transformPoint(client);
+    var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
+    var touch = _touches.containsKey(identifier) ? _touches[identifier] : new _Touch(target, _touches.length == 0);
 
-      if (event.type == "touchend") {
-        _touches.remove(identifier);
-        touchEventType = TouchEvent.TOUCH_END;
-      }
+    if (touch.target != null && touch.target != target) {
 
-      if (event.type == "touchcancel") {
-        _touches.remove(identifier);
-        touchEventType = TouchEvent.TOUCH_CANCEL;
-      }
+      touch.target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true)
+        .._localPoint = touch.target.stage != null ? touch.target.globalToLocal(stagePoint) : new Point<num>(0, 0)
+        .._stagePoint = stagePoint
+        .._touchPointID = touch.touchPointID
+        .._isPrimaryTouchPoint = touch.primaryTouchPoint
+        .._altKey = altKey
+        .._ctrlKey = ctrlKey
+        .._shiftKey = shiftKey);
 
-      if (event.type == "touchmove") {
-        touchEventType = TouchEvent.TOUCH_MOVE;
-      }
+      touch.target = null;
+    }
 
-      if (touchEventType != null && target != null) {
+    if (target != null && target != touch.target) {
 
-        target.dispatchEvent(new TouchEvent(touchEventType, true)
-          .._localPoint = target.globalToLocal(stagePoint)
-          .._stagePoint = stagePoint
-          .._touchPointID = touch.touchPointID
-          .._isPrimaryTouchPoint = touch.primaryTouchPoint
-          .._altKey = event.altKey
-          .._ctrlKey = event.ctrlKey
-          .._shiftKey = event.shiftKey);
-      }
+      target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true)
+        .._localPoint = target.globalToLocal(stagePoint)
+        .._stagePoint = stagePoint
+        .._touchPointID = touch.touchPointID
+        .._isPrimaryTouchPoint = touch.primaryTouchPoint
+        .._altKey = altKey
+        .._ctrlKey = ctrlKey
+        .._shiftKey = shiftKey);
+
+      touch.target = target;
+    }
+
+    String touchEventType = null;
+
+    if (eventType == "touchstart") {
+      _canvas.focus();
+      _touches[identifier] = touch;
+      touchEventType = TouchEvent.TOUCH_BEGIN;
+    }
+
+    if (eventType == "touchend") {
+      _touches.remove(identifier);
+      touchEventType = TouchEvent.TOUCH_END;
+    }
+
+    if (eventType == "touchcancel") {
+      _touches.remove(identifier);
+      touchEventType = TouchEvent.TOUCH_CANCEL;
+    }
+
+    if (eventType == "touchmove") {
+      touchEventType = TouchEvent.TOUCH_MOVE;
+    }
+
+    if (touchEventType != null && target != null) {
+
+      target.dispatchEvent(new TouchEvent(touchEventType, true)
+        .._localPoint = target.globalToLocal(stagePoint)
+        .._stagePoint = stagePoint
+        .._touchPointID = touch.touchPointID
+        .._isPrimaryTouchPoint = touch.primaryTouchPoint
+        .._altKey = altKey
+        .._ctrlKey = ctrlKey
+        .._shiftKey = shiftKey);
     }
   }
 
