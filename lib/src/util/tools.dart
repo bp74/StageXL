@@ -111,7 +111,7 @@ bool _checkHiDpi() {
 }
 
 bool _checkCocoonJS() {
-  return js.context["navigator"]["isCocoonJS"] == true;
+  return context["navigator"]["isCocoonJS"] == true;
 }
 
 //-------------------------------------------------------------------------------------------------

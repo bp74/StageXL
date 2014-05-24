@@ -1,9 +1,9 @@
 library stagexl;
 
+import 'dart:js';
 import 'dart:async';
 import 'dart:math' hide Point, Rectangle;
 import 'dart:convert';
-import 'dart:js' as js;
 import 'dart:math' as math;
 import 'dart:html' as html;
 import 'dart:web_gl' as gl;

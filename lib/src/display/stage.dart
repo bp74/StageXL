@@ -716,17 +716,17 @@ class Stage extends DisplayObjectContainer {
 
     if (_isCocoonJS) {
 
-      var eventJS = new js.JsObject.fromBrowserObject(event);
-      var touchesJS = new js.JsArray.from(eventJS["changedTouches"]);
-      var eventType = _ensureString(eventJS["type"]);
+      var jsEvent = new JsObject.fromBrowserObject(event);
+      var jsChangedTouches = new JsArray.from(jsEvent["changedTouches"]);
+      var eventType = _ensureString(jsEvent["type"]);
 
-      eventJS.callMethod("preventDefault");
+      jsEvent.callMethod("preventDefault");
 
-      for(var touch in touchesJS) {
-        var touchJS = new js.JsObject.fromBrowserObject(touch);
-        var identifier = _ensureInt(touchJS["identifier"]);
-        var clientX = _ensureNum(touchJS["clientX"]);
-        var clientY = _ensureNum(touchJS["clientY"]);
+      for(var changedTouch in jsChangedTouches) {
+        var jsChangedTouch = new JsObject.fromBrowserObject(changedTouch);
+        var identifier = _ensureInt(jsChangedTouch["identifier"]);
+        var clientX = _ensureNum(jsChangedTouch["clientX"]);
+        var clientY = _ensureNum(jsChangedTouch["clientY"]);
         var client = new math.Point(clientX, clientY);
         _onTouchEventProcessor(eventType, identifier, client, false, false, false);
       }
