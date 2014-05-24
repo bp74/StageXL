@@ -17,6 +17,8 @@ class RenderContextWebGL extends RenderContext {
   bool _contextValid = true;
   int _contextIdentifier = 0;
   int _stencilDepth = 0;
+  int _viewportWidth = 0;
+  int _viewportHeight = 0;
 
   RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
 
@@ -44,6 +46,8 @@ class RenderContextWebGL extends RenderContext {
 
     _contextValid = true;
     _contextIdentifier = ++_globalContextIdentifier;
+
+    this.reset();
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -60,18 +64,16 @@ class RenderContextWebGL extends RenderContext {
   int get contextIdentifier => _contextIdentifier;
 
   Matrix get viewPortMatrix {
-    int width = _renderingContext.drawingBufferWidth;
-    int height = _renderingContext.drawingBufferHeight;
-    return new Matrix(2.0 / width, 0.0, 0.0, - 2.0 / height, -1.0, 1.0);
+    return new Matrix(2.0 / _viewportWidth, 0.0, 0.0, - 2.0 / _viewportHeight, -1.0, 1.0);
   }
 
   //-----------------------------------------------------------------------------------------------
 
   void reset() {
-    int width = _renderingContext.drawingBufferWidth;
-    int height = _renderingContext.drawingBufferHeight;
+    _viewportWidth = _canvasElement.width;
+    _viewportHeight = _canvasElement.height;
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
-    _renderingContext.viewport(0, 0, width, height);
+    _renderingContext.viewport(0, 0, _viewportWidth, _viewportHeight);
     _renderFrameBuffer = null;
   }
 
@@ -209,8 +211,8 @@ class RenderContextWebGL extends RenderContext {
         framebuffer = renderFrameBuffer.framebuffer;
         stencilDepth = renderFrameBuffer.stencilDepth;
       } else {
-        width = _renderingContext.drawingBufferWidth;
-        height = _renderingContext.drawingBufferHeight;
+        width = _viewportWidth;
+        height = _viewportHeight;
         framebuffer = null;
         stencilDepth = _stencilDepth;
       }

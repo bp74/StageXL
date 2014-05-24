@@ -93,6 +93,27 @@ Future<bool> _checkWebpSupport() {
   return completer.future;
 }
 
+bool _checkMobileDevice() {
+  var ua = html.window.navigator.userAgent.toLowerCase();
+  var identifiers = ["iphone", "ipad", "ipod", "android", "webos", "windows phone"];
+  return identifiers.any((id) => ua.indexOf(id) >= 0);
+}
+
+bool _checkHiDpi() {
+  var devicePixelRatio = _devicePixelRatio;
+  var isMobileDevice = _isMobile;
+  var isCocoonJS = _isCocoonJS;
+  var screen = html.window.screen;
+  var screenSize = screen is html.Screen ? max(screen.width, screen.height) : 1024;
+
+  // only recent devices (> iPhone4) and hi-dpi desktops
+  return devicePixelRatio > 1.0 && (isMobileDevice == false || screenSize > 480 || isCocoonJS);
+}
+
+bool _checkCocoonJS() {
+  return js.context["navigator"]["isCocoonJS"] == true;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height,
