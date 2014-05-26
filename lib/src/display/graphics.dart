@@ -248,6 +248,12 @@ class Graphics {
 
     if (_identityRectangle.contains(localX, localY)) {
 
+      if (_isCocoonJS) {
+        // CocoonJS does not support "isPointInPath", therefore we just
+        // check the rectangular bounds of the graphics shape.
+        return true;
+      }
+
       var context = _dummyCanvasContext;
       context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
       context.beginPath();
