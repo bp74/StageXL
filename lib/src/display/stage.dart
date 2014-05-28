@@ -354,23 +354,22 @@ class Stage extends DisplayObjectContainer {
 
   _updateCanvasSize() {
 
-    num clientLeft = _canvas.clientLeft;
-    num clientTop = _canvas.clientTop;
-    num clientWidth = _canvas.clientWidth;
-    num clientHeight = _canvas.clientHeight;
+    num clientLeft, clientTop;
+    num clientWidth, clientHeight;
     num sourceWidth = _sourceWidth;
     num sourceHeight = _sourceHeight;
 
     if (_isCocoonJS) {
-      // A CocoonJS canvas is always full screen. No need to get client rectangle.
-      // js.JsObject canvasJS = new js.JsObject.fromBrowserObject(_canvas);
-      // js.JsObject clientJS = canvasJS.callMethod("getBoundingClientRect");
-      // clientLeft += clientJS["left"];
-      // clientTop += clientJS["top"];
+      clientLeft = 0;
+      clientTop = 0;
+      clientWidth = html.window.innerWidth;
+      clientHeight = html.window.innerHeight;
     } else {
       var clientRectangle = _canvas.getBoundingClientRect();
-      clientLeft += clientRectangle.left;
-      clientTop += clientRectangle.top;
+      clientLeft = _canvas.clientLeft + clientRectangle.left;
+      clientTop = _canvas.clientTop + clientRectangle.top;
+      clientWidth = _canvas.clientWidth;
+      clientHeight = _canvas.clientHeight;
     }
 
     if (clientWidth is! num) throw "dart2js_hint";
@@ -449,7 +448,10 @@ class Stage extends DisplayObjectContainer {
     _clientTransformation.setTo(1.0, 0.0, 0.0, 1.0, - clientLeft - pivotX, - clientTop - pivotY);
     _clientTransformation.scale(1.0 / scaleX, 1.0 / scaleY);
 
+    //----------------------------
+
     if (_canvasWidth != clientWidth || _canvasHeight != clientHeight) {
+
       _canvasWidth = clientWidth;
       _canvasHeight = clientHeight;
       _canvas.width = (_canvasWidth * pixelRatio).round();
