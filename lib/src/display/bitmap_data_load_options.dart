@@ -35,7 +35,7 @@ class BitmapDataLoadOptions {
     this.jpg: true,
     this.webp: false,
     this.autoHiDpi: true,
-    this.corsEnabled: true
+    this.corsEnabled: false
   });
 }
 
