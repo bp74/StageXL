@@ -88,9 +88,10 @@ class RenderTexture {
 
     var hiDpi = Stage.autoHiDpi && autoHiDpi && url.contains("@1x.");
     var hiDpiUrl = hiDpi ? url.replaceAll("@1x.", "@2x.") : url;
-    var loader = _loadImageElement(hiDpiUrl, webpAvailable, corsEnabled);
+    var imageLoader = new ImageLoader(hiDpiUrl, webpAvailable, corsEnabled);
 
-    return loader.then((image) => new RenderTexture.fromImage(image, hiDpi ? 2.0 : 1.0));
+    return imageLoader.done.then((image) =>
+        new RenderTexture.fromImage(image, hiDpi ? 2.0 : 1.0));
   }
 
   //-----------------------------------------------------------------------------------------------

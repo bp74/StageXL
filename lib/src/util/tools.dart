@@ -79,18 +79,14 @@ String _replaceFilename(String url, String filename) {
 
 Future<bool> _checkWebpSupport() {
 
-  var completer = new Completer<bool>();
-  var image = new ImageElement();
+  var webpUrl = "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA";
+  var loader = new ImageLoader(webpUrl, false, false);
 
-  void checkImage() {
-    completer.complete(image.width == 2 && image.height == 2);
-  }
-
-  image.onLoad.listen((e) => checkImage());
-  image.onError.listen((e) => checkImage());
-  image.src = "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA";
-
-  return completer.future;
+  return loader.done.then((ImageElement image) {
+    return image.width == 2 && image.height == 2;
+  }).catchError((e) {
+    return false;
+  });
 }
 
 bool _checkMobileDevice() {
@@ -163,37 +159,4 @@ Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height,
   }
 
   return returnRectangle;
-}
-
-//------------------------------------------------------------------------------------------------------
-
-Future<ImageElement> _loadImageElement(String url, bool webpAvailable, bool corsEnabled) {
-
-  Completer<ImageElement> completer = new Completer<ImageElement>();
-
-  ImageElement imageElement = new ImageElement();
-  StreamSubscription onLoadSubscription;
-  StreamSubscription onErrorSubscription;
-
-  onLoadSubscription = imageElement.onLoad.listen((event) {
-    onLoadSubscription.cancel();
-    onErrorSubscription.cancel();
-    completer.complete(imageElement);
-  });
-
-  onErrorSubscription = imageElement.onError.listen((event) {
-    onLoadSubscription.cancel();
-    onErrorSubscription.cancel();
-    completer.completeError(new StateError("Failed to load image."));
-  });
-
-  _isWebpSupported.then((bool webpSupported) {
-    var match = new RegExp(r"(png|jpg|jpeg)$").firstMatch(url);
-    if (corsEnabled) imageElement.crossOrigin = 'anonymous';
-    imageElement.src = (webpAvailable && webpSupported && match != null)
-        ? url.substring(0, match.start) + "webp"
-        : url;
-  });
-
-  return completer.future;
 }

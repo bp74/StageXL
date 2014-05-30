@@ -131,6 +131,7 @@ part 'src/ui/mouse.dart';
 part 'src/ui/mouse_cursor.dart';
 part 'src/ui/multitouch.dart';
 
+part 'src/util/image_loader.dart';
 part 'src/util/object_pool.dart';
 part 'src/util/resource_manager.dart';
 part 'src/util/resource_manager_resource.dart';
