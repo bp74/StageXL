@@ -1,6 +1,6 @@
 part of stagexl;
 
-class ImageLoader {
+class _ImageLoader {
 
   final ImageElement _image = new ImageElement();
   final Completer<ImageElement> _completer = new Completer<ImageElement>();
@@ -9,7 +9,7 @@ class ImageLoader {
   StreamSubscription _onLoadSubscription;
   StreamSubscription _onErrorSubscription;
 
-  ImageLoader(String url, bool webpAvailable, bool corsEnabled) {
+  _ImageLoader(String url, bool webpAvailable, bool corsEnabled) {
 
     _url = url;
     _onLoadSubscription = _image.onLoad.listen(_onImageLoad);

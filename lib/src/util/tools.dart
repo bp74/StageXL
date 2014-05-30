@@ -80,7 +80,7 @@ String _replaceFilename(String url, String filename) {
 Future<bool> _checkWebpSupport() {
 
   var webpUrl = "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA";
-  var loader = new ImageLoader(webpUrl, false, false);
+  var loader = new _ImageLoader(webpUrl, false, false);
 
   return loader.done.then((ImageElement image) {
     return image.width == 2 && image.height == 2;
