@@ -52,7 +52,11 @@ class TextFormat {
   //-------------------------------------------------------------------------------------------------
 
   String get _cssFontStyle {
-    var fontStyle = "${size}px ${font}, sans-serif";
+
+    var fontStyle = _isCocoonJS
+        ? "${size}px ${font}"
+        : "${size}px ${font}, sans-serif";
+
     if (bold) fontStyle = "bold $fontStyle";
     if (italic) fontStyle = "italic $fontStyle";
     return fontStyle;
