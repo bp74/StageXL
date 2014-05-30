@@ -1,39 +1,46 @@
 part of stagexl;
 
-final Map<String, _FontStyleMetrics> _fontStyleMetrics = new Map<String, _FontStyleMetrics>(); 
+final Map<String, _FontStyleMetrics> _fontStyleMetrics = new Map<String, _FontStyleMetrics>();
 
-_FontStyleMetrics _getFontStyleMetrics(String fontStyle) {
-
-  if (_fontStyleMetrics.containsKey(fontStyle) == false) {
-    _fontStyleMetrics[fontStyle] = new _FontStyleMetrics(fontStyle);
-  }
-
-  return _fontStyleMetrics[fontStyle];
+_FontStyleMetrics _getFontStyleMetrics(TextFormat textFormat) {
+  String fontStyle = textFormat._cssFontStyle;
+  return _fontStyleMetrics.putIfAbsent(fontStyle, () => new _FontStyleMetrics(textFormat));
 }
 
 //-------------------------------------------------------------------------------------------------
 
 class _FontStyleMetrics {
 
-  String fontStyle;
   int ascent = 0;
   int descent = 0;
   int height = 0;
 
-  _FontStyleMetrics(String fontStyle) {
+  _FontStyleMetrics(TextFormat textFormat) {
+    if (_isCocoonJS) {
+      _fromEstimation(textFormat);
+    } else {
+      _fromHtml(textFormat);
+    }
+  }
 
-    this.fontStyle = fontStyle;
+  void _fromEstimation(TextFormat textFormat) {
+    this.height = textFormat.size;
+    this.ascent = textFormat.size * 7 ~/ 8;
+    this.descent = textFormat.size * 2 ~/ 8;
+  }
 
+  void _fromHtml(TextFormat textFormat) {
+
+    var fontStyle = textFormat._cssFontStyle;
     var text = new html.Element.tag("span");
-    text.style.font = this.fontStyle;
-    text.text = "Hg";
-
     var block = new html.Element.tag("div");
+    var div = new html.Element.tag("div");
+
+    text.style.font = fontStyle;
+    text.text = "Hg";
     block.style.display = "inline-block";
     block.style.width = "1px";
     block.style.height = "0px";
-
-    var div = new html.Element.tag("div");
     div.append(block);
     div.append(text);
 
@@ -42,17 +49,15 @@ class _FontStyleMetrics {
     try {
       block.style.verticalAlign = "baseline";
       this.ascent = block.offsetTop - text.offsetTop;
-
       block.style.verticalAlign = "bottom";
       this.height = block.offsetTop - text.offsetTop;
-
       this.descent = height - ascent;
-
     } catch (e) {
-
+      _fromEstimation(textFormat);
     } finally {
       div.remove();
     }
   }
+
 }
 

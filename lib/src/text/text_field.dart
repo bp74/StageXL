@@ -296,7 +296,7 @@ class TextField extends InteractiveObject {
     var textFormatAlign = _ensureString(textFormat.align);
 
     var fontStyle = textFormat._cssFontStyle;
-    var fontStyleMetrics = _getFontStyleMetrics(fontStyle);
+    var fontStyleMetrics = _getFontStyleMetrics(textFormat);
     var fontStyleMetricsAscent = _ensureNum(fontStyleMetrics.ascent);
     var fontStyleMetricsDescent = _ensureNum(fontStyleMetrics.descent);
 
