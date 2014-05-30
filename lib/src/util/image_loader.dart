@@ -13,7 +13,7 @@ class _ImageLoader {
 
     _url = url;
     _onLoadSubscription = _image.onLoad.listen(_onImageLoad);
-    _onErrorSubscription = _image.onLoad.listen(_onImageError);
+    _onErrorSubscription = _image.onError.listen(_onImageError);
 
     if (corsEnabled) {
       _image.crossOrigin = 'anonymous';
