@@ -16,23 +16,17 @@ class TimeGauge extends Gauge implements Animatable {
       Gauge.DIRECTION_LEFT]) : super(bitmapData, direction) {
 
     if (time <= 0) throw new ArgumentError('Time must be greater than zero');
-
     _totalTime = time;
-
     clearAlarms();
   }
 
   //-------------------------------------------------------------------------------------------------
 
   bool advanceTime(num time) {
-
     if (_isStarted && ratio > 0.0) {
-
       ratio = ratio - time / totalTime;
-
       if (ratio == 0.0) pause();
     }
-
     return true;
   }
 
@@ -47,31 +41,24 @@ class TimeGauge extends Gauge implements Animatable {
   }
 
   void reset([num time = 0.0]) {
-
     pause();
-
     time = max(time, 0.0);
-
     if (time != 0.0) {
       _totalTime = time;
       clearAlarms();
     }
-
     ratio = 1.0;
   }
 
   void addAlarm(String name, num restTime) {
-
     _alarms[name] = restTime / totalTime;
   }
 
   void removeAlarm(String name) {
-
     _alarms.remove(name);
   }
 
   void clearAlarms() {
-
     _alarms = new Map<String, num>();
     addAlarm(TimeGauge.TIME_OUT, 0);
   }
@@ -107,10 +94,10 @@ class TimeGauge extends Gauge implements Animatable {
     super.ratio = value;
 
     if (_alarmsEnabled) {
-
       _alarms.forEach((alarmName, alarmRatio) {
-        if (alarmRatio < oldRatio && alarmRatio >= ratio) dispatchEvent(
-            new Event(alarmName));
+        if (alarmRatio < oldRatio && alarmRatio >= ratio) {
+          dispatchEvent(new Event(alarmName, true));
+        }
       });
     }
   }
