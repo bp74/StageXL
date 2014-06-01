@@ -41,22 +41,16 @@ class TextFormat {
 
   //-------------------------------------------------------------------------------------------------
 
-  TextFormat clone() {
-    return new TextFormat(font, size, color,
-        strokeWidth: strokeWidth, strokeColor: strokeColor, fillGradient: fillGradient,
-        bold: bold, italic: italic, underline: underline, align: align,
-        topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin,
-        indent: indent, leading: leading);
-  }
+  TextFormat clone() => new TextFormat(font, size, color,
+      strokeWidth: strokeWidth, strokeColor: strokeColor, fillGradient: fillGradient,
+      bold: bold, italic: italic, underline: underline, align: align,
+      topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin,
+      indent: indent, leading: leading);
 
   //-------------------------------------------------------------------------------------------------
 
   String get _cssFontStyle {
-
-    var fontStyle = _isCocoonJS
-        ? "${size}px ${font}"
-        : "${size}px ${font}, sans-serif";
-
+    var fontStyle = "${size}px ${font}";
     if (bold) fontStyle = "bold $fontStyle";
     if (italic) fontStyle = "italic $fontStyle";
     return fontStyle;
