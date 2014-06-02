@@ -82,8 +82,8 @@ class Stage extends DisplayObjectContainer {
   int _sourceWidth = 0;
   int _sourceHeight = 0;
   int _frameRate = 30;
-  num _stageWidth = -1;
-  num _stageHeight = -1;
+  num _stageWidth = 0.0;
+  num _stageHeight = 0.0;
   Rectangle<num> _contentRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
 
   Matrix _clientTransformation = new Matrix.fromIdentity();
