@@ -4,9 +4,8 @@ This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
 #### Pub version 0.9.3+1
-  author: Bernhard Pichler <support@stagexl.org>
-  description: A library for graphically rich content like games, based on the Flash API.
-  homepage: http://www.stagexl.org
+  * Changed Stage.stageWidth and stageHeight to num.
+  * Added workaround for web fonts issue in IE.  
   
 #### Pub version 0.9.3
   * Added Scale9Bitmap DisplayObject.
