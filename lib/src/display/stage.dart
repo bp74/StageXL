@@ -82,8 +82,8 @@ class Stage extends DisplayObjectContainer {
   int _sourceWidth = 0;
   int _sourceHeight = 0;
   int _frameRate = 30;
-  int _canvasWidth = -1;
-  int _canvasHeight = -1;
+  num _stageWidth = -1;
+  num _stageHeight = -1;
   Rectangle<num> _contentRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
 
   Matrix _clientTransformation = new Matrix.fromIdentity();
@@ -197,11 +197,11 @@ class Stage extends DisplayObjectContainer {
 
   /// Gets the width of the Stage in screen coordinates/pixels.
 
-  int get stageWidth => _canvasWidth;
+  int get stageWidth => _stageWidth;
 
   /// Gets the height of the Stage in screen coordinates/pixels.
 
-  int get stageHeight => _canvasHeight;
+  int get stageHeight => _stageHeight;
 
   /// Gets and sets the width of the Stage in world coordinates.
   /// The initial value of [sourceWidth] is the width of the canvas
@@ -450,12 +450,12 @@ class Stage extends DisplayObjectContainer {
 
     //----------------------------
 
-    if (_canvasWidth != clientWidth || _canvasHeight != clientHeight) {
+    if (_stageWidth != clientWidth || _stageHeight != clientHeight) {
 
-      _canvasWidth = clientWidth;
-      _canvasHeight = clientHeight;
-      _canvas.width = (_canvasWidth * pixelRatio).round();
-      _canvas.height = (_canvasHeight * pixelRatio).round();
+      _stageWidth = clientWidth;
+      _stageHeight = clientHeight;
+      _canvas.width = (clientWidth * pixelRatio).round();
+      _canvas.height = (clientHeight * pixelRatio).round();
 
       // update hi-dpi canvas style size if client size has changed
       if (_canvas.clientWidth != clientWidth || _canvas.clientHeight != clientHeight) {
