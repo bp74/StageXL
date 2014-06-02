@@ -82,8 +82,8 @@ class Stage extends DisplayObjectContainer {
   int _sourceWidth = 0;
   int _sourceHeight = 0;
   int _frameRate = 30;
-  num _stageWidth = 0.0;
-  num _stageHeight = 0.0;
+  int _stageWidth = 0;
+  int _stageHeight = 0;
   Rectangle<num> _contentRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
 
   Matrix _clientTransformation = new Matrix.fromIdentity();
@@ -354,10 +354,10 @@ class Stage extends DisplayObjectContainer {
 
   _updateCanvasSize() {
 
-    num clientLeft, clientTop;
-    num clientWidth, clientHeight;
-    num sourceWidth = _sourceWidth;
-    num sourceHeight = _sourceHeight;
+    int clientLeft, clientTop;
+    int clientWidth, clientHeight;
+    int sourceWidth = _sourceWidth;
+    int sourceHeight = _sourceHeight;
 
     if (_isCocoonJS) {
       clientLeft = 0;
@@ -366,8 +366,8 @@ class Stage extends DisplayObjectContainer {
       clientHeight = html.window.innerHeight;
     } else {
       var clientRectangle = _canvas.getBoundingClientRect();
-      clientLeft = _canvas.clientLeft + clientRectangle.left;
-      clientTop = _canvas.clientTop + clientRectangle.top;
+      clientLeft = _canvas.clientLeft + clientRectangle.left.round();
+      clientTop = _canvas.clientTop + clientRectangle.top.round();
       clientWidth = _canvas.clientWidth;
       clientHeight = _canvas.clientHeight;
     }
@@ -381,12 +381,12 @@ class Stage extends DisplayObjectContainer {
 
     //----------------------------
 
-    num scaleX = 1.0;
-    num scaleY = 1.0;
-    num pivotX = 0.0;
-    num pivotY = 0.0;
-    num ratioWidth = clientWidth / sourceWidth;
-    num ratioHeight = clientHeight / sourceHeight;
+    double scaleX = 1.0;
+    double scaleY = 1.0;
+    double pivotX = 0.0;
+    double pivotY = 0.0;
+    double ratioWidth = clientWidth / sourceWidth;
+    double ratioHeight = clientHeight / sourceHeight;
 
     switch(_stageScaleMode) {
       case StageScaleMode.EXACT_FIT:

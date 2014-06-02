@@ -3,6 +3,9 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.9.3+2
+  * stageWidth and stageHeight are integers again.
+
 #### Pub version 0.9.3+1
   * Changed Stage.stageWidth and stageHeight to num.
   * Added workaround for web fonts issue in IE.  
