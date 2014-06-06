@@ -30,15 +30,13 @@ class RenderTexture {
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
 
-    var canvasWidth = (_storeWidth / _backingStorePixelRatio).round();
-    var canvasHeight = (_storeHeight / _backingStorePixelRatio).round();
-    _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
+    _canvas = new CanvasElement(width: _storeWidth, height: _storeHeight);
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
 
     if (fillColor != 0 || transparent == false) {
       var context = _canvas.context2D;
       context.fillStyle = transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
-      context.fillRect(0, 0, canvasWidth, canvasHeight);
+      context.fillRect(0, 0, _storeWidth, _storeHeight);
     }
   }
 
@@ -51,15 +49,13 @@ class RenderTexture {
     _storeHeight = (_height * _storePixelRatio).round();
     _transparent = true;
 
-    var canvasWidth = (_storeWidth / _backingStorePixelRatio).round();
-    var canvasHeight = (_storeHeight / _backingStorePixelRatio).round();
-    _canvas = new CanvasElement(width: canvasWidth, height: canvasHeight);
+    _canvas = new CanvasElement(width: _storeWidth, height: _storeHeight);
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
     _texture = null;
 
     _canvas.context2D.drawImageScaledFromSource(imageElement,
         0, 0, imageElement.width, imageElement.height,
-        0, 0, canvasWidth, canvasHeight);
+        0, 0, _storeWidth, _storeHeight);
   }
 
   RenderTexture.fromRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer, num storePixelRatio) {
@@ -132,8 +128,8 @@ class RenderTexture {
       _height = _ensureInt(height);
       _storeWidth = (_width * _storePixelRatio).round();
       _storeHeight = (_height * _storePixelRatio).round();
-      _canvas.width = (_storeWidth / _backingStorePixelRatio).round();
-      _canvas.height = (_storeHeight / _backingStorePixelRatio).round();
+      _canvas.width = _storeWidth;
+      _canvas.height = _storeHeight;
       _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
     }
   }

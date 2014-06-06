@@ -155,9 +155,6 @@ final Matrix _identityMatrix = new Matrix.fromIdentity();
 final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
 final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
 
-final num _backingStorePixelRatio = _dummyCanvasContext.backingStorePixelRatio == null ?
-    1.0 : _dummyCanvasContext.backingStorePixelRatio.toDouble();
-
 final num _devicePixelRatio = html.window.devicePixelRatio == null ?
     1.0 : html.window.devicePixelRatio;
 

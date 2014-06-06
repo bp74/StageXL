@@ -53,7 +53,7 @@ class RenderTextureQuad {
 
     int renderTextureWidth = _renderTexture.width;
     int renderTextureHeight = _renderTexture.height;
-    num pixelRatio = _renderTexture.storePixelRatio / _backingStorePixelRatio;
+    num storePixelRatio = _renderTexture.storePixelRatio;
 
     uvList[0] = x1 / renderTextureWidth;
     uvList[1] = y1 / renderTextureHeight;
@@ -64,14 +64,14 @@ class RenderTextureQuad {
     uvList[6] = x4 / renderTextureWidth;
     uvList[7] = y4 / renderTextureHeight;
 
-    xyList[0] = (x1 * pixelRatio).round();
-    xyList[1] = (y1 * pixelRatio).round();
-    xyList[2] = (x2 * pixelRatio).round();
-    xyList[3] = (y2 * pixelRatio).round();
-    xyList[4] = (x3 * pixelRatio).round();
-    xyList[5] = (y3 * pixelRatio).round();
-    xyList[6] = (x4 * pixelRatio).round();
-    xyList[7] = (y4 * pixelRatio).round();
+    xyList[0] = (x1 * storePixelRatio).round();
+    xyList[1] = (y1 * storePixelRatio).round();
+    xyList[2] = (x2 * storePixelRatio).round();
+    xyList[3] = (y2 * storePixelRatio).round();
+    xyList[4] = (x3 * storePixelRatio).round();
+    xyList[5] = (y3 * storePixelRatio).round();
+    xyList[6] = (x4 * storePixelRatio).round();
+    xyList[7] = (y4 * storePixelRatio).round();
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ class RenderTextureQuad {
 
   Matrix get drawMatrix {
 
-    // var scale = _renderTexture.storePixelRatio / _backingStorePixelRatio;
+    // var scale = _renderTexture.storePixelRatio;
     // var matrix = new Matrix.fromIdentity();
     // matrix.translate(-offsetX, -offsetY);
     // matrix.rotate(_rotation * PI / 2.0);
@@ -107,7 +107,7 @@ class RenderTextureQuad {
     // matrix.scale(scale, scale);
     // return matrix;
 
-    num s = _renderTexture.storePixelRatio / _backingStorePixelRatio;
+    num s = _renderTexture.storePixelRatio;
 
     return (_rotation == 0)
         ? new Matrix(s, 0.0, 0.0, s, s * (textureX - offsetX), s * (textureY - offsetY))
@@ -197,17 +197,15 @@ class RenderTextureQuad {
 
   Rectangle<int> get _imageDataRectangle {
     num storePixelRatio = _renderTexture.storePixelRatio;
-    num backingStorePixelRatio = _backingStorePixelRatio;
-    num pixelRatio = storePixelRatio / backingStorePixelRatio;
     int left = (rotation == 0) ? textureX : textureX - textureHeight;
     int top = (rotation == 0) ? textureY : textureY;
     int right = (rotation == 0) ? textureX + textureWidth : textureX;
     int bottom = (rotation == 0) ? textureY + textureHeight : textureY + textureWidth;
 
-    left = (left * pixelRatio).round();
-    top = (top * pixelRatio).round();
-    right = (right * pixelRatio).round();
-    bottom = (bottom * pixelRatio).round();
+    left = (left * storePixelRatio).round();
+    top = (top * storePixelRatio).round();
+    right = (right * storePixelRatio).round();
+    bottom = (bottom * storePixelRatio).round();
 
     return new Rectangle<int>(left, top, right - left, bottom - top);
   }
@@ -221,23 +219,13 @@ class RenderTextureQuad {
   ImageData getImageData() {
     var rect = _imageDataRectangle;
     var context = _renderTexture.canvas.context2D;
-    var backingStorePixelRatio = _backingStorePixelRatio;
-    if (backingStorePixelRatio > 1.0) {
-      return context.getImageDataHD(rect.left, rect.top, rect.width, rect.height);
-    } else {
-      return context.getImageData(rect.left, rect.top, rect.width, rect.height);
-    }
+    return context.getImageData(rect.left, rect.top, rect.width, rect.height);
   }
 
   void putImageData(ImageData imageData) {
     var rect = _imageDataRectangle;
     var context = _renderTexture.canvas.context2D;
-    var backingStorePixelRatio = _backingStorePixelRatio;
-    if (backingStorePixelRatio > 1.0) {
-      context.putImageDataHD(imageData, rect.left, rect.top);
-    } else {
-      context.putImageData(imageData, rect.left, rect.top);
-    }
+    context.putImageData(imageData, rect.left, rect.top);
   }
 
 

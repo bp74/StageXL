@@ -438,7 +438,7 @@ class Stage extends DisplayObjectContainer {
     contentRectangle.width = clientWidth / scaleX;
     contentRectangle.height = clientHeight / scaleY;
 
-    var pixelRatio = (Stage.autoHiDpi ? _devicePixelRatio : 1.0) / _backingStorePixelRatio;
+    var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
 
     // stage to canvas coordinate transformation
     _stageTransformation.setTo(scaleX, 0.0, 0.0, scaleY, pivotX, pivotY);
