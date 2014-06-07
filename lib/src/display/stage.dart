@@ -759,23 +759,67 @@ class Stage extends DisplayObjectContainer {
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
     var touch = _touches.containsKey(identifier) ? _touches[identifier] : new _Touch(target, _touches.length == 0);
 
-    if (touch.target != null && touch.target != target) {
+    if (touch.target != target) {
 
-      touch.target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true)
-        .._localPoint = touch.target.stage != null ? touch.target.globalToLocal(stagePoint) : new Point<num>(0, 0)
-        .._stagePoint = stagePoint
-        .._touchPointID = touch.touchPointID
-        .._isPrimaryTouchPoint = touch.primaryTouchPoint
-        .._altKey = altKey
-        .._ctrlKey = ctrlKey
-        .._shiftKey = shiftKey);
+      DisplayObject oldTarget = touch.target;
+      DisplayObject newTarget = target;
+      List oldTargetList = [];
+      List newTargetList = [];
+      int commonCount = 0;
 
-      touch.target = null;
-    }
+      for(DisplayObject p = oldTarget; p != null; p = p.parent) {
+        oldTargetList.add(p);
+      }
 
-    if (target != null && target != touch.target) {
+      for(DisplayObject p = newTarget; p != null; p = p.parent) {
+        newTargetList.add(p);
+      }
 
-      target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true)
+      for(;;commonCount++) {
+        if (commonCount == oldTargetList.length) break;
+        if (commonCount == newTargetList.length) break;
+        var ot = oldTargetList[oldTargetList.length - commonCount - 1];
+        var nt = newTargetList[newTargetList.length - commonCount - 1];
+        if (ot != nt) break;
+      }
+
+      if (oldTarget != null) {
+        oldTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true)
+            .._localPoint = oldTarget.globalToLocal(stagePoint)
+            .._stagePoint = stagePoint
+            .._touchPointID = touch.touchPointID
+            .._isPrimaryTouchPoint = touch.primaryTouchPoint
+            .._altKey = altKey
+            .._ctrlKey = ctrlKey
+            .._shiftKey = shiftKey);
+      }
+
+      for(int i = 0; i < oldTargetList.length - commonCount; i++) {
+        DisplayObject target = oldTargetList[i];
+        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OUT, false)
+            .._localPoint = target.globalToLocal(stagePoint)
+            .._stagePoint = stagePoint
+            .._touchPointID = touch.touchPointID
+            .._isPrimaryTouchPoint = touch.primaryTouchPoint
+            .._altKey = altKey
+            .._ctrlKey = ctrlKey
+            .._shiftKey = shiftKey);
+      }
+
+      for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
+        DisplayObject target = newTargetList[i];
+        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OVER, false)
+            .._localPoint = target.globalToLocal(stagePoint)
+            .._stagePoint = stagePoint
+            .._touchPointID = touch.touchPointID
+            .._isPrimaryTouchPoint = touch.primaryTouchPoint
+            .._altKey = altKey
+            .._ctrlKey = ctrlKey
+            .._shiftKey = shiftKey);
+      }
+
+      if (newTarget != null) {
+        newTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true)
         .._localPoint = target.globalToLocal(stagePoint)
         .._stagePoint = stagePoint
         .._touchPointID = touch.touchPointID
@@ -783,9 +827,12 @@ class Stage extends DisplayObjectContainer {
         .._altKey = altKey
         .._ctrlKey = ctrlKey
         .._shiftKey = shiftKey);
+      }
 
-      touch.target = target;
+      touch.target = newTarget;
     }
+
+    //-----------------------------------------------------------------
 
     String touchEventType = null;
 
