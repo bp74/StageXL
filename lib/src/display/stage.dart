@@ -763,8 +763,8 @@ class Stage extends DisplayObjectContainer {
 
       DisplayObject oldTarget = touch.target;
       DisplayObject newTarget = target;
-      List oldTargetList = [];
-      List newTargetList = [];
+      List<DisplayObject> oldTargetList = new List<DisplayObject>();
+      List<DisplayObject> newTargetList = new List<DisplayObject>();
       int commonCount = 0;
 
       for(DisplayObject p = oldTarget; p != null; p = p.parent) {
@@ -784,49 +784,37 @@ class Stage extends DisplayObjectContainer {
       }
 
       if (oldTarget != null) {
-        oldTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true)
-            .._localPoint = oldTarget.globalToLocal(stagePoint)
-            .._stagePoint = stagePoint
-            .._touchPointID = touch.touchPointID
-            .._isPrimaryTouchPoint = touch.primaryTouchPoint
-            .._altKey = altKey
-            .._ctrlKey = ctrlKey
-            .._shiftKey = shiftKey);
+        Point localPoint = oldTarget.globalToLocal(stagePoint);
+        oldTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true,
+            touch.touchPointID, touch.primaryTouchPoint,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+            altKey, ctrlKey, shiftKey));
       }
 
       for(int i = 0; i < oldTargetList.length - commonCount; i++) {
         DisplayObject target = oldTargetList[i];
-        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OUT, false)
-            .._localPoint = target.globalToLocal(stagePoint)
-            .._stagePoint = stagePoint
-            .._touchPointID = touch.touchPointID
-            .._isPrimaryTouchPoint = touch.primaryTouchPoint
-            .._altKey = altKey
-            .._ctrlKey = ctrlKey
-            .._shiftKey = shiftKey);
+        Point localPoint = target.globalToLocal(stagePoint);
+        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OUT, false,
+            touch.touchPointID, touch.primaryTouchPoint,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+            altKey, ctrlKey, shiftKey));
       }
 
       for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
         DisplayObject target = newTargetList[i];
-        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OVER, false)
-            .._localPoint = target.globalToLocal(stagePoint)
-            .._stagePoint = stagePoint
-            .._touchPointID = touch.touchPointID
-            .._isPrimaryTouchPoint = touch.primaryTouchPoint
-            .._altKey = altKey
-            .._ctrlKey = ctrlKey
-            .._shiftKey = shiftKey);
+        Point localPoint = target.globalToLocal(stagePoint);
+        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OVER, false,
+            touch.touchPointID, touch.primaryTouchPoint,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+            altKey, ctrlKey, shiftKey));
       }
 
       if (newTarget != null) {
-        newTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true)
-        .._localPoint = target.globalToLocal(stagePoint)
-        .._stagePoint = stagePoint
-        .._touchPointID = touch.touchPointID
-        .._isPrimaryTouchPoint = touch.primaryTouchPoint
-        .._altKey = altKey
-        .._ctrlKey = ctrlKey
-        .._shiftKey = shiftKey);
+        Point localPoint = newTarget.globalToLocal(stagePoint);
+        newTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true,
+            touch.touchPointID, touch.primaryTouchPoint,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+            altKey, ctrlKey, shiftKey));
       }
 
       touch.target = newTarget;
@@ -857,15 +845,11 @@ class Stage extends DisplayObjectContainer {
     }
 
     if (touchEventType != null && target != null) {
-
-      target.dispatchEvent(new TouchEvent(touchEventType, true)
-        .._localPoint = target.globalToLocal(stagePoint)
-        .._stagePoint = stagePoint
-        .._touchPointID = touch.touchPointID
-        .._isPrimaryTouchPoint = touch.primaryTouchPoint
-        .._altKey = altKey
-        .._ctrlKey = ctrlKey
-        .._shiftKey = shiftKey);
+      Point localPoint = target.globalToLocal(stagePoint);
+      target.dispatchEvent(new TouchEvent(touchEventType, true,
+          touch.touchPointID, touch.primaryTouchPoint,
+          localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+          altKey, ctrlKey, shiftKey));
     }
   }
 
