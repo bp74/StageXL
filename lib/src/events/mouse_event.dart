@@ -23,49 +23,20 @@ class MouseEvent extends Event {
   static const String ROLL_OUT = "rollOut";
   static const String ROLL_OVER = "rollOver";
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
-  num _localX = 0.0, _localY = 0.0;
-  num _stageX = 0.0, _stageY = 0.0;
-  num _deltaX = 0.0, _deltaY = 0.0;
+  final num localX, localY;
+  final num stageX, stageY;
+  final num deltaX, deltaY;
+  final bool buttonDown;
+  final int clickCount;
+  final bool altKey, ctrlKey, shiftKey;
 
-  bool _buttonDown = false;
-  bool _altKey = false;
-  bool _ctrlKey = false;
-  bool _shiftKey = false;
+  MouseEvent(String type, bool bubbles,
+      this.localX, this.localY,
+      this.stageX, this.stageY,
+      this.deltaX, this.deltaY,
+      this.buttonDown, this.clickCount,
+      this.altKey, this.ctrlKey, this.shiftKey) : super(type, bubbles);
 
-  int _clickCount = 0;
-
-  MouseEvent(String type, [bool bubbles = false]) : super(type, bubbles);
-
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  set _localPoint(Point<num> point) {
-    _localX = point.x;
-    _localY = point.y;
-  }
-
-  set _stagePoint(Point<num> point) {
-    _stageX = point.x;
-    _stageY = point.y;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  num get localX => _localX;
-  num get localY => _localY;
-  num get stageX => _stageX;
-  num get stageY => _stageY;
-  num get deltaX => _deltaX;
-  num get deltaY => _deltaY;
-
-  bool get buttonDown => _buttonDown;
-  bool get altKey => _altKey;
-  bool get ctrlKey => _ctrlKey;
-  bool get shiftKey => _shiftKey;
-
-  int get clickCount => _clickCount;
 }

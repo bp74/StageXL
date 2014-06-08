@@ -485,7 +485,6 @@ class Stage extends DisplayObjectContainer {
 
     InteractiveObject target = null;
     Point stagePoint = _clientTransformation.transformPoint(event.client);
-    Point localPoint = null;
 
     if (button < 0 || button > 2) return;
     if (event.type == "mousemove" && _mousePosition.equals(stagePoint)) return;
@@ -547,45 +546,33 @@ class Stage extends DisplayObjectContainer {
       }
 
       if (oldTarget != null) {
-        oldTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT, true)
-            .._localPoint = oldTarget.globalToLocal(stagePoint)
-            .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown
-            .._altKey = event.altKey
-            .._ctrlKey = event.ctrlKey
-            .._shiftKey = event.shiftKey);
+        Point localPoint = oldTarget.globalToLocal(stagePoint);
+        oldTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT, true,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
+            mouseButton.buttonDown, 0, event.altKey, event.ctrlKey, event.shiftKey));
       }
 
       for(int i = 0; i < oldTargetList.length - commonCount; i++) {
         DisplayObject target = oldTargetList[i];
-        target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT, false)
-            .._localPoint = target.globalToLocal(stagePoint)
-            .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown
-            .._altKey = event.altKey
-            .._ctrlKey = event.ctrlKey
-            .._shiftKey = event.shiftKey);
+        Point localPoint = target.globalToLocal(stagePoint);
+        target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT, false,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
+            mouseButton.buttonDown, 0, event.altKey, event.ctrlKey, event.shiftKey));
       }
 
       for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
         DisplayObject target = newTargetList[i];
-        target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER, false)
-            .._localPoint = target.globalToLocal(stagePoint)
-            .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown
-            .._altKey = event.altKey
-            .._ctrlKey = event.ctrlKey
-            .._shiftKey = event.shiftKey);
+        Point localPoint = target.globalToLocal(stagePoint);
+        target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER, false,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
+            mouseButton.buttonDown, 0, event.altKey, event.ctrlKey, event.shiftKey));
       }
 
       if (newTarget != null) {
-        newTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER, true)
-            .._localPoint = newTarget.globalToLocal(stagePoint)
-            .._stagePoint = stagePoint
-            .._buttonDown = mouseButton.buttonDown
-            .._altKey = event.altKey
-            .._ctrlKey = event.ctrlKey
-            .._shiftKey = event.shiftKey);
+        Point localPoint = newTarget.globalToLocal(stagePoint);
+        newTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER, true,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
+            mouseButton.buttonDown, 0, event.altKey, event.ctrlKey, event.shiftKey));
       }
 
       _mouseTarget = newTarget;
@@ -632,39 +619,22 @@ class Stage extends DisplayObjectContainer {
 
     if (mouseEventType != null && target != null) {
 
-      localPoint = target.globalToLocal(stagePoint);
+      Point localPoint = target.globalToLocal(stagePoint);
 
-      target.dispatchEvent(new MouseEvent(mouseEventType, true)
-          .._localPoint = localPoint
-          .._stagePoint = stagePoint
-          .._buttonDown = mouseButton.buttonDown
-          .._clickCount = mouseButton.clickCount
-          .._altKey = event.altKey
-          .._ctrlKey = event.ctrlKey
-          .._shiftKey = event.shiftKey);
+      target.dispatchEvent(new MouseEvent(mouseEventType, true,
+          localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
+          mouseButton.buttonDown, mouseButton.clickCount,
+          event.altKey, event.ctrlKey, event.shiftKey));
 
       if (isClick) {
 
-        if (isDoubleClick && target.doubleClickEnabled) {
+        mouseEventType = isDoubleClick && target.doubleClickEnabled
+            ? mouseButton.mouseDoubleClickEventType
+            : mouseButton.mouseClickEventType;
 
-          target.dispatchEvent(new MouseEvent(mouseButton.mouseDoubleClickEventType, true)
-              .._localPoint = localPoint
-              .._stagePoint = stagePoint
-              .._buttonDown = mouseButton.buttonDown
-              .._altKey = event.altKey
-              .._ctrlKey = event.ctrlKey
-              .._shiftKey = event.shiftKey);
-
-        } else {
-
-          target.dispatchEvent(new MouseEvent(mouseButton.mouseClickEventType, true)
-              .._localPoint = localPoint
-              .._stagePoint = stagePoint
-              .._buttonDown = mouseButton.buttonDown
-              .._altKey = event.altKey
-              .._ctrlKey = event.ctrlKey
-              .._shiftKey = event.shiftKey);
-        }
+        target.dispatchEvent(new MouseEvent(mouseEventType, true,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
+            mouseButton.buttonDown, 0, event.altKey, event.ctrlKey, event.shiftKey));
       }
     }
   }
@@ -675,20 +645,15 @@ class Stage extends DisplayObjectContainer {
 
     var stagePoint = _clientTransformation.transformPoint(event.client);
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
+    if (target == null) return;
 
-    if (target != null) {
-      var mouseEvent = new MouseEvent(MouseEvent.MOUSE_WHEEL, true)
-          .._localPoint = target.globalToLocal(stagePoint)
-          .._stagePoint = stagePoint
-          .._deltaX = event.deltaX
-          .._deltaY = event.deltaY
-          .._altKey = event.altKey
-          .._ctrlKey = event.ctrlKey
-          .._shiftKey = event.shiftKey;
+    var localPoint = target.globalToLocal(stagePoint);
+    var mouseEvent = new MouseEvent(MouseEvent.MOUSE_WHEEL, true,
+        localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, event.deltaX, event.deltaY,
+        false, 0, event.altKey, event.ctrlKey, event.shiftKey);
 
-      target.dispatchEvent(mouseEvent);
-      if (mouseEvent.stopsPropagation) event.preventDefault();
-    }
+    target.dispatchEvent(mouseEvent);
+    if (mouseEvent.stopsPropagation) event.preventDefault();
   }
 
   //-------------------------------------------------------------------------------------------------
