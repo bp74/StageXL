@@ -833,8 +833,12 @@ class Stage extends DisplayObjectContainer {
       if (keyCode == 13) charCode = 13;
       if (charCode == 0) return;
 
-      _focus.dispatchEvent(new TextEvent(TextEvent.TEXT_INPUT, true)
-          .._text = new String.fromCharCodes([charCode]));
+      var text = new String.fromCharCodes([charCode]);
+      var textEvent = new TextEvent(TextEvent.TEXT_INPUT, true, text);
+
+      _focus.dispatchEvent(textEvent);
+
+      if (textEvent.stopsPropagation) event.preventDefault();
 
     } else {
 
