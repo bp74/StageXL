@@ -728,8 +728,8 @@ class Stage extends DisplayObjectContainer {
 
       DisplayObject oldTarget = touch.target;
       DisplayObject newTarget = target;
-      List<DisplayObject> oldTargetList = new List<DisplayObject>();
-      List<DisplayObject> newTargetList = new List<DisplayObject>();
+      List oldTargetList = [];
+      List newTargetList = [];
       int commonCount = 0;
 
       for(DisplayObject p = oldTarget; p != null; p = p.parent) {
