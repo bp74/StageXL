@@ -13,12 +13,17 @@ class SimpleButton extends InteractiveObject {
 
   SimpleButton([this.upState, this.overState, this.downState, this.hitTestState]) {
 
-    useHandCursor = true;
-    
-    addEventListener(MouseEvent.MOUSE_OVER, _onMouseEvent);
-    addEventListener(MouseEvent.MOUSE_OUT, _onMouseEvent);
-    addEventListener(MouseEvent.MOUSE_DOWN, _onMouseEvent);
-    addEventListener(MouseEvent.MOUSE_UP, _onMouseEvent);
+    this.useHandCursor = true;
+
+    this.onMouseOver.listen(_onMouseEvent);
+    this.onMouseOut.listen(_onMouseEvent);
+    this.onMouseDown.listen(_onMouseEvent);
+    this.onMouseUp.listen(_onMouseEvent);
+
+    this.onTouchOver.listen(_onTouchEvent);
+    this.onTouchOut.listen(_onTouchEvent);
+    this.onTouchBegin.listen(_onTouchEvent);
+    this.onTouchEnd.listen(_onTouchEvent);
 
     _currentState = this.upState;
   }
@@ -58,20 +63,30 @@ class SimpleButton extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-
-    if (_currentState != null)
+    if (_currentState != null) {
       renderState.renderDisplayObject(_currentState);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   void _onMouseEvent(MouseEvent mouseEvent) {
-
     if (mouseEvent.type == MouseEvent.MOUSE_OUT) {
       _currentState = upState;
     } else {
       _currentState = mouseEvent.buttonDown ? downState : overState;
+    }
+  }
+
+  void _onTouchEvent(TouchEvent touchEvent) {
+    if (touchEvent.isPrimaryTouchPoint) {
+      switch(touchEvent.type) {
+        case TouchEvent.TOUCH_OVER: _currentState = downState; break;
+        case TouchEvent.TOUCH_OUT: _currentState = upState; break;
+        case TouchEvent.TOUCH_BEGIN: _currentState = downState; break;
+        case TouchEvent.TOUCH_END: _currentState = upState; break;
+      }
     }
   }
 
