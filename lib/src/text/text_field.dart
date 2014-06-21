@@ -319,6 +319,7 @@ class TextField extends InteractiveObject {
 
       if (_wordWrap == false) {
 
+        paragraph = _passwordEncoder(paragraph);
         _textLineMetrics.add(new TextLineMetrics._internal(paragraph, startIndex));
         startIndex += paragraph.length + 1;
 
