@@ -1,4 +1,7 @@
-part of stagexl;
+library stagexl.geom.point;
+
+import 'dart:math' hide Point, Rectangle;
+import 'dart:math' as math;
 
 class Point<T extends num> implements math.Point<T> {
 
