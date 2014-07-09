@@ -8,7 +8,7 @@ class SoundMixer {
   static AudioElementMixer _audioElementMixer;
 
   static SoundTransform _soundTransform = new SoundTransform();
-  static List<String> _supportedTypes = _getSupportedTypes();
+  static final List<String> _supportedTypes = _getSupportedTypes();
 
   //-------------------------------------------------------------------------------------------------
 

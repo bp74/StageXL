@@ -1,13 +1,11 @@
 part of stagexl;
 
 class MockSoundChannel extends SoundChannel {
-
-  bool _loop;
+  final bool _loop;
   SoundTransform _soundTransform;
 
   MockSoundChannel(MockSound mockSound,
       num startTime, num duration, bool loop, SoundTransform soundTransform) :
-
       _loop = loop,
       _soundTransform = soundTransform;
 

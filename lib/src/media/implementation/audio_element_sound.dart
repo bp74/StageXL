@@ -2,11 +2,11 @@ part of stagexl;
 
 class AudioElementSound extends Sound {
 
-  AudioElement _audio = new AudioElement();
-  List<AudioElement> _audioPool = new List<AudioElement>();
-  List<AudioElementSoundChannel> _soundChannels = new List<AudioElementSoundChannel>();
+  final AudioElement _audio = new AudioElement();
+  final List<AudioElement> _audioPool = new List<AudioElement>();
+  final List<AudioElementSoundChannel> _soundChannels = new List<AudioElementSoundChannel>();
 
-  AudioElementSound() {
+  AudioElementSound._() {
     _audio.onEnded.listen(_onAudioEnded);
     _audioPool.add(_audio);
 
@@ -20,7 +20,7 @@ class AudioElementSound extends Sound {
 
     if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
 
-    var sound = new AudioElementSound();
+    var sound = new AudioElementSound._();
     var audio = sound._audio;
     var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
     var loadCompleter = new Completer<Sound>();
