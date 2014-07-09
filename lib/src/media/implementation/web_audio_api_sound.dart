@@ -4,7 +4,7 @@ class WebAudioApiSound extends Sound {
 
   AudioBuffer _buffer;
 
-  WebAudioApiSound() {
+  WebAudioApiSound._() {
     if (SoundMixer.engine != "WebAudioApi") {
       throw new UnsupportedError("This browser does not support Web Audio API.");
     }
@@ -17,7 +17,7 @@ class WebAudioApiSound extends Sound {
 
     if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
 
-    var sound = new WebAudioApiSound();
+    var sound = new WebAudioApiSound._();
     var loadCompleter = new Completer<Sound>();
     var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
     var audioContext = WebAudioApiMixer.audioContext;

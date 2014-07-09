@@ -2,15 +2,13 @@ part of stagexl;
 
 class MockSound extends Sound {
 
-  MockSound() {
-
-  }
+  MockSound._();
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
-    return new Future<Sound>.value(new MockSound());
+    return new Future<Sound>.value(new MockSound._());
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -32,6 +30,4 @@ class MockSound extends Sound {
     if (soundTransform == null) soundTransform = new SoundTransform();
     return new MockSoundChannel(this, startTime, duration, loop, soundTransform);
   }
-
 }
-
