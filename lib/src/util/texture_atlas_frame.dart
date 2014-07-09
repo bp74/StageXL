@@ -19,15 +19,15 @@ class TextureAtlasFrame {
   TextureAtlasFrame.fromJson(TextureAtlas textureAtlas, String name, Map frame) :
     _textureAtlas = textureAtlas,
     _name = name,
-    _rotated = _ensureBool(frame["rotated"]),
-    _originalWidth = _ensureInt(frame["sourceSize"]["w"]),
-    _originalHeight = _ensureInt(frame["sourceSize"]["h"]),
-    _offsetX = _ensureInt(frame["spriteSourceSize"]["x"]),
-    _offsetY = _ensureInt(frame["spriteSourceSize"]["y"]),
-    _frameX = _ensureInt(frame["frame"]["x"]),
-    _frameY = _ensureInt(frame["frame"]["y"]),
-    _frameWidth = _ensureInt(frame["frame"]["w"]),
-    _frameHeight = _ensureInt(frame["frame"]["h"]);
+    _rotated = ensureBool(frame["rotated"]),
+    _originalWidth = ensureInt(frame["sourceSize"]["w"]),
+    _originalHeight = ensureInt(frame["sourceSize"]["h"]),
+    _offsetX = ensureInt(frame["spriteSourceSize"]["x"]),
+    _offsetY = ensureInt(frame["spriteSourceSize"]["y"]),
+    _frameX = ensureInt(frame["frame"]["x"]),
+    _frameY = ensureInt(frame["frame"]["y"]),
+    _frameWidth = ensureInt(frame["frame"]["w"]),
+    _frameHeight = ensureInt(frame["frame"]["h"]);
 
   //-------------------------------------------------------------------------------------------------
 

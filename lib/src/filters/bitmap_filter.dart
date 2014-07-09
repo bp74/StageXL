@@ -156,10 +156,10 @@ abstract class BitmapFilter {
 
   _setColor(List<int> data, int color) {
 
-    int rColor = _colorGetR(color);
-    int gColor = _colorGetG(color);
-    int bColor = _colorGetB(color);
-    int aColor = _colorGetA(color);
+    int rColor = colorGetR(color);
+    int gColor = colorGetG(color);
+    int bColor = colorGetB(color);
+    int aColor = colorGetA(color);
 
     if (BitmapDataChannel.isLittleEndianSystem) {
       for(var i = 0; i <= data.length - 4; i += 4) {
@@ -242,10 +242,10 @@ abstract class BitmapFilter {
 
     if (dstData.length != srcData.length) return;
 
-    int rColor = _colorGetR(color);
-    int gColor = _colorGetG(color);
-    int bColor = _colorGetB(color);
-    int aColor = _colorGetA(color);
+    int rColor = colorGetR(color);
+    int gColor = colorGetG(color);
+    int bColor = colorGetB(color);
+    int aColor = colorGetA(color);
 
     if (BitmapDataChannel.isLittleEndianSystem) {
       for(int i = 0; i <= dstData.length - 4; i += 4) {
@@ -292,10 +292,10 @@ abstract class BitmapFilter {
 
     if (dstData.length != srcData.length) return;
 
-    int rColor = _colorGetR(color);
-    int gColor = _colorGetG(color);
-    int bColor = _colorGetB(color);
-    int aColor = _colorGetA(color);
+    int rColor = colorGetR(color);
+    int gColor = colorGetG(color);
+    int bColor = colorGetB(color);
+    int aColor = colorGetA(color);
 
     if (BitmapDataChannel.isLittleEndianSystem) {
       for(var i = 0; i <= dstData.length - 4; i += 4) {

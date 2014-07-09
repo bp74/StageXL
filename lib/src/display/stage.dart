@@ -71,9 +71,9 @@ class _Touch {
 
 class Stage extends DisplayObjectContainer {
 
-  static bool autoHiDpi = _autoHiDpi;
-  static bool get isMobile => _isMobile;
-  static num get devicePixelRatio => _devicePixelRatio;
+  static bool get autoHiDpi => tools.autoHiDpi;
+  static bool get isMobile => tools.isMobile;
+  static num get devicePixelRatio => tools.devicePixelRatio;
 
   CanvasElement _canvas;
   RenderContext _renderContext;
@@ -129,10 +129,10 @@ class Stage extends DisplayObjectContainer {
     if (canvas.tabIndex == -1) canvas.tabIndex = 0;
     if (canvas.style.outline == "") canvas.style.outline = "none";
 
-    _color = _ensureInt(color);
-    _sourceWidth = _ensureInt((width != null) ? width : canvas.width);
-    _sourceHeight = _ensureInt((width != null) ? height : canvas.height);
-    _frameRate = _ensureInt((frameRate != null) ? frameRate : 30);
+    _color = ensureInt(color);
+    _sourceWidth = ensureInt((width != null) ? width : canvas.width);
+    _sourceHeight = ensureInt((width != null) ? height : canvas.height);
+    _frameRate = ensureInt((frameRate != null) ? frameRate : 30);
 
     if (webGL && gl.RenderingContext.supported) {
       try {
@@ -210,7 +210,7 @@ class Stage extends DisplayObjectContainer {
   int get sourceWidth => _sourceWidth;
 
   void set sourceWidth(int value) {
-    _sourceWidth = _ensureInt(value);
+    _sourceWidth = ensureInt(value);
     _updateCanvasSize();
   }
 
@@ -221,7 +221,7 @@ class Stage extends DisplayObjectContainer {
   int get sourceHeight => _sourceHeight;
 
   void set sourceHeight(int value) {
-    _sourceHeight = _ensureInt(value);
+    _sourceHeight = ensureInt(value);
     _updateCanvasSize();
   }
 
@@ -336,8 +336,8 @@ class Stage extends DisplayObjectContainer {
 
       _renderState.reset(_stageTransformation);
       _renderState.globalMatrix.concat(_renderContext.viewPortMatrix);
-      _renderState._currentTime = _ensureNum(currentTime);
-      _renderState._deltaTime = _ensureNum(deltaTime);
+      _renderState._currentTime = ensureNum(currentTime);
+      _renderState._deltaTime = ensureNum(deltaTime);
 
       _renderInternal(_renderState);
 
@@ -359,7 +359,7 @@ class Stage extends DisplayObjectContainer {
     int sourceWidth = _sourceWidth;
     int sourceHeight = _sourceHeight;
 
-    if (_isCocoonJS) {
+    if (isCocoonJS) {
       clientLeft = 0;
       clientTop = 0;
       clientWidth = html.window.innerWidth;
@@ -438,7 +438,7 @@ class Stage extends DisplayObjectContainer {
     contentRectangle.width = clientWidth / scaleX;
     contentRectangle.height = clientHeight / scaleY;
 
-    var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
+    var pixelRatio = Stage.autoHiDpi ? devicePixelRatio : 1.0;
 
     // stage to canvas coordinate transformation
     _stageTransformation.setTo(scaleX, 0.0, 0.0, scaleY, pivotX, pivotY);
@@ -681,19 +681,19 @@ class Stage extends DisplayObjectContainer {
 
   _onTouchEvent(html.TouchEvent event) {
 
-    if (_isCocoonJS) {
+    if (isCocoonJS) {
 
       var jsEvent = new JsObject.fromBrowserObject(event);
       var jsChangedTouches = new JsArray.from(jsEvent["changedTouches"]);
-      var eventType = _ensureString(jsEvent["type"]);
+      var eventType = ensureString(jsEvent["type"]);
 
       jsEvent.callMethod("preventDefault");
 
       for(var changedTouch in jsChangedTouches) {
         var jsChangedTouch = new JsObject.fromBrowserObject(changedTouch);
-        var identifier = _ensureInt(jsChangedTouch["identifier"]);
-        var clientX = _ensureNum(jsChangedTouch["clientX"]);
-        var clientY = _ensureNum(jsChangedTouch["clientY"]);
+        var identifier = ensureInt(jsChangedTouch["identifier"]);
+        var clientX = ensureNum(jsChangedTouch["clientX"]);
+        var clientY = ensureNum(jsChangedTouch["clientY"]);
         var client = new math.Point(clientX, clientY);
         _onTouchEventProcessor(eventType, identifier, client, false, false, false);
       }

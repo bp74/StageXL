@@ -78,10 +78,10 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void clear(int color) {
-    num r = _colorGetR(color) / 255.0;
-    num g = _colorGetG(color) / 255.0;
-    num b = _colorGetB(color) / 255.0;
-    num a = _colorGetA(color) / 255.0;
+    num r = colorGetR(color) / 255.0;
+    num g = colorGetG(color) / 255.0;
+    num b = colorGetB(color) / 255.0;
+    num a = colorGetA(color) / 255.0;
 
     _renderingContext.colorMask(true, true, true, true);
     _renderingContext.clearColor(r, g, b, a);

@@ -28,6 +28,10 @@ import 'src/geom/polygon.dart';
 import 'src/geom/rectangle.dart';
 import 'src/geom/vector.dart';
 
+import 'src/util/image_loader.dart';
+import 'src/util/tools.dart';
+import 'src/util/tools.dart' as tools;
+
 export 'src/geom/circle.dart';
 export 'src/geom/matrix.dart';
 export 'src/geom/point.dart';
@@ -138,7 +142,6 @@ part 'src/ui/mouse.dart';
 part 'src/ui/mouse_cursor.dart';
 part 'src/ui/multitouch.dart';
 
-part 'src/util/image_loader.dart';
 part 'src/util/object_pool.dart';
 part 'src/util/resource_manager.dart';
 part 'src/util/resource_manager_resource.dart';
@@ -148,20 +151,10 @@ part 'src/util/sprite_sheet.dart';
 part 'src/util/texture_atlas.dart';
 part 'src/util/texture_atlas_format.dart';
 part 'src/util/texture_atlas_frame.dart';
-part 'src/util/tools.dart';
 
 //-----------------------------------------------------------------------------
-
-final bool _autoHiDpi = _checkHiDpi();
-final bool _isMobile = _checkMobileDevice();
-final bool _isCocoonJS = _checkCocoonJS();
-final Future<bool> _isWebpSupported = _checkWebpSupport();
 
 final Matrix _identityMatrix = new Matrix.fromIdentity();
 
 final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
 final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
-
-final num _devicePixelRatio = html.window.devicePixelRatio == null ?
-    1.0 : html.window.devicePixelRatio;
-

@@ -23,10 +23,10 @@ class RenderTexture {
 
     if (width == 0 && height == 0) throw new ArgumentError();
 
-    _width = _ensureInt(width);
-    _height = _ensureInt(height);
-    _transparent = _ensureBool(transparent);
-    _storePixelRatio = _ensureNum(storePixelRatio);
+    _width = ensureInt(width);
+    _height = ensureInt(height);
+    _transparent = ensureBool(transparent);
+    _storePixelRatio = ensureNum(storePixelRatio);
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
 
@@ -35,16 +35,16 @@ class RenderTexture {
 
     if (fillColor != 0 || transparent == false) {
       var context = _canvas.context2D;
-      context.fillStyle = transparent ? _color2rgba(fillColor) : _color2rgb(fillColor);
+      context.fillStyle = transparent ? color2rgba(fillColor) : color2rgb(fillColor);
       context.fillRect(0, 0, _storeWidth, _storeHeight);
     }
   }
 
   RenderTexture.fromImage(ImageElement imageElement, num imagePixelRatio) {
 
-    _storePixelRatio = _ensureNum(imagePixelRatio);
-    _width = (_ensureNum(imageElement.width) / _storePixelRatio).floor();
-    _height = (_ensureNum(imageElement.height) / _storePixelRatio).floor();
+    _storePixelRatio = ensureNum(imagePixelRatio);
+    _width = (ensureNum(imageElement.width) / _storePixelRatio).floor();
+    _height = (ensureNum(imageElement.height) / _storePixelRatio).floor();
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
     _transparent = true;
@@ -62,9 +62,9 @@ class RenderTexture {
 
     // TODO: mark RenderTexture as read only in some way.
 
-    _storePixelRatio = _ensureNum(storePixelRatio);
-    _storeWidth = _ensureInt(renderFrameBuffer.width);
-    _storeHeight = _ensureInt(renderFrameBuffer.height);
+    _storePixelRatio = ensureNum(storePixelRatio);
+    _storeWidth = ensureInt(renderFrameBuffer.width);
+    _storeHeight = ensureInt(renderFrameBuffer.height);
     _width = (_storeWidth / _storePixelRatio).round();
     _height = (_storeHeight / _storePixelRatio).round();
     _transparent = true;
@@ -84,7 +84,7 @@ class RenderTexture {
 
     var hiDpi = Stage.autoHiDpi && autoHiDpi && url.contains("@1x.");
     var hiDpiUrl = hiDpi ? url.replaceAll("@1x.", "@2x.") : url;
-    var imageLoader = new _ImageLoader(hiDpiUrl, webpAvailable, corsEnabled);
+    var imageLoader = new ImageLoader(hiDpiUrl, webpAvailable, corsEnabled);
 
     return imageLoader.done.then((image) =>
         new RenderTexture.fromImage(image, hiDpi ? 2.0 : 1.0));
@@ -124,8 +124,8 @@ class RenderTexture {
 
   void resize(int width, int height) {
     if (width != _width || height != _height) {
-      _width = _ensureInt(width);
-      _height = _ensureInt(height);
+      _width = ensureInt(width);
+      _height = ensureInt(height);
       _storeWidth = (_width * _storePixelRatio).round();
       _storeHeight = (_height * _storePixelRatio).round();
       _canvas.width = _storeWidth;

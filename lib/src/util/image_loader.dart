@@ -1,6 +1,16 @@
-part of stagexl;
+library stagexl.util.image_loader;
 
-class _ImageLoader {
+import 'dart:async';
+import 'dart:html' as html;
+
+import 'dart:html' show
+  Element, ImageElement, AudioElement, HttpRequest,
+  CanvasElement, CanvasRenderingContext2D, CanvasImageSource,
+  CanvasPattern, CanvasGradient, ImageData;
+
+import 'tools.dart';
+
+class ImageLoader {
 
   final ImageElement _image = new ImageElement();
   final Completer<ImageElement> _completer = new Completer<ImageElement>();
@@ -9,7 +19,7 @@ class _ImageLoader {
   StreamSubscription _onLoadSubscription;
   StreamSubscription _onErrorSubscription;
 
-  _ImageLoader(String url, bool webpAvailable, bool corsEnabled) {
+  ImageLoader(String url, bool webpAvailable, bool corsEnabled) {
 
     _url = url;
     _onLoadSubscription = _image.onLoad.listen(_onImageLoad);
@@ -20,7 +30,7 @@ class _ImageLoader {
     }
 
     if (webpAvailable) {
-      _isWebpSupported.then(_onWebpSupported);
+      isWebpSupported.then(_onWebpSupported);
     } else {
       _image.src = _url;
     }
@@ -53,5 +63,4 @@ class _ImageLoader {
     _onErrorSubscription.cancel();
     _completer.completeError(new StateError("Failed to load image."));
   }
-
 }
