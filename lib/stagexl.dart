@@ -18,6 +18,21 @@ import 'dart:web_audio' show AudioContext, AudioBuffer, AudioBufferSourceNode,
     ChannelMergerNode;
 
 //-----------------------------------------------------------------------------
+import 'src/geom/circle.dart';
+import 'src/geom/matrix.dart';
+import 'src/geom/matrix_3d.dart';
+import 'src/geom/point.dart';
+import 'src/geom/polygon.dart';
+import 'src/geom/rectangle.dart';
+import 'src/geom/vector.dart';
+
+export 'src/geom/circle.dart';
+export 'src/geom/matrix.dart';
+export 'src/geom/matrix_3d.dart';
+export 'src/geom/point.dart';
+export 'src/geom/polygon.dart';
+export 'src/geom/rectangle.dart';
+export 'src/geom/vector.dart';
 
 part 'src/animation/animatable.dart';
 part 'src/animation/animation_chain.dart';
@@ -98,14 +113,6 @@ part 'src/filters/displacement_map_filter.dart';
 part 'src/filters/drop_shadow_filter.dart';
 part 'src/filters/flatten_filter.dart';
 part 'src/filters/glow_filter.dart';
-
-part 'src/geom/circle.dart';
-part 'src/geom/matrix.dart';
-part 'src/geom/matrix_3d.dart';
-part 'src/geom/point.dart';
-part 'src/geom/polygon.dart';
-part 'src/geom/rectangle.dart';
-part 'src/geom/vector.dart';
 
 part 'src/media/sound.dart';
 part 'src/media/sound_channel.dart';

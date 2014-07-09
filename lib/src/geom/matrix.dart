@@ -1,4 +1,11 @@
-part of stagexl;
+library stagexl.geom.matrix;
+
+import 'dart:math' hide Point, Rectangle;
+import 'dart:math' as math;
+import 'dart:typed_data';
+
+import 'point.dart';
+import 'vector.dart';
 
 class Matrix {
 
