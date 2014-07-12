@@ -37,24 +37,34 @@ class StageRenderMode {
 //-------------------------------------------------------------------------------------------------
 
 class _MouseButton {
+
+  final String mouseDownEventType, mouseUpEventType;
+  final String mouseClickEventType, mouseDoubleClickEventType;
+
   InteractiveObject target = null;
   bool buttonDown = false;
   int clickTime = 0;
   int clickCount = 0;
-  String mouseDownEventType, mouseUpEventType;
-  String mouseClickEventType, mouseDoubleClickEventType;
 
-  _MouseButton(this.mouseDownEventType, this.mouseUpEventType, this.mouseClickEventType, this.mouseDoubleClickEventType);
+  _MouseButton(
+      this.mouseDownEventType, this.mouseUpEventType,
+      this.mouseClickEventType, this.mouseDoubleClickEventType);
 }
 
 class _Touch {
+
   static int _globalTouchPointID = 0;
 
-  int touchPointID = _globalTouchPointID++;
-  InteractiveObject target = null;
-  bool primaryTouchPoint = false;
+  final int touchPointID = _globalTouchPointID++;
+  final bool primaryTouchPoint;
+  final InteractiveObject target;
 
-  _Touch(this.target, this.primaryTouchPoint);
+  InteractiveObject currentTarget;
+
+  _Touch(InteractiveObject target, bool primaryTouchPoint) :
+      this.target = target,
+      this.currentTarget = target,
+      this.primaryTouchPoint = primaryTouchPoint;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -722,11 +732,11 @@ class Stage extends DisplayObjectContainer {
 
     var stagePoint = _clientTransformation.transformPoint(client);
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
-    var touch = _touches.containsKey(identifier) ? _touches[identifier] : new _Touch(target, _touches.length == 0);
+    var touch = _touches.putIfAbsent(identifier, () => new _Touch(target, _touches.isEmpty));
 
-    if (touch.target != target) {
+    if (touch.currentTarget != target) {
 
-      DisplayObject oldTarget = touch.target;
+      DisplayObject oldTarget = touch.currentTarget;
       DisplayObject newTarget = target;
       List oldTargetList = [];
       List newTargetList = [];
@@ -782,12 +792,13 @@ class Stage extends DisplayObjectContainer {
             altKey, ctrlKey, shiftKey));
       }
 
-      touch.target = newTarget;
+      touch.currentTarget = newTarget;
     }
 
     //-----------------------------------------------------------------
 
     String touchEventType = null;
+    bool isTap = false;
 
     if (eventType == "touchstart") {
       _canvas.focus();
@@ -798,6 +809,7 @@ class Stage extends DisplayObjectContainer {
     if (eventType == "touchend") {
       _touches.remove(identifier);
       touchEventType = TouchEvent.TOUCH_END;
+      isTap = (touch.target == target);
     }
 
     if (eventType == "touchcancel") {
@@ -811,10 +823,18 @@ class Stage extends DisplayObjectContainer {
 
     if (touchEventType != null && target != null) {
       Point localPoint = target.globalToLocal(stagePoint);
+
       target.dispatchEvent(new TouchEvent(touchEventType, true,
           touch.touchPointID, touch.primaryTouchPoint,
           localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
           altKey, ctrlKey, shiftKey));
+
+      if (isTap) {
+        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_TAP, true,
+            touch.touchPointID, touch.primaryTouchPoint,
+            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+            altKey, ctrlKey, shiftKey));
+      }
     }
   }
 

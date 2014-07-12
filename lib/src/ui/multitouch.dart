@@ -11,29 +11,37 @@ class Multitouch {
 
   static bool _initialized = false;
   static bool _supportsGestureEvents = false;
-  static bool _supportsTouchEvents = html.TouchEvent.supported;
-  static int _maxTouchPoints = html.TouchEvent.supported ? 10 : 0;
+  static bool _supportsTouchEvents = _checkTouchEvents;
 
   static List<String> _supportedGestures = [];
   static String _inputMode =  MultitouchInputMode.NONE;
 
   static StreamController<String> _inputModeChangedEvent = new StreamController<String>();
   static Stream<String> _onInputModeChanged = _inputModeChangedEvent.stream.asBroadcastStream();
-  
+
   //------------------------------------------------------------------
 
   static bool get supportsGestureEvents => _supportsGestureEvents;
   static bool get supportsTouchEvents => _supportsTouchEvents;
-  static int get maxTouchPoints => _maxTouchPoints;
   static List<String> get supportedGestures => _supportedGestures;
 
-  //------------------------------------------------------------------
+  static int get maxTouchPoints => _supportsTouchEvents ? 10 : 0;
 
   static String get inputMode => _inputMode;
 
   static set inputMode(String value) {
     _inputMode = value;
     _inputModeChangedEvent.add(_inputMode);
+  }
+
+  //------------------------------------------------------------------
+
+  static bool get _checkTouchEvents {
+    try {
+      return html.TouchEvent.supported;
+    } catch (e) {
+      return false;
+    }
   }
 
 }

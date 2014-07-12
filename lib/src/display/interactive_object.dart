@@ -56,6 +56,7 @@ abstract class InteractiveObject extends DisplayObject {
   static const EventStreamProvider<TouchEvent> touchCancelEvent = const EventStreamProvider<TouchEvent>(TouchEvent.TOUCH_CANCEL);
   static const EventStreamProvider<TouchEvent> touchRollOut = const EventStreamProvider<TouchEvent>(TouchEvent.TOUCH_ROLL_OUT);
   static const EventStreamProvider<TouchEvent> touchRollOver = const EventStreamProvider<TouchEvent>(TouchEvent.TOUCH_ROLL_OVER);
+  static const EventStreamProvider<TouchEvent> touchTap = const EventStreamProvider<TouchEvent>(TouchEvent.TOUCH_TAP);
 
   EventStream<TouchEvent> get onTouchOut => InteractiveObject.touchOutEvent.forTarget(this);
   EventStream<TouchEvent> get onTouchOver => InteractiveObject.touchOverEvent.forTarget(this);
@@ -65,6 +66,7 @@ abstract class InteractiveObject extends DisplayObject {
   EventStream<TouchEvent> get onTouchCancel => InteractiveObject.touchCancelEvent.forTarget(this);
   EventStream<TouchEvent> get onTouchRollOut => InteractiveObject.touchRollOut.forTarget(this);
   EventStream<TouchEvent> get onTouchRollOver => InteractiveObject.touchRollOver.forTarget(this);
+  EventStream<TouchEvent> get onTouchTap => InteractiveObject.touchTap.forTarget(this);
 
   // keyboard events
 
