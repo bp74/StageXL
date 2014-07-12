@@ -3,6 +3,20 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.9.4
+  * Added TouchEvents TOUCH\_ROLL\_OUT, TOUCH\_ROLL\_OVER, TOUCH\_TAP.
+  * Added touch support for SimpleButton.
+  * Fixed TextField.displayAsPassword
+  * Improved compatibility for CocoonJS on Android.
+  * Changed default value of BitmapDataLoaderOptions.corsEnabled to false.
+  * Removed support for Canvas.backingStorePixelRatio.
+  
+This will be the last version of StageXL with support for IE9. The Dart team 
+announced that Dart 1.5 will be the last version with support for IE9.
+Therefore the next version of StageXL will take advantage of features (like
+typed arrays) which are not supported by IE9. This will presumably improve
+the render performance on all other browsers.
+
 #### Pub version 0.9.3+2
   * stageWidth and stageHeight are integers again.
 
