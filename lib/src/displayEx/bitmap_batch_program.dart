@@ -152,8 +152,6 @@ class _BitmapBatchProgram extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  Random _random = new Random();
-
   void renderBitmap(Bitmap bitmap) {
 
     BitmapData bitmapData = bitmap.bitmapData;
