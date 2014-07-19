@@ -55,8 +55,8 @@ part 'src/display/simple_button.dart';
 part 'src/display/sprite.dart';
 part 'src/display/stage.dart';
 
-part 'src/displayEx/bitmap_batch.dart';
-part 'src/displayEx/bitmap_batch_program.dart';
+part 'src/displayEx/bitmap_container.dart';
+part 'src/displayEx/bitmap_container_program.dart';
 part 'src/displayEx/flip_book.dart';
 part 'src/displayEx/gauge.dart';
 part 'src/displayEx/glass_plate.dart';

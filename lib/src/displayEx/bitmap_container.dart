@@ -1,6 +1,6 @@
 part of stagexl;
 
-/// The BitmapBatch class is an optimized container for Bitmaps.
+/// The BitmapContainer class is an optimized container for Bitmaps.
 ///
 /// Please note that only the Bitmap properties x, y, pivotX, pivotY,
 /// scaleX, scaleY, skewX, skewY, rotate and alpha are supported.
@@ -11,7 +11,7 @@ part of stagexl;
 /// specialized render path improves performance even for the standard
 /// Canvas renderer.
 ///
-class BitmapBatch extends DisplayObjectContainer {
+class BitmapContainer extends DisplayObjectContainer {
 
   void addChildAt(DisplayObject child, int index) {
     if (child is! Bitmap) {
@@ -40,7 +40,7 @@ class BitmapBatch extends DisplayObjectContainer {
     var globalAlpha = renderState.globalAlpha;
     var renderContext = renderState.renderContext;
     var renderContextWebGL = renderContext as RenderContextWebGL;
-    var renderProgram = _BitmapBatchProgram.instance;
+    var renderProgram = _BitmapContainerProgram.instance;
 
     renderContextWebGL.activateRenderProgram(renderProgram);
     renderProgram.flush();

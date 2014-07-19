@@ -1,6 +1,6 @@
 part of stagexl;
 
-class _BitmapBatchProgram extends RenderProgram {
+class _BitmapContainerProgram extends RenderProgram {
 
   var _vertexShaderSource = """
       attribute vec2 aPosition;
@@ -50,7 +50,7 @@ class _BitmapBatchProgram extends RenderProgram {
   //---------------------------------------------------------------------------
 
   static const int _maxQuadCount = 256;
-  static final _BitmapBatchProgram instance = new _BitmapBatchProgram();
+  static final _BitmapContainerProgram instance = new _BitmapContainerProgram();
 
   int _contextIdentifier = -1;
   gl.RenderingContext _renderingContext = null;
@@ -71,7 +71,7 @@ class _BitmapBatchProgram extends RenderProgram {
   int _aAlphaLocation = 0;
   int _quadCount = 0;
 
-  _BitmapBatchProgram() {
+  _BitmapContainerProgram() {
     for(int i = 0, j = 0; i <= _indexList.length - 6; i += 6, j +=4 ) {
       _indexList[i + 0] = j + 0;
       _indexList[i + 1] = j + 1;
