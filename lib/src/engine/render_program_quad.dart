@@ -23,8 +23,7 @@ class RenderProgramQuad extends RenderProgram {
       varying float vAlpha;
 
       void main() {
-        vec4 color = texture2D(uSampler, vTextCoord);
-        gl_FragColor = color * vAlpha;
+        gl_FragColor = texture2D(uSampler, vTextCoord) * vAlpha;
       }
       """;
 
@@ -107,7 +106,7 @@ class RenderProgramQuad extends RenderProgram {
     int height = renderTextureQuad.textureHeight;
     int offsetX = renderTextureQuad.offsetX;
     int offsetY = renderTextureQuad.offsetY;
-    List<num> uvList = renderTextureQuad.uvList;
+    Float32List uvList = renderTextureQuad.uvList;
 
     // x' = tx + a * x + c * y
     // y' = ty + b * x + d * y

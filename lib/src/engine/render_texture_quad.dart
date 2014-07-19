@@ -4,12 +4,8 @@ class RenderTextureQuad {
 
   RenderTexture _renderTexture;
 
-  // TODO: Use typed data once IE9 is no longer supported
-  // Float32List _uvList = new Float32List(8);   // WebGL coordinates
-  // Int32List _xyList = new Int32List(8);       // Canvas coordinates
-
-  List<num> _uvList = [0, 0, 0, 0, 0, 0, 0, 0];   // WebGL coordinates
-  List<int> _xyList = [0, 0, 0, 0, 0, 0, 0, 0];   // Canvas coordinates
+  Float32List _uvList = new Float32List(8);   // WebGL coordinates
+  Int32List _xyList = new Int32List(8);       // Canvas coordinates
 
   int _rotation = 0;
   int _offsetX = 0;
@@ -77,8 +73,8 @@ class RenderTextureQuad {
   //-----------------------------------------------------------------------------------------------
 
   RenderTexture get renderTexture => _renderTexture;
-  List<num> get uvList => _uvList;
-  List<int> get xyList => _xyList;
+  Float32List get uvList => _uvList;
+  Int32List get xyList => _xyList;
 
   int get rotation => _rotation;
   int get offsetX => _offsetX;
