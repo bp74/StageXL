@@ -25,7 +25,7 @@ class _BitmapBatchProgram extends RenderProgram {
         vec3 position = vec3(aPosition + offsetSkewed, 1.0) * uGlobalMatrix;
         gl_Position = vec4(position.xy, 0.0, 1.0);
         vTextCoord = aTextCoord;
-        vAlpha = uGlobalAlpha * aAlpha;
+        vAlpha = aAlpha * uGlobalAlpha;
       }
       """;
 
@@ -136,18 +136,11 @@ class _BitmapBatchProgram extends RenderProgram {
     var uGlobalMatrix = new Float32List.fromList([
         globalMatrix.a, globalMatrix.c, globalMatrix.tx,
         globalMatrix.b, globalMatrix.d, globalMatrix.ty,
-        1.0, 1.0, 1.0]);
+        0.0, 0.0, 0.0]);
 
     _renderingContext.uniformMatrix3fv(_uGlobalMatrix, false, uGlobalMatrix);
     _renderingContext.uniform1f(_uGlobalAlpha, globalAlpha);
     _quadCount = 0;
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
-    // This render program does not implement the [renderQuad] method.
-    // The [renderBitmap] method is used instead.
   }
 
   //-----------------------------------------------------------------------------------------------

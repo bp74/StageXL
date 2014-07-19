@@ -2,14 +2,14 @@ part of stagexl;
 
 /// The BitmapBatch class is an optimized container for Bitmaps.
 ///
-/// Please not that only the DisplayObject properties x, y, pivotX, pivotY,
-/// scaleX, scaleY, rotate, skewX and skewY are used to render the Bitmaps.
-/// The mask and filters properties are ignored.
+/// Please note that only the Bitmap properties x, y, pivotX, pivotY,
+/// scaleX, scaleY, skewX, skewY, rotate and alpha are supported.
+/// The mask and filters property are ignored.
 ///
 /// A specialized WebGL render program takes over all matrix calculations
 /// to improve the performance and reduce garbage collection. Another
-/// specialized render path even improves performance if WebGL is not
-/// available and the standard Canvas element render operations are used.
+/// specialized render path improves performance even for the standard
+/// Canvas renderer.
 ///
 class BitmapBatch extends DisplayObjectContainer {
 
