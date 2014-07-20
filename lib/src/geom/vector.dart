@@ -1,4 +1,6 @@
-part of stagexl;
+library stagexl.geom.vector;
+
+import 'dart:math' hide Point, Rectangle;
 
 class Vector {
 

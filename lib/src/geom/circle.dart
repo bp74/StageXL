@@ -1,4 +1,6 @@
-part of stagexl;
+library stagexl.geom.circle;
+
+import 'point.dart';
 
 class Circle<T extends num> {
 

@@ -1,30 +1,52 @@
-part of stagexl;
+library stagexl.util.tools;
+
+import 'dart:async';
+import 'dart:js';
+import 'dart:math' hide Point, Rectangle;
+import 'dart:html' as html;
+
+import 'dart:html' show
+  Element, ImageElement, AudioElement, HttpRequest,
+  CanvasElement, CanvasRenderingContext2D, CanvasImageSource,
+  CanvasPattern, CanvasGradient, ImageData;
+
+import '../geom/matrix.dart';
+import '../geom/rectangle.dart';
+import 'image_loader.dart';
+
+final bool autoHiDpi = _checkHiDpi();
+final bool isMobile = _checkMobileDevice();
+final bool isCocoonJS = _checkCocoonJS();
+final Future<bool> isWebpSupported = _checkWebpSupport();
+
+final num devicePixelRatio = html.window.devicePixelRatio == null ?
+    1.0 : html.window.devicePixelRatio;
 
 //-------------------------------------------------------------------------------------------------
 
-int _colorGetA(int color) => (color >> 24) & 0xFF;
-int _colorGetR(int color) => (color >> 16) & 0xFF;
-int _colorGetG(int color) => (color >>  8) & 0xFF;
-int _colorGetB(int color) => (color      ) & 0xFF;
+int colorGetA(int color) => (color >> 24) & 0xFF;
+int colorGetR(int color) => (color >> 16) & 0xFF;
+int colorGetG(int color) => (color >>  8) & 0xFF;
+int colorGetB(int color) => (color      ) & 0xFF;
 
-String _color2rgb(int color) {
-  int r = _colorGetR(color);
-  int g = _colorGetG(color);
-  int b = _colorGetB(color);
+String color2rgb(int color) {
+  int r = colorGetR(color);
+  int g = colorGetG(color);
+  int b = colorGetB(color);
   return "rgb($r,$g,$b)";
 }
 
-String _color2rgba(int color) {
-  int r = _colorGetR(color);
-  int g = _colorGetG(color);
-  int b = _colorGetB(color);
-  num a = _colorGetA(color) / 255.0;
+String color2rgba(int color) {
+  int r = colorGetR(color);
+  int g = colorGetG(color);
+  int b = colorGetB(color);
+  num a = colorGetA(color) / 255.0;
   return "rgba($r,$g,$b,$a)";
 }
 
 //-------------------------------------------------------------------------------------------------
 
-bool _ensureBool(bool value) {
+bool ensureBool(bool value) {
   if (value is bool) {
     return value;
   } else {
@@ -32,7 +54,7 @@ bool _ensureBool(bool value) {
   }
 }
 
-int _ensureInt(int value) {
+int ensureInt(int value) {
   if (value is int) {
     return value;
   } else {
@@ -40,7 +62,7 @@ int _ensureInt(int value) {
   }
 }
 
-num _ensureNum(num value) {
+num ensureNum(num value) {
   if (value is num) {
     return value;
   } else {
@@ -48,7 +70,7 @@ num _ensureNum(num value) {
   }
 }
 
-String _ensureString(String value) {
+String ensureString(String value) {
   if (value is String) {
     return value;
   } else {
@@ -58,7 +80,7 @@ String _ensureString(String value) {
 
 //-------------------------------------------------------------------------------------------------
 
-String _getFilenameWithoutExtension(String filename) {
+String getFilenameWithoutExtension(String filename) {
 
   RegExp regex = new RegExp(r"(.+?)(\.[^.]*$|$)", multiLine:false, caseSensitive:false);
   Match match = regex.firstMatch(filename);
@@ -67,7 +89,7 @@ String _getFilenameWithoutExtension(String filename) {
 
 //-------------------------------------------------------------------------------------------------
 
-String _replaceFilename(String url, String filename) {
+String replaceFilename(String url, String filename) {
 
   RegExp regex = new RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))", multiLine:false, caseSensitive:false);
   Match match = regex.firstMatch(url);
@@ -80,7 +102,7 @@ String _replaceFilename(String url, String filename) {
 Future<bool> _checkWebpSupport() {
 
   var webpUrl = "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA";
-  var loader = new _ImageLoader(webpUrl, false, false);
+  var loader = new ImageLoader(webpUrl, false, false);
 
   return loader.done.then((ImageElement image) {
     return image.width == 2 && image.height == 2;
@@ -96,14 +118,11 @@ bool _checkMobileDevice() {
 }
 
 bool _checkHiDpi() {
-  var devicePixelRatio = _devicePixelRatio;
-  var isMobileDevice = _isMobile;
-  var isCocoonJS = _isCocoonJS;
   var screen = html.window.screen;
   var screenSize = screen is html.Screen ? max(screen.width, screen.height) : 1024;
 
   // only recent devices (> iPhone4) and hi-dpi desktops
-  return devicePixelRatio > 1.0 && (isMobileDevice == false || screenSize > 480 || isCocoonJS);
+  return devicePixelRatio > 1.0 && (!isMobile || screenSize > 480 || isCocoonJS);
 }
 
 bool _checkCocoonJS() {
@@ -112,7 +131,7 @@ bool _checkCocoonJS() {
 
 //-------------------------------------------------------------------------------------------------
 
-Rectangle _getBoundsTransformedHelper(Matrix matrix, num width, num height,
+Rectangle getBoundsTransformedHelper(Matrix matrix, num width, num height,
                                       Rectangle<num> returnRectangle) {
 
   width = width.toDouble();

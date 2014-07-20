@@ -20,13 +20,13 @@ class RenderTextureQuad {
       int textureX, int textureY, int textureWidth, int textureHeight) {
 
     _renderTexture = renderTexture;
-    _rotation = _ensureInt(rotation);
-    _offsetX = _ensureInt(offsetX);
-    _offsetY = _ensureInt(offsetY);
-    _textureX = _ensureInt(textureX);
-    _textureY = _ensureInt(textureY);
-    _textureWidth = _ensureInt(textureWidth);
-    _textureHeight = _ensureInt(textureHeight);
+    _rotation = ensureInt(rotation);
+    _offsetX = ensureInt(offsetX);
+    _offsetY = ensureInt(offsetY);
+    _textureX = ensureInt(textureX);
+    _textureY = ensureInt(textureY);
+    _textureWidth = ensureInt(textureWidth);
+    _textureHeight = ensureInt(textureHeight);
 
     int x1 = 0, y1 = 0;
     int x2 = 0, y2 = 0;

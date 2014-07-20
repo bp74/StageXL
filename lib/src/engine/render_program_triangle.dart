@@ -74,10 +74,10 @@ class RenderProgramTriangle extends RenderProgram {
     Matrix matrix = renderState.globalMatrix;
     num alpha = renderState.globalAlpha;
 
-    num colorA = _colorGetA(color) / 255.0 * alpha;
-    num colorR = _colorGetR(color) / 255.0;
-    num colorG = _colorGetG(color) / 255.0;
-    num colorB = _colorGetB(color) / 255.0;
+    num colorA = colorGetA(color) / 255.0 * alpha;
+    num colorR = colorGetR(color) / 255.0;
+    num colorG = colorGetG(color) / 255.0;
+    num colorB = colorGetB(color) / 255.0;
 
     num a = matrix.a;
     num b = matrix.b;

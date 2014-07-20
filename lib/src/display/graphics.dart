@@ -99,7 +99,7 @@ class Graphics {
    * Apply a stroke color to the **previously drawn** vector object.
    */
   strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
-    _addCommand(new _GraphicsCommandStrokeColor(_color2rgba(color), width, joints, caps));
+    _addCommand(new _GraphicsCommandStrokeColor(color2rgba(color), width, joints, caps));
 
   /**
    * Apply a stroke color to the **previously drawn** vector object.
@@ -117,7 +117,7 @@ class Graphics {
    * Apply a fill color to the **previously drawn** vector object.
    */
   fillColor(int color) =>
-    _addCommand(new _GraphicsCommandFillColor(_color2rgba(color)));
+    _addCommand(new _GraphicsCommandFillColor(color2rgba(color)));
 
   /**
    * Apply a fill gradient to the **previously drawn** vector object.
@@ -248,7 +248,7 @@ class Graphics {
 
     if (_identityRectangle.contains(localX, localY)) {
 
-      if (_isCocoonJS) {
+      if (isCocoonJS) {
         // CocoonJS does not support "isPointInPath", therefore we just
         // check the rectangular bounds of the graphics shape.
         return true;

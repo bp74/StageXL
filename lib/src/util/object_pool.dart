@@ -12,7 +12,6 @@ class ObjectPool<T> {
   //---------------------------------------------------------------------------
 
   T pop() {
-
     if (_poolCount == 0) {
       return _valueFactory();
     } else {
@@ -23,8 +22,7 @@ class ObjectPool<T> {
 
   //---------------------------------------------------------------------------
 
-  push(T value) {
-
+  void push(T value) {
     if (_poolCount == _pool.length) {
       _pool.add(value);
     } else {
@@ -35,10 +33,8 @@ class ObjectPool<T> {
 
   //---------------------------------------------------------------------------
 
-  reset() {
-
+  void reset() {
     _pool.clear();
     _poolCount = 0;
   }
 }
-

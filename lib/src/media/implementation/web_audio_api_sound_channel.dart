@@ -1,9 +1,8 @@
 part of stagexl;
 
 class WebAudioApiSoundChannel extends SoundChannel {
-
   SoundTransform _soundTransform;
-  bool _loop;
+  final bool _loop;
 
   AudioBufferSourceNode _sourceNode;
   WebAudioApiSound _webAudioApiSound;

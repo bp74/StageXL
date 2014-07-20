@@ -1,4 +1,9 @@
-part of stagexl;
+library stagexl.geom.rectangle;
+
+import 'dart:math' hide Point, Rectangle;
+import 'dart:math' as math;
+
+import 'point.dart';
 
 class Rectangle<T extends num> implements math.MutableRectangle<T> {
 

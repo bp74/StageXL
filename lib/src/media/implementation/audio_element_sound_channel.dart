@@ -2,10 +2,10 @@ part of stagexl;
 
 class AudioElementSoundChannel extends SoundChannel {
 
-  AudioElementSound _audioElementSound;
+  final AudioElementSound _audioElementSound;
   AudioElement _audio;
 
-  bool _loop;
+  final bool _loop;
   bool _stopped = false;
 
   SoundTransform _soundTransform;

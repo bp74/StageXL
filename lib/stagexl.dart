@@ -21,6 +21,24 @@ import 'dart:web_audio' show
 
 //-----------------------------------------------------------------------------
 
+import 'src/geom/circle.dart';
+import 'src/geom/matrix.dart';
+import 'src/geom/point.dart';
+import 'src/geom/polygon.dart';
+import 'src/geom/rectangle.dart';
+import 'src/geom/vector.dart';
+
+import 'src/util/image_loader.dart';
+import 'src/util/tools.dart';
+import 'src/util/tools.dart' as tools;
+
+export 'src/geom/circle.dart';
+export 'src/geom/matrix.dart';
+export 'src/geom/point.dart';
+export 'src/geom/polygon.dart';
+export 'src/geom/rectangle.dart';
+export 'src/geom/vector.dart';
+
 part 'src/animation/animatable.dart';
 part 'src/animation/animation_chain.dart';
 part 'src/animation/animation_group.dart';
@@ -98,13 +116,6 @@ part 'src/filters/displacement_map_filter.dart';
 part 'src/filters/drop_shadow_filter.dart';
 part 'src/filters/glow_filter.dart';
 
-part 'src/geom/circle.dart';
-part 'src/geom/matrix.dart';
-part 'src/geom/point.dart';
-part 'src/geom/polygon.dart';
-part 'src/geom/rectangle.dart';
-part 'src/geom/vector.dart';
-
 part 'src/media/sound.dart';
 part 'src/media/sound_channel.dart';
 part 'src/media/sound_load_options.dart';
@@ -133,7 +144,6 @@ part 'src/ui/mouse.dart';
 part 'src/ui/mouse_cursor.dart';
 part 'src/ui/multitouch.dart';
 
-part 'src/util/image_loader.dart';
 part 'src/util/object_pool.dart';
 part 'src/util/resource_manager.dart';
 part 'src/util/resource_manager_resource.dart';
@@ -143,20 +153,10 @@ part 'src/util/sprite_sheet.dart';
 part 'src/util/texture_atlas.dart';
 part 'src/util/texture_atlas_format.dart';
 part 'src/util/texture_atlas_frame.dart';
-part 'src/util/tools.dart';
 
 //-----------------------------------------------------------------------------
-
-final bool _autoHiDpi = _checkHiDpi();
-final bool _isMobile = _checkMobileDevice();
-final bool _isCocoonJS = _checkCocoonJS();
-final Future<bool> _isWebpSupported = _checkWebpSupport();
 
 final Matrix _identityMatrix = new Matrix.fromIdentity();
 
 final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
 final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
-
-final num _devicePixelRatio = html.window.devicePixelRatio == null ?
-    1.0 : html.window.devicePixelRatio;
-

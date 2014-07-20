@@ -215,7 +215,7 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    return _getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
+    return getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -285,20 +285,20 @@ class TextField extends InteractiveObject {
     var lineIndent = 0;
 
     var textFormat = _defaultTextFormat;
-    var textFormatSize = _ensureNum(textFormat.size);
-    num textFormatStrokeWidth = _ensureNum(textFormat.strokeWidth);
-    var textFormatLeftMargin = _ensureNum(textFormat.leftMargin);
-    var textFormatRightMargin = _ensureNum(textFormat.rightMargin);
-    var textFormatTopMargin = _ensureNum(textFormat.topMargin);
-    var textFormatBottomMargin = _ensureNum(textFormat.bottomMargin);
-    var textFormatIndent = _ensureNum(textFormat.indent);
-    var textFormatLeading = _ensureNum(textFormat.leading);
-    var textFormatAlign = _ensureString(textFormat.align);
+    var textFormatSize = ensureNum(textFormat.size);
+    num textFormatStrokeWidth = ensureNum(textFormat.strokeWidth);
+    var textFormatLeftMargin = ensureNum(textFormat.leftMargin);
+    var textFormatRightMargin = ensureNum(textFormat.rightMargin);
+    var textFormatTopMargin = ensureNum(textFormat.topMargin);
+    var textFormatBottomMargin = ensureNum(textFormat.bottomMargin);
+    var textFormatIndent = ensureNum(textFormat.indent);
+    var textFormatLeading = ensureNum(textFormat.leading);
+    var textFormatAlign = ensureString(textFormat.align);
 
     var fontStyle = textFormat._cssFontStyle;
     var fontStyleMetrics = _getFontStyleMetrics(textFormat);
-    var fontStyleMetricsAscent = _ensureNum(fontStyleMetrics.ascent);
-    var fontStyleMetricsDescent = _ensureNum(fontStyleMetrics.descent);
+    var fontStyleMetricsAscent = ensureNum(fontStyleMetrics.ascent);
+    var fontStyleMetricsDescent = ensureNum(fontStyleMetrics.descent);
 
     var availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
     var canvasContext = _dummyCanvasContext;
@@ -501,7 +501,7 @@ class TextField extends InteractiveObject {
       _refreshPending &= 255 - 2;
     }
 
-    var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
+    var pixelRatio = Stage.autoHiDpi ? devicePixelRatio : 1.0;
     var width = max(1, _width).ceil();
     var height =  max(1, _height).ceil();
 
@@ -539,13 +539,13 @@ class TextField extends InteractiveObject {
     context.lineJoin = "round";
 
     if (_background) {
-      context.fillStyle = _color2rgb(_backgroundColor);
+      context.fillStyle = color2rgb(_backgroundColor);
       context.fillRect(0, 0, _width, _height);
     }
 
     if(textFormat.strokeWidth > 0) {
       context.lineWidth = textFormat.strokeWidth * 2;
-      context.strokeStyle = _color2rgb(textFormat.strokeColor);
+      context.strokeStyle = color2rgb(textFormat.strokeColor);
       for(int i = 0; i < _textLineMetrics.length; i++) {
         var lm = _textLineMetrics[i];
         context.strokeText(lm._text, lm.x, lm.y);
@@ -553,10 +553,10 @@ class TextField extends InteractiveObject {
     }
 
     context.lineWidth = lineWidth;
-    context.strokeStyle = _color2rgb(textFormat.color);
+    context.strokeStyle = color2rgb(textFormat.color);
     context.fillStyle = textFormat.fillGradient != null
         ? textFormat.fillGradient.getCanvasGradient(context)
-        : _color2rgb(textFormat.color);
+        : color2rgb(textFormat.color);
 
     for(int i = 0; i < _textLineMetrics.length; i++) {
       var lm = _textLineMetrics[i];
@@ -572,7 +572,7 @@ class TextField extends InteractiveObject {
     }
 
     if (_border) {
-      context.strokeStyle = _color2rgb(_borderColor);
+      context.strokeStyle = color2rgb(_borderColor);
       context.lineWidth = 1;
       context.strokeRect(0, 0, _width, _height);
     }

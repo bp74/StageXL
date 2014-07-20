@@ -23,13 +23,13 @@ class TextureAtlas {
           var data = JSON.decode(textureAtlasJson);
           var frames = data["frames"];
           var meta = data["meta"];
-          var imageUrl = _replaceFilename(url, meta["image"]);
+          var imageUrl = replaceFilename(url, meta["image"]);
 
           if (frames is List) {
             for (var frame in frames) {
               var frameMap = frame as Map;
               var fileName = frameMap["filename"] as String;
-              var frameName = _getFilenameWithoutExtension(fileName);
+              var frameName = getFilenameWithoutExtension(fileName);
               var taf = new TextureAtlasFrame.fromJson(textureAtlas, frameName, frameMap);
               textureAtlas._frames.add(taf);
             }
@@ -38,7 +38,7 @@ class TextureAtlas {
           if (frames is Map) {
             for(String fileName in frames.keys) {
               var frameMap = frames[fileName] as Map;
-              var frameName = _getFilenameWithoutExtension(fileName);
+              var frameName = getFilenameWithoutExtension(fileName);
               var taf = new TextureAtlasFrame.fromJson(textureAtlas, frameName, frameMap);
               textureAtlas._frames.add(taf);
             }
