@@ -236,11 +236,11 @@ class BitmapData implements BitmapDrawable {
   }
 
   void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint,
-                  [String compositeOperation]) {
+                  [BlendMode blendMode]) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderContext = new RenderContextCanvas(_renderTexture.canvas);
     var matrix = _renderTextureQuad.drawMatrix..prependTranslation(destPoint.x, destPoint.y);
-    var renderState = new RenderState(renderContext, matrix, 1.0, compositeOperation);
+    var renderState = new RenderState(renderContext, matrix, 1.0, blendMode);
     renderContext.renderQuad(renderState, sourceQuad);
     _renderTexture.update();
   }

@@ -20,7 +20,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   bool _off = false; // disable rendering
 
   Mask _mask = null;
-  String _blendMode = null;
+  BlendMode _blendMode = null;
   List<BitmapFilter> _filters = null;
   RenderTextureQuad _cacheTextureQuad = null;
   bool _cacheDebugBorder = false;
@@ -83,7 +83,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     return _filters;
   }
 
-  String get blendMode => _blendMode;
+  BlendMode get blendMode => _blendMode;
 
   String get name => _name;
   DisplayObjectContainer get parent => _parent;
@@ -195,7 +195,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     _filters = value;
   }
 
-  set blendMode(String value) {
+  set blendMode(BlendMode value) {
     _blendMode = value;
   }
 

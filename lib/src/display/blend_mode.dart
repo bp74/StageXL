@@ -1,13 +1,16 @@
 part of stagexl;
 
 class BlendMode {
-  static const String NORMAL   = "normal";
-  static const String ADD      = "add";
-  static const String MULTIPLY = "multiply";
-  static const String SCREEN   = "screen";
-  static const String ERASE    = "erase";
-  static const String BELOW    = "below";
-  static const String ABOVE    = "above";
+  final int _value;
+  const BlendMode._internal(int value) : _value = value;
+
+  static const NORMAL   = const BlendMode._internal(0);
+  static const ADD      = const BlendMode._internal(1);
+  static const MULTIPLY = const BlendMode._internal(2);
+  static const SCREEN   = const BlendMode._internal(3);
+  static const ERASE    = const BlendMode._internal(4);
+  static const BELOW    = const BlendMode._internal(5);
+  static const ABOVE    = const BlendMode._internal(6);
 }
 
 /// The CompositeOperation is deprecated.

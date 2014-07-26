@@ -3,7 +3,7 @@ part of stagexl;
 class _ContextState {
   final Matrix matrix = new Matrix.fromIdentity();
   num alpha = 1.0;
-  String blendMode = BlendMode.NORMAL;
+  BlendMode blendMode = BlendMode.NORMAL;
 
   _ContextState _nextContextState;
 
@@ -22,7 +22,7 @@ class RenderState {
   _ContextState _firstContextState;
   _ContextState _currentContextState;
 
-  RenderState(RenderContext renderContext, [Matrix matrix, num alpha, String blendMode]) :
+  RenderState(RenderContext renderContext, [Matrix matrix, num alpha, BlendMode blendMode]) :
     _renderContext = renderContext {
 
     _firstContextState = new _ContextState();
@@ -30,7 +30,7 @@ class RenderState {
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
     if (alpha is num) _firstContextState.alpha = alpha;
-    if (blendMode is String) _firstContextState.blendMode = blendMode;
+    if (blendMode is BlendMode) _firstContextState.blendMode = blendMode;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -42,11 +42,11 @@ class RenderState {
 
   Matrix get globalMatrix => _currentContextState.matrix;
   double get globalAlpha => _currentContextState.alpha;
-  String get globalBlendMode => _currentContextState.blendMode;
+  BlendMode get globalBlendMode => _currentContextState.blendMode;
 
   //-------------------------------------------------------------------------------------------------
 
-  void reset([Matrix matrix, num alpha, String blendMode]) {
+  void reset([Matrix matrix, num alpha, BlendMode blendMode]) {
 
     _currentContextState = _firstContextState;
     _currentContextState.matrix.identity();
@@ -55,7 +55,7 @@ class RenderState {
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
     if (alpha is num) _firstContextState.alpha = alpha;
-    if (blendMode is String) _firstContextState.blendMode = blendMode;
+    if (blendMode is BlendMode) _firstContextState.blendMode = blendMode;
   }
 
   void copyFrom(RenderState renderState) {
@@ -77,7 +77,7 @@ class RenderState {
     var alpha = displayObject.alpha;
 
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
-    cs2.blendMode = (blendMode is String) ? blendMode : cs1.blendMode;
+    cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
     cs2.alpha = alpha * cs1.alpha;
 
     _currentContextState = cs2;

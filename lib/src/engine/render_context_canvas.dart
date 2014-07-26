@@ -5,7 +5,7 @@ class RenderContextCanvas extends RenderContext {
   final CanvasElement _canvasElement;
 
   CanvasRenderingContext2D _renderingContext;
-  String _activeBlendMode = BlendMode.NORMAL;
+  BlendMode _activeBlendMode = BlendMode.NORMAL;
   double _activeAlpha = 1.0;
 
   RenderContextCanvas(CanvasElement canvasElement) : _canvasElement = canvasElement {
@@ -158,7 +158,7 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  String _getCompositeOperation(String blendMode) {
+  String _getCompositeOperation(BlendMode blendMode) {
     // https://developer.mozilla.org/samples/canvas-tutorial/6_1_canvas_composite.html
     String compositeOperation = "source-over";
     switch(blendMode) {

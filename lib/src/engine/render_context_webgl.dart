@@ -15,7 +15,7 @@ class RenderContextWebGL extends RenderContext {
   RenderTexture _activeRenderTexture = null;
   RenderProgram _activeRenderProgram = null;
   RenderFrameBuffer _activeRenderFrameBuffer = null;
-  String _activeBlendMode = null;
+  BlendMode _activeBlendMode = null;
 
   bool _contextValid = true;
   int _contextIdentifier = 0;
@@ -64,7 +64,7 @@ class RenderContextWebGL extends RenderContext {
   RenderTexture get activeRenderTexture => _activeRenderTexture;
   RenderProgram get activeRenderProgram => _activeRenderProgram;
   RenderFrameBuffer get activeRenderFrameBuffer => _activeRenderFrameBuffer;
-  String get activeBlendMode => _activeBlendMode;
+  BlendMode get activeBlendMode => _activeBlendMode;
 
   bool get contextValid => _contextValid;
   int get contextIdentifier => _contextIdentifier;
@@ -235,7 +235,7 @@ class RenderContextWebGL extends RenderContext {
       _activeRenderTexture.activate(this, gl.TEXTURE0);
     }
   }
-  void activateBlendMode(String blendMode) {
+  void activateBlendMode(BlendMode blendMode) {
     if (blendMode != _activeBlendMode) {
       _activeRenderProgram.flush();
       _activeBlendMode = blendMode;
