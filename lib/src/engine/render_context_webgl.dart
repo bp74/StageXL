@@ -272,6 +272,10 @@ class RenderContextWebGL extends RenderContext {
           srcFactor = gl.DST_ALPHA;
           dstFactor = gl.ONE_MINUS_SRC_ALPHA;
           break;
+        case BlendMode.NONE:
+          srcFactor = gl.ONE;
+          dstFactor = gl.ZERO;
+          break;
       }
 
       _renderingContext.blendFunc(srcFactor, dstFactor);

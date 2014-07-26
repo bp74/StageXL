@@ -169,6 +169,7 @@ class RenderContextCanvas extends RenderContext {
       case BlendMode.ERASE:    compositeOperation = "destination-out"; break;
       case BlendMode.BELOW:    compositeOperation = "destination-over"; break;
       case BlendMode.ABOVE:    compositeOperation = "source-atop"; break;
+      case BlendMode.NONE:     compositeOperation = "source-over"; break;
     }
 
     return compositeOperation;

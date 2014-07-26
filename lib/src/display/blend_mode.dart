@@ -11,6 +11,7 @@ class BlendMode {
   static const ERASE    = const BlendMode._internal(4);
   static const BELOW    = const BlendMode._internal(5);
   static const ABOVE    = const BlendMode._internal(6);
+  static const NONE     = const BlendMode._internal(7);
 }
 
 /// The CompositeOperation is deprecated.
