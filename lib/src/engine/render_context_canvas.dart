@@ -5,6 +5,8 @@ class RenderContextCanvas extends RenderContext {
   final CanvasElement _canvasElement;
 
   CanvasRenderingContext2D _renderingContext;
+  String _activeBlendMode = BlendMode.NORMAL;
+  double _activeAlpha = 1.0;
 
   RenderContextCanvas(CanvasElement canvasElement) : _canvasElement = canvasElement {
 
@@ -27,7 +29,10 @@ class RenderContextCanvas extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void reset() {
-
+    _activeBlendMode = BlendMode.NORMAL;
+    _activeAlpha = 1.0;
+    _renderingContext.globalCompositeOperation = "source-over";
+    _renderingContext.globalAlpha = 1.0;
   }
 
   void clear(int color) {
@@ -54,9 +59,18 @@ class RenderContextCanvas extends RenderContext {
     var rotation = renderTextureQuad.rotation;
     var xyList = renderTextureQuad.xyList;
     var matrix = renderState.globalMatrix;
+    var alpha = renderState.globalAlpha;
+    var blendMode = renderState.globalBlendMode;
 
-    context.globalAlpha = renderState.globalAlpha;
-    context.globalCompositeOperation = renderState.globalCompositeOperation;
+    if (_activeAlpha != alpha) {
+      _activeAlpha = alpha;
+      context.globalAlpha = alpha;
+    }
+
+    if (_activeBlendMode != blendMode) {
+      _activeBlendMode = blendMode;
+      context.globalCompositeOperation = _getCompositeOperation(blendMode);
+    }
 
     if (rotation == 0) {
 
@@ -96,9 +110,19 @@ class RenderContextCanvas extends RenderContext {
 
     var context = _renderingContext;
     var matrix = renderState.globalMatrix;
+    var alpha = renderState.globalAlpha;
+    var blendMode = renderState.globalBlendMode;
 
-    context.globalAlpha = renderState.globalAlpha;
-    context.globalCompositeOperation = renderState.globalCompositeOperation;
+    if (_activeAlpha != alpha) {
+      _activeAlpha = alpha;
+      context.globalAlpha = alpha;
+    }
+
+    if (_activeBlendMode != blendMode) {
+      _activeBlendMode = blendMode;
+      context.globalCompositeOperation = _getCompositeOperation(blendMode);
+    }
+
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
 
     context.beginPath();
@@ -146,4 +170,22 @@ class RenderContextCanvas extends RenderContext {
   void endRenderShadow(RenderState renderState, Shadow shadow) {
     _renderingContext.restore();
   }
+
+  //-----------------------------------------------------------------------------------------------
+
+  String _getCompositeOperation(String blendMode) {
+    // https://developer.mozilla.org/samples/canvas-tutorial/6_1_canvas_composite.html
+    String compositeOperation = "source-over";
+    switch(blendMode) {
+      case BlendMode.NORMAL:   compositeOperation = "source-over"; break;
+      case BlendMode.ADD:      compositeOperation = "lighter"; break;
+      case BlendMode.MULTIPLY: compositeOperation = "multiply"; break;
+      case BlendMode.SCREEN:   compositeOperation = "screen"; break;
+      case BlendMode.ERASE:    compositeOperation = "destination-out"; break;
+      case BlendMode.BELOW:    compositeOperation = "destination-over"; break;
+      case BlendMode.ABOVE:    compositeOperation = "source-atop"; break;
+    }
+    return compositeOperation;
+  }
+
 }

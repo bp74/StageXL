@@ -11,22 +11,27 @@ class RenderContextWebGL extends RenderContext {
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
 
   gl.RenderingContext _renderingContext = null;
-  RenderTexture _renderTexture = null;
-  RenderProgram _renderProgram = null;
-  RenderFrameBuffer _renderFrameBuffer = null;
+
+  RenderTexture _activeRenderTexture = null;
+  RenderProgram _activeRenderProgram = null;
+  RenderFrameBuffer _activeRenderFrameBuffer = null;
+  String _activeBlendMode = null;
+
   bool _contextValid = true;
   int _contextIdentifier = 0;
   int _stencilDepth = 0;
   int _viewportWidth = 0;
   int _viewportHeight = 0;
 
-  RenderContextWebGL(CanvasElement canvasElement) : _canvasElement = canvasElement {
+  RenderContextWebGL(CanvasElement canvasElement, {
+    bool alpha: false, bool antialias: false }) : _canvasElement = canvasElement {
 
     _canvasElement.onWebGlContextLost.listen(_onContextLost);
     _canvasElement.onWebGlContextRestored.listen(_onContextRestored);
 
     var renderingContext = _canvasElement.getContext3d(
-        alpha: false, depth: false, stencil: true, antialias: false,
+        alpha: alpha, antialias: antialias,
+        depth: false, stencil: true,
         premultipliedAlpha: true, preserveDrawingBuffer: false);
 
     if (renderingContext is! gl.RenderingContext) {
@@ -41,8 +46,8 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
     _renderingContext.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-    _renderProgram = _renderProgramQuad;
-    _renderProgram.activate(this);
+    _activeRenderProgram = _renderProgramQuad;
+    _activeRenderProgram.activate(this);
 
     _contextValid = true;
     _contextIdentifier = ++_globalContextIdentifier;
@@ -56,9 +61,10 @@ class RenderContextWebGL extends RenderContext {
 
   String get renderEngine => RenderEngine.WebGL;
 
-  RenderTexture get activeRenderTexture => _renderTexture;
-  RenderProgram get activeRenderProgram => _renderProgram;
-  RenderFrameBuffer get activeRenderFrameBuffer => _renderFrameBuffer;
+  RenderTexture get activeRenderTexture => _activeRenderTexture;
+  RenderProgram get activeRenderProgram => _activeRenderProgram;
+  RenderFrameBuffer get activeRenderFrameBuffer => _activeRenderFrameBuffer;
+  String get activeBlendMode => _activeBlendMode;
 
   bool get contextValid => _contextValid;
   int get contextIdentifier => _contextIdentifier;
@@ -74,7 +80,7 @@ class RenderContextWebGL extends RenderContext {
     _viewportHeight = _canvasElement.height;
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, _viewportWidth, _viewportHeight);
-    _renderFrameBuffer = null;
+    _activeRenderFrameBuffer = null;
   }
 
   void clear(int color) {
@@ -90,16 +96,16 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void flush() {
-    _renderProgram.flush();
+    _activeRenderProgram.flush();
   }
 
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
-
     activateRenderProgram(_renderProgramQuad);
     activateRenderTexture(renderTextureQuad.renderTexture);
+    activateBlendMode(renderState.globalBlendMode);
     _renderProgramQuad.renderQuad(renderState, renderTextureQuad);
   }
 
@@ -109,6 +115,7 @@ class RenderContextWebGL extends RenderContext {
                       num x1, num y1, num x2, num y2, num x3, num y3, int color) {
 
     activateRenderProgram(_renderProgramTriangle);
+    activateBlendMode(renderState.globalBlendMode);
     _renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
   }
 
@@ -117,7 +124,7 @@ class RenderContextWebGL extends RenderContext {
 
   void beginRenderMask(RenderState renderState, Mask mask) {
 
-    _renderProgram.flush();
+    _activeRenderProgram.flush();
 
     int stencilDepth = _getStencilDepth() + 1;
     _updateStencilDepth(stencilDepth);
@@ -138,7 +145,7 @@ class RenderContextWebGL extends RenderContext {
 
   void endRenderMask(RenderState renderState, Mask mask) {
 
-    _renderProgram.flush();
+    _activeRenderProgram.flush();
 
     int stencilDepth = _getStencilDepth() - 1;
     _updateStencilDepth(stencilDepth);
@@ -181,7 +188,7 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   RenderFrameBuffer requestRenderFrameBuffer(int width, int height) {
-    _renderProgram.flush();
+    _activeRenderProgram.flush();
     if (_renderFrameBufferPool.length > 0) {
       return _renderFrameBufferPool.removeLast()..resize(width, height);
     } else {
@@ -198,9 +205,9 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void activateRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    if (identical(renderFrameBuffer, _renderFrameBuffer) == false) {
-      _renderProgram.flush();
-      _renderFrameBuffer = renderFrameBuffer;
+    if (identical(renderFrameBuffer, _activeRenderFrameBuffer) == false) {
+      _activeRenderProgram.flush();
+      _activeRenderFrameBuffer = renderFrameBuffer;
 
       int width, height, stencilDepth;
       gl.Framebuffer framebuffer;
@@ -224,18 +231,60 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateRenderProgram(RenderProgram renderProgram) {
-    if (identical(renderProgram, _renderProgram) == false) {
-      _renderProgram.flush();
-      _renderProgram = renderProgram;
-      _renderProgram.activate(this);
+    if (identical(renderProgram, _activeRenderProgram) == false) {
+      _activeRenderProgram.flush();
+      _activeRenderProgram = renderProgram;
+      _activeRenderProgram.activate(this);
     }
   }
 
   void activateRenderTexture(RenderTexture renderTexture) {
-    if (identical(renderTexture, _renderTexture) == false) {
-      _renderProgram.flush();
-      _renderTexture = renderTexture;
-      _renderTexture.activate(this, gl.TEXTURE0);
+    if (identical(renderTexture, _activeRenderTexture) == false) {
+      _activeRenderProgram.flush();
+      _activeRenderTexture = renderTexture;
+      _activeRenderTexture.activate(this, gl.TEXTURE0);
+    }
+  }
+  void activateBlendMode(String blendMode) {
+    if (blendMode != _activeBlendMode) {
+      _activeRenderProgram.flush();
+      _activeBlendMode = blendMode;
+
+      int srcFactor = gl.ONE;
+      int dstFactor = gl.ONE_MINUS_SRC_ALPHA;
+
+      switch(blendMode) {
+        case BlendMode.NORMAL:
+          srcFactor = gl.ONE;
+          dstFactor = gl.ONE_MINUS_SRC_ALPHA;
+          break;
+        case BlendMode.ADD:
+          srcFactor = gl.ONE;
+          dstFactor = gl.ONE;
+          break;
+        case BlendMode.MULTIPLY:
+          srcFactor = gl.DST_COLOR;
+          dstFactor = gl.ONE_MINUS_SRC_ALPHA;
+          break;
+        case BlendMode.SCREEN:
+          srcFactor = gl.ONE;
+          dstFactor = gl.ONE_MINUS_SRC_COLOR;
+          break;
+        case BlendMode.ERASE:
+          srcFactor = gl.ZERO;
+          dstFactor = gl.ONE_MINUS_SRC_ALPHA;
+          break;
+        case BlendMode.BELOW:
+          srcFactor = gl.ONE_MINUS_DST_ALPHA;
+          dstFactor = gl.ONE;
+          break;
+        case BlendMode.ABOVE:
+          srcFactor = gl.DST_ALPHA;
+          dstFactor = gl.ONE_MINUS_SRC_ALPHA;
+          break;
+      }
+
+      _renderingContext.blendFunc(srcFactor, dstFactor);
     }
   }
 
@@ -256,15 +305,15 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   int _getStencilDepth() {
-    return _renderFrameBuffer != null
-        ? _renderFrameBuffer._stencilDepth
+    return _activeRenderFrameBuffer != null
+        ? _activeRenderFrameBuffer._stencilDepth
         : _stencilDepth;
   }
 
   _updateStencilDepth(int stencilDepth) {
-    if (_renderFrameBuffer != null) {
-      if (_renderFrameBuffer._stencilDepth != stencilDepth) {
-        _renderFrameBuffer._stencilDepth = stencilDepth;
+    if (_activeRenderFrameBuffer != null) {
+      if (_activeRenderFrameBuffer._stencilDepth != stencilDepth) {
+        _activeRenderFrameBuffer._stencilDepth = stencilDepth;
         _updateStencilState(stencilDepth);
       }
     } else {

@@ -21,7 +21,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 
   Mask _mask = null;
   Shadow _shadow = null;
-  String _compositeOperation = null;
+  String _blendMode = null;
   List<BitmapFilter> _filters = null;
   RenderTextureQuad _cacheTextureQuad = null;
   bool _cacheDebugBorder = false;
@@ -82,10 +82,13 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   }
 
   Shadow get shadow => _shadow;
-  String get compositeOperation => _compositeOperation;
+  String get blendMode => _blendMode;
 
   String get name => _name;
   DisplayObjectContainer get parent => _parent;
+
+  @deprecated
+  String get compositeOperation => null;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -198,12 +201,16 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     _shadow = value;
   }
 
-  set compositeOperation(String value) {
-    _compositeOperation = value;
+  set blendMode(String value) {
+    _blendMode = value;
   }
 
   set name(String value) {
     _name = value;
+  }
+
+  @deprecated
+  set compositeOperation(String value) {
   }
 
   //-------------------------------------------------------------------------------------------------

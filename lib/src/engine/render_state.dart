@@ -3,7 +3,7 @@ part of stagexl;
 class _ContextState {
   final Matrix matrix = new Matrix.fromIdentity();
   num alpha = 1.0;
-  String compositeOperation = CompositeOperation.SOURCE_OVER;
+  String blendMode = BlendMode.NORMAL;
 
   _ContextState _nextContextState;
 
@@ -22,7 +22,7 @@ class RenderState {
   _ContextState _firstContextState;
   _ContextState _currentContextState;
 
-  RenderState(RenderContext renderContext, [Matrix matrix, num alpha, String compositeOperation]) :
+  RenderState(RenderContext renderContext, [Matrix matrix, num alpha, String blendMode]) :
     _renderContext = renderContext {
 
     _firstContextState = new _ContextState();
@@ -30,7 +30,7 @@ class RenderState {
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
     if (alpha is num) _firstContextState.alpha = alpha;
-    if (compositeOperation is String) _firstContextState.compositeOperation = compositeOperation;
+    if (blendMode is String) _firstContextState.blendMode = blendMode;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -42,20 +42,20 @@ class RenderState {
 
   Matrix get globalMatrix => _currentContextState.matrix;
   double get globalAlpha => _currentContextState.alpha;
-  String get globalCompositeOperation => _currentContextState.compositeOperation;
+  String get globalBlendMode => _currentContextState.blendMode;
 
   //-------------------------------------------------------------------------------------------------
 
-  void reset([Matrix matrix, num alpha, String compositeOperation]) {
+  void reset([Matrix matrix, num alpha, String blendMode]) {
 
     _currentContextState = _firstContextState;
     _currentContextState.matrix.identity();
     _currentContextState.alpha = 1.0;
-    _currentContextState.compositeOperation = CompositeOperation.SOURCE_OVER;
+    _currentContextState.blendMode = BlendMode.NORMAL;
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
     if (alpha is num) _firstContextState.alpha = alpha;
-    if (compositeOperation is String) _firstContextState.compositeOperation = compositeOperation;
+    if (blendMode is String) _firstContextState.blendMode = blendMode;
   }
 
   void copyFrom(RenderState renderState) {
@@ -63,7 +63,7 @@ class RenderState {
     _currentContextState = _firstContextState;
     _currentContextState.matrix.copyFrom(renderState.globalMatrix);
     _currentContextState.alpha = renderState.globalAlpha;
-    _currentContextState.compositeOperation = renderState.globalCompositeOperation;
+    _currentContextState.blendMode = renderState.globalBlendMode;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -73,11 +73,11 @@ class RenderState {
     var cs1 = _currentContextState;
     var cs2 = _currentContextState.nextContextState;
     var matrix = displayObject.transformationMatrix;
-    var composite = displayObject.compositeOperation;
+    var blendMode = displayObject.blendMode;
     var alpha = displayObject.alpha;
 
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
-    cs2.compositeOperation = (composite is String) ? composite : cs1.compositeOperation;
+    cs2.blendMode = (blendMode is String) ? blendMode : cs1.blendMode;
     cs2.alpha = alpha * cs1.alpha;
 
     _currentContextState = cs2;
