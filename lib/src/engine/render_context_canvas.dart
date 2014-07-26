@@ -158,21 +158,6 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void beginRenderShadow(RenderState renderState, Shadow shadow) {
-    var matrix = renderState.globalMatrix;
-    _renderingContext.save();
-    _renderingContext.shadowColor = _color2rgba(shadow.color);
-    _renderingContext.shadowBlur = sqrt(matrix.det) * shadow.blur;
-    _renderingContext.shadowOffsetX = shadow.offsetX * matrix.a + shadow.offsetY * matrix.c;
-    _renderingContext.shadowOffsetY = shadow.offsetX * matrix.b + shadow.offsetY * matrix.d;
-  }
-
-  void endRenderShadow(RenderState renderState, Shadow shadow) {
-    _renderingContext.restore();
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
   String _getCompositeOperation(String blendMode) {
     // https://developer.mozilla.org/samples/canvas-tutorial/6_1_canvas_composite.html
     String compositeOperation = "source-over";
@@ -185,6 +170,7 @@ class RenderContextCanvas extends RenderContext {
       case BlendMode.BELOW:    compositeOperation = "destination-over"; break;
       case BlendMode.ABOVE:    compositeOperation = "source-atop"; break;
     }
+
     return compositeOperation;
   }
 

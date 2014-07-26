@@ -177,16 +177,6 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void beginRenderShadow(RenderState renderState, Shadow shadow) {
-    // TODO: We will add this once we have WebGL filters.
-  }
-
-  void endRenderShadow(RenderState renderState, Shadow shadow) {
-
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
   RenderFrameBuffer requestRenderFrameBuffer(int width, int height) {
     _activeRenderProgram.flush();
     if (_renderFrameBufferPool.length > 0) {

@@ -20,7 +20,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   bool _off = false; // disable rendering
 
   Mask _mask = null;
-  Shadow _shadow = null;
   String _blendMode = null;
   List<BitmapFilter> _filters = null;
   RenderTextureQuad _cacheTextureQuad = null;
@@ -32,6 +31,9 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
   final Matrix _tmpMatrix = new Matrix.fromIdentity();
   final Matrix _transformationMatrix = new Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
+
+  @deprecated Shadow shadow;
+  @deprecated String compositeOperation;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -81,14 +83,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     return _filters;
   }
 
-  Shadow get shadow => _shadow;
   String get blendMode => _blendMode;
 
   String get name => _name;
   DisplayObjectContainer get parent => _parent;
-
-  @deprecated
-  String get compositeOperation => null;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -197,20 +195,12 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     _filters = value;
   }
 
-  set shadow(Shadow value) {
-    _shadow = value;
-  }
-
   set blendMode(String value) {
     _blendMode = value;
   }
 
   set name(String value) {
     _name = value;
-  }
-
-  @deprecated
-  set compositeOperation(String value) {
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -578,9 +568,8 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
     RenderState maskRenderState;
     RenderState shadowRenderState;
     Mask mask = _mask;
-    Shadow shadow = _shadow;
 
-    // render mask and shadow (begin)
+    // render mask (begin)
 
     if (mask != null) {
       maskRenderState = new RenderState(renderState.renderContext, renderState.globalMatrix);
@@ -588,14 +577,6 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
         maskRenderState.globalMatrix.prepend(mask.targetSpace.transformationMatrixTo(this));
       }
       maskRenderState.renderContext.beginRenderMask(maskRenderState, mask);
-    }
-
-    if (shadow != null) {
-      shadowRenderState = new RenderState(renderState.renderContext, renderState.globalMatrix);
-      if (shadow.targetSpace != null && identical(this, shadow.targetSpace) == false) {
-        shadowRenderState.globalMatrix.prepend(shadow.targetSpace.transformationMatrixTo(this));
-      }
-      shadowRenderState.renderContext.beginRenderShadow(shadowRenderState, shadow);
     }
 
     // render DisplayObject
@@ -608,11 +589,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       render(renderState);
     }
 
-    // render mask and shadow (end)
-
-    if (shadow != null) {
-      shadowRenderState.renderContext.endRenderShadow(shadowRenderState, shadow);
-    }
+    // render mask (end)
 
     if (mask != null) {
       maskRenderState.renderContext.endRenderMask(maskRenderState, mask);

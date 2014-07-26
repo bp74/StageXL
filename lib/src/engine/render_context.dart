@@ -25,7 +25,4 @@ abstract class RenderContext extends EventDispatcher {
 
   void beginRenderMask(RenderState renderState, Mask mask);
   void endRenderMask(RenderState renderState, Mask mask);
-
-  void beginRenderShadow(RenderState renderState, Shadow shadow);
-  void endRenderShadow(RenderState renderState, Shadow shadow);
 }

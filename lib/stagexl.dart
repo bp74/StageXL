@@ -49,7 +49,6 @@ part 'src/display/interactive_object.dart';
 part 'src/display/joint_style.dart';
 part 'src/display/mask.dart';
 part 'src/display/movie_clip.dart';
-part 'src/display/shadow.dart';
 part 'src/display/shape.dart';
 part 'src/display/simple_button.dart';
 part 'src/display/sprite.dart';
@@ -57,6 +56,7 @@ part 'src/display/stage.dart';
 
 part 'src/displayEx/bitmap_container.dart';
 part 'src/displayEx/bitmap_container_program.dart';
+part 'src/displayEx/canvas_shadow_wrapper.dart';
 part 'src/displayEx/flip_book.dart';
 part 'src/displayEx/gauge.dart';
 part 'src/displayEx/glass_plate.dart';
