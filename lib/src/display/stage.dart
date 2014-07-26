@@ -128,7 +128,7 @@ class Stage extends DisplayObjectContainer {
   //-------------------------------------------------------------------------------------------------
 
   Stage(CanvasElement canvas, {int width, int height,
-    bool webGL: false, int frameRate: 30, int color: Color.White}) {
+    bool webGL: false, bool alpha: false, int frameRate: 30, int color: Color.White}) {
 
     if (canvas is! CanvasElement) {
       throw new ArgumentError("The canvas argument is not a CanvasElement");
@@ -146,7 +146,7 @@ class Stage extends DisplayObjectContainer {
 
     if (webGL && gl.RenderingContext.supported) {
       try {
-        _renderContext = new RenderContextWebGL(canvas);
+        _renderContext = new RenderContextWebGL(canvas, alpha: alpha);
       } catch(e) {
         _renderContext = new RenderContextCanvas(canvas);
       }
