@@ -239,46 +239,7 @@ class RenderContextWebGL extends RenderContext {
     if (blendMode != _activeBlendMode) {
       _activeRenderProgram.flush();
       _activeBlendMode = blendMode;
-
-      int srcFactor = gl.ONE;
-      int dstFactor = gl.ONE_MINUS_SRC_ALPHA;
-
-      switch(blendMode) {
-        case BlendMode.NORMAL:
-          srcFactor = gl.ONE;
-          dstFactor = gl.ONE_MINUS_SRC_ALPHA;
-          break;
-        case BlendMode.ADD:
-          srcFactor = gl.ONE;
-          dstFactor = gl.ONE;
-          break;
-        case BlendMode.MULTIPLY:
-          srcFactor = gl.DST_COLOR;
-          dstFactor = gl.ONE_MINUS_SRC_ALPHA;
-          break;
-        case BlendMode.SCREEN:
-          srcFactor = gl.ONE;
-          dstFactor = gl.ONE_MINUS_SRC_COLOR;
-          break;
-        case BlendMode.ERASE:
-          srcFactor = gl.ZERO;
-          dstFactor = gl.ONE_MINUS_SRC_ALPHA;
-          break;
-        case BlendMode.BELOW:
-          srcFactor = gl.ONE_MINUS_DST_ALPHA;
-          dstFactor = gl.ONE;
-          break;
-        case BlendMode.ABOVE:
-          srcFactor = gl.DST_ALPHA;
-          dstFactor = gl.ONE_MINUS_SRC_ALPHA;
-          break;
-        case BlendMode.NONE:
-          srcFactor = gl.ONE;
-          dstFactor = gl.ZERO;
-          break;
-      }
-
-      _renderingContext.blendFunc(srcFactor, dstFactor);
+      _renderingContext.blendFunc(blendMode.srcFactor, blendMode.dstFactor);
     }
   }
 

@@ -1,17 +1,21 @@
 part of stagexl;
 
 class BlendMode {
-  final int _value;
-  const BlendMode._internal(int value) : _value = value;
 
-  static const NORMAL   = const BlendMode._internal(0);
-  static const ADD      = const BlendMode._internal(1);
-  static const MULTIPLY = const BlendMode._internal(2);
-  static const SCREEN   = const BlendMode._internal(3);
-  static const ERASE    = const BlendMode._internal(4);
-  static const BELOW    = const BlendMode._internal(5);
-  static const ABOVE    = const BlendMode._internal(6);
-  static const NONE     = const BlendMode._internal(7);
+  final int srcFactor;
+  final int dstFactor;
+  final String compositeOperation;
+
+  const BlendMode(this.srcFactor, this.dstFactor, this.compositeOperation);
+
+  static const NORMAL   = const BlendMode(gl.ONE, gl.ONE_MINUS_SRC_ALPHA, "source-over");
+  static const ADD      = const BlendMode(gl.ONE, gl.ONE, "lighter");
+  static const MULTIPLY = const BlendMode(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, "multiply");
+  static const SCREEN   = const BlendMode(gl.ONE, gl.ONE_MINUS_SRC_COLOR, "screen");
+  static const ERASE    = const BlendMode(gl.ZERO, gl.ONE_MINUS_SRC_ALPHA, "destination-out");
+  static const BELOW    = const BlendMode(gl.ONE_MINUS_DST_ALPHA, gl.ONE, "destination-over");
+  static const ABOVE    = const BlendMode(gl.DST_ALPHA, gl.ONE_MINUS_SRC_ALPHA, "source-atop");
+  static const NONE     = const BlendMode(gl.ONE, gl.ZERO, "source-over");
 }
 
 /// The CompositeOperation is deprecated.

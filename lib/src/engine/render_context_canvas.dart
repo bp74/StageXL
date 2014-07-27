@@ -69,7 +69,7 @@ class RenderContextCanvas extends RenderContext {
 
     if (_activeBlendMode != blendMode) {
       _activeBlendMode = blendMode;
-      context.globalCompositeOperation = _getCompositeOperation(blendMode);
+      context.globalCompositeOperation = blendMode.compositeOperation;
     }
 
     if (rotation == 0) {
@@ -120,7 +120,7 @@ class RenderContextCanvas extends RenderContext {
 
     if (_activeBlendMode != blendMode) {
       _activeBlendMode = blendMode;
-      context.globalCompositeOperation = _getCompositeOperation(blendMode);
+      context.globalCompositeOperation = blendMode.compositeOperation;
     }
 
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
@@ -154,25 +154,6 @@ class RenderContextCanvas extends RenderContext {
       _renderingContext.lineJoin = "round";
       _renderingContext.stroke();
     }
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  String _getCompositeOperation(BlendMode blendMode) {
-    // https://developer.mozilla.org/samples/canvas-tutorial/6_1_canvas_composite.html
-    String compositeOperation = "source-over";
-    switch(blendMode) {
-      case BlendMode.NORMAL:   compositeOperation = "source-over"; break;
-      case BlendMode.ADD:      compositeOperation = "lighter"; break;
-      case BlendMode.MULTIPLY: compositeOperation = "multiply"; break;
-      case BlendMode.SCREEN:   compositeOperation = "screen"; break;
-      case BlendMode.ERASE:    compositeOperation = "destination-out"; break;
-      case BlendMode.BELOW:    compositeOperation = "destination-over"; break;
-      case BlendMode.ABOVE:    compositeOperation = "source-atop"; break;
-      case BlendMode.NONE:     compositeOperation = "source-over"; break;
-    }
-
-    return compositeOperation;
   }
 
 }
