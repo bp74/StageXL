@@ -104,8 +104,8 @@ class RenderContextWebGL extends RenderContext {
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
     activateRenderProgram(_renderProgramQuad);
-    activateRenderTexture(renderTextureQuad.renderTexture);
     activateBlendMode(renderState.globalBlendMode);
+    activateRenderTexture(renderTextureQuad.renderTexture);
     _renderProgramQuad.renderQuad(renderState, renderTextureQuad);
   }
 
@@ -228,18 +228,19 @@ class RenderContextWebGL extends RenderContext {
     }
   }
 
+  void activateBlendMode(BlendMode blendMode) {
+    if (identical(blendMode, _activeBlendMode) == false) {
+      _activeRenderProgram.flush();
+      _activeBlendMode = blendMode;
+      _renderingContext.blendFunc(blendMode.srcFactor, blendMode.dstFactor);
+    }
+  }
+
   void activateRenderTexture(RenderTexture renderTexture) {
     if (identical(renderTexture, _activeRenderTexture) == false) {
       _activeRenderProgram.flush();
       _activeRenderTexture = renderTexture;
       _activeRenderTexture.activate(this, gl.TEXTURE0);
-    }
-  }
-  void activateBlendMode(BlendMode blendMode) {
-    if (blendMode != _activeBlendMode) {
-      _activeRenderProgram.flush();
-      _activeBlendMode = blendMode;
-      _renderingContext.blendFunc(blendMode.srcFactor, blendMode.dstFactor);
     }
   }
 
