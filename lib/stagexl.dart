@@ -96,6 +96,7 @@ part 'src/filters/blur_filter.dart';
 part 'src/filters/color_matrix_filter.dart';
 part 'src/filters/displacement_map_filter.dart';
 part 'src/filters/drop_shadow_filter.dart';
+part 'src/filters/flatten_filter.dart';
 part 'src/filters/glow_filter.dart';
 
 part 'src/geom/circle.dart';
