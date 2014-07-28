@@ -676,12 +676,14 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
             filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
             filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
             renderContext.activateRenderFrameBuffer(targetRenderFrameBuffer);
+            renderContext.activateBlendMode(BlendMode.NORMAL);
           } else {
             targetRenderFrameBuffer = renderContext.requestRenderFrameBuffer(boundsWidth, boundsHeight);
             filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
             filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
             renderFrameBufferMap[renderPassTarget] = targetRenderFrameBuffer;
             renderContext.activateRenderFrameBuffer(targetRenderFrameBuffer);
+            renderContext.activateBlendMode(BlendMode.NORMAL);
             renderContext.clear(0);
           }
 
