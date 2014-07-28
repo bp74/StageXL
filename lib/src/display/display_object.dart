@@ -621,7 +621,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       var boundsWidth = boundsRight - boundsLeft;
       var boundsHeight = boundsBottom - boundsTop;
 
-      var currentRenderFrameBuffer = renderContext.activeRenderFrameBuffer;
+      var initialRenderFrameBuffer = renderContext.activeRenderFrameBuffer;
       var flattenRenderFrameBuffer = renderContext.requestRenderFrameBuffer(boundsWidth, boundsHeight);
       var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
       var flattenRenderTextureQuad = new RenderTextureQuad(
@@ -629,6 +629,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       var flattenRenderState = new RenderState(renderContext, flattenRenderTextureQuad.bufferMatrix);
 
       renderContext.activateRenderFrameBuffer(flattenRenderFrameBuffer);
+      renderContext.activateBlendMode(BlendMode.NORMAL);
       renderContext.clear(0);
       render(flattenRenderState);
 
@@ -667,9 +668,10 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
           // get targetRenderFrameBuffer
 
           if (i == filters.length - 1 && renderPassTarget == renderPassTargets.last) {
-            targetRenderFrameBuffer = currentRenderFrameBuffer;
+            targetRenderFrameBuffer = initialRenderFrameBuffer;
             filterRenderState.copyFrom(renderState);
             renderContext.activateRenderFrameBuffer(targetRenderFrameBuffer);
+            renderContext.activateBlendMode(filterRenderState.globalBlendMode);
           } else if (renderFrameBufferMap.containsKey(renderPassTarget)) {
             targetRenderFrameBuffer = renderFrameBufferMap[renderPassTarget];
             filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
