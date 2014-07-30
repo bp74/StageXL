@@ -132,6 +132,7 @@ class RenderContextWebGL extends RenderContext {
     renderState.flush();
 
     _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
+    _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
     _renderingContext.stencilMask(0x00);
     _renderingContext.colorMask(true, true, true, true);
   }
@@ -147,11 +148,14 @@ class RenderContextWebGL extends RenderContext {
 
       _renderingContext.stencilMask(0xFF);
       _renderingContext.clear(gl.STENCIL_BUFFER_BIT);
+      _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
+      _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
       _renderingContext.stencilMask(0x00);
 
     } else {
 
       activateRenderProgram(_renderProgramTriangle);
+
       _renderingContext.stencilFunc(gl.EQUAL, stencilDepth + 1, 0xFF);
       _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
       _renderingContext.stencilMask(0xFF);
@@ -163,6 +167,7 @@ class RenderContextWebGL extends RenderContext {
       renderState.flush();
 
       _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
+      _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
       _renderingContext.stencilMask(0x00);
       _renderingContext.colorMask(true, true, true, true);
     }
