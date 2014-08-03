@@ -3,6 +3,9 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.9.4+1
+  * Fixed an issue with WebGL masks in combination with WebGL filters.
+
 #### Pub version 0.9.4
   * Added TouchEvents TOUCH\_ROLL\_OUT, TOUCH\_ROLL\_OVER, TOUCH\_TAP.
   * Added touch support for SimpleButton.
