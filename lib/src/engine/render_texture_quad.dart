@@ -43,6 +43,16 @@ class RenderTextureQuad {
       y1 = y4 = _textureY;
       x3 = x4 = _textureX - _textureHeight;
       y2 = y3 = _textureY + _textureWidth;
+    } else if (_rotation == 2) {
+      x1 = x4 = _textureX;
+      y1 = y2 = _textureY;
+      x2 = x3 = _textureX - _textureWidth;
+      y3 = y4 = _textureY - _textureHeight;
+    } else if (_rotation == 3) {
+      x1 = x2 = _textureX;
+      y1 = y4 = _textureY;
+      x3 = x4 = _textureX + _textureHeight;
+      y2 = y3 = _textureY - _textureWidth;
     } else {
       throw new ArgumentError("rotation not supported.");
     }
@@ -105,9 +115,17 @@ class RenderTextureQuad {
 
     num s = _renderTexture.storePixelRatio;
 
-    return (_rotation == 0)
-        ? new Matrix(s, 0.0, 0.0, s, s * (textureX - offsetX), s * (textureY - offsetY))
-        : new Matrix(0.0, s, -s, 0.0, s * (textureX + offsetY), s * (textureY - offsetX));
+    if (rotation == 0) {
+      return new Matrix(s, 0.0, 0.0, s, s * (textureX - offsetX), s * (textureY - offsetY));
+    } else if (rotation == 1) {
+      return new Matrix(0.0, s, -s, 0.0, s * (textureX + offsetY), s * (textureY - offsetX));
+    } else if (rotation == 2) {
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+    } else if (rotation == 3) {
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+    } else {
+      throw new Error();
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -134,9 +152,17 @@ class RenderTextureQuad {
     num sx = 2.0 / _renderTexture.width;
     num sy = 2.0 / _renderTexture.height;
 
-    return (_rotation == 0)
-        ? new Matrix(sx, 0.0, 0.0, sy, sx * (textureX - offsetX) - 1.0, sy * (textureY - offsetY) - 1.0)
-        : new Matrix(0.0, sy, -sx, 0.0, sx * (textureX + offsetY) - 1.0, sy * (textureY - offsetX) - 1.0);
+    if (rotation == 0) {
+      return new Matrix(sx, 0.0, 0.0, sy, sx * (textureX - offsetX) - 1.0, sy * (textureY - offsetY) - 1.0);
+    } else if (rotation == 1) {
+      return new Matrix(0.0, sy, -sx, 0.0, sx * (textureX + offsetY) - 1.0, sy * (textureY - offsetX) - 1.0);
+    } else if (rotation == 2) {
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+    } else if (rotation == 3) {
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+    } else {
+      throw new Error();
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -153,9 +179,17 @@ class RenderTextureQuad {
     num sx = 1.0 / _renderTexture.width;
     num sy = 1.0 / _renderTexture.height;
 
-    return (_rotation == 0)
-        ? new Matrix(sx, 0.0, 0.0, sy, sx * (textureX - offsetX), sy * (textureY - offsetY))
-        : new Matrix(0.0, sy, -sx, 0.0, sx * (textureX + offsetY), sy * (textureY - offsetX));
+    if (rotation == 0) {
+      return new Matrix(sx, 0.0, 0.0, sy, sx * (textureX - offsetX), sy * (textureY - offsetY));
+    } else if (rotation == 1) {
+      return new Matrix(0.0, sy, -sx, 0.0, sx * (textureX + offsetY), sy * (textureY - offsetX));
+    } else if (rotation == 2) {
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+    } else if (rotation == 3) {
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+    } else {
+      throw new Error();
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -170,8 +204,21 @@ class RenderTextureQuad {
     int right = _maxInt(_offsetX, _minInt(_offsetX + _textureWidth, rectangle.right));
     int bottom = _maxInt(_offsetY, _minInt(_offsetY + _textureHeight, rectangle.bottom));
 
-    int textureX = rotation == 0 ? _textureX - _offsetX + left : _textureX + _offsetY - top;
-    int textureY = rotation == 0 ? _textureY - _offsetY + top : _textureY - _offsetX + left;
+    int textureX = 0;
+    int textureY = 0;
+
+    if (rotation == 0) {
+      textureX = _textureX - _offsetX + left;
+      textureY = _textureY - _offsetY + top;
+    } else if (rotation == 1) {
+      textureX = _textureX + _offsetY - top;
+      textureY = _textureY - _offsetX + left;
+    } else if (rotation == 2) {
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+    } else if (rotation == 3) {
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+    }
+
     int textureWidth = right - left;
     int textureHeight = bottom - top;
 
@@ -193,10 +240,29 @@ class RenderTextureQuad {
 
   Rectangle<int> get _imageDataRectangle {
     num storePixelRatio = _renderTexture.storePixelRatio;
-    int left = (rotation == 0) ? textureX : textureX - textureHeight;
-    int top = (rotation == 0) ? textureY : textureY;
-    int right = (rotation == 0) ? textureX + textureWidth : textureX;
-    int bottom = (rotation == 0) ? textureY + textureHeight : textureY + textureWidth;
+    int left = 0, top = 0, right = 1, bottom = 1;
+
+    if (rotation == 0) {
+      left = textureX;
+      top = textureY;
+      right = textureX + textureWidth;
+      bottom = textureY + textureHeight;
+    } else if (rotation == 1) {
+      left = textureX - textureHeight;
+      top = textureY;
+      right = textureX;
+      bottom = textureY + textureWidth;
+    } else if (rotation == 2) {
+      left = textureX - textureWidth;
+      top = textureY - textureHeight;
+      right = textureX;
+      bottom = textureY;
+    } else if (rotation == 3) {
+      left = textureX;
+      top = textureY - textureWidth;
+      right = textureX + textureHeight;
+      bottom = textureY;
+    }
 
     left = (left * storePixelRatio).round();
     top = (top * storePixelRatio).round();

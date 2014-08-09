@@ -103,6 +103,15 @@ class RenderContextCanvas extends RenderContext {
       context.drawImageScaledFromSource(source,
           sourceX, sourceY, sourceWidth, sourceHeight,
           destinationX, destinationY, destinationWidth, destinationHeight);
+
+    } else if (rotation == 2) {
+
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+
+    } else if (rotation == 3) {
+
+      throw new StateError("Not implemented."); // TODO: Implement rotation
+
     }
   }
 
