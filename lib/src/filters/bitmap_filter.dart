@@ -18,7 +18,7 @@ abstract class BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  static var _buffer = new List<int>.filled(1024, 0);
+  static Int32List _buffer = new Int32List(1024);
 
   //-----------------------------------------------------------------------------------------------
 
@@ -126,7 +126,7 @@ abstract class BitmapFilter {
     int radius1 = radius * 1;
     int radius2 = radius * 2;
 
-    List<int> buffer = _buffer;
+    Int32List buffer = _buffer;
 
     for (int i = 0; i < length + radius1; i++) {
 

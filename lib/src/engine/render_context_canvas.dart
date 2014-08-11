@@ -110,8 +110,19 @@ class RenderContextCanvas extends RenderContext {
 
     } else if (rotation == 3) {
 
-      throw new StateError("Not implemented."); // TODO: Implement rotation
+      var sourceX = xyList[2];
+      var sourceY = xyList[3];
+      var sourceWidth = xyList[6] - sourceX;
+      var sourceHeight = xyList[7] - sourceY;
+      var destinationX = 0.0;
+      var destinationY = 0.0 - renderTextureQuad.offsetX - renderTextureQuad.textureWidth;
+      var destinationWidth = renderTextureQuad.textureHeight;
+      var destinationHeight = renderTextureQuad.textureWidth;
 
+      context.setTransform(matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
+      context.drawImageScaledFromSource(source,
+          sourceX, sourceY, sourceWidth, sourceHeight,
+          destinationX, destinationY, destinationWidth, destinationHeight);
     }
   }
 

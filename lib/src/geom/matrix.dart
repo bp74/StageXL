@@ -2,41 +2,41 @@ part of stagexl;
 
 class Matrix {
 
-  double _a, _b, _c, _d, _tx, _ty;
-  double _det;
+  final Float32List _data = new Float32List(6);
 
-  Matrix(num a, num b, num c, num d, num tx, num ty) :
-    _a = a.toDouble(),
-    _b = b.toDouble(),
-    _c = c.toDouble(),
-    _d = d.toDouble(),
-    _tx = tx.toDouble(),
-    _ty = ty.toDouble(),
-    _det = (a * d - b * c).toDouble();
+  Matrix(num a, num b, num c, num d, num tx, num ty) {
+    _data[0] = a.toDouble();
+    _data[1] = b.toDouble();
+    _data[2] = c.toDouble();
+    _data[3] = d.toDouble();
+    _data[4] = tx.toDouble();
+    _data[5] = ty.toDouble();
+  }
 
-  Matrix.fromIdentity() :
-    _a = 1.0,
-    _b = 0.0,
-    _c = 0.0,
-    _d = 1.0,
-    _tx = 0.0,
-    _ty = 0.0,
-    _det = 1.0;
+  Matrix.fromIdentity() {
+    _data[0] = 1.0;
+    _data[1] = 0.0;
+    _data[2] = 0.0;
+    _data[3] = 1.0;
+    _data[4] = 0.0;
+    _data[5] = 0.0;
+  }
 
   //-------------------------------------------------------------------------------------------------
 
-  String toString() => "Matrix [a=$_a, b=$_b, c=$_c, d=$_d, tx=$_tx, ty=$_ty]";
+  String toString() => "Matrix [a=$a, b=$b, c=$c, d=$d, tx=$tx, ty=$ty]";
 
-  Matrix clone() => new Matrix(_a, _b, _c, _d, _tx, _ty);
+  Matrix clone() => new Matrix(a, b, c, d, tx, ty);
 
   Matrix cloneInvert() {
 
-    num a =    (_d / _det);
-    num b =  - (_b / _det);
-    num c =  - (_c / _det);
-    num d =    (_a / _det);
-    num tx = - (a * _tx + c * _ty);
-    num ty = - (b * _tx + d * _ty);
+    num det =  this.det;
+    num a =    this.d / det;
+    num b =  - this.b / det;
+    num c =  - this.c / det;
+    num d =    this.a / det;
+    num tx = - this.tx * a - this.ty * c;
+    num ty = - this.tx * b - this.ty * d;
 
     return new Matrix(a, b, c, d, tx, ty);
   }
@@ -44,136 +44,128 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get a => _a;
-  num get b => _b;
-  num get c => _c;
-  num get d => _d;
-  num get tx => _tx;
-  num get ty => _ty;
-  num get det => _det;
+  num get a =>  _data[0];
+  num get b =>  _data[1];
+  num get c =>  _data[2];
+  num get d =>  _data[3];
+  num get tx => _data[4];
+  num get ty => _data[5];
+
+  num get det => a * d - b * c;
 
   //-------------------------------------------------------------------------------------------------
 
   Point<num> deltaTransformPoint(math.Point<num> p) {
     var x = p.x.toDouble();
     var y = p.y.toDouble();
-    return new Point<num>(x * _a + y * _c, x * _b + y * _d);
+    return new Point<num>(x * this.a + y * this.c, x * this.b + y * this.d);
   }
 
   Point<num> transformPoint(math.Point<num> p) {
     var x = p.x.toDouble();
     var y = p.y.toDouble();
-    return new Point<num>(x * _a + y * _c + _tx, x * _b + y * _d + _ty);
+    return new Point<num>(x * this.a + y * this.c + this.tx, x * this.b + y * this.d + this.ty);
   }
 
   Vector transformVector(Vector v) {
     var x = v.x.toDouble();
     var y = v.y.toDouble();
-    return new Vector(x * _a + y * _c + _tx, x * _b + y * _d + _ty);
+    return new Vector(x * this.a + y * this.c + this.tx, x * this.b + y * this.d + this.ty);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void concat(Matrix matrix) {
 
-    num a1 =   _a;
-    num b1 =   _b;
-    num c1 =   _c;
-    num d1 =   _d;
-    num tx1 =  _tx;
-    num ty1 =  _ty;
-    num det1 = _det;
+    num a1 =  this.a;
+    num b1 =  this.b;
+    num c1 =  this.c;
+    num d1 =  this.d;
+    num tx1 = this.tx;
+    num ty1 = this.ty;
 
-    num a2 =   matrix.a;
-    num b2 =   matrix.b;
-    num c2 =   matrix.c;
-    num d2 =   matrix.d;
-    num tx2 =  matrix.tx;
-    num ty2 =  matrix.ty;
-    num det2 = matrix.det;
+    num a2 =  matrix.a;
+    num b2 =  matrix.b;
+    num c2 =  matrix.c;
+    num d2 =  matrix.d;
+    num tx2 = matrix.tx;
+    num ty2 = matrix.ty;
 
-    _a =   (a1 * a2 + b1 * c2).toDouble();
-    _b =   (a1 * b2 + b1 * d2).toDouble();
-    _c =   (c1 * a2 + d1 * c2).toDouble();
-    _d =   (c1 * b2 + d1 * d2).toDouble();
-    _tx =  (tx1 * a2 + ty1 * c2 + tx2).toDouble();
-    _ty =  (tx1 * b2 + ty1 * d2 + ty2).toDouble();
-    _det = (det1 * det2).toDouble();
+    _data[0] = a1 * a2 + b1 * c2;
+    _data[1] = a1 * b2 + b1 * d2;
+    _data[2] = c1 * a2 + d1 * c2;
+    _data[3] = c1 * b2 + d1 * d2;
+    _data[4] = tx1 * a2 + ty1 * c2 + tx2;
+    _data[5] = tx1 * b2 + ty1 * d2 + ty2;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void prepend(Matrix matrix) {
 
-    num a1 =   _a;
-    num b1 =   _b;
-    num c1 =   _c;
-    num d1 =   _d;
-    num tx1 =  _tx;
-    num ty1 =  _ty;
-    num det1 = _det;
+    num a1 =  this.a;
+    num b1 =  this.b;
+    num c1 =  this.c;
+    num d1 =  this.d;
+    num tx1 = this.tx;
+    num ty1 = this.ty;
 
-    num a2 =   matrix.a;
-    num b2 =   matrix.b;
-    num c2 =   matrix.c;
-    num d2 =   matrix.d;
-    num tx2 =  matrix.tx;
-    num ty2 =  matrix.ty;
-    num det2 = matrix.det;
+    num a2 =  matrix.a;
+    num b2 =  matrix.b;
+    num c2 =  matrix.c;
+    num d2 =  matrix.d;
+    num tx2 = matrix.tx;
+    num ty2 = matrix.ty;
 
-    _a =   (a1 * a2 + c1 * b2).toDouble();
-    _b =   (b1 * a2 + d1 * b2).toDouble();
-    _c =   (a1 * c2 + c1 * d2).toDouble();
-    _d =   (b1 * c2 + d1 * d2).toDouble();
-    _tx =  (tx2 * a1 + ty2 * c1 + tx1).toDouble();
-    _ty =  (tx2 * b1 + ty2 * d1 + ty1).toDouble();
-    _det = (det1 * det2).toDouble();
+    _data[0] = a1 * a2 + c1 * b2;
+    _data[1] = b1 * a2 + d1 * b2;
+    _data[2] = a1 * c2 + c1 * d2;
+    _data[3] = b1 * c2 + d1 * d2;
+    _data[4] = tx2 * a1 + ty2 * c1 + tx1;
+    _data[5] = tx2 * b1 + ty2 * d1 + ty1;
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  Matrix createBox(num scaleX, num scaleY, [num rotation = 0.0, num translationX = 0.0, num translationY = 0.0]) {
+  Matrix createBox(num scaleX, num scaleY, [
+    num rotation = 0.0, num translationX = 0.0, num translationY = 0.0]) {
 
-    Matrix matrix = new Matrix.fromIdentity();
+    var matrix = new Matrix.fromIdentity();
     matrix.scale(scaleX, scaleY);
     matrix.rotate(rotation);
     matrix.translate(translationX, translationY);
-
     return matrix;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void identity() {
-
-    _a =   1.0;
-    _b =   0.0;
-    _c =   0.0;
-    _d =   1.0;
-    _tx =  0.0;
-    _ty =  0.0;
-    _det = 1.0;
+    _data[0] = 1.0;
+    _data[1] = 0.0;
+    _data[2] = 0.0;
+    _data[3] = 1.0;
+    _data[4] = 0.0;
+    _data[5] = 0.0;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void invert() {
 
-    num a =   _a;
-    num b =   _b;
-    num c =   _c;
-    num d =   _d;
-    num tx =  _tx;
-    num ty =  _ty;
-    num det = _det;
+    num a =   this.a;
+    num b =   this.b;
+    num c =   this.c;
+    num d =   this.d;
+    num tx =  this.tx;
+    num ty =  this.ty;
+    num det = this.det;
 
-    _a =    (d / det).toDouble();
-    _b =  - (b / det).toDouble();
-    _c =  - (c / det).toDouble();
-    _d =    (a / det).toDouble();
-    _tx = - (_a * tx + _c * ty).toDouble();
-    _ty = - (_b * tx + _d * ty).toDouble();
-    _det =  (1.0 / det).toDouble();
+    _data[0] =   d / det;
+    _data[1] = - b / det;
+    _data[2] = - c / det;
+    _data[3] =   a / det;
+    _data[4] = - tx * _data[0] - ty * _data[2];
+    _data[5] = - tx * _data[1] - ty * _data[3];
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -183,19 +175,19 @@ class Matrix {
     num cosR = cos(rotation);
     num sinR = sin(rotation);
 
-    num a =  _a;
-    num b =  _b;
-    num c =  _c;
-    num d =  _d;
-    num tx = _tx;
-    num ty = _ty;
+    num a =  this.a;
+    num b =  this.b;
+    num c =  this.c;
+    num d =  this.d;
+    num tx = this.tx;
+    num ty = this.ty;
 
-    _a =  (a * cosR - b * sinR).toDouble();
-    _b =  (a * sinR + b * cosR).toDouble();
-    _c =  (c * cosR - d * sinR).toDouble();
-    _d =  (c * sinR + d * cosR).toDouble();
-    _tx = (tx * cosR - ty * sinR).toDouble();
-    _ty = (tx * sinR + ty * cosR).toDouble();
+    _data[0] = a * cosR - b * sinR;
+    _data[1] = a * sinR + b * cosR;
+    _data[2] = c * cosR - d * sinR;
+    _data[3] = c * sinR + d * cosR;
+    _data[4] = tx * cosR - ty * sinR;
+    _data[5] = tx * sinR + ty * cosR;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -207,129 +199,117 @@ class Matrix {
     num sinY = sin(skewY);
     num cosY = cos(skewY);
 
-    num a =  _a;
-    num b =  _b;
-    num c =  _c;
-    num d =  _d;
-    num tx = _tx;
-    num ty = _ty;
+    num a =  this.a;
+    num b =  this.b;
+    num c =  this.c;
+    num d =  this.d;
+    num tx = this.tx;
+    num ty = this.ty;
 
-    _a =   (a * cosY - b * sinX).toDouble();
-    _b =   (a * sinY + b * cosX).toDouble();
-    _c =   (c * cosY - d * sinX).toDouble();
-    _d =   (c * sinY + d * cosX).toDouble();
-    _tx =  (tx * cosY - ty * sinX).toDouble();
-    _ty =  (tx * sinY + ty * cosX).toDouble();
-    _det = (_a * _d - _b * _c).toDouble();
+    _data[0] = a * cosY - b * sinX;
+    _data[1] = a * sinY + b * cosX;
+    _data[2] = c * cosY - d * sinX;
+    _data[3] = c * sinY + d * cosX;
+    _data[4] = tx * cosY - ty * sinX;
+    _data[5] = tx * sinY + ty * cosX;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void scale(num scaleX, num scaleY) {
-
-    _a   = (  _a * scaleX).toDouble();
-    _b   = (  _b * scaleY).toDouble();
-    _c   = (  _c * scaleX).toDouble();
-    _d   = (  _d * scaleY).toDouble();
-    _tx  = ( _tx * scaleX).toDouble();
-    _ty  = ( _ty * scaleY).toDouble();
-    _det = (_det * scaleX * scaleY).toDouble();
+    _data[0] = this.a * scaleX;
+    _data[1] = this.b * scaleY;
+    _data[2] = this.c * scaleX;
+    _data[3] = this.d * scaleY;
+    _data[4] = this.tx * scaleX;
+    _data[5] = this.ty * scaleY;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void translate(num translationX, num translationY) {
-
-    _tx = (_tx + translationX).toDouble();
-    _ty = (_ty + translationY).toDouble();
+    _data[4] = this.tx + translationX;
+    _data[5] = this.ty + translationY;
   }
 
   void prependTranslation(num translationX, num translationY) {
-
-    _tx =  (translationX * _a + translationY * _c + _tx).toDouble();
-    _ty =  (translationX * _b + translationY * _d + _ty).toDouble();
+    _data[4] = translationX * this.a + translationY * this.c + this.tx;
+    _data[5] = translationX * this.b + translationY * this.d + this.ty;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void setTo(num a, num b, num c, num d, num tx, num ty) {
-
-    _a =   a.toDouble();
-    _b =   b.toDouble();
-    _c =   c.toDouble();
-    _d =   d.toDouble();
-    _tx =  tx.toDouble();
-    _ty =  ty.toDouble();
-    _det = (_a * _d - _b * _c).toDouble();
+    _data[0] = a.toDouble();
+    _data[1] = b.toDouble();
+    _data[2] = c.toDouble();
+    _data[3] = d.toDouble();
+    _data[4] = tx.toDouble();
+    _data[5] = ty.toDouble();
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void copyFrom(Matrix matrix) {
-
-    _a =   matrix.a.toDouble();
-    _b =   matrix.b.toDouble();
-    _c =   matrix.c.toDouble();
-    _d =   matrix.d.toDouble();
-    _tx =  matrix.tx.toDouble();
-    _ty =  matrix.ty.toDouble();
-    _det = matrix.det.toDouble();
+    _data[0] = matrix.a;
+    _data[1] = matrix.b;
+    _data[2] = matrix.c;
+    _data[3] = matrix.d;
+    _data[4] = matrix.tx;
+    _data[5] = matrix.ty;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void copyFromAndConcat(Matrix copyMatrix, Matrix concatMatrix) {
 
-    num a1 =   copyMatrix.a;
-    num b1 =   copyMatrix.b;
-    num c1 =   copyMatrix.c;
-    num d1 =   copyMatrix.d;
-    num tx1 =  copyMatrix.tx;
-    num ty1 =  copyMatrix.ty;
-    num det1 = copyMatrix.det;
+    num a1 =  copyMatrix.a;
+    num b1 =  copyMatrix.b;
+    num c1 =  copyMatrix.c;
+    num d1 =  copyMatrix.d;
+    num tx1 = copyMatrix.tx;
+    num ty1 = copyMatrix.ty;
 
-    num a2 =   concatMatrix.a;
-    num b2 =   concatMatrix.b;
-    num c2 =   concatMatrix.c;
-    num d2 =   concatMatrix.d;
-    num tx2 =  concatMatrix.tx;
-    num ty2 =  concatMatrix.ty;
-    num det2 = concatMatrix.det;
+    num a2 =  concatMatrix.a;
+    num b2 =  concatMatrix.b;
+    num c2 =  concatMatrix.c;
+    num d2 =  concatMatrix.d;
+    num tx2 = concatMatrix.tx;
+    num ty2 = concatMatrix.ty;
 
-    _a =   (a1 * a2 + b1 * c2).toDouble();
-    _b =   (a1 * b2 + b1 * d2).toDouble();
-    _c =   (c1 * a2 + d1 * c2).toDouble();
-    _d =   (c1 * b2 + d1 * d2).toDouble();
-    _tx =  (tx1 * a2 + ty1 * c2 + tx2).toDouble();
-    _ty =  (tx1 * b2 + ty1 * d2 + ty2).toDouble();
-    _det = (det1 * det2).toDouble();
+    _data[0] = a1 * a2 + b1 * c2;
+    _data[1] = a1 * b2 + b1 * d2;
+    _data[2] = c1 * a2 + d1 * c2;
+    _data[3] = c1 * b2 + d1 * d2;
+    _data[4] = tx1 * a2 + ty1 * c2 + tx2;
+    _data[5] = tx1 * b2 + ty1 * d2 + ty2;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void invertAndConcat(Matrix concatMatrix) {
 
-    num a1 =    _d / _det;
-    num b1 =  - _b / _det;
-    num c1 =  - _c / _det;
-    num d1 =    _a / _det;
-    num tx1 = - a1 * _tx - c1 * _ty;
-    num ty1 = - b1 * _tx - d1 * _ty;
+    num det =   this.det;
+    num a1 =    this.d / det;
+    num b1 =  - this.b / det;
+    num c1 =  - this.c / det;
+    num d1 =    this.a / det;
+    num tx1 = - this.tx * a1 - this.ty * c1;
+    num ty1 = - this.tx * b1 - this.ty * d1;
 
-    num a2 =   concatMatrix.a;
-    num b2 =   concatMatrix.b;
-    num c2 =   concatMatrix.c;
-    num d2 =   concatMatrix.d;
-    num tx2 =  concatMatrix.tx;
-    num ty2 =  concatMatrix.ty;
+    num a2 =  concatMatrix.a;
+    num b2 =  concatMatrix.b;
+    num c2 =  concatMatrix.c;
+    num d2 =  concatMatrix.d;
+    num tx2 = concatMatrix.tx;
+    num ty2 = concatMatrix.ty;
 
-    _a =   (a1 * a2 + b1 * c2).toDouble();
-    _b =   (a1 * b2 + b1 * d2).toDouble();
-    _c =   (c1 * a2 + d1 * c2).toDouble();
-    _d =   (c1 * b2 + d1 * d2).toDouble();
-    _tx =  (tx1 * a2 + ty1 * c2 + tx2).toDouble();
-    _ty =  (tx1 * b2 + ty1 * d2 + ty2).toDouble();
-    _det = (_a * _d - _b * _c).toDouble();
+    _data[0] = a1 * a2 + b1 * c2;
+    _data[1] = a1 * b2 + b1 * d2;
+    _data[2] = c1 * a2 + d1 * c2;
+    _data[3] = c1 * b2 + d1 * d2;
+    _data[4] = tx1 * a2 + ty1 * c2 + tx2;
+    _data[5] = tx1 * b2 + ty1 * d2 + ty2;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -344,13 +324,12 @@ class Matrix {
     num ty =  matrix.ty;
     num det = matrix.det;
 
-    _a =    (d / det).toDouble();
-    _b =  - (b / det).toDouble();
-    _c =  - (c / det).toDouble();
-    _d =    (a / det).toDouble();
-    _tx = - (_a * tx + _c * ty).toDouble();
-    _ty = - (_b * tx + _d * ty).toDouble();
-    _det =  (1.0 / det).toDouble();
+    _data[0] =   d / det;
+    _data[1] = - b / det;
+    _data[2] = - c / det;
+    _data[3] =   a / det;
+    _data[4] = - tx * _data[0] - ty * _data[2];
+    _data[5] = - tx * _data[1] - ty * _data[3];
   }
 
 }
