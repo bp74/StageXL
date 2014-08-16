@@ -105,24 +105,16 @@ class RenderTextureQuad {
 
   Matrix get drawMatrix {
 
-    // var scale = _renderTexture.storePixelRatio;
-    // var matrix = new Matrix.fromIdentity();
-    // matrix.translate(-offsetX, -offsetY);
-    // matrix.rotate(_rotation * PI / 2.0);
-    // matrix.translate(textureX, textureY);
-    // matrix.scale(scale, scale);
-    // return matrix;
-
     num s = _renderTexture.storePixelRatio;
 
     if (rotation == 0) {
-      return new Matrix(s, 0.0, 0.0, s, s * (textureX - offsetX), s * (textureY - offsetY));
+      return new Matrix( s, 0.0, 0.0,  s, s * (textureX - offsetX), s * (textureY - offsetY));
     } else if (rotation == 1) {
-      return new Matrix(0.0, s, -s, 0.0, s * (textureX + offsetY), s * (textureY - offsetX));
+      return new Matrix(0.0,  s, -s, 0.0, s * (textureX + offsetY), s * (textureY - offsetX));
     } else if (rotation == 2) {
-      throw new StateError("Not implemented."); // TODO: Implement rotation
+      return new Matrix(-s, 0.0, 0.0, -s, s * (textureX + offsetX), s * (textureY + offsetY));
     } else if (rotation == 3) {
-      throw new StateError("Not implemented."); // TODO: Implement rotation
+      return new Matrix(0.0, -s,  s, 0.0, s * (textureX - offsetY), s * (textureY + offsetX));
     } else {
       throw new Error();
     }
@@ -139,27 +131,17 @@ class RenderTextureQuad {
 
   Matrix get bufferMatrix {
 
-    // var scaleWidth = 2.0 / _renderTexture.width;
-    // var scaleHeight = 2.0 / _renderTexture.height;
-    // var matrix = new Matrix.fromIdentity();
-    // matrix.translate(-offsetX, -offsetY);
-    // matrix.rotate(_rotation * PI / 2.0);
-    // matrix.translate(textureX, textureY);
-    // matrix.scale(scaleWidth, scaleHeight);
-    // matrix.translate(-1.0, -1.0);
-    // return matrix;
-
     num sx = 2.0 / _renderTexture.width;
     num sy = 2.0 / _renderTexture.height;
 
     if (rotation == 0) {
-      return new Matrix(sx, 0.0, 0.0, sy, sx * (textureX - offsetX) - 1.0, sy * (textureY - offsetY) - 1.0);
+      return new Matrix( sx, 0.0, 0.0,  sy, sx * (textureX - offsetX) - 1.0, sy * (textureY - offsetY) - 1.0);
     } else if (rotation == 1) {
-      return new Matrix(0.0, sy, -sx, 0.0, sx * (textureX + offsetY) - 1.0, sy * (textureY - offsetX) - 1.0);
+      return new Matrix(0.0,  sy, -sx, 0.0, sx * (textureX + offsetY) - 1.0, sy * (textureY - offsetX) - 1.0);
     } else if (rotation == 2) {
-      throw new StateError("Not implemented."); // TODO: Implement rotation
+      return new Matrix(-sx, 0.0, 0.0, -sy, sx * (textureX + offsetX) - 1.0, sy * (textureY + offsetY) - 1.0);
     } else if (rotation == 3) {
-      throw new StateError("Not implemented."); // TODO: Implement rotation
+      return new Matrix(0.0, -sy,  sx, 0.0, sx * (textureX - offsetY) - 1.0, sy * (textureY + offsetX) - 1.0);
     } else {
       throw new Error();
     }
@@ -180,13 +162,13 @@ class RenderTextureQuad {
     num sy = 1.0 / _renderTexture.height;
 
     if (rotation == 0) {
-      return new Matrix(sx, 0.0, 0.0, sy, sx * (textureX - offsetX), sy * (textureY - offsetY));
+      return new Matrix( sx, 0.0, 0.0,  sy, sx * (textureX - offsetX), sy * (textureY - offsetY));
     } else if (rotation == 1) {
-      return new Matrix(0.0, sy, -sx, 0.0, sx * (textureX + offsetY), sy * (textureY - offsetX));
+      return new Matrix(0.0,  sy, -sx, 0.0, sx * (textureX + offsetY), sy * (textureY - offsetX));
     } else if (rotation == 2) {
-      throw new StateError("Not implemented."); // TODO: Implement rotation
+      return new Matrix(-sx, 0.0, 0.0, -sy, sx * (textureX + offsetX), sy * (textureY + offsetY));
     } else if (rotation == 3) {
-      throw new StateError("Not implemented."); // TODO: Implement rotation
+      return new Matrix(0.0, -sy,  sx, 0.0, sx * (textureX - offsetY), sy * (textureY + offsetX));
     } else {
       throw new Error();
     }
@@ -214,9 +196,11 @@ class RenderTextureQuad {
       textureX = _textureX + _offsetY - top;
       textureY = _textureY - _offsetX + left;
     } else if (rotation == 2) {
-      throw new StateError("Not implemented."); // TODO: Implement rotation
+      textureX = _textureX + _offsetX - left;
+      textureY = _textureY + _offsetY - top;
     } else if (rotation == 3) {
-      throw new StateError("Not implemented."); // TODO: Implement rotation
+      textureX = _textureX - _offsetY + top;
+      textureY = _textureY + _offsetX - left;
     }
 
     int textureWidth = right - left;
