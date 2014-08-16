@@ -126,7 +126,7 @@ class RenderContextCanvas extends RenderContext {
       var sourceY = xyList[3];
       var sourceWidth = xyList[6] - sourceX;
       var sourceHeight = xyList[7] - sourceY;
-      var destinationX = 0.0;
+      var destinationX = renderTextureQuad.offsetY;
       var destinationY = 0.0 - renderTextureQuad.offsetX - renderTextureQuad.textureWidth;
       var destinationWidth = renderTextureQuad.textureHeight;
       var destinationHeight = renderTextureQuad.textureWidth;
