@@ -3,77 +3,14 @@ part of stagexl;
 class TextureAtlas {
 
   final List<TextureAtlasFrame> _frames = new List<TextureAtlasFrame>();
-  RenderTexture _renderTexture;
 
-  //-------------------------------------------------------------------------------------------------
+  static Future<TextureAtlas> load(String url, TextureAtlasFormat textureAtlasFormat, [
+    BitmapDataLoadOptions bitmapDataLoadOptions]) {
 
-  static Future<TextureAtlas> load(
-      String url, String textureAtlasFormat, [BitmapDataLoadOptions bitmapDataLoadOptions]) {
-
-    Completer<TextureAtlas> completer = new Completer<TextureAtlas>();
-    TextureAtlas textureAtlas = new TextureAtlas();
-
-    switch (textureAtlasFormat) {
-
-      case TextureAtlasFormat.JSON:
-      case TextureAtlasFormat.JSONARRAY:
-
-        HttpRequest.getString(url).then((textureAtlasJson) {
-
-          var data = JSON.decode(textureAtlasJson);
-          var frames = data["frames"];
-          var meta = data["meta"];
-          var imageUrl = _replaceFilename(url, meta["image"]);
-
-          if (frames is List) {
-            for (var frame in frames) {
-              var frameMap = frame as Map;
-              var fileName = frameMap["filename"] as String;
-              var frameName = _getFilenameWithoutExtension(fileName);
-              var taf = new TextureAtlasFrame.fromJson(textureAtlas, frameName, frameMap);
-              textureAtlas._frames.add(taf);
-            }
-          }
-
-          if (frames is Map) {
-            for(String fileName in frames.keys) {
-              var frameMap = frames[fileName] as Map;
-              var frameName = _getFilenameWithoutExtension(fileName);
-              var taf = new TextureAtlasFrame.fromJson(textureAtlas, frameName, frameMap);
-              textureAtlas._frames.add(taf);
-            }
-          }
-
-          if (bitmapDataLoadOptions == null) {
-            bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
-          }
-
-          var autoHiDpi = bitmapDataLoadOptions.autoHiDpi;
-          var webpAvailable = bitmapDataLoadOptions.webp;
-          var corsEnabled = bitmapDataLoadOptions.corsEnabled;
-          var loader = RenderTexture.load(imageUrl, autoHiDpi, webpAvailable, corsEnabled);
-
-          loader.then((RenderTexture renderTexture) {
-            textureAtlas._renderTexture = renderTexture;
-            completer.complete(textureAtlas);
-          }).catchError((error) {
-            completer.completeError(new StateError("Failed to load image."));
-          });
-
-        }).catchError((error) {
-          completer.completeError(new StateError("Failed to load json file."));
-        });
-
-        break;
-    }
-
-    return completer.future;
+    return textureAtlasFormat.load(url, bitmapDataLoadOptions);
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  RenderTexture get renderTexture => _renderTexture;
 
   List<TextureAtlasFrame> get frames => _frames.toList(growable: false);
   List<String> get frameNames => _frames.map((f) => f.name).toList(growable: false);

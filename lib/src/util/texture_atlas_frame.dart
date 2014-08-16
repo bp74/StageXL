@@ -2,59 +2,58 @@ part of stagexl;
 
 class TextureAtlasFrame {
 
-  final TextureAtlas _textureAtlas;
-  final String _name;
-  final bool _rotated;
+  final TextureAtlas textureAtlas;
+  final String name;
+  final int rotation;
 
-  final int _originalWidth;
-  final int _originalHeight;
-  final int _offsetX;
-  final int _offsetY;
+  final int originalWidth;
+  final int originalHeight;
+  final int offsetX;
+  final int offsetY;
 
-  final int _frameX;
-  final int _frameY;
-  final int _frameWidth;
-  final int _frameHeight;
+  final int frameX;
+  final int frameY;
+  final int frameWidth;
+  final int frameHeight;
 
-  TextureAtlasFrame.fromJson(TextureAtlas textureAtlas, String name, Map frame) :
-    _textureAtlas = textureAtlas,
-    _name = name,
-    _rotated = _ensureBool(frame["rotated"]),
-    _originalWidth = _ensureInt(frame["sourceSize"]["w"]),
-    _originalHeight = _ensureInt(frame["sourceSize"]["h"]),
-    _offsetX = _ensureInt(frame["spriteSourceSize"]["x"]),
-    _offsetY = _ensureInt(frame["spriteSourceSize"]["y"]),
-    _frameX = _ensureInt(frame["frame"]["x"]),
-    _frameY = _ensureInt(frame["frame"]["y"]),
-    _frameWidth = _ensureInt(frame["frame"]["w"]),
-    _frameHeight = _ensureInt(frame["frame"]["h"]);
+  RenderTexture renderTexture = null;
 
-  //-------------------------------------------------------------------------------------------------
+  TextureAtlasFrame(this.textureAtlas, this.name, this.rotation,
+      this.originalWidth, this.originalHeight, this.offsetX, this.offsetY,
+      this.frameX, this.frameY, this.frameWidth, this.frameHeight);
 
-  TextureAtlas get textureAtlas => _textureAtlas;
-  String get name => _name;
-  bool get rotated => _rotated;
-
-  int get frameX => _frameX;
-  int get frameY => _frameY;
-  int get frameWidth => _frameWidth;
-  int get frameHeight => _frameHeight;
-
-  int get offsetX => _offsetX;
-  int get offsetY => _offsetY;
-  int get originalWidth => _originalWidth;
-  int get originalHeight => _originalHeight;
+  TextureAtlasFrame._fromJson(this.textureAtlas, this.name, Map frame) :
+    rotation = _ensureBool(frame["rotated"]) ? 1 : 0,
+    originalWidth = _ensureInt(frame["sourceSize"]["w"]),
+    originalHeight = _ensureInt(frame["sourceSize"]["h"]),
+    offsetX = _ensureInt(frame["spriteSourceSize"]["x"]),
+    offsetY = _ensureInt(frame["spriteSourceSize"]["y"]),
+    frameX = _ensureInt(frame["frame"]["x"]),
+    frameY = _ensureInt(frame["frame"]["y"]),
+    frameWidth = _ensureInt(frame["frame"]["w"]),
+    frameHeight = _ensureInt(frame["frame"]["h"]);
 
   //-------------------------------------------------------------------------------------------------
 
   BitmapData getBitmapData() {
 
-    var renderTexture = _textureAtlas.renderTexture;
-    var renderTextureQuad = new RenderTextureQuad(renderTexture,
-        _rotated ? 1 : 0, _offsetX, _offsetY,
-        _rotated ? _frameX + _frameHeight : _frameX, _frameY, _frameWidth, _frameHeight);
+    var renderTextureQuad = renderTexture.quad;
 
-    return new BitmapData.fromRenderTextureQuad(renderTextureQuad, _originalWidth, _originalHeight);
+    if (rotation == 0) {
+      renderTextureQuad = new RenderTextureQuad(renderTexture,
+          0, offsetX, offsetY, frameX, frameY, frameWidth, frameHeight);
+    } else if (rotation == 1) {
+      renderTextureQuad = new RenderTextureQuad(renderTexture,
+          1, offsetX, offsetY, frameX + frameHeight, frameY, frameWidth, frameHeight);
+    } else if (rotation == 2) {
+      renderTextureQuad = new RenderTextureQuad(renderTexture,
+          2, offsetX, offsetY, frameX + frameWidth, frameY + frameHeight, frameWidth, frameHeight);
+    } else if (rotation == 3) {
+      renderTextureQuad = new RenderTextureQuad(renderTexture,
+          3, offsetX, offsetY, frameX, frameY + frameWidth, frameWidth, frameHeight);
+    }
+
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad, originalWidth, originalHeight);
   }
 
 }

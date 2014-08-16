@@ -105,7 +105,7 @@ class ResourceManager extends EventDispatcher {
     _addResource("SoundSprite", name, url, SoundSprite.load(url));
   }
 
-  void addTextureAtlas(String name, String url, String textureAtlasFormat) {
+  void addTextureAtlas(String name, String url, TextureAtlasFormat textureAtlasFormat) {
     _addResource("TextureAtlas", name, url, TextureAtlas.load(url, textureAtlasFormat));
   }
 
