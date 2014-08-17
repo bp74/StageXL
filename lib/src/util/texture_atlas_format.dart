@@ -36,7 +36,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
           var fileName = frameMap["filename"] as String;
           var frameName = _getFilenameWithoutExtension(fileName);
           var taf = new TextureAtlasFrame._fromJson(textureAtlas, frameName, frameMap);
-          textureAtlas._frames.add(taf);
+          textureAtlas.frames.add(taf);
         }
       }
 
@@ -45,7 +45,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
           var frameMap = frames[fileName] as Map;
           var frameName = _getFilenameWithoutExtension(fileName);
           var taf = new TextureAtlasFrame._fromJson(textureAtlas, frameName, frameMap);
-          textureAtlas._frames.add(taf);
+          textureAtlas.frames.add(taf);
         }
       }
 
@@ -182,7 +182,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
         renderTextures.forEach((imageName, Future<RenderTexture> future) {
           future.then((renderTexture) => textureAtlasFrames[imageName].forEach((frame) {
             frame.renderTexture = renderTexture;
-            textureAtlas._frames.add(frame);
+            textureAtlas.frames.add(frame);
           }));
         });
         completer.complete(textureAtlas);
