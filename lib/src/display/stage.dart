@@ -727,7 +727,7 @@ class Stage extends DisplayObjectContainer {
 
   //-------------------------------------------------------------------------------------------------
 
-  _onTouchEventProcessor(String eventType, int identifier, Point client,
+  _onTouchEventProcessor(String eventType, int identifier, math.Point client,
                          bool altKey, bool ctrlKey, bool shiftKey) {
 
     var stagePoint = _clientTransformation.transformPoint(client);
