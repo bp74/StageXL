@@ -49,7 +49,7 @@ class Polygon {
     for(int i = 0; i < length; i++) {
 
       Point<num> a1 = points[i];
-      Point<num> a2 = points[(i == length - 1) ? 0 : i];
+      Point<num> a2 = points[i + 1 < length ? i + 1 : 0];
 
       for(int j = 0; j < length; j++) {
 
@@ -58,7 +58,7 @@ class Polygon {
         if (i == length - 1 && j == 0) continue;
 
         Point<num> b1 = points[j];
-        Point<num> b2 = points[(j == length - 1) ? 0 : j];
+        Point<num> b2 = points[j + 1 < length ? j + 1 : 0];
 
         if(_getLineIntersection(a1, a2, b1, b2) != null) return false;
       }
@@ -195,12 +195,14 @@ class Polygon {
 
   bool _inRect(Point<num> point, Point<num> a1, Point<num> a2) {
 
-    if  (a1.x == a2.x) return point.y >= min(a1.y, a2.y) && point.y <= max(a1.y, a2.y);
-    if  (a1.y == a2.y) return point.x >= min(a1.x, a2.x) && point.x <= max(a1.x, a2.x);
+    num x = point.x;
+    num y = point.y;
+    num left   = a1.x < a2.x ? a1.x : a2.x;
+    num top    = a1.y < a2.y ? a1.y : a2.y;
+    num right  = a1.x > a2.x ? a1.x : a2.x;
+    num bottom = a1.y > a2.y ? a1.y : a2.y;
 
-    return
-        point.x >= min(a1.x, a2.x) && point.x <= max(a1.x, a2.x) &&
-        point.y >= min(a1.y, a2.y) && point.y <= max(a1.y, a2.y);
+    return x >= left && x <= right && y >= top && y <= bottom;
   }
 
   //-----------------------------------------------------------------------------------------------
