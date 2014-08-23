@@ -6,8 +6,10 @@ class RenderContextWebGL extends RenderContext {
 
   final CanvasElement _canvasElement;
 
-  final RenderProgramQuad _renderProgramQuad = new RenderProgramQuad();
-  final RenderProgramTriangle _renderProgramTriangle = new RenderProgramTriangle();
+  final RenderProgramQuad renderProgramQuad = new RenderProgramQuad();
+  final RenderProgramTriangle renderProgramTriangle = new RenderProgramTriangle();
+  final RenderProgramMesh renderProgramMesh = new RenderProgramMesh();
+
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
 
   gl.RenderingContext _renderingContext = null;
@@ -46,7 +48,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
     _renderingContext.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-    _activeRenderProgram = _renderProgramQuad;
+    _activeRenderProgram = renderProgramQuad;
     _activeRenderProgram.activate(this);
 
     _contextValid = true;
@@ -103,10 +105,10 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
-    activateRenderProgram(_renderProgramQuad);
+    activateRenderProgram(renderProgramQuad);
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(renderTextureQuad.renderTexture);
-    _renderProgramQuad.renderQuad(renderState, renderTextureQuad);
+    renderProgramQuad.renderQuad(renderState, renderTextureQuad);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -114,9 +116,9 @@ class RenderContextWebGL extends RenderContext {
   void renderTriangle(RenderState renderState,
                       num x1, num y1, num x2, num y2, num x3, num y3, int color) {
 
-    activateRenderProgram(_renderProgramTriangle);
+    activateRenderProgram(renderProgramTriangle);
     activateBlendMode(renderState.globalBlendMode);
-    _renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
+    renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -129,7 +131,7 @@ class RenderContextWebGL extends RenderContext {
     int stencilDepth = _getStencilDepth() + 1;
     _updateStencilDepth(stencilDepth);
 
-    activateRenderProgram(_renderProgramTriangle);
+    activateRenderProgram(renderProgramTriangle);
     _renderingContext.stencilFunc(gl.EQUAL, stencilDepth - 1, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
     _renderingContext.stencilMask(0xFF);
@@ -161,7 +163,7 @@ class RenderContextWebGL extends RenderContext {
 
     } else {
 
-      activateRenderProgram(_renderProgramTriangle);
+      activateRenderProgram(renderProgramTriangle);
 
       _renderingContext.stencilFunc(gl.EQUAL, stencilDepth + 1, 0xFF);
       _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);

@@ -71,6 +71,7 @@ part 'src/engine/render_context_webgl.dart';
 part 'src/engine/render_frame_buffer.dart';
 part 'src/engine/render_loop.dart';
 part 'src/engine/render_program.dart';
+part 'src/engine/render_program_mesh.dart';
 part 'src/engine/render_program_quad.dart';
 part 'src/engine/render_program_triangle.dart';
 part 'src/engine/render_state.dart';
