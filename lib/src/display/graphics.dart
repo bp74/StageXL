@@ -282,18 +282,16 @@ class Graphics {
   void render(RenderState renderState) {
 
     var renderContext = renderState.renderContext;
-    var matrix = renderState.globalMatrix;
-    var alpha = renderState.globalAlpha;
-
     if (renderContext is RenderContextCanvas) {
 
-      var context = renderContext.rawContext;
-      context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-      context.globalAlpha = alpha;
-      context.beginPath();
+      renderContext.setTransform(renderState.globalMatrix);
+      renderContext.setAlpha(renderState.globalAlpha);
+
+      var rawContext = renderContext.rawContext;
+      rawContext.beginPath();
 
       for(int i = 0; i < _commands.length; i++) {
-        _commands[i].render(context);
+        _commands[i].render(rawContext);
       }
 
     } else {

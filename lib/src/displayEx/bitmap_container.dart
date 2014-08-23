@@ -60,15 +60,11 @@ class BitmapContainer extends DisplayObjectContainer {
 
   void _renderCanvas(RenderState renderState) {
 
-    var globalMatrix = renderState.globalMatrix;
-    var globalAlpha = renderState.globalAlpha;
     var renderContext = renderState.renderContext;
     var renderContextCanvas = renderContext as RenderContextCanvas;
-    var rawContext = renderContextCanvas.rawContext;
-    var matrix = globalMatrix;
 
-    rawContext.globalAlpha = renderState.globalAlpha;
-    rawContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    renderContextCanvas.setTransform(renderState.globalMatrix);
+    renderContextCanvas.setAlpha(renderState.globalAlpha);
 
     // TODO: implement optimized BitmapBatch render code for canvas.
 

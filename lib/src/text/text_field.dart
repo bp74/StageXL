@@ -237,10 +237,8 @@ class TextField extends InteractiveObject {
       renderState.renderQuad(_renderTexture.quad);
     } else {
       var renderContextCanvas = renderState.renderContext as RenderContextCanvas;
-      var context = renderContextCanvas.rawContext;
-      var matrix = renderState.globalMatrix;
-      context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-      context.globalAlpha = renderState.globalAlpha;
+      renderContextCanvas.setTransform(renderState.globalMatrix);
+      renderContextCanvas.setAlpha(renderState.globalAlpha);
       _renderText(renderContextCanvas.rawContext);
     }
 
