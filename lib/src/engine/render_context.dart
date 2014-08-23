@@ -14,7 +14,8 @@ abstract class RenderContext extends EventDispatcher {
   EventStream<Event> get onContextRestored => RenderContext.contextRestoredEvent.forTarget(this);
 
   String get renderEngine;
-  Matrix get viewPortMatrix;
+
+  Matrix3D get projectionMatrix;
 
   void reset();
   void clear(int color);

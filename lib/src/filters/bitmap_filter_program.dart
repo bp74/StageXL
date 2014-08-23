@@ -6,12 +6,13 @@ abstract class _BitmapFilterProgram extends RenderProgram {
       attribute vec2 aVertexPosition;
       attribute vec2 aVertexTextCoord;
       attribute float aVertexAlpha;
+      uniform mat4 uProjectionMatrix;
       varying vec2 vTextCoord;
       varying float vAlpha;
       void main() {
         vTextCoord = aVertexTextCoord;
         vAlpha = aVertexAlpha;
-        gl_Position = vec4(aVertexPosition, 0.0, 1.0);
+        gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
       }
       """;
 
@@ -30,11 +31,20 @@ abstract class _BitmapFilterProgram extends RenderProgram {
   gl.Program _program;
   gl.Buffer _vertexBuffer;
 
+  gl.UniformLocation _uProjectionMatrixLocation;
+
   StreamSubscription _contextRestoredSubscription;
 
   final Float32List _vertexList = new Float32List(4 * 5);
   final Map<String, gl.UniformLocation> _uniformLocations = new Map<String, gl.UniformLocation>();
   final Map<String, int> _attribLocations = new Map<String, int>();
+
+  //-----------------------------------------------------------------------------------------------
+
+  void set projectionMatrix(Matrix3D matrix) {
+    gl.UniformLocation uProjectionMatrixLocation = _uniformLocations["uProjectionMatrix"];
+    _renderingContext.uniformMatrix4fv(uProjectionMatrixLocation, false, matrix.data);
+  }
 
   //-----------------------------------------------------------------------------------------------
 

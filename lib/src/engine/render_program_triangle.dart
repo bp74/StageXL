@@ -5,11 +5,12 @@ class RenderProgramTriangle extends RenderProgram {
   var _vertexShaderSource = """
       attribute vec2 aVertexPosition;
       attribute vec4 aVertexColor;
+      uniform mat4 uProjectionMatrix;
       varying vec4 vColor;
 
       void main() {
         vColor = aVertexColor;
-        gl_Position = vec4(aVertexPosition, 0.0, 1.0); 
+        gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
       }
       """;
 
@@ -36,9 +37,17 @@ class RenderProgramTriangle extends RenderProgram {
 
   Float32List _vertexList = new Float32List(_maxTriangleCount * 3 * 6);
 
+  gl.UniformLocation _uProjectionMatrixLocation;
+
   int _aVertexPositionLocation = 0;
   int _aVertexColorLocation = 0;
   int _triangleCount = 0;
+
+  //-----------------------------------------------------------------------------------------------
+
+  void set projectionMatrix(Matrix3D matrix) {
+    _renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
+  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -53,6 +62,8 @@ class RenderProgramTriangle extends RenderProgram {
 
       _aVertexPositionLocation = _renderingContext.getAttribLocation(_program, "aVertexPosition");
       _aVertexColorLocation = _renderingContext.getAttribLocation(_program, "aVertexColor");
+
+      _uProjectionMatrixLocation = _renderingContext.getUniformLocation(_program, "uProjectionMatrix");
 
       _renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
       _renderingContext.enableVertexAttribArray(_aVertexColorLocation);

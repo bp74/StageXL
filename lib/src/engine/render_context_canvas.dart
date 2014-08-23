@@ -5,6 +5,8 @@ class RenderContextCanvas extends RenderContext {
   final CanvasElement _canvasElement;
 
   CanvasRenderingContext2D _renderingContext;
+  Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
+
   BlendMode _activeBlendMode = BlendMode.NORMAL;
   double _activeAlpha = 1.0;
 
@@ -22,22 +24,23 @@ class RenderContextCanvas extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   CanvasRenderingContext2D get rawContext => _renderingContext;
-
+  Matrix3D get projectionMatrix => _projectionMatrix;
   String get renderEngine => RenderEngine.Canvas2D;
-  Matrix get viewPortMatrix => new Matrix.fromIdentity();
 
   //-----------------------------------------------------------------------------------------------
 
   void reset() {
-    _activeBlendMode = BlendMode.NORMAL;
-    _activeAlpha = 1.0;
-    _renderingContext.globalCompositeOperation = "source-over";
-    _renderingContext.globalAlpha = 1.0;
+    setTransform(_identityMatrix);
+    setBlendMode(BlendMode.NORMAL);
+    setAlpha(1.0);
   }
 
   void clear(int color) {
-    _renderingContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    _renderingContext.globalAlpha = 1.0;
+
+    setTransform(_identityMatrix);
+    setBlendMode(BlendMode.NORMAL);
+    setAlpha(1.0);
+
     if (color & 0xFF000000 == 0) {
       _renderingContext.clearRect(0, 0, _canvasElement.width, _canvasElement.height);
     } else {
@@ -186,6 +189,22 @@ class RenderContextCanvas extends RenderContext {
       _renderingContext.lineJoin = "round";
       _renderingContext.stroke();
     }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void setTransform(Matrix matrix) {
+    _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+  }
+
+  void setAlpha(num alpha) {
+    _activeAlpha = alpha;
+    _renderingContext.globalAlpha = alpha;
+  }
+
+  void setBlendMode(BlendMode blendMode) {
+    _activeBlendMode = blendMode;
+    _renderingContext.globalCompositeOperation = blendMode.compositeOperation;
   }
 
 }

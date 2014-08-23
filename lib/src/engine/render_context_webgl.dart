@@ -13,6 +13,7 @@ class RenderContextWebGL extends RenderContext {
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
 
   gl.RenderingContext _renderingContext = null;
+  Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
 
   RenderTexture _activeRenderTexture = null;
   RenderProgram _activeRenderProgram = null;
@@ -60,7 +61,7 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   gl.RenderingContext get rawContext => _renderingContext;
-
+  Matrix3D get projectionMatrix => _projectionMatrix;
   String get renderEngine => RenderEngine.WebGL;
 
   RenderTexture get activeRenderTexture => _activeRenderTexture;
@@ -71,21 +72,26 @@ class RenderContextWebGL extends RenderContext {
   bool get contextValid => _contextValid;
   int get contextIdentifier => _contextIdentifier;
 
-  Matrix get viewPortMatrix {
-    return new Matrix(2.0 / _viewportWidth, 0.0, 0.0, - 2.0 / _viewportHeight, -1.0, 1.0);
-  }
-
   //-----------------------------------------------------------------------------------------------
 
   void reset() {
+
     _viewportWidth = _canvasElement.width;
     _viewportHeight = _canvasElement.height;
+
+    _activeRenderFrameBuffer = null;
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, _viewportWidth, _viewportHeight);
-    _activeRenderFrameBuffer = null;
+
+    _projectionMatrix.identity();
+    _projectionMatrix.scale(2.0 / _viewportWidth, - 2.0 / _viewportHeight, 1.0);
+    _projectionMatrix.translate(-1.0, 1.0, 0.0);
+
+    _activeRenderProgram.projectionMatrix = _projectionMatrix;
   }
 
   void clear(int color) {
+
     num r = _colorGetR(color) / 255.0;
     num g = _colorGetG(color) / 255.0;
     num b = _colorGetB(color) / 255.0;
@@ -98,6 +104,7 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void flush() {
+
     _activeRenderProgram.flush();
   }
 
@@ -232,6 +239,7 @@ class RenderContextWebGL extends RenderContext {
       _activeRenderProgram.flush();
       _activeRenderProgram = renderProgram;
       _activeRenderProgram.activate(this);
+      _activeRenderProgram.projectionMatrix = _projectionMatrix;
     }
   }
 

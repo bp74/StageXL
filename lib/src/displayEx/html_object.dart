@@ -80,13 +80,11 @@ class HtmlObject extends DisplayObject {
 
   void render(RenderState renderState) {
 
-    var viewPortMatrix = renderState.renderContext.viewPortMatrix;
     var globalMatrix = renderState.globalMatrix;
     var globalAlpha = renderState.globalAlpha;
     var visibility = this.visible && this.off == false;
 
     _tmpMatrix.copyFrom(globalMatrix);
-    _tmpMatrix.concat(viewPortMatrix.cloneInvert());
 
     var mxa = _tmpMatrix.a.toStringAsFixed(4);
     var mxb = _tmpMatrix.b.toStringAsFixed(4);

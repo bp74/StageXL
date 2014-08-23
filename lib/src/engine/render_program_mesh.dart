@@ -6,14 +6,15 @@ class RenderProgramMesh extends RenderProgram {
       attribute vec2 aVertexPosition;
       attribute vec2 aVertexTextCoord;
       attribute vec4 aVertexColor;
-      uniform mat3 uGlobalMatrix;
+      uniform mat4 uProjectionMatrix;
+      uniform mat4 uGlobalMatrix;
       varying vec2 vTextCoord;
       varying vec4 vColor; 
 
       void main() {
         vTextCoord = aVertexTextCoord;
         vColor = aVertexColor;
-        gl_Position = vec4(aVertexPosition, 1.0, 1.0) * mat4(uGlobalMatrix);
+        gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uGlobalMatrix * uProjectionMatrix;
       }
       """;
 
@@ -44,6 +45,7 @@ class RenderProgramMesh extends RenderProgram {
   Int16List _indexList = new Int16List(2048);
   Float32List _vertexList = new Float32List(8192);
 
+  gl.UniformLocation _uProjectionMatrixLocation;
   gl.UniformLocation _uGlobalMatrixLocation;
   gl.UniformLocation _uSamplerLocation;
 
@@ -52,6 +54,19 @@ class RenderProgramMesh extends RenderProgram {
   int _aVertexColorLocation = 0;
   int _vertexCount = 0;
   int _indexCount = 0;
+
+  Matrix3D _globalMatrix = new Matrix3D.fromIdentity();
+
+  //-----------------------------------------------------------------------------------------------
+
+  void set projectionMatrix(Matrix3D matrix) {
+    _renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
+  }
+
+  void set globalMatrix(Matrix globalMatrix) {
+    _globalMatrix.copyFromMatrix2D(globalMatrix);
+    _renderingContext.uniformMatrix4fv(_uGlobalMatrixLocation, false, _globalMatrix.data);
+  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -69,8 +84,9 @@ class RenderProgramMesh extends RenderProgram {
       _aVertexTextCoordLocation = _renderingContext.getAttribLocation(_program, "aVertexTextCoord");
       _aVertexColorLocation = _renderingContext.getAttribLocation(_program, "aVertexColor");
 
-      _uSamplerLocation = _renderingContext.getUniformLocation(_program, "uSampler");
+      _uProjectionMatrixLocation = _renderingContext.getUniformLocation(_program, "uProjectionMatrix");
       _uGlobalMatrixLocation = _renderingContext.getUniformLocation(_program, "uGlobalMatrix");
+      _uSamplerLocation = _renderingContext.getUniformLocation(_program, "uSampler");
 
       _renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
       _renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
@@ -89,18 +105,6 @@ class RenderProgramMesh extends RenderProgram {
     _renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 32, 0);
     _renderingContext.vertexAttribPointer(_aVertexTextCoordLocation, 2, gl.FLOAT, false, 32, 8);
     _renderingContext.vertexAttribPointer(_aVertexColorLocation, 4, gl.FLOAT, false, 32, 16);
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  void configure(Matrix globalMatrix) {
-
-    Float32List uGlobalMatrix = new Float32List.fromList([
-        globalMatrix.a, globalMatrix.c, globalMatrix.tx,
-        globalMatrix.b, globalMatrix.d, globalMatrix.ty,
-        0.0, 0.0, 1.0]);
-
-    _renderingContext.uniformMatrix3fv(_uGlobalMatrixLocation, false, uGlobalMatrix);
     _renderingContext.uniform1i(_uSamplerLocation, 0);
   }
 

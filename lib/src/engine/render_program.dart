@@ -5,6 +5,8 @@ abstract class RenderProgram {
   void activate(RenderContextWebGL renderContext);
   void flush();
 
+  void set projectionMatrix(Matrix3D matrix);
+
   //-----------------------------------------------------------------------------------------------
 
   gl.Shader _createShader(gl.RenderingContext renderingContext, String source, int shaderType) {

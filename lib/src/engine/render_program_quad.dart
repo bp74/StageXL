@@ -6,13 +6,14 @@ class RenderProgramQuad extends RenderProgram {
       attribute vec2 aVertexPosition;
       attribute vec2 aVertexTextCoord;
       attribute float aVertexAlpha;
+      uniform mat4 uProjectionMatrix;
       varying vec2 vTextCoord;
       varying float vAlpha;
 
       void main() {
         vTextCoord = aVertexTextCoord;
         vAlpha = aVertexAlpha;
-        gl_Position = vec4(aVertexPosition, 0.0, 1.0); 
+        gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
       }
       """;
 
@@ -44,6 +45,9 @@ class RenderProgramQuad extends RenderProgram {
   Int16List _indexList = new Int16List(_maxQuadCount * 6);
   Float32List _vertexList = new Float32List(_maxQuadCount * 4 * 5);
 
+  gl.UniformLocation _uProjectionMatrixLocation;
+  gl.UniformLocation _uSamplerLocation;
+
   int _aVertexPositionLocation = 0;
   int _aVertexTextCoordLocation = 0;
   int _aVertexAlphaLocation = 0;
@@ -62,6 +66,12 @@ class RenderProgramQuad extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
+  void set projectionMatrix(Matrix3D matrix) {
+    _renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
   void activate(RenderContextWebGL renderContext) {
 
     if (_contextIdentifier != renderContext.contextIdentifier) {
@@ -75,6 +85,9 @@ class RenderProgramQuad extends RenderProgram {
       _aVertexPositionLocation = _renderingContext.getAttribLocation(_program, "aVertexPosition");
       _aVertexTextCoordLocation = _renderingContext.getAttribLocation(_program, "aVertexTextCoord");
       _aVertexAlphaLocation = _renderingContext.getAttribLocation(_program, "aVertexAlpha");
+
+      _uProjectionMatrixLocation = _renderingContext.getUniformLocation(_program, "uProjectionMatrix");
+      _uSamplerLocation = _renderingContext.getUniformLocation(_program, "uSampler");
 
       _renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
       _renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
@@ -93,6 +106,7 @@ class RenderProgramQuad extends RenderProgram {
     _renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 20, 0);
     _renderingContext.vertexAttribPointer(_aVertexTextCoordLocation, 2, gl.FLOAT, false, 20, 8);
     _renderingContext.vertexAttribPointer(_aVertexAlphaLocation, 1, gl.FLOAT, false, 20, 16);
+    _renderingContext.uniform1i(_uSamplerLocation, 0);
   }
 
   //-----------------------------------------------------------------------------------------------

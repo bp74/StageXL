@@ -9,6 +9,7 @@ class _BitmapContainerProgram extends RenderProgram {
       attribute vec2 aSkew;
       attribute vec2 aTextCoord;
       attribute float aAlpha;
+      uniform mat4 uProjectionMatrix;
       uniform mat3 uGlobalMatrix;
       uniform float uGlobalAlpha;
       varying vec2 vTextCoord;
@@ -22,8 +23,8 @@ class _BitmapContainerProgram extends RenderProgram {
              offsetScaled.x * cos(skewY) - offsetScaled.y * sin(skewX), 
              offsetScaled.x * sin(skewY) + offsetScaled.y * cos(skewX));
 
-        vec3 position = vec3(aPosition + offsetSkewed, 1.0) * uGlobalMatrix;
-        gl_Position = vec4(position.xy, 0.0, 1.0);
+        vec3 position = vec3(aPosition + offsetSkewed, 1.0);
+        gl_Position = vec4(position.xy, 0.0, 1.0) * mat4(uGlobalMatrix) * uProjectionMatrix;
         vTextCoord = aTextCoord;
         vAlpha = aAlpha * uGlobalAlpha;
       }
@@ -57,6 +58,8 @@ class _BitmapContainerProgram extends RenderProgram {
   gl.Program _program = null;
   gl.Buffer _vertexBuffer = null;
   gl.Buffer _indexBuffer = null;
+
+  gl.UniformLocation _uProjectionMatrixLocation = null;
   gl.UniformLocation _uGlobalMatrix = null;
   gl.UniformLocation _uGlobalAlpha = null;
 
@@ -82,6 +85,12 @@ class _BitmapContainerProgram extends RenderProgram {
     }
   }
 
+//-----------------------------------------------------------------------------------------------
+
+  void set projectionMatrix(Matrix3D matrix) {
+    _renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
+  }
+
   //-----------------------------------------------------------------------------------------------
 
   void activate(RenderContextWebGL renderContext) {
@@ -101,6 +110,7 @@ class _BitmapContainerProgram extends RenderProgram {
       _aTextCoordLocation = _renderingContext.getAttribLocation(_program, "aTextCoord");
       _aAlphaLocation = _renderingContext.getAttribLocation(_program, "aAlpha");
 
+      _uProjectionMatrixLocation = _renderingContext.getUniformLocation(_program, "uProjectionMatrix");
       _uGlobalMatrix = _renderingContext.getUniformLocation(_program, "uGlobalMatrix");
       _uGlobalAlpha = _renderingContext.getUniformLocation(_program, "uGlobalAlpha");
 

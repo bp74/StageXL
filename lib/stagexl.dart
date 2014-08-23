@@ -102,6 +102,7 @@ part 'src/filters/glow_filter.dart';
 
 part 'src/geom/circle.dart';
 part 'src/geom/matrix.dart';
+part 'src/geom/matrix_3d.dart';
 part 'src/geom/point.dart';
 part 'src/geom/polygon.dart';
 part 'src/geom/rectangle.dart';
