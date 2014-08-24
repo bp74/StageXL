@@ -5,7 +5,6 @@ class RenderContextCanvas extends RenderContext {
   final CanvasElement _canvasElement;
 
   CanvasRenderingContext2D _renderingContext;
-  Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
 
   BlendMode _activeBlendMode = BlendMode.NORMAL;
   double _activeAlpha = 1.0;
@@ -24,7 +23,6 @@ class RenderContextCanvas extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   CanvasRenderingContext2D get rawContext => _renderingContext;
-  Matrix3D get projectionMatrix => _projectionMatrix;
   String get renderEngine => RenderEngine.Canvas2D;
 
   //-----------------------------------------------------------------------------------------------

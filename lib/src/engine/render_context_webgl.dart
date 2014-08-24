@@ -61,12 +61,12 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   gl.RenderingContext get rawContext => _renderingContext;
-  Matrix3D get projectionMatrix => _projectionMatrix;
   String get renderEngine => RenderEngine.WebGL;
 
   RenderTexture get activeRenderTexture => _activeRenderTexture;
   RenderProgram get activeRenderProgram => _activeRenderProgram;
   RenderFrameBuffer get activeRenderFrameBuffer => _activeRenderFrameBuffer;
+  Matrix3D get activeProjectionMatrix => _projectionMatrix;
   BlendMode get activeBlendMode => _activeBlendMode;
 
   bool get contextValid => _contextValid;
@@ -83,9 +83,29 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, _viewportWidth, _viewportHeight);
 
-    _projectionMatrix.identity();
+    _projectionMatrix.setIdentity();
     _projectionMatrix.scale(2.0 / _viewportWidth, - 2.0 / _viewportHeight, 1.0);
     _projectionMatrix.translate(-1.0, 1.0, 0.0);
+
+    /*
+    num width = _viewportWidth;
+    num height = _viewportHeight;
+    num dist = _viewportWidth + _viewportHeight;
+    num near = 100;
+    num far = 10000;
+
+    var perspectiveMatrix = new Matrix3D.fromIdentity();
+    perspectiveMatrix.data[00] = 2.0 * dist / width;
+    perspectiveMatrix.data[05] = 2.0 * dist / height;
+    perspectiveMatrix.data[10] = far / (far - near);
+    perspectiveMatrix.data[11] = near * far / (near - far);
+    perspectiveMatrix.data[14] = 1.0;
+
+    _projectionMatrix.setIdentity();
+    _projectionMatrix.translate(-width / 2.0, -height / 2.0, dist);
+    _projectionMatrix.scale(1.0, -1.0, 1.0);
+    _projectionMatrix.concat(perspectiveMatrix);
+    */
 
     _activeRenderProgram.projectionMatrix = _projectionMatrix;
   }
@@ -257,6 +277,12 @@ class RenderContextWebGL extends RenderContext {
       _activeRenderTexture = renderTexture;
       _activeRenderTexture.activate(this, gl.TEXTURE0);
     }
+  }
+
+  void activateProjectionMatrix(Matrix3D matrix) {
+    _projectionMatrix.copyFromMatrix3D(matrix);
+    _activeRenderProgram.flush();
+    _activeRenderProgram.projectionMatrix = _projectionMatrix;
   }
 
   //-----------------------------------------------------------------------------------------------

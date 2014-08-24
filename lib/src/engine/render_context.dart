@@ -15,8 +15,6 @@ abstract class RenderContext extends EventDispatcher {
 
   String get renderEngine;
 
-  Matrix3D get projectionMatrix;
-
   void reset();
   void clear(int color);
   void flush();
