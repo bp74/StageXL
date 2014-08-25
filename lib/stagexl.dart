@@ -33,6 +33,7 @@ part 'src/animation/tween.dart';
 part 'src/display/bitmap.dart';
 part 'src/display/bitmap_data.dart';
 part 'src/display/bitmap_data_channel.dart';
+part 'src/display/bitmap_data_update_batch.dart';
 part 'src/display/bitmap_data_load_options.dart';
 part 'src/display/bitmap_drawable.dart';
 part 'src/display/blend_mode.dart';
