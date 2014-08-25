@@ -75,66 +75,13 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
-  void concat(Matrix matrix) {
-
-    num a1 =  this.a;
-    num b1 =  this.b;
-    num c1 =  this.c;
-    num d1 =  this.d;
-    num tx1 = this.tx;
-    num ty1 = this.ty;
-
-    num a2 =  matrix.a;
-    num b2 =  matrix.b;
-    num c2 =  matrix.c;
-    num d2 =  matrix.d;
-    num tx2 = matrix.tx;
-    num ty2 = matrix.ty;
-
-    _data[0] = a1 * a2 + b1 * c2;
-    _data[1] = a1 * b2 + b1 * d2;
-    _data[2] = c1 * a2 + d1 * c2;
-    _data[3] = c1 * b2 + d1 * d2;
-    _data[4] = tx1 * a2 + ty1 * c2 + tx2;
-    _data[5] = tx1 * b2 + ty1 * d2 + ty2;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  void prepend(Matrix matrix) {
-
-    num a1 =  this.a;
-    num b1 =  this.b;
-    num c1 =  this.c;
-    num d1 =  this.d;
-    num tx1 = this.tx;
-    num ty1 = this.ty;
-
-    num a2 =  matrix.a;
-    num b2 =  matrix.b;
-    num c2 =  matrix.c;
-    num d2 =  matrix.d;
-    num tx2 = matrix.tx;
-    num ty2 = matrix.ty;
-
-    _data[0] = a1 * a2 + c1 * b2;
-    _data[1] = b1 * a2 + d1 * b2;
-    _data[2] = a1 * c2 + c1 * d2;
-    _data[3] = b1 * c2 + d1 * d2;
-    _data[4] = tx2 * a1 + ty2 * c1 + tx1;
-    _data[5] = tx2 * b1 + ty2 * d1 + ty1;
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  Matrix createBox(num scaleX, num scaleY, [
+  void createBox(num scaleX, num scaleY, [
     num rotation = 0.0, num translationX = 0.0, num translationY = 0.0]) {
 
-    var matrix = new Matrix.fromIdentity();
-    matrix.scale(scaleX, scaleY);
-    matrix.rotate(rotation);
-    matrix.translate(translationX, translationY);
-    return matrix;
+    this.identity();
+    this.scale(scaleX, scaleY);
+    this.rotate(rotation);
+    this.translate(translationX, translationY);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -260,6 +207,14 @@ class Matrix {
   }
 
   //-------------------------------------------------------------------------------------------------
+
+  void concat(Matrix matrix) {
+    this.copyFromAndConcat(this, matrix);
+  }
+
+  void prepend(Matrix matrix) {
+    this.copyFromAndConcat(matrix, this);
+  }
 
   void copyFromAndConcat(Matrix copyMatrix, Matrix concatMatrix) {
 

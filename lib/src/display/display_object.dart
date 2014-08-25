@@ -631,6 +631,11 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
       var flattenRenderState = new RenderState(renderContext, flattenRenderTextureQuad.bufferMatrix);
       var flattenProjectionMatrix = new Matrix3D.fromIdentity();
 
+      // TODO: We should remove the flattenRenderTextureQuad and use the flattenProjectionMatrix
+      // for the transformation. This is also useful for the filterRenderState resets later in
+      // the code. Less code and less memore allocations. But this also affects filters like
+      // AlphaMaskFilter or DisplacementFilter.
+
       renderContext.activateRenderFrameBuffer(flattenRenderFrameBuffer);
       renderContext.activateProjectionMatrix(flattenProjectionMatrix);
       renderContext.clear(0);
