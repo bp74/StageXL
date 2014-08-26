@@ -8,13 +8,13 @@ part of stagexl;
 ///
 class BitmapDataUpdateBatch {
 
-  BitmapData bitmapData;
+  final BitmapData bitmapData;
 
-  RenderTexture _renderTexture;
-  RenderTextureQuad _renderTextureQuad;
-  Matrix _matrix;
-  CanvasElement _canvas;
-  CanvasRenderingContext2D _context;
+  final RenderTexture _renderTexture;
+  final RenderTextureQuad _renderTextureQuad;
+  final Matrix _matrix;
+  final CanvasElement _canvas;
+  final CanvasRenderingContext2D _context;
 
   BitmapDataUpdateBatch(BitmapData bitmapData) : bitmapData = bitmapData,
     _renderTexture = bitmapData.renderTexture,
@@ -88,6 +88,7 @@ class BitmapDataUpdateBatch {
   }
 
   //-----------------------------------------------------------------------------------------------
+
   /**
    * See [BitmapData.clear]
    */
@@ -121,6 +122,9 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
+  /**
+   * See [BitmapData.copyPixels]
+   */
   void copyPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint) {
 
     var matrix = new Matrix(1, 0, 0, 1, destPoint.x, destPoint.y);
@@ -137,6 +141,9 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
+  /**
+   * See [BitmapData.drawPixels]
+   */
   void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint,
                   [BlendMode blendMode]) {
 
@@ -184,6 +191,7 @@ class BitmapDataUpdateBatch {
   }
 
   //-----------------------------------------------------------------------------------------------
+
   /**
    * See [BitmapData.setPixel32]
    */
