@@ -9,15 +9,13 @@ import 'dart:html' as html;
 import 'dart:web_gl' as gl;
 import 'dart:typed_data';
 
-import 'dart:html' show
-  Element, ImageElement, AudioElement, HttpRequest,
-  CanvasElement, CanvasRenderingContext2D, CanvasImageSource,
-  CanvasPattern, CanvasGradient, ImageData;
+import 'dart:html' show Element, ImageElement, AudioElement, HttpRequest,
+    CanvasElement, CanvasRenderingContext2D, CanvasImageSource, CanvasPattern,
+    CanvasGradient, ImageData;
 
-import 'dart:web_audio' show
-  AudioContext, AudioBuffer, AudioBufferSourceNode,
-  AudioNode, GainNode, PannerNode, DynamicsCompressorNode,
-  ChannelSplitterNode, ChannelMergerNode;
+import 'dart:web_audio' show AudioContext, AudioBuffer, AudioBufferSourceNode,
+    AudioNode, GainNode, PannerNode, DynamicsCompressorNode, ChannelSplitterNode,
+    ChannelMergerNode;
 
 //-----------------------------------------------------------------------------
 
@@ -162,5 +160,6 @@ final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
 final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
 
 final num _devicePixelRatio = html.window.devicePixelRatio == null ?
-    1.0 : html.window.devicePixelRatio;
+    1.0 :
+    html.window.devicePixelRatio;
 

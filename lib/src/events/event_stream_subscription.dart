@@ -63,7 +63,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
     }
   }
 
-  void resume()  {
+  void resume() {
     if (_pauseCount == 0) {
       throw new StateError("Subscription is not paused.");
     }

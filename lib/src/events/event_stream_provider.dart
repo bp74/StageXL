@@ -1,6 +1,6 @@
 part of stagexl;
 
-class EventStreamProvider<T extends Event>  {
+class EventStreamProvider<T extends Event> {
 
   final String eventType;
   const EventStreamProvider(this.eventType);

@@ -361,7 +361,7 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
     List<num> txs = _computeCubicFirstDerivativeRoots(start.x, control1.x, control2.x, end.x);
     List<num> tys = _computeCubicFirstDerivativeRoots(start.y, control1.y, control2.y, end.y);
 
-    for(int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2; i++) {
       num tx = txs[i].toDouble();
       num ty = tys[i].toDouble();
       num xm = (tx >= 0 && tx <= 1) ? _computeCubicBaseValue(tx, start.x, control1.x, control2.x, end.x) : start.x;
@@ -419,7 +419,7 @@ class _GraphicsCommandArc extends _GraphicsCommand {
 
     bounds.updatePath(bounds.cursorX, bounds.cursorY);
 
-    for(var i = 0; i <= arcSteps; i++) {
+    for (var i = 0; i <= arcSteps; i++) {
       var v = initPoint.rotate(angle1 + i * arcAngle / arcSteps);
       bounds.updatePath(_x + v.x, _y + v.y);
     }

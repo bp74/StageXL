@@ -6,7 +6,7 @@ class ButtonHelper {
   var upLabel;
   var overLabel;
   var downLabel;
-  
+
   bool useHandCursor = true;
   bool enabled = true;
   

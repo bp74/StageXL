@@ -37,7 +37,7 @@ _dispatchBroadcastEvent(BroadcastEvent broadcastEvent, List<EventStreamSubscript
 
   var length = subscriptions.length;
 
-  for(int i = 0; i < length; i++) {
+  for (int i = 0; i < length; i++) {
     var subscription = subscriptions[i];
     if (subscription.isCanceled == false) {
       broadcastEvent._stopsPropagation = false;

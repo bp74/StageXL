@@ -197,7 +197,7 @@ class MovieClip extends Sprite {
     paused = false;
     _goto(positionOrLabel);
   }
-  
+
   /**
    * Advances this movie clip to the specified position or label and sets paused to true.
    **/
@@ -205,7 +205,7 @@ class MovieClip extends Sprite {
     paused = true;
     _goto(positionOrLabel);
   }
-  
+
   /**
    * Returns a string representation of this object.
    * @return {String} a string representation of the instance.
@@ -213,7 +213,7 @@ class MovieClip extends Sprite {
   String toString() {
     return "[MovieClip (name=$name)]";
   }
-  
+
 // private methods
 
   bool _advanceTime(num time) {
@@ -221,12 +221,12 @@ class MovieClip extends Sprite {
       var f = frameRate > 0 ? frameRate : stage.frameRate;
       num sPerFrame = 1 / f;
       num df = min(1, time / sPerFrame);
-      _prevPosition = (_prevPos < 0) ? 0 : _prevPosition+df;
+      _prevPosition = (_prevPos < 0) ? 0 : _prevPosition + df;
       timeline._advanceTime(df);
     }
     return true;
   }
-  
+
   void _goto(positionOrLabel) {
     var pos = timeline.resolve(positionOrLabel);
     if (pos == null) return;
@@ -235,18 +235,18 @@ class MovieClip extends Sprite {
     _prevPosition = pos;
     _updateTimeline();
   }
-  
+
   void _reset() {
     _prevPos = -1;
     _currentFrame = 0;
   }
-  
+
   void _updateTimeline() {
     var tl = timeline;
     var tweens = tl._tweens;
     var synched = mode != MovieClip.INDEPENDENT;
     tl.loop = loop;
-    
+
     // update timeline position, ignoring actions if this is a graphic.
     if (synched) {
       // TODO: this would be far more ideal if the _synchOffset was somehow provided by the parent, so that reparenting wouldn't cause problems and we can direct draw. Ditto for _off (though less important).
@@ -282,8 +282,8 @@ class MovieClip extends Sprite {
         }
       }
     }
-    
-    for (var i=_children.length-1; i>=0; i--) {
+
+    for (var i = _children.length - 1; i >= 0; i--) {
       var id = _children[i]._id;
       if (_managed[id] == 1) {
         removeChildAt(i);
@@ -291,20 +291,17 @@ class MovieClip extends Sprite {
       }
     }
   }
-  
+
   void _setState(List<dynamic> state, int offset) {
     if (state == null) return;
     for (var i=0,l=state.length;i<l;i++) {
       var o = state[i];
       var target = o["t"];
-      if (target is DisplayObject)
-      {
+      if (target is DisplayObject) {
         var d = target as DisplayObject;
-        if (o.containsKey("p"))
-        {
+        if (o.containsKey("p")) {
           var p = o["p"];
-          for(var n in p.keys)
-          {
+          for (var n in p.keys) {
             var v = p[n];
             num dv = v is num ? v.toDouble() : 0;  
             switch(n)
@@ -350,14 +347,14 @@ class MovieClip extends Sprite {
       }
     }
   }
-  
+
   /**
    * Adds a child to the timeline, and sets it up as a managed child.
    **/
   void _addManagedChild(DisplayObject child, int offset) {
     if (child._off) { return; }
     addChild(child);
-    
+
     if (child is MovieClip) {
       var mc = child;
       mc._synchOffset = offset;
@@ -366,37 +363,36 @@ class MovieClip extends Sprite {
     }
     _managed[child._id] = 2;
   }
-  
+
 }
 
 
 typedef void ChangeHandler(dynamic sender); // Tween or Timeline
 
 
-class Timeline
-{
+class Timeline {
   /**
   * Causes this timeline to continue playing when a global pause is active.
   **/
   bool ignoreGlobalPause = false;
-  
+
   /**
    * Read-only property specifying the total duration of this timeline in ticks.
    * This value is usually automatically updated as you modify the timeline. See updateDuration for more information.
    **/
   num duration = 1;
-  
+
   /**
    * If true, the timeline will loop when it reaches the end. Can be set via the props param.
 
    **/
   bool loop = false;
-  
+
   /**
    * Called, with a single parameter referencing this timeline instance, whenever the timeline's position changes.
    **/
   ChangeHandler onChange = null;
-  
+
   /**
    * Read-only. The current normalized position of the timeline. This will always be a value between 0 and duration.
    * Changing this property directly will have no effect.
@@ -404,13 +400,13 @@ class Timeline
   num position = null;
 
 // private properties:
-  
+
   bool _paused = false;
   final List<TimelineTween> _tweens = new List<TimelineTween>();
   Map<String, num> _labels;
   num _prevPosition = 0;
   num _prevPos = -1;
-  
+
   /**
    * The Timeline class synchronizes multiple tweens and allows them to be controlled as a group. Please note that if a
    * timeline is looping, the tweens on it may appear to loop even if the "loop" property of the tween is false.
@@ -477,10 +473,10 @@ class Timeline
       _tweens.removeAt(index);
       if (tween.duration >= duration) { updateDuration(); }
       return true;
-    } 
+    }
     return false;
   }
-  
+
   /** 
    * Adds a label that can be used with gotoAndPlay/Stop.
    * @param label The label name.
@@ -497,7 +493,7 @@ class Timeline
   void setLabels(Map<String, int> o) {
     _labels = o != null ? o : new Map<String, int>();
   }
-  
+
   /** 
    * Unpauses this timeline and jumps to the specified position or label.
    * @method gotoAndPlay
@@ -507,7 +503,7 @@ class Timeline
     setPaused(false);
     _goto(positionOrLabel);
   }
-  
+
   /** 
    * Pauses this timeline and jumps to the specified position or label.
    * @method gotoAndStop
@@ -517,7 +513,7 @@ class Timeline
     setPaused(true);
     _goto(positionOrLabel);
   }
-  
+
   /** 
    * Advances the timeline to the specified position.
    * @param value The position to seek to in ticks.
@@ -532,8 +528,8 @@ class Timeline
     if (t == _prevPos) return end;
     _prevPosition = value;
     position = _prevPos = t; // in case an action changes the current frame.
-    
-    for(var i=0; i<_tweens.length; i++) {
+
+    for (var i = 0; i < _tweens.length; i++) {
       _tweens[i].setPosition(t, actionsMode);
       if (t != _prevPos) return false; // an action changed this timeline's position.
     }
@@ -541,16 +537,16 @@ class Timeline
     if (onChange != null) onChange(this);
     return end;
   }
-  
+
   /** 
    * Pauses or plays this timeline.
    * @param value Indicates whether the tween should be paused (true) or played (false).
    **/
   void setPaused(bool value) {
     _paused = !!value;
-    //TimelineTween._register(this, !value); 
+    //TimelineTween._register(this, !value);
   }
-  
+
   /** 
    * Recalculates the duration of the timeline.
    * The duration is automatically updated when tweens are added or removed, but this method is useful 
@@ -559,21 +555,21 @@ class Timeline
    **/
   void updateDuration() {
     duration = 0;
-    for(var i=0; i<_tweens.length; i++) {
+    for (var i = 0; i < _tweens.length; i++) {
       var tween = _tweens[i];
       if (tween.duration > duration) duration = tween.duration;
     }
   }
-  
+
   /** 
    * Advances this timeline by the specified amount of time in ticks.
    * This is normally called automatically by the TimelineTween engine (via TimelineTween.tick), but is exposed for advanced uses.
    * @param delta The time to advance in ticks.
    **/
   void tick(num delta) {
-    setPosition(_prevPosition+delta);
+    setPosition(_prevPosition + delta);
   }
-   
+
   /** 
    * If a numeric position is passed, it is returned unchanged. If a string is passed, the position of the
    * corresponding frame label will be returned, or null if a matching label is not defined.
@@ -601,7 +597,7 @@ class Timeline
   String toString() {
     return "[Timeline]";
   }
-  
+
 // private methods:
   /**
    * @method _goto
@@ -611,17 +607,16 @@ class Timeline
     var pos = resolve(positionOrLabel);
     if (pos != null) { setPosition(pos); }
   }
-  
+
   void _advanceTime(num delta) {
-    for(var i=0; i<_tweens.length; i++) {
+    for (var i = 0; i < _tweens.length; i++) {
       var tween = _tweens[i];
       tween.tick(delta);
     }
   }
 }
 
-class TimelineStep 
-{
+class TimelineStep {
   num d;
   int t;
   Map<String, dynamic> p0;
@@ -637,8 +632,7 @@ class TimelineStep
   }
 }
 
-class TimelineAction
-{
+class TimelineAction {
   int t;
   Function f;
   List<dynamic> p;
@@ -683,23 +677,22 @@ class TimelineAction
  *
  * See the TimelineTween {{#crossLink "TimelineTween/get"}}{{/crossLink}} method for additional param documentation.
  */
-class TimelineTween
-{
+class TimelineTween {
   /** 
    * Constant defining the none actionsMode for use with setPosition.
    **/
   static const int NONE = 0;
-  
+
   /** 
    * Constant defining the loop actionsMode for use with setPosition.
    **/
   static const int LOOP = 1;
-  
+
   /** 
    * Constant defining the reverse actionsMode for use with setPosition.
    **/
   static const int REVERSE = 2;
-  
+
   //static List<TimelineTween> _tweens = [];
   static EaseFunction _linearEase = TransitionFunction.linear;
 
@@ -749,7 +742,7 @@ class TimelineTween
     }
   }
   **/
-  
+
   /** 
    * Removes all existing tweens for a target. This is called automatically by new tweens if the <code>override</code> prop is true.
    * @method removeTweens
@@ -767,7 +760,7 @@ class TimelineTween
     //target.tweenjs_count = 0;
   }
    **/
-  
+
   /** 
    * Indicates whether there are any active tweens on the target object (if specified) or in general.
    * @method hasActiveTweens
@@ -783,7 +776,7 @@ class TimelineTween
     return TimelineTween._tweens && TimelineTween._tweens.length;
   }
    **/
-  
+
   /** 
    * Registers or unregisters a tween with the ticking system.
    * @method _register

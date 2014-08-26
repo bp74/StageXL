@@ -59,7 +59,7 @@ class BitmapDataUpdateBatch {
     var imageData = renderTextureQuad.getImageData();
     var data = imageData.data;
 
-    for(int i = 0; i <= data.length - 4; i += 4) {
+    for (int i = 0; i <= data.length - 4; i += 4) {
 
       int c0 = data[i + 0];
       int c1 = data[i + 1];
@@ -157,7 +157,7 @@ class BitmapDataUpdateBatch {
     var pixels = imageData.width * imageData.height;
     var data = imageData.data;
 
-    for(int i = 0; i <= data.length - 4; i += 4) {
+    for (int i = 0; i <= data.length - 4; i += 4) {
       r += isLittleEndianSystem ? data[i + 0] : data[i + 3];
       g += isLittleEndianSystem ? data[i + 1] : data[i + 2];
       b += isLittleEndianSystem ? data[i + 2] : data[i + 1];
@@ -169,7 +169,7 @@ class BitmapDataUpdateBatch {
     b = b ~/ pixels;
     a = a ~/ pixels;
 
-    return (a << 24) + (r  << 16) + (g << 8) + b;
+    return (a << 24) + (r << 16) + (g << 8) + b;
   }
 
   //-----------------------------------------------------------------------------------------------
