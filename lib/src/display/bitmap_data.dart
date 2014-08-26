@@ -1,5 +1,11 @@
 part of stagexl;
 
+/**
+ * A drawable Bitmap surface
+ *
+ * If you need to batch drawing operations for better performance,
+ * please use [BitmapDataUpdateBatch] instead.
+ **/
 class BitmapData implements BitmapDrawable {
 
   int _width = 0;
@@ -151,6 +157,9 @@ class BitmapData implements BitmapDrawable {
     updateBatch.update();
   }
 
+  /**
+   * Clear the entire rendering surface.
+   */
   void clear() {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.clear();
@@ -183,22 +192,40 @@ class BitmapData implements BitmapDrawable {
 
   //-------------------------------------------------------------------------------------------------
 
+  /**
+   * Get a single RGB pixel
+   */
   int getPixel(int x, int y) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     return updateBatch.getPixel32(x, y) & 0x00FFFFFF;
   }
 
+  /**
+   * Get a single RGBA pixel
+   */
   int getPixel32(int x, int y) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     return updateBatch.getPixel32(x, y);
   }
 
+  /**
+   * Draw an RGB pixel at the given coordinates.
+   *
+   * setPixel updates the underlying texture. If you need to make multiple calls,
+   * use [BitmapDataUpdateBatch] instead.
+   */
   void setPixel(int x, int y, int color) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.setPixel32(x, y, color | 0xFF000000);
     updateBatch.update();
   }
 
+  /**
+   * Draw an RGBA pixel at the given coordinates.
+   *
+   * setPixel32 updates the underlying texture. If you need to make multiple calls,
+   * use [BitmapDataUpdateBatch] instead.
+   */
   void setPixel32(int x, int y, int color) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.setPixel32(x, y, color);

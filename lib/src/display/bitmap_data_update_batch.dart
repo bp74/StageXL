@@ -25,6 +25,9 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
+  /**
+   * Update the underlying rendering surface.
+   */
   update() => _renderTexture.update();
 
   //-----------------------------------------------------------------------------------------------
@@ -85,7 +88,9 @@ class BitmapDataUpdateBatch {
   }
 
   //-----------------------------------------------------------------------------------------------
-
+  /**
+   * See [BitmapData.clear]
+   */
   void clear() {
     _context.setTransform(_matrix.a, _matrix.b, _matrix.c, _matrix.d, _matrix.tx, _matrix.ty);
     _context.clearRect(0, 0, this.bitmapData.width, this.bitmapData.height);
@@ -146,6 +151,9 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
+  /**
+   * See [BitmapData.getPixel32]
+   */
   int getPixel32(int x, int y) {
 
     int r = 0, g = 0, b = 0, a = 0;
@@ -176,7 +184,9 @@ class BitmapDataUpdateBatch {
   }
 
   //-----------------------------------------------------------------------------------------------
-
+  /**
+   * See [BitmapData.setPixel32]
+   */
   void setPixel32(int x, int y, int color) {
      _context.setTransform(_matrix.a, _matrix.b, _matrix.c, _matrix.d, _matrix.tx, _matrix.ty);
      _context.fillStyle = _color2rgba(color);
