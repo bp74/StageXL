@@ -21,19 +21,19 @@ part of stagexl;
  */
 class Graphics {
 
-  static final Map _BASE_64 = {"A":0,"B":1,"C":2,"D":3,"E":4,"F":5,"G":6,"H":7,"I":8,"J":9,"K":10,"L":11,"M":12,"N":13,"O":14,"P":15,"Q":16,"R":17,"S":18,"T":19,"U":20,"V":21,"W":22,"X":23,"Y":24,"Z":25,"a":26,"b":27,"c":28,"d":29,"e":30,"f":31,"g":32,"h":33,"i":34,"j":35,"k":36,"l":37,"m":38,"n":39,"o":40,"p":41,"q":42,"r":43,"s":44,"t":45,"u":46,"v":47,"w":48,"x":49,"y":50,"z":51,"0":52,"1":53,"2":54,"3":55,"4":56,"5":57,"6":58,"7":59,"8":60,"9":61,"+":62,"/":63};
+  static const Map _BASE_64 = const {"A":0,"B":1,"C":2,"D":3,"E":4,"F":5,"G":6,"H":7,"I":8,"J":9,"K":10,"L":11,"M":12,"N":13,"O":14,"P":15,"Q":16,"R":17,"S":18,"T":19,"U":20,"V":21,"W":22,"X":23,"Y":24,"Z":25,"a":26,"b":27,"c":28,"d":29,"e":30,"f":31,"g":32,"h":33,"i":34,"j":35,"k":36,"l":37,"m":38,"n":39,"o":40,"p":41,"q":42,"r":43,"s":44,"t":45,"u":46,"v":47,"w":48,"x":49,"y":50,"z":51,"0":52,"1":53,"2":54,"3":55,"4":56,"5":57,"6":58,"7":59,"8":60,"9":61,"+":62,"/":63};
 
   final List<_GraphicsCommand> _commands = new List<_GraphicsCommand>();
 
   Rectangle<num> _identityRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
   bool _identityRectangleRefresh = true;
 
-  clear() {
+  void clear() {
     _commands.clear();
     _identityRectangleRefresh = true;
   }
 
-  _addCommand(_GraphicsCommand command) {
+  void _addCommand(_GraphicsCommand command) {
     _commands.add(command);
     _identityRectangleRefresh = true;
   }
@@ -44,37 +44,37 @@ class Graphics {
    * Start drawing a freeform path.
    *
    */
-  beginPath() =>
+  void beginPath() =>
     _addCommand(new _GraphicsCommandBeginPath());
 
   /**
    * Stop drawing a freeform path.
    */
-  closePath() =>
+  void closePath() =>
     _addCommand(new _GraphicsCommandClosePath());
 
   /**
    * Moves the next point in the path to [x] and [y]
    */
-  moveTo(num x, num y) =>
+  void moveTo(num x, num y) =>
     _addCommand(new _GraphicsCommandMoveTo(x, y));
 
   /**
    * From the current point in the path, draw a line to [x] and [y]
    */
-  lineTo(num x, num y) =>
+  void lineTo(num x, num y) =>
     _addCommand(new _GraphicsCommandLineTo(x, y));
 
   /**
    * From the current point in the path, draw an arc to [endX] and [endY]
    */
-  arcTo(num controlX, num controlY, num endX, num endY, num radius) =>
+  void arcTo(num controlX, num controlY, num endX, num endY, num radius) =>
     _addCommand(new _GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
 
   /**
    * From the current point in the path, draw a quadratic curve to [endX] and [endY]
    */
-  quadraticCurveTo(num controlX, num controlY, num endX, num endY) =>
+  void quadraticCurveTo(num controlX, num controlY, num endX, num endY) =>
     _addCommand(new _GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
 
   /**
@@ -86,49 +86,49 @@ class Graphics {
   /**
    * Draw an arc at [x] and [y].
    */
-  arc(num x, num y, num radius, num startAngle, num endAngle, bool antiClockwise) =>
+  void arc(num x, num y, num radius, num startAngle, num endAngle, bool antiClockwise) =>
     _addCommand(new _GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
 
   /**
    * Draw a rectangle at [x] and [y]
    */
-  rect(num x, num y, num width, num height) =>
+  void rect(num x, num y, num width, num height) =>
     _addCommand(new _GraphicsCommandRect(x,y, width, height));
 
   /**
    * Apply a stroke color to the **previously drawn** vector object.
    */
-  strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
+  void strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
     _addCommand(new _GraphicsCommandStrokeColor(_color2rgba(color), width, joints, caps));
 
   /**
    * Apply a stroke color to the **previously drawn** vector object.
    */
-  strokeGradient(GraphicsGradient gradient, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
+  void strokeGradient(GraphicsGradient gradient, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
     _addCommand(new _GraphicsCommandStrokeGradient(gradient, width, joints, caps));
 
   /**
    * Apply a stroke pattern to the **previously drawn** vector object.
    */
-  strokePattern(GraphicsPattern pattern, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
+  void strokePattern(GraphicsPattern pattern, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
     _addCommand(new _GraphicsCommandStrokePattern(pattern, width, joints, caps));
 
   /**
    * Apply a fill color to the **previously drawn** vector object.
    */
-  fillColor(int color) =>
+  void fillColor(int color) =>
     _addCommand(new _GraphicsCommandFillColor(_color2rgba(color)));
 
   /**
    * Apply a fill gradient to the **previously drawn** vector object.
    */
-  fillGradient(GraphicsGradient gradient) =>
+  void fillGradient(GraphicsGradient gradient) =>
     _addCommand(new _GraphicsCommandFillGradient(gradient));
 
   /**
    * Apply a fill pattern to the **previously drawn** vector object.
    */
-  fillPattern(GraphicsPattern pattern) =>
+  void fillPattern(GraphicsPattern pattern) =>
     _addCommand(new _GraphicsCommandFillPattern(pattern));
 
   //-------------------------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ class Graphics {
   /**
    * Draw a rounded rectangle at [x] and [y].
    */
-  rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
+  void rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
 
     _addCommand(new _GraphicsCommandMoveTo(x + ellipseWidth, y));
     _addCommand(new _GraphicsCommandLineTo(x + width - ellipseWidth, y));
@@ -154,7 +154,7 @@ class Graphics {
   /**
    * Draw a circle at [x] and [y]
    */
-  circle(num x, num y, num radius) {
+  void circle(num x, num y, num radius) {
 
     _addCommand(new _GraphicsCommandMoveTo(x + radius, y));
     _addCommand(new _GraphicsCommandArc(x, y, radius, 0, PI * 2, false));
@@ -165,7 +165,7 @@ class Graphics {
   /**
    * Draw an ellipse at [x] and [y]
    */
-  ellipse(num x, num y, num width, num height) {
+  void ellipse(num x, num y, num width, num height) {
 
     num kappa = 0.5522848;
     num ox = (width / 2) * kappa;
@@ -186,7 +186,7 @@ class Graphics {
 
   //-------------------------------------------------------------------------------------------------
 
-  decode(String str)  {
+  void decode(String str)  {
 
     var base64 = _BASE_64;
     var instructions = [moveTo, lineTo, quadraticCurveTo, bezierCurveTo, closePath];
