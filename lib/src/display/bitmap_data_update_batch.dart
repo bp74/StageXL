@@ -109,14 +109,9 @@ class BitmapDataUpdateBatch {
 
   void draw(BitmapDrawable source, [Matrix matrix]) {
 
-    if (matrix == null) {
-      matrix = _matrix.clone();
-    } else {
-      matrix.concat(_matrix);
-    }
-
     var renderContext = new RenderContextCanvas(_canvas);
-    var renderState = new RenderState(renderContext, matrix);
+    var renderState = new RenderState(renderContext, _matrix);
+    if (matrix != null) renderState.globalMatrix.prepend(matrix);
     source.render(renderState);
   }
 
@@ -127,15 +122,12 @@ class BitmapDataUpdateBatch {
    */
   void copyPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint) {
 
-    var matrix = new Matrix(1, 0, 0, 1, destPoint.x, destPoint.y);
-    matrix.concat(_matrix);
-
-    _context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-    _context.clearRect(0, 0, sourceRect.width, sourceRect.height);
-
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderContext = new RenderContextCanvas(_canvas);
-    var renderState = new RenderState(renderContext, matrix);
+    var renderState = new RenderState(renderContext, _matrix);
+    renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);
+    renderContext.setTransform(renderState.globalMatrix);
+    renderContext.rawContext.clearRect(0, 0, sourceRect.width, sourceRect.height);
     renderContext.renderQuad(renderState, sourceQuad);
   }
 
@@ -147,13 +139,11 @@ class BitmapDataUpdateBatch {
   void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint,
                   [BlendMode blendMode]) {
 
-    var matrix = new Matrix(1, 0, 0, 1, destPoint.x, destPoint.y);
-    matrix.concat(_matrix);
-
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderContext = new RenderContextCanvas(_canvas);
-    var renderState = new RenderState(renderContext, matrix, 1.0, blendMode);
-    renderContext.renderQuad(renderState, sourceQuad);
+    var renderState = new RenderState(renderContext, _matrix, 1.0, blendMode);
+    renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);
+    renderState.renderQuad(sourceQuad);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -196,10 +186,10 @@ class BitmapDataUpdateBatch {
    * See [BitmapData.setPixel32]
    */
   void setPixel32(int x, int y, int color) {
-     _context.setTransform(_matrix.a, _matrix.b, _matrix.c, _matrix.d, _matrix.tx, _matrix.ty);
-     _context.fillStyle = _color2rgba(color);
-     _context.clearRect(x, y, 1, 1);
-     _context.fillRect(x, y, 1, 1);
-   }
+    _context.setTransform(_matrix.a, _matrix.b, _matrix.c, _matrix.d, _matrix.tx, _matrix.ty);
+    _context.fillStyle = _color2rgba(color);
+    _context.clearRect(x, y, 1, 1);
+    _context.fillRect(x, y, 1, 1);
+  }
 
 }
