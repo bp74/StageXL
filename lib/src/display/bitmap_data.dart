@@ -178,12 +178,27 @@ class BitmapData implements BitmapDrawable {
     updateBatch.update();
   }
 
+  /**
+   * Copy pixels from [source], completely replacing the pixels at [destPoint].
+   *
+   * copyPixels erases the target location specified by [destPoint] and [sourceRect],
+   * then draws over it.
+   *
+   * NOTE: [drawPixels] is more performant.
+   */
   void copyPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.copyPixels(source, sourceRect, destPoint);
     updateBatch.update();
   }
 
+  /**
+   * Draws pixels from [source] onto this object.
+   *
+   * Unlike [copyPixels], the target location is not erased first. That means pixels on this
+   * BitmapData may be visible if pixels from [source] are transparent. Select a [blendMode]
+   * to customize how two pixels are blended.
+   */
   void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint, [BlendMode blendMode]) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.drawPixels(source, sourceRect, destPoint);
