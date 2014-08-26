@@ -9,26 +9,19 @@ part of stagexl;
 class BitmapDataUpdateBatch {
 
   final BitmapData bitmapData;
-
-  final RenderTexture _renderTexture;
-  final RenderTextureQuad _renderTextureQuad;
-  final Matrix _matrix;
-  final CanvasElement _canvas;
-  final CanvasRenderingContext2D _context;
+  final RenderContextCanvas _renderContext;
+  final Matrix _drawMatrix;
 
   BitmapDataUpdateBatch(BitmapData bitmapData) : bitmapData = bitmapData,
-    _renderTexture = bitmapData.renderTexture,
-    _renderTextureQuad = bitmapData.renderTextureQuad,
-    _matrix = bitmapData.renderTextureQuad.drawMatrix,
-    _canvas = bitmapData.renderTexture.canvas,
-    _context = bitmapData.renderTexture.canvas.context2D;
+    _renderContext = new RenderContextCanvas(bitmapData.renderTexture.canvas),
+    _drawMatrix = bitmapData.renderTextureQuad.drawMatrix;
 
   //-----------------------------------------------------------------------------------------------
 
   /**
    * Update the underlying rendering surface.
    */
-  update() => _renderTexture.update();
+  update() => this.bitmapData.renderTexture.update();
 
   //-----------------------------------------------------------------------------------------------
 
@@ -62,7 +55,7 @@ class BitmapDataUpdateBatch {
     int offset2 = isLittleEndianSystem ? blueOffset : greenOffset;
     int offset3 = isLittleEndianSystem ? alphaOffset : redOffset;
 
-    var renderTextureQuad = _renderTextureQuad.cut(rect);
+    var renderTextureQuad = this.bitmapData.renderTextureQuad.cut(rect);
     var imageData = renderTextureQuad.getImageData();
     var data = imageData.data;
 
@@ -93,24 +86,25 @@ class BitmapDataUpdateBatch {
    * See [BitmapData.clear]
    */
   void clear() {
-    _context.setTransform(_matrix.a, _matrix.b, _matrix.c, _matrix.d, _matrix.tx, _matrix.ty);
-    _context.clearRect(0, 0, this.bitmapData.width, this.bitmapData.height);
+
+    _renderContext.setTransform(_drawMatrix);
+    _renderContext.rawContext.clearRect(0, 0, this.bitmapData.width, this.bitmapData.height);
   }
 
   //-----------------------------------------------------------------------------------------------
 
   void fillRect(Rectangle<int> rect, int color) {
-    _context.setTransform(_matrix.a, _matrix.b, _matrix.c, _matrix.d, _matrix.tx, _matrix.ty);
-    _context.fillStyle = _color2rgba(color);
-    _context.fillRect(rect.left, rect.top, rect.width, rect.height);
+
+    _renderContext.setTransform(_drawMatrix);
+    _renderContext.rawContext.fillStyle = _color2rgba(color);
+    _renderContext.rawContext.fillRect(rect.left, rect.top, rect.width, rect.height);
   }
 
   //-----------------------------------------------------------------------------------------------
 
   void draw(BitmapDrawable source, [Matrix matrix]) {
 
-    var renderContext = new RenderContextCanvas(_canvas);
-    var renderState = new RenderState(renderContext, _matrix);
+    var renderState = new RenderState(_renderContext, _drawMatrix);
     if (matrix != null) renderState.globalMatrix.prepend(matrix);
     source.render(renderState);
   }
@@ -123,12 +117,11 @@ class BitmapDataUpdateBatch {
   void copyPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint) {
 
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
-    var renderContext = new RenderContextCanvas(_canvas);
-    var renderState = new RenderState(renderContext, _matrix);
+    var renderState = new RenderState(_renderContext, _drawMatrix);
     renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);
-    renderContext.setTransform(renderState.globalMatrix);
-    renderContext.rawContext.clearRect(0, 0, sourceRect.width, sourceRect.height);
-    renderContext.renderQuad(renderState, sourceQuad);
+    _renderContext.setTransform(renderState.globalMatrix);
+    _renderContext.rawContext.clearRect(0, 0, sourceRect.width, sourceRect.height);
+    _renderContext.renderQuad(renderState, sourceQuad);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -140,8 +133,7 @@ class BitmapDataUpdateBatch {
                   [BlendMode blendMode]) {
 
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
-    var renderContext = new RenderContextCanvas(_canvas);
-    var renderState = new RenderState(renderContext, _matrix, 1.0, blendMode);
+    var renderState = new RenderState(_renderContext, _drawMatrix, 1.0, blendMode);
     renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);
     renderState.renderQuad(sourceQuad);
   }
@@ -156,7 +148,7 @@ class BitmapDataUpdateBatch {
     int r = 0, g = 0, b = 0, a = 0;
 
     var rectangle = new Rectangle<int>(x, y, 1, 1);
-    var renderTextureQuad = _renderTextureQuad.clip(rectangle);
+    var renderTextureQuad = this.bitmapData.renderTextureQuad.clip(rectangle);
     if (renderTextureQuad.textureWidth == 0) return 0;
     if (renderTextureQuad.textureHeight == 0) return 0;
 
@@ -186,10 +178,10 @@ class BitmapDataUpdateBatch {
    * See [BitmapData.setPixel32]
    */
   void setPixel32(int x, int y, int color) {
-    _context.setTransform(_matrix.a, _matrix.b, _matrix.c, _matrix.d, _matrix.tx, _matrix.ty);
-    _context.fillStyle = _color2rgba(color);
-    _context.clearRect(x, y, 1, 1);
-    _context.fillRect(x, y, 1, 1);
+    _renderContext.setTransform(_drawMatrix);
+    _renderContext.rawContext.fillStyle = _color2rgba(color);
+    _renderContext.rawContext.clearRect(x, y, 1, 1);
+    _renderContext.rawContext.fillRect(x, y, 1, 1);
   }
 
 }
