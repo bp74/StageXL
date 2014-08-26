@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /// The BitmapContainer class is an optimized container for Bitmaps.
 ///

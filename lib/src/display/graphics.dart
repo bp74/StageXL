@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /**
  * A vector graphics drawing surface.

@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /**
  * This Animatable class declares a common interface

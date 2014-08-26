@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /*
 * Ported from CreateJS to Dart

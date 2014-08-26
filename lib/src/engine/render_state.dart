@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 class _ContextState {
   final Matrix matrix = new Matrix.fromIdentity();

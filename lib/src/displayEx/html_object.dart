@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /**
  * The HtmlObject adds a regular HTML element to the display list.

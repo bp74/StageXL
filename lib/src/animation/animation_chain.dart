@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /**
  * The AnimationChain class is used to animate multiple Animatables.

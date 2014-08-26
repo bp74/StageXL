@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /**
  * The EaseFunction is the function signature for transitions

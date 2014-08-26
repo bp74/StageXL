@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /// The StageScaleMode defines how the Stage is scaled inside of the Canvas.
 
