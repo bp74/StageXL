@@ -106,7 +106,7 @@ class AudioElementSound extends Sound {
 
   //-------------------------------------------------------------------------------------------------
 
-  void _onAudioEnded(html.Event event) {
+  void _onAudioEnded(Event event) {
     var soundChannel = _soundChannels.firstWhere((sc) => identical(sc._audio, event.target), orElse: () => null);
     if (soundChannel != null) soundChannel.stop();
   }

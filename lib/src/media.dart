@@ -2,14 +2,8 @@ library stagexl.media;
 
 import 'dart:async';
 import 'dart:html';
-import 'dart:html' as html;
-import 'dart:math' as math;
-
-import 'dart:html' show AudioElement;
-
-import 'dart:web_audio' show AudioContext, AudioBuffer, AudioBufferSourceNode,
-    AudioNode, GainNode, PannerNode, DynamicsCompressorNode, ChannelSplitterNode,
-    ChannelMergerNode;
+import 'dart:math';
+import 'dart:web_audio';
 
 part 'media/sound.dart';
 part 'media/sound_channel.dart';
