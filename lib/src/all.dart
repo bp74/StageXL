@@ -13,12 +13,10 @@ import 'dart:html' show Element, ImageElement, AudioElement, HttpRequest,
     CanvasElement, CanvasRenderingContext2D, CanvasImageSource, CanvasPattern,
     CanvasGradient, ImageData;
 
-import 'dart:web_audio' show AudioContext, AudioBuffer, AudioBufferSourceNode,
-    AudioNode, GainNode, PannerNode, DynamicsCompressorNode, ChannelSplitterNode,
-    ChannelMergerNode;
-
 //-----------------------------------------------------------------------------
+
 import 'geom.dart';
+import 'media.dart';
 
 part 'animation/animatable.dart';
 part 'animation/animation_chain.dart';
@@ -100,19 +98,6 @@ part 'filters/drop_shadow_filter.dart';
 part 'filters/flatten_filter.dart';
 part 'filters/glow_filter.dart';
 
-part 'media/sound.dart';
-part 'media/sound_channel.dart';
-part 'media/sound_load_options.dart';
-part 'media/sound_mixer.dart';
-part 'media/sound_transform.dart';
-part 'media/implementation/audio_element_mixer.dart';
-part 'media/implementation/audio_element_sound.dart';
-part 'media/implementation/audio_element_sound_channel.dart';
-part 'media/implementation/mock_sound.dart';
-part 'media/implementation/mock_sound_channel.dart';
-part 'media/implementation/web_audio_api_mixer.dart';
-part 'media/implementation/web_audio_api_sound.dart';
-part 'media/implementation/web_audio_api_sound_channel.dart';
 
 part 'text/font_style_metrics.dart';
 part 'text/text_field.dart';

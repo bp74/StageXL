@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.media;
 
 class AudioElementSound extends Sound {
 
@@ -10,7 +10,7 @@ class AudioElementSound extends Sound {
     _audio.onEnded.listen(_onAudioEnded);
     _audioPool.add(_audio);
 
-    html.document.body.children.add(_audio);
+    document.body.children.add(_audio);
   }
 
   //-------------------------------------------------------------------------------------------------

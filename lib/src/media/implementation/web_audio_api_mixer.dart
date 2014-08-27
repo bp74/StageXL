@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.media;
 
 class WebAudioApiMixer {
   static final AudioContext audioContext = new AudioContext();
@@ -14,7 +14,7 @@ class WebAudioApiMixer {
 
   void applySoundTransform(SoundTransform soundTransform) {
     var volume = soundTransform.volume;
-    _volumeNode.gain.value = pow(volume, 2);
+    _volumeNode.gain.value = math.pow(volume, 2);
   }
 
   AudioNode get inputNode => _volumeNode;

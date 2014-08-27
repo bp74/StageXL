@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.media;
 
 class WebAudioApiSoundChannel extends SoundChannel {
   SoundTransform _soundTransform;

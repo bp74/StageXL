@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.media;
 
 class SoundMixer {
 
@@ -50,7 +50,7 @@ class SoundMixer {
       _webAudioApiMixer = new WebAudioApiMixer();
     }
 
-    var ua = html.window.navigator.userAgent;
+    var ua = window.navigator.userAgent;
 
     if (ua.contains("IEMobile")) {
       if (ua.contains("9.0")) {

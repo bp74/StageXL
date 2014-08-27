@@ -1,6 +1,6 @@
-part of stagexl.all;
+part of stagexl.media;
 
-abstract class SoundChannel extends EventDispatcher {
+abstract class SoundChannel {
   SoundTransform get soundTransform;
   void set soundTransform(SoundTransform value);
   void stop();
