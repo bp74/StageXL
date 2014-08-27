@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 class BroadcastEvent extends Event {
   BroadcastEvent(String type) : super(type, false);

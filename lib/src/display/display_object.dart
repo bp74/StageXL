@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
 

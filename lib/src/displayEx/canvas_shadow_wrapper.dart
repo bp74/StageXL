@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /// This class is a replacement for the deprecated shadow property of the
 /// DisplayObject class. Please consider to use the DropShadowFilter class

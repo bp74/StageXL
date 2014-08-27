@@ -1,4 +1,9 @@
-part of stagexl;
+library stagexl.geom.polygon;
+
+import 'dart:math' hide Point, Rectangle;
+
+import 'point.dart';
+import 'rectangle.dart';
 
 // PolyK library
 // url: http://polyk.ivank.net

@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /**
  * The [Transition] class animates a value by calling the onUpdate function continuously.

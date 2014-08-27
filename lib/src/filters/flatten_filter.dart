@@ -1,4 +1,4 @@
-part of stagexl;
+part of stagexl.all;
 
 /// The FlattenFilter does not change the visual appearance of the BitmapData
 /// or DisplayObject where it is applied to. This filter can be used to merge
