@@ -23,15 +23,15 @@ class TextureAtlasFrame {
       this.frameX, this.frameY, this.frameWidth, this.frameHeight);
 
   TextureAtlasFrame._fromJson(this.textureAtlas, this.name, Map frame) :
-    rotation = _ensureBool(frame["rotated"]) ? 1 : 0,
-    originalWidth = _ensureInt(frame["sourceSize"]["w"]),
-    originalHeight = _ensureInt(frame["sourceSize"]["h"]),
-    offsetX = _ensureInt(frame["spriteSourceSize"]["x"]),
-    offsetY = _ensureInt(frame["spriteSourceSize"]["y"]),
-    frameX = _ensureInt(frame["frame"]["x"]),
-    frameY = _ensureInt(frame["frame"]["y"]),
-    frameWidth = _ensureInt(frame["frame"]["w"]),
-    frameHeight = _ensureInt(frame["frame"]["h"]);
+    rotation = ensureBool(frame["rotated"]) ? 1 : 0,
+    originalWidth = ensureInt(frame["sourceSize"]["w"]),
+    originalHeight = ensureInt(frame["sourceSize"]["h"]),
+    offsetX = ensureInt(frame["spriteSourceSize"]["x"]),
+    offsetY = ensureInt(frame["spriteSourceSize"]["y"]),
+    frameX = ensureInt(frame["frame"]["x"]),
+    frameY = ensureInt(frame["frame"]["y"]),
+    frameWidth = ensureInt(frame["frame"]["w"]),
+    frameHeight = ensureInt(frame["frame"]["h"]);
 
   //-------------------------------------------------------------------------------------------------
 

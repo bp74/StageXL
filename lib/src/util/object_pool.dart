@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.util.objectpool;
 
 class ObjectPool<T> {
 

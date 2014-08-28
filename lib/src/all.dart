@@ -16,6 +16,7 @@ import 'dart:html' show Element, ImageElement, AudioElement, HttpRequest,
 //-----------------------------------------------------------------------------
 
 import 'geom.dart';
+import 'internal.dart';
 import 'media.dart';
 
 part 'animation/animatable.dart';
@@ -98,7 +99,6 @@ part 'filters/drop_shadow_filter.dart';
 part 'filters/flatten_filter.dart';
 part 'filters/glow_filter.dart';
 
-
 part 'text/font_style_metrics.dart';
 part 'text/text_field.dart';
 part 'text/text_field_auto_size.dart';
@@ -113,8 +113,6 @@ part 'ui/mouse.dart';
 part 'ui/mouse_cursor.dart';
 part 'ui/multitouch.dart';
 
-part 'util/image_loader.dart';
-part 'util/object_pool.dart';
 part 'util/resource_manager.dart';
 part 'util/resource_manager_resource.dart';
 part 'util/sound_sprite.dart';
@@ -123,21 +121,11 @@ part 'util/sprite_sheet.dart';
 part 'util/texture_atlas.dart';
 part 'util/texture_atlas_format.dart';
 part 'util/texture_atlas_frame.dart';
-part 'util/tools.dart';
 
 //-----------------------------------------------------------------------------
-
-final bool _autoHiDpi = _checkHiDpi();
-final bool _isMobile = _checkMobileDevice();
-final bool _isCocoonJS = _checkCocoonJS();
-final Future<bool> _isWebpSupported = _checkWebpSupport();
 
 final Matrix _identityMatrix = new Matrix.fromIdentity();
 
 final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
 final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
-
-final num _devicePixelRatio = html.window.devicePixelRatio == null ?
-    1.0 :
-    html.window.devicePixelRatio;
 

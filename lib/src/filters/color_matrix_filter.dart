@@ -103,9 +103,9 @@ class ColorMatrixFilter extends BitmapFilter {
 
   void adjustColoration(int color, [num strength = 1.0]) {
 
-    num r = _colorGetR(color) * strength / 255.0;
-    num g = _colorGetG(color) * strength / 255.0;
-    num b = _colorGetB(color) * strength / 255.0;
+    num r = colorGetR(color) * strength / 255.0;
+    num g = colorGetG(color) * strength / 255.0;
+    num b = colorGetB(color) * strength / 255.0;
     num i = 1.0 - strength;
 
     _concat([

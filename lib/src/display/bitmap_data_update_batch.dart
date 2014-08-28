@@ -96,7 +96,7 @@ class BitmapDataUpdateBatch {
   void fillRect(Rectangle<int> rect, int color) {
 
     _renderContext.setTransform(_drawMatrix);
-    _renderContext.rawContext.fillStyle = _color2rgba(color);
+    _renderContext.rawContext.fillStyle = color2rgba(color);
     _renderContext.rawContext.fillRect(rect.left, rect.top, rect.width, rect.height);
   }
 
@@ -179,7 +179,7 @@ class BitmapDataUpdateBatch {
    */
   void setPixel32(int x, int y, int color) {
     _renderContext.setTransform(_drawMatrix);
-    _renderContext.rawContext.fillStyle = _color2rgba(color);
+    _renderContext.rawContext.fillStyle = color2rgba(color);
     _renderContext.rawContext.clearRect(x, y, 1, 1);
     _renderContext.rawContext.fillRect(x, y, 1, 1);
   }

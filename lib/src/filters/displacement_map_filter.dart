@@ -38,12 +38,12 @@ class DisplacementMapFilter extends BitmapFilter {
     ImageData mapImageData = this.bitmapData.renderTextureQuad.getImageData();
     ImageData srcImageData = renderTextureQuad.getImageData();
     ImageData dstImageData = renderTextureQuad.createImageData();
-    int mapWidth = _ensureInt(mapImageData.width);
-    int mapHeight = _ensureInt(mapImageData.height);
-    int srcWidth = _ensureInt(srcImageData.width);
-    int srcHeight = _ensureInt(srcImageData.height);
-    int dstWidth = _ensureInt(dstImageData.width);
-    int dstHeight = _ensureInt(dstImageData.height);
+    int mapWidth = ensureInt(mapImageData.width);
+    int mapHeight = ensureInt(mapImageData.height);
+    int srcWidth = ensureInt(srcImageData.width);
+    int srcHeight = ensureInt(srcImageData.height);
+    int dstWidth = ensureInt(dstImageData.width);
+    int dstHeight = ensureInt(dstImageData.height);
 
     var mapData = mapImageData.data;
     var srcData = srcImageData.data;

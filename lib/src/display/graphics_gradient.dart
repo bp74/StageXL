@@ -35,7 +35,7 @@ class GraphicsGradient {
   //-------------------------------------------------------------------------------------------------
 
   void addColorStop(num offset, int color) {
-    _colorStops.add({"offset" : offset, "color" : _color2rgba(color)});
+    _colorStops.add({"offset" : offset, "color" : color2rgba(color)});
   }
 
   //-------------------------------------------------------------------------------------------------

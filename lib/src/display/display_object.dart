@@ -471,7 +471,7 @@ abstract class DisplayObject extends EventDispatcher implements BitmapDrawable {
    */
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
 
-    var pixelRatio = Stage.autoHiDpi ? _devicePixelRatio : 1.0;
+    var pixelRatio = Stage.autoHiDpi ? Environment.devicePixelRatio : 1.0;
 
     var renderTexture = _cacheTextureQuad == null
         ? new RenderTexture(width, height, true, Color.Transparent, pixelRatio)

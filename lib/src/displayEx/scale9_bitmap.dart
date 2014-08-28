@@ -16,8 +16,8 @@ class Scale9Bitmap extends Bitmap {
   Scale9Bitmap(BitmapData bitmapData, Rectangle<int> grid) : super(bitmapData) {
     _bitmapData = bitmapData;
     _grid = grid;
-    _width = _ensureInt(bitmapData.width);
-    _height = _ensureInt(bitmapData.height);
+    _width = ensureInt(bitmapData.width);
+    _height = ensureInt(bitmapData.height);
     _updateRenderTextureQuads();
   }
 
@@ -29,7 +29,7 @@ class Scale9Bitmap extends Bitmap {
   int get width => _width;
 
   void set width(int value) {
-    _width = _ensureInt(value);
+    _width = ensureInt(value);
   }
 
   /// Gets and sets the height of this Scale9Bitmap. In contrast to other
@@ -38,7 +38,7 @@ class Scale9Bitmap extends Bitmap {
   int get height => _height;
 
   void set height(int value) {
-    _height = _ensureInt(value);
+    _height = ensureInt(value);
   }
 
   /// Gets and sets the grid rectangle within the BitmapData to be scaled.
@@ -62,7 +62,7 @@ class Scale9Bitmap extends Bitmap {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    return _getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
+    return matrix.transformBounds(_width, _height, returnRectangle);
   }
 
   DisplayObject hitTestInput(num localX, num localY) =>
@@ -73,10 +73,10 @@ class Scale9Bitmap extends Bitmap {
 
     var x1 = _grid.left;
     var x2 = _grid.right;
-    var x3 = _ensureInt(bitmapData.width);
+    var x3 = ensureInt(bitmapData.width);
     var y1 = _grid.top;
     var y2 = _grid.bottom;
-    var y3 = _ensureInt(bitmapData.height);
+    var y3 = ensureInt(bitmapData.height);
     var width = _width;
     var height = _height;
 

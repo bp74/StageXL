@@ -37,8 +37,8 @@ class BlurFilter extends BitmapFilter {
 
     ImageData imageData = renderTextureQuad.getImageData();
     List<int> data = imageData.data;
-    int width = _ensureInt(imageData.width);
-    int height = _ensureInt(imageData.height);
+    int width = ensureInt(imageData.width);
+    int height = ensureInt(imageData.height);
 
     num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
     int blurX = (this.blurX * pixelRatio).round();

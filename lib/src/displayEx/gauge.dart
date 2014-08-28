@@ -51,7 +51,7 @@ class Gauge extends DisplayObject {
     int width = (_bitmapData != null) ? _bitmapData.width : 0;
     int height = (_bitmapData != null) ? _bitmapData.height : 0;
 
-    return _getBoundsTransformedHelper(matrix, width, height, returnRectangle);
+    return matrix.transformBounds(width, height, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------

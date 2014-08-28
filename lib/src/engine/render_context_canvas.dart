@@ -42,7 +42,7 @@ class RenderContextCanvas extends RenderContext {
     if (color & 0xFF000000 == 0) {
       _renderingContext.clearRect(0, 0, _canvasElement.width, _canvasElement.height);
     } else {
-      _renderingContext.fillStyle = _color2rgb(color);
+      _renderingContext.fillStyle = color2rgb(color);
       _renderingContext.fillRect(0, 0, _canvasElement.width, _canvasElement.height);
     }
   }
@@ -163,7 +163,7 @@ class RenderContextCanvas extends RenderContext {
     context.lineTo(x2, y2);
     context.lineTo(x3, y3);
     context.closePath();
-    context.fillStyle = _color2rgba(color);
+    context.fillStyle = color2rgba(color);
     context.fill();
   }
 
@@ -181,7 +181,7 @@ class RenderContextCanvas extends RenderContext {
   void endRenderMask(RenderState renderState, Mask mask) {
     _renderingContext.restore();
     if (mask.border) {
-      _renderingContext.strokeStyle = _color2rgba(mask.borderColor);
+      _renderingContext.strokeStyle = color2rgba(mask.borderColor);
       _renderingContext.lineWidth = mask.borderWidth;
       _renderingContext.lineCap = "round";
       _renderingContext.lineJoin = "round";

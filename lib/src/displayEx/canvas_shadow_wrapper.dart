@@ -90,7 +90,7 @@ class CanvasShadowWrapper extends DisplayObject {
       }
 
       rawContext.save();
-      rawContext.shadowColor = _color2rgba(shadowColor);
+      rawContext.shadowColor = color2rgba(shadowColor);
       rawContext.shadowBlur = sqrt(shadowMatrix.det) * shadowBlur;
       rawContext.shadowOffsetX = shadowOffsetX * shadowMatrix.a + shadowOffsetY * shadowMatrix.c;
       rawContext.shadowOffsetY = shadowOffsetX * shadowMatrix.b + shadowOffsetY * shadowMatrix.d;

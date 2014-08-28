@@ -21,15 +21,15 @@ class SoundSprite {
       if (segments is Map) {
         for (String segment in segments.keys) {
           var segmentList = segments[segment] as List;
-          var startTime = _ensureNum(segmentList[0]);
-          var duration = _ensureNum(segmentList[1]);
-          var loop = segmentList.length >= 3 ? _ensureBool(segmentList[2]) : false;
+          var startTime = ensureNum(segmentList[0]);
+          var duration = ensureNum(segmentList[1]);
+          var loop = segmentList.length >= 3 ? ensureBool(segmentList[2]) : false;
           var sss = new SoundSpriteSegment(soundSprite, segment, startTime, duration, loop);
           soundSprite._segments.add(sss);
         }
       }
 
-      var soundUrls = urls.map((u) => _replaceFilename(url, u)).toList();
+      var soundUrls = urls.map((u) => replaceFilename(url, u)).toList();
       var soundUrl = soundUrls[0];
 
       soundLoadOptions = (soundLoadOptions == null)

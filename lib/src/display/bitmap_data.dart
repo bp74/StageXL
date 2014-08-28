@@ -21,8 +21,8 @@ class BitmapData implements BitmapDrawable {
   BitmapData(int width, int height, [
       bool transparent = true, int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
 
-    _width = _ensureInt(width);
-    _height = _ensureInt(height);
+    _width = ensureInt(width);
+    _height = ensureInt(height);
     _renderTexture = new RenderTexture(_width, _height, transparent, fillColor, pixelRatio);
     _renderTextureQuad = _renderTexture.quad;
   }
@@ -30,13 +30,13 @@ class BitmapData implements BitmapDrawable {
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
     _renderTexture = new RenderTexture.fromImage(imageElement, pixelRatio);
     _renderTextureQuad = _renderTexture.quad;
-    _width = _ensureInt(_renderTexture.width);
-    _height = _ensureInt(_renderTexture.height);
+    _width = ensureInt(_renderTexture.width);
+    _height = ensureInt(_renderTexture.height);
   }
 
   BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
-    _width = _ensureInt(rectangle.width);
-    _height = _ensureInt(rectangle.height);
+    _width = ensureInt(rectangle.width);
+    _height = ensureInt(rectangle.height);
     _renderTexture = bitmapData.renderTexture;
     _renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
   }
@@ -44,8 +44,8 @@ class BitmapData implements BitmapDrawable {
   BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad, [int width, int height]) {
     if (width == null) width = renderTextureQuad.textureWidth + renderTextureQuad.offsetX;
     if (height == null) height = renderTextureQuad.textureHeight + renderTextureQuad.offsetY;
-    _width = _ensureInt(width);
-    _height = _ensureInt(height);
+    _width = ensureInt(width);
+    _height = ensureInt(height);
     _renderTexture = renderTextureQuad.renderTexture;
     _renderTextureQuad = renderTextureQuad;
   }
