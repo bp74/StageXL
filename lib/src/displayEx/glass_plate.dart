@@ -11,7 +11,7 @@ class GlassPlate extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    return matrix.transformBounds(width, height, returnRectangle);
+    return getBoundsTransformedHelper(matrix, width, height, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------

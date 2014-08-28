@@ -215,7 +215,7 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    return matrix.transformBounds(_width, _height, returnRectangle);
+    return getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------

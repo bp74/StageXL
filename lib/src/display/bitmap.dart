@@ -11,7 +11,7 @@ class Bitmap extends DisplayObject {
   Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
     var width = bitmapData != null ? bitmapData.width : 0;
     var height = bitmapData != null ? bitmapData.height : 0;
-    return matrix.transformBounds(width, height, returnRectangle);
+    return getBoundsTransformedHelper(matrix, width, height, returnRectangle);
   }
 
   DisplayObject hitTestInput(num localX, num localY) {

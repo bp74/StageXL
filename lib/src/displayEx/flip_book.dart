@@ -143,7 +143,7 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
     var bitmapData = _bitmapDatas[_currentFrame];
-    return matrix.transformBounds(bitmapData.width, bitmapData.height, returnRectangle);
+    return getBoundsTransformedHelper(matrix, bitmapData.width, bitmapData.height, returnRectangle);
   }
 
   //-------------------------------------------------------------------------------------------------

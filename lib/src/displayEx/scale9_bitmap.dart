@@ -62,7 +62,7 @@ class Scale9Bitmap extends Bitmap {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    return matrix.transformBounds(_width, _height, returnRectangle);
+    return getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
   }
 
   DisplayObject hitTestInput(num localX, num localY) =>
