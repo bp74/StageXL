@@ -16,7 +16,11 @@ import 'dart:html' show Element, ImageElement, AudioElement, HttpRequest,
 //-----------------------------------------------------------------------------
 
 import 'geom.dart';
-import 'internal.dart';
+
+import 'internal/environment.dart' as env;
+import 'internal/image_loader.dart';
+import 'internal/tools.dart';
+
 import 'media.dart';
 
 part 'animation/animatable.dart';

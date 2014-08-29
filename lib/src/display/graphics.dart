@@ -248,7 +248,7 @@ class Graphics {
 
     if (_identityRectangle.contains(localX, localY)) {
 
-      if (Environment.isCocoonJS) {
+      if (env.isCocoonJS) {
         // CocoonJS does not support "isPointInPath", therefore we just
         // check the rectangular bounds of the graphics shape.
         return true;

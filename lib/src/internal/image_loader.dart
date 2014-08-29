@@ -3,7 +3,7 @@ library stagexl.internal.imageloader;
 import 'dart:async';
 import 'dart:html';
 
-import 'environment.dart';
+import 'environment.dart' as env;
 
 class ImageLoader {
 
@@ -25,7 +25,7 @@ class ImageLoader {
     }
 
     if (webpAvailable) {
-      Environment.isWebpSupported.then(_onWebpSupported);
+      env.isWebpSupported.then(_onWebpSupported);
     } else {
       _image.src = _url;
     }
@@ -58,5 +58,4 @@ class ImageLoader {
     _onErrorSubscription.cancel();
     _completer.completeError(new StateError("Failed to load image."));
   }
-
 }

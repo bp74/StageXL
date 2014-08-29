@@ -16,7 +16,7 @@ class _FontStyleMetrics {
   int height = 0;
 
   _FontStyleMetrics(TextFormat textFormat) {
-    if (Environment.isCocoonJS) {
+    if (env.isCocoonJS) {
       _fromEstimation(textFormat);
     } else {
       _fromHtml(textFormat);
