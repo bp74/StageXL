@@ -2,15 +2,14 @@ part of stagexl.all;
 
 class ResourceManagerResource {
 
-  String _kind;
-  String _name;
-  String _url;
+  final String kind;
+  final String name;
+  final String url;
   dynamic _value = null;
   dynamic _error = null;
-  Completer _completer = new Completer();
+  final Completer _completer = new Completer();
 
-  ResourceManagerResource(String kind, String name, String url, Future loader) :
-    _kind = kind, _name = name, _url = url  {
+  ResourceManagerResource(this.kind, this.name, this.url, Future loader) {
 
     loader.then((resource) {
       _value = resource;
@@ -21,17 +20,12 @@ class ResourceManagerResource {
     });
   }
 
-  String toString() => "ResourceManagerResource [kind=${_kind}, name=${_name}, url = ${_url}]";
+  String toString() => "ResourceManagerResource [kind=${kind}, name=${name}, url = ${url}]";
 
   //-----------------------------------------------------------------------------------------------
-
-  String get kind => _kind;
-  String get name => _name;
-  String get url => _url;
 
   dynamic get value => _value;
   dynamic get error => _error;
 
   Future get complete => _completer.future;
 }
-
