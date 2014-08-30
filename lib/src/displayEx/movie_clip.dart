@@ -4,7 +4,7 @@ part of stagexl.all;
 * Ported from CreateJS to Dart
 *
 * Copyright (c) 2010 gskinner.com, inc.
-* 
+*
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
 * files (the "Software"), to deal in the Software without
@@ -13,10 +13,10 @@ part of stagexl.all;
 * copies of the Software, and to permit persons to whom the
 * Software is furnished to do so, subject to the following
 * conditions:
-* 
+*
 * The above copyright notice and this permission notice shall be
 * included in all copies or substantial portions of the Software.
-* 
+*
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -91,12 +91,12 @@ class MovieClip extends Sprite {
    * If true, the MovieClip's position will not advance when ticked.
    */
   bool paused = false;
-  
+
   /**
    * If true, actions in this MovieClip's tweens will be run when the playhead advances.
    */
   bool actionsEnabled = true;
-  
+
   /**
    * If true, the MovieClip will automatically be reset to its first frame whenever the timeline adds
    * it back onto the display list. This only applies to MovieClip instances with mode=INDEPENDENT.
@@ -111,12 +111,12 @@ class MovieClip extends Sprite {
 // properties:
 
   int _currentFrame = 0;
-  int _synchOffset = 0;  
+  int _synchOffset = 0;
   num _prevPos = -1; // TODO: evaluate using a ._reset Boolean prop instead of -1.
   num _prevPosition = 0;
   final Map<int, int> _managed = new Map<int, int>();
   Map<String, dynamic> props;
-  
+
   /**
    * The MovieClip class associates a TimelineTween Timeline with a {{#crossLink "Sprite"}}{{/crossLink}}. It allows
    * you to create objects which encapsulate timeline animations, state changes, and synched actions. Due to the
@@ -124,7 +124,7 @@ class MovieClip extends Sprite {
    *
    * Currently MovieClip only works properly if it is tick based (as opposed to time based) though some concessions have
    * been made to support time-based timelines in the future.
-   * 
+   *
    * @param mode Initial value for the mode property. One of MovieClip.INDEPENDENT, MovieClip.SINGLE_FRAME, or MovieClip.SYNCHED.
    * @param startPosition Initial value for the startPosition property.
    * @param loop Initial value for the loop property.
@@ -132,14 +132,14 @@ class MovieClip extends Sprite {
    **/
   MovieClip([String mode, int startPosition, bool loop, Map<String, num> labels])
     : super() {
-    
+
     this.mode = mode != null ? mode : MovieClip.INDEPENDENT;
     this.startPosition = startPosition != null ? startPosition : 0;
     this.loop = loop != null ? loop : true;
     props = {"paused":true, "position":this.startPosition};
     timeline = new Timeline(null, labels, props);
   }
-  
+
 // public methods:
   /**
    * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
@@ -161,7 +161,7 @@ class MovieClip extends Sprite {
     _advanceTime(deltaTime);
     _updateTimeline();
   }
-  
+
   /**
    * Draws the display object into the specified context ignoring it's visible, alpha, shadow, and transform.
    * Returns true if the draw was handled (useful for overriding functionality).
@@ -175,21 +175,21 @@ class MovieClip extends Sprite {
     advance(renderState.deltaTime);
     super.render(renderState);
   }
-  
+
   /**
    * Sets paused to false.
    **/
   void play() {
     paused = false;
   }
-  
+
   /**
    * Sets paused to true.
    **/
   void stop() {
     paused = true;
   }
-  
+
   /**
    * Advances this movie clip to the specified position or label and sets paused to false.
    **/
@@ -254,26 +254,26 @@ class MovieClip extends Sprite {
     } else {
       tl.setPosition(_prevPos < 0 ? 0 : _prevPosition, actionsEnabled ? null : TimelineTween.NONE);
     }
-    
+
     _prevPosition = tl._prevPosition;
-    if (_prevPos == tl._prevPos) 
+    if (_prevPos == tl._prevPos)
       return;
     _prevPos = tl._prevPos;
     _currentFrame = _prevPos.toInt();
-    
+
     for (var n in _managed.keys) { _managed[n] = 1; }
-    
+
     for (var i=tweens.length-1; i>=0; i--) {
       TimelineTween tween = tweens[i];
       var target = tween._target;
       if (target == null || target == this) continue; // TODO: this assumes this is the actions tween. Valid?
       int offset = tween._stepPosition.toInt();
-      
+
       if (target is DisplayObject) {
         // motion tween.
-        DisplayObject child = target as DisplayObject; 
+        DisplayObject child = target as DisplayObject;
         _addManagedChild(child, offset);
-      } 
+      }
       else {
         // state tween.
         if (target.containsKey("state")) {
@@ -283,8 +283,8 @@ class MovieClip extends Sprite {
       }
     }
 
-    for (var i = _children.length - 1; i >= 0; i--) {
-      var id = _children[i]._id;
+    for (var i = numChildren - 1; i >= 0; i--) {
+      var id = getChildAt(i).id;
       if (_managed[id] == 1) {
         removeChildAt(i);
         _managed.remove(id);
@@ -303,7 +303,7 @@ class MovieClip extends Sprite {
           var p = o["p"];
           for (var n in p.keys) {
             var v = p[n];
-            num dv = v is num ? v.toDouble() : 0;  
+            num dv = v is num ? v.toDouble() : 0;
             switch(n)
             {
               case "off": d.off = v as bool; break;
@@ -352,16 +352,16 @@ class MovieClip extends Sprite {
    * Adds a child to the timeline, and sets it up as a managed child.
    **/
   void _addManagedChild(DisplayObject child, int offset) {
-    if (child._off) { return; }
+    if (child.off) { return; }
     addChild(child);
 
     if (child is MovieClip) {
       var mc = child;
       mc._synchOffset = offset;
       // TODO: this does not precisely match Flash. Flash loses track of the clip if it is renamed or removed from the timeline, which causes it to reset.
-      if (mc.mode == MovieClip.INDEPENDENT && mc.autoReset && !_managed.containsKey(child._id)) { mc._reset(); }
+      if (mc.mode == MovieClip.INDEPENDENT && mc.autoReset && !_managed.containsKey(child.id)) { mc._reset(); }
     }
-    _managed[child._id] = 2;
+    _managed[child.id] = 2;
   }
 
 }
@@ -438,12 +438,12 @@ class Timeline {
     setLabels(labels);
     if (props != null && props.containsKey("paused") && props["paused"] == true) { _paused = true; }
     //else { TimelineTween._register(this, true); }
-    
-    if (props != null && props.containsKey("position") && props["position"] != 0) { 
+
+    if (props != null && props.containsKey("position") && props["position"] != 0) {
       setPosition(props["position"], TimelineTween.NONE); }
   }
-  
-  /** 
+
+  /**
    * Adds one or more tweens (or timelines) to this timeline. The tweens will be paused (to remove them from the normal ticking system)
    * and managed by this timeline. Adding a tween to multiple timelines will result in unexpected behaviour.
    * @param tween The tween(s) to add. Accepts multiple arguments.
@@ -460,7 +460,7 @@ class Timeline {
     return tween;
   }
 
-  /** 
+  /**
    * Removes one or more tweens from this timeline.
    * @param tween The tween(s) to remove. Accepts multiple arguments.
    * @return Boolean Returns true if all of the tweens were successfully removed.
@@ -477,7 +477,7 @@ class Timeline {
     return false;
   }
 
-  /** 
+  /**
    * Adds a label that can be used with gotoAndPlay/Stop.
    * @param label The label name.
    * @param position The position this label represents.
@@ -486,7 +486,7 @@ class Timeline {
     _labels[label] = position;
   }
 
-  /** 
+  /**
    * Defines labels for use with gotoAndPlay/Stop. Overwrites any previously set labels.
    * @param o An object defining labels for using gotoAndPlay/Stop in the form {labelName:time} where time is in ticks.
    **/
@@ -494,7 +494,7 @@ class Timeline {
     _labels = o != null ? o : new Map<String, int>();
   }
 
-  /** 
+  /**
    * Unpauses this timeline and jumps to the specified position or label.
    * @method gotoAndPlay
    * @param positionOrLabel The position in ticks or label to jump to.
@@ -504,7 +504,7 @@ class Timeline {
     _goto(positionOrLabel);
   }
 
-  /** 
+  /**
    * Pauses this timeline and jumps to the specified position or label.
    * @method gotoAndStop
    * @param positionOrLabel The position in ticks or label to jump to.
@@ -514,7 +514,7 @@ class Timeline {
     _goto(positionOrLabel);
   }
 
-  /** 
+  /**
    * Advances the timeline to the specified position.
    * @param value The position to seek to in ticks.
    * @param actionsMode Optional parameter specifying how actions are handled. See TimelineTween.setPosition for more details.
@@ -524,7 +524,7 @@ class Timeline {
     if (value.isNaN || value < 0) { value = 0; }
     num t = loop ? value%duration : value;
     bool end = !loop && value >= duration;
-    
+
     if (t == _prevPos) return end;
     _prevPosition = value;
     position = _prevPos = t; // in case an action changes the current frame.
@@ -538,7 +538,7 @@ class Timeline {
     return end;
   }
 
-  /** 
+  /**
    * Pauses or plays this timeline.
    * @param value Indicates whether the tween should be paused (true) or played (false).
    **/
@@ -547,9 +547,9 @@ class Timeline {
     //TimelineTween._register(this, !value);
   }
 
-  /** 
+  /**
    * Recalculates the duration of the timeline.
-   * The duration is automatically updated when tweens are added or removed, but this method is useful 
+   * The duration is automatically updated when tweens are added or removed, but this method is useful
    * if you modify a tween after it was added to the timeline.
    * @method updateDuration
    **/
@@ -561,7 +561,7 @@ class Timeline {
     }
   }
 
-  /** 
+  /**
    * Advances this timeline by the specified amount of time in ticks.
    * This is normally called automatically by the TimelineTween engine (via TimelineTween.tick), but is exposed for advanced uses.
    * @param delta The time to advance in ticks.
@@ -570,7 +570,7 @@ class Timeline {
     setPosition(_prevPosition + delta);
   }
 
-  /** 
+  /**
    * If a numeric position is passed, it is returned unchanged. If a string is passed, the position of the
    * corresponding frame label will be returned, or null if a matching label is not defined.
    * @param positionOrLabel A numeric position value or label string.
@@ -622,7 +622,7 @@ class TimelineStep {
   Map<String, dynamic> p0;
   Map<String, dynamic> p1;
   EaseFunction e;
-  
+
   TimelineStep (num duration, Map<String, dynamic> start, EaseFunction ease, Map<String, dynamic> end)
   {
     d = duration;
@@ -636,7 +636,7 @@ class TimelineAction {
   int t;
   Function f;
   List<dynamic> p;
-  
+
   TimelineAction (Function func, List<dynamic> params)
   {
     f = func;
@@ -678,17 +678,17 @@ class TimelineAction {
  * See the TimelineTween {{#crossLink "TimelineTween/get"}}{{/crossLink}} method for additional param documentation.
  */
 class TimelineTween {
-  /** 
+  /**
    * Constant defining the none actionsMode for use with setPosition.
    **/
   static const int NONE = 0;
 
-  /** 
+  /**
    * Constant defining the loop actionsMode for use with setPosition.
    **/
   static const int LOOP = 1;
 
-  /** 
+  /**
    * Constant defining the reverse actionsMode for use with setPosition.
    **/
   static const int REVERSE = 2;
@@ -723,7 +723,7 @@ class TimelineTween {
     //if (override) { TimelineTween.removeTweens(target); }
     return new TimelineTween(target, props);
   }
-  
+
   /**
    * Advances all tweens. This typically uses the Ticker class (available in the EaselJS library), but you can call it
    * manually if you prefer to use your own "heartbeat" implementation.
@@ -743,7 +743,7 @@ class TimelineTween {
   }
   **/
 
-  /** 
+  /**
    * Removes all existing tweens for a target. This is called automatically by new tweens if the <code>override</code> prop is true.
    * @method removeTweens
    * @static
@@ -761,7 +761,7 @@ class TimelineTween {
   }
    **/
 
-  /** 
+  /**
    * Indicates whether there are any active tweens on the target object (if specified) or in general.
    * @method hasActiveTweens
    * @static
@@ -771,24 +771,24 @@ class TimelineTween {
   TimelineTween.hasActiveTweens(target) {
     if (target != null) {
       assert(target == null); // TODO
-      //return target.tweenjs_count; 
+      //return target.tweenjs_count;
     }
     return TimelineTween._tweens && TimelineTween._tweens.length;
   }
    **/
 
-  /** 
+  /**
    * Registers or unregisters a tween with the ticking system.
    * @method _register
    * @static
-   * @protected 
+   * @protected
   static void _register(TimelineTween tween, bool value) {
     var target = tween._target;
     if (value) {
       // TODO: this approach might fail if a dev is using sealed objects in ES5
       //if (target) { target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count+1 : 1; }
       TimelineTween._tweens.add(tween);
-    } 
+    }
     else {
       //if (target) { target.tweenjs_count--; }
       var i = TimelineTween._tweens.indexOf(tween);
@@ -796,7 +796,7 @@ class TimelineTween {
     }
   }
    **/
-    
+
 // public properties:
   /**
    * Causes this tween to continue playing when a global pause is active. For example, if TweenJS is using Ticker,
@@ -804,41 +804,41 @@ class TimelineTween {
    * See TimelineTween.tick() for more info. Can be set via the props param.
    **/
   bool ignoreGlobalPause = false;
-  
+
   /**
    * If true, the tween will loop when it reaches the end. Can be set via the props param.
    **/
   bool loop = false;
-  
+
   /**
    * Read-only. Specifies the total duration of this tween in ticks.
    * This value is automatically updated as you modify the tween. Changing it directly could result in unexpected
    * behaviour.
    **/
   num duration = 0;
-  
+
   /**
    * Called whenever the tween's position changes with a single parameter referencing this tween instance.
    * @property onChange
    * @type {Function}
    **/
   ChangeHandler onChange = null;
-    
+
     /**
    * Called whenever the tween's position changes with a single parameter referencing this tween instance.
      * @event change
      * @since 0.4.0
     void change = null;
    **/
-  
+
   /**
-   * Read-only. The target of this tween. This is the object on which the tweened properties will be changed. Changing 
+   * Read-only. The target of this tween. This is the object on which the tweened properties will be changed. Changing
    * this property after the tween is created will not have any effect.
    * @property target
    * @type {Object}
    **/
   dynamic target = null;
-  
+
   /**
    * Read-only. The current normalized position of the tween. This will always be a value between 0 and duration.
    * Changing this property directly will have no effect.
@@ -846,13 +846,13 @@ class TimelineTween {
   num position = null;
 
 // private properties:
-  
+
   bool _paused = false;
   final Map<String, dynamic> _curQueueProps = {};
   final Map<String, dynamic> _initQueueProps = {};
   final List<TimelineStep> _steps = new List<TimelineStep>();
   final List<TimelineAction> _actions = new List<TimelineAction>();
-  
+
   /**
    * Raw position.
    **/
@@ -862,17 +862,17 @@ class TimelineTween {
    * The position within the current step.
    */
   num _stepPosition = 0; // this is needed by MovieClip.
-  
+
   /**
    * Normalized position.
    **/
   num _prevPos = -1;
   int _prevActionPos = -1;
-  
+
   dynamic _target = null;
-  
+
 // constructor:
-  /** 
+  /**
    * @method initialize
    * @param {Object} target
    * @param {Object} props
@@ -886,17 +886,17 @@ class TimelineTween {
       onChange = props.containsKey("onChange") ? props["onChange"] : null;
       //if (props.containsKey("override") && props["override"] == true) { TimelineTween.removeTweens(target); }
     }
-    
+
     if (props != null && props.containsKey("paused") && props["paused"] == true) { _paused = true; }
     //else { TimelineTween._register(this,true); }
-    if (props != null && props.containsKey("position")) { 
+    if (props != null && props.containsKey("position")) {
       setPosition(props["position"], TimelineTween.NONE); }
   }
-  
+
 // public methods:
-  /** 
+  /**
    * Queues a wait (essentially an empty tween).
-   * @example                                                   
+   * @example
    *  //This tween will wait 1s before alpha is faded to 0.
    *  createjs.TimelineTween.get(target).wait(1000).to({alpha:0}, 1000);
    * @method wait
@@ -911,9 +911,9 @@ class TimelineTween {
     var o = _cloneProps(_curQueueProps);
     return _addStep(new TimelineStep(duration, o, _linearEase, o));
   }
-  
 
-  /** 
+
+  /**
    * Queues a tween from the current values to the target properties. Set duration to 0 to jump to these value.
    * Numeric properties will be tweened from their current value in the tween to the target value. Non-numeric
    * properties will be set at the end of the specified duration.
@@ -935,11 +935,11 @@ class TimelineTween {
     if (duration != null && !duration.isNaN && duration > 0) d = duration;
     return _addStep(new TimelineStep(d, _cloneProps(_curQueueProps), ease, _cloneProps(_appendQueueProps(props))));
   }
-  
-  /** 
-   * Queues an action to call the specified function. 
+
+  /**
+   * Queues an action to call the specified function.
    *  @example
-   *    //would call myFunction() after 1s.      
+   *    //would call myFunction() after 1s.
    *    myTween.wait(1000).call(myFunction);
    * @method call
    * @param {Function} callback The function to call.
@@ -955,9 +955,9 @@ class TimelineTween {
   TimelineTween c(Function callback, [List<dynamic> params]) {
     return _addAction(new TimelineAction(callback, params != null ? params : [this]));
   }
-  
+
   // TODO: add clarification between this and a 0 duration .to:
-  /** 
+  /**
    * Queues an action to set the specified props on the specified target. If target is null, it will use this tween's
    * target.
    * @example
@@ -975,9 +975,9 @@ class TimelineTween {
         _target]));
   }
 
-  /** 
+  /**
    * Queues an action to to play (unpause) the specified tween. This enables you to sequence multiple tweens.
-   * @example 
+   * @example
    *  myTween.to({x:100},500).play(otherTween);
    * @method play
    * @param {TimelineTween} tween The tween to play.
@@ -987,7 +987,7 @@ class TimelineTween {
     return call(tween.setPaused, [false]);
   }
 
-  /** 
+  /**
    * Queues an action to to pause the specified tween.
    * @method pause
    * @param {TimelineTween} tween The tween to play. If null, it pauses this tween.
@@ -998,7 +998,7 @@ class TimelineTween {
     return call(tween.setPaused, [true]);
   }
 
-  /** 
+  /**
    * Advances the tween to a specified position.
    * @method setPosition
    * @param {Number} value The position to seek to in ticks.
@@ -1011,7 +1011,7 @@ class TimelineTween {
   bool setPosition(num value, [int actionsMode]) {
     if (value < 0) value = 0;
     if (actionsMode == null) actionsMode = 1;
-    
+
     // normalize position:
     var t = value;
     var end = false;
@@ -1022,19 +1022,19 @@ class TimelineTween {
         end = true;
       }
     }
-    
+
     if (t == _prevPos) { return end; }
-    
+
     var prevPos = _prevPos;
     position = _prevPos = t; // set this in advance in case an action modifies position.
     _prevPosition = value;
-    
+
     // handle tweens:
     if (_target != null) {
       if (end) {
         // addresses problems with an ending zero length step.
         _updateTargetProps(null,1);
-      } 
+      }
       else if (_steps.length > 0) {
         // find our new tween index:
         int i=0;
@@ -1046,7 +1046,7 @@ class TimelineTween {
         _updateTargetProps(step,_stepPosition/step.d);
       }
     }
-    
+
     // run actions:
     if (actionsMode != 0 && _actions.length > 0) {
       int actionPos = t.toInt();
@@ -1057,12 +1057,12 @@ class TimelineTween {
     }
 
     if (end) { setPaused(true); }
-    
+
     if (onChange != null) onChange(this);
     return end;
   }
 
-  /** 
+  /**
    * Advances this tween by the specified amount of time in milliseconds (or ticks if <code>useTicks</code> is true).
    * This is normally called automatically by the TimelineTween engine (via <code>TimelineTween.tick</code>), but is exposed for advanced uses.
    * @method tick
@@ -1073,7 +1073,7 @@ class TimelineTween {
     setPosition(_prevPosition+delta);
   }
 
-  /** 
+  /**
    * Pauses or plays this tween.
    * @method setPaused
    * @param {Boolean} value Indicates whether the tween should be paused (true) or played (false).
@@ -1093,7 +1093,7 @@ class TimelineTween {
   String toString() {
     return "[TimelineTween]";
   }
-  
+
 // private methods:
   /**
    * @method _updateTargetProps
@@ -1116,7 +1116,7 @@ class TimelineTween {
     for (var n in _initQueueProps.keys) {
       if ((v0 = p0[n]) == null) { p0[n] = v0 = _initQueueProps[n]; }
       if ((v1 = p1[n]) == null) { p1[n] = v1 = v0; }
-      
+
       if (v0 is num/*typeof number*/) {
         dv0 = v0.toDouble();
         dv1 = v1.toDouble();
@@ -1177,7 +1177,7 @@ class TimelineTween {
       else _target[n] = v;
     }
   }
-  
+
   /**
    * @method _runActions
    * @param {Number} startPos
@@ -1205,7 +1205,7 @@ class TimelineTween {
     var arr,oldValue = null,i, l, injectProps;
     for (var n in o.keys) {
       if (!_initQueueProps.containsKey(n)) {
-        
+
         //oldValue = _target[n];
         if (_target is DisplayObject)
         {
@@ -1223,17 +1223,17 @@ class TimelineTween {
             case "skewY": oldValue = d.skewY; break;
             case "regX": oldValue = d.pivotX; break;
             case "regY": oldValue = d.pivotY; break;
-            case "startPosition": 
+            case "startPosition":
               if (_target is MovieClip)
                 oldValue = (_target as MovieClip).startPosition;
               else oldValue = null;
               break;
-            case "mode": 
+            case "mode":
               if (_target is MovieClip)
                 oldValue = (_target as MovieClip).mode;
               else oldValue = null;
               break;
-            case "loop": 
+            case "loop":
               if (_target is MovieClip)
                 oldValue = (_target as MovieClip).loop;
               else oldValue = null;
@@ -1256,13 +1256,13 @@ class TimelineTween {
           if (_target.containsKey(n)) oldValue = _target[n];
           else oldValue = null;
         }
-        
+
         _initQueueProps[n] = oldValue;;
-      } 
+      }
       else if (_curQueueProps.containsKey(n)) {
         oldValue = _curQueueProps[n];
       }
-      
+
       _curQueueProps[n] = o[n];
     }
     return _curQueueProps;

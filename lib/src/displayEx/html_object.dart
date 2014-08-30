@@ -84,14 +84,12 @@ class HtmlObject extends DisplayObject {
     var globalAlpha = renderState.globalAlpha;
     var visibility = this.visible && this.off == false;
 
-    _tmpMatrix.copyFrom(globalMatrix);
-
-    var mxa = _tmpMatrix.a.toStringAsFixed(4);
-    var mxb = _tmpMatrix.b.toStringAsFixed(4);
-    var mxc = _tmpMatrix.c.toStringAsFixed(4);
-    var mxd = _tmpMatrix.d.toStringAsFixed(4);
-    var mxtx = _tmpMatrix.tx.toStringAsFixed(4);
-    var mxty = _tmpMatrix.ty.toStringAsFixed(4);
+    var mxa = globalMatrix.a.toStringAsFixed(4);
+    var mxb = globalMatrix.b.toStringAsFixed(4);
+    var mxc = globalMatrix.c.toStringAsFixed(4);
+    var mxd = globalMatrix.d.toStringAsFixed(4);
+    var mxtx = globalMatrix.tx.toStringAsFixed(4);
+    var mxty = globalMatrix.ty.toStringAsFixed(4);
 
     var styleOpacity = globalAlpha.toStringAsFixed(4);
     var styleTransform = "matrix($mxa,$mxb,$mxc,$mxd,$mxtx,$mxty)";

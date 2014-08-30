@@ -1,12 +1,23 @@
-part of stagexl.all;
+part of stagexl.display;
 
 abstract class InteractiveObject extends DisplayObject {
 
   bool doubleClickEnabled = false;
   bool mouseEnabled = true;
-  bool useHandCursor = false;
+  String mouseCursor = MouseCursor.AUTO;
+
   bool tabEnabled = true;
   int tabIndex = 0;
+
+  // simulate [useHandCursor] by changing the [mouseCursor] value.
+
+  bool get useHandCursor {
+    return mouseCursor == MouseCursor.BUTTON;
+  }
+
+  set useHandCursor(bool value) {
+    mouseCursor = value ? MouseCursor.BUTTON : null;
+  }
 
   // mouse events
 

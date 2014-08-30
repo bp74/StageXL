@@ -1,5 +1,9 @@
 part of stagexl.all;
 
+/// WARNING: This class is experimental! The implementation and behaviour may
+/// change in the future. Therefore it's recommended to use the [Sprite]
+/// class instead.
+///
 /// The BitmapContainer class is an optimized container for Bitmaps.
 ///
 /// Please note that only the Bitmap properties x, y, pivotX, pivotY,
@@ -46,8 +50,8 @@ class BitmapContainer extends DisplayObjectContainer {
     renderProgram.flush();
     renderProgram.reset(globalMatrix, globalAlpha);
 
-    for (int i = 0; i < _children.length; i++) {
-      Bitmap bitmap = _children[i];
+    for (int i = 0; i < numChildren; i++) {
+      Bitmap bitmap = getChildAt(i);
       BitmapData bitmapData = bitmap.bitmapData;
       if (bitmap.visible && bitmap.off == false && bitmapData != null) {
         renderContextWebGL.activateRenderTexture(bitmapData.renderTexture);
@@ -68,8 +72,8 @@ class BitmapContainer extends DisplayObjectContainer {
 
     // TODO: implement optimized BitmapBatch render code for canvas.
 
-    for (int i = 0; i < _children.length; i++) {
-      Bitmap bitmap = _children[i];
+    for (int i = 0; i < numChildren; i++) {
+      Bitmap bitmap = getChildAt(i);
       if (bitmap.visible && bitmap.off == false) {
         renderState.renderObject(bitmap);
       }

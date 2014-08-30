@@ -45,23 +45,23 @@ class BlurFilter extends BitmapFilter {
     int blurY = (this.blurY * pixelRatio).round();
     int stride = width * 4;
 
-    _premultiplyAlpha(data);
+    premultiplyAlpha(data);
 
     for (int x = 0; x < width; x++) {
-      _blur2(data, x * 4 + 0, height, stride, blurY);
-      _blur2(data, x * 4 + 1, height, stride, blurY);
-      _blur2(data, x * 4 + 2, height, stride, blurY);
-      _blur2(data, x * 4 + 3, height, stride, blurY);
+      blur(data, x * 4 + 0, height, stride, blurY);
+      blur(data, x * 4 + 1, height, stride, blurY);
+      blur(data, x * 4 + 2, height, stride, blurY);
+      blur(data, x * 4 + 3, height, stride, blurY);
     }
 
     for (int y = 0; y < height; y++) {
-      _blur2(data, y * stride + 0, width, 4, blurX);
-      _blur2(data, y * stride + 1, width, 4, blurX);
-      _blur2(data, y * stride + 2, width, 4, blurX);
-      _blur2(data, y * stride + 3, width, 4, blurX);
+      blur(data, y * stride + 0, width, 4, blurX);
+      blur(data, y * stride + 1, width, 4, blurX);
+      blur(data, y * stride + 2, width, 4, blurX);
+      blur(data, y * stride + 3, width, 4, blurX);
     }
 
-    _unpremultiplyAlpha(data);
+    unpremultiplyAlpha(data);
 
     renderTextureQuad.putImageData(imageData);
   }

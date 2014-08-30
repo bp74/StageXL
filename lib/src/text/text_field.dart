@@ -74,6 +74,8 @@ class TextField extends InteractiveObject {
   int get borderColor => _borderColor;
   int get maxChars => _maxChars;
 
+  String get mouseCursor => (type == TextFieldType.INPUT) ? MouseCursor.IBEAM : super.mouseCursor;
+
   //-------------------------------------------------------------------------------------------------
 
   void set width(num value) {

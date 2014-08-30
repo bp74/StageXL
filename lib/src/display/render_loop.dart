@@ -1,8 +1,9 @@
-part of stagexl.all;
+part of stagexl.display;
 
 class RenderLoop {
 
-  Juggler _juggler = new Juggler();
+  final Juggler _juggler = new Juggler();
+
   List<Stage> _stages = new List<Stage>();
   num _renderTime = -1;
   int _requestId = null;

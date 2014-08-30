@@ -1,35 +1,29 @@
-part of stagexl.all;
+part of stagexl.animation;
 
-/**
- * The EaseFunction is the function signature for transitions
- * used in the [Tween] and [Transition] classes. The function
- * takes the ration between 0.0 and 1.0 and returns the actual
- * progress of the transition.
- *
- * See also: [TransitionFunction], [Tween], [Transition]
- *
- * Examples:
- *
- *     // a linear transition
- *     var transition = (ratio) => ratio;
- *
- *     // a quadratic transtion
- *     var transition = (ratio) => ratio * ratio;
- *
- */
-
+/// The [EaseFunction] is the function signature for transitions
+/// used in the [Tween] and [Transition] classes. The function
+/// takes the ration between 0.0 and 1.0 and returns the actual
+/// progress of the transition.
+///
+/// See also: [TransitionFunction], [Tween], [Transition]
+///
+/// Examples:
+///
+///     // a linear transition
+///     var transition = (ratio) => ratio;
+///
+///     // a quadratic transtion
+///     var transition = (ratio) => ratio * ratio;
+///
 typedef num EaseFunction(num ratio);
 
-/**
- * The [TransitionFunction] class provides common transition functions used by
- * the [Transition] and [Tween] classes. The signature of those functions is
- * declared in [EaseFunction].
- *
- * Overview of all available transition types:
- *   <http://www.stagexl.org/docs/transitions.html>
- *
- */
-
+/// The [TransitionFunction] class provides common transition functions used by
+/// the [Transition] and [Tween] classes. The signature of those functions is
+/// declared in [EaseFunction].
+///
+/// Overview of all available transition types:
+/// <http://www.stagexl.org/docs/transitions.html>
+///
 class TransitionFunction {
 
   // Standard

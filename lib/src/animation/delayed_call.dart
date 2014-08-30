@@ -1,22 +1,19 @@
-part of stagexl.all;
+part of stagexl.animation;
 
-/**
- * The DelayedCall class is used to delay the invocation of
- * a function by a given time.
- *
- * See also: [Juggler]
- *
- * Examples:
- *
- *     var action = () => print("Hello world!");
- *     var delayedCall = new DelayedCall(action, 1.0);
- *     juggler.add(delayedCall);
- *
- *     var action = () => print("Hello world!");
- *     juggler.delayCall(action, 1.0);
- *
- */
-
+/// The [DelayedCall] class is used to delay the invocation of
+/// a function by a given time.
+///
+/// See also: [Juggler]
+///
+/// Examples:
+///
+///     var action = () => print("Hello world!");
+///     var delayedCall = new DelayedCall(action, 1.0);
+///     juggler.add(delayedCall);
+///
+///     var action = () => print("Hello world!");
+///     juggler.delayCall(action, 1.0);
+///
 class DelayedCall implements Animatable {
 
   final Function _action;

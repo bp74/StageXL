@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.display;
 
 /// The StageScaleMode defines how the Stage is scaled inside of the Canvas.
 
@@ -169,8 +169,8 @@ class Stage extends DisplayObjectContainer {
     canvas.onContextMenu.listen(_onMouseEvent);
     canvas.onMouseWheel.listen(_onMouseWheelEvent);
 
-    Mouse._onMouseCursorChanged.listen(_onMouseCursorChanged);
-    Multitouch._onInputModeChanged.listen(_onMultitouchInputModeChanged);
+    Mouse.onCursorChanged.listen((cursorName) => _updateMouseCursor());
+    Multitouch.onInputModeChanged.listen(_onMultitouchInputModeChanged);
 
     _onMultitouchInputModeChanged(null);
   }
@@ -475,10 +475,26 @@ class Stage extends DisplayObjectContainer {
   }
 
   //-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
 
-  _onMouseCursorChanged(String action) {
+  _updateMouseCursor() {
 
-    _canvas.style.cursor = Mouse._getCssStyle(_mouseCursor);
+    var mouseTarget = _mouseTarget;
+    var mouseCursor = Mouse.cursor;
+
+    if (mouseTarget != null && mouseCursor == MouseCursor.AUTO) {
+      var mc = mouseTarget.mouseCursor;
+      if (mc != null && mc != MouseCursor.AUTO) mouseCursor = mc;
+    }
+
+    if (mouseCursor == MouseCursor.AUTO) {
+      mouseCursor = MouseCursor.ARROW;
+    }
+
+    if (_mouseCursor != mouseCursor) {
+      _mouseCursor = mouseCursor;
+      _canvas.style.cursor = Mouse.getCursorStyle(mouseCursor);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -499,31 +515,14 @@ class Stage extends DisplayObjectContainer {
     _MouseButton mouseButton = _mouseButtons[button];
     _mousePosition = stagePoint;
 
-    if (Mouse._dragSprite != null) {
-      Mouse._dragSprite._updateDrag();
+    if (Sprite._dragSprite != null) {
+      Sprite._dragSprite._updateDrag();
     }
 
     if (event.type != "mouseout") {
       target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
     } else {
       this.dispatchEvent(new Event(Event.MOUSE_LEAVE));
-    }
-
-    //-----------------------------------------------------------------
-
-    var mouseCursor = MouseCursor.ARROW;
-
-    if (target is InteractiveObject && target.useHandCursor) {
-      mouseCursor = MouseCursor.BUTTON;
-    }
-
-    if (target is TextField && (target as TextField).type == TextFieldType.INPUT) {
-      mouseCursor = MouseCursor.IBEAM;
-    }
-
-    if (_mouseCursor != mouseCursor) {
-      _mouseCursor = mouseCursor;
-      _canvas.style.cursor = Mouse._getCssStyle(mouseCursor);
     }
 
     //-----------------------------------------------------------------
@@ -584,6 +583,10 @@ class Stage extends DisplayObjectContainer {
 
       _mouseTarget = newTarget;
     }
+
+    //-----------------------------------------------------------------
+
+    _updateMouseCursor();
 
     //-----------------------------------------------------------------
 
@@ -668,11 +671,11 @@ class Stage extends DisplayObjectContainer {
 
   List<StreamSubscription<html.TouchEvent>> _touchEventSubscriptions = [];
 
-  _onMultitouchInputModeChanged(String inputMode) {
+  _onMultitouchInputModeChanged(MultitouchInputMode inputMode) {
 
     _touchEventSubscriptions.forEach((s) => s.cancel());
 
-    if (Multitouch.inputMode == MultitouchInputMode.TOUCH_POINT) {
+    if (inputMode == MultitouchInputMode.TOUCH_POINT) {
       _touchEventSubscriptions = [
         _canvas.onTouchStart.listen(_onTouchEvent),
         _canvas.onTouchEnd.listen(_onTouchEvent),

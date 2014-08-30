@@ -1,38 +1,35 @@
-part of stagexl.all;
+part of stagexl.animation;
 
 class _AnimatableLink {
   Animatable animatable;
   _AnimatableLink nextAnimatableLink;
 }
 
-/**
- * The Juggler controls the progress of your application by
- * propagating the time passed between two render frames.
- *
- * The [RenderLoop] and [Stage] class provides Juggler instances
- * which are driven by the browsers animation frames. You can also
- * create your own Juggler instance and control the time by yourself.
- * Because Juggler implements the [Animatable] interface it can be
- * added to other Juggler instances too.
- *
- * See also: [Tween], [Transition], [DelayedCall]
- *
- * Examples:
- *
- *     var tween = new Tween(sprite, 1.0, TransitionFunction.easeIn);
- *     tween.animate.x.to(1.0);
- *     stage.juggler.add(tween);
- *
- *     // create a "gameJuggler" who controls all my animations.
- *     var gameJuggler = new Juggler();
- *     // start all animations controlled by "gameJuggler".
- *     stage.juggler.add(gameJuggler);
- *     // stop all animations controlled by "gameJuggler".
- *     stage.juggler.remove(gameJuggler);
- *
- */
-
-class Juggler implements Animatable {
+/// The [Juggler] controls the progress of your application by
+/// propagating the time passed between two render frames.
+///
+/// The RenderLoop and Stage class provide Juggler instances which are
+/// driven by the browsers animation frames. You can also create your
+/// own Juggler instance and control the time by yourself.
+/// Because [Juggler] implements the [Animatable] interface it can be
+/// added to other Juggler instances too.
+///
+/// See also: [Tween], [Transition], [DelayedCall]
+///
+/// Examples:
+///
+///     var tween = new Tween(sprite, 1.0, TransitionFunction.easeIn);
+///     tween.animate.x.to(1.0);
+///     stage.juggler.add(tween);
+///
+///     // create a "gameJuggler" who controls all my animations.
+///     var gameJuggler = new Juggler();
+///     // start all animations controlled by "gameJuggler".
+///     stage.juggler.add(gameJuggler);
+///     // stop all animations controlled by "gameJuggler".
+///     stage.juggler.remove(gameJuggler);
+///
+ class Juggler implements Animatable {
 
   _AnimatableLink _firstAnimatableLink;
   _AnimatableLink _lastAnimatableLink;
@@ -99,12 +96,12 @@ class Juggler implements Animatable {
 
   //-----------------------------------------------------------------------------------------------
 
-  void removeTweens(DisplayObject displayObject) {
+  void removeTweens(TweenObject tweenObject) {
 
     var link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
       var animatable = link.animatable;
-      if (animatable is Tween && identical(animatable.displayObject, displayObject)) {
+      if (animatable is Tween && identical(animatable.tweenObject, tweenObject)) {
         link.animatable = null;
       }
       link = link.nextAnimatableLink;
@@ -113,12 +110,12 @@ class Juggler implements Animatable {
 
   //-----------------------------------------------------------------------------------------------
 
-  bool containsTweens(DisplayObject displayObject) {
+  bool containsTweens(TweenObject tweenObject) {
 
     var link = _firstAnimatableLink;
     while(identical(link, _lastAnimatableLink) == false) {
       var animatable = link.animatable;
-      if (animatable is Tween && identical(animatable.displayObject, displayObject)) {
+      if (animatable is Tween && identical(animatable.tweenObject, tweenObject)) {
         return true;
       }
       link = link.nextAnimatableLink;
@@ -143,11 +140,11 @@ class Juggler implements Animatable {
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
-  Tween tween(DisplayObject displayObject, num time, [EaseFunction transitionFunction]) {
+  Tween tween(TweenObject tweenObject, num time, [EaseFunction transitionFunction]) {
 
     Tween tween = transitionFunction != null
-        ? new Tween(displayObject, time, transitionFunction)
-        : new Tween(displayObject, time);
+        ? new Tween(tweenObject, time, transitionFunction)
+        : new Tween(tweenObject, time);
 
     add(tween);
     return tween;
@@ -155,7 +152,8 @@ class Juggler implements Animatable {
 
   //-----------------------------------------------------------------------------------------------
 
-  Transition transition(num startValue, num targetValue, num time, EaseFunction transitionFunction, void onUpdate(num value)) {
+  Transition transition(num startValue, num targetValue, num time,
+                        EaseFunction transitionFunction, void onUpdate(num value)) {
 
     Transition transition = new Transition(startValue, targetValue, time, transitionFunction);
     transition.onUpdate = onUpdate;

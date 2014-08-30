@@ -1,42 +1,43 @@
-part of stagexl.all;
+library stagexl.multitouch;
+
+import 'dart:async';
+import 'dart:html' as html;
 
 class MultitouchInputMode {
+  final String name;
+  const MultitouchInputMode(this.name);
 
-  static const String GESTURE = "gesture";
-  static const String NONE = "none";
-  static const String TOUCH_POINT = "touchPoint";
+  static const MultitouchInputMode GESTURE = const MultitouchInputMode("GESTURE");
+  static const MultitouchInputMode NONE = const MultitouchInputMode("NONE");
+  static const MultitouchInputMode TOUCH_POINT = const MultitouchInputMode("TOUCH_POINT");
 }
 
 class Multitouch {
 
+  static bool supportsGestureEvents = false;
+  static bool supportsTouchEvents = _checkTouchEvents();
+  static List<String> supportedGestures = [];
+
   static bool _initialized = false;
-  static bool _supportsGestureEvents = false;
-  static bool _supportsTouchEvents = _checkTouchEvents;
+  static MultitouchInputMode _inputMode =  MultitouchInputMode.NONE;
 
-  static List<String> _supportedGestures = [];
-  static String _inputMode =  MultitouchInputMode.NONE;
-
-  static StreamController<String> _inputModeChangedEvent = new StreamController<String>();
-  static Stream<String> _onInputModeChanged = _inputModeChangedEvent.stream.asBroadcastStream();
+  static final _inputModeChangedEvent = new StreamController<MultitouchInputMode>.broadcast();
+  static Stream<MultitouchInputMode> onInputModeChanged = _inputModeChangedEvent.stream;
 
   //------------------------------------------------------------------
 
-  static bool get supportsGestureEvents => _supportsGestureEvents;
-  static bool get supportsTouchEvents => _supportsTouchEvents;
-  static List<String> get supportedGestures => _supportedGestures;
+  static int get maxTouchPoints => supportsTouchEvents ? 10 : 0;
 
-  static int get maxTouchPoints => _supportsTouchEvents ? 10 : 0;
+  static MultitouchInputMode get inputMode => _inputMode;
 
-  static String get inputMode => _inputMode;
-
-  static set inputMode(String value) {
+  static set inputMode(MultitouchInputMode value) {
     _inputMode = value;
-    _inputModeChangedEvent.add(_inputMode);
+    _inputModeChangedEvent.add(value);
   }
 
   //------------------------------------------------------------------
 
-  static bool get _checkTouchEvents {
+  static bool _checkTouchEvents() {
     try {
       return html.TouchEvent.supported;
     } catch (e) {

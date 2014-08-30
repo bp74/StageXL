@@ -1,29 +1,26 @@
-part of stagexl.all;
+part of stagexl.animation;
 
-/**
- * The AnimationChain class is used to animate multiple Animatables.
- * Those Animatables are animated one after the other and the onComplete
- * callback is called when the last Animatable has completed.
- *
- * See also: [Juggler], [AnimationChain], [Animatable]
- *
- * Examples:
- *
- *     var ac = new AnimationChain();
- *     ac.add(new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700));
- *     ac.add(new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500));
- *     ac.delay = 1.0;
- *     ac.onStart = () => print("start");
- *     ac.onComplete = () => print("complete");
- *     juggler.add(ac);
- *
- *     juggler.addChain([
- *         new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
- *         new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
- *         ..onComplete = () => print("complete");
- *
- */
-
+/// The [AnimationChain] class is used to animate multiple Animatables.
+/// Those Animatables are animated one after the other and the onComplete
+/// callback is called when the last Animatable has completed.
+///
+/// See also: [Juggler], [AnimationChain], [Animatable]
+///
+/// Examples:
+///
+///     var ac = new AnimationChain();
+///     ac.add(new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700));
+///     ac.add(new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500));
+///     ac.delay = 1.0;
+///     ac.onStart = () => print("start");
+///     ac.onComplete = () => print("complete");
+///     juggler.add(ac);
+///
+///     juggler.addChain([
+///         new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
+///         new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
+///        ..onComplete = () => print("complete");
+///
 class AnimationChain implements Animatable {
 
   final List<Animatable> _animatables = new List<Animatable>();

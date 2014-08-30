@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.display;
 
 /// The BitmapDataUpdateBatch class provides all the BitmapData update
 /// methods, but does not automatically update the underlying WebGL
@@ -33,7 +33,7 @@ class BitmapDataUpdateBatch {
 
   void colorTransform(Rectangle<int> rect, ColorTransform transform) {
 
-    bool isLittleEndianSystem = BitmapDataChannel.isLittleEndianSystem;
+    bool isLittleEndianSystem = env.isLittleEndianSystem;
 
     int redMultiplier = (1024 * transform.redMultiplier).toInt();
     int greenMultiplier = (1024 * transform.greenMultiplier).toInt();
@@ -152,7 +152,7 @@ class BitmapDataUpdateBatch {
     if (renderTextureQuad.textureWidth == 0) return 0;
     if (renderTextureQuad.textureHeight == 0) return 0;
 
-    var isLittleEndianSystem = BitmapDataChannel.isLittleEndianSystem;
+    var isLittleEndianSystem = env.isLittleEndianSystem;
     var imageData = renderTextureQuad.getImageData();
     var pixels = imageData.width * imageData.height;
     var data = imageData.data;

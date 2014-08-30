@@ -1,4 +1,22 @@
-part of stagexl.all;
+library stagexl.mouse;
+
+import 'dart:async';
+import 'dart:math';
+
+class MouseCursor {
+  static const String AUTO = "auto";
+  static const String ARROW = "arrow";
+  static const String BUTTON = "button";
+  static const String HAND = "hand";
+  static const String IBEAM = "ibeam";
+  static const String WAIT = "wait";
+}
+
+class MouseCursorData {
+  String url;
+  Point<int> hotSpot;
+  MouseCursorData(this.url, this.hotSpot);
+}
 
 class Mouse {
 
@@ -6,56 +24,44 @@ class Mouse {
   static String _cursorName = MouseCursor.AUTO;
   static Map<String, MouseCursorData> _cursorDatas = new Map<String, MouseCursorData>();
 
-  static Sprite _dragSprite = null;
-  static Point<num> _dragSpriteCenter = null;
-  static Rectangle<num> _dragSpriteBounds = null;
-
-  static StreamController<String> _mouseCursorChangedEvent = new StreamController<String>();
-  static Stream<String> _onMouseCursorChanged = _mouseCursorChangedEvent.stream.asBroadcastStream();
+  static final _cursorChangedEvent = new StreamController<String>.broadcast();
+  static Stream<String> onCursorChanged = _cursorChangedEvent.stream;
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
   static String get cursor => _cursorName;
 
-  static void set cursor(String value) {
-    _cursorName = value;
-    _mouseCursorChangedEvent.add("cursor");
+  static void set cursor(String cursorName) {
+    _cursorName = cursorName;
+    _cursorChangedEvent.add(cursorName);
   }
 
   //-------------------------------------------------------------------------------------------------
 
   static void registerCursor(String cursorName, MouseCursorData cursorData) {
     _cursorDatas[cursorName] = cursorData;
-    _mouseCursorChangedEvent.add("registerCursor");
   }
 
   static void unregisterCursor(String cursorName) {
     _cursorDatas.remove(cursorName);
-    _mouseCursorChangedEvent.add("unregisterCursor");
   }
-
-  //-------------------------------------------------------------------------------------------------
 
   static void hide() {
     _cursorHidden = true;
-    _mouseCursorChangedEvent.add("hide");
+    _cursorChangedEvent.add(_cursorName);
   }
 
   static void show() {
     _cursorHidden = false;
-    _mouseCursorChangedEvent.add("show");
+    _cursorChangedEvent.add(_cursorName);
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  static String _getCssStyle(String cursorName) {
+  static String getCursorStyle(String cursorName) {
 
     String style = "auto";
-
-    if (_cursorName != MouseCursor.AUTO) {
-      cursorName = _cursorName;
-    }
 
     switch(cursorName) {
       case MouseCursor.AUTO: style = "auto"; break;
@@ -74,11 +80,7 @@ class Mouse {
       style = "url('$cursorDataUrl') $cursorDataX $cursorDataY, $style";
     }
 
-    if (_cursorHidden) {
-      style = "none";
-    }
-
-    return style;
+    return _cursorHidden ? "none": style;
   }
 
 }

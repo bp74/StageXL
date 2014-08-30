@@ -1,10 +1,12 @@
-part of stagexl.all;
+part of stagexl.display;
 
-abstract class DisplayObject extends EventDispatcher implements BitmapDrawable, RenderObject {
+abstract class DisplayObject
+    extends EventDispatcher
+    implements BitmapDrawable, RenderObject, TweenObject {
 
   static int _nextID = 0;
+  final int id = _nextID++;
 
-  int _id = _nextID++;
   num _x = 0.0;
   num _y = 0.0;
   num _pivotX = 0.0;

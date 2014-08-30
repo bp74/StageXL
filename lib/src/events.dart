@@ -10,6 +10,7 @@ part 'events/event_stream.dart';
 part 'events/event_stream_provider.dart';
 part 'events/event_stream_subscription.dart';
 part 'events/keyboard_event.dart';
+part 'events/key_location.dart';
 part 'events/mouse_event.dart';
 part 'events/text_event.dart';
 part 'events/touch_event.dart';

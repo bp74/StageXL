@@ -62,22 +62,22 @@ class DropShadowFilter extends BitmapFilter {
     int alphaChannel = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.ALPHA);
     int stride = width * 4;
 
-    _shiftChannel(data, 3, width, height, shiftX, shiftY);
+    shiftChannel(data, 3, width, height, shiftX, shiftY);
 
     for (int x = 0; x < width; x++) {
-      _blur2(data, x * 4 + alphaChannel, height, stride, blurY);
+      blur(data, x * 4 + alphaChannel, height, stride, blurY);
     }
 
     for (int y = 0; y < height; y++) {
-      _blur2(data, y * stride + alphaChannel, width, 4, blurX);
+      blur(data, y * stride + alphaChannel, width, 4, blurX);
     }
 
     if (this.knockout) {
-      _setColorKnockout(data, this.color, sourceImageData.data);
+      setColorKnockout(data, this.color, sourceImageData.data);
     } else if (this.hideObject) {
-      _setColor(data, this.color);
+      setColor(data, this.color);
     } else {
-      _setColorBlend(data, this.color, sourceImageData.data);
+      setColorBlend(data, this.color, sourceImageData.data);
     }
 
     renderTextureQuad.putImageData(imageData);

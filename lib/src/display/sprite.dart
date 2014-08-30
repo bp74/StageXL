@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.display;
 
 class Sprite extends DisplayObjectContainer {
 
@@ -11,21 +11,26 @@ class Sprite extends DisplayObjectContainer {
   Graphics get graphics {
     return (_graphics != null) ? _graphics : _graphics = new Graphics();
   }
+
   set graphics(Graphics value) => _graphics = value;
 
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
+  static Sprite _dragSprite = null;
+  static Point<num> _dragSpriteCenter = null;
+  static Rectangle<num> _dragSpriteBounds = null;
+
   startDrag([bool lockCenter = false, Rectangle<num> bounds = null]) {
 
-    Mouse._dragSprite = this;
-    Mouse._dragSpriteBounds = bounds;
+    _dragSprite = this;
+    _dragSpriteBounds = bounds;
 
     if (lockCenter) {
-      Mouse._dragSpriteCenter = this.getBoundsTransformed(_identityMatrix).center;
+      _dragSpriteCenter = this.getBoundsTransformed(_identityMatrix).center;
     } else {
       var mp = this.mousePosition;
-      Mouse._dragSpriteCenter = (mp != null) ? mp : new Point<num>(0, 0);
+      _dragSpriteCenter = (mp != null) ? mp : new Point<num>(0, 0);
     }
 
     _updateDrag();
@@ -33,10 +38,10 @@ class Sprite extends DisplayObjectContainer {
 
   stopDrag() {
 
-    if (Mouse._dragSprite == this) {
-      Mouse._dragSprite = null;
-      Mouse._dragSpriteCenter = null;
-      Mouse._dragSpriteBounds = null;
+    if (_dragSprite == this) {
+      _dragSprite = null;
+      _dragSpriteCenter = null;
+      _dragSpriteBounds = null;
     }
   }
 
@@ -48,7 +53,7 @@ class Sprite extends DisplayObjectContainer {
 
     if (mp != null && this.stage != null) {
 
-      var bounds = Mouse._dragSpriteBounds;
+      var bounds = _dragSpriteBounds;
       if (bounds != null) {
         var mpParent = this.transformationMatrix.transformPoint(mp);
         if (mpParent.x < bounds.left) mpParent.x = bounds.left;
@@ -58,7 +63,7 @@ class Sprite extends DisplayObjectContainer {
         mp = this.transformationMatrix.cloneInvert().transformPoint(mpParent);
       }
 
-      var pivot = new Point(_pivotX, _pivotY).add(mp).subtract(Mouse._dragSpriteCenter);
+      var pivot = new Point(_pivotX, _pivotY).add(mp).subtract(_dragSpriteCenter);
       var location = this.transformationMatrix.transformPoint(pivot);
 
       this.visible = false;

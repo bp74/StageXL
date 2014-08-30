@@ -155,7 +155,7 @@ class ColorMatrixFilter extends BitmapFilter {
     //dstB = (m[ 8] * srcR) + (m[ 9] * srcG) + (m[10] * srcB) + (m[11] * srcA) + o[2]
     //dstA = (m[12] * srcR) + (m[13] * srcG) + (m[14] * srcB) + (m[15] * srcA) + o[3]
 
-    bool isLittleEndianSystem = BitmapDataChannel.isLittleEndianSystem;
+    bool isLittleEndianSystem = env.isLittleEndianSystem;
 
     int d0c0 = (_colorMatrixList[isLittleEndianSystem ? 00 : 15] * 65536).round();
     int d0c1 = (_colorMatrixList[isLittleEndianSystem ? 01 : 14] * 65536).round();
