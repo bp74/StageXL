@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.displayex;
 
 /// WARNING: This class is experimental! The implementation and behaviour may
 /// change in the future. Therefore it's recommended to use the [Sprite]

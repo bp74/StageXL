@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.displayex;
 
 class ButtonHelper {
 
@@ -14,10 +14,10 @@ class ButtonHelper {
     : super() {
 
     target.stop();
-    target.addEventListener(MouseEvent.MOUSE_OVER, _onMouseEvent);
-    target.addEventListener(MouseEvent.MOUSE_OUT, _onMouseEvent);
-    target.addEventListener(MouseEvent.MOUSE_DOWN, _onMouseEvent);
-    target.addEventListener(MouseEvent.MOUSE_UP, _onMouseEvent);
+    target.onMouseOver.listen(_onMouseEvent);
+    target.onMouseOut.listen(_onMouseEvent);
+    target.onMouseDown.listen(_onMouseEvent);
+    target.onMouseUp.listen(_onMouseEvent);
     target.hitArea = hitArea;
     target.useHandCursor = true;
 

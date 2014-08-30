@@ -1,8 +1,8 @@
 library stagexl;
 
-export 'src/all.dart';
 export 'src/animation.dart';
 export 'src/display.dart';
+export 'src/display_ex.dart';
 export 'src/engine.dart';
 export 'src/events.dart';
 export 'src/filters.dart';

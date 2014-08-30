@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.displayex;
 
 class _BitmapContainerProgram extends RenderProgram {
 

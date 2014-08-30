@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.displayex;
 
 /**
  * The HtmlObject adds a regular HTML element to the display list.
@@ -37,9 +37,9 @@ part of stagexl.all;
 
 class HtmlObject extends DisplayObject {
 
-  final html.Element element;
+  final Element element;
 
-  html.CssStyleDeclaration _style;
+  CssStyleDeclaration _style;
   String _styleOpacity = "";
   String _styleTransform = "";
   String _styleVisibility = "";
