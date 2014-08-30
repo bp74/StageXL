@@ -16,7 +16,11 @@ import 'dart:html' show Element, ImageElement, AudioElement, HttpRequest,
 //-----------------------------------------------------------------------------
 
 import 'geom.dart';
-import 'internal.dart';
+
+import 'internal/environment.dart' as env;
+import 'internal/image_loader.dart';
+import 'internal/tools.dart';
+
 import 'media.dart';
 
 part 'animation/animatable.dart';
@@ -99,6 +103,15 @@ part 'filters/drop_shadow_filter.dart';
 part 'filters/flatten_filter.dart';
 part 'filters/glow_filter.dart';
 
+part 'resources/resource_manager.dart';
+part 'resources/resource_manager_resource.dart';
+part 'resources/sound_sprite.dart';
+part 'resources/sound_sprite_segment.dart';
+part 'resources/sprite_sheet.dart';
+part 'resources/texture_atlas.dart';
+part 'resources/texture_atlas_format.dart';
+part 'resources/texture_atlas_frame.dart';
+
 part 'text/font_style_metrics.dart';
 part 'text/text_field.dart';
 part 'text/text_field_auto_size.dart';
@@ -112,15 +125,6 @@ part 'ui/key_location.dart';
 part 'ui/mouse.dart';
 part 'ui/mouse_cursor.dart';
 part 'ui/multitouch.dart';
-
-part 'util/resource_manager.dart';
-part 'util/resource_manager_resource.dart';
-part 'util/sound_sprite.dart';
-part 'util/sound_sprite_segment.dart';
-part 'util/sprite_sheet.dart';
-part 'util/texture_atlas.dart';
-part 'util/texture_atlas_format.dart';
-part 'util/texture_atlas_frame.dart';
 
 //-----------------------------------------------------------------------------
 

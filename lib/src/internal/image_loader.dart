@@ -3,47 +3,46 @@ library stagexl.internal.imageloader;
 import 'dart:async';
 import 'dart:html';
 
-import 'environment.dart';
+import 'environment.dart' as env;
 
 class ImageLoader {
 
-  final ImageElement _image = new ImageElement();
+  final ImageElement image = new ImageElement();
   final Completer<ImageElement> _completer = new Completer<ImageElement>();
 
-  String _url;
+  final String _url;
   StreamSubscription _onLoadSubscription;
   StreamSubscription _onErrorSubscription;
 
-  ImageLoader(String url, bool webpAvailable, bool corsEnabled) {
+  ImageLoader(String url, bool webpAvailable, bool corsEnabled)
+      : _url = url {
 
-    _url = url;
-    _onLoadSubscription = _image.onLoad.listen(_onImageLoad);
-    _onErrorSubscription = _image.onError.listen(_onImageError);
+    _onLoadSubscription = image.onLoad.listen(_onImageLoad);
+    _onErrorSubscription = image.onError.listen(_onImageError);
 
     if (corsEnabled) {
-      _image.crossOrigin = 'anonymous';
+      image.crossOrigin = 'anonymous';
     }
 
     if (webpAvailable) {
-      Environment.isWebpSupported.then(_onWebpSupported);
+      env.isWebpSupported.then(_onWebpSupported);
     } else {
-      _image.src = _url;
+      image.src = _url;
     }
   }
 
   //---------------------------------------------------------------------------
 
   Future<ImageElement> get done => _completer.future;
-  ImageElement get image => _image;
 
   //---------------------------------------------------------------------------
 
   void _onWebpSupported(bool webpSupported) {
     var match = new RegExp(r"(png|jpg|jpeg)$").firstMatch(_url);
     if (webpSupported && match != null) {
-      _image.src = _url.substring(0, match.start) + "webp";
+      image.src = _url.substring(0, match.start) + "webp";
     } else {
-      _image.src = _url;
+      image.src = _url;
     }
   }
 
@@ -58,5 +57,4 @@ class ImageLoader {
     _onErrorSubscription.cancel();
     _completer.completeError(new StateError("Failed to load image."));
   }
-
 }

@@ -81,9 +81,9 @@ class _Touch {
 
 class Stage extends DisplayObjectContainer {
 
-  static bool autoHiDpi = Environment.autoHiDPI;
-  static bool get isMobile => Environment.isMobileDevice;
-  static num get devicePixelRatio => Environment.devicePixelRatio;
+  static bool autoHiDpi = env.autoHiDPI;
+  static bool get isMobile => env.isMobileDevice;
+  static num get devicePixelRatio => env.devicePixelRatio;
 
   CanvasElement _canvas;
   RenderContext _renderContext;
@@ -368,7 +368,7 @@ class Stage extends DisplayObjectContainer {
     int sourceWidth = _sourceWidth;
     int sourceHeight = _sourceHeight;
 
-    if (Environment.isCocoonJS) {
+    if (env.isCocoonJS) {
       clientLeft = 0;
       clientTop = 0;
       clientWidth = html.window.innerWidth;
@@ -690,7 +690,7 @@ class Stage extends DisplayObjectContainer {
 
   _onTouchEvent(html.TouchEvent event) {
 
-    if (Environment.isCocoonJS) {
+    if (env.isCocoonJS) {
 
       var jsEvent = new JsObject.fromBrowserObject(event);
       var jsChangedTouches = new JsArray.from(jsEvent["changedTouches"]);

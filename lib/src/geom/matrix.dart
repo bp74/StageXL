@@ -6,7 +6,6 @@ import 'dart:typed_data';
 
 import 'point.dart';
 import 'vector.dart';
-import 'rectangle.dart';
 
 class Matrix {
 
