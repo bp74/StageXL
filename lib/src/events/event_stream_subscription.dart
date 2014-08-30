@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.events;
 
 typedef void EventListener<T extends Event>(T event);
 

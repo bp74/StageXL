@@ -1,24 +1,27 @@
-part of stagexl.all;
+part of stagexl.events;
 
-class BroadcastEvent extends Event {
+// TODO: We should make BroadcastEvents more generic.
+
+abstract class BroadcastEvent extends Event {
   BroadcastEvent(String type) : super(type, false);
   bool get captures => false;
+  void dispatch();
 }
 
 class EnterFrameEvent extends BroadcastEvent {
-  num _passedTime;
-  num get passedTime => _passedTime;
-  EnterFrameEvent(num passedTime)
-      : super(Event.ENTER_FRAME),
-        _passedTime = passedTime;
+  num passedTime;
+  EnterFrameEvent(this.passedTime) : super(Event.ENTER_FRAME);
+  void dispatch() => _dispatchBroadcastEvent(this, _enterFrameSubscriptions);
 }
 
 class ExitFrameEvent extends BroadcastEvent {
   ExitFrameEvent() : super(Event.EXIT_FRAME);
+  void dispatch() => _dispatchBroadcastEvent(this, _exitFrameSubscriptions);
 }
 
 class RenderEvent extends BroadcastEvent {
   RenderEvent() : super(Event.RENDER);
+  void dispatch() => _dispatchBroadcastEvent(this, _renderSubscriptions);
 }
 
 //-------------------------------------------------------------------------------------------------

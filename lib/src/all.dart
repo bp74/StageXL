@@ -19,6 +19,7 @@ import 'internal/environment.dart' as env;
 import 'internal/tools.dart';
 
 import 'engine.dart';
+import 'events.dart';
 import 'geom.dart';
 import 'media.dart';
 import 'ui.dart';
@@ -67,18 +68,6 @@ part 'displayEx/html_object.dart';
 part 'displayEx/scale9_bitmap.dart';
 part 'displayEx/time_gauge.dart';
 part 'displayEx/warp.dart';
-
-part 'events/broadcast_event.dart';
-part 'events/event.dart';
-part 'events/event_dispatcher.dart';
-part 'events/event_phase.dart';
-part 'events/event_stream.dart';
-part 'events/event_stream_provider.dart';
-part 'events/event_stream_subscription.dart';
-part 'events/keyboard_event.dart';
-part 'events/mouse_event.dart';
-part 'events/text_event.dart';
-part 'events/touch_event.dart';
 
 part 'filters/alpha_mask_filter.dart';
 part 'filters/bitmap_filter.dart';

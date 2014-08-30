@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.events;
 
 class EventStreamProvider<T extends Event> {
 

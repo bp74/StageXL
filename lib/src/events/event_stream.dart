@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.events;
 
 class EventStream<T extends Event> extends Stream<T> {
 
@@ -23,6 +23,8 @@ class EventStream<T extends Event> extends Stream<T> {
     void onCancel(StreamSubscription subscription)}) => this;
 
   bool get hasSubscriptions => _subscriptions.length > 0;
+  bool get hasCapturingSubscriptions => _capturingSubscriptionCount > 0;
+  bool get hasBubblingSubscriptions => _subscriptions.length > _capturingSubscriptionCount;
 
   EventDispatcher get target => _target;
   String get eventType => _eventType;
@@ -133,19 +135,12 @@ class EventStream<T extends Event> extends Stream<T> {
 
   //-----------------------------------------------------------------------------------------------
 
-  bool _hasPropagationSubscriptions(Event event) {
-
-    return event.captures && _capturingSubscriptionCount > 0 ||
-           event.bubbles && _subscriptions.length > _capturingSubscriptionCount;
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  _dispatchEventInternal(T event, EventDispatcher target, int eventPhase)  {
+  _dispatchEventInternal(T event, EventDispatcher target, EventPhase eventPhase)  {
 
     var subscriptions = _subscriptions;
 
     for(var i = 0; i < subscriptions.length; i++) {
+
       var subscription = subscriptions[i];
       if (subscription.isCanceled || subscription.isPaused ||
           subscription.isCapturing != (eventPhase == EventPhase.CAPTURING_PHASE)) continue;

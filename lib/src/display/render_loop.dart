@@ -84,10 +84,10 @@ class RenderLoop {
     var invalidate = false;
 
     if (deltaTime >= 1) {
-      _renderTime = currentTime;
-      _enterFrameEvent._passedTime = deltaTimeSec;
-      _dispatchBroadcastEvent(_enterFrameEvent, _enterFrameSubscriptions);
 
+      _renderTime = currentTime;
+      _enterFrameEvent.passedTime = deltaTimeSec;
+      _enterFrameEvent.dispatch();
       _juggler.advanceTime(deltaTimeSec);
 
       for (int i = 0; i < _stages.length; i++) {
@@ -96,14 +96,14 @@ class RenderLoop {
 
       if (_invalidate) {
         _invalidate = false;
-        _dispatchBroadcastEvent(_renderEvent, _renderSubscriptions);
+        _renderEvent.dispatch();
       }
 
       for (int i = 0; i < _stages.length; i++) {
         _stages[i].materialize(currentTimeSec, deltaTimeSec);
       }
 
-      _dispatchBroadcastEvent(_exitFrameEvent, _exitFrameSubscriptions);
+      _exitFrameEvent.dispatch();
     }
   }
 }

@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.events;
 
 class Event {
 
@@ -30,7 +30,7 @@ class Event {
 
   String _type;
   bool _bubbles;
-  int _eventPhase = EventPhase.AT_TARGET;
+  EventPhase _eventPhase = EventPhase.AT_TARGET;
   EventDispatcher _target = null;
   EventDispatcher _currentTarget = null;
   bool _stopsPropagation = false;
@@ -54,10 +54,10 @@ class Event {
   bool get stopsImmediatePropagation => _stopsImmediatePropagation;
 
   String get type => _type;
-  int get eventPhase => _eventPhase;
   bool get bubbles => _bubbles;
   bool get captures => true;
 
+  EventPhase get eventPhase => _eventPhase;
   EventDispatcher get target => _target;
   EventDispatcher get currentTarget => _currentTarget;
 }

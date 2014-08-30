@@ -1,9 +1,14 @@
-part of stagexl.all;
+part of stagexl.events;
 
 class EventPhase {
 
-  static const int CAPTURING_PHASE = 1;
-  static const int AT_TARGET = 2;
-  static const int BUBBLING_PHASE = 3;
+  final int phase;
+  final String name;
+
+  const EventPhase(this.phase, this.name);
+
+  static const EventPhase CAPTURING_PHASE = const EventPhase(1, "CAPTURING_PHASE");
+  static const EventPhase AT_TARGET = const EventPhase(2, "AT_TARGET");
+  static const EventPhase BUBBLING_PHASE = const EventPhase(3, "BUBBLING_PHASE");
 }
 
