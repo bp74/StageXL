@@ -2,6 +2,8 @@ part of stagexl.display;
 
 abstract class Mask implements RenderMask {
 
+  bool relativeToParent = false;
+
   bool border = false;
   int borderColor = 0xFF000000;
   int borderWidth = 1;

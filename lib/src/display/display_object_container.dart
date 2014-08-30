@@ -265,10 +265,12 @@ abstract class DisplayObjectContainer extends InteractiveObject {
         num deltaY = localY - matrix.ty;
         num childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
         num childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
-        num maskX = 0.0;
-        num maskY = 0.0;
 
-        if (mask != null && mask.hitTest(childX, childY) == false) continue;
+        if (mask != null) {
+          num maskX = mask.relativeToParent ? localX : childX;
+          num maskY = mask.relativeToParent ? localY : childY;
+          if (mask.hitTest(maskX, maskY) == false) continue;
+        }
 
         var displayObject = child.hitTestInput(childX, childY);
         if (displayObject == null) continue;

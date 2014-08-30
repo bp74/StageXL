@@ -95,11 +95,12 @@ class RenderState {
     cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
     cs2.alpha = alpha * cs1.alpha;
 
-    _currentContextState = cs2;
-
     if (mask != null) {
+      _currentContextState = mask.relativeToParent ? cs1 : cs2;
       renderContext.beginRenderMask(this, mask);
     }
+
+    _currentContextState = cs2;
 
     if (cache != null) {
       renderQuad(cache);
@@ -110,6 +111,7 @@ class RenderState {
     }
 
     if (mask != null) {
+      _currentContextState = mask.relativeToParent ? cs1 : cs2;
       renderContext.endRenderMask(this, mask);
     }
 
