@@ -1,5 +1,23 @@
 library stagexl;
 
+// StageXL Library Hierarchy (bottom-up)
+//
+// ┌──────────────────┐
+// │stagexl.displayEx │
+// └──────────────────┘
+// ┌──────────────────┐┌──────────────────┐┌────────────────┐
+// │stagexl.filters   ││stagexl.resources ││stagexl.text    │
+// └──────────────────┘└──────────────────┘└────────────────┘
+// ┌──────────────────┐
+// │stagexl.display   │
+// └──────────────────┘
+// ┌──────────────────┐┌──────────────────┐┌────────────────┐┌───────────────┐
+// │stagexl.engine    ││stagexl.animation ││stagexl.events  ││stagexl.media  │
+// └──────────────────┘└──────────────────┘└────────────────┘└───────────────┘
+// ┌──────────────────┐┌──────────────────┐┌────────────────┐
+// │stagexl.geom      ││stagexl.ui        ││stagexl.tools*  │
+// └──────────────────┘└──────────────────┘└────────────────┘
+
 export 'src/animation.dart';
 export 'src/display.dart';
 export 'src/display_ex.dart';
