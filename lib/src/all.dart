@@ -1,6 +1,5 @@
 library stagexl.all;
 
-import 'dart:async';
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' as html;
 import 'dart:web_gl' as gl;
@@ -12,8 +11,6 @@ import 'dart:html' show Element, ImageElement, AudioElement, HttpRequest,
 
 //-----------------------------------------------------------------------------
 
-import 'filters/image_data_helpers.dart';
-import 'internal/environment.dart' as env;
 import 'internal/tools.dart';
 
 import 'animation.dart';
@@ -36,15 +33,6 @@ part 'displayEx/movie_clip.dart';
 part 'displayEx/scale9_bitmap.dart';
 part 'displayEx/time_gauge.dart';
 part 'displayEx/warp.dart';
-
-part 'filters/alpha_mask_filter.dart';
-part 'filters/bitmap_filter_program.dart';
-part 'filters/blur_filter.dart';
-part 'filters/color_matrix_filter.dart';
-part 'filters/displacement_map_filter.dart';
-part 'filters/drop_shadow_filter.dart';
-part 'filters/flatten_filter.dart';
-part 'filters/glow_filter.dart';
 
 //-----------------------------------------------------------------------------
 

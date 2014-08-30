@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.filters;
 
 class GlowFilter extends BitmapFilter {
 

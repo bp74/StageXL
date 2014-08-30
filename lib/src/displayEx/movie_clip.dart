@@ -284,7 +284,7 @@ class MovieClip extends Sprite {
     }
 
     for (var i = numChildren - 1; i >= 0; i--) {
-      var id = getChildAt(i).id;
+      var id = getChildAt(i).displayObjectID;
       if (_managed[id] == 1) {
         removeChildAt(i);
         _managed.remove(id);
@@ -359,9 +359,9 @@ class MovieClip extends Sprite {
       var mc = child;
       mc._synchOffset = offset;
       // TODO: this does not precisely match Flash. Flash loses track of the clip if it is renamed or removed from the timeline, which causes it to reset.
-      if (mc.mode == MovieClip.INDEPENDENT && mc.autoReset && !_managed.containsKey(child.id)) { mc._reset(); }
+      if (mc.mode == MovieClip.INDEPENDENT && mc.autoReset && !_managed.containsKey(child.displayObjectID)) { mc._reset(); }
     }
-    _managed[child.id] = 2;
+    _managed[child.displayObjectID] = 2;
   }
 
 }

@@ -1,8 +1,4 @@
-library stagexl.imagedatahelpers;
-
-import 'dart:typed_data';
-import '../internal/environment.dart' as env;
-import '../internal/tools.dart';
+part of stagexl.filters;
 
 Int32List _buffer = new Int32List(1024);
 
