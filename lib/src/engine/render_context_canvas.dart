@@ -1,24 +1,18 @@
-part of stagexl.all;
+part of stagexl.engine;
 
 class RenderContextCanvas extends RenderContext {
 
   final CanvasElement _canvasElement;
 
   CanvasRenderingContext2D _renderingContext;
+  Matrix _identityMatrix = new Matrix.fromIdentity();
 
   BlendMode _activeBlendMode = BlendMode.NORMAL;
   double _activeAlpha = 1.0;
 
-  RenderContextCanvas(CanvasElement canvasElement) : _canvasElement = canvasElement {
-
-    var renderingContext = _canvasElement.context2D;
-
-    if (renderingContext is! CanvasRenderingContext2D) {
-      throw new StateError("Failed to get Canvas context.");
-    }
-
-    _renderingContext = renderingContext;
-  }
+  RenderContextCanvas(CanvasElement canvasElement) :
+    _canvasElement = canvasElement,
+    _renderingContext = canvasElement.context2D;
 
   //-----------------------------------------------------------------------------------------------
 
@@ -169,7 +163,7 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void beginRenderMask(RenderState renderState, Mask mask) {
+  void beginRenderMask(RenderState renderState, RenderMask mask) {
     var matrix = renderState.globalMatrix;
     _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     _renderingContext.beginPath();
@@ -178,7 +172,7 @@ class RenderContextCanvas extends RenderContext {
     _renderingContext.clip();
   }
 
-  void endRenderMask(RenderState renderState, Mask mask) {
+  void endRenderMask(RenderState renderState, RenderMask mask) {
     _renderingContext.restore();
     if (mask.border) {
       _renderingContext.strokeStyle = color2rgba(mask.borderColor);

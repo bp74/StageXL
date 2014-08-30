@@ -1,4 +1,4 @@
-part of stagexl.all;
+library stagexl.ui.color;
 
 class Color {
 

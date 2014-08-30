@@ -147,7 +147,7 @@ abstract class _BitmapFilterProgram extends RenderProgram {
   void flush() {
   }
 
-  _onContextRestored(Event e) {
+  _onContextRestored(RenderContextEvent e) {
     _program = null;
   }
 }

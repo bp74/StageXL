@@ -71,7 +71,7 @@ class BitmapContainer extends DisplayObjectContainer {
     for (int i = 0; i < _children.length; i++) {
       Bitmap bitmap = _children[i];
       if (bitmap.visible && bitmap.off == false) {
-        renderState.renderDisplayObject(bitmap);
+        renderState.renderObject(bitmap);
       }
     }
   }

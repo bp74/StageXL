@@ -27,7 +27,6 @@ class CanvasShadowWrapper extends DisplayObject {
 
   final DisplayObject displayObject;
 
-  DisplayObject shadowTargetSpace = null;
   int shadowColor;
   num shadowOffsetX;
   num shadowOffsetY;
@@ -76,30 +75,19 @@ class CanvasShadowWrapper extends DisplayObject {
 
       RenderContextCanvas renderContextCanvas = renderContext as RenderContextCanvas;
       CanvasRenderingContext2D rawContext = renderContextCanvas.rawContext;
-      Matrix shadowMatrix = renderState.globalMatrix.clone();
-      Matrix targetSpaceMatrix = null;
-
-      if (this.shadowTargetSpace != null) {
-        targetSpaceMatrix = this.shadowTargetSpace.transformationMatrixTo(this);
-      } else if (this.shadowTargetSpace == null) {
-        targetSpaceMatrix = this.displayObject.transformationMatrix;
-      }
-
-      if (targetSpaceMatrix != null) {
-        shadowMatrix.concat(targetSpaceMatrix);
-      }
+      Matrix shadowMatrix = renderState.globalMatrix;
 
       rawContext.save();
       rawContext.shadowColor = color2rgba(shadowColor);
       rawContext.shadowBlur = sqrt(shadowMatrix.det) * shadowBlur;
       rawContext.shadowOffsetX = shadowOffsetX * shadowMatrix.a + shadowOffsetY * shadowMatrix.c;
       rawContext.shadowOffsetY = shadowOffsetX * shadowMatrix.b + shadowOffsetY * shadowMatrix.d;
-      renderState.renderDisplayObject(this.displayObject);
+      renderState.renderObject(this.displayObject);
       rawContext.restore();
 
     } else {
 
-      renderState.renderDisplayObject(this.displayObject);
+      renderState.renderObject(this.displayObject);
     }
   }
 }

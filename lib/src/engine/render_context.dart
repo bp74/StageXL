@@ -1,17 +1,21 @@
-part of stagexl.all;
+part of stagexl.engine;
 
 class RenderEngine {
   static const String WebGL = "WebGL";
   static const String Canvas2D = "Canvas2D";
 }
 
-abstract class RenderContext extends EventDispatcher {
+class RenderContextEvent {
 
-  static const EventStreamProvider<Event> contextLostEvent = const EventStreamProvider<Event>("contextLost");
-  static const EventStreamProvider<Event> contextRestoredEvent = const EventStreamProvider<Event>("contextRestored");
+}
 
-  EventStream<Event> get onContextLost => RenderContext.contextLostEvent.forTarget(this);
-  EventStream<Event> get onContextRestored => RenderContext.contextRestoredEvent.forTarget(this);
+abstract class RenderContext {
+
+  final _contextLostEvent = new StreamController<RenderContextEvent>.broadcast();
+  final _contextRestoredEvent = new StreamController<RenderContextEvent>.broadcast();
+
+  Stream<RenderContextEvent> get onContextLost => _contextLostEvent.stream;
+  Stream<RenderContextEvent> get onContextRestored => _contextRestoredEvent.stream;
 
   String get renderEngine;
 
@@ -22,6 +26,6 @@ abstract class RenderContext extends EventDispatcher {
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad);
   void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color);
 
-  void beginRenderMask(RenderState renderState, Mask mask);
-  void endRenderMask(RenderState renderState, Mask mask);
+  void beginRenderMask(RenderState renderState, RenderMask mask);
+  void endRenderMask(RenderState renderState, RenderMask mask);
 }

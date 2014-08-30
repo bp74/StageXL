@@ -15,13 +15,13 @@ import 'dart:html' show Element, ImageElement, AudioElement, HttpRequest,
 
 //-----------------------------------------------------------------------------
 
-import 'geom.dart';
-
 import 'internal/environment.dart' as env;
-import 'internal/image_loader.dart';
 import 'internal/tools.dart';
 
+import 'engine.dart';
+import 'geom.dart';
 import 'media.dart';
+import 'ui.dart';
 
 part 'animation/animatable.dart';
 part 'animation/animation_chain.dart';
@@ -38,7 +38,6 @@ part 'display/bitmap_data_channel.dart';
 part 'display/bitmap_data_update_batch.dart';
 part 'display/bitmap_data_load_options.dart';
 part 'display/bitmap_drawable.dart';
-part 'display/blend_mode.dart';
 part 'display/button_helper.dart';
 part 'display/caps_style.dart';
 part 'display/color_transform.dart';
@@ -52,6 +51,7 @@ part 'display/interactive_object.dart';
 part 'display/joint_style.dart';
 part 'display/mask.dart';
 part 'display/movie_clip.dart';
+part 'display/render_loop.dart';
 part 'display/shape.dart';
 part 'display/simple_button.dart';
 part 'display/sprite.dart';
@@ -67,19 +67,6 @@ part 'displayEx/html_object.dart';
 part 'displayEx/scale9_bitmap.dart';
 part 'displayEx/time_gauge.dart';
 part 'displayEx/warp.dart';
-
-part 'engine/render_context.dart';
-part 'engine/render_context_canvas.dart';
-part 'engine/render_context_webgl.dart';
-part 'engine/render_frame_buffer.dart';
-part 'engine/render_loop.dart';
-part 'engine/render_program.dart';
-part 'engine/render_program_mesh.dart';
-part 'engine/render_program_quad.dart';
-part 'engine/render_program_triangle.dart';
-part 'engine/render_state.dart';
-part 'engine/render_texture.dart';
-part 'engine/render_texture_quad.dart';
 
 part 'events/broadcast_event.dart';
 part 'events/event.dart';
@@ -120,7 +107,6 @@ part 'text/text_format.dart';
 part 'text/text_format_align.dart';
 part 'text/text_line_metrics.dart';
 
-part 'ui/color.dart';
 part 'ui/key_location.dart';
 part 'ui/mouse.dart';
 part 'ui/mouse_cursor.dart';

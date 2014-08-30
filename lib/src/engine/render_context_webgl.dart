@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.engine;
 
 class RenderContextWebGL extends RenderContext {
 
@@ -151,7 +151,7 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
-  void beginRenderMask(RenderState renderState, Mask mask) {
+  void beginRenderMask(RenderState renderState, RenderMask mask) {
 
     _activeRenderProgram.flush();
 
@@ -173,7 +173,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(true, true, true, true);
   }
 
-  void endRenderMask(RenderState renderState, Mask mask) {
+  void endRenderMask(RenderState renderState, RenderMask mask) {
 
     _activeRenderProgram.flush();
 
@@ -290,13 +290,13 @@ class RenderContextWebGL extends RenderContext {
   _onContextLost(gl.ContextEvent contextEvent) {
     contextEvent.preventDefault();
     _contextValid = false;
-    this.dispatchEvent(new Event("contextLost"));
+    _contextLostEvent.add(new RenderContextEvent());
   }
 
   _onContextRestored(gl.ContextEvent contextEvent) {
     _contextValid = true;
     _contextIdentifier = ++_globalContextIdentifier;
-    this.dispatchEvent(new Event("contextRestored"));
+    _contextRestoredEvent.add(new RenderContextEvent());
   }
 
   //-----------------------------------------------------------------------------------------------

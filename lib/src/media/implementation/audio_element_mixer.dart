@@ -4,8 +4,7 @@ class AudioElementMixer {
 
   num _volume = 1.0;
 
-  static final StreamController<num> _volumeChangedEvent =
-      new StreamController<num>.broadcast();
+  final StreamController<num> _volumeChangedEvent = new StreamController<num>.broadcast();
 
   Stream<num> get onVolumeChanged => _volumeChangedEvent.stream;
 

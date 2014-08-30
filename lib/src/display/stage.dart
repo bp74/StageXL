@@ -345,11 +345,9 @@ class Stage extends DisplayObjectContainer {
       _renderContext.clear(_color);
 
       _renderState.reset(_stageTransformation);
-      _renderState._currentTime = ensureNum(currentTime);
-      _renderState._deltaTime = ensureNum(deltaTime);
-
-      _renderInternal(_renderState);
-
+      _renderState.currentTime = ensureNum(currentTime);
+      _renderState.deltaTime = ensureNum(deltaTime);
+      _renderState.renderObject(this);
       _renderState.flush();
 
       if (_stageRenderMode == StageRenderMode.ONCE) {

@@ -1,6 +1,6 @@
 part of stagexl.all;
 
-abstract class BitmapFilter {
+abstract class BitmapFilter implements RenderFilter {
 
   BitmapFilter clone();
 

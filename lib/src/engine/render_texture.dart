@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.engine;
 
 class RenderTexture {
 
@@ -82,7 +82,7 @@ class RenderTexture {
   static Future<RenderTexture> load(
       String url, bool autoHiDpi, bool webpAvailable, bool corsEnabled) {
 
-    var hiDpi = Stage.autoHiDpi && autoHiDpi && url.contains("@1x.");
+    var hiDpi = autoHiDpi && url.contains("@1x.");
     var hiDpiUrl = hiDpi ? url.replaceAll("@1x.", "@2x.") : url;
     var imageLoader = new ImageLoader(hiDpiUrl, webpAvailable, corsEnabled);
 

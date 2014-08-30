@@ -1,8 +1,7 @@
 part of stagexl.all;
 
-abstract class Mask {
+abstract class Mask implements RenderMask {
 
-  DisplayObject targetSpace = null;
   bool border = false;
   int borderColor = 0xFF000000;
   int borderWidth = 1;

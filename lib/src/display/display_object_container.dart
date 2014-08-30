@@ -268,24 +268,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
         num maskX = 0.0;
         num maskY = 0.0;
 
-        if (mask != null) {
-          if (mask.targetSpace == null) {
-            maskX = childX;
-            maskY = childY;
-          } else if (identical(mask.targetSpace, child)) {
-            maskX = childX;
-            maskY = childY;
-          } else if (identical(mask.targetSpace, this)) {
-            maskX = localX;
-            maskY = localY;
-          } else {
-            matrix = this.transformationMatrixTo(mask.targetSpace);
-            matrix = (matrix != null) ? matrix : _identityMatrix;
-            maskX = localX * matrix.a + localY * matrix.c + matrix.tx;
-            maskY = localX * matrix.b + localY * matrix.d + matrix.ty;
-          }
-          if (mask.hitTest(maskX, maskY) == false) continue;
-        }
+        if (mask != null && mask.hitTest(childX, childY) == false) continue;
 
         var displayObject = child.hitTestInput(childX, childY);
         if (displayObject == null) continue;
@@ -308,7 +291,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     for (int i = 0; i < _children.length; i++) {
       DisplayObject child = _children[i];
       if (child.visible && child.off == false) {
-        renderState.renderDisplayObject(child);
+        renderState.renderObject(child);
       }
     }
   }

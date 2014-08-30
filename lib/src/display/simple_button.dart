@@ -64,7 +64,7 @@ class SimpleButton extends InteractiveObject {
 
   void render(RenderState renderState) {
     if (_currentState != null) {
-      renderState.renderDisplayObject(_currentState);
+      renderState.renderObject(_currentState);
     }
   }
 
