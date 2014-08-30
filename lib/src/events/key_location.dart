@@ -2,12 +2,12 @@ part of stagexl.events;
 
 class KeyLocation {
 
-  final String name;
-  const KeyLocation(this.name);
+  final int _ordinal;
+  const KeyLocation._(this._ordinal);
 
-  static const KeyLocation STANDARD = const KeyLocation("STANDARD");
-  static const KeyLocation LEFT = const KeyLocation("LEFT");
-  static const KeyLocation RIGHT = const KeyLocation("RIGHT");
-  static const KeyLocation NUM_PAD = const KeyLocation("NUM_PAD");
-  static const KeyLocation D_PAD = const KeyLocation("D_PAD");
+  static const KeyLocation STANDARD = const KeyLocation._(0);
+  static const KeyLocation LEFT = const KeyLocation._(1);
+  static const KeyLocation RIGHT = const KeyLocation._(2);
+  static const KeyLocation NUM_PAD = const KeyLocation._(3);
+  static const KeyLocation D_PAD = const KeyLocation._(4);
 }

@@ -4,13 +4,13 @@ part of stagexl.display;
 
 class StageScaleMode {
 
-  final String name;
-  const StageScaleMode(this.name);
+  final int _ordinal;
+  const StageScaleMode._(this._ordinal);
 
-  static const StageScaleMode EXACT_FIT = const StageScaleMode("exactFit");
-  static const StageScaleMode NO_BORDER = const StageScaleMode("noBorder");
-  static const StageScaleMode NO_SCALE = const StageScaleMode("noScale");
-  static const StageScaleMode SHOW_ALL = const StageScaleMode("showAll");
+  static const StageScaleMode EXACT_FIT = const StageScaleMode._(0);
+  static const StageScaleMode NO_BORDER = const StageScaleMode._(1);
+  static const StageScaleMode NO_SCALE = const StageScaleMode._(2);
+  static const StageScaleMode SHOW_ALL = const StageScaleMode._(3);
 }
 
 /// The StageAlign defines how the content of the Stage is aligned inside
@@ -19,18 +19,18 @@ class StageScaleMode {
 
 class StageAlign {
 
-  final String name;
-  const StageAlign(this.name);
+  final int _ordinal;
+  const StageAlign._(this._ordinal);
 
-  static const StageAlign BOTTOM = const StageAlign("BOTTOM");
-  static const StageAlign BOTTOM_LEFT = const StageAlign("BOTTOM_LEFT");
-  static const StageAlign BOTTOM_RIGHT = const StageAlign("BOTTOM_RIGHT");
-  static const StageAlign LEFT = const StageAlign("LEFT");
-  static const StageAlign RIGHT = const StageAlign("RIGHT");
-  static const StageAlign TOP = const StageAlign("TOP");
-  static const StageAlign TOP_LEFT = const StageAlign("TOP_LEFT");
-  static const StageAlign TOP_RIGHT = const StageAlign("TOP_RIGHT");
-  static const StageAlign NONE = const StageAlign("NONE");
+  static const StageAlign BOTTOM = const StageAlign._(0);
+  static const StageAlign BOTTOM_LEFT = const StageAlign._(1);
+  static const StageAlign BOTTOM_RIGHT = const StageAlign._(2);
+  static const StageAlign LEFT = const StageAlign._(3);
+  static const StageAlign RIGHT = const StageAlign._(4);
+  static const StageAlign TOP = const StageAlign._(5);
+  static const StageAlign TOP_LEFT = const StageAlign._(6);
+  static const StageAlign TOP_RIGHT = const StageAlign._(7);
+  static const StageAlign NONE = const StageAlign._(8);
 }
 
 /// The StageRenderMode defines how often the Stage is renderes by
@@ -38,12 +38,12 @@ class StageAlign {
 
 class StageRenderMode {
 
-  final String name;
-  const StageRenderMode(this.name);
+  final int _ordinal;
+  const StageRenderMode._(this._ordinal);
 
-  static const StageRenderMode AUTO = const StageRenderMode("auto");
-  static const StageRenderMode STOP = const StageRenderMode("stop");
-  static const StageRenderMode ONCE = const StageRenderMode("once");
+  static const StageRenderMode AUTO = const StageRenderMode._(0);
+  static const StageRenderMode STOP = const StageRenderMode._(1);
+  static const StageRenderMode ONCE = const StageRenderMode._(2);
 }
 
 //-------------------------------------------------------------------------------------------------
