@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.text;
 
 final Map<String, _FontStyleMetrics> _fontStyleMetrics = new Map<String, _FontStyleMetrics>();
 
