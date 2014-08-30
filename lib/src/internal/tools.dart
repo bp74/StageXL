@@ -78,7 +78,7 @@ String replaceFilename(String url, String filename) {
 
 //-----------------------------------------------------------------------------
 
-Rectangle getBoundsTransformedHelper(
+Rectangle<num> getBoundsTransformedHelper(
     Matrix matrix, num width, num height, Rectangle<num> returnRectangle) {
 
   width = width.toDouble();
