@@ -3,10 +3,14 @@ part of stagexl.display;
 /// The StageScaleMode defines how the Stage is scaled inside of the Canvas.
 
 class StageScaleMode {
-  static const String EXACT_FIT = "exactFit";
-  static const String NO_BORDER = "noBorder";
-  static const String NO_SCALE = "noScale";
-  static const String SHOW_ALL = "showAll";
+
+  final String name;
+  const StageScaleMode(this.name);
+
+  static const StageScaleMode EXACT_FIT = const StageScaleMode("exactFit");
+  static const StageScaleMode NO_BORDER = const StageScaleMode("noBorder");
+  static const StageScaleMode NO_SCALE = const StageScaleMode("noScale");
+  static const StageScaleMode SHOW_ALL = const StageScaleMode("showAll");
 }
 
 /// The StageAlign defines how the content of the Stage is aligned inside
@@ -14,24 +18,32 @@ class StageScaleMode {
 /// Stage will be placed on the Canvas.
 
 class StageAlign {
-  static const String BOTTOM = "B";
-  static const String BOTTOM_LEFT = "BL";
-  static const String BOTTOM_RIGHT = "BR";
-  static const String LEFT = "L";
-  static const String RIGHT = "R";
-  static const String TOP = "T";
-  static const String TOP_LEFT = "TL";
-  static const String TOP_RIGHT = "TR";
-  static const String NONE = "";
+
+  final String name;
+  const StageAlign(this.name);
+
+  static const StageAlign BOTTOM = const StageAlign("BOTTOM");
+  static const StageAlign BOTTOM_LEFT = const StageAlign("BOTTOM_LEFT");
+  static const StageAlign BOTTOM_RIGHT = const StageAlign("BOTTOM_RIGHT");
+  static const StageAlign LEFT = const StageAlign("LEFT");
+  static const StageAlign RIGHT = const StageAlign("RIGHT");
+  static const StageAlign TOP = const StageAlign("TOP");
+  static const StageAlign TOP_LEFT = const StageAlign("TOP_LEFT");
+  static const StageAlign TOP_RIGHT = const StageAlign("TOP_RIGHT");
+  static const StageAlign NONE = const StageAlign("NONE");
 }
 
 /// The StageRenderMode defines how often the Stage is renderes by
 /// the [RenderLoop] where the Stage is attached to.
 
 class StageRenderMode {
-  static const String AUTO = "auto";
-  static const String STOP = "stop";
-  static const String ONCE = "once";
+
+  final String name;
+  const StageRenderMode(this.name);
+
+  static const StageRenderMode AUTO = const StageRenderMode("auto");
+  static const StageRenderMode STOP = const StageRenderMode("stop");
+  static const StageRenderMode ONCE = const StageRenderMode("once");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -103,9 +115,9 @@ class Stage extends DisplayObjectContainer {
 
   InteractiveObject _focus = null;
   RenderState _renderState = null;
-  String _stageRenderMode = StageRenderMode.AUTO;
-  String _stageScaleMode = StageScaleMode.SHOW_ALL;
-  String _stageAlign = StageAlign.NONE;
+  StageRenderMode _stageRenderMode = StageRenderMode.AUTO;
+  StageScaleMode _stageScaleMode = StageScaleMode.SHOW_ALL;
+  StageAlign _stageAlign = StageAlign.NONE;
 
   String _mouseCursor = MouseCursor.ARROW;
   Point<num> _mousePosition = new Point<num>(0.0, 0.0);
@@ -256,18 +268,18 @@ class Stage extends DisplayObjectContainer {
   /// Gets and sets the render mode of this Stage. You can choose between
   /// three different modes defined in [StageRenderMode].
 
-  String get renderMode => _stageRenderMode;
+  StageRenderMode get renderMode => _stageRenderMode;
 
-  void set renderMode(String value) {
+  void set renderMode(StageRenderMode value) {
     _stageRenderMode = value;
   }
 
   /// Gets and sets the scale mode of this Stage. You can choose between
   /// four dfferent modes defined in [StageScaleMode].
 
-  String get scaleMode => _stageScaleMode;
+  StageScaleMode get scaleMode => _stageScaleMode;
 
-  void set scaleMode(String value) {
+  void set scaleMode(StageScaleMode value) {
     _stageScaleMode = value;
     _updateCanvasSize();
   }
@@ -275,9 +287,9 @@ class Stage extends DisplayObjectContainer {
   /// Gets and sets the alignment of this Stage inside of the Canvas element.
   /// You can choose between nine different align modes defined in [StageAlign].
 
-  String get align => _stageAlign;
+  StageAlign get align => _stageAlign;
 
-  void set align(String value) {
+  void set align(StageAlign value) {
     _stageAlign = value;
     _updateCanvasSize();
   }

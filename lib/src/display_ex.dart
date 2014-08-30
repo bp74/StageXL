@@ -11,8 +11,8 @@ import 'events.dart';
 import 'display.dart';
 import 'geom.dart';
 import 'text.dart';
-import 'ui/color.dart';
 import 'internal/tools.dart';
+import 'ui/color.dart';
 
 part 'displayEx/bitmap_container.dart';
 part 'displayEx/bitmap_container_program.dart';
