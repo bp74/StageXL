@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.resources;
 
 class TextureAtlasFrame {
 
@@ -37,21 +37,27 @@ class TextureAtlasFrame {
 
   BitmapData getBitmapData() {
 
-    var renderTextureQuad = renderTexture.quad;
+    var textureX = frameX;
+    var textureY = frameY;
+    var textureWidth = frameWidth;
+    var textureHeight = frameHeight;
 
     if (rotation == 0) {
-      renderTextureQuad = new RenderTextureQuad(renderTexture,
-          0, offsetX, offsetY, frameX, frameY, frameWidth, frameHeight);
+      textureX = frameX;
+      textureY = frameY;
     } else if (rotation == 1) {
-      renderTextureQuad = new RenderTextureQuad(renderTexture,
-          1, offsetX, offsetY, frameX + frameHeight, frameY, frameWidth, frameHeight);
+      textureX = frameX + frameHeight;
+      textureY = frameY;
     } else if (rotation == 2) {
-      renderTextureQuad = new RenderTextureQuad(renderTexture,
-          2, offsetX, offsetY, frameX + frameWidth, frameY + frameHeight, frameWidth, frameHeight);
+      textureX = frameX + frameWidth;
+      textureY = frameY + frameHeight;
     } else if (rotation == 3) {
-      renderTextureQuad = new RenderTextureQuad(renderTexture,
-          3, offsetX, offsetY, frameX, frameY + frameWidth, frameWidth, frameHeight);
+      textureX = frameX;
+      textureY = frameY + frameWidth;
     }
+
+    var renderTextureQuad = new RenderTextureQuad(renderTexture,
+        rotation, offsetX, offsetY, textureX, textureY, textureWidth, textureHeight);
 
     return new BitmapData.fromRenderTextureQuad(renderTextureQuad, originalWidth, originalHeight);
   }

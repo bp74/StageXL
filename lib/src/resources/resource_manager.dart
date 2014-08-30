@@ -1,11 +1,11 @@
-part of stagexl.all;
+part of stagexl.resources;
 
-class ResourceManager extends EventDispatcher {
+class ResourceManager {
 
   final Map<String, ResourceManagerResource> _resources = new Map<String, ResourceManagerResource>();
 
-  static const EventStreamProvider<Event> progressEvent = const EventStreamProvider<Event>(Event.PROGRESS);
-  EventStream<Event> get onProgress => ResourceManager.progressEvent.forTarget(this);
+  final _progressEvent = new StreamController<num>.broadcast();
+  Stream<num> get onProgress => _progressEvent.stream;
 
   //-----------------------------------------------------------------------------------------------
 
@@ -26,7 +26,9 @@ class ResourceManager extends EventDispatcher {
     }
 
     resource.complete.then((_) {
-      this.dispatchEvent(new Event(Event.PROGRESS));
+      var finished = _resources.values.where((r) => r.value != null).length;
+      var progress = finished / _resources.length;
+      _progressEvent.add(progress);
     });
   }
 

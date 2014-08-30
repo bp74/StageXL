@@ -2,7 +2,6 @@ library stagexl.all;
 
 import 'dart:async';
 import 'dart:math' hide Point, Rectangle;
-import 'dart:convert';
 import 'dart:html' as html;
 import 'dart:web_gl' as gl;
 import 'dart:typed_data';
@@ -22,7 +21,6 @@ import 'display.dart';
 import 'engine.dart';
 import 'events.dart';
 import 'geom.dart';
-import 'media.dart';
 import 'ui.dart';
 
 part 'displayEx/bitmap_container.dart';
@@ -46,15 +44,6 @@ part 'filters/displacement_map_filter.dart';
 part 'filters/drop_shadow_filter.dart';
 part 'filters/flatten_filter.dart';
 part 'filters/glow_filter.dart';
-
-part 'resources/resource_manager.dart';
-part 'resources/resource_manager_resource.dart';
-part 'resources/sound_sprite.dart';
-part 'resources/sound_sprite_segment.dart';
-part 'resources/sprite_sheet.dart';
-part 'resources/texture_atlas.dart';
-part 'resources/texture_atlas_format.dart';
-part 'resources/texture_atlas_frame.dart';
 
 part 'text/font_style_metrics.dart';
 part 'text/text_field.dart';

@@ -1,4 +1,4 @@
-part of stagexl.all;
+part of stagexl.resources;
 
 class SoundSprite {
 
@@ -75,7 +75,5 @@ class SoundSprite {
   SoundChannel play(String name, [bool loop, SoundTransform soundTransform]) {
     return this.getSegment(name).play(loop, soundTransform);
   }
-
-  //-------------------------------------------------------------------------------------------------
 
 }
