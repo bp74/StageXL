@@ -1,4 +1,4 @@
-library stagexl.mouse;
+library stagexl.ui.mouse;
 
 import 'dart:async';
 import 'dart:math';

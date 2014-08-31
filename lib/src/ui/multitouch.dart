@@ -1,4 +1,4 @@
-library stagexl.multitouch;
+library stagexl.ui.multitouch;
 
 import 'dart:async';
 import 'dart:html' as html;
