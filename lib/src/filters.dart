@@ -10,6 +10,7 @@ import 'display.dart';
 import 'engine.dart';
 import 'geom.dart';
 import 'internal/environment.dart' as env;
+import 'internal/filter_helpers.dart';
 import 'internal/tools.dart';
 
 part 'filters/alpha_mask_filter.dart';
@@ -20,4 +21,3 @@ part 'filters/displacement_map_filter.dart';
 part 'filters/drop_shadow_filter.dart';
 part 'filters/flatten_filter.dart';
 part 'filters/glow_filter.dart';
-part 'filters/image_data_helpers.dart';

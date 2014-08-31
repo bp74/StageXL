@@ -1,4 +1,8 @@
-part of stagexl.filters;
+library stagexl.internal.filter_helpers;
+
+import 'dart:typed_data';
+import 'environment.dart' as env;
+import 'tools.dart';
 
 Int32List _buffer = new Int32List(1024);
 
