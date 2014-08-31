@@ -17,7 +17,7 @@ class _ContextState {
 /// The [RenderState] class is used to render objects to a give render surface
 /// defined by the renderContext parameter. Most users won't ever use this
 /// class directly because it's only used internaly to render the display list.
-/// However, more advanced uses may use it to create custom display objects.
+/// However, more advanced users may use it to create custom display objects.
 ///
 /// The [renderObject] method keeps track of the state for hierarchical objects
 /// from the display list and therefore can be called recursively.
