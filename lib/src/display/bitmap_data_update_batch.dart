@@ -1,10 +1,10 @@
 part of stagexl.display;
 
-/// The BitmapDataUpdateBatch class provides all the BitmapData update
-/// methods, but does not automatically update the underlying WebGL
-/// texture. This improves the performance for multiple updates
-/// to the BitmapData. Once all updates are done, call the [update]
-/// method to update the underlying WebGL texture.
+/// The [BitmapDataUpdateBatch] class provides all the [BitmapData] update
+/// methods, but does not automatically update the underlying WebGL texture.
+/// This improves the performance for multiple updates to the BitmapData.
+/// Once all updates are done, call the [update] method to update the
+/// underlying WebGL texture.
 ///
 class BitmapDataUpdateBatch {
 
