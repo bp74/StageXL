@@ -38,13 +38,13 @@ abstract class RenderLoopBase {
     _requestId = null;
     _requestAnimationFrame();
 
-    num renderTime = ensureNum(time) / 1000.0;
+    num oldRenderTime = _renderTime;
+    num newRenderTime = ensureNum(time) / 1000.0;
+    _renderTime = newRenderTime;
 
-    if (_renderTime >= 0 && renderTime > _renderTime) {
-      this.advanceTime(renderTime - _renderTime);
+    if (oldRenderTime >= 0.0 && newRenderTime > oldRenderTime) {
+      this.advanceTime(newRenderTime - oldRenderTime);
     }
-
-    _renderTime = renderTime;
   }
 
 }
