@@ -1,35 +1,22 @@
 part of stagexl.display;
 
-class RenderLoop {
+class RenderLoop extends RenderLoopBase {
 
-  final Juggler _juggler = new Juggler();
+  final Juggler juggler = new Juggler();
 
   List<Stage> _stages = new List<Stage>();
-  num _renderTime = -1;
-  int _requestId = null;
   bool _invalidate = false;
+  num _currentTime = 0.0;
 
   EnterFrameEvent _enterFrameEvent = new EnterFrameEvent(0);
   ExitFrameEvent _exitFrameEvent = new ExitFrameEvent();
   RenderEvent _renderEvent = new RenderEvent();
 
   RenderLoop() {
-    start();
+    this.start();
   }
-
-  Juggler get juggler => _juggler;
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  void start() {
-    _renderTime = -1;
-    _requestAnimationFrame();
-  }
-
-  void stop() {
-    _cancelAnimationFrame();
-  }
 
   void invalidate() {
     _invalidate = true;
@@ -54,57 +41,30 @@ class RenderLoop {
   }
 
   //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
 
-  _requestAnimationFrame() {
-    if (_requestId == null) {
-      _requestId = html.window.requestAnimationFrame(_onAnimationFrame);
+  void advanceTime(num deltaTime) {
+
+    _currentTime += deltaTime;
+
+    _enterFrameEvent.passedTime = deltaTime;
+    _enterFrameEvent.dispatch();
+
+    juggler.advanceTime(deltaTime);
+
+    for (int i = 0; i < _stages.length; i++) {
+      _stages[i].juggler.advanceTime(deltaTime);
     }
+
+    if (_invalidate) {
+      _invalidate = false;
+      _renderEvent.dispatch();
+    }
+
+    for (int i = 0; i < _stages.length; i++) {
+      _stages[i].materialize(_currentTime, deltaTime);
+    }
+
+    _exitFrameEvent.dispatch();
   }
 
-  _cancelAnimationFrame() {
-    if (_requestId != null) {
-      html.window.cancelAnimationFrame(_requestId);
-      _requestId = null;
-    }
-  }
-
-  _onAnimationFrame(num currentTime) {
-
-    _requestId = null;
-    _requestAnimationFrame();
-
-    currentTime = currentTime.toDouble();
-
-    if (_renderTime == -1) _renderTime = currentTime;
-    if (_renderTime > currentTime) _renderTime = currentTime;
-
-    var deltaTime = currentTime - _renderTime;
-    var deltaTimeSec = deltaTime / 1000.0;
-    var currentTimeSec = currentTime / 1000.0;
-    var invalidate = false;
-
-    if (deltaTime >= 1) {
-
-      _renderTime = currentTime;
-      _enterFrameEvent.passedTime = deltaTimeSec;
-      _enterFrameEvent.dispatch();
-      _juggler.advanceTime(deltaTimeSec);
-
-      for (int i = 0; i < _stages.length; i++) {
-        _stages[i].juggler.advanceTime(deltaTimeSec);
-      }
-
-      if (_invalidate) {
-        _invalidate = false;
-        _renderEvent.dispatch();
-      }
-
-      for (int i = 0; i < _stages.length; i++) {
-        _stages[i].materialize(currentTimeSec, deltaTimeSec);
-      }
-
-      _exitFrameEvent.dispatch();
-    }
-  }
 }
