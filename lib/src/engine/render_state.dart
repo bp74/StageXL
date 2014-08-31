@@ -1,6 +1,7 @@
 part of stagexl.engine;
 
 class _ContextState {
+
   final Matrix matrix = new Matrix.fromIdentity();
   num alpha = 1.0;
   BlendMode blendMode = BlendMode.NORMAL;
@@ -13,6 +14,16 @@ class _ContextState {
   }
 }
 
+/// The [RenderState] class is used to render objects to a give render surface
+/// defined by the renderContext parameter. Most users won't ever use this
+/// class directly because it's only used internaly to render the display list.
+/// However, more advanced uses may use it to create custom display objects.
+///
+/// The [renderObject] method keeps track of the state for hierarchical objects
+/// from the display list and therefore can be called recursively.
+/// The [renderQuad] method renders simple [RenderTextureQuad] objects. This is
+/// also the method that is used by the display list to draw BitmapData objects.
+///
 class RenderState {
 
   num currentTime = 0.0;

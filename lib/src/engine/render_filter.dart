@@ -1,5 +1,8 @@
 part of stagexl.engine;
 
+/// The abstract [RenderFilter] class defines the interface for filters
+/// that can be rendered by the engine.
+///
 abstract class RenderFilter {
 
   Rectangle<int> get overlap;

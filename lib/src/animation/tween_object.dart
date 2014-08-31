@@ -1,7 +1,7 @@
 part of stagexl.animation;
 
 /// The abstract [TweenObject] class defines the interface for a class
-/// that can used with the [Tween] class. All DisplayObjects implement
+/// that can used with the [Tween] class. All DisplayObjects do implement
 /// this interface and therefore they can be used for tween animations.
 ///
 abstract class TweenObject {
