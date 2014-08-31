@@ -2,13 +2,13 @@ part of stagexl.engine;
 
 abstract class RenderLoopBase {
 
-  num _renderTime = -1.0;
+  num _renderTime = double.MAX_FINITE;
   int _requestId = null;
 
   //-------------------------------------------------------------------------------------------------
 
   void start() {
-    _renderTime = -1.0;
+    _renderTime = double.MAX_FINITE;
     _requestAnimationFrame();
   }
 
@@ -39,10 +39,9 @@ abstract class RenderLoopBase {
     _requestAnimationFrame();
 
     num oldRenderTime = _renderTime;
-    num newRenderTime = ensureNum(time) / 1000.0;
-    _renderTime = newRenderTime;
+    num newRenderTime = _renderTime = ensureNum(time) / 1000.0;
 
-    if (oldRenderTime >= 0.0 && newRenderTime > oldRenderTime) {
+    if (newRenderTime > oldRenderTime) {
       this.advanceTime(newRenderTime - oldRenderTime);
     }
   }
