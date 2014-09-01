@@ -1,32 +1,64 @@
 part of stagexl.display;
 
+/// A [Mask] describes a geometric shape to show only a portion of a
+/// [DisplayObject]. Pixels inside of the shape are visible and pixels
+/// outside of the shape are invisible.
+///
+/// The mask is placed relative to the [DisplayObject] where it is applied
+/// to. However, you can set the [relativeToParent] property to `true` to
+/// placed the mask relativ to the DisplayObjects parent.
+///
+/// Example:
+///
+///     var rifleScope = new Sprite();
+///     rifleScope.mask = new Mask.circle(0, 0, 50);
+///     rifleScope.addChild(world);
+///
 abstract class Mask implements RenderMask {
 
+  /// You can use the [transformationMatrix] to change the size,
+  /// position, scale, rotation etc. from the Mask.
+  ///
   final Matrix transformationMatrix = new Matrix.fromIdentity();
-  final Matrix _tmpMatrix = new Matrix.fromIdentity();
 
+  /// Set to `true` to place the [Mask] relative to the DisplayObjects
+  /// parent. The default value is `false` and therefore the mask is
+  /// placed relative to the DisplayObject where it is applied to.
+  ///
   bool relativeToParent = false;
 
   bool border = false;
   int borderColor = 0xFF000000;
   int borderWidth = 1;
 
+  final Matrix _tmpMatrix = new Matrix.fromIdentity();
+
   Mask();
 
   //-----------------------------------------------------------------------------------------------
 
+  /// Create a rectangluar mask.
+  ///
   factory Mask.rectangle(num x, num y, num width, num height) {
     return new _RectangleMask(x, y, width, height);
   }
 
+  /// Create a circular mask.
+  ///
   factory Mask.circle(num x, num y, num radius) {
     return new _CirlceMask(x, y, radius);
   }
 
+  /// Create a custom mask with a polygonal shape defined by [points].
+  ///
   factory Mask.custom(List<Point<num>> points) {
     return new _CustomMask(points);
   }
 
+  /// Create a custom mask defined by a [Shape]. Currently only the
+  /// Canvas2D renderer supports this type of mask. You can't use
+  /// this mask with the WebGL renderer.
+  ///
   factory Mask.shape(Shape shape) {
     return new _ShapeMask(shape);
   }
