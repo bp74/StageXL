@@ -274,5 +274,7 @@ class _ShapeMask extends Mask {
       // TODO: ShapeMask for WebGL
 
     }
+
+    renderState.globalMatrix.copyFrom(_tmpMatrix);
   }
 }
