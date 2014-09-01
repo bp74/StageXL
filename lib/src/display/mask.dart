@@ -2,6 +2,9 @@ part of stagexl.display;
 
 abstract class Mask implements RenderMask {
 
+  final Matrix transformationMatrix = new Matrix.fromIdentity();
+  final Matrix _tmpMatrix = new Matrix.fromIdentity();
+
   bool relativeToParent = false;
 
   bool border = false;
@@ -43,24 +46,44 @@ class _RectangleMask extends Mask {
   final Rectangle<num> _rectangle;
 
   _RectangleMask(num x, num y, num width, num height) :
-    _rectangle = new Rectangle<num>(x, y, width, height);
+      _rectangle = new Rectangle<num>(x, y, width, height);
 
-  bool hitTest(num x, num y) => _rectangle.contains(x, y);
+  bool hitTest(num x, num y) {
+
+    Matrix mtx = this.transformationMatrix;
+    num deltaX = x - mtx.tx;
+    num deltaY = y - mtx.ty;
+    x = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
+    y = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
+
+    return _rectangle.contains(x, y);
+  }
 
   void renderMask(RenderState renderState) {
 
-    if (renderState.renderContext is RenderContextCanvas) {
-      var renderContext = renderState.renderContext as RenderContextCanvas;
-      var context = renderContext.rawContext;
-      context.rect(_rectangle.left, _rectangle.top, _rectangle.width, _rectangle.height);
+    _tmpMatrix.copyFrom(renderState.globalMatrix);
+    renderState.globalMatrix.prepend(this.transformationMatrix);
+
+    var renderContext = renderState.renderContext;
+    var rect = _rectangle;
+
+    if (renderContext is RenderContextCanvas) {
+
+      renderContext.setTransform(renderState.globalMatrix);
+      renderContext.rawContext.rect(rect.left, rect.top, rect.width, rect.height);
+
     } else {
-      var l = _rectangle.left;
-      var t = _rectangle.top;
-      var r = _rectangle.right;
-      var b = _rectangle.bottom;
+
+      var l = rect.left;
+      var t = rect.top;
+      var r = rect.right;
+      var b = rect.bottom;
+
       renderState.renderTriangle(l, t, r, t, r, b, Color.Magenta);
       renderState.renderTriangle(l, t, r, b, l, b, Color.Magenta);
     }
+
+    renderState.globalMatrix.copyFrom(_tmpMatrix);
   }
 }
 
@@ -72,15 +95,32 @@ class _CirlceMask extends Mask {
 
   _CirlceMask(num x, num y, num radius) : _circle = new Circle<num>(x, y, radius);
 
-  bool hitTest(num x, num y) => _circle.contains(x, y);
+  bool hitTest(num x, num y) {
+
+    Matrix mtx = this.transformationMatrix;
+    num deltaX = x - mtx.tx;
+    num deltaY = y - mtx.ty;
+    x = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
+    y = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
+
+    return _circle.contains(x, y);
+  }
 
   void renderMask(RenderState renderState) {
 
-    if (renderState.renderContext is RenderContextCanvas) {
-      var renderContext = renderState.renderContext as RenderContextCanvas;
-      var context = renderContext.rawContext;
-      context.arc(_circle.x, _circle.y, _circle.radius, 0, PI * 2.0, false);
+    _tmpMatrix.copyFrom(renderState.globalMatrix);
+    renderState.globalMatrix.prepend(this.transformationMatrix);
+
+    var renderContext = renderState.renderContext;
+    var circle = _circle;
+
+    if (renderContext is RenderContextCanvas) {
+
+      renderContext.setTransform(renderState.globalMatrix);
+      renderContext.rawContext.arc(circle.x, circle.y, circle.radius, 0, PI * 2.0, false);
+
     } else {
+
       var steps = 40;
       var centerX = _circle.x;
       var centerY = _circle.y;
@@ -98,6 +138,8 @@ class _CirlceMask extends Mask {
         currentX = nextX;
         currentY = nextY;
       }
+
+      renderState.globalMatrix.copyFrom(_tmpMatrix);
     }
   }
 }
@@ -115,20 +157,37 @@ class _CustomMask extends Mask {
     _polygonTriangles = _polygon.triangulate();
   }
 
-  bool hitTest(num x, num y) => _polygonBounds.contains(x, y) ? _polygon.contains(x, y) : false;
+  bool hitTest(num x, num y) {
+
+    Matrix mtx = this.transformationMatrix;
+    num deltaX = x - mtx.tx;
+    num deltaY = y - mtx.ty;
+    x = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
+    y = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
+
+    return _polygonBounds.contains(x, y) ? _polygon.contains(x, y) : false;
+  }
 
   void renderMask(RenderState renderState) {
+
+    _tmpMatrix.copyFrom(renderState.globalMatrix);
+    renderState.globalMatrix.prepend(this.transformationMatrix);
+
     var points = _polygon.points;
     var triangles = _polygonTriangles;
+    var renderContext = renderState.renderContext;
 
-    if (renderState.renderContext is RenderContextCanvas) {
-      var renderContext = renderState.renderContext as RenderContextCanvas;
-      var context = renderContext.rawContext;
+    if (renderContext is RenderContextCanvas) {
+
+      renderContext.setTransform(renderState.globalMatrix);
+
       for (int i = 0; i <= points.length; i++) {
         var point = points[i % points.length];
-        context.lineTo(point.x, point.y);
+        renderContext.rawContext.lineTo(point.x, point.y);
       }
+
     } else {
+
       for (int i = 0; i <= triangles.length - 3; i += 3) {
         var p1 = points[triangles[i + 0]];
         var p2 = points[triangles[i + 1]];
@@ -136,6 +195,8 @@ class _CustomMask extends Mask {
         renderState.renderTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, Color.Magenta);
       }
     }
+
+    renderState.globalMatrix.copyFrom(_tmpMatrix);
   }
 }
 
@@ -148,23 +209,38 @@ class _ShapeMask extends Mask {
   _ShapeMask(Shape shape) : _shape = shape;
 
   bool hitTest(num x, num y) {
+
+    _tmpMatrix.identity();
+    _tmpMatrix.prepend(this.transformationMatrix);
+    _tmpMatrix.prepend(_shape.transformationMatrix);
+
     var context = _dummyCanvasContext;
-    var mtx = _shape.transformationMatrix;
+    var mtx = _tmpMatrix;
     context.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
     context.beginPath();
+
     _shape.graphics._drawPath(context);
+
     return context.isPointInPath(x, y);
   }
 
   void renderMask(RenderState renderState) {
-    if (renderState.renderContext is RenderContextCanvas) {
-      var renderContext = renderState.renderContext as RenderContextCanvas;
-      var context = renderContext.rawContext;
-      var mtx = _shape.transformationMatrix;
-      context.transform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-      _shape.graphics._drawPath(context);
+
+    _tmpMatrix.copyFrom(renderState.globalMatrix);
+    renderState.globalMatrix.prepend(this.transformationMatrix);
+    renderState.globalMatrix.prepend(_shape.transformationMatrix);
+
+    var renderContext = renderState.renderContext;
+
+    if (renderContext is RenderContextCanvas) {
+
+      renderContext.setTransform(renderState.globalMatrix);
+      _shape.graphics._drawPath(renderContext.rawContext);
+
     } else {
+
       // TODO: ShapeMask for WebGL
+
     }
   }
 }
