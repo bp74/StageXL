@@ -72,7 +72,7 @@ abstract class Mask implements RenderMask {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-abstract class _MaskTransformed extends Mask {
+abstract class _TransformedMask extends Mask {
 
   final Matrix globalMatrixOriginal = new Matrix.fromIdentity();
 
@@ -101,7 +101,7 @@ abstract class _MaskTransformed extends Mask {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _RectangleMask extends _MaskTransformed {
+class _RectangleMask extends _TransformedMask {
 
   final Rectangle<num> _rectangle;
 
@@ -137,7 +137,7 @@ class _RectangleMask extends _MaskTransformed {
 
 //-------------------------------------------------------------------------------------------------
 
-class _CirlceMask extends _MaskTransformed {
+class _CirlceMask extends _TransformedMask {
 
   final Circle<num> _circle;
 
@@ -182,7 +182,7 @@ class _CirlceMask extends _MaskTransformed {
 
 //-------------------------------------------------------------------------------------------------
 
-class _CustomMask extends _MaskTransformed {
+class _CustomMask extends _TransformedMask {
 
   final Polygon _polygon;
   Rectangle<num> _polygonBounds;
@@ -226,7 +226,7 @@ class _CustomMask extends _MaskTransformed {
 
 //-------------------------------------------------------------------------------------------------
 
-class _ShapeMask extends _MaskTransformed {
+class _ShapeMask extends _TransformedMask {
 
   final Shape _shape;
 
