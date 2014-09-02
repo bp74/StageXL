@@ -74,27 +74,27 @@ abstract class Mask implements RenderMask {
 
 abstract class _MaskTransformed extends Mask {
 
-  final Matrix _globalMatrixCopy = new Matrix.fromIdentity();
+  final Matrix globalMatrixOriginal = new Matrix.fromIdentity();
 
-  bool _hitTestTransformed(num x, num y);
+  bool hitTestTransformed(num x, num y);
 
-  void _renderMaskTransformed(RenderState renderState);
+  void renderMaskTransformed(RenderState renderState);
 
   bool hitTest(num x, num y) {
     Matrix mtx = this.transformationMatrix;
     num deltaX = x - mtx.tx;
     num deltaY = y - mtx.ty;
-    x = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
-    y = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
-    return _hitTestTransformed(x, y);
+    num maskX = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
+    num maskY = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
+    return hitTestTransformed(maskX, maskY);
   }
 
   void renderMask(RenderState renderState) {
     var globalMatrix = renderState.globalMatrix;
-    _globalMatrixCopy.copyFrom(globalMatrix);
+    globalMatrixOriginal.copyFrom(globalMatrix);
     globalMatrix.prepend(this.transformationMatrix);
-    _renderMaskTransformed(renderState);
-    globalMatrix.copyFrom(_globalMatrixCopy);
+    renderMaskTransformed(renderState);
+    globalMatrix.copyFrom(globalMatrixOriginal);
   }
 }
 
@@ -108,11 +108,11 @@ class _RectangleMask extends _MaskTransformed {
   _RectangleMask(num x, num y, num width, num height) :
       _rectangle = new Rectangle<num>(x, y, width, height);
 
-  bool _hitTestTransformed(num x, num y) {
+  bool hitTestTransformed(num x, num y) {
     return _rectangle.contains(x, y);
   }
 
-  void _renderMaskTransformed(RenderState renderState) {
+  void renderMaskTransformed(RenderState renderState) {
 
     var renderContext = renderState.renderContext;
     var rect = _rectangle;
@@ -143,11 +143,11 @@ class _CirlceMask extends _MaskTransformed {
 
   _CirlceMask(num x, num y, num radius) : _circle = new Circle<num>(x, y, radius);
 
-  bool _hitTestTransformed(num x, num y) {
+  bool hitTestTransformed(num x, num y) {
     return _circle.contains(x, y);
   }
 
-  void _renderMaskTransformed(RenderState renderState) {
+  void renderMaskTransformed(RenderState renderState) {
 
     var renderContext = renderState.renderContext;
     var circle = _circle;
@@ -193,11 +193,11 @@ class _CustomMask extends _MaskTransformed {
     _polygonTriangles = _polygon.triangulate();
   }
 
-  bool _hitTestTransformed(num x, num y) {
+  bool hitTestTransformed(num x, num y) {
     return _polygonBounds.contains(x, y) ? _polygon.contains(x, y) : false;
   }
 
-  void _renderMaskTransformed(RenderState renderState) {
+  void renderMaskTransformed(RenderState renderState) {
 
     var points = _polygon.points;
     var triangles = _polygonTriangles;
@@ -232,7 +232,7 @@ class _ShapeMask extends _MaskTransformed {
 
   _ShapeMask(Shape shape) : _shape = shape;
 
-  bool _hitTestTransformed(num x, num y) {
+  bool hitTestTransformed(num x, num y) {
 
     var context = _dummyCanvasContext;
     var mtx = _shape.transformationMatrix;
@@ -244,7 +244,7 @@ class _ShapeMask extends _MaskTransformed {
     return context.isPointInPath(x, y);
   }
 
-  void _renderMaskTransformed(RenderState renderState) {
+  void renderMaskTransformed(RenderState renderState) {
 
     var renderContext = renderState.renderContext;
 
