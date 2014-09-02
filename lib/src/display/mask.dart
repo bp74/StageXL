@@ -65,10 +65,7 @@ abstract class Mask implements RenderMask {
 
   //-----------------------------------------------------------------------------------------------
 
-  bool _hitTestTransformed(num x, num y) {
-    // implement in derived class
-    return false;
-  }
+  bool _hitTestTransformed(num x, num y);
 
   bool hitTest(num x, num y) {
     Matrix mtx = this.transformationMatrix;
@@ -81,9 +78,7 @@ abstract class Mask implements RenderMask {
 
   //-----------------------------------------------------------------------------------------------
 
-  void _renderMaskTransformed(RenderState renderState) {
-    // implement in derived class
-  }
+  void _renderMaskTransformed(RenderState renderState);
 
   void renderMask(RenderState renderState) {
     var globalMatrix = renderState.globalMatrix;
