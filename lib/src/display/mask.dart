@@ -31,8 +31,6 @@ abstract class Mask implements RenderMask {
   int borderColor = 0xFF000000;
   int borderWidth = 1;
 
-  final Matrix _globalMatrixCopy = new Matrix.fromIdentity();
-
   Mask();
 
   //-----------------------------------------------------------------------------------------------
@@ -65,7 +63,22 @@ abstract class Mask implements RenderMask {
 
   //-----------------------------------------------------------------------------------------------
 
+  bool hitTest(num x, num y);
+
+  void renderMask(RenderState renderState);
+
+}
+
+//-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+
+abstract class _MaskTransformed extends Mask {
+
+  final Matrix _globalMatrixCopy = new Matrix.fromIdentity();
+
   bool _hitTestTransformed(num x, num y);
+
+  void _renderMaskTransformed(RenderState renderState);
 
   bool hitTest(num x, num y) {
     Matrix mtx = this.transformationMatrix;
@@ -75,10 +88,6 @@ abstract class Mask implements RenderMask {
     y = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
     return _hitTestTransformed(x, y);
   }
-
-  //-----------------------------------------------------------------------------------------------
-
-  void _renderMaskTransformed(RenderState renderState);
 
   void renderMask(RenderState renderState) {
     var globalMatrix = renderState.globalMatrix;
@@ -92,7 +101,7 @@ abstract class Mask implements RenderMask {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _RectangleMask extends Mask {
+class _RectangleMask extends _MaskTransformed {
 
   final Rectangle<num> _rectangle;
 
@@ -128,7 +137,7 @@ class _RectangleMask extends Mask {
 
 //-------------------------------------------------------------------------------------------------
 
-class _CirlceMask extends Mask {
+class _CirlceMask extends _MaskTransformed {
 
   final Circle<num> _circle;
 
@@ -173,7 +182,7 @@ class _CirlceMask extends Mask {
 
 //-------------------------------------------------------------------------------------------------
 
-class _CustomMask extends Mask {
+class _CustomMask extends _MaskTransformed {
 
   final Polygon _polygon;
   Rectangle<num> _polygonBounds;
@@ -217,7 +226,7 @@ class _CustomMask extends Mask {
 
 //-------------------------------------------------------------------------------------------------
 
-class _ShapeMask extends Mask {
+class _ShapeMask extends _MaskTransformed {
 
   final Shape _shape;
 
