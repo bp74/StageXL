@@ -3,6 +3,25 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.10.0
+  * Added DisplayObject.blendMode property.
+  * Added BitmapDataUpdateBatch class for better BitmapData update performance.
+  * Added LibGDX texture atlases loader (for Spine runtime).
+  * Added texture mesh renderer (for Spine runtime).
+  * Added FlattenFilter to flatten hierarchical containers.
+  * Added Mask.relativeToParent property.
+  * Added Mask.transformationMatrix property.
+  * Deprecated DisplayObject.shadow property.
+  * Deprecated DisplayObject.compositeOperation property.
+  * Deprecated Mask.targetSpace property.
+  * Bugfixes and performance improvements.
+  * Internal refactoring to use mini-libs.
+  
+This version contains a few minor breaking changes. If you experience 
+a problem please report the issue either in the 
+[StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
+or in the [StageXL Forum](http://www.stagexl.org/forum.html).
+
 #### Pub version 0.9.4
   * Added TouchEvents TOUCH\_ROLL\_OUT, TOUCH\_ROLL\_OVER, TOUCH\_TAP.
   * Added touch support for SimpleButton.

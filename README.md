@@ -2,8 +2,8 @@
 
 StageXL is a package for the Dart programming language. It offers an easy to use and complete API for impressive 2D content like games and other rich applications. The library started as an easy migration path for Adobe Flash developers to HTML5. Therefore the StageXL API is for the most part identical to the Flash API. Today many developers who have no prior experience with Flash are using StageXL for their applications.
 
-StageXL homepage: <http://www.stagexl.org><br>
-Dart homepage: <http://www.dartlang.org>
+StageXL homepage: <http://www.stagexl.org>  
+Dart homepage: <http://www.dartlang.org>  
 
 ## Get more information
 
