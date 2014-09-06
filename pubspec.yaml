@@ -5,6 +5,7 @@ description: A library for graphically rich content like games, based on the Fla
 homepage: http://www.stagexl.org
 environment:
   sdk: '>=0.1.6 <2.0.0'
+documentation: http://www.stagexl.org/docs/api/index.html
 dependencies:
   browser: any
 dev_dependencies:
