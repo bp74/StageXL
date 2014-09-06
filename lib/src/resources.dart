@@ -1,3 +1,11 @@
+/// This classes will help you to load and manage your resources (assets).
+///
+/// Use the [ResourceManager] class to load BitmapDatas, Sounds, Texts and
+/// other resources for your application. The [TextureAtlas] class combines
+/// a set of BitmapDatas to one render texture (which greatly improves the
+/// performance of the WebGL renderer). The [SoundSprite] does a similar
+/// thing for Sounds as the texture altas does for BitmapDatas.
+///
 library stagexl.resources;
 
 import 'dart:async';

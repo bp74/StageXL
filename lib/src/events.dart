@@ -1,3 +1,10 @@
+/// The event classes are built on top of streams from the dart:async
+/// library. The display list supports event capturing and bubbling of
+/// events through the hierarchy of the display list.
+///
+/// All display objects extend the [EventDispatcher] class which is used
+/// to listen to events as well as dispatching new events.
+///
 library stagexl.events;
 
 import 'dart:async';

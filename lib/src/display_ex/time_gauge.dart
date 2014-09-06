@@ -1,5 +1,12 @@
-part of stagexl.displayex;
+part of stagexl.display_ex;
 
+/// A [Gauge] specially designed to work in combination with the [Juggler].
+///
+/// The [TimeGauge] class implements the [Animatable] interface and therefore
+/// can be added to the [Juggler]. The ratio of the gauge will automatically
+/// be adjusted according to the time that has passed. This is useful for
+/// time gauges used in games.
+///
 class TimeGauge extends Gauge implements Animatable {
 
   static const String TIME_OUT = 'TIME_OUT';

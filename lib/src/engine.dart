@@ -1,3 +1,16 @@
+/// This are the classes for the underlying rendering engine for the
+/// display list. Most users won't need to use this classes in their
+/// applications.
+///
+/// The render engine of StageXL supports the Canvas2D API for older browsers
+/// and the more performant and flexible WebGL API for newer browsers.
+/// The [RenderContext] and [RenderState] classes do abstract the internal
+/// differences of those two render pathes.
+///
+/// Another basic building block of the engine are the [RenderTexture] and
+/// [RenderTextureQuad] classes. More advanced uses may even implement custom
+/// WebGL shaders by extending the [RenderProgram] class.
+///
 library stagexl.engine;
 
 import 'dart:async';

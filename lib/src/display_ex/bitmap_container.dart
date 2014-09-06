@@ -1,4 +1,4 @@
-part of stagexl.displayex;
+part of stagexl.display_ex;
 
 /// WARNING: This class is experimental! The implementation and behaviour may
 /// change in the future. Therefore it's recommended to use the [Sprite]
@@ -23,6 +23,10 @@ class BitmapContainer extends DisplayObjectContainer {
     } else {
       super.addChildAt(child, index);
     }
+  }
+
+  DisplayObject hitTestInput(num localX, num localY) {
+    return null;
   }
 
   void render(RenderState renderState) {

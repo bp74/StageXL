@@ -1,3 +1,16 @@
+/// The main classes for the display list. This are the most important class
+/// you will need to build your application.
+///
+/// The [Stage] is the main rendering surface of your application. All objects
+/// of the display list do inherit the properties from [DisplayObject]. Your
+/// images and artworks are stored in [BitmapData] objects and added to the
+/// display list by creating [Bitmap] instances. To group your display objects
+/// please use the [Sprite] or [DisplayObjectContainer] base class.
+///
+/// To get more information about the display list and how to create a stage,
+/// please read the wiki article about the basics of StageXL here:
+/// [Introducing StageXL](http://www.stagexl.org/docs/wiki-articles.html?article=introduction)
+///
 library stagexl.display;
 
 import 'dart:js';
@@ -48,8 +61,8 @@ final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
 
 //-----------------------------------------------------------------------------
 
-/// The Shadow class is deprecated. Please use the DropShadowFilter
-/// class instead.
+/// The Shadow class is deprecated.
+/// Please use the DropShadowFilter class instead.
 ///
 @deprecated
 class Shadow {
@@ -61,8 +74,8 @@ class Shadow {
   Shadow(this.color, this.offsetX, this.offsetY, this.blur);
 }
 
-/// The CompositeOperation is deprecated. Please use the BlendMode
-/// class instead.
+/// The CompositeOperation is deprecated.
+/// Please use the BlendMode class instead.
 ///
 @deprecated
 class CompositeOperation {

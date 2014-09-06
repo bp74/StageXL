@@ -1,3 +1,11 @@
+/// The display object to display texts. A wide range of formatting options
+/// are available to change the visual appearance of the texts.
+/// Web fonts are supported too!
+///
+/// The [TextField] class extends the [DisplayObject] class and therefore
+/// you can add it the display list. Use the [TextFormat] class to change
+/// the color, size, margin, style and more of your texts.
+///
 library stagexl.text;
 
 import 'dart:html' as html;

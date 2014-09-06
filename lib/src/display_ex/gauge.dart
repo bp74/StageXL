@@ -1,5 +1,16 @@
-part of stagexl.displayex;
+part of stagexl.display_ex;
 
+/// A display object to show a section of a [BitmapData] according
+/// to the [ratio] property.
+///
+/// Example:
+///
+///     var bitmapData = resourceManager.getBitmapData("loading");
+///     var gauge = new Gauge(bitmapData, Gauge.DIRECTION_LEFT);
+///     stage.addChild(gauge);
+///
+///     resourceManager.onProgress.listen((progress) => gauge.ratio = progress);
+///
 class Gauge extends DisplayObject {
 
   static const String DIRECTION_UP = 'DIRECTION_UP';

@@ -1,5 +1,8 @@
-part of stagexl.displayex;
+part of stagexl.display_ex;
 
+/// A display object to play sprite sheet animations. Sprite sheet animations
+/// are a set of images to simulate a moving/animated body.
+///
 class FlipBook extends InteractiveObject implements Animatable {
 
   List<BitmapData> _bitmapDatas;

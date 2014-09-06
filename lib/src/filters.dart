@@ -1,3 +1,14 @@
+/// Filters are used to change the visual appearance of your display objects.
+/// Add drop shadows, blur effects, color transformations or other effects
+/// in real time (only available if WebGL is available).
+///
+/// It is recommended to use filters only if WebGL is available. If WebGL is
+/// not available and you have to use the Canvas2D renderer, filters are only
+/// visible if you apply a cache to your display objects. This is a time
+/// consuming operation performed on the CPU.
+///
+/// Sample: <http://www.stagexl.org/samples/filter/>
+///
 library stagexl.filters;
 
 import 'dart:async';

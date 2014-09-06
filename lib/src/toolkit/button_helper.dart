@@ -1,4 +1,4 @@
-part of stagexl.displayex;
+part of stagexl.toolkit;
 
 class ButtonHelper {
 
@@ -11,7 +11,7 @@ class ButtonHelper {
   bool enabled = true;
 
   ButtonHelper(this.target, this.upLabel, this.overLabel, this.downLabel, [DisplayObject hitArea])
-    : super() {
+      : super() {
 
     target.stop();
     target.onMouseOver.listen(_onMouseEvent);
@@ -41,4 +41,3 @@ class ButtonHelper {
     }
   }
 }
-

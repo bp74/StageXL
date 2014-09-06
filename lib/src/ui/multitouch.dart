@@ -3,6 +3,8 @@ library stagexl.ui.multitouch;
 import 'dart:async';
 import 'dart:html' as html;
 
+/// The input modes for touch screen devices.
+///
 class MultitouchInputMode {
   final String name;
   const MultitouchInputMode(this.name);
@@ -12,6 +14,20 @@ class MultitouchInputMode {
   static const MultitouchInputMode TOUCH_POINT = const MultitouchInputMode("TOUCH_POINT");
 }
 
+/// The [Multitouch] class is used opt-in for multi touch support in your
+/// application. It also provides an easy way to check if the current device
+/// supports multi touch or not.
+///
+/// Example:
+///
+///     if (Multitouch.supportsTouchEvents) {
+///       Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+///     }
+///
+///     var sprite = new Sprite();
+///     sprite.onMouseDown.listen(_onMouseDown);
+///     sprite.onTouchBegin.listen(_onTouchBegin);
+///
 class Multitouch {
 
   static bool supportsGestureEvents = false;
