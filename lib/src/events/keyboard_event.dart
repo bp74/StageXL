@@ -7,11 +7,11 @@ class KeyboardEvent extends Event {
 
   //-----------------------------------------------------------------------------------------------
 
-  final bool altKey, ctrlKey, shiftKey;
-  final int charCode, keyCode;
+  final int keyCode;
   final KeyLocation keyLocation;
+  final bool altKey, ctrlKey, shiftKey;
 
   KeyboardEvent(String type, bool bubbles,
-      this.charCode, this.keyCode, this.keyLocation,
+      this.keyCode, this.keyLocation,
       this.altKey, this.ctrlKey, this.shiftKey): super(type, bubbles);
 }

@@ -886,7 +886,7 @@ class Stage extends DisplayObjectContainer {
       if (event.keyLocation == html.KeyLocation.MOBILE) keyLocation = KeyLocation.D_PAD;
 
       var keyboardEvent = new KeyboardEvent(keyboardEventType, true,
-          event.charCode,  event.keyCode, keyLocation,
+          event.keyCode, keyLocation,
           event.altKey, event.ctrlKey, event.shiftKey);
 
       _focus.dispatchEvent(keyboardEvent);
