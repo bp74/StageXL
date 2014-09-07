@@ -12,7 +12,7 @@ class RenderTexture {
 
   CanvasElement _canvas;
   RenderTextureQuad _quad;
-  RenderTextureFilter _filter = RenderTextureFilter.LINEAR;
+  RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
 
   int _contextIdentifier = -1;
   gl.RenderingContext _renderingContext = null;
@@ -95,7 +95,7 @@ class RenderTexture {
 
   CanvasElement get canvas => _canvas;
   RenderTextureQuad get quad => _quad;
-  RenderTextureFilter get filter => _filter;
+  RenderTextureFiltering get filtering => _filtering;
 
   gl.Texture get texture => _texture;
 
@@ -108,16 +108,16 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  set filter(RenderTextureFilter filter) {
+  set filtering(RenderTextureFiltering filtering) {
 
-    if (_filter != filter) {
-      _filter = filter;
+    if (_filtering != filtering) {
+      _filtering = filtering;
 
       if (_texture != null) {
         _renderingContext.activeTexture(gl.TEXTURE10);
         _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
-        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filter.glFilter);
-        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filter.glFilter);
+        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.glFilter);
+        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.glFilter);
       }
     }
   }
@@ -177,8 +177,8 @@ class RenderTexture {
       _renderingContext.texImage2DCanvas(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filter.glFilter);
-      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filter.glFilter);
+      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.glFilter);
+      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.glFilter);
 
     } else {
 
