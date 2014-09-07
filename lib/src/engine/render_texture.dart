@@ -12,6 +12,7 @@ class RenderTexture {
 
   CanvasElement _canvas;
   RenderTextureQuad _quad;
+  RenderTextureFilter _filter = RenderTextureFilter.LINEAR;
 
   int _contextIdentifier = -1;
   gl.RenderingContext _renderingContext = null;
@@ -94,6 +95,8 @@ class RenderTexture {
 
   CanvasElement get canvas => _canvas;
   RenderTextureQuad get quad => _quad;
+  RenderTextureFilter get filter => _filter;
+
   gl.Texture get texture => _texture;
 
   int get width => _width;
@@ -105,10 +108,24 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * Call the dispose method to release memory allocated by WebGL.
-   */
+  set filter(RenderTextureFilter filter) {
 
+    if (_filter != filter) {
+      _filter = filter;
+
+      if (_texture != null) {
+        _renderingContext.activeTexture(gl.TEXTURE10);
+        _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
+        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filter.glFilter);
+        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filter.glFilter);
+      }
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  /// Call the dispose method to release memory allocated by WebGL.
+  ///
   void dispose() {
 
     if (_contextIdentifier != -1) {
@@ -160,8 +177,8 @@ class RenderTexture {
       _renderingContext.texImage2DCanvas(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filter.glFilter);
+      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filter.glFilter);
 
     } else {
 
