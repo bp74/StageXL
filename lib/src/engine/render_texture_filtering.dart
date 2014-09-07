@@ -8,9 +8,9 @@ part of stagexl.engine;
 ///
 class RenderTextureFiltering {
 
-  final int glFilter;
+  final int value;
 
-  const RenderTextureFiltering(this.glFilter);
+  const RenderTextureFiltering(this.value);
 
   static const NEAREST = const RenderTextureFiltering(gl.NEAREST);
   static const LINEAR  = const RenderTextureFiltering(gl.LINEAR);
