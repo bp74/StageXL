@@ -73,6 +73,8 @@ class Sprite3D extends DisplayObjectContainer {
 
     // TODO: optimize memory allocations!
     // TODO: think about how we can maintain draw call batching!
+    // TODO: maybe we sould add worldX, worldY, worldZ properties to move
+    // the sprite relative to the pivot point in 3d space.
 
     var renderContext = renderState.renderContext as RenderContextWebGL;
     var globalMatrix = renderState.globalMatrix;
