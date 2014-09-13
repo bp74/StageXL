@@ -14,9 +14,10 @@ class Sprite3D extends DisplayObjectContainer {
   num _rotationY = 0.0;
   num _rotationZ = 0.0;
 
-  final Matrix _identityMatrix = new Matrix.fromIdentity();
-  final Matrix3D _transformationMatrix3D = new Matrix3D.fromIdentity();
   bool _transformationMatrix3DRefresh = false;
+  final Matrix3D _transformationMatrix3D = new Matrix3D.fromIdentity();
+  final Matrix3D _oldProjectionMatrix3D = new Matrix3D.fromIdentity();
+  final Matrix3D _newProjectionMatrix3D = new Matrix3D.fromIdentity();
 
   void render(RenderState renderState) {
     var renderContext = renderState.renderContext;
@@ -93,30 +94,24 @@ class Sprite3D extends DisplayObjectContainer {
 
   void _renderWebGL(RenderState renderState) {
 
-    // TODO: optimize memory allocations!
-    // TODO: think about how we can maintain draw call batching!
-
     var renderContext = renderState.renderContext as RenderContextWebGL;
     var globalMatrix = renderState.globalMatrix;
     var globalAlpha = renderState.globalAlpha;
     var globalBlendMode = renderState.globalBlendMode;
-    var activeProjectionMatrix = renderContext.activeProjectionMatrix;
+    var tmpRenderState = new RenderState(renderContext, null, globalAlpha, globalBlendMode);
 
-    var identityMatrix = new Matrix.fromIdentity();
-    var tmpRenderState = new RenderState(renderContext, identityMatrix, globalAlpha, globalBlendMode);
-    var perspectiveMatrix = perspectiveProjection.perspectiveMatrix3D;
-    var transformationMatrix2D = new Matrix3D.fromMatrix2D(globalMatrix);
-    transformationMatrix2D.prepandTranslation(pivotX, pivotY, 0);
+    _oldProjectionMatrix3D.copyFromMatrix3D(renderContext.activeProjectionMatrix);
 
-    var projectionMatrix = new Matrix3D.fromIdentity();
-    projectionMatrix.translate(-pivotX, -pivotY, 0);
-    projectionMatrix.concat(transformationMatrix3D);
-    projectionMatrix.concat(perspectiveMatrix);
-    projectionMatrix.concat(transformationMatrix2D);
-    projectionMatrix.concat(activeProjectionMatrix);
-    renderContext.activateProjectionMatrix(projectionMatrix);
+    _newProjectionMatrix3D.copyFromMatrix2D(globalMatrix);
+    _newProjectionMatrix3D.prependTranslation(pivotX, pivotY, 0);
+    _newProjectionMatrix3D.prepend(perspectiveProjection.perspectiveMatrix3D);
+    _newProjectionMatrix3D.prepend(this.transformationMatrix3D);
+    _newProjectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0);
+    _newProjectionMatrix3D.concat(_oldProjectionMatrix3D);
+
+    renderContext.activateProjectionMatrix(_newProjectionMatrix3D);
     super.render(tmpRenderState);
-    renderContext.activateProjectionMatrix(activeProjectionMatrix);
+    renderContext.activateProjectionMatrix(_oldProjectionMatrix3D);
   }
 
   void _renderCanvas(RenderState renderState) {

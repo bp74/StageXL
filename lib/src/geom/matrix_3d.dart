@@ -97,7 +97,7 @@ class Matrix3D {
     _data[11] += translationZ;
   }
 
-  void prepandTranslation(num translationX, num translationY, num translationZ) {
+  void prependTranslation(num translationX, num translationY, num translationZ) {
 
     num m00 = this.m00;
     num m01 = this.m01;
