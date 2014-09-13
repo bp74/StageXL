@@ -97,6 +97,27 @@ class Matrix3D {
     _data[11] += translationZ;
   }
 
+  void prepandTranslation(num translationX, num translationY, num translationZ) {
+
+    num m00 = this.m00;
+    num m01 = this.m01;
+    num m02 = this.m02;
+    num m03 = this.m03;
+    num m10 = this.m10;
+    num m11 = this.m11;
+    num m12 = this.m12;
+    num m13 = this.m13;
+    num m20 = this.m20;
+    num m21 = this.m21;
+    num m22 = this.m22;
+    num m23 = this.m23;
+
+    _data[03] += m00 * translationX + m10 * translationY + m20 * translationZ;
+    _data[07] += m01 * translationX + m11 * translationY + m21 * translationZ;
+    _data[11] += m02 * translationX + m12 * translationY + m22 * translationZ;
+    _data[15] += m03 * translationX + m13 * translationY + m23 * translationZ;
+  }
+
   //-----------------------------------------------------------------------------------------------
 
   void rotateX(num angle) {

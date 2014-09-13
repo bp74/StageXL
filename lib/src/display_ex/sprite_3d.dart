@@ -16,7 +16,7 @@ class Sprite3D extends DisplayObjectContainer {
 
   final Matrix _identityMatrix = new Matrix.fromIdentity();
   final Matrix3D _transformationMatrix3D = new Matrix3D.fromIdentity();
-  bool _transformationMatrix3DRefresh = true;
+  bool _transformationMatrix3DRefresh = false;
 
   void render(RenderState renderState) {
     var renderContext = renderState.renderContext;
@@ -106,12 +106,14 @@ class Sprite3D extends DisplayObjectContainer {
     var tmpRenderState = new RenderState(renderContext, identityMatrix, globalAlpha, globalBlendMode);
     var perspectiveMatrix = perspectiveProjection.perspectiveMatrix3D;
     var transformationMatrix2D = new Matrix3D.fromMatrix2D(globalMatrix);
+    transformationMatrix2D.prepandTranslation(pivotX, pivotY, 0);
 
-    var projectionMatrix = new Matrix3D.fromMatrix3D(transformationMatrix3D);
+    var projectionMatrix = new Matrix3D.fromIdentity();
+    projectionMatrix.translate(-pivotX, -pivotY, 0);
+    projectionMatrix.concat(transformationMatrix3D);
     projectionMatrix.concat(perspectiveMatrix);
     projectionMatrix.concat(transformationMatrix2D);
     projectionMatrix.concat(activeProjectionMatrix);
-
     renderContext.activateProjectionMatrix(projectionMatrix);
     super.render(tmpRenderState);
     renderContext.activateProjectionMatrix(activeProjectionMatrix);
