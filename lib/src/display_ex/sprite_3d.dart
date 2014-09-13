@@ -105,7 +105,7 @@ class Sprite3D extends DisplayObjectContainer {
     _newProjectionMatrix3D.copyFromMatrix2D(globalMatrix);
     _newProjectionMatrix3D.prependTranslation(pivotX, pivotY, 0);
     _newProjectionMatrix3D.prepend(perspectiveProjection.perspectiveMatrix3D);
-    _newProjectionMatrix3D.prepend(this.transformationMatrix3D);
+    _newProjectionMatrix3D.prepend(transformationMatrix3D);
     _newProjectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0);
     _newProjectionMatrix3D.concat(_oldProjectionMatrix3D);
 

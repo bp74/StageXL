@@ -99,19 +99,6 @@ class Matrix3D {
 
   void prependTranslation(num translationX, num translationY, num translationZ) {
 
-    num m00 = this.m00;
-    num m01 = this.m01;
-    num m02 = this.m02;
-    num m03 = this.m03;
-    num m10 = this.m10;
-    num m11 = this.m11;
-    num m12 = this.m12;
-    num m13 = this.m13;
-    num m20 = this.m20;
-    num m21 = this.m21;
-    num m22 = this.m22;
-    num m23 = this.m23;
-
     _data[03] += m00 * translationX + m10 * translationY + m20 * translationZ;
     _data[07] += m01 * translationX + m11 * translationY + m21 * translationZ;
     _data[11] += m02 * translationX + m12 * translationY + m22 * translationZ;
@@ -197,17 +184,14 @@ class Matrix3D {
     _data[01] = matrix.c;
     _data[02] = 0.0;
     _data[03] = matrix.tx;
-
     _data[04] = matrix.b;
     _data[05] = matrix.d;
     _data[06] = 0.0;
     _data[07] = matrix.ty;
-
     _data[08] = 0.0;
     _data[09] = 0.0;
     _data[10] = 1.0;
     _data[11] = 0.0;
-
     _data[12] = 0.0;
     _data[13] = 0.0;
     _data[14] = 0.0;
