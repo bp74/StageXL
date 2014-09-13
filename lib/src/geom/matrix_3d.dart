@@ -158,14 +158,14 @@ class Matrix3D {
     num m21 = this.m21;
     num m31 = this.m31;
 
-    _data[00] = m00 * cos - m01 * sin;
-    _data[01] = m10 * cos - m11 * sin;
-    _data[02] = m20 * cos - m21 * sin;
-    _data[03] = m30 * cos - m31 * sin;
-    _data[04] = m01 * cos + m00 * sin;
-    _data[05] = m11 * cos + m10 * sin;
-    _data[06] = m21 * cos + m20 * sin;
-    _data[07] = m31 * cos + m30 * sin;
+    _data[00] = m00 * cos + m01 * sin;
+    _data[01] = m10 * cos + m11 * sin;
+    _data[02] = m20 * cos + m21 * sin;
+    _data[03] = m30 * cos + m31 * sin;
+    _data[04] = m01 * cos - m00 * sin;
+    _data[05] = m11 * cos - m10 * sin;
+    _data[06] = m21 * cos - m20 * sin;
+    _data[07] = m31 * cos - m30 * sin;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -215,7 +215,13 @@ class Matrix3D {
 
   //-----------------------------------------------------------------------------------------------
 
-  void concat(Matrix3D matrix) => copyFromAndConcat(this, matrix);
+  void concat(Matrix3D matrix) {
+    this.copyFromAndConcat(this, matrix);
+  }
+
+  void prepend(Matrix3D matrix) {
+    this.copyFromAndConcat(matrix, this);
+  }
 
   void copyFromAndConcat(Matrix3D copyMatrix, Matrix3D concatMatrix) {
 

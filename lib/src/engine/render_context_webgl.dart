@@ -87,26 +87,6 @@ class RenderContextWebGL extends RenderContext {
     _projectionMatrix.scale(2.0 / _viewportWidth, - 2.0 / _viewportHeight, 1.0);
     _projectionMatrix.translate(-1.0, 1.0, 0.0);
 
-    /*
-    num width = _viewportWidth;
-    num height = _viewportHeight;
-    num dist = _viewportWidth + _viewportHeight;
-    num near = 100;
-    num far = 10000;
-
-    var perspectiveMatrix = new Matrix3D.fromIdentity();
-    perspectiveMatrix.data[00] = 2.0 * dist / width;
-    perspectiveMatrix.data[05] = 2.0 * dist / height;
-    perspectiveMatrix.data[10] = far / (far - near);
-    perspectiveMatrix.data[11] = near * far / (near - far);
-    perspectiveMatrix.data[14] = 1.0;
-
-    _projectionMatrix.setIdentity();
-    _projectionMatrix.translate(-width / 2.0, -height / 2.0, dist);
-    _projectionMatrix.scale(1.0, -1.0, 1.0);
-    _projectionMatrix.concat(perspectiveMatrix);
-    */
-
     _activeRenderProgram.projectionMatrix = _projectionMatrix;
   }
 
