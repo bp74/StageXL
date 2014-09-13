@@ -3,6 +3,7 @@ library stagexl.internal.environment;
 import 'dart:async';
 import 'dart:html';
 import 'dart:js';
+import 'dart:typed_data';
 
 final bool autoHiDPI = _checkAutoHiDPI();
 final num devicePixelRatio = _checkDevicePixelRatio();
@@ -36,12 +37,10 @@ bool _checkCocoonJS() {
 //-------------------------------------------------------------------------------------
 
 bool _checkLittleEndianSystem() {
-  var canvas = new CanvasElement(width: 1, height: 1);
-  canvas.context2D.fillStyle = "#000000";
-  canvas.context2D.fillRect(0, 0, 1, 1);
-  var data = canvas.context2D.getImageData(0, 0, 1, 1).data;
-  var littleEndian = (data[0] == 0);
-  return littleEndian;
+  var wordList = new Int32List(1);
+  var byteList = wordList.buffer.asUint8List();
+  wordList[0] = 0x11223344;
+  return byteList[0] == 0x44;
 }
 
 //-------------------------------------------------------------------------------------
