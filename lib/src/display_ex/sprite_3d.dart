@@ -78,6 +78,7 @@ class Sprite3D extends DisplayObjectContainer {
   Matrix3D get transformationMatrix3D {
 
     if (_transformationMatrix3DRefresh) {
+      _transformationMatrix3DRefresh = false;
       _transformationMatrix3D.setIdentity();
       _transformationMatrix3D.translate(offsetX, offsetY, offsetZ);
       _transformationMatrix3D.rotateX(0.0 - rotationX);
