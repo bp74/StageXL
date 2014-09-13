@@ -7,7 +7,9 @@ class Sprite3D extends DisplayObjectContainer {
 
   PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
 
-  num _z = 0.0;
+  num _offsetX = 0.0;
+  num _offsetY = 0.0;
+  num _offsetZ = 0.0;
   num _rotationX = 0.0;
   num _rotationY = 0.0;
   num _rotationZ = 0.0;
@@ -27,13 +29,32 @@ class Sprite3D extends DisplayObjectContainer {
 
   //-----------------------------------------------------------------------------------------------
 
-  num get z => _z;
+  /// The offset to the x-axis for all children in 3D space.
+  num get offsetX => _offsetX;
+  /// The offset to the y-axis for all children in 3D space.
+  num get offsetY => _offsetY;
+  /// The offset to the z-axis for all children in 3D space.
+  num get offsetZ => _offsetZ;
+
+  /// The x-axis rotation in 3D space.
   num get rotationX => _rotationX;
+  /// The y-axis rotation in 3D space.
   num get rotationY => _rotationY;
+  /// The z-axis rotation in 3D space.
   num get rotationZ => _rotationZ;
 
-  set z(num value) {
-    if (value is num) _z = value;
+  set offsetX(num value) {
+    if (value is num) _offsetX = value;
+    _transformationMatrix3DRefresh = true;
+  }
+
+  set offsetY(num value) {
+    if (value is num) _offsetY = value;
+    _transformationMatrix3DRefresh = true;
+  }
+
+  set offsetZ(num value) {
+    if (value is num) _offsetZ = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -58,10 +79,10 @@ class Sprite3D extends DisplayObjectContainer {
 
     if (_transformationMatrix3DRefresh) {
       _transformationMatrix3D.setIdentity();
-      _transformationMatrix3D.rotateX(0.0 - _rotationX);
-      _transformationMatrix3D.rotateY(_rotationY);
-      _transformationMatrix3D.rotateZ(0.0 - _rotationZ);
-      _transformationMatrix3D.translate(0.0, 0.0, _z);
+      _transformationMatrix3D.translate(offsetX, offsetY, offsetZ);
+      _transformationMatrix3D.rotateX(0.0 - rotationX);
+      _transformationMatrix3D.rotateY(rotationY);
+      _transformationMatrix3D.rotateZ(0.0 - rotationZ);
     }
 
     return _transformationMatrix3D;
@@ -73,8 +94,6 @@ class Sprite3D extends DisplayObjectContainer {
 
     // TODO: optimize memory allocations!
     // TODO: think about how we can maintain draw call batching!
-    // TODO: maybe we sould add worldX, worldY, worldZ properties to move
-    // the sprite relative to the pivot point in 3d space.
 
     var renderContext = renderState.renderContext as RenderContextWebGL;
     var globalMatrix = renderState.globalMatrix;
