@@ -82,7 +82,7 @@ class Sprite3D extends DisplayObjectContainer {
 
     var identityMatrix = new Matrix.fromIdentity();
     var tmpRenderState = new RenderState(renderContext, identityMatrix, globalAlpha, globalBlendMode);
-    var perspectiveMatrix = perspectiveProjection.transformationMatrix3D;
+    var perspectiveMatrix = perspectiveProjection.perspectiveMatrix3D;
     var transformationMatrix2D = new Matrix3D.fromMatrix2D(globalMatrix);
 
     var projectionMatrix = new Matrix3D.fromMatrix3D(transformationMatrix3D);
