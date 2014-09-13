@@ -5,11 +5,27 @@ import 'dart:math';
 
 class MouseCursor {
   static const String AUTO = "auto";
-  static const String ARROW = "arrow";
-  static const String BUTTON = "button";
-  static const String HAND = "hand";
-  static const String IBEAM = "ibeam";
+  static const String DEFAULT = "default";
+  static const String POINTER = "pointer";
+  static const String MOVE = "move";
+  static const String CROSSHAIR = "crosshair";
+  static const String TEXT = "text";
+  static const String VERTICAL_TEXT = "vertical-text";
+  static const String PROGRESS = "progress";
   static const String WAIT = "wait";
+  static const String RESIZE_COLUMN = "col-resize";
+  static const String RESIZE_ROW = "row-resize";
+  static const String RESIZE_NORTH = "n-resize";
+  static const String RESIZE_SOUTH = "s-resize";
+  static const String RESIZE_EAST = "e-resize";
+  static const String RESIZE_WEST = "w-resize";
+  static const String RESIZE_NORTHWEST = "nw-resize";
+  static const String RESIZE_NORTHEAST = "ne-resize";
+  static const String RESIZE_SOUTHWEST = "sw-resize";
+  static const String RESIZE_SOUTHEAST = "se-resize";
+  static const String NOT_ALLOWED = "not-allowed";
+  static const String NO_DROP = "no-drop";
+  static const String ALL_SCROLL = "all-scroll";
 }
 
 class MouseCursorData {
@@ -61,16 +77,7 @@ class Mouse {
 
   static String getCursorStyle(String cursorName) {
 
-    String style = "auto";
-
-    switch(cursorName) {
-      case MouseCursor.AUTO: style = "auto"; break;
-      case MouseCursor.ARROW: style = "default"; break;
-      case MouseCursor.BUTTON: style = "pointer"; break;
-      case MouseCursor.HAND: style = "move"; break;
-      case MouseCursor.IBEAM: style = "text"; break;
-      case MouseCursor.WAIT: style = "wait"; break;
-    }
+    String style = cursorName;
 
     if (_cursorDatas.containsKey(cursorName)) {
       var cursorData = _cursorDatas[cursorName];

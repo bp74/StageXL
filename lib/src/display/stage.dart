@@ -119,7 +119,7 @@ class Stage extends DisplayObjectContainer {
   StageScaleMode _stageScaleMode = StageScaleMode.SHOW_ALL;
   StageAlign _stageAlign = StageAlign.NONE;
 
-  String _mouseCursor = MouseCursor.ARROW;
+  String _mouseCursor = MouseCursor.DEFAULT;
   Point<num> _mousePosition = new Point<num>(0.0, 0.0);
   InteractiveObject _mouseTarget = null;
 
@@ -500,7 +500,7 @@ class Stage extends DisplayObjectContainer {
     }
 
     if (mouseCursor == MouseCursor.AUTO) {
-      mouseCursor = MouseCursor.ARROW;
+      mouseCursor = MouseCursor.DEFAULT;
     }
 
     if (_mouseCursor != mouseCursor) {

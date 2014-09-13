@@ -12,11 +12,11 @@ abstract class InteractiveObject extends DisplayObject {
   // simulate [useHandCursor] by changing the [mouseCursor] value.
 
   bool get useHandCursor {
-    return mouseCursor == MouseCursor.BUTTON;
+    return mouseCursor == MouseCursor.POINTER;
   }
 
   set useHandCursor(bool value) {
-    mouseCursor = value ? MouseCursor.BUTTON : null;
+    mouseCursor = value ? MouseCursor.POINTER : null;
   }
 
   // mouse events
