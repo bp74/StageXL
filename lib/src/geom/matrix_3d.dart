@@ -33,23 +33,20 @@ class Matrix3D {
   Float32List get data => _data;
 
   num get m00 => _data[00];
-  num get m01 => _data[04];
-  num get m02 => _data[08];
-  num get m03 => _data[12];
-
   num get m10 => _data[01];
-  num get m11 => _data[05];
-  num get m12 => _data[09];
-  num get m13 => _data[13];
-
   num get m20 => _data[02];
-  num get m21 => _data[06];
-  num get m22 => _data[10];
-  num get m23 => _data[14];
-
   num get m30 => _data[03];
+  num get m01 => _data[04];
+  num get m11 => _data[05];
+  num get m21 => _data[06];
   num get m31 => _data[07];
+  num get m02 => _data[08];
+  num get m12 => _data[09];
+  num get m22 => _data[10];
   num get m32 => _data[11];
+  num get m03 => _data[12];
+  num get m13 => _data[13];
+  num get m23 => _data[14];
   num get m33 => _data[15];
 
   //-----------------------------------------------------------------------------------------------
@@ -224,44 +221,120 @@ class Matrix3D {
     this.copyFromAndConcat(this, matrix);
   }
 
+  void concat2D(Matrix matrix) {
+    this.copyFromAndConcat2D(this, matrix);
+  }
+
   void prepend(Matrix3D matrix) {
     this.copyFromAndConcat(matrix, this);
+  }
+
+  void prepend2D(Matrix matrix) {
+    this.copyFrom2DAndConcat(matrix, this);
+  }
+
+  void copyFromAndConcat2D(Matrix3D copyMatrix, Matrix concatMatrix) {
+
+    num m00 = copyMatrix.m00;
+    num m10 = copyMatrix.m10;
+    num m20 = copyMatrix.m20;
+    num m30 = copyMatrix.m30;
+    num m01 = copyMatrix.m01;
+    num m11 = copyMatrix.m11;
+    num m21 = copyMatrix.m21;
+    num m31 = copyMatrix.m31;
+    num m03 = copyMatrix.m03;
+    num m13 = copyMatrix.m13;
+    num m23 = copyMatrix.m23;
+    num m33 = copyMatrix.m33;
+
+    num n00 = concatMatrix.a;
+    num n10 = concatMatrix.c;
+    num n30 = concatMatrix.tx;
+    num n01 = concatMatrix.b;
+    num n11 = concatMatrix.d;
+    num n31 = concatMatrix.ty;
+
+    _data[00] = m00 * n00 + m01 * n10 + m03 * n30;
+    _data[01] = m10 * n00 + m11 * n10 + m13 * n30;
+    _data[02] = m20 * n00 + m21 * n10 + m23 * n30;
+    _data[03] = m30 * n00 + m31 * n10 + m33 * n30;
+    _data[04] = m00 * n01 + m01 * n11 + m03 * n31;
+    _data[05] = m10 * n01 + m11 * n11 + m13 * n31;
+    _data[06] = m20 * n01 + m21 * n11 + m23 * n31;
+    _data[07] = m30 * n01 + m31 * n11 + m33 * n31;
+  }
+
+  void copyFrom2DAndConcat(Matrix copyMatrix, Matrix3D concatMatrix) {
+
+    num m00 = copyMatrix.a;
+    num m10 = copyMatrix.c;
+    num m30 = copyMatrix.tx;
+    num m01 = copyMatrix.b;
+    num m11 = copyMatrix.d;
+    num m31 = copyMatrix.ty;
+
+    num n00 = concatMatrix.m00;
+    num n10 = concatMatrix.m10;
+    num n30 = concatMatrix.m30;
+    num n01 = concatMatrix.m01;
+    num n11 = concatMatrix.m11;
+    num n31 = concatMatrix.m31;
+    num n02 = concatMatrix.m02;
+    num n12 = concatMatrix.m12;
+    num n32 = concatMatrix.m32;
+    num n03 = concatMatrix.m03;
+    num n13 = concatMatrix.m13;
+    num n33 = concatMatrix.m33;
+
+    _data[00] = m00 * n00 + m01 * n10;
+    _data[01] = m10 * n00 + m11 * n10;
+    _data[03] = m30 * n00 + m31 * n10 + n30;
+    _data[04] = m00 * n01 + m01 * n11;
+    _data[05] = m10 * n01 + m11 * n11;
+    _data[07] = m30 * n01 + m31 * n11 + n31;
+    _data[08] = m00 * n02 + m01 * n12;
+    _data[09] = m10 * n02 + m11 * n12;
+    _data[11] = m30 * n02 + m31 * n12 + n32;
+    _data[12] = m00 * n03 + m01 * n13;
+    _data[13] = m10 * n03 + m11 * n13;
+    _data[15] = m30 * n03 + m31 * n13 + n33;
   }
 
   void copyFromAndConcat(Matrix3D copyMatrix, Matrix3D concatMatrix) {
 
     num m00 = copyMatrix.m00;
-    num m01 = copyMatrix.m01;
-    num m02 = copyMatrix.m02;
-    num m03 = copyMatrix.m03;
     num m10 = copyMatrix.m10;
-    num m11 = copyMatrix.m11;
-    num m12 = copyMatrix.m12;
-    num m13 = copyMatrix.m13;
     num m20 = copyMatrix.m20;
-    num m21 = copyMatrix.m21;
-    num m22 = copyMatrix.m22;
-    num m23 = copyMatrix.m23;
     num m30 = copyMatrix.m30;
+    num m01 = copyMatrix.m01;
+    num m11 = copyMatrix.m11;
+    num m21 = copyMatrix.m21;
     num m31 = copyMatrix.m31;
+    num m02 = copyMatrix.m02;
+    num m12 = copyMatrix.m12;
+    num m22 = copyMatrix.m22;
     num m32 = copyMatrix.m32;
+    num m03 = copyMatrix.m03;
+    num m13 = copyMatrix.m13;
+    num m23 = copyMatrix.m23;
     num m33 = copyMatrix.m33;
 
     num n00 = concatMatrix.m00;
-    num n01 = concatMatrix.m01;
-    num n02 = concatMatrix.m02;
-    num n03 = concatMatrix.m03;
     num n10 = concatMatrix.m10;
-    num n11 = concatMatrix.m11;
-    num n12 = concatMatrix.m12;
-    num n13 = concatMatrix.m13;
     num n20 = concatMatrix.m20;
-    num n21 = concatMatrix.m21;
-    num n22 = concatMatrix.m22;
-    num n23 = concatMatrix.m23;
     num n30 = concatMatrix.m30;
+    num n01 = concatMatrix.m01;
+    num n11 = concatMatrix.m11;
+    num n21 = concatMatrix.m21;
     num n31 = concatMatrix.m31;
+    num n02 = concatMatrix.m02;
+    num n12 = concatMatrix.m12;
+    num n22 = concatMatrix.m22;
     num n32 = concatMatrix.m32;
+    num n03 = concatMatrix.m03;
+    num n13 = concatMatrix.m13;
+    num n23 = concatMatrix.m23;
     num n33 = concatMatrix.m33;
 
     _data[00] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
