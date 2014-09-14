@@ -243,6 +243,10 @@ class Matrix3D {
     num m11 = copyMatrix.m11;
     num m21 = copyMatrix.m21;
     num m31 = copyMatrix.m31;
+    num m02 = copyMatrix.m02;
+    num m12 = copyMatrix.m12;
+    num m22 = copyMatrix.m22;
+    num m32 = copyMatrix.m32;
     num m03 = copyMatrix.m03;
     num m13 = copyMatrix.m13;
     num m23 = copyMatrix.m23;
@@ -263,6 +267,14 @@ class Matrix3D {
     _data[05] = m10 * n01 + m11 * n11 + m13 * n31;
     _data[06] = m20 * n01 + m21 * n11 + m23 * n31;
     _data[07] = m30 * n01 + m31 * n11 + m33 * n31;
+    _data[08] = m02;
+    _data[09] = m12;
+    _data[10] = m22;
+    _data[11] = m32;
+    _data[12] = m03;
+    _data[13] = m13;
+    _data[14] = m23;
+    _data[15] = m33;
   }
 
   void copyFrom2DAndConcat(Matrix copyMatrix, Matrix3D concatMatrix) {
@@ -276,28 +288,36 @@ class Matrix3D {
 
     num n00 = concatMatrix.m00;
     num n10 = concatMatrix.m10;
+    num n20 = concatMatrix.m20;
     num n30 = concatMatrix.m30;
     num n01 = concatMatrix.m01;
     num n11 = concatMatrix.m11;
+    num n21 = concatMatrix.m21;
     num n31 = concatMatrix.m31;
     num n02 = concatMatrix.m02;
     num n12 = concatMatrix.m12;
+    num n22 = concatMatrix.m22;
     num n32 = concatMatrix.m32;
     num n03 = concatMatrix.m03;
     num n13 = concatMatrix.m13;
+    num n23 = concatMatrix.m23;
     num n33 = concatMatrix.m33;
 
     _data[00] = m00 * n00 + m01 * n10;
     _data[01] = m10 * n00 + m11 * n10;
+    _data[02] = n20;
     _data[03] = m30 * n00 + m31 * n10 + n30;
     _data[04] = m00 * n01 + m01 * n11;
     _data[05] = m10 * n01 + m11 * n11;
+    _data[06] = n21;
     _data[07] = m30 * n01 + m31 * n11 + n31;
     _data[08] = m00 * n02 + m01 * n12;
     _data[09] = m10 * n02 + m11 * n12;
+    _data[10] = n22;
     _data[11] = m30 * n02 + m31 * n12 + n32;
     _data[12] = m00 * n03 + m01 * n13;
     _data[13] = m10 * n03 + m11 * n13;
+    _data[14] = n23;
     _data[15] = m30 * n03 + m31 * n13 + n33;
   }
 
