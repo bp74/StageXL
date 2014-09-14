@@ -101,17 +101,16 @@ class Sprite3D extends DisplayObjectContainer {
     var transformationMatrix3D = this.transformationMatrix3D;
     var pivotX = this.pivotX.toDouble();
     var pivotY = this.pivotY.toDouble();
-    var pivotZ = 0.0;
 
     // TODO: avoid projection matrix changes for un-transformed objects.
 
     _oldProjectionMatrix3D.copyFromMatrix3D(activeProjectionMatrix);
 
     _newProjectionMatrix3D.copyFromMatrix2D(globalMatrix);
-    _newProjectionMatrix3D.prependTranslation(pivotX, pivotY, pivotZ);
+    _newProjectionMatrix3D.prependTranslation(pivotX, pivotY, 0.0);
     _newProjectionMatrix3D.prepend(perspectiveMatrix3D);
     _newProjectionMatrix3D.prepend(transformationMatrix3D);
-    _newProjectionMatrix3D.prependTranslation(-pivotX, -pivotY, pivotZ);
+    _newProjectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
     _newProjectionMatrix3D.concat(activeProjectionMatrix);
     _newProjectionMatrix3D.prepend2D(globalMatrix.cloneInvert());
 
