@@ -14,7 +14,7 @@ class PerspectiveProjection {
 
   PerspectiveProjection.fromDepth(num depth, num scale) {
     perspectiveMatrix3D.setIdentity();
-    perspectiveMatrix3D.data[10] = 2.0 / depth;
+    perspectiveMatrix3D.data[10] = 1.0 / depth;
     perspectiveMatrix3D.data[14] = scale / depth;
   }
 }
