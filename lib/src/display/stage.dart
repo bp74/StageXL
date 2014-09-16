@@ -301,6 +301,10 @@ class Stage extends DisplayObjectContainer {
   void set backgroundColor(int value) {
     _color = value;
   }
+  
+  /// Controls whether we should call [html.TouchEvent.preventDefault] on the [html.TouchEvent]
+  /// before forwarding the event to the stage's children
+  bool preventDefaultOnTouch = true;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -709,7 +713,9 @@ class Stage extends DisplayObjectContainer {
       var jsChangedTouches = new JsArray.from(jsEvent["changedTouches"]);
       var eventType = ensureString(jsEvent["type"]);
 
-      jsEvent.callMethod("preventDefault");
+      if (preventDefaultOnTouch) {
+        jsEvent.callMethod("preventDefault");
+      }
 
       for(var changedTouch in jsChangedTouches) {
         var jsChangedTouch = new JsObject.fromBrowserObject(changedTouch);
@@ -722,7 +728,9 @@ class Stage extends DisplayObjectContainer {
 
     } else {
 
-      event.preventDefault();
+      if (preventDefaultOnTouch) {
+        event.preventDefault();
+      }
 
       var eventType = event.type;
       var altKey = event.altKey;
