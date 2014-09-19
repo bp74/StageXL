@@ -132,61 +132,34 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void beginRenderMask(RenderState renderState, RenderMask mask) {
+    _renderMask(renderState, mask, 1);
+  }
+
+  void endRenderMask(RenderState renderState, RenderMask mask) {
+    _renderMask(renderState, mask, -1);
+  }
+
+  void _renderMask(RenderState renderState, RenderMask mask, int depthDelta) {
+
+    int stencilDepth = _getStencilDepth();
 
     _activeRenderProgram.flush();
 
-    int stencilDepth = _getStencilDepth() + 1;
-    _updateStencilDepth(stencilDepth);
-
-    activateRenderProgram(renderProgramTriangle);
-    _renderingContext.stencilFunc(gl.EQUAL, stencilDepth - 1, 0xFF);
-    _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
+    _renderingContext.enable(gl.STENCIL_TEST);
+    _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
+    _renderingContext.stencilOp(gl.KEEP, gl.KEEP, depthDelta == 1 ? gl.INCR : gl.DECR);
     _renderingContext.stencilMask(0xFF);
     _renderingContext.colorMask(false, false, false, false);
 
     mask.renderMask(renderState);
     renderState.flush();
 
-    _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
+    _renderingContext.stencilFunc(gl.EQUAL, stencilDepth + depthDelta, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
     _renderingContext.stencilMask(0x00);
     _renderingContext.colorMask(true, true, true, true);
-  }
 
-  void endRenderMask(RenderState renderState, RenderMask mask) {
-
-    _activeRenderProgram.flush();
-
-    int stencilDepth = _getStencilDepth() - 1;
-    _updateStencilDepth(stencilDepth);
-
-    if (stencilDepth == 0) {
-
-      _renderingContext.stencilMask(0xFF);
-      _renderingContext.clear(gl.STENCIL_BUFFER_BIT);
-      _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
-      _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
-      _renderingContext.stencilMask(0x00);
-
-    } else {
-
-      activateRenderProgram(renderProgramTriangle);
-
-      _renderingContext.stencilFunc(gl.EQUAL, stencilDepth + 1, 0xFF);
-      _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
-      _renderingContext.stencilMask(0xFF);
-      _renderingContext.colorMask(false, false, false, false);
-
-      renderState.globalMatrix.identity();
-      renderState.renderTriangle(-1, -1, 1, -1, 1, 1, Color.Magenta);
-      renderState.renderTriangle(-1, -1, 1, 1, -1, 1, Color.Magenta);
-      renderState.flush();
-
-      _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
-      _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
-      _renderingContext.stencilMask(0x00);
-      _renderingContext.colorMask(true, true, true, true);
-    }
+    _updateStencilDepth(stencilDepth + depthDelta);
   }
 
   //-----------------------------------------------------------------------------------------------
