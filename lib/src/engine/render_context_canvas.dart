@@ -174,6 +174,8 @@ class RenderContextCanvas extends RenderContext {
 
   void endRenderMask(RenderState renderState, RenderMask mask) {
     _renderingContext.restore();
+    _renderingContext.globalAlpha = _activeAlpha;
+    _renderingContext.globalCompositeOperation = _activeBlendMode.compositeOperation;
     if (mask.border) {
       _renderingContext.strokeStyle = color2rgba(mask.borderColor);
       _renderingContext.lineWidth = mask.borderWidth;
