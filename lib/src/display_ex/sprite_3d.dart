@@ -124,14 +124,12 @@ class Sprite3D extends DisplayObjectContainer {
     num m03 = matrix.m03;
     num m13 = matrix.m13;
     num m33 = matrix.m33;
-    num lx = localX;
-    num ly = localY;
 
-    num d = m10 * (m03 * ly - m01) - m00 * m13 * ly + (m01 * m13 - m03 * m11) * lx + m00 * m11;
-    num x = m30 * (m13 * ly - m11) - m10 * m33 * ly + (m11 * m33 - m13 * m31) * lx + m10 * m31;
-    num y = m30 * (m03 * ly - m01) - m00 * m33 * ly + (m01 * m33 - m03 * m31) * lx + m00 * m31;
+    num d = localX * (m01 * m13 - m03 * m11) + localY * (m10 * m03 - m00 * m13) + (m00 * m11 - m10 * m01);
+    num x = localX * (m11 * m33 - m13 * m31) + localY * (m30 * m13 - m10 * m33) + (m10 * m31 - m30 * m11);
+    num y = localX * (m03 * m31 - m01 * m33) + localY * (m00 * m33 - m30 * m03) + (m30 * m01 - m00 * m31);
 
-    return super.hitTestInput(x / d, - y / d);
+    return super.hitTestInput(x / d, y / d);
   }
 
   void render(RenderState renderState) {
