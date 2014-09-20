@@ -53,9 +53,7 @@ bool _checkAutoHiDPI() {
   // only recent devices (> iPhone4) and hi-dpi desktops
 
   if (isMobileDevice && !isCocoonJS && screen != null) {
-    var width = screen.width;
-    var height = screen.height;
-    if (width <= 480 || height <= 480) autoHiDPI = false;
+    autoHiDPI = autoHiDPI && (screen.width > 480 || screen.height > 480);
   }
 
   return autoHiDPI;
