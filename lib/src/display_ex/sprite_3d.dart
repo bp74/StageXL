@@ -100,13 +100,12 @@ class Sprite3D extends DisplayObjectContainer {
     Matrix3D transformationMatrix3D = this.transformationMatrix3D;
     Matrix3D matrix3D = _newProjectionMatrix3D;
 
-    matrix3D.setIdentity();
+    matrix3D.copyFromMatrix2D(matrix);
     matrix3D.prependTranslation(pivotX, pivotY, 0.0);
     matrix3D.prepend(perspectiveMatrix3D);
     matrix3D.prepend(transformationMatrix3D);
     matrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
 
-    // 3D transformation
     // x' = (m00 * x + m10 * y + m30) / (m03 * x + m13 * y + m33);
     // y' = (m01 * x + m11 * y + m31) / (m03 * x + m13 * y + m33);
 
@@ -138,47 +137,27 @@ class Sprite3D extends DisplayObjectContainer {
     num x4 = (m00 * rl + m10 * rb + m30) / d4;
     num y4 = (m01 * rl + m11 * rb + m31) / d4;
 
-    // 2D transformation
-    // x' = x * a + y * c + tx
-    // y' = x * b + y * d + ty
-
-    num a = matrix.a;
-    num b = matrix.b;
-    num c = matrix.c;
-    num d = matrix.d;
-    num tx = matrix.tx;
-    num ty = matrix.ty;
-
-    num u1 = x1 * a + y1 * c + tx;
-    num v1 = x1 * b + y1 * d + ty;
-    num u2 = x2 * a + y2 * c + tx;
-    num v2 = x2 * b + y2 * d + ty;
-    num u3 = x3 * a + y3 * c + tx;
-    num v3 = x3 * b + y3 * d + ty;
-    num u4 = x4 * a + y4 * c + tx;
-    num v4 = x4 * b + y4 * d + ty;
-
     // find minimums and maximums
 
-    num left = u1;
-    if (left > u2) left = u2;
-    if (left > u3) left = u3;
-    if (left > u4) left = u4;
+    num left = x1;
+    if (left > x2) left = x2;
+    if (left > x3) left = x3;
+    if (left > x4) left = x4;
 
-    num top = v1;
-    if (top > v2) top = v2;
-    if (top > v3) top = v3;
-    if (top > v4) top = v4;
+    num top = y1;
+    if (top > y2) top = y2;
+    if (top > y3) top = y3;
+    if (top > y4) top = y4;
 
-    num right = u1;
-    if (right < u2) right = u2;
-    if (right < u3) right = u3;
-    if (right < u4) right = u4;
+    num right = x1;
+    if (right < x2) right = x2;
+    if (right < x3) right = x3;
+    if (right < x4) right = x4;
 
-    num bottom = v1;
-    if (bottom < v2) bottom = v2;
-    if (bottom < v3) bottom = v3;
-    if (bottom < v4) bottom = v4;
+    num bottom = y1;
+    if (bottom < y2) bottom = y2;
+    if (bottom < y3) bottom = y3;
+    if (bottom < y4) bottom = y4;
 
     rectangle.setTo(left, top, right - left, bottom - top);
 
