@@ -1,11 +1,12 @@
 part of stagexl.display_ex;
 
-/// This class is experimental - use with caution.
-/// The name of the class and the API may change!
+/// This class is experimental. Use with caution!
 ///
-/// Not implemented yet:
-/// [Sprite3D.getBoundsTransformed] return empty region.
-/// [Sprite3D.mask] is always applied relative to the parent.
+/// Known issues:
+///
+/// [Sprite3D.mask] does not work correctly!
+/// To get correct results either use a mask that is relative to the parent,
+/// or apply the mask to a child of this Sprite3D.
 ///
 class Sprite3D extends DisplayObjectContainer {
 
@@ -87,43 +88,102 @@ class Sprite3D extends DisplayObjectContainer {
 
   //-----------------------------------------------------------------------------------------------
 
-  // http://stackoverflow.com/questions/2465116/understanding-opengl-matrices/2465290#2465290
-  // http://www.quickmath.com/webMathematica3/quickmath/equations/solve/advanced.jsp#c=solve_advancedsolveequations&v1=x2+%3D+(m00+*+x1+%2B+m10+*+y1+%2B+m30)+%2F+(m03+*+x1+%2B+m13+*+y1+%2B+m33)%0A%0Ay2+%3D+(m01+*+x1+%2B+m11+*+y1+%2B+m31)+%2F+(m03+*+x1+%2B+m13+*+y1+%2B+m33)%0A&v2=x1%0Ay1
-
   Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
 
-    // TODO: calculate real bounds in 3D space.
+    // This calculation is simplified for optimal performance. To get a more
+    // accurate result we would need to transform all children to 3D space.
+    // The current calculation should be sufficient for most use cases.
 
-    if (returnRectangle != null) {
-      returnRectangle.setTo(matrix.tx, matrix.ty, 0, 0);
-    } else {
-      returnRectangle = new Rectangle<num>(matrix.tx, matrix.ty, 0, 0);
-    }
+    Rectangle rectangle = super.getBoundsTransformed(_identityMatrix, returnRectangle);
 
-    return returnRectangle;
+    Matrix3D perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
+    Matrix3D transformationMatrix3D = this.transformationMatrix3D;
+    Matrix3D matrix3D = _newProjectionMatrix3D;
+
+    matrix3D.setIdentity();
+    matrix3D.prependTranslation(pivotX, pivotY, 0.0);
+    matrix3D.prepend(perspectiveMatrix3D);
+    matrix3D.prepend(transformationMatrix3D);
+    matrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
+
+    num m00 = matrix3D.m00;
+    num m10 = matrix3D.m10;
+    num m30 = matrix3D.m30;
+    num m01 = matrix3D.m01;
+    num m11 = matrix3D.m11;
+    num m31 = matrix3D.m31;
+    num m03 = matrix3D.m03;
+    num m13 = matrix3D.m13;
+    num m33 = matrix3D.m33;
+
+    // x' = (m00 * x + m10 * y + m30) / (m03 * x + m13 * y + m33);
+    // y' = (m01 * x + m11 * y + m31) / (m03 * x + m13 * y + m33);
+
+    num rl = rectangle.left;
+    num rr = rectangle.right;
+    num rt = rectangle.top;
+    num rb = rectangle.bottom;
+
+    num d1 = (m03 * rl + m13 * rt + m33);
+    num x1 = (m00 * rl + m10 * rt + m30) / d1;
+    num y1 = (m01 * rl + m11 * rt + m31) / d1;
+    num d2 = (m03 * rr + m13 * rt + m33);
+    num x2 = (m00 * rr + m10 * rt + m30) / d2;
+    num y2 = (m01 * rr + m11 * rt + m31) / d2;
+    num d3 = (m03 * rr + m13 * rb + m33);
+    num x3 = (m00 * rr + m10 * rb + m30) / d3;
+    num y3 = (m01 * rr + m11 * rb + m31) / d3;
+    num d4 = (m03 * rl + m13 * rb + m33);
+    num x4 = (m00 * rl + m10 * rb + m30) / d4;
+    num y4 = (m01 * rl + m11 * rb + m31) / d4;
+
+    num left = x1;
+    if (left > x2) left = x2;
+    if (left > x3) left = x3;
+    if (left > x4) left = x4;
+
+    num top = y1;
+    if (top > y2) top = y2;
+    if (top > y3) top = y3;
+    if (top > y4) top = y4;
+
+    num right = x1;
+    if (right < x2) right = x2;
+    if (right < x3) right = x3;
+    if (right < x4) right = x4;
+
+    num bottom = y1;
+    if (bottom < y2) bottom = y2;
+    if (bottom < y3) bottom = y3;
+    if (bottom < y4) bottom = y4;
+
+    rectangle.setTo(left, top, right - left, bottom - top);
+    return rectangle;
   }
+
+  //-----------------------------------------------------------------------------------------------
 
   DisplayObject hitTestInput(num localX, num localY) {
 
     Matrix3D perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
     Matrix3D transformationMatrix3D = this.transformationMatrix3D;
-    Matrix3D matrix = _newProjectionMatrix3D;
+    Matrix3D matrix3D = _newProjectionMatrix3D;
 
-    matrix.setIdentity();
-    matrix.prependTranslation(pivotX, pivotY, 0.0);
-    matrix.prepend(perspectiveMatrix3D);
-    matrix.prepend(transformationMatrix3D);
-    matrix.prependTranslation(-pivotX, -pivotY, 0.0);
+    matrix3D.setIdentity();
+    matrix3D.prependTranslation(pivotX, pivotY, 0.0);
+    matrix3D.prepend(perspectiveMatrix3D);
+    matrix3D.prepend(transformationMatrix3D);
+    matrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
 
-    num m00 = matrix.m00;
-    num m10 = matrix.m10;
-    num m30 = matrix.m30;
-    num m01 = matrix.m01;
-    num m11 = matrix.m11;
-    num m31 = matrix.m31;
-    num m03 = matrix.m03;
-    num m13 = matrix.m13;
-    num m33 = matrix.m33;
+    num m00 = matrix3D.m00;
+    num m10 = matrix3D.m10;
+    num m30 = matrix3D.m30;
+    num m01 = matrix3D.m01;
+    num m11 = matrix3D.m11;
+    num m31 = matrix3D.m31;
+    num m03 = matrix3D.m03;
+    num m13 = matrix3D.m13;
+    num m33 = matrix3D.m33;
 
     num d = localX * (m01 * m13 - m03 * m11) + localY * (m10 * m03 - m00 * m13) + (m00 * m11 - m10 * m01);
     num x = localX * (m11 * m33 - m13 * m31) + localY * (m30 * m13 - m10 * m33) + (m10 * m31 - m30 * m11);
@@ -131,6 +191,8 @@ class Sprite3D extends DisplayObjectContainer {
 
     return super.hitTestInput(x / d, y / d);
   }
+
+  //-----------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
     var renderContext = renderState.renderContext;
