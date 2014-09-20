@@ -3,6 +3,10 @@ part of stagexl.display_ex;
 /// This class is experimental - use with caution.
 /// The name of the class and the API may change!
 ///
+/// Not implemented yet:
+/// [Sprite3D.getBoundsTransformed] return empty region.
+/// [Sprite3D.mask] is always applied relative to the parent.
+///
 class Sprite3D extends DisplayObjectContainer {
 
   PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
@@ -18,15 +22,6 @@ class Sprite3D extends DisplayObjectContainer {
   final Matrix3D _transformationMatrix3D = new Matrix3D.fromIdentity();
   final Matrix3D _oldProjectionMatrix3D = new Matrix3D.fromIdentity();
   final Matrix3D _newProjectionMatrix3D = new Matrix3D.fromIdentity();
-
-  void render(RenderState renderState) {
-    var renderContext = renderState.renderContext;
-    if (renderContext is RenderContextWebGL) {
-      _renderWebGL(renderState);
-    } else {
-      _renderCanvas(renderState);
-    }
-  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -81,13 +76,71 @@ class Sprite3D extends DisplayObjectContainer {
     if (_transformationMatrix3DRefresh) {
       _transformationMatrix3DRefresh = false;
       _transformationMatrix3D.setIdentity();
-      _transformationMatrix3D.translate(offsetX, offsetY, offsetZ);
       _transformationMatrix3D.rotateX(0.0 - rotationX);
       _transformationMatrix3D.rotateY(0.0 + rotationY);
       _transformationMatrix3D.rotateZ(0.0 - rotationZ);
+      _transformationMatrix3D.translate(offsetX, offsetY, offsetZ);
     }
 
     return _transformationMatrix3D;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  // http://stackoverflow.com/questions/2465116/understanding-opengl-matrices/2465290#2465290
+  // http://www.quickmath.com/webMathematica3/quickmath/equations/solve/advanced.jsp#c=solve_advancedsolveequations&v1=x2+%3D+(m00+*+x1+%2B+m10+*+y1+%2B+m30)+%2F+(m03+*+x1+%2B+m13+*+y1+%2B+m33)%0A%0Ay2+%3D+(m01+*+x1+%2B+m11+*+y1+%2B+m31)+%2F+(m03+*+x1+%2B+m13+*+y1+%2B+m33)%0A&v2=x1%0Ay1
+
+  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
+
+    // TODO: calculate real bounds in 3D space.
+
+    if (returnRectangle != null) {
+      returnRectangle.setTo(matrix.tx, matrix.ty, 0, 0);
+    } else {
+      returnRectangle = new Rectangle<num>(matrix.tx, matrix.ty, 0, 0);
+    }
+
+    return returnRectangle;
+  }
+
+  DisplayObject hitTestInput(num localX, num localY) {
+
+    Matrix3D perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
+    Matrix3D transformationMatrix3D = this.transformationMatrix3D;
+    Matrix3D matrix = _newProjectionMatrix3D;
+
+    matrix.setIdentity();
+    matrix.prependTranslation(pivotX, pivotY, 0.0);
+    matrix.prepend(perspectiveMatrix3D);
+    matrix.prepend(transformationMatrix3D);
+    matrix.prependTranslation(-pivotX, -pivotY, 0.0);
+
+    num m00 = matrix.m00;
+    num m10 = matrix.m10;
+    num m30 = matrix.m30;
+    num m01 = matrix.m01;
+    num m11 = matrix.m11;
+    num m31 = matrix.m31;
+    num m03 = matrix.m03;
+    num m13 = matrix.m13;
+    num m33 = matrix.m33;
+    num lx = localX;
+    num ly = localY;
+
+    num d = m10 * (m03 * ly - m01) - m00 * m13 * ly + (m01 * m13 - m03 * m11) * lx + m00 * m11;
+    num x = m30 * (m13 * ly - m11) - m10 * m33 * ly + (m11 * m33 - m13 * m31) * lx + m10 * m31;
+    num y = m30 * (m03 * ly - m01) - m00 * m33 * ly + (m01 * m33 - m03 * m31) * lx + m00 * m31;
+
+    return super.hitTestInput(x / d, - y / d);
+  }
+
+  void render(RenderState renderState) {
+    var renderContext = renderState.renderContext;
+    if (renderContext is RenderContextWebGL) {
+      _renderWebGL(renderState);
+    } else {
+      _renderCanvas(renderState);
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -103,6 +156,7 @@ class Sprite3D extends DisplayObjectContainer {
     var pivotY = this.pivotY.toDouble();
 
     // TODO: avoid projection matrix changes for un-transformed objects.
+    // TODO: avoid globalMatrix in the _newProjectionMatrix3D calculation.
 
     _oldProjectionMatrix3D.copyFromMatrix3D(activeProjectionMatrix);
 

@@ -217,6 +217,64 @@ class Matrix3D {
 
   //-----------------------------------------------------------------------------------------------
 
+  void invert() {
+
+    double a00 = _data[00];
+    double a10 = _data[01];
+    double a20 = _data[02];
+    double a30 = _data[03];
+    double a01 = _data[04];
+    double a11 = _data[05];
+    double a21 = _data[06];
+    double a31 = _data[07];
+    double a02 = _data[08];
+    double a12 = _data[09];
+    double a22 = _data[10];
+    double a32 = _data[11];
+    double a03 = _data[12];
+    double a13 = _data[13];
+    double a23 = _data[14];
+    double a33 = _data[15];
+
+    var b00 = a00 * a11 - a01 * a10;
+    var b01 = a00 * a12 - a02 * a10;
+    var b02 = a00 * a13 - a03 * a10;
+    var b03 = a01 * a12 - a02 * a11;
+    var b04 = a01 * a13 - a03 * a11;
+    var b05 = a02 * a13 - a03 * a12;
+    var b06 = a20 * a31 - a21 * a30;
+    var b07 = a20 * a32 - a22 * a30;
+    var b08 = a20 * a33 - a23 * a30;
+    var b09 = a21 * a32 - a22 * a31;
+    var b10 = a21 * a33 - a23 * a31;
+    var b11 = a22 * a33 - a23 * a32;
+
+    var det = (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06);
+
+    if (det != 0.0) {
+
+      var invDet = 1.0 / det;
+      _data[00] = ( a11 * b11 - a12 * b10 + a13 * b09) * invDet;
+      _data[01] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
+      _data[02] = ( a10 * b10 - a11 * b08 + a13 * b06) * invDet;
+      _data[03] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
+      _data[04] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
+      _data[05] = ( a00 * b11 - a02 * b08 + a03 * b07) * invDet;
+      _data[06] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
+      _data[07] = ( a00 * b09 - a01 * b07 + a02 * b06) * invDet;
+      _data[08] = ( a31 * b05 - a32 * b04 + a33 * b03) * invDet;
+      _data[09] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
+      _data[10] = ( a30 * b04 - a31 * b02 + a33 * b00) * invDet;
+      _data[11] = (-a30 * b03 + a31 * b01 - a32 * b00) * invDet;
+      _data[12] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
+      _data[13] = ( a20 * b05 - a22 * b02 + a23 * b01) * invDet;
+      _data[14] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
+      _data[15] = ( a20 * b03 - a21 * b01 + a22 * b00) * invDet;
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
   void concat(Matrix3D matrix) {
     this.copyFromAndConcat(this, matrix);
   }
