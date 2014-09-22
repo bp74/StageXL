@@ -26,7 +26,6 @@ import 'geom/matrix_3d.dart';
 import 'geom/rectangle.dart';
 import 'internal/image_loader.dart';
 import 'internal/tools.dart';
-import 'ui/color.dart';
 
 part 'engine/blend_mode.dart';
 part 'engine/render_context.dart';
