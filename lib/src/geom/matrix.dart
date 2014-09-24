@@ -52,11 +52,29 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   num get a =>  _data[0];
+  void set a (num n){
+    _data[0] = n.toDouble();
+  }
   num get b =>  _data[1];
+  void set b (num n){
+    _data[1] = n.toDouble();
+  }
   num get c =>  _data[2];
+  void set c (num n){
+    _data[2] = n.toDouble();
+  }
   num get d =>  _data[3];
+  void set d (num n){
+    _data[3] = n.toDouble();
+  }
   num get tx => _data[4];
+  void set tx (num n){
+    _data[4] = n.toDouble();
+  }
   num get ty => _data[5];
+  void set ty (num n){
+    _data[5] = n.toDouble();
+  }
 
   num get det => a * d - b * c;
 
