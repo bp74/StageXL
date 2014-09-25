@@ -20,6 +20,21 @@ class GraphicsGradient {
      _colorStops = new List();
   }
 
+  GraphicsGradient.linearFlash(List colors, List alphas, List ratios, Matrix matrix) {
+      _kind = "linear";
+      _startX = matrix.tx;
+      _startY = matrix.ty;
+      _endX = matrix.a;
+      _endY = matrix.d;
+      _colorStops = new List();
+      int argb = 0;
+      for(int i = 0; i<colors.length; i++){
+        argb += (alphas[i] * 255).round() << 24;
+        argb += colors[i];
+        addColorStop(ratios[i], argb);
+      }
+  }
+
   GraphicsGradient.radial(num startX, num startY, num startRadius, num endX, num endY, num endRadius) {
     _kind = "radial";
     _startX = startX;
