@@ -1,5 +1,12 @@
 part of stagexl.display;
 
+/// The abstract [DisplayObjectContainer3D] class enables 3D transformations
+/// of 2D display objects.
+///
+/// Use the [rotationX], [rotationY] and [rotationZ] properties to rotate the
+/// display object in 3D space. Use the [offsetX], [offsetY] and [offsetZ]
+/// properties to move the display object in 3D space.
+///
 abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
@@ -87,7 +94,6 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     // The current calculation should be sufficient for most use cases.
 
     Rectangle rectangle = super.getBoundsTransformed(_identityMatrix, returnRectangle);
-
     num rl = rectangle.left.toDouble();
     num rr = rectangle.right.toDouble();
     num rt = rectangle.top.toDouble();
@@ -120,7 +126,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     num x4 = (m00 * rl + m10 * rb + m30) / d4;
     num y4 = (m01 * rl + m11 * rb + m31) / d4;
 
-    // find minimums and maximums
+    // find minima and maxima
 
     num left = x1;
     if (left > x2) left = x2;
