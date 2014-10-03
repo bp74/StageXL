@@ -42,6 +42,7 @@ part 'display/caps_style.dart';
 part 'display/color_transform.dart';
 part 'display/display_object.dart';
 part 'display/display_object_container.dart';
+part 'display/display_object_container_3d.dart';
 part 'display/graphics.dart';
 part 'display/graphics_command.dart';
 part 'display/graphics_gradient.dart';
@@ -53,6 +54,7 @@ part 'display/render_loop.dart';
 part 'display/shape.dart';
 part 'display/simple_button.dart';
 part 'display/sprite.dart';
+part 'display/sprite_3d.dart';
 part 'display/stage.dart';
 
 final Matrix _identityMatrix = new Matrix.fromIdentity();

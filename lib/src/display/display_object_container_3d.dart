@@ -1,14 +1,6 @@
-part of stagexl.display_ex;
+part of stagexl.display;
 
-/// This class is experimental. Use with caution!
-///
-/// Known issues:
-///
-/// [Sprite3D.mask] does not work correctly!
-/// To get correct results either use a mask that is relative to the parent,
-/// or apply the mask to a child of this Sprite3D.
-///
-class Sprite3D extends DisplayObjectContainer {
+abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
 
