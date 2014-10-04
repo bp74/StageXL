@@ -3,6 +3,15 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.10.1
+  * Added Sprite3D for 3D transformations of display objects.
+  * Added RenderTexture.filtering option for pixel art games.
+  * Added InteractiveObject.mouseCursor property.
+  * Fixed MouseCursor definitions and added new ones.
+  * Fixed nested masks with WebGL renderer.
+  * Fixed Stage.autoHiDpi heuristics.
+  * Bugfixes and performance improvements.
+
 #### Pub version 0.10.0
   * Added DisplayObject.blendMode property.
   * Added BitmapDataUpdateBatch class for better BitmapData update performance.
