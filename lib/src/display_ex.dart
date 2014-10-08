@@ -24,7 +24,6 @@ part 'display_ex/gauge.dart';
 part 'display_ex/glass_plate.dart';
 part 'display_ex/html_object.dart';
 part 'display_ex/scale9_bitmap.dart';
-part 'display_ex/sprite_3d.dart';
 part 'display_ex/time_gauge.dart';
 part 'display_ex/warp.dart';
 
