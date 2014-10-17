@@ -31,6 +31,12 @@ a problem please report the issue either in the
 [StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
 or in the [StageXL Forum](http://www.stagexl.org/forum.html).
 
+#### Pub version 0.9.4+2
+  * Fixed an issue with TouchEvents in Dartium.
+
+#### Pub version 0.9.4+1
+  * Fixed an issue with WebGL masks in combination with WebGL filters.
+
 #### Pub version 0.9.4
   * Added TouchEvents TOUCH\_ROLL\_OUT, TOUCH\_ROLL\_OVER, TOUCH\_TAP.
   * Added touch support for SimpleButton.
