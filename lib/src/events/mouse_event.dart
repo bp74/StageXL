@@ -53,12 +53,10 @@ class MouseEvent extends Event {
   /// The y-coordinate at which the event occurred relative to the stage.
   final num stageY;
   
-  /// The change in mouse position in the x direction since the last mouse 
-  /// event.
+  /// The amount that is expected to scroll horizontally.
   final num deltaX;
   
-  /// The change in mouse position in the y direction since the last mouse 
-  /// event.
+  /// The amount that is expected to scroll vertically.
   final num deltaY;
   
   /// Indicates whether the primary mouse button is pressed (true) or not (false).
