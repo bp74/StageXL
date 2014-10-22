@@ -2,6 +2,10 @@ part of stagexl.events;
 
 /// The [TouchEvent] class lets you handle events on devices that detect user 
 /// contact with the device (such as a finger on a touch screen).
+/// 
+/// Use the Multitouch class to determine the current environment's support for 
+/// touch interaction, and to manage the support of touch interaction if the 
+/// current environment supports it.
 class TouchEvent extends Event {
 
   static const String TOUCH_BEGIN = "touchBegin";
