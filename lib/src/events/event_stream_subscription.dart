@@ -1,7 +1,13 @@
 part of stagexl.events;
 
+/// An [EventListener] is a handler function for that is used to listen to events.
 typedef void EventListener<T extends Event>(T event);
 
+/// A subscritption on events from an [EventStream].
+/// 
+/// The subscription provides events to the listener, and holds the callbacks 
+/// used to handle the events. The subscription can also be used to unsubscribe 
+/// from the events, or to temporarily pause the events from the stream.
 class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
 
   int _priority = 0;
@@ -28,20 +34,24 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void onData(void handleData(T event)) {
     _eventListener = handleData;
   }
-
+  
+  @override
   void onError(void handleError(error)) {
     // This stream has no errors.
   }
 
+  @override
   void onDone(void handleDone()) {
     // This stream is never done.
   }
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   Future asFuture([var futureValue]) {
     // This stream is never done and has no errors.
     return new Completer().future;
@@ -49,6 +59,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   Future cancel() {
     if (_canceled == false) {
       _eventStream._cancelSubscription(this);
@@ -56,6 +67,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
     return null;
   }
 
+  @override
   void pause([Future resumeSignal]) {
     _pauseCount++;
     if (resumeSignal != null) {
@@ -63,6 +75,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
     }
   }
 
+  @override
   void resume() {
     if (_pauseCount == 0) {
       throw new StateError("Subscription is not paused.");

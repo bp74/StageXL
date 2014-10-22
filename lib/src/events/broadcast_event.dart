@@ -2,36 +2,55 @@ part of stagexl.events;
 
 // TODO: We should make BroadcastEvents more generic.
 
+/// [BroadcastEvent]s are events that have no specific [DisplayObject] as 
+/// target but rather all [DisplayObject] instances, including those that are
+/// not on the display list. This means that you can add a listener to any 
+/// [DisplayObject] instance to listen for [BroadcastEvent]s. 
 abstract class BroadcastEvent extends Event {
   BroadcastEvent(String type) : super(type, false);
   bool get captures => false;
   void dispatch();
 }
 
+/// [EnterFrameEvent] is a event that is dispatched when a new frame is entered. 
+/// This event is a [BroadcastEvent], which means that it is dispatched by all 
+/// [DisplayObject]s with a listener registered for this event.
 class EnterFrameEvent extends BroadcastEvent {
   num passedTime;
   EnterFrameEvent(this.passedTime) : super(Event.ENTER_FRAME);
   void dispatch() => _dispatchBroadcastEvent(this, _enterFrameSubscriptions);
 }
 
+/// [ExitFrameEvent] is a event that is dispatched when the current frame is 
+/// exited. This event is a [BroadcastEvent], which means that it is dispatched 
+/// by all [DisplayObject]s with a listener registered for this event.
 class ExitFrameEvent extends BroadcastEvent {
   ExitFrameEvent() : super(Event.EXIT_FRAME);
   void dispatch() => _dispatchBroadcastEvent(this, _exitFrameSubscriptions);
 }
 
+/// [RenderEvent] is an event that is dispatched when the display list is about 
+/// to be updated and rendered. This event provides the last opportunity for 
+/// objects listening for this event to make changes before the display list is 
+/// rendered. You must call the invalidate() method of the [Stage] object each 
+/// time you want a [RenderEvent] to be dispatched. 
+/// 
+/// This event is a [BroadcastEvent], which means that it is dispatched 
+/// by all [DisplayObject]s with a listener registered for this event.
 class RenderEvent extends BroadcastEvent {
   RenderEvent() : super(Event.RENDER);
   void dispatch() => _dispatchBroadcastEvent(this, _renderSubscriptions);
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 final List<EventStreamSubscription> _enterFrameSubscriptions = [];
 final List<EventStreamSubscription> _exitFrameSubscriptions = [];
 final List<EventStreamSubscription> _renderSubscriptions = [];
 
-_dispatchBroadcastEvent(BroadcastEvent broadcastEvent, List<EventStreamSubscription> subscriptions) {
+_dispatchBroadcastEvent(BroadcastEvent broadcastEvent, 
+    List<EventStreamSubscription> subscriptions) {
 
   // Dispatch event to current subscriptions.
   // Do not dispatch events to newly added subscriptions.
