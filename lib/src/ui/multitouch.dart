@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:html' as html;
 
 /// The input modes for touch screen devices.
-///
 class MultitouchInputMode {
   final String name;
   const MultitouchInputMode(this.name);
@@ -26,8 +25,10 @@ class MultitouchInputMode {
 }
 
 /// The [Multitouch] class is used opt-in for multi touch support in your
-/// application. It also provides an easy way to check if the current device
-/// supports multi touch or not.
+/// application. 
+/// 
+/// It also provides an easy way to check if the current device supports multi 
+/// touch or not.
 ///
 /// Example:
 ///
@@ -38,7 +39,6 @@ class MultitouchInputMode {
 ///     var sprite = new Sprite();
 ///     sprite.onMouseDown.listen(_onMouseDown);
 ///     sprite.onTouchBegin.listen(_onTouchBegin);
-///
 class Multitouch {
 
   /// Indicates whether the current environment supports gesture input, such as 

@@ -2,17 +2,19 @@ part of stagexl.events;
 
 // TODO: We should make BroadcastEvents more generic.
 
-/// [BroadcastEvent]s are events that have no specific [DisplayObject] as 
-/// target but rather all [DisplayObject] instances, including those that are
-/// not on the display list. This means that you can add a listener to any 
-/// [DisplayObject] instance to listen for [BroadcastEvent]s. 
+/// An event that has no specific [DisplayObject] as target but rather all 
+/// [DisplayObject] instances, including those that are not on the display list. 
+/// 
+/// This means that you can add a listener to any [DisplayObject] instance to 
+/// listen for [BroadcastEvent]s. 
 abstract class BroadcastEvent extends Event {
   BroadcastEvent(String type) : super(type, false);
   bool get captures => false;
   void dispatch();
 }
 
-/// [EnterFrameEvent] is a event that is dispatched when a new frame is entered. 
+/// An event that is dispatched when a new frame is entered. 
+/// 
 /// This event is a [BroadcastEvent], which means that it is dispatched by all 
 /// [DisplayObject]s with a listener registered for this event.
 class EnterFrameEvent extends BroadcastEvent {
@@ -21,16 +23,19 @@ class EnterFrameEvent extends BroadcastEvent {
   void dispatch() => _dispatchBroadcastEvent(this, _enterFrameSubscriptions);
 }
 
-/// [ExitFrameEvent] is a event that is dispatched when the current frame is 
-/// exited. This event is a [BroadcastEvent], which means that it is dispatched 
+/// An event that is dispatched when the current frame is exited. 
+/// 
+/// This event is a [BroadcastEvent], which means that it is dispatched 
 /// by all [DisplayObject]s with a listener registered for this event.
 class ExitFrameEvent extends BroadcastEvent {
   ExitFrameEvent() : super(Event.EXIT_FRAME);
   void dispatch() => _dispatchBroadcastEvent(this, _exitFrameSubscriptions);
 }
 
-/// [RenderEvent] is an event that is dispatched when the display list is about 
-/// to be updated and rendered. This event provides the last opportunity for 
+/// An event that is dispatched when the display list is about to be updated 
+/// and rendered. 
+/// 
+/// This event provides the last opportunity for 
 /// objects listening for this event to make changes before the display list is 
 /// rendered. You must call the invalidate() method of the [Stage] object each 
 /// time you want a [RenderEvent] to be dispatched. 

@@ -1,13 +1,14 @@
 part of stagexl.events;
 
-/// The [Event] class holds basic information about an event. For many events, 
-/// such as the events represented by the [Event] class constants, this basic 
-/// information is sufficient. Other events, however, may require more detailed 
-/// information. Events associated with a mouse click, for example, need to 
-/// include additional information about the location of the click event and 
-/// whether any keys were pressed during the click event. You can pass such 
-/// additional information to event listeners by extending the Event class, 
-/// which is what the [MouseEvent] class does.
+/// Holds basic information about an event. 
+/// 
+/// For many events, such as the events represented by the [Event] class 
+/// constants, this basic information is sufficient. Other events, however, may 
+/// require more detailed information. Events associated with a mouse click, for 
+/// example, need to include additional information about the location of the 
+/// click event and whether any keys were pressed during the click event. You 
+/// can pass such additional information to event listeners by extending the 
+/// Event class, which is what the [MouseEvent] class does.
 /// 
 /// The methods of the Event class can be used in event listener functions to 
 /// affect the behavior of the event object. You can make the current event 
@@ -56,40 +57,44 @@ class Event {
   //----------------------------------------------------------------------------
 
   /// Prevents processing of any event listeners in nodes subsequent to the 
-  /// current node in the event flow. This method does not affect any event 
-  /// listeners in the current node ([currentTarget]). In contrast, the 
-  /// [stopImmediatePropagation] method prevents processing of event listeners 
-  /// in both the current node and subsequent nodes. Additional calls to this 
-  /// method have no effect. This method can be called in any phase of the event 
-  /// flow.
+  /// current node in the event flow. 
+  /// 
+  /// This method does not affect any event listeners in the current node 
+  /// ([currentTarget]). In contrast, the [stopImmediatePropagation] method 
+  /// prevents processing of event listeners in both the current node and 
+  /// subsequent nodes. Additional calls to this method have no effect. This 
+  /// method can be called in any phase of the event flow.
   void stopPropagation() {
     _stopsPropagation = true;
   }
 
   /// Prevents processing of any event listeners in the current node and any 
-  /// subsequent nodes in the event flow. This method takes effect immediately, 
-  /// and it affects event listeners in the current node. In contrast, the 
-  /// [stopPropagation] method doesn't take effect until all the event listeners 
-  /// in the current node finish processing.
+  /// subsequent nodes in the event flow. 
+  /// 
+  /// This method takes effect immediately, and it affects event listeners in 
+  /// the current node. In contrast, the [stopPropagation] method doesn't take 
+  /// effect until all the event listeners in the current node finish processing.
   void stopImmediatePropagation() {
     _stopsPropagation = true;
     _stopsImmediatePropagation = true;
   }
 
-  /// Indicates if the propagation of this event has been stopped. If true, 
-  /// processing of any event listeners in nodes subsequent to the current node
-  /// in the event flow is prevented. This does not affect any event listeners 
-  /// in the current node ([currentTarget]). In contrast, 
+  /// Indicates if the propagation of this event has been stopped. 
+  /// 
+  /// If true, processing of any event listeners in nodes subsequent to the 
+  /// current node in the event flow is prevented. This does not affect any 
+  /// event listeners  in the current node ([currentTarget]). In contrast, 
   /// [stopsImmediatePropagation] indicates if processing of event listeners 
   /// in both the current node and subsequent nodes is prevented.
   bool get stopsPropagation => _stopsPropagation;
   
-  /// Indicates if the propagation of this event has been stopped. If true, 
-  /// processing of any event listeners in the current node and any subsequent 
-  /// nodes in the event flow is prevented. This takes effect immediately, and 
-  /// it affects event listeners in the current node. In contrast,  
-  /// [stopsPropagation] indicates that it doesn't take effect until all the 
-  /// event listeners in the current node finish processing.
+  /// Indicates if the propagation of this event has been stopped. 
+  /// 
+  /// If true, processing of any event listeners in the current node and any 
+  /// subsequent nodes in the event flow is prevented. This takes effect 
+  /// immediately, and it affects event listeners in the current node. In 
+  /// contrast, [stopsPropagation] indicates that it doesn't take effect until 
+  /// all the event listeners in the current node finish processing.
   bool get stopsImmediatePropagation => _stopsImmediatePropagation;
 
   /// The type of event.
@@ -108,22 +113,26 @@ class Event {
   /// Indicates whether an event is a capturing event. 
   bool get captures => true;
 
-  /// The current phase in the event flow. This property can contain the 
-  /// following numeric values:
+  /// The current phase in the event flow. 
+  /// 
+  /// This property can contain the following numeric values:
   ///
   /// * The capture phase ([EventPhase.CAPTURING_PHASE]).
   /// * The target phase ([EventPhase.AT_TARGET]).
   /// * The bubbling phase ([EventPhase.BUBBLING_PHASE]).
   EventPhase get eventPhase => _eventPhase;
   
-  /// The event target. This property contains the target node. For example, if 
-  /// a user clicks an OK button, the target node is the display list node 
-  /// containing that button.
+  /// The event target. 
+  /// 
+  /// This property contains the target node. For example, if a user clicks an 
+  /// OK button, the target node is the display list node containing that button.
   EventDispatcher get target => _target;
   
   /// The object that is actively processing the Event object with an event 
-  /// listener. For example, if a user clicks an OK button, the current target 
-  /// could be the node containing that button or one of its ancestors that has 
+  /// listener. 
+  /// 
+  /// For example, if a user clicks an OK button, the current target could be 
+  /// the node containing that button or one of its ancestors that has 
   /// registered an event listener for that event.
   EventDispatcher get currentTarget => _currentTarget;
 }

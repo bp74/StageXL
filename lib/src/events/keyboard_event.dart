@@ -1,7 +1,8 @@
 part of stagexl.events;
 
-/// A [KeyboardEvent] is an [Event] that is dispatched in response to user input
-/// through a keyboard. There are two types of keyboard events:
+/// An [Event] that is dispatched in response to user input through a keyboard. 
+/// 
+/// There are two types of keyboard events:
 /// 
 /// * [KeyboardEvent.KEY_DOWN]
 /// * [KeyboardEvent.KEY_UP]
@@ -15,10 +16,11 @@ class KeyboardEvent extends Event {
   /// The key code value of the key pressed or released.
   final int keyCode;
   
-  /// Indicates the location of the key on the keyboard. This is useful for 
-  /// differentiating keys that appear more than once on a keyboard. For 
-  /// example, you can differentiate between the left and right Shift keys by 
-  /// the value of this property: 
+  /// Indicates the location of the key on the keyboard. 
+  /// 
+  /// This is useful for differentiating keys that appear more than once on a 
+  /// keyboard. For example, you can differentiate between the left and right 
+  /// Shift keys by the value of this property: 
   /// 
   /// * [KeyLocation.LEFT] for the left and 
   /// * [KeyLocation.RIGHT] for the right. 

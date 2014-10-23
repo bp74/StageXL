@@ -38,8 +38,10 @@ class EventStream<T extends Event> extends Stream<T> {
   //----------------------------------------------------------------------------
 
   /// Adds a subscription to this stream that processes the event during the 
-  /// target or bubbling phase. In contrast, the [capture] method processes the 
-  /// event during the capture phase.
+  /// target or bubbling phase. 
+  /// 
+  /// In contrast, the [capture] method processes the event during the capture 
+  /// phase.
   ///
   /// On each data event from this stream, the subscriber's [onData] handler
   /// is called.
@@ -62,8 +64,10 @@ class EventStream<T extends Event> extends Stream<T> {
   //----------------------------------------------------------------------------
 
   /// Adds a subscription to this stream that processes the event during the 
-  /// capture phase. In contrast, the [listen] method processes the event during
-  /// the target or bubbling phase.
+  /// capture phase. 
+  /// 
+  /// In contrast, the [listen] method processes the event during the target or 
+  /// bubbling phase.
   ///
   /// On each data event from this stream, the subscriber's [onData] handler
   /// is called.

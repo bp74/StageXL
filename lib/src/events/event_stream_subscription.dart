@@ -1,9 +1,9 @@
 part of stagexl.events;
 
-/// An [EventListener] is a handler function for that is used to listen to events.
+/// A handler function that is used to listen to events.
 typedef void EventListener<T extends Event>(T event);
 
-/// A subscritption on events from an [EventStream].
+/// A subscription on events from an [EventStream].
 /// 
 /// The subscription provides events to the listener, and holds the callbacks 
 /// used to handle the events. The subscription can also be used to unsubscribe 

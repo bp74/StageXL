@@ -1,9 +1,10 @@
 part of stagexl.events;
 
-/// The [EventDispatcher] class is the base class for all classes that dispatch 
-/// events. The [EventDispatcher] class is the base class for the 
-/// [DisplayObject] class. The [EventDispatcher] class allows any object on the 
-/// display list to be an event target.
+/// The base class for all classes that dispatch events. 
+/// 
+/// The [EventDispatcher] class is the base class for the [DisplayObject] class. 
+/// The [EventDispatcher] class allows any object on the display list to be an 
+/// event target.
 /// 
 /// Event targets are an important part of the StageXL event model. The event 
 /// target serves as the focal point for how events flow through the display 
@@ -30,8 +31,10 @@ class EventDispatcher {
 
   //----------------------------------------------------------------------------
 
-  /// Returns an event stream of type [eventType]. This accessor should only be 
-  /// used when an explicit accessor is not available, e.g. for custom events:
+  /// Returns an event stream of type [eventType]. 
+  /// 
+  /// This accessor should only be used when an explicit accessor is not 
+  /// available, e.g. for custom events:
   /// 
   ///     sprite.onAddedToStage.listen(_onAddedToStage);
   ///     sprite.onMouseClick.capture(_onMouseClick);
@@ -83,10 +86,11 @@ class EventDispatcher {
 
   //----------------------------------------------------------------------------
 
-  /// Adds an event listener to receive events. This style of adding an event 
-  /// listener is used for an easy migration from legacy ActionScript3 code to 
-  /// Dart code. In pure Dart code you should consider using the Dart style of 
-  /// adding event listenes like this:
+  /// Adds an event listener to receive events. 
+  /// 
+  /// This style of adding an event listener is used for an easy migration from 
+  /// legacy ActionScript3 code to Dart code. In pure Dart code you should 
+  /// consider using the Dart style of adding event listenes like this:
   ///
   /// Example:
   ///
@@ -105,10 +109,11 @@ class EventDispatcher {
     return this.on(eventType)._subscribe(eventListener, useCapture, priority);
   }
 
-  /// Removes an event listener to stop receiving events. This style of removing 
-  /// an event listener is used for an easy migration from legacy ActionScript3 
-  /// code to Dart code. In pure Dart code you should consider using the Dart 
-  /// style of removing event listenes like this:
+  /// Removes an event listener to stop receiving events. 
+  /// 
+  /// This style of removing an event listener is used for an easy migration 
+  /// from legacy ActionScript3 code to Dart code. In pure Dart code you should 
+  /// consider using the Dart style of removing event listenes like this:
   ///
   /// Example:
   ///

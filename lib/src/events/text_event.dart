@@ -1,8 +1,9 @@
 part of stagexl.events;
 
 /// An object dispatches a [TextEvent] object when a user enters text in a text 
-/// field or clicks a hyperlink in an HTML-enabled text field. There are two 
-/// types of text events: 
+/// field or clicks a hyperlink in an HTML-enabled text field. 
+/// 
+/// There are two types of text events: 
 /// 
 /// * [TextEvent.LINK] 
 /// * [TextEvent.TEXT_INPUT]
