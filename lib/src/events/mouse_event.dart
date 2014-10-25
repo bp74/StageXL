@@ -8,13 +8,9 @@ part of stagexl.events;
 /// When nested nodes are involved, mouse events target the deepest possible 
 /// nested node that is visible in the display list. This node is called the 
 /// target node. To have a target node's ancestor receive notification of a 
-/// mouse event, use the corresponding on() method:
+/// mouse event, use the corresponding on...() methods:
 /// 
-///     // Explicit accessor is available (for InteractiveObjects):
 ///     sprite.onMouseClick.listen(_onMouseClick);
-/// 
-///     // Explicit accessor is not available:
-///     someObject.on(MouseEvent.CLICK).listen(_onMouseClick);
 class MouseEvent extends Event {
 
   static const String CLICK = "click";
