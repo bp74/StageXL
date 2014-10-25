@@ -247,8 +247,8 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     num m13 = _tmpProjectionMatrix3D.m13;
     num m33 = _tmpProjectionMatrix3D.m33;
 
-    num x1 = (m30      ) / (m33      );
-    num y1 = (m31      ) / (m33      );
+    num x1 = (0.0 + m30) / (0.0 + m33);
+    num y1 = (0.0 + m31) / (0.0 + m33);
     num x2 = (m00 + m30) / (m03 + m33);
     num y2 = (m01 + m31) / (m03 + m33);
     num x3 = (m10 + m30) / (m13 + m33);
@@ -292,13 +292,12 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     _calculateLocalProjectionMatrix3D(this.transformationMatrix);
 
     for (var current = parent; current != null; current = current.parent) {
-
       if (current is DisplayObjectContainer3D) {
-        current._calculateLocalProjectionMatrix3D(_identityMatrix);
+        current._calculateLocalProjectionMatrix3D(current.transformationMatrix);
         _tmpProjectionMatrix3D.concat(current._tmpProjectionMatrix3D);
+      } else {
+        _tmpProjectionMatrix3D.concat2D(current.transformationMatrix);
       }
-
-      _tmpProjectionMatrix3D.concat2D(current.transformationMatrix);
     }
   }
 
