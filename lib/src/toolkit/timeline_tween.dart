@@ -30,6 +30,9 @@ part of stagexl.toolkit;
 // ToDo: possibly add a END actionsMode (only runs actions that == position)?
 // ToDo: evaluate a way to decouple paused from tick registration.
 
+/// **Note:** This class is not intended to be used directly. It is needed by 
+/// the 'Toolkit for Dart' to export from Flash Professional to Dart/StageXL.
+///
 /// A TimelineTween instance tweens properties for a single target.
 ///
 /// Instance methods can be chained for easy construction and sequencing:
