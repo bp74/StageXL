@@ -15,15 +15,16 @@ class _ContextState {
 }
 
 /// The [RenderState] class is used to render objects to a give render surface
-/// defined by the renderContext parameter. Most users won't ever use this
-/// class directly because it's only used internaly to render the display list.
-/// However, more advanced users may use it to create custom display objects.
+/// defined by the renderContext parameter. 
+/// 
+/// Most users won't ever use this class directly because it's only used 
+/// internaly to render the display list. However, more advanced users may use 
+/// it to create custom display objects.
 ///
 /// The [renderObject] method keeps track of the state for hierarchical objects
 /// from the display list and therefore can be called recursively.
 /// The [renderQuad] method renders simple [RenderTextureQuad] objects. This is
 /// also the method that is used by the display list to draw BitmapData objects.
-///
 class RenderState {
 
   num currentTime = 0.0;
