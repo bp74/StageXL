@@ -278,7 +278,12 @@ abstract class DisplayObject
     if (value is bool) _visible = value;
   }
   
-  // TODO (marcojakob): Add comment here. Have no idea what off is.
+  /// The same as the [visible] property.
+  /// 
+  /// This property exists only for compatibility reasons to the 'Toolkit for 
+  /// Dart' (a Dart/StageXL code generator for Adobe Flash Professional).
+  /// 
+  /// It's recommended that you use [visible] instead of this property.
   bool get off => _off;
 
   set off(bool value) {
@@ -303,30 +308,9 @@ abstract class DisplayObject
 
   /// The calling display object is masked by the specified mask object. 
   /// 
-  /// To ensure that masking works when the [Stage] is scaled, the mask 
-  /// [DisplayObject] must be in an active part of the display list. The mask 
-  /// object itself is not drawn. Set mask to null to remove the mask.
-  /// 
-  /// To be able to scale a mask object, it must be on the display list. To be 
-  /// able to drag a mask [Sprite] object (by calling its startDrag() method), it 
-  /// must be on the display list. To call the startDrag() method for a mask 
-  /// sprite based on a mouseDown event being dispatched by the sprite, set the 
-  /// sprite's buttonMode property to true.
-  /// 
-  /// When [DisplayObject]s are cached both the mask and the display object 
-  /// being masked must be part of the same cached bitmap. Thus, if the display 
-  /// object is cached, then the mask must be a child of the display object. If 
-  /// an ancestor of the display object on the display list is cached, then the 
-  /// mask must be a child of that ancestor or one of its descendents. If more 
-  /// than one ancestor of the masked object is cached, then the mask must be a 
-  /// descendent of the cached container closest to the masked object in the 
-  /// display list.
-  ///  
-  /// Note: A single mask object cannot be used to mask more than one calling 
-  /// display object. When the mask is assigned to a second display object, it 
-  /// is removed as the mask of the first object, and that object's mask 
-  /// property becomes null.
-  // TODO (marcojakob): I'm not sure about this masking comment!
+  /// By default, a [Mask] is applied relative to this [DisplayObject]. If 
+  /// [Mask.relativeToParent] is set to true, the [Mask] is applied relative 
+  /// to the parent [DisplayObject]. 
   Mask get mask => _mask;
   
   set mask(Mask value) {
@@ -334,7 +318,6 @@ abstract class DisplayObject
   }
 
   /// The filters currently associated with this [DisplayObject].
-  // TODO (marcojakob): Maybe add more infos about filters here.
   List<BitmapFilter> get filters => _filters;
   
   set filters(List<BitmapFilter> value) {
@@ -373,24 +356,26 @@ abstract class DisplayObject
   /// are above the current display object in the display list hierarchy.
   DisplayObjectContainer get parent => _parent;
   
-  /// Returns a rectangle that defines the area of the display object.
+  /// Returns a rectangle that defines the area of this [DisplayObject].
   Rectangle<num> get bounds => getBoundsTransformed(_identityMatrix);
 
   //----------------------------------------------------------------------------
 
-  /// The position of the mouse or user input device, in pixels.
+  /// The position of the mouse or user input device, in stage coordinates.
   Point<num> get mousePosition {
     var stage = this.stage;
     return (stage != null) ? this.globalToLocal(stage._mousePosition) : null;
   }
 
-  /// The x-coordinate of the mouse or user input device position, in pixels.
+  /// The x-coordinate of the mouse or user input device position, in stage
+  /// coordinates.
   num get mouseX {
     var mp = this.mousePosition;
     return (mp != null) ? mp.x : 0.0;
   }
 
-  /// The y-coordinate of the mouse or user input device position, in pixels.
+  /// The y-coordinate of the mouse or user input device position, in stage 
+  /// coordinates.
   num get mouseY {
     var mp = this.mousePosition;
     return (mp != null) ? mp.y : 0.0;
@@ -424,10 +409,12 @@ abstract class DisplayObject
   //----------------------------------------------------------------------------
 
   /// Sets transformation properties. 
-  // TODO (marcojakob): Why this method? Is there any benefit using this instead
-  // of setting the properties individually. If we keep this method, the 
-  // positional parameters should be changed to named parameters to make calling
-  // it less error prone.
+  /// 
+  /// This method exists only for compatibility reasons to the 'Toolkit for 
+  /// Dart' (a Dart/StageXL code generator for Adobe Flash Professional).
+  /// 
+  /// It's recommended that you use the setters of [x], [y], [scaleX], etc. 
+  /// directly instead of calling this method.
   void setTransform(num x, num y, [num scaleX, num scaleY, num rotation, 
                                    num skewX, num skewY, num pivotX, num pivotY]) {
     if (x is num) _x = x;
@@ -444,7 +431,7 @@ abstract class DisplayObject
 
   //----------------------------------------------------------------------------
 
-  /// The width of this [DisplayObject], in pixels. 
+  /// The width of this [DisplayObject], in stage coordinates. 
   /// 
   /// The width is calculated based on the bounds of the content of the 
   /// [DisplayObject]. When you set the width property, the [scaleX] property is 
@@ -457,7 +444,7 @@ abstract class DisplayObject
     this.scaleX = (normalWidth != 0.0) ? value / normalWidth : 1.0;
   }
 
-  /// The height of this [DisplayObject], in pixels. 
+  /// The height of this [DisplayObject], in stage coordinates. 
   /// 
   /// The height is calculated based on the bounds of the content of the 
   /// [DisplayObject]. When you set the width property, the [scaleY] property is 
@@ -619,8 +606,8 @@ abstract class DisplayObject
 
   //----------------------------------------------------------------------------
 
-  // TODO (marcojakob): What is the difference between the bounds getter and 
-  // getBounds(). Kind of confusing if they are different.
+  /// Returns the bounds of this [DisplayObject] relative to the specified 
+  /// [targetSpace].
   Rectangle<num> getBounds(DisplayObject targetSpace) {
 
     var returnRectangle = new Rectangle<num>(0, 0, 0, 0);
@@ -682,9 +669,14 @@ abstract class DisplayObject
 
   //----------------------------------------------------------------------------
 
-  // TODO (marcojakob): I'm not sure about what this method does and why it 
-  // returns the display object itself rather than a bool. This could probably
-  // also use the 'bounds' getter instead of 'getBoundsTransformed()'.
+  /// Evaluates this [DisplayObject] to see if the coordinates [localX] and 
+  /// [localY] are inside this [DisplayObject].
+  /// 
+  /// If the coordinates are inside, this [DisplayObject] is returned; null
+  /// otherwise.
+  /// 
+  /// [localX] and [localY] are relative to to the origin (0,0) of this
+  /// [DisplayObject] (local coordinates).
   DisplayObject hitTestInput(num localX, num localY) {
     return getBoundsTransformed(_identityMatrix).contains(localX, localY) ? this : null;
   }

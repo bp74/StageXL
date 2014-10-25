@@ -24,7 +24,7 @@ class BlendMode {
   /// 0xAAA633, and the background pixel has an RGB value of 0xDD2200, the 
   /// resulting RGB value for the displayed pixel is 0xFFC833 (because 0xAA + 
   /// 0xDD > 0xFF, 0xA6 + 0x22 = 0xC8, and 0x33 + 0x00 = 0x33).
-  static const ADD      = const BlendMode(gl.ONE, gl.ONE, "lighter");
+  static const ADD = const BlendMode(gl.ONE, gl.ONE, "lighter");
   
   /// Multiplies the values of the display object constituent colors by the 
   /// colors of the background color, and then normalizes by dividing by 0xFF, 
@@ -44,19 +44,23 @@ class BlendMode {
   /// 
   /// This setting is commonly used for highlights or to remove black areas of 
   /// the display object.
-  static const SCREEN   = const BlendMode(gl.ONE, gl.ONE_MINUS_SRC_COLOR, "screen");
+  static const SCREEN = const BlendMode(gl.ONE, gl.ONE_MINUS_SRC_COLOR, "screen");
   
   /// Erases the background based on the alpha value of the display object. 
-  static const ERASE    = const BlendMode(gl.ZERO, gl.ONE_MINUS_SRC_ALPHA, "destination-out");
+  static const ERASE = const BlendMode(gl.ZERO, gl.ONE_MINUS_SRC_ALPHA, "destination-out");
   
   /// The display object appears in behind the background. Pixel values of the 
   /// background object override those of the display object. Where the 
-  /// background is is transparent, the display object is visible.
-  static const BELOW    = const BlendMode(gl.ONE_MINUS_DST_ALPHA, gl.ONE, "destination-over");
+  /// background is transparent, the display object is visible.
+  static const BELOW = const BlendMode(gl.ONE_MINUS_DST_ALPHA, gl.ONE, "destination-over");
   
-  // TODO (marcojakob): What does this mean?
-  static const ABOVE    = const BlendMode(gl.DST_ALPHA, gl.ONE_MINUS_SRC_ALPHA, "source-atop");
+  /// The display object appears above the background. Pixel values of the 
+  /// display object are invisible where the backround is transparent.
+  static const ABOVE = const BlendMode(gl.DST_ALPHA, gl.ONE_MINUS_SRC_ALPHA, "source-atop");
   
-  // TODO (marcojakob): What does this mean?
-  static const NONE     = const BlendMode(gl.ONE, gl.ZERO, "source-over");
+  /// Works only in WebGL and may improve performance for big background images 
+  /// withoug alpha. The source pixels are not blended with the destination 
+  /// pixels and therefore the GPU does not read the color from the destination
+  /// pixels.
+  static const NONE = const BlendMode(gl.ONE, gl.ZERO, "source-over");
 }
