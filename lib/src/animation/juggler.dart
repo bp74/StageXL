@@ -8,7 +8,7 @@ class _AnimatableLink {
 /// The [Juggler] controls the progress of your application by
 /// propagating the time passed between two render frames.
 ///
-/// The RenderLoop and Stage class provide Juggler instances which are
+/// The RenderLoop and Stage class provide juggler instances which are
 /// driven by the browsers animation frames. You can also create your
 /// own Juggler instance and control the time by yourself.
 /// Because [Juggler] implements the [Animatable] interface it can be
@@ -41,13 +41,19 @@ class _AnimatableLink {
     _lastAnimatableLink = _firstAnimatableLink;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// The total elapsed time.
   num get elapsedTime => _elapsedTime;
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Adds the [animatable] to this juggler who will take care that it is 
+  /// animated.
+  /// 
+  /// When the animatable is finished it is automatically removed from this 
+  /// juggler.
   void add(Animatable animatable) {
 
     if (animatable is! Animatable) {
@@ -63,8 +69,9 @@ class _AnimatableLink {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Removes the specified [animatable] from this juggler.
   void remove(Animatable animatable) {
 
     if (animatable != null) {
@@ -79,8 +86,9 @@ class _AnimatableLink {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Returns true if this juggler contains the specified [animatable].
   bool contains(Animatable animatable) {
 
     if (animatable != null) {
@@ -94,8 +102,9 @@ class _AnimatableLink {
     return false;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Removes all tweens from the specified [tweenObject].
   void removeTweens(TweenObject tweenObject) {
 
     var link = _firstAnimatableLink;
@@ -108,8 +117,10 @@ class _AnimatableLink {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Returns true if this juggler contains tweens for the specified 
+  /// [tweenObject].
   bool containsTweens(TweenObject tweenObject) {
 
     var link = _firstAnimatableLink;
@@ -124,8 +135,9 @@ class _AnimatableLink {
     return false;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Removes all [Animatable]s from this juggler.
   void clear() {
 
     var link = _firstAnimatableLink;
@@ -137,9 +149,21 @@ class _AnimatableLink {
     _lastAnimatableLink = _firstAnimatableLink;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Animates properties of the [tweenObject].
+  /// 
+  /// This is a convenience method that creates a [Tween] and adds it to this 
+  /// juggler. See [Tween] for more details.
+  /// 
+  /// Example:
+  /// 
+  ///     // Create a tween and animate the x and y property of the spaceship
+  ///     juggler.tween(spaceship, 2.0, TransitionFunction.linear)
+  ///       ..animate.x.to(100)
+  ///       ..animate.y.to(200);
+  ///       
   Tween tween(TweenObject tweenObject, num time, [EaseFunction transitionFunction]) {
 
     Tween tween = transitionFunction != null
@@ -150,8 +174,18 @@ class _AnimatableLink {
     return tween;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Animates a value by calling the [onUpdate] function continuously.
+  /// 
+  /// This is a convenience method that creates a [Transition] and adds it to 
+  /// this juggler. See [Transition] for more details.
+  /// 
+  /// Example:
+  /// 
+  ///     // Create a transition for a value from 0.0 to 100.0 within 5.0 seconds.
+  ///     juggler.transition(0.0, 100.0, 5.0, TransitionFunction.linear, (num value) => print(value));
+  ///     
   Transition transition(num startValue, num targetValue, num time,
                         EaseFunction transitionFunction, void onUpdate(num value)) {
 
@@ -162,8 +196,19 @@ class _AnimatableLink {
     return transition;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Delays the invocation of the [action] function by the given [delay] in 
+  /// seconds.
+  /// 
+  /// This is a convenience method that creates a [DelayedCall] and adds it to 
+  /// this juggler. See [DelayedCall] for more details.
+  /// 
+  /// Example:
+  /// 
+  ///     // Delay the call of 'action' by 5.0 seconds.
+  ///     juggler.delayCall(action, 5.0);
+  ///     
   DelayedCall delayCall(Function action, num delay) {
 
     DelayedCall delayedCall = new DelayedCall(action, delay);
@@ -172,8 +217,21 @@ class _AnimatableLink {
     return delayedCall;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Groups the specified list of [animatables] and runs them in parallel.
+  /// 
+  /// This is a convenience method that creates an [AnimatableGroup] and adds 
+  /// it to this juggler. See [AnimatableGroup] for more details.
+  /// 
+  /// Example:
+  /// 
+  ///     // Group a list of Animatables (run them in parallel).
+  ///     juggler.addGroup([
+  ///         new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
+  ///         new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
+  ///       ..onComplete = () => print("complete");
+  ///         
   AnimationGroup addGroup(List<Animatable> animatables) {
     var animationGroup = new AnimationGroup();
     for (int i = 0; i < animatables.length; i++) {
@@ -183,8 +241,21 @@ class _AnimatableLink {
     return animationGroup;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Chains the specified list of [animatables] and runs them sequentially.
+  /// 
+  /// This is a convenience method that creates an [AnimatableChain] and adds 
+  /// it to this juggler. See [AnimatableChain] for more details.
+  /// 
+  /// Example:
+  /// 
+  ///     // Chain a list of Animatables (run them sequentially).
+  ///     juggler.addChain([
+  ///         new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
+  ///         new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
+  ///       ..onComplete = () => print("complete");
+  ///   
   AnimationChain addChain(List<Animatable> animatables) {
     var animationChain = new AnimationChain();
     for (int i = 0; i < animatables.length; i++) {
@@ -194,9 +265,10 @@ class _AnimatableLink {
     return animationChain;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  @override
   bool advanceTime(num time) {
 
     _elapsedTime += time;

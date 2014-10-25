@@ -19,9 +19,10 @@ part of stagexl.animation;
 ///
 abstract class Animatable {
 
-  /* This method is called by the Juggler with the
-   * time past since the last call.
-   */
-
+  /// This method is called by the [Juggler] with the [time] past since the last 
+  /// call.
+  /// 
+  /// Returns true as long as this [Animatable] is not completed; false if it
+  /// is completed.
   bool advanceTime(num time);
 }
