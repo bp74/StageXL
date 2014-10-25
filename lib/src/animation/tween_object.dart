@@ -1,9 +1,10 @@
 part of stagexl.animation;
 
 /// The abstract [TweenObject] class defines the interface for a class
-/// that can used with the [Tween] class. All DisplayObjects do implement
-/// this interface and therefore they can be used for tween animations.
-///
+/// that can used with the [Tween] class. 
+/// 
+/// All [DisplayObject]s do implement this interface and therefore they can be 
+/// used for tween animations.
 abstract class TweenObject {
   num x, y;
   num pivotX, pivotY;
@@ -18,7 +19,6 @@ abstract class TweenObject {
 
 /// The [TweenPropertyFactory] is returned by the [Tween.animate] method
 /// and is used to access the animatable properties of a [TweenObject].
-///
 class TweenPropertyFactory {
 
   final Tween _tween;
@@ -42,7 +42,6 @@ class TweenPropertyFactory {
 
 /// The [TweenProperty] class is used by the [TweenPropertyFactory] to
 /// access a property of the [TweenObject] class.
-///
 class TweenProperty {
 
   final TweenObject _tweenObject;

@@ -18,8 +18,9 @@ part of stagexl.animation;
 typedef num EaseFunction(num ratio);
 
 /// The [TransitionFunction] class provides common transition functions used by
-/// the [Transition] and [Tween] classes. The signature of those functions is
-/// declared in [EaseFunction].
+/// the [Transition] and [Tween] classes. 
+/// 
+/// The signature of those functions is declared in [EaseFunction].
 ///
 /// Overview of all available transition types:
 /// <http://www.stagexl.org/docs/transitions.html>
