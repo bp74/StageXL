@@ -268,7 +268,7 @@ abstract class DisplayObject
     _transformationMatrixRefresh = true;
   }
 
-  /// Whether or not the display object is visible. 
+  /// The visibility and availability of the display object. 
   /// 
   /// Display objects that are not visible are disabled. For example, if 
   /// visible=false for an [InteractiveObject] instance, it cannot be clicked.
@@ -278,10 +278,12 @@ abstract class DisplayObject
     if (value is bool) _visible = value;
   }
   
-  /// The same as the [visible] property.
+  /// The availability and visibility of the display object.
   /// 
-  /// This property exists only for compatibility reasons to the 'Toolkit for 
-  /// Dart' (a Dart/StageXL code generator for Adobe Flash Professional).
+  /// Turning off a display object has the same effect as setting the 
+  /// [visible] property. This property exists only for compatibility 
+  /// reasons to the 'Toolkit for Dart' (a Dart/StageXL code generator 
+  /// for Adobe Flash Professional). 
   /// 
   /// It's recommended that you use [visible] instead of this property.
   bool get off => _off;
@@ -361,21 +363,22 @@ abstract class DisplayObject
 
   //----------------------------------------------------------------------------
 
-  /// The position of the mouse or user input device, in stage coordinates.
+  /// The position of the mouse relative to the local coordinate system of 
+  /// the display object.
   Point<num> get mousePosition {
     var stage = this.stage;
     return (stage != null) ? this.globalToLocal(stage._mousePosition) : null;
   }
 
-  /// The x-coordinate of the mouse or user input device position, in stage
-  /// coordinates.
+  /// The x-coordinate of the mouse relative to the local coordinate system of 
+  /// the display object.
   num get mouseX {
     var mp = this.mousePosition;
     return (mp != null) ? mp.x : 0.0;
   }
 
-  /// The y-coordinate of the mouse or user input device position, in stage 
-  /// coordinates.
+  /// The y-coordinate of the mouse relative to the local coordinate system of 
+  /// the display object.
   num get mouseY {
     var mp = this.mousePosition;
     return (mp != null) ? mp.y : 0.0;
