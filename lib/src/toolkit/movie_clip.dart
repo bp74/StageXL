@@ -27,6 +27,8 @@ part of stagexl.toolkit;
 * OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/// **Note:** This class is not intended to be used directly. It is needed by 
+/// the 'Toolkit for Dart' to export from Flash Professional to Dart/StageXL.
 class MovieClip extends Sprite {
   /**
    * Read-only. The MovieClip will advance independently of its parent, even if its parent is paused.

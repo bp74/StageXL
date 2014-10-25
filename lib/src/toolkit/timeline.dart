@@ -29,6 +29,8 @@ part of stagexl.toolkit;
 
 typedef void ChangeHandler(dynamic sender); // Tween or Timeline
 
+/// **Note:** This class is not intended to be used directly. It is needed by 
+/// the 'Toolkit for Dart' to export from Flash Professional to Dart/StageXL.
 class TimelineAction {
   int t;
   Function f;
@@ -40,6 +42,8 @@ class TimelineAction {
   }
 }
 
+/// **Note:** This class is not intended to be used directly. It is needed by 
+/// the 'Toolkit for Dart' to export from Flash Professional to Dart/StageXL.
 class TimelineStep {
   num d;
   int t;
@@ -55,6 +59,8 @@ class TimelineStep {
   }
 }
 
+/// **Note:** This class is not intended to be used directly. It is needed by 
+/// the 'Toolkit for Dart' to export from Flash Professional to Dart/StageXL.
 class Timeline {
   /**
   * Causes this timeline to continue playing when a global pause is active.
