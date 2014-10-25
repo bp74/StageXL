@@ -183,23 +183,17 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   Point<num> localToGlobal(Point<num> localPoint) {
 
-    _tmpMatrix.identity();
+    var matrix3D = _calculateGlobalProjectionMatrix();
 
-    for (var current = this; current != null; current = current._parent) {
-      _tmpMatrix.concat(current.transformationMatrix);
-    }
-
-    _calculateNewProjectionMatrix3D(_tmpMatrix);
-
-    num m00 = _newProjectionMatrix3D.m00;
-    num m10 = _newProjectionMatrix3D.m10;
-    num m30 = _newProjectionMatrix3D.m30;
-    num m01 = _newProjectionMatrix3D.m01;
-    num m11 = _newProjectionMatrix3D.m11;
-    num m31 = _newProjectionMatrix3D.m31;
-    num m03 = _newProjectionMatrix3D.m03;
-    num m13 = _newProjectionMatrix3D.m13;
-    num m33 = _newProjectionMatrix3D.m33;
+    num m00 = matrix3D.m00;
+    num m10 = matrix3D.m10;
+    num m30 = matrix3D.m30;
+    num m01 = matrix3D.m01;
+    num m11 = matrix3D.m11;
+    num m31 = matrix3D.m31;
+    num m03 = matrix3D.m03;
+    num m13 = matrix3D.m13;
+    num m33 = matrix3D.m33;
 
     num px = localPoint.x.toDouble();
     num py = localPoint.y.toDouble();
@@ -215,23 +209,17 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   Point<num> globalToLocal(Point<num> globalPoint) {
 
-    _tmpMatrix.identity();
+    var matrix3D = _calculateGlobalProjectionMatrix();
 
-    for (var current = this; current != null; current = current._parent) {
-      _tmpMatrix.concat(current.transformationMatrix);
-    }
-
-    _calculateNewProjectionMatrix3D(_tmpMatrix);
-
-    num m00 = _newProjectionMatrix3D.m00;
-    num m10 = _newProjectionMatrix3D.m10;
-    num m30 = _newProjectionMatrix3D.m30;
-    num m01 = _newProjectionMatrix3D.m01;
-    num m11 = _newProjectionMatrix3D.m11;
-    num m31 = _newProjectionMatrix3D.m31;
-    num m03 = _newProjectionMatrix3D.m03;
-    num m13 = _newProjectionMatrix3D.m13;
-    num m33 = _newProjectionMatrix3D.m33;
+    num m00 = matrix3D.m00;
+    num m10 = matrix3D.m10;
+    num m30 = matrix3D.m30;
+    num m01 = matrix3D.m01;
+    num m11 = matrix3D.m11;
+    num m31 = matrix3D.m31;
+    num m03 = matrix3D.m03;
+    num m13 = matrix3D.m13;
+    num m33 = matrix3D.m33;
 
     num px = globalPoint.x.toDouble();
     num py = globalPoint.y.toDouble();
@@ -241,6 +229,23 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     num y = px * (m03 * m31 - m01 * m33) + py * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
 
     return new Point<num>(x / d, y / d);
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  bool get isFacingToCamera {
+
+    // TODO: Optimize the isFacingToCamera calcualtion
+
+    var p1 = localToGlobal(new Point(0, 0));
+    var p2 = localToGlobal(new Point(100, 0));
+    var p3 = localToGlobal(new Point(100, 100));
+
+    var e1 = (p2.x - p1.x) * (p2.y + p1.y);
+    var e2 = (p3.x - p2.x) * (p3.y + p2.y);
+    var e3 = (p1.x - p3.x) * (p1.y + p3.y);
+
+    return e1 + e2 + e3 <= 0;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -269,6 +274,21 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     _newProjectionMatrix3D.prepend(perspectiveMatrix3D);
     _newProjectionMatrix3D.prepend(transformationMatrix3D);
     _newProjectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
+  }
+
+  Matrix3D _calculateGlobalProjectionMatrix() {
+
+    Matrix3D matrix3D = new Matrix3D.fromIdentity();
+
+    for (var current = this; current != null; current = current._parent) {
+      if (current is DisplayObjectContainer3D) {
+        current._calculateNewProjectionMatrix3D(_identityMatrix);
+        matrix3D.concat(current._newProjectionMatrix3D);
+      }
+      matrix3D.concat2D(current.transformationMatrix);
+    }
+
+    return matrix3D;
   }
 
   //-----------------------------------------------------------------------------------------------
