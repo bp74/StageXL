@@ -235,17 +235,38 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   bool get isFacingToCamera {
 
-    // TODO: Optimize the isFacingToCamera calcualtion
-
+/*
     var p1 = localToGlobal(new Point(0, 0));
-    var p2 = localToGlobal(new Point(100, 0));
-    var p3 = localToGlobal(new Point(100, 100));
+    var p2 = localToGlobal(new Point(1, 0));
+    var p3 = localToGlobal(new Point(1, 0));
 
     var e1 = (p2.x - p1.x) * (p2.y + p1.y);
     var e2 = (p3.x - p2.x) * (p3.y + p2.y);
     var e3 = (p1.x - p3.x) * (p1.y + p3.y);
 
     return e1 + e2 + e3 <= 0;
+*/
+
+    var matrix3D = _calculateGlobalProjectionMatrix();
+
+    num m00 = matrix3D.m00;
+    num m10 = matrix3D.m10;
+    num m30 = matrix3D.m30;
+    num m01 = matrix3D.m01;
+    num m11 = matrix3D.m11;
+    num m31 = matrix3D.m31;
+    num m03 = matrix3D.m03;
+    num m13 = matrix3D.m13;
+    num m33 = matrix3D.m33;
+
+    num x1 = (m30      ) / (m33      );
+    num y1 = (m31      ) / (m33      );
+    num x2 = (m00 + m30) / (m03 + m33);
+    num y2 = (m01 + m31) / (m03 + m33);
+    num x3 = (m10 + m30) / (m13 + m33);
+    num y3 = (m11 + m31) / (m13 + m33);
+
+    return x1 * (y3 - y2) + x2 * (y1  - y3) + x3 * (y2 - y1) <= 0;
   }
 
   //-----------------------------------------------------------------------------------------------
