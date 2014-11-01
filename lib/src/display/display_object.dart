@@ -778,7 +778,7 @@ abstract class DisplayObject
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  /// Converts the point object from this display object]'s local coordinates
+  /// Converts the point object from this display object's local coordinates
   /// to this display object's parent coordinates.
   ///
   /// This method allows you to convert any given x- and y-coordinates from
@@ -799,7 +799,7 @@ abstract class DisplayObject
     return p;
   }
 
-  /// Converts the point object from this display object]'s local coordinates
+  /// Converts the point object from this display object's local coordinates
   /// to the [Stage] global coordinates.
   ///
   /// This method allows you to convert any given x- and y-coordinates from
