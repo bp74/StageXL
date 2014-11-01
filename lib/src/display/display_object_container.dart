@@ -16,9 +16,9 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   bool _tabChildren = true;
 
   //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
 
   /// The number of children of this container.
+
   int get numChildren => _children.length;
 
   /// Determines whether or not the children of the object are mouse, or user
@@ -40,6 +40,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   ///
   /// No event is dispatched by setting this property. You must use the on...()
   /// event methods to create interactive functionality.
+
   bool get mouseChildren => _mouseChildren;
 
   void set mouseChildren(bool value) { _mouseChildren = value; }
@@ -47,6 +48,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// Determines whether the children of this container are tab enabled.
   ///
   /// The default is true.
+
   bool get tabChildren => _tabChildren;
 
   void set tabChildren(bool value) { _tabChildren = value; }
@@ -62,11 +64,10 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// If you add a child object that already has a different display object
   /// container as a parent, the object is removed from the child list of the
   /// other display object container.
+
   void addChild(DisplayObject child) {
     addChildAt(child, _children.length);
   }
-
-  //----------------------------------------------------------------------------
 
   /// Adds a child [DisplayObject] to this [DisplayObjectContainer] at the
   /// specified [index] position.
@@ -77,6 +78,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// If you add a child object that already has a different display object
   /// container as a parent, the object is removed from the child list of the
   /// other display object container.
+
   void addChildAt(DisplayObject child, int index) {
 
     if (index < 0 || index > _children.length) {
@@ -124,6 +126,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// garbage collected if no other references to the child exist. The index
   /// positions of any display objects above the child in the
   /// [DisplayObjectContainer] are decreased by 1.
+
   void removeChild(DisplayObject child) {
 
     int childIndex = _children.indexOf(child);
@@ -134,8 +137,6 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     removeChildAt(childIndex);
   }
 
-  //----------------------------------------------------------------------------
-
   /// Removes the child [DisplayObject] from the specified [index] position in
   /// the child list of this [DisplayObjectContainer].
   ///
@@ -143,6 +144,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// garbage collected if no other references to the child exist. The index
   /// positions of any display objects above the child in the
   /// [DisplayObjectContainer] are decreased by 1.
+
   void removeChildAt(int index) {
 
     if (index < 0 || index >= _children.length) {
@@ -161,8 +163,6 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     _children.removeAt(index);
   }
 
-  //----------------------------------------------------------------------------
-
   /// Removes all child [DisplayObject] instances from the child list of this
   /// [DisplayObjectContainer] instance.
   ///
@@ -171,6 +171,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   ///
   /// The parent property of the removed children is set to null, and the
   /// objects are garbage collected if no other references to the children exist.
+
   void removeChildren([int beginIndex = 0, int endIndex = 0x7fffffff]) {
 
     var length = _children.length;
@@ -193,6 +194,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //----------------------------------------------------------------------------
 
   /// Returns the child [DisplayObject] at the specified [index].
+
   DisplayObject getChildAt(int index) {
 
     if (index < 0 || index >= _children.length) {
@@ -200,8 +202,6 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     }
     return _children[index];
   }
-
-  //----------------------------------------------------------------------------
 
   /// Returns the child [DisplayObject] that exists with the specified name.
   ///
@@ -211,6 +211,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// The [getChildAt] method is faster than the [getChildByName] method. The
   /// [getChildAt] method accesses a child from a cached array, whereas the
   /// [getChildByName] method has to traverse a list to access a child.
+
   DisplayObject getChildByName(String name) {
 
     for (int i = 0; i < _children.length; i++) {
@@ -220,11 +221,9 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     return null;
   }
 
-  //-------------------------------------------------------------------------------------------------
-
   /// Returns the index position of a child [DisplayObject].
-  int getChildIndex(DisplayObject child) {
 
+  int getChildIndex(DisplayObject child) {
     return _children.indexOf(child);
   }
 
@@ -242,6 +241,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// children in between will INCREASE by 1 for their index reference. If a
   /// child is moved to an index HIGHER than its current index, all children in
   /// between will DECREASE by 1 for their index reference.
+
   void setChildIndex(DisplayObject child, int index) {
 
     if (index < 0 || index >= _children.length) {
@@ -257,12 +257,11 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     _children.insert(index, child);
   }
 
-  //----------------------------------------------------------------------------
-
   /// Swaps the z-order (front-to-back order) of the two specified child objects.
   ///
   /// All other child objects in the display object container remain in the same
   /// index positions.
+
   void swapChildren(DisplayObject child1, DisplayObject child2) {
 
     int index1 = getChildIndex(child1);
@@ -275,13 +274,12 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     swapChildrenAt(index1, index2);
   }
 
-  //----------------------------------------------------------------------------
-
   /// Swaps the z-order (front-to-back order) of the child objects at the two
   /// specified index positions in the child list.
   ///
   /// All other child objects in the display object container remain in the same
   /// index positions.
+
   void swapChildrenAt(int index1, int index2) {
 
     DisplayObject child1 = getChildAt(index1);
@@ -294,11 +292,10 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   /// Sorts the child list according to the order specified by the [compare]
   /// Function.
+
   void sortChildren(int compare(DisplayObject a, DisplayObject b)) {
     _children.sort(compare);
   }
-
-  //----------------------------------------------------------------------------
 
   /// Determines whether the specified [DisplayObject] is a child of this
   /// [DisplayObjectContainer] instance or the instance itself.
@@ -306,6 +303,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// The search includes the entire display list including this
   /// [DisplayObjectContainer] instance. Grandchildren, great-grandchildren,
   /// and so on each return true.
+
   bool contains(DisplayObject child) {
 
     while (child != null) {
@@ -313,6 +311,37 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       child = child.parent;
     }
     return false;
+  }
+
+  /// Returns a list of display objects that lie under the specified
+  /// point and are children (or grandchildren, and so on) of this
+  /// display object container.
+  ///
+  /// The [point] parameter is in the local coordinate system of
+  /// this display object container.
+
+  List<DisplayObject> getObjectsUnderPoint(Point<num> point, [
+    List<DisplayObject> returnList]) {
+
+    var tmpPoint = new Point<num>(0.0, 0.0);
+
+    if (returnList is! List) {
+      returnList = new List<DisplayObject>();
+    }
+
+    for (int i = 0; i < _children.length; i++) {
+
+      var child = _children[i];
+      child.parentToLocal(point, tmpPoint);
+
+      if (child is DisplayObjectContainer) {
+        child.getObjectsUnderPoint(tmpPoint, returnList);
+      } else if (child.bounds.contains(tmpPoint.x, tmpPoint.y)) {
+        returnList.add(child);
+      }
+    }
+
+    return returnList;
   }
 
   //----------------------------------------------------------------------------
