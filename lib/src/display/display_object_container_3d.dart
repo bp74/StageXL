@@ -87,6 +87,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
 
     // This calculation is simplified for optimal performance. To get a more
@@ -155,6 +156,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
 
     _calculateLocalProjectionMatrix3D(_identityMatrix);
@@ -181,9 +183,10 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   //-----------------------------------------------------------------------------------------------
 
-  Point<num> localToGlobal(Point<num> localPoint) {
+  @override
+  Point<num> localToParent(Point<num> localPoint, [Point<num> returnPoint]) {
 
-    _calculateGlobalProjectionMatrix();
+    _calculateLocalProjectionMatrix3D(this.transformationMatrix);
 
     num m00 = _tmpProjectionMatrix3D.m00;
     num m10 = _tmpProjectionMatrix3D.m10;
@@ -195,21 +198,26 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     num m13 = _tmpProjectionMatrix3D.m13;
     num m33 = _tmpProjectionMatrix3D.m33;
 
-    num px = localPoint.x.toDouble();
-    num py = localPoint.y.toDouble();
+    var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
+    var x = localPoint.x.toDouble();
+    var y = localPoint.y.toDouble();
 
-    num d = m03 * px + m13 * py + m33;
-    num x = m00 * px + m10 * py + m30;
-    num y = m01 * px + m11 * py + m31;
+    var td = m03 * x + m13 * y + m33;
+    var tx = m00 * x + m10 * y + m30;
+    var ty = m01 * x + m11 * y + m31;
 
-    return new Point<num>(x / d, y / d);
+    p.x = tx / td;
+    p.y = ty / td;
+
+    return p;
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  Point<num> globalToLocal(Point<num> globalPoint) {
+  @override
+  Point<num> parentToLocal(Point<num> parentPoint, [Point<num> returnPoint]) {
 
-    _calculateGlobalProjectionMatrix();
+    _calculateLocalProjectionMatrix3D(this.transformationMatrix);
 
     num m00 = _tmpProjectionMatrix3D.m00;
     num m10 = _tmpProjectionMatrix3D.m10;
@@ -221,14 +229,18 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     num m13 = _tmpProjectionMatrix3D.m13;
     num m33 = _tmpProjectionMatrix3D.m33;
 
-    num px = globalPoint.x.toDouble();
-    num py = globalPoint.y.toDouble();
+    var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
+    var x = parentPoint.x.toDouble();
+    var y = parentPoint.y.toDouble();
 
-    num d = px * (m01 * m13 - m03 * m11) + py * (m10 * m03 - m00 * m13) + m00 * m11 - m10 * m01;
-    num x = px * (m11 * m33 - m13 * m31) + py * (m30 * m13 - m10 * m33) + m10 * m31 - m30 * m11;
-    num y = px * (m03 * m31 - m01 * m33) + py * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
+    var td = x * (m01 * m13 - m03 * m11) + y * (m10 * m03 - m00 * m13) + m00 * m11 - m10 * m01;
+    var tx = x * (m11 * m33 - m13 * m31) + y * (m30 * m13 - m10 * m33) + m10 * m31 - m30 * m11;
+    var ty = x * (m03 * m31 - m01 * m33) + y * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
 
-    return new Point<num>(x / d, y / d);
+    p.x = tx / td;
+    p.y = ty / td;
+
+    return p;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -259,6 +271,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void render(RenderState renderState) {
     var renderContext = renderState.renderContext;
     if (renderContext is RenderContextWebGL) {
