@@ -714,28 +714,29 @@ abstract class DisplayObject
 
   /// Returns the bounds of this display object relative to the specified
   /// [targetSpace].
+  ///
+  /// This method may return ´null´ if this display objects has no
+  /// relation to the [targetSpace].
 
   Rectangle<num> getBounds(DisplayObject targetSpace) {
     var rectangle = this.bounds;
     var matrix = this.getTransformationMatrix3D(targetSpace);
+    if (matrix == null) return null;
     return matrix.transformRectangle(rectangle, rectangle);
   }
 
   //----------------------------------------------------------------------------
-/*
+
+  /// Evaluates this display object to see if it overlaps or intersects with
+  /// the bounding box of the [other] display object.
+
   bool hitTestObject(DisplayObject other) {
 
-    var stage1 = this.stage;
-    var stage2 = other.stage;
+    var otherBounds = other.getBounds(this);
+    if (otherBounds == null) return false;
 
-    if (stage1 == null || stage2 == null || stage1 != stage2) return false;
-
-    var rect1 = this.getBounds(stage1);
-    var rect2 = other.getBounds(stage2);
-
-    return rect1.intersects(rect2);
+    return this.bounds.intersects(otherBounds);
   }
-*/
 
   /// Evaluates this display object to see if it overlaps or intersects with
   /// the point specified by the [x] and [y] parameters.
