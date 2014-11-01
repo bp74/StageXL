@@ -1,10 +1,5 @@
 library stagexl.internal.tools;
 
-import '../geom/matrix.dart';
-import '../geom/rectangle.dart';
-
-//-----------------------------------------------------------------------------
-
 int colorGetA(int color) => (color >> 24) & 0xFF;
 int colorGetR(int color) => (color >> 16) & 0xFF;
 int colorGetG(int color) => (color >>  8) & 0xFF;
@@ -74,53 +69,4 @@ String replaceFilename(String url, String filename) {
   Match match = regex.firstMatch(url);
   String path = match.group(1);
   return (path == null) ? filename : "$path$filename";
-}
-
-//-----------------------------------------------------------------------------
-
-Rectangle<num> getBoundsTransformedHelper(
-    Matrix matrix, num width, num height, Rectangle<num> returnRectangle) {
-
-  width = width.toDouble();
-  height = height.toDouble();
-
-  // tranformedX = X * matrix.a + Y * matrix.c + matrix.tx;
-  // tranformedY = X * matrix.b + Y * matrix.d + matrix.ty;
-
-  num x1 = matrix.tx;
-  num y1 = matrix.ty;
-  num x2 = matrix.tx + width * matrix.a;
-  num y2 = matrix.ty + width * matrix.b;
-  num x3 = matrix.tx + width * matrix.a + height * matrix.c;
-  num y3 = matrix.ty + width * matrix.b + height * matrix.d;
-  num x4 = matrix.tx + height * matrix.c;
-  num y4 = matrix.ty + height * matrix.d;
-
-  num left = x1;
-  if (left > x2) left = x2;
-  if (left > x3) left = x3;
-  if (left > x4) left = x4;
-
-  num top = y1;
-  if (top > y2 ) top = y2;
-  if (top > y3 ) top = y3;
-  if (top > y4 ) top = y4;
-
-  num right = x1;
-  if (right < x2) right = x2;
-  if (right < x3) right = x3;
-  if (right < x4) right = x4;
-
-  num bottom = y1;
-  if (bottom < y2 ) bottom = y2;
-  if (bottom < y3 ) bottom = y3;
-  if (bottom < y4 ) bottom = y4;
-
-  if (returnRectangle == null) {
-    returnRectangle = new Rectangle<num>(left, top, right - left, bottom - top);
-  } else {
-    returnRectangle.setTo(left, top, right - left, bottom - top);
-  }
-
-  return returnRectangle;
 }

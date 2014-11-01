@@ -384,10 +384,6 @@ abstract class DisplayObject
 
   DisplayObjectContainer get parent => _parent;
 
-  /// Returns a rectangle that defines the area of this display object.
-
-  Rectangle<num> get bounds => getBoundsTransformed(_identityMatrix);
-
   //----------------------------------------------------------------------------
 
   /// The position of the mouse relative to the local coordinate system of
@@ -426,18 +422,15 @@ abstract class DisplayObject
   /// structure.
 
   DisplayObject get root {
-    DisplayObject currentObject = this;
-
-    while (currentObject._parent != null)
-      currentObject = currentObject._parent;
-
-    return currentObject;
+    DisplayObject obj = this;
+    while(obj.parent != null) obj = obj.parent;
+    return obj;
   }
 
-  /// The Stage of this display object.
+  /// The [Stage] of this display object.
   ///
-  /// If a display object is not added to the display list,
-  /// its stage property is set to null.
+  /// If this display object is not added to the display list,
+  /// the [stage] property returns null.
 
   Stage get stage {
     DisplayObject root = this.root;
@@ -476,10 +469,10 @@ abstract class DisplayObject
   /// display object. When you set the width property, the [scaleX] property is
   /// adjusted accordingly.
 
-  num get width => getBoundsTransformed(this.transformationMatrix).width;
+  num get width => this.boundsTransformed.width;
 
   void set width(num value) {
-    this.scaleX = 1;
+    this.scaleX = 1.0;
     num normalWidth = this.width;
     this.scaleX = (normalWidth != 0.0) ? value / normalWidth : 1.0;
   }
@@ -490,47 +483,30 @@ abstract class DisplayObject
   /// display object. When you set the width property, the [scaleY] property is
   /// adjusted accordingly.
 
-  num get height => getBoundsTransformed(this.transformationMatrix).height;
+  num get height => this.boundsTransformed.height;
 
   void set height(num value) {
-    this.scaleY = 1;
+    this.scaleY = 1.0;
     num normalHeight = this.height;
     this.scaleY = (normalHeight != 0.0) ? value / normalHeight : 1.0;
   }
 
   //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
 
-  /// Convenience method to add this display object to the specified [parent].
-
-  void addTo(DisplayObjectContainer parent) {
-    parent.addChild(this);
-  }
-
-  /// Removes this display object from its parent.
-
-  void removeFromParent() {
-    if (_parent != null) {
-      _parent.removeChild(this);
-    }
-  }
-
-  //----------------------------------------------------------------------------
-
-  /// The transformation matrix of this display object.
+  /// The transformation matrix of this display object relative to
+  /// this display object's parent.
   ///
   /// The transformation matrix is calculated according the following
   /// properties of this display object: [x], [y], [pivotX], [pivotY],
   /// [rotation], [scaleX], [scaleY], [skewX] and [skewY]
 
   Matrix get transformationMatrix {
-    /*
-    _transformationMatrix.identity();
-    _transformationMatrix.translate(-_pivotX, -_pivotY);
-    _transformationMatrix.scale(_scaleX, _scaleY);
-    _transformationMatrix.rotate(_rotation);
-    _transformationMatrix.translate(_x, _y);
-    */
+
+    // _transformationMatrix.identity();
+    // _transformationMatrix.translate(-_pivotX, -_pivotY);
+    // _transformationMatrix.scale(_scaleX, _scaleY);
+    // _transformationMatrix.rotate(_rotation);
+    // _transformationMatrix.translate(_x, _y);
 
     if (_transformationMatrixRefresh) {
 
@@ -581,92 +557,172 @@ abstract class DisplayObject
 
   //----------------------------------------------------------------------------
 
-  Matrix transformationMatrixTo(DisplayObject targetSpace) {
+  /// The global 2D transformation matrix of this display object.
+  ///
+  /// Note: You can get the global transformation matrix either with the
+  /// [globalTransformationMatrix] or the [globalTransformationMatrix3D]
+  /// getter. You only need to use a 3D transformation matrix if
+  /// you are working with 3D display objects.
 
-    if (targetSpace == this) {
-      return new Matrix.fromIdentity();
+  Matrix get globalTransformationMatrix {
+
+    var result = new Matrix.fromIdentity();
+
+    for (var obj = this; obj != null; obj = obj.parent) {
+      if (obj is DisplayObjectContainer3D) {
+        throw new StateError("Can't calculate 2D matrix for 3D display object.");
+      } else {
+        result.concat(obj.transformationMatrix);
+      }
     }
 
-    if (targetSpace == _parent) {
-      return this.transformationMatrix.clone();
+    return result;
+  }
+
+  /// The global 3D transformation matrix of this display object.
+  ///
+  /// Note: You can get the global transformation matrix either with the
+  /// [globalTransformationMatrix] or the [globalTransformationMatrix3D]
+  /// getter. You only need to use a 3D transformation matrix if
+  /// you are working with 3D display objects.
+
+  Matrix3D get globalTransformationMatrix3D {
+
+    var result = new Matrix3D.fromIdentity();
+
+    for (var obj = this; obj != null; obj = obj.parent) {
+      if (obj is DisplayObjectContainer3D) {
+        result.concat(obj.projectionMatrix3D);
+      }
+      result.concat2D(obj.transformationMatrix);
     }
 
-    if (targetSpace != null && targetSpace._parent == this) {
-      return targetSpace.transformationMatrix.cloneInvert();
+    return result;
+  }
+
+  //----------------------------------------------------------------------------
+
+  /// The 2D transformation matrix relative to the given [targetSpace].
+  ///
+  /// Note: You can get the transformation matrix either with the
+  /// [getTransformationMatrix] or the [getTransformationMatrix3D]
+  /// method. You only need to use a 3D transformation matrix if
+  /// you are working with 3D display objects.
+
+  Matrix getTransformationMatrix(DisplayObject targetSpace) {
+
+    if (targetSpace == null) return this.globalTransformationMatrix;
+    if (targetSpace == this) return new Matrix.fromIdentity();
+
+    var ancestor = _getCommonAncestor(targetSpace);
+    if (ancestor == null) return null;
+
+    var resultMatrix  = new Matrix.fromIdentity();
+    for (var obj = this; obj != ancestor; obj = obj.parent) {
+      if (obj is DisplayObjectContainer3D) {
+        throw new StateError("Can't calculate 2D matrix for 3D display object.");
+      }
+      resultMatrix.concat(obj.transformationMatrix);
     }
 
-    //------------------------------------------------
+    if (identical(targetSpace, ancestor)) return resultMatrix;
 
-    Matrix resultMatrix = new Matrix.fromIdentity();
-    DisplayObject resultObject = this;
-
-    while (resultObject != targetSpace && resultObject._parent != null) {
-      resultMatrix.concat(resultObject.transformationMatrix);
-      resultObject = resultObject._parent;
-    }
-
-    if (targetSpace == null && resultObject != null) {
-      resultMatrix.concat(resultObject.transformationMatrix);
-      resultObject = null;
-    }
-
-    if (resultObject == targetSpace) {
-      return resultMatrix;
-    }
-
-    //------------------------------------------------
-
-    Matrix targetMatrix = new Matrix.fromIdentity();
-    DisplayObject targetObject = targetSpace;
-
-    while (targetObject != this && targetObject._parent != null) {
-      targetMatrix.concat(targetObject.transformationMatrix);
-      targetObject = targetObject._parent;
+    var targetMatrix  = new Matrix.fromIdentity();
+    for (var obj = targetSpace; obj != ancestor; obj = obj.parent) {
+      if (obj is DisplayObjectContainer3D) {
+        throw new StateError("Can't calculate 2D matrix for 3D display object.");
+      }
+      targetMatrix.concat(obj.transformationMatrix);
     }
 
     targetMatrix.invert();
-
-    if (targetObject == this) {
-      return targetMatrix;
-    }
-
-    if (targetObject != resultObject) {
-      return null;
-    }
-
     resultMatrix.concat(targetMatrix);
+    return resultMatrix;
+  }
 
+  /// The 3D transformation matrix relative to the given [targetSpace].
+  ///
+  /// Note: You can get the transformation matrix either with the
+  /// [getTransformationMatrix] or the [getTransformationMatrix3D]
+  /// method. You only need to use a 3D transformation matrix if
+  /// you are working with 3D display objects.
+
+  Matrix3D getTransformationMatrix3D(DisplayObject targetSpace) {
+
+    if (targetSpace == null) return this.globalTransformationMatrix3D;
+    if (targetSpace == this) return new Matrix3D.fromIdentity();
+
+    var ancestor = _getCommonAncestor(targetSpace);
+    if (ancestor == null) return null;
+
+    var resultMatrix  = new Matrix3D.fromIdentity();
+    for (var obj = this; obj != ancestor; obj = obj.parent) {
+      if (obj is DisplayObjectContainer3D) {
+        resultMatrix.concat(obj.projectionMatrix3D);
+      }
+      resultMatrix.concat2D(obj.transformationMatrix);
+    }
+
+    if (identical(targetSpace, ancestor)) return resultMatrix;
+
+    var targetMatrix  = new Matrix3D.fromIdentity();
+    for (var obj = targetSpace; obj != ancestor; obj = obj.parent) {
+      if (obj is DisplayObjectContainer3D) {
+        targetMatrix.concat(obj.projectionMatrix3D);
+      }
+      targetMatrix.concat2D(obj.transformationMatrix);
+    }
+
+    targetMatrix.invert();
+    resultMatrix.concat(targetMatrix);
     return resultMatrix;
   }
 
   //----------------------------------------------------------------------------
 
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
+  /// Convenience method to add this display object to the specified [parent].
 
-    if (returnRectangle != null) {
-      returnRectangle.setTo(matrix.tx, matrix.ty, 0, 0);
-    } else {
-      returnRectangle = new Rectangle<num>(matrix.tx, matrix.ty, 0, 0);
+  void addTo(DisplayObjectContainer parent) {
+    parent.addChild(this);
+  }
+
+  /// Removes this display object from its parent.
+
+  void removeFromParent() {
+    if (_parent != null) {
+      _parent.removeChild(this);
     }
-
-    return returnRectangle;
   }
 
   //----------------------------------------------------------------------------
+
+  /// Returns a rectangle that defines the area of this display object in
+  /// this display object's local coordinates.
+
+  Rectangle<num> get bounds {
+    return new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
+  }
+
+  /// Returns a rectangle that defines the area of this display object in
+  /// this display object's parent coordinates.
+
+  Rectangle<num> get boundsTransformed {
+    var rectangle = this.bounds;
+    var matrix = this.transformationMatrix;
+    return matrix.transformRectangle(rectangle, rectangle);
+  }
 
   /// Returns the bounds of this display object relative to the specified
   /// [targetSpace].
 
   Rectangle<num> getBounds(DisplayObject targetSpace) {
-
-    var returnRectangle = new Rectangle<num>(0, 0, 0, 0);
-    var matrix = (targetSpace == null) ? transformationMatrix : transformationMatrixTo(targetSpace);
-
-    return (matrix != null) ? getBoundsTransformed(matrix, returnRectangle) : returnRectangle;
+    var rectangle = this.bounds;
+    var matrix = this.getTransformationMatrix3D(targetSpace);
+    return matrix.transformRectangle(rectangle, rectangle);
   }
 
   //----------------------------------------------------------------------------
-
+/*
   bool hitTestObject(DisplayObject other) {
 
     var stage1 = this.stage;
@@ -679,8 +735,7 @@ abstract class DisplayObject
 
     return rect1.intersects(rect2);
   }
-
-  //----------------------------------------------------------------------------
+*/
 
   /// Evaluates this display object to see if it overlaps or intersects with
   /// the point specified by the [x] and [y] parameters.
@@ -698,26 +753,13 @@ abstract class DisplayObject
 
   bool hitTestPoint(num x, num y, [bool shapeFlag = false]) {
 
-    var stage = this.stage;
-    if (stage == null) return false;
+    var point = new Point<num>(x, y);
+    point = this.globalToLocal(point, point);
 
-    if (shapeFlag) {
-      var matrix = stage.transformationMatrixTo(this);
-      if (matrix == null) return false;
-
-      var stagePoint = new Point<num>(x, y);
-      var localPoint = matrix.transformPoint(stagePoint);
-
-      return this.hitTestInput(localPoint.x, localPoint.y) != null;
-
-    } else {
-
-      var rect = this.getBounds(stage);
-      return rect.contains(x, y);
-    }
+    return shapeFlag
+      ? this.hitTestInput(point.x, point.y) != null
+      : this.bounds.contains(point.x, point.y);
   }
-
-  //----------------------------------------------------------------------------
 
   /// Evaluates this display object to see if the coordinates [localX] and
   /// [localY] are inside this display object.
@@ -732,6 +774,7 @@ abstract class DisplayObject
     return this.bounds.contains(localX, localY) ? this : null;
   }
 
+  //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
   /// Converts the point object from this display object]'s local coordinates
@@ -825,6 +868,7 @@ abstract class DisplayObject
     return p;
   }
 
+  //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
   /// Caches a rectangular area of this display object for better performance.
@@ -925,12 +969,32 @@ abstract class DisplayObject
     }
   }
 
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
-
   /// Renders this display object with the given [renderState].
 
   void render(RenderState renderState);
+
+  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+
+  DisplayObject _getCommonAncestor(DisplayObject other) {
+
+    var obj1 = this;
+    var obj2 = other;
+    var depth1 = 0;
+    var depth2 = 0;
+
+    for(var o = obj1; o.parent != null; o = o.parent) { depth1 += 1; }
+    for(var o = obj2; o.parent != null; o = o.parent) { depth2 += 1; }
+    while(depth1 > depth2) { obj1 = obj1.parent; depth1 -= 1; }
+    while(depth2 > depth1) { obj2 = obj2.parent; depth2 -= 1; }
+
+    while(identical(obj1, obj2) == false) {
+      obj1 = obj1.parent;
+      obj2 = obj2.parent;
+    }
+
+    return obj1;
+  }
 
 }
 

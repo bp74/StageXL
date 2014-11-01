@@ -216,18 +216,19 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    return getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
+  @override
+  Rectangle<num> get bounds {
+    return new Rectangle<num>(0.0, 0.0, _width, _height);
   }
 
-  //-------------------------------------------------------------------------------------------------
-
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
-    return localX >= 0 && localY >= 0 && localX < _width && localY < _height ? this : null;
+    if (localX < 0 || localX >= _width) return null;
+    if (localY < 0 || localY >= _height) return null;
+    return this;
   }
 
-  //-------------------------------------------------------------------------------------------------
-
+  @override
   void render(RenderState renderState) {
 
     _refreshTextLineMetrics();

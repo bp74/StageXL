@@ -21,7 +21,7 @@ class Scale9Bitmap extends Bitmap {
     _updateRenderTextureQuads();
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Gets and sets the width of this Scale9Bitmap. In contrast to other
   /// display objects, this does not affect the scaleX factor.
@@ -59,16 +59,21 @@ class Scale9Bitmap extends Bitmap {
     _updateRenderTextureQuads();
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    return getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
+  @override
+  Rectangle<num> get bounds {
+    return new Rectangle<num>(0.0, 0.0, _width, _height);
   }
 
-  DisplayObject hitTestInput(num localX, num localY) =>
-    localX >= 0.0 && localY >= 0.0 &&
-    localX < _width && localY < _height ? this : null;
+  @override
+  DisplayObject hitTestInput(num localX, num localY) {
+    if (localX < 0.0 || localX >= _width) return null;
+    if (localY < 0.0 || localY >= _height) return null;
+    return this;
+  }
 
+  @override
   void render(RenderState renderState) {
 
     var x1 = _grid.left;
@@ -99,7 +104,7 @@ class Scale9Bitmap extends Bitmap {
     globalMatrix.copyFrom(tempMatrix);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   _updateRenderTextureQuads() {
 

@@ -28,48 +28,37 @@ class SimpleButton extends InteractiveObject {
     _currentState = this.upState;
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-
-    if (_currentState != null) {
-      _tmpMatrix.copyFromAndConcat(_currentState.transformationMatrix, matrix);
-      return _currentState.getBoundsTransformed(_tmpMatrix, returnRectangle);
-    }
-
-    return super.getBoundsTransformed(matrix, returnRectangle);
+  @override
+  Rectangle<num> get bounds {
+    if (_currentState == null) return super.bounds;
+    return _currentState.boundsTransformed;
   }
 
-  //-------------------------------------------------------------------------------------------------
-
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
 
-    if (this.hitTestState != null) {
+    if (hitTestState == null) return null;
 
-      Matrix matrix = this.hitTestState.transformationMatrix;
+    Matrix matrix = hitTestState.transformationMatrix;
 
-      num deltaX = localX - matrix.tx;
-      num deltaY = localY - matrix.ty;
-      num childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
-      num childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
+    num deltaX = localX - matrix.tx;
+    num deltaY = localY - matrix.ty;
+    num childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
+    num childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
 
-      if (this.hitTestState.hitTestInput(childX, childY) != null) return this;
-    }
-
-    return null;
+    return hitTestState.hitTestInput(childX, childY) != null ? this : null;
   }
 
-  //-------------------------------------------------------------------------------------------------
-
+  @override
   void render(RenderState renderState) {
     if (_currentState != null) {
       renderState.renderObject(_currentState);
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void _onMouseEvent(MouseEvent mouseEvent) {
     if (mouseEvent.type == MouseEvent.MOUSE_OUT) {

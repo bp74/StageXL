@@ -27,7 +27,7 @@ class Sprite extends DisplayObjectContainer {
     _dragSpriteBounds = bounds;
 
     if (lockCenter) {
-      _dragSpriteCenter = this.getBoundsTransformed(_identityMatrix).center;
+      _dragSpriteCenter = this.bounds.center;
     } else {
       var mp = this.mousePosition;
       _dragSpriteCenter = (mp != null) ? mp : new Point<num>(0, 0);
@@ -80,57 +80,37 @@ class Sprite extends DisplayObjectContainer {
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-
-    returnRectangle = super.getBoundsTransformed(matrix, returnRectangle);
-
-    if (_graphics != null) {
-      var graphicsBounds = _graphics._getBoundsTransformed(matrix);
-      return returnRectangle.boundingBox(graphicsBounds);
-    } else {
-      return returnRectangle;
-    }
+  @override
+  Rectangle<num> get bounds {
+    var rectangle = super.bounds;
+    if (graphics != null) rectangle.boundingBox(graphics.bounds);
+    return rectangle;
   }
 
-  //-----------------------------------------------------------------------------------------------
-
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
-
-    DisplayObject target = null;
 
     if (this.hitArea != null) {
 
-      var matrix = this.transformationMatrixTo(this.hitArea);
-      if (matrix != null) {
-        double hitAreaX = localX * matrix.a + localY * matrix.c + matrix.tx;
-        double hitAreaY = localX * matrix.b + localY * matrix.d + matrix.ty;
+      var point = new Point(localX, localY);
+      this.localToGlobal(point, point);
+      this.hitArea.globalToLocal(point, point);
 
-        if (this.hitArea.hitTestInput(hitAreaX, hitAreaY) != null) {
-          target = this;
-        }
-      }
+      var target = this.hitArea.hitTestInput(point.x, point.y);
+      return target != null ? this : null;
+    }
 
-    } else {
-
-      target = super.hitTestInput(localX, localY);
-
-      if (target == null && _graphics != null) {
-        if (_graphics._hitTestInput(localX, localY)) {
-          target = this;
-        }
-      }
+    var target = super.hitTestInput(localX, localY);
+    if (target == null && graphics != null) {
+      target = graphics.hitTestInput(localX, localY) ? this : null;
     }
 
     return target;
   }
 
-  //-----------------------------------------------------------------------------------------------
-
+  @override
   render(RenderState renderState) {
-
-    if (_graphics != null)
-      _graphics.render(renderState);
-
+    if (_graphics != null) _graphics.render(renderState);
     super.render(renderState);
   }
 

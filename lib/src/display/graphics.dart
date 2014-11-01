@@ -25,17 +25,17 @@ class Graphics {
 
   final List<_GraphicsCommand> _commands = new List<_GraphicsCommand>();
 
-  Rectangle<num> _identityRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
-  bool _identityRectangleRefresh = true;
+  Rectangle<num> _boundsRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
+  bool _boundsRefresh = true;
 
   void clear() {
     _commands.clear();
-    _identityRectangleRefresh = true;
+    _boundsRefresh = true;
   }
 
   void _addCommand(_GraphicsCommand command) {
     _commands.add(command);
-    _identityRectangleRefresh = true;
+    _boundsRefresh = true;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -226,27 +226,28 @@ class Graphics {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle<num> _getBoundsTransformed(Matrix matrix) {
+  Rectangle<num> get bounds {
 
-    var bounds = new _GraphicsBounds(matrix);
+    if (_boundsRefresh){
 
-    for(int i = 0; i < _commands.length; i++) {
-      _commands[i].updateBounds(bounds);
+      var graphicsBounds = new _GraphicsBounds();
+
+      for(int i = 0; i < _commands.length; i++) {
+        _commands[i].updateBounds(graphicsBounds);
+      }
+
+      _boundsRefresh = false;
+      _boundsRectangle = graphicsBounds.getRectangle();
     }
 
-    return bounds.getRectangle();
+    return _boundsRectangle.clone();
   }
 
   //-------------------------------------------------------------------------------------------------
 
-  bool _hitTestInput(num localX, num localY) {
+  bool hitTestInput(num localX, num localY) {
 
-    if (_identityRectangleRefresh) {
-      _identityRectangleRefresh = false;
-      _identityRectangle = _getBoundsTransformed(_identityMatrix);
-    }
-
-    if (_identityRectangle.contains(localX, localY)) {
+    if (this.bounds.contains(localX, localY)) {
 
       if (env.isCocoonJS) {
         // CocoonJS does not support "isPointInPath", therefore we just
@@ -267,16 +268,6 @@ class Graphics {
 
     return false;
   }
-
-  //-------------------------------------------------------------------------------------------------
-
-  void _drawPath(CanvasRenderingContext2D context) {
-
-    for(int i = 0; i < _commands.length; i++) {
-      _commands[i].drawPath(context);
-    }
-  }
-
   //-------------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
@@ -301,5 +292,15 @@ class Graphics {
 
     }
   }
+
+  //-------------------------------------------------------------------------------------------------
+
+  void _drawPath(CanvasRenderingContext2D context) {
+
+    for(int i = 0; i < _commands.length; i++) {
+      _commands[i].drawPath(context);
+    }
+  }
+
 
 }

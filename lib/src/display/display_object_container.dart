@@ -1,13 +1,13 @@
 part of stagexl.display;
 
-/// The base class for all objects that can serve as display object containers 
-/// on the display list. 
-/// 
-/// The display list manages all objects displayed. Use the 
-/// [DisplayObjectContainer] class to arrange the display objects in the display 
-/// list. Each [DisplayObjectContainer] object has its own child list for 
-/// organizing the z-order of the objects. The z-order is the front-to-back 
-/// order that determines which object is drawn in front, which is behind, and 
+/// The base class for all objects that can serve as display object containers
+/// on the display list.
+///
+/// The display list manages all objects displayed. Use the
+/// [DisplayObjectContainer] class to arrange the display objects in the display
+/// list. Each [DisplayObjectContainer] object has its own child list for
+/// organizing the z-order of the objects. The z-order is the front-to-back
+/// order that determines which object is drawn in front, which is behind, and
 /// so on.
 abstract class DisplayObjectContainer extends InteractiveObject {
 
@@ -20,32 +20,32 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   /// The number of children of this container.
   int get numChildren => _children.length;
-  
-  /// Determines whether or not the children of the object are mouse, or user 
-  /// input device, enabled. 
-  /// 
-  /// If an object is enabled, a user can interact with it by using a mouse or 
+
+  /// Determines whether or not the children of the object are mouse, or user
+  /// input device, enabled.
+  ///
+  /// If an object is enabled, a user can interact with it by using a mouse or
   /// user input device. The default is true.
-  /// 
-  /// This property is useful when you create a button with an instance of the 
-  /// [Sprite] class (instead of using the [SimpleButton] class). When you use 
-  /// a [Sprite] instance to create a button, you can choose to decorate the 
-  /// button by using the [addChild] method to add additional [Sprite] 
-  /// instances. This process can cause unexpected behavior with mouse events 
-  /// because the [Sprite] instances you add as children can become the target 
-  /// object of a mouse event when you expect the parent instance to be the 
-  /// target object. To ensure that the parent instance serves as the target 
-  /// objects for mouse events, you can set the [mouseChildren] property of the 
+  ///
+  /// This property is useful when you create a button with an instance of the
+  /// [Sprite] class (instead of using the [SimpleButton] class). When you use
+  /// a [Sprite] instance to create a button, you can choose to decorate the
+  /// button by using the [addChild] method to add additional [Sprite]
+  /// instances. This process can cause unexpected behavior with mouse events
+  /// because the [Sprite] instances you add as children can become the target
+  /// object of a mouse event when you expect the parent instance to be the
+  /// target object. To ensure that the parent instance serves as the target
+  /// objects for mouse events, you can set the [mouseChildren] property of the
   /// parent instance to false.
-  /// 
+  ///
   /// No event is dispatched by setting this property. You must use the on...()
   /// event methods to create interactive functionality.
   bool get mouseChildren => _mouseChildren;
 
   void set mouseChildren(bool value) { _mouseChildren = value; }
-  
-  /// Determines whether the children of this container are tab enabled. 
-  /// 
+
+  /// Determines whether the children of this container are tab enabled.
+  ///
   /// The default is true.
   bool get tabChildren => _tabChildren;
 
@@ -55,12 +55,12 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //----------------------------------------------------------------------------
 
   /// Adds a child [DisplayObject] to this [DisplayObjectContainer].
-  /// 
-  /// The child is added to the front (top) of all other children. (To add a 
+  ///
+  /// The child is added to the front (top) of all other children. (To add a
   /// child to a specific index position, use [addChildAt].)
-  /// 
-  /// If you add a child object that already has a different display object 
-  /// container as a parent, the object is removed from the child list of the 
+  ///
+  /// If you add a child object that already has a different display object
+  /// container as a parent, the object is removed from the child list of the
   /// other display object container.
   void addChild(DisplayObject child) {
     addChildAt(child, _children.length);
@@ -68,14 +68,14 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
-  /// Adds a child [DisplayObject] to this [DisplayObjectContainer] at the 
+  /// Adds a child [DisplayObject] to this [DisplayObjectContainer] at the
   /// specified [index] position.
-  /// 
-  /// An [index] of 0 represents the back (bottom) of the display list for this 
+  ///
+  /// An [index] of 0 represents the back (bottom) of the display list for this
   /// [DisplayObjectContainer].
-  /// 
-  /// If you add a child object that already has a different display object 
-  /// container as a parent, the object is removed from the child list of the 
+  ///
+  /// If you add a child object that already has a different display object
+  /// container as a parent, the object is removed from the child list of the
   /// other display object container.
   void addChildAt(DisplayObject child, int index) {
 
@@ -117,12 +117,12 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
-  /// Removes the specified [child] from the child list of this 
-  /// [DisplayObjectContainer]. 
-  /// 
-  /// The parent property of the removed child is set to null, and the object is 
-  /// garbage collected if no other references to the child exist. The index 
-  /// positions of any display objects above the child in the 
+  /// Removes the specified [child] from the child list of this
+  /// [DisplayObjectContainer].
+  ///
+  /// The parent property of the removed child is set to null, and the object is
+  /// garbage collected if no other references to the child exist. The index
+  /// positions of any display objects above the child in the
   /// [DisplayObjectContainer] are decreased by 1.
   void removeChild(DisplayObject child) {
 
@@ -136,12 +136,12 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
-  /// Removes the child [DisplayObject] from the specified [index] position in 
-  /// the child list of this [DisplayObjectContainer]. 
-  /// 
-  /// The parent property of the removed child is set to null, and the object is 
-  /// garbage collected if no other references to the child exist. The index 
-  /// positions of any display objects above the child in the 
+  /// Removes the child [DisplayObject] from the specified [index] position in
+  /// the child list of this [DisplayObjectContainer].
+  ///
+  /// The parent property of the removed child is set to null, and the object is
+  /// garbage collected if no other references to the child exist. The index
+  /// positions of any display objects above the child in the
   /// [DisplayObjectContainer] are decreased by 1.
   void removeChildAt(int index) {
 
@@ -164,12 +164,12 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //----------------------------------------------------------------------------
 
   /// Removes all child [DisplayObject] instances from the child list of this
-  /// [DisplayObjectContainer] instance. 
-  /// 
-  /// Optionally, an index range may be specified with [beginIndex] and 
-  /// [endIndex]. 
-  /// 
-  /// The parent property of the removed children is set to null, and the 
+  /// [DisplayObjectContainer] instance.
+  ///
+  /// Optionally, an index range may be specified with [beginIndex] and
+  /// [endIndex].
+  ///
+  /// The parent property of the removed children is set to null, and the
   /// objects are garbage collected if no other references to the children exist.
   void removeChildren([int beginIndex = 0, int endIndex = 0x7fffffff]) {
 
@@ -203,13 +203,13 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
-  /// Returns the child [DisplayObject] that exists with the specified name. 
-  /// 
-  /// If more that one child [DisplayObject] has the specified name, the method 
+  /// Returns the child [DisplayObject] that exists with the specified name.
+  ///
+  /// If more that one child [DisplayObject] has the specified name, the method
   /// returns the first object in the child list.
-  /// 
-  /// The [getChildAt] method is faster than the [getChildByName] method. The 
-  /// [getChildAt] method accesses a child from a cached array, whereas the 
+  ///
+  /// The [getChildAt] method is faster than the [getChildByName] method. The
+  /// [getChildAt] method accesses a child from a cached array, whereas the
   /// [getChildByName] method has to traverse a list to access a child.
   DisplayObject getChildByName(String name) {
 
@@ -230,18 +230,18 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  /// Changes the position of an existing [child] in this 
+  /// Changes the position of an existing [child] in this
   /// [DisplayObjectContainer] to the new [index].
-  /// 
-  /// This affects the layering of child objects. 
-  /// 
-  /// When you use the [setChildIndex] method and specify an index position that 
-  /// is already occupied, the only positions that change are those in between 
-  /// the display object's former and new position. All others will stay the 
-  /// same. If a child is moved to an index LOWER than its current index, all 
-  /// children in between will INCREASE by 1 for their index reference. If a 
-  /// child is moved to an index HIGHER than its current index, all children in 
-  /// between will DECREASE by 1 for their index reference. 
+  ///
+  /// This affects the layering of child objects.
+  ///
+  /// When you use the [setChildIndex] method and specify an index position that
+  /// is already occupied, the only positions that change are those in between
+  /// the display object's former and new position. All others will stay the
+  /// same. If a child is moved to an index LOWER than its current index, all
+  /// children in between will INCREASE by 1 for their index reference. If a
+  /// child is moved to an index HIGHER than its current index, all children in
+  /// between will DECREASE by 1 for their index reference.
   void setChildIndex(DisplayObject child, int index) {
 
     if (index < 0 || index >= _children.length) {
@@ -259,9 +259,9 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
-  /// Swaps the z-order (front-to-back order) of the two specified child objects. 
-  /// 
-  /// All other child objects in the display object container remain in the same 
+  /// Swaps the z-order (front-to-back order) of the two specified child objects.
+  ///
+  /// All other child objects in the display object container remain in the same
   /// index positions.
   void swapChildren(DisplayObject child1, DisplayObject child2) {
 
@@ -277,10 +277,10 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
-  /// Swaps the z-order (front-to-back order) of the child objects at the two 
-  /// specified index positions in the child list. 
-  /// 
-  /// All other child objects in the display object container remain in the same 
+  /// Swaps the z-order (front-to-back order) of the child objects at the two
+  /// specified index positions in the child list.
+  ///
+  /// All other child objects in the display object container remain in the same
   /// index positions.
   void swapChildrenAt(int index1, int index2) {
 
@@ -292,7 +292,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
-  /// Sorts the child list according to the order specified by the [compare] 
+  /// Sorts the child list according to the order specified by the [compare]
   /// Function.
   void sortChildren(int compare(DisplayObject a, DisplayObject b)) {
     _children.sort(compare);
@@ -300,11 +300,11 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
-  /// Determines whether the specified [DisplayObject] is a child of this 
-  /// [DisplayObjectContainer] instance or the instance itself. 
-  /// 
-  /// The search includes the entire display list including this 
-  /// [DisplayObjectContainer] instance. Grandchildren, great-grandchildren, 
+  /// Determines whether the specified [DisplayObject] is a child of this
+  /// [DisplayObjectContainer] instance or the instance itself.
+  ///
+  /// The search includes the entire display list including this
+  /// [DisplayObjectContainer] instance. Grandchildren, great-grandchildren,
   /// and so on each return true.
   bool contains(DisplayObject child) {
 
@@ -319,29 +319,18 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //----------------------------------------------------------------------------
 
   @override
-  Rectangle getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
+  Rectangle<num> get bounds {
 
-    if (returnRectangle == null) {
-      returnRectangle = new Rectangle<num>(0, 0, 0, 0);
-    }
-
-    if (_children.length == 0) {
-      return super.getBoundsTransformed(matrix, returnRectangle);
-    }
+    if (_children.length == 0) return super.bounds;
 
     num left = double.INFINITY;
     num top = double.INFINITY;
     num right = double.NEGATIVE_INFINITY;
     num bottom = double.NEGATIVE_INFINITY;
 
-    int childrenLength = _children.length;
-
     for (int i = 0; i < _children.length; i++) {
 
-      DisplayObject child = _children[i];
-
-      _tmpMatrix.copyFromAndConcat(child.transformationMatrix, matrix);
-      Rectangle<num> rectangle = child.getBoundsTransformed(_tmpMatrix, returnRectangle);
+      var rectangle = _children[i].boundsTransformed;
 
       if (rectangle.left < left) left = rectangle.left;
       if (rectangle.top < top) top = rectangle.top;
@@ -349,12 +338,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       if (rectangle.bottom > bottom) bottom = rectangle.bottom;
     }
 
-    returnRectangle.left = left;
-    returnRectangle.top = top;
-    returnRectangle.width = right - left;
-    returnRectangle.height = bottom - top;
-
-    return returnRectangle;
+    return new Rectangle<num>(left, top, right - left, bottom - top);
   }
 
   //----------------------------------------------------------------------------

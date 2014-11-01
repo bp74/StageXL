@@ -6,20 +6,25 @@ class Bitmap extends DisplayObject {
 
   Bitmap([this.bitmapData = null]);
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    var width = bitmapData != null ? bitmapData.width : 0;
-    var height = bitmapData != null ? bitmapData.height : 0;
-    return getBoundsTransformedHelper(matrix, width, height, returnRectangle);
+  @override
+  Rectangle<num> get bounds {
+    return bitmapData == null
+      ? new Rectangle<num>(0.0, 0.0, 0.0 ,0.0)
+      : new Rectangle<num>(0.0, 0.0, bitmapData.width, bitmapData.height);
   }
 
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
-    return bitmapData != null &&
-        localX >= 0.0 && localY >= 0.0 &&
-        localX < bitmapData.width && localY < bitmapData.height ? this : null;
+    // We override the hitTestInput method for optimal performance.
+    if (bitmapData == null) return null;
+    if (localX < 0.0 || localX >= bitmapData.width) return null;
+    if (localY < 0.0 || localY >= bitmapData.height) return null;
+    return this;
   }
 
+  @override
   void render(RenderState renderState) {
     if (bitmapData != null) bitmapData.render(renderState);
   }

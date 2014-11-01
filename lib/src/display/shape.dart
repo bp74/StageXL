@@ -2,35 +2,22 @@ part of stagexl.display;
 
 class Shape extends DisplayObject {
 
-  Graphics _graphics = new Graphics();
+  Graphics graphics = new Graphics();
 
-  Graphics get graphics => _graphics;
-  set graphics(Graphics value) => _graphics = value;
-
-  //-----------------------------------------------------------------------------------------------
-
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    if (_graphics == null) {
-      return super.getBoundsTransformed(matrix, returnRectangle);
-    } else {
-      return _graphics._getBoundsTransformed(matrix);
-    }
+  @override
+  Rectangle<num> get bounds {
+    return graphics != null ? graphics.bounds : super.bounds;
   }
 
-  //-----------------------------------------------------------------------------------------------
-
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
-    if (_graphics == null) {
-      return null;
-    } else {
-      return _graphics._hitTestInput(localX, localY) ? this : null;
-    }
+    if (graphics == null) return null;
+    if (graphics.hitTestInput(localX, localY)) return this;
+    return null;
   }
 
-  //-----------------------------------------------------------------------------------------------
-
+  @override
   void render(RenderState renderState) {
-    if (_graphics != null) _graphics.render(renderState);
+    if (graphics != null) graphics.render(renderState);
   }
-
 }
