@@ -799,29 +799,7 @@ abstract class DisplayObject
     return p;
   }
 
-  /// Converts the point object from this display object's local coordinates
-  /// to the [Stage] global coordinates.
-  ///
-  /// This method allows you to convert any given x- and y-coordinates from
-  /// values that are relative to the origin (0,0) of this display object's
-  /// local coordinates to values that are relative to the origin of the
-  /// [Stage]'s global coordinates.
-
-  Point<num> localToGlobal(Point<num> localPoint, [Point<num> returnPoint]) {
-
-    var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
-
-    p.x = localPoint.x.toDouble();
-    p.y = localPoint.y.toDouble();
-
-    for (var obj = this; obj != null; obj = obj.parent) {
-      obj.localToParent(p, p);
-    }
-
-    return p;
-  }
-
-  /// Converts the point object from this display obejcts's parent coordinates
+  /// Converts the point object from this display obejct's parent coordinates
   /// to this display object's local coordinates.
   ///
   /// This method allows you to convert any given x- and y-coordinates from
@@ -842,6 +820,27 @@ abstract class DisplayObject
     return p;
   }
 
+  /// Converts the point object from this display object's local coordinates
+  /// to the [Stage] global coordinates.
+  ///
+  /// This method allows you to convert any given x- and y-coordinates from
+  /// values that are relative to the origin (0,0) of this display object's
+  /// local coordinates to values that are relative to the origin of the
+  /// [Stage]'s global coordinates.
+
+  Point<num> localToGlobal(Point<num> localPoint, [Point<num> returnPoint]) {
+
+    var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
+    p.x = localPoint.x.toDouble();
+    p.y = localPoint.y.toDouble();
+
+    for (var obj = this; obj != null; obj = obj.parent) {
+      obj.localToParent(p, p);
+    }
+
+    return p;
+  }
+
   /// Converts the point object from the [Stage]'s global coordinates to this
   /// display object's local coordinates.
   ///
@@ -852,21 +851,17 @@ abstract class DisplayObject
 
   Point<num> globalToLocal(Point<num> globalPoint, [Point<num> returnPoint]) {
 
-    var ancestors = new List<DisplayObject>();
     var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
-
-    for (var obj = this; obj != null; obj = obj.parent) {
-      ancestors.add(obj);
-    }
-
     p.x = globalPoint.x.toDouble();
     p.y = globalPoint.y.toDouble();
 
-    for(int i = ancestors.length - 1; i >= 0; i--) {
-      ancestors[i].parentToLocal(p, p);
-    }
-
+    _globalToLocalRecursive(p);
     return p;
+  }
+
+  void _globalToLocalRecursive(Point<num> point) {
+    if (parent != null) parent._globalToLocalRecursive(point);
+    this.parentToLocal(point, point);
   }
 
   //----------------------------------------------------------------------------
