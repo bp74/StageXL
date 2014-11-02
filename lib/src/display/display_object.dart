@@ -58,7 +58,6 @@ abstract class DisplayObject
   String _name = "";
   DisplayObjectContainer _parent = null;
 
-  final Matrix _tmpMatrix = new Matrix.fromIdentity();
   final Matrix _transformationMatrix = new Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
 
