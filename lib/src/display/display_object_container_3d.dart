@@ -98,18 +98,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
   //---------------------------------------------------------------------------
 
   Matrix3D get projectionMatrix3D {
-
-    var perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
-    var transformationMatrix3D = this.transformationMatrix3D;
-    var pivotX = this.pivotX.toDouble();
-    var pivotY = this.pivotY.toDouble();
-
-    _projectionMatrix3D.setIdentity();
-    _projectionMatrix3D.prependTranslation(pivotX, pivotY, 0.0);
-    _projectionMatrix3D.prepend(perspectiveMatrix3D);
-    _projectionMatrix3D.prepend(transformationMatrix3D);
-    _projectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
-
+    _calculateProjectionMatrix(_identityMatrix);
     return _projectionMatrix3D;
   }
 
@@ -144,10 +133,11 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   @override
   Rectangle<num> get boundsTransformed {
+
+    _calculateProjectionMatrix(this.transformationMatrix);
+
     var rectangle = this.bounds;
-    var matrix = this.projectionMatrix3D;
-    matrix.concat2D(this.transformationMatrix);
-    return matrix.transformRectangle(rectangle, rectangle);
+    return _projectionMatrix3D.transformRectangle(rectangle, rectangle);
   }
 
   //---------------------------------------------------------------------------
@@ -155,18 +145,17 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
   @override
   Point<num> localToParent(Point<num> localPoint, [Point<num> returnPoint]) {
 
-    var matrix = this.projectionMatrix3D;
-    matrix.concat2D(this.transformationMatrix);
+    _calculateProjectionMatrix(this.transformationMatrix);
 
-    num m00 = matrix.m00;
-    num m10 = matrix.m10;
-    num m30 = matrix.m30;
-    num m01 = matrix.m01;
-    num m11 = matrix.m11;
-    num m31 = matrix.m31;
-    num m03 = matrix.m03;
-    num m13 = matrix.m13;
-    num m33 = matrix.m33;
+    num m00 = _projectionMatrix3D.m00;
+    num m10 = _projectionMatrix3D.m10;
+    num m30 = _projectionMatrix3D.m30;
+    num m01 = _projectionMatrix3D.m01;
+    num m11 = _projectionMatrix3D.m11;
+    num m31 = _projectionMatrix3D.m31;
+    num m03 = _projectionMatrix3D.m03;
+    num m13 = _projectionMatrix3D.m13;
+    num m33 = _projectionMatrix3D.m33;
 
     var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
     var x = localPoint.x.toDouble();
@@ -187,18 +176,17 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
   @override
   Point<num> parentToLocal(Point<num> parentPoint, [Point<num> returnPoint]) {
 
-    var matrix = this.projectionMatrix3D;
-    matrix.concat2D(this.transformationMatrix);
+    _calculateProjectionMatrix(this.transformationMatrix);
 
-    num m00 = matrix.m00;
-    num m10 = matrix.m10;
-    num m30 = matrix.m30;
-    num m01 = matrix.m01;
-    num m11 = matrix.m11;
-    num m31 = matrix.m31;
-    num m03 = matrix.m03;
-    num m13 = matrix.m13;
-    num m33 = matrix.m33;
+    num m00 = _projectionMatrix3D.m00;
+    num m10 = _projectionMatrix3D.m10;
+    num m30 = _projectionMatrix3D.m30;
+    num m01 = _projectionMatrix3D.m01;
+    num m11 = _projectionMatrix3D.m11;
+    num m31 = _projectionMatrix3D.m31;
+    num m03 = _projectionMatrix3D.m03;
+    num m13 = _projectionMatrix3D.m13;
+    num m33 = _projectionMatrix3D.m33;
 
     var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
     var x = parentPoint.x.toDouble();
@@ -219,17 +207,17 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
   @override
   DisplayObject hitTestInput(num localX, num localY) {
 
-    var matrix = this.projectionMatrix3D;
+    _calculateProjectionMatrix(_identityMatrix);
 
-    num m00 = matrix.m00;
-    num m10 = matrix.m10;
-    num m30 = matrix.m30;
-    num m01 = matrix.m01;
-    num m11 = matrix.m11;
-    num m31 = matrix.m31;
-    num m03 = matrix.m03;
-    num m13 = matrix.m13;
-    num m33 = matrix.m33;
+    num m00 = _projectionMatrix3D.m00;
+    num m10 = _projectionMatrix3D.m10;
+    num m30 = _projectionMatrix3D.m30;
+    num m01 = _projectionMatrix3D.m01;
+    num m11 = _projectionMatrix3D.m11;
+    num m31 = _projectionMatrix3D.m31;
+    num m03 = _projectionMatrix3D.m03;
+    num m13 = _projectionMatrix3D.m13;
+    num m33 = _projectionMatrix3D.m33;
 
     num px = localX.toDouble();
     num py = localY.toDouble();
@@ -253,15 +241,14 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
       var activeProjectionMatrix = renderContext.activeProjectionMatrix;
       var globalMatrix = renderState.globalMatrix;
 
+      _calculateProjectionMatrix(globalMatrix);
       _tmpMatrix.copyFromAndInvert(globalMatrix);
       _oldProjectionMatrix3D.copyFromMatrix3D(activeProjectionMatrix);
 
-      var matrix = this.projectionMatrix3D;
-      matrix.concat2D(globalMatrix);
-      matrix.concat(activeProjectionMatrix);
-      matrix.prepend2D(_tmpMatrix);
+      _projectionMatrix3D.concat(activeProjectionMatrix);
+      _projectionMatrix3D.prepend2D(_tmpMatrix);
 
-      renderContext.activateProjectionMatrix(matrix);
+      renderContext.activateProjectionMatrix(_projectionMatrix3D);
       super.render(renderState);
       renderContext.activateProjectionMatrix(_oldProjectionMatrix3D);
 
@@ -270,6 +257,23 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
       // TODO: We could simulate the 3d-transformation with 2d scales
       // and 2d transformations - not perfect but better than nothing.
     }
+  }
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  void _calculateProjectionMatrix(Matrix matrix) {
+
+    var perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
+    var transformationMatrix3D = this.transformationMatrix3D;
+    var pivotX = this.pivotX.toDouble();
+    var pivotY = this.pivotY.toDouble();
+
+    _projectionMatrix3D.copyFromMatrix2D(matrix);
+    _projectionMatrix3D.prependTranslation(pivotX, pivotY, 0.0);
+    _projectionMatrix3D.prepend(perspectiveMatrix3D);
+    _projectionMatrix3D.prepend(transformationMatrix3D);
+    _projectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
   }
 
 }
