@@ -237,14 +237,13 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     var renderContext = renderState.renderContext;
     if (renderContext is RenderContextWebGL) {
 
-      var renderContext = renderState.renderContext as RenderContextWebGL;
       var activeProjectionMatrix = renderContext.activeProjectionMatrix;
       var globalMatrix = renderState.globalMatrix;
 
-      _calculateProjectionMatrix(globalMatrix);
-      _tmpMatrix.copyFromAndInvert(globalMatrix);
       _oldProjectionMatrix3D.copyFromMatrix3D(activeProjectionMatrix);
 
+      _calculateProjectionMatrix(globalMatrix);
+      _tmpMatrix.copyFromAndInvert(globalMatrix);
       _projectionMatrix3D.concat(activeProjectionMatrix);
       _projectionMatrix3D.prepend2D(_tmpMatrix);
 
