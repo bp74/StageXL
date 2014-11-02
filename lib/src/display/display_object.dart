@@ -390,7 +390,9 @@ abstract class DisplayObject
 
   Point<num> get mousePosition {
     var stage = this.stage;
-    return (stage != null) ? this.globalToLocal(stage._mousePosition) : null;
+    if (stage == null) return null;
+    var localPoint = new Point<num>(0.0, 0.0);
+    return this.globalToLocal(stage.mousePosition, localPoint);
   }
 
   /// The x-coordinate of the mouse relative to the local coordinate system of
@@ -754,7 +756,7 @@ abstract class DisplayObject
   bool hitTestPoint(num x, num y, [bool shapeFlag = false]) {
 
     var point = new Point<num>(x, y);
-    point = this.globalToLocal(point, point);
+    this.globalToLocal(point, point);
 
     return shapeFlag
       ? this.hitTestInput(point.x, point.y) != null

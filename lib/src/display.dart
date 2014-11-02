@@ -57,13 +57,11 @@ part 'display/sprite.dart';
 part 'display/sprite_3d.dart';
 part 'display/stage.dart';
 
+final Matrix _tmpMatrix = new Matrix.fromIdentity();
 final Matrix _identityMatrix = new Matrix.fromIdentity();
 final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
 final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
 
-final Matrix _tmpMatrix = new Matrix.fromIdentity();
-final Point<num> _tmpPoint = new Point<num>(0.0, 0.0);
-final Rectangle<num> _tmpRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
 
 //-----------------------------------------------------------------------------
 
