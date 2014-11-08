@@ -45,10 +45,15 @@ class Tween implements Animatable {
   bool _roundToInt = false;
   bool _started = false;
 
-  /// Creates a new [Tween] for the specified [tweenObject] with a duration
+  /// Creates a new [Tween] for the specified [TweenObject] with a duration
   /// of [time] seconds.
-  Tween(TweenObject tweenObject, num time,
-      [EaseFunction transitionFunction = TransitionFunction.linear]) :
+  ///
+  /// All display objects implements [TweenObject2D] and all 3D display
+  /// additionally objects implements [TweenObject3D]. Therefore all
+  /// display objects can be used with with tweens.
+
+  Tween(TweenObject tweenObject, num time, [
+    EaseFunction transitionFunction = TransitionFunction.linear]) :
 
     _tweenObject = tweenObject,
     _transitionFunction = transitionFunction {
@@ -60,30 +65,39 @@ class Tween implements Animatable {
     _totalTime = max(0.0001, time);
   }
 
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  /// Accessor for the [TweenPropertyFactory] to specify what properties 
-  /// should be animated by this [Tween].
-  TweenPropertyFactory get animate => new TweenPropertyFactory._internal(this);
+  /// Accessor for 2D properties like x, y, rotation, alpha and others which
+  /// can be animated with this tween. Works for all display objects.
 
-  TweenProperty _addTweenProperty(int propertyIndex) {
-    var tweenProperty = new TweenProperty._internal(_tweenObject, propertyIndex);
+  TweenPropertyAccessor2D get animate {
+    var tweenObject = _tweenObject;
+    if (tweenObject is TweenObject2D) {
+      return new TweenPropertyAccessor2D._(this, tweenObject);
+    } else {
+      throw new StateError("Invalid tween object for 2D animation.");
+    }
+  }
+
+  /// Accessor for 3D properties like offsetZ, rotationZ and others which
+  /// can be animated with this tween. Works for all 3D display objects.
+
+  TweenPropertyAccessor3D get animate3D {
+    var tweenObject = _tweenObject;
+    if (tweenObject is TweenObject3D) {
+      return new TweenPropertyAccessor3D._(this, tweenObject);
+    } else {
+      throw new StateError("Invalid tween object for 3D animation.");
+    }
+  }
+
+  TweenProperty _createTweenProperty(TweenPropertyAccessor accessor, int propertyID) {
+    var tweenProperty = new TweenProperty._(accessor, propertyID);
     if (_started == false) _tweenPropertyList.add(tweenProperty);
     return tweenProperty;
   }
 
-  //----------------------------------------------------------------------------
-
-  /// Advances this [Tween] to its end state.
-  void complete() {
-    if (_totalTime >= _currentTime) {
-      advanceTime(_totalTime - _currentTime);
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   @override
   bool advanceTime(num time) {
@@ -101,6 +115,7 @@ class Tween implements Animatable {
         // set startValues if this is the first start
 
         if (_started == false) {
+
           _started = true;
 
           for (int i = 0; i < _tweenPropertyList.length; i++) {
@@ -131,54 +146,72 @@ class Tween implements Animatable {
     return _currentTime < _totalTime;
   }
 
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  /// Advances this [Tween] to its end state.
+
+  void complete() {
+    if (_totalTime >= _currentTime) {
+      advanceTime(_totalTime - _currentTime);
+    }
+  }
+
+  //---------------------------------------------------------------------------
 
   /// The object that is tweened.
+
   TweenObject get tweenObject => _tweenObject;
-  
+
   /// The total time of this [Tween].
+
   num get totalTime => _totalTime;
-  
+
   /// The current time of this [Tween].
+
   num get currentTime => _currentTime;
 
   /// The delay this [Tween] waits until it starts animating.
-  /// 
-  /// The delay may be changed as long as the animation has not been started. 
+  ///
+  /// The delay may be changed as long as the animation has not been started.
+
   num get delay => _delay;
-  
+
   set delay(num value) {
     if (_started == false) {
       _currentTime = _currentTime + _delay - value;
       _delay = value;
     }
   }
-  
+
   /// Specifies if the values should be rounded to an integer.
-  /// 
+  ///
   /// Default is false.
+
   bool get roundToInt => _roundToInt;
 
   set roundToInt(bool value) {
     _roundToInt = value;
   }
-  
+
   /// Indicates if this [Tween] is completed.
+
   bool get isComplete => _currentTime >= _totalTime;
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  /// The function that is called when this [Tween] starts. 
-  /// 
+  /// The function that is called when this [Tween] starts.
+  ///
   /// This happens after the specified [delay].
+
   void set onStart(void function()) { _onStart = function; }
 
-  /// The function that is called every time this [Tween] updates the properties 
-  /// of the [TweenObject].
+  /// The function that is called every time this [Tween] updates the
+  /// properties of the [TweenObject].
+
   void set onUpdate(void function()) { _onUpdate = function; }
 
   /// The function that is called when this [Tween] is completed.
+
   void set onComplete(void function()) { _onComplete = function; }
 }
 

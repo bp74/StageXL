@@ -7,7 +7,9 @@ part of stagexl.display;
 /// display object in 3D space. Use the [offsetX], [offsetY] and [offsetZ]
 /// properties to move the display object in 3D space.
 ///
-abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
+abstract class DisplayObjectContainer3D
+    extends DisplayObjectContainer
+    implements TweenObject3D {
 
   PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
 

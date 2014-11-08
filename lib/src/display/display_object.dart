@@ -30,7 +30,7 @@ part of stagexl.display;
 
 abstract class DisplayObject
     extends EventDispatcher
-    implements RenderObject, TweenObject, BitmapDrawable {
+    implements RenderObject, TweenObject2D, BitmapDrawable {
 
   static int _nextID = 0;
   final int displayObjectID = _nextID++;
