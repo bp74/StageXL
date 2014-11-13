@@ -27,6 +27,7 @@ import 'internal/tools.dart';
 part 'filters/alpha_mask_filter.dart';
 part 'filters/bitmap_filter_program.dart';
 part 'filters/blur_filter.dart';
+part 'filters/chroma_key_filter.dart';
 part 'filters/color_matrix_filter.dart';
 part 'filters/displacement_map_filter.dart';
 part 'filters/drop_shadow_filter.dart';

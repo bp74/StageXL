@@ -41,6 +41,25 @@ class RenderTexture {
     }
   }
 
+  RenderTexture.fromVideo(VideoElement videoElement, num pixelRatio) {
+
+    _storePixelRatio = ensureNum(pixelRatio);
+
+    _width = (ensureNum(videoElement.width) / _storePixelRatio).floor();
+    _height = (ensureNum(videoElement.height) / _storePixelRatio).floor();
+    _storeWidth = (_width * _storePixelRatio).round();
+    _storeHeight = (_height * _storePixelRatio).round();
+    _transparent = true;
+
+    _canvas = new CanvasElement(width: _storeWidth, height: _storeHeight);
+    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
+    _texture = null;
+
+    _canvas.context2D.drawImageScaledFromSource(videoElement,
+        0, 0, videoElement.width, videoElement.height,
+        0, 0, _storeWidth, _storeHeight);
+  }
+
   RenderTexture.fromImage(ImageElement imageElement, num imagePixelRatio) {
 
     _storePixelRatio = ensureNum(imagePixelRatio);
@@ -76,6 +95,21 @@ class RenderTexture {
     _renderingContext = renderFrameBuffer.renderingContext;
     _texture = renderFrameBuffer.texture;
     _canvas = null;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  // update the image in the intermediary canvas
+  // between the VideoElement and the VideoData.
+  // This is necesary when the video is playing
+
+  void updateVideoCanvas(VideoElement videoElement) {
+    _canvas.context2D.clearRect(0, 0, _storeWidth, _storeHeight);
+
+    _canvas.context2D.drawImageScaledFromSource(videoElement,
+        0, 0, videoElement.videoWidth, videoElement.videoHeight,
+        0, 0, _storeWidth, _storeHeight);
+
+    update();
   }
 
   //-----------------------------------------------------------------------------------------------
