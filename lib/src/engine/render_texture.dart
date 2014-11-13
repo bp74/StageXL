@@ -98,21 +98,6 @@ class RenderTexture {
   }
 
   //-----------------------------------------------------------------------------------------------
-  // update the image in the intermediary canvas
-  // between the VideoElement and the VideoData.
-  // This is necesary when the video is playing
-
-  void updateVideoCanvas(VideoElement videoElement) {
-    _canvas.context2D.clearRect(0, 0, _storeWidth, _storeHeight);
-
-    _canvas.context2D.drawImageScaledFromSource(videoElement,
-        0, 0, videoElement.videoWidth, videoElement.videoHeight,
-        0, 0, _storeWidth, _storeHeight);
-
-    update();
-  }
-
-  //-----------------------------------------------------------------------------------------------
 
   static Future<RenderTexture> load(
       String url, bool autoHiDpi, bool webpAvailable, bool corsEnabled) {

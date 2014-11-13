@@ -90,7 +90,17 @@ class Video extends DisplayObject {
 
       _nextFrameTime = videoTime + _frameRateDelay;
 
-      _renderTexture.updateVideoCanvas(_video);
+      // update the image in the intermediary canvas
+      // between the VideoElement and the VideoData.
+      // This is necesary when the video is playing
+      var canvas = _renderTexture.canvas;
+      canvas.context2D.clearRect(0, 0, _renderTexture.storeWidth, _renderTexture.storeHeight);
+      canvas.context2D.drawImageScaledFromSource(_video,
+          0, 0, _video.videoWidth, _video.videoHeight,
+          0, 0, _renderTexture.storeWidth, _renderTexture.storeHeight);
+
+      _renderTexture.update();
+
       _renderTextureQuad = _renderTexture.quad;
     }
 
