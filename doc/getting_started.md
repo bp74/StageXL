@@ -27,7 +27,7 @@ The following code shows how to initialize the main drawing area (Stage) and how
     void main() {
 
       // The Stage is a wrapper over the HTML canvas element.
-      CanvasElement canvas = html.querySelector('#stageCanvas')
+      CanvasElement canvas = html.querySelector('#stageCanvas');
       Stage stage = new Stage(canvas);
 
       // The RenderLoop controls the flow of the program
@@ -35,7 +35,7 @@ The following code shows how to initialize the main drawing area (Stage) and how
       renderLoop.addStage(stage);
 
       // Start loading an image (BitmapData) and continue when done
-      Future<BitmapData> future = BitmapData.loadImage('Flower.png');
+      Future<BitmapData> future = BitmapData.load('Flower.png');
       future.then((BitmapData bitmapData) {
 
         // A Bitmap is the display object you can add to the display list.
