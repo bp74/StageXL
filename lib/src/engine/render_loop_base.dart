@@ -13,7 +13,7 @@ void _animationFrame(num frameTime) {
 
   var frameListeners = _globalFrameListeners.toList(growable:false);
   var currentFrameTime = ensureNum(frameTime) / 1000.0;
-  var deltaTime = frameTime - currentFrameTime;
+  var deltaTime = currentFrameTime - _globalFrameTime;
 
   for(int i = 0; i < frameListeners.length; i++) {
     frameListeners[i](deltaTime);
