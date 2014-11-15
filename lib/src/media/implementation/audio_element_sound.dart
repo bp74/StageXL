@@ -32,20 +32,19 @@ class AudioElementSound extends Sound {
     StreamSubscription onCanPlaySubscription;
     StreamSubscription onErrorSubscription;
 
-    onCanPlay(event) {
+    void onCanPlay(event) {
       onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
       loadCompleter.complete(sound);
     };
 
-    onError(event) {
+    void onError(event) {
       if (audioUrls.length > 0) {
         audio.src = audioUrls.removeAt(0);
         audio.load();
       } else {
         onCanPlaySubscription.cancel();
         onErrorSubscription.cancel();
-
         if (soundLoadOptions.ignoreErrors) {
           MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
         } else {

@@ -20,7 +20,7 @@ import 'dart:math' as math;
 import 'dart:html' as html;
 
 import 'dart:math' hide Point, Rectangle;
-import 'dart:html' show ImageElement;
+import 'dart:html' show ImageElement, VideoElement;
 import 'dart:html' show CanvasElement, CanvasRenderingContext2D, CanvasGradient, CanvasPattern;
 
 import 'animation.dart';

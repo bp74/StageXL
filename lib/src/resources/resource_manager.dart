@@ -87,6 +87,7 @@ class ResourceManager {
 
   bool containsBitmapData(String name) => _containsResource("BitmapData", name);
   bool containsSound(String name) => _containsResource("Sound", name);
+  bool containsVideo(String name) => _containsResource("Video", name);
   bool containsSoundSprite(String name) => _containsResource("SoundSprite", name);
   bool containsTextureAtlas(String name) => _containsResource("TextureAtlas", name);
   bool containsTextFile(String name) => _containsResource("TextFile", name);
@@ -101,6 +102,10 @@ class ResourceManager {
 
   void addSound(String name, String url, [SoundLoadOptions soundFileSupport = null]) {
     _addResource("Sound", name, url, Sound.load(url, soundFileSupport));
+  }
+
+  void addVideo(String name, String url, [VideoLoadOptions videoFileSupport = null]) {
+    _addResource("Video", name, url, Video.load(url, videoFileSupport));
   }
 
   void addSoundSprite(String name, String url) {
@@ -137,6 +142,12 @@ class ResourceManager {
   Sound getSound(String name) {
     var value = _getResourceValue("Sound", name);
     if (value is! Sound) throw "dart2js_hint";
+    return value;
+  }
+
+  Video getVideo(String name) {
+    var value = _getResourceValue("Video", name);
+    if (value is! Video) throw "dart2js_hint";
     return value;
   }
 

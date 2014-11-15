@@ -50,7 +50,7 @@ class RenderContextCanvas extends RenderContext {
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
 
     var context = _renderingContext;
-    var source = renderTextureQuad.renderTexture.canvas;
+    var source = renderTextureQuad.renderTexture.source;
     var rotation = renderTextureQuad.rotation;
     var xyList = renderTextureQuad.xyList;
     var matrix = renderState.globalMatrix;
