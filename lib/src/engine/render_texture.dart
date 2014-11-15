@@ -44,7 +44,7 @@ class RenderTexture {
     }
   }
 
-  RenderTexture.fromImage(ImageElement imageElement, num imagePixelRatio) {
+  RenderTexture.fromImageElement(ImageElement imageElement, num imagePixelRatio) {
 
     _storePixelRatio = ensureNum(imagePixelRatio);
     _width = (ensureNum(imageElement.width) / _storePixelRatio).floor();
@@ -106,7 +106,7 @@ class RenderTexture {
     var imageLoader = new ImageLoader(hiDpiUrl, webpAvailable, corsEnabled);
 
     return imageLoader.done.then((image) =>
-        new RenderTexture.fromImage(image, hiDpi ? 2.0 : 1.0));
+        new RenderTexture.fromImageElement(image, hiDpi ? 2.0 : 1.0));
   }
 
   //-----------------------------------------------------------------------------------------------

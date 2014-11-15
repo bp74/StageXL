@@ -26,7 +26,7 @@ class BitmapData implements BitmapDrawable {
   }
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
-    _renderTexture = new RenderTexture.fromImage(imageElement, pixelRatio);
+    _renderTexture = new RenderTexture.fromImageElement(imageElement, pixelRatio);
     _renderTextureQuad = _renderTexture.quad;
     _width = ensureInt(_renderTexture.width);
     _height = ensureInt(_renderTexture.height);
