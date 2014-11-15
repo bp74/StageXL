@@ -20,7 +20,7 @@ import 'dart:math' as math;
 import 'dart:html' as html;
 
 import 'dart:math' hide Point, Rectangle;
-import 'dart:html' show ImageElement;
+import 'dart:html' show ImageElement, VideoElement;
 import 'dart:html' show CanvasElement, CanvasRenderingContext2D, CanvasGradient, CanvasPattern;
 
 import 'animation.dart';
@@ -56,6 +56,8 @@ part 'display/simple_button.dart';
 part 'display/sprite.dart';
 part 'display/sprite_3d.dart';
 part 'display/stage.dart';
+part 'display/video.dart';
+part 'display/video_data.dart';
 
 final Matrix _tmpMatrix = new Matrix.fromIdentity();
 final Matrix _identityMatrix = new Matrix.fromIdentity();
