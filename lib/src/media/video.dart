@@ -42,7 +42,7 @@ class Video {
   final _errorEvent = new StreamController.broadcast();
   final _playEvent = new StreamController.broadcast();
 
-  Video(this.videoElement) {
+  Video._(this.videoElement) {
     videoElement.onEnded.listen(_onEnded);
     videoElement.onPause.listen(_onPause);
     videoElement.onError.listen(_onError);
@@ -84,7 +84,7 @@ class Video {
       videoLoader.done.then((VideoElement videoElement) {
         videoElement.width = videoElement.videoWidth;
         videoElement.height = videoElement.videoHeight;
-        completer.complete(new Video(videoElement));
+        completer.complete(new Video._(videoElement));
       }).catchError((error) {
         completer.completeError(new StateError("Failed to load video."));
       });
@@ -101,7 +101,7 @@ class Video {
     videoElement.width = this.videoElement.width;
     videoElement.height = this.videoElement.height;
     videoElement.load();
-    return new Video(videoElement);
+    return new Video._(videoElement);
   }
 
   /// Play the video.
