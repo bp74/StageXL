@@ -1,7 +1,5 @@
 part of stagexl.media;
 
-/// A Video can be used as a source for the BitmapData class.
-///
 /// The Video will be rendered to a RenderTexture, therefore it will work
 /// the same way as any other static BitmapData content. Please look at the
 /// sample below to see how it works:
@@ -10,10 +8,10 @@ part of stagexl.media;
 ///     resourceManager.addVideo("vid1", "video.webm");
 ///     resourceManager.load().then((_) {
 ///       var video = resourceManager.getVideo("vid1");
-///       var bitmapData = new BitmapData.fromVideoElement(video.videoElement);
-///       var bitmap = new Bitmap(bitmapData);
-///       stage.addChild(bitmap);
-///       video.play();
+///       var videoObject = new VideoObject(video);
+///
+///       stage.addChild(videoObject);
+///       videoObject.play();
 ///     });
 ///
 /// If the video codec of the file is not supported by the browser, the
@@ -23,17 +21,23 @@ part of stagexl.media;
 
 class Video {
 
-  final VideoElement videoElement = new VideoElement();
+  VideoElement videoElement;
   bool loop = false;
+  bool autoplay = false;
+
+  Video(this.videoElement) {
+    videoElement.onEnded.listen(_onEnded);
+  }
 
   static VideoLoadOptions defaultLoadOptions = new VideoLoadOptions(mp4:true, webm:true, ogg:true);
+  static VideoLoadOptions defaultDataLoadOptions = new VideoLoadOptions(mp4:true, webm:true, ogg:true, loadData:true);
 
   static Future<Video> load(String url, [VideoLoadOptions videoLoadOptions = null]) {
 
     if (videoLoadOptions == null) videoLoadOptions = Video.defaultLoadOptions;
 
-    var video = new Video();
-    var videoElement = video.videoElement;
+    var videoElement = new VideoElement();
+    var video = new Video(videoElement);
     var videoUrls = _getOptimalVideoUrls(url, videoLoadOptions);
     var loadCompleter = new Completer<Video>();
 
@@ -52,6 +56,10 @@ class Video {
     void onCanPlay(event) {
       onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
+
+      videoElement.width = videoElement.videoWidth;
+      videoElement.height = videoElement.videoHeight;
+
       loadCompleter.complete(video);
     };
 
@@ -71,25 +79,105 @@ class Video {
 
     videoElement.preload = "auto";
     videoElement.src = videoUrls.removeAt(0);
-    videoElement.onEnded.listen(video._onEnded);
     videoElement.load();
 
     return loadCompleter.future;
   }
+
+
+  static Future<Video> loadDataUrl(String url, [VideoLoadOptions videoLoadOptions = null]) {
+    if (videoLoadOptions == null) videoLoadOptions = Video.defaultLoadOptions;
+
+    VideoElement videoElement;
+
+    var videoUrls = _getOptimalVideoUrls(url, videoLoadOptions);
+
+    var loadCompleter = new Completer<Video>();
+
+    var onCanPlaySubscription;
+    var onErrorSubscription;
+
+    onCanPlay(event) {
+      onCanPlaySubscription.cancel();
+      onErrorSubscription.cancel();
+
+      var video = new Video(videoElement);
+      videoElement.width = videoElement.videoWidth;
+      videoElement.height = videoElement.videoHeight;
+
+      loadCompleter.complete(video);
+    };
+
+    onData(HttpRequest request) {
+      FileReader reader = new FileReader();
+      reader.readAsDataUrl(request.response);
+
+      reader.onLoadEnd.first.then((e){
+        if(reader.readyState != FileReader.DONE) {
+          throw 'Error while reading ${url}';
+        }
+
+        videoElement = new VideoElement();
+
+        onCanPlaySubscription = videoElement.onCanPlayThrough.listen(onCanPlay);
+        onErrorSubscription = videoElement.onError.listen((_){
+          loadCompleter.completeError(new StateError("Failed to create video with data."));
+        });
+
+        videoElement.preload = "auto";
+        videoElement.src = reader.result;
+        videoElement.load();
+      });
+    };
+
+    onError(event) {
+      if (videoUrls.length > 0) {
+        HttpRequest.request(videoUrls.removeAt(0), responseType: 'blob')
+          .then(onData)
+          .catchError(onError);
+      } else {
+        loadCompleter.completeError(new StateError("Failed to load uri."));
+      }
+    };
+    HttpRequest.request(videoUrls.removeAt(0), responseType: 'blob')
+      .then(onData)
+      .catchError(onError);
+
+    return loadCompleter.future;
+  }
+
+
+  //-------------------------------------------------------------------------------------------------
+  // Clone the VideoElement
+  // so it can be played independantly from
+  // the previous base Video
+
+  Video clone() {
+    var video = videoElement.clone(true);
+    video.width = videoElement.videoWidth;
+    video.height = videoElement.videoHeight;
+
+    video.load();
+
+    return new Video(video);
+  }
+
 
   //-------------------------------------------------------------------------------------------------
   // video controls methods :
   // more or less direct forward to the
   // VideoElement html api methods
 
+  bool get isPlaying => !videoElement.paused;
+
   void play() {
-    if (videoElement.paused) {
+    if (!isPlaying) {
       videoElement.play();
     }
   }
 
   void pause() {
-    if (videoElement.paused == false) {
+    if (isPlaying) {
       videoElement.pause();
     }
   }
@@ -105,9 +193,16 @@ class Video {
   }
 
   //-----------------------------------------------------------------------------------------------
+  // event front VideoElement api
+
+  ElementStream<Event> get onEnded => videoElement.onEnded;
+  ElementStream<Event> get onPause => videoElement.onPause;
+  ElementStream<Event> get onPlay => videoElement.onPlay;
+  ElementStream<Event> get onError => videoElement.onError;
+
+  //-----------------------------------------------------------------------------------------------
 
   void _onEnded(Event event) {
-
     // we autoloop manualy to avoid a bug in some browser :
     // http://stackoverflow.com/questions/17930964/
     //

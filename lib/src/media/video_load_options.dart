@@ -18,16 +18,24 @@ class VideoLoadOptions {
 
   List<String> alternativeUrls;
 
+  /// load the data from the video file
+  /// so the src of the VideoElement is
+  /// a base64 encode video data
+  /// and not a url
+  bool loadData;
+
   //---------------------------------------------------------------------------
 
   VideoLoadOptions({
       this.mp4: false,
       this.webm: false,
       this.ogg: false,
-      this.alternativeUrls: null
+      this.alternativeUrls: null,
+      this.loadData: false
     });
 
   VideoLoadOptions clone() => new VideoLoadOptions(
       mp4: this.mp4, webm: this.webm, ogg: this.ogg,
-      alternativeUrls: this.alternativeUrls);
+      alternativeUrls: this.alternativeUrls,
+      loadData: loadData);
 }
