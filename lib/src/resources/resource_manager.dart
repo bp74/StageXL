@@ -105,7 +105,15 @@ class ResourceManager {
   }
 
   void addVideo(String name, String url, [VideoLoadOptions videoFileSupport = null]) {
-    _addResource("Video", name, url, Video.load(url, videoFileSupport));
+    Future videoLoad;
+
+    if (videoFileSupport != null && videoFileSupport.loadData) {
+      videoLoad = Video.loadDataUrl(url, videoFileSupport);
+    } else {
+      videoLoad = Video.load(url, videoFileSupport);
+    }
+
+    _addResource("Video", name, url, videoLoad);
   }
 
   void addSoundSprite(String name, String url) {

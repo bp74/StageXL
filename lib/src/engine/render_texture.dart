@@ -65,8 +65,11 @@ class RenderTexture {
   RenderTexture.fromVideoElement(VideoElement videoElement, num videoPixelRatio) {
 
     _storePixelRatio = ensureNum(videoPixelRatio);
-    _width = (ensureNum(videoElement.videoWidth) / _storePixelRatio).floor();
-    _height = (ensureNum(videoElement.videoHeight) / _storePixelRatio).floor();
+    // can't use videoWidth and videoHeight,
+    // thei'r read only and we need to add the video to the dom to get them right.
+    // we use the width and height instead that are set to the right value in the video clone
+    _width = (ensureNum(videoElement.width) / _storePixelRatio).floor();
+    _height = (ensureNum(videoElement.height) / _storePixelRatio).floor();
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
     _transparent = true;
