@@ -64,9 +64,20 @@ class RenderTexture {
 
   RenderTexture.fromVideoElement(VideoElement videoElement, num videoPixelRatio) {
 
+    var videoWidth = videoElement.videoWidth;
+    var videoHeight = videoElement.videoHeight;
+
+    // Cloned VideoElements from the Video class will have videoWidth and
+    // videoHeight equal to zero. Therefore the clone method of video sets
+    // the width and height properties to the correct values. This is a
+    // small hack but it shouldn't cause any problems.
+
+    if (videoWidth == 0) videoWidth = videoElement.width;
+    if (videoHeight == 0) videoHeight = videoElement.height;
+
     _storePixelRatio = ensureNum(videoPixelRatio);
-    _width = (ensureNum(videoElement.width) / _storePixelRatio).floor();
-    _height = (ensureNum(videoElement.height) / _storePixelRatio).floor();
+    _width = (ensureNum(videoWidth) / _storePixelRatio).floor();
+    _height = (ensureNum(videoHeight) / _storePixelRatio).floor();
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
     _transparent = true;
