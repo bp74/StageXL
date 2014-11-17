@@ -69,17 +69,28 @@ class VideoObject extends InteractiveObject {
   Video get video => _video;
   RenderTexture get renderTexture => _renderTexture;
 
-  void play() => _video.play();
-  void pause() => _video.pause();
+  void play() {
+    _video.play();
+  }
+
+  void pause() {
+    _video.pause();
+  }
 
   bool get muted => _video.muted;
-  void set muted(muted) => _video.muted = muted;
+  void set muted(muted) {
+    _video.muted = muted;
+  }
 
   bool get loop => _video.loop;
-  void set loop(loop) => _video.loop = loop;
+  void set loop(loop) {
+    _video.loop = loop;
+  }
 
   num get volume => _video.volume;
-  void set volume(volume) => _video.volume = volume;
+  void set volume(volume) {
+    _video.volume = volume;
+  }
 
   bool get isPlaying => _video.isPlaying;
 }
