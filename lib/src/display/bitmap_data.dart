@@ -32,6 +32,13 @@ class BitmapData implements BitmapDrawable {
     _height = ensureInt(_renderTexture.height);
   }
 
+  BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
+    _renderTexture = new RenderTexture.fromVideoElement(videoElement, pixelRatio);
+    _renderTextureQuad = _renderTexture.quad;
+    _width = ensureInt(_renderTexture.width);
+    _height = ensureInt(_renderTexture.height);
+  }
+
   BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
     _width = ensureInt(rectangle.width);
     _height = ensureInt(rectangle.height);

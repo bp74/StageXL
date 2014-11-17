@@ -29,7 +29,6 @@ class Video {
     videoElement.onEnded.listen(_onEnded);
   }
 
-
   static VideoLoadOptions defaultLoadOptions = new VideoLoadOptions(mp4:true, webm:true, ogg:true);
   static VideoLoadOptions defaultDataLoadOptions = new VideoLoadOptions(mp4:true, webm:true, ogg:true, loadData:true);
 
@@ -57,6 +56,10 @@ class Video {
     void onCanPlay(event) {
       onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
+
+      videoElement.width = videoElement.videoWidth;
+      videoElement.height = videoElement.videoHeight;
+
       loadCompleter.complete(video);
     };
 
@@ -99,6 +102,8 @@ class Video {
       onErrorSubscription.cancel();
 
       var video = new Video(videoElement);
+      videoElement.width = videoElement.videoWidth;
+      videoElement.height = videoElement.videoHeight;
 
       loadCompleter.complete(video);
     };
@@ -163,14 +168,16 @@ class Video {
   // more or less direct forward to the
   // VideoElement html api methods
 
+  bool get isPlaying => !videoElement.paused;
+
   void play() {
-    if (videoElement.paused) {
+    if (!isPlaying) {
       videoElement.play();
     }
   }
 
   void pause() {
-    if (videoElement.paused == false) {
+    if (isPlaying) {
       videoElement.pause();
     }
   }
@@ -184,6 +191,14 @@ class Video {
   void set volume(num volume) {
     videoElement.volume = volume;
   }
+
+  //-----------------------------------------------------------------------------------------------
+  // event front VideoElement api
+
+  ElementStream<Event> get onEnded => videoElement.onEnded;
+  ElementStream<Event> get onPause => videoElement.onPause;
+  ElementStream<Event> get onPlay => videoElement.onPlay;
+  ElementStream<Event> get onError => videoElement.onError;
 
   //-----------------------------------------------------------------------------------------------
 
