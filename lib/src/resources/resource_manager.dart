@@ -100,20 +100,12 @@ class ResourceManager {
     _addResource("BitmapData", name, url, BitmapData.load(url, bitmapDataLoadOptions));
   }
 
-  void addSound(String name, String url, [SoundLoadOptions soundFileSupport = null]) {
-    _addResource("Sound", name, url, Sound.load(url, soundFileSupport));
+  void addSound(String name, String url, [SoundLoadOptions soundLoadOptions = null]) {
+    _addResource("Sound", name, url, Sound.load(url, soundLoadOptions));
   }
 
-  void addVideo(String name, String url, [VideoLoadOptions videoFileSupport = null]) {
-    Future videoLoad;
-
-    if (videoFileSupport != null && videoFileSupport.loadData) {
-      videoLoad = Video.loadDataUrl(url, videoFileSupport);
-    } else {
-      videoLoad = Video.load(url, videoFileSupport);
-    }
-
-    _addResource("Video", name, url, videoLoad);
+  void addVideo(String name, String url, [VideoLoadOptions videoLoadOptions = null]) {
+    _addResource("Video", name, url, Video.load(url, videoLoadOptions));
   }
 
   void addSoundSprite(String name, String url) {

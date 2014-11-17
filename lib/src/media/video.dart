@@ -8,8 +8,21 @@ part of stagexl.media;
 ///     resourceManager.addVideo("vid1", "video.webm");
 ///     resourceManager.load().then((_) {
 ///       var video = resourceManager.getVideo("vid1");
-///       var videoObject = new VideoObject(video);
+///       var bitmapData = new BitmapData.fromVideoElement(video.videoElement);
+///       var bitmap = new Bitmap(bitmapData);
+///       stage.addChild(bitmap);
+///       video.play();
+///     });
 ///
+///  You can also use the more convenient VideoObject class. Please note that
+///  the VideoObject will create a clone of the video and therefore the
+///  playback is independent from other VideoObject instances.
+///
+///     var resourceManager = new ResourceManager();
+///     resourceManager.addVideo("vid1", "video.webm");
+///     resourceManager.load().then((_) {
+///       var video = resourceManager.getVideo("vid1");
+///       var videoObject = new VideoObject(video);
 ///       stage.addChild(videoObject);
 ///       videoObject.play();
 ///     });
@@ -23,152 +36,75 @@ class Video {
 
   VideoElement videoElement;
   bool loop = false;
-  bool autoplay = false;
+
+  final _endedEvent = new StreamController.broadcast();
+  final _pauseEvent = new StreamController.broadcast();
+  final _errorEvent = new StreamController.broadcast();
+  final _playEvent = new StreamController.broadcast();
 
   Video(this.videoElement) {
     videoElement.onEnded.listen(_onEnded);
+    videoElement.onPause.listen(_onPause);
+    videoElement.onError.listen(_onError);
+    videoElement.onPlay.listen(_onPlay);
   }
 
-  static VideoLoadOptions defaultLoadOptions = new VideoLoadOptions(mp4:true, webm:true, ogg:true);
-  static VideoLoadOptions defaultDataLoadOptions = new VideoLoadOptions(mp4:true, webm:true, ogg:true, loadData:true);
+  Stream get onEnded => _endedEvent.stream;
+  Stream get onPause => _pauseEvent.stream;
+  Stream get onError => _errorEvent.stream;
+  Stream get onPlay => _playEvent.stream;
 
-  static Future<Video> load(String url, [VideoLoadOptions videoLoadOptions = null]) {
+  //---------------------------------------------------------------------------
+
+  /// The default video load options are used if no custom video load options
+  /// are provided for the [load] method. This default video load options
+  /// enable all supported video file formats: mp4, webm and ogg.
+
+  static VideoLoadOptions defaultLoadOptions =
+      new VideoLoadOptions(mp4:true, webm:true, ogg:true);
+
+  /// Use this method to load a video from a given [url]. If you don't
+  /// provide [videoLoadOptions] the [defaultLoadOptions] will be used.
+
+  static Future<Video> load(String url, [
+      VideoLoadOptions videoLoadOptions = null]) {
 
     if (videoLoadOptions == null) videoLoadOptions = Video.defaultLoadOptions;
 
-    var videoElement = new VideoElement();
-    var video = new Video(videoElement);
     var videoUrls = _getOptimalVideoUrls(url, videoLoadOptions);
-    var loadCompleter = new Completer<Video>();
+    var completer = new Completer<Video>();
 
     if (videoUrls.length == 0) {
-      loadCompleter.completeError(new StateError("No url provided."));
-      return loadCompleter.future;
+
+      completer.completeError(new StateError("No url provided."));
+
+    } else {
+
+      var videoLoader = new VideoLoader(videoUrls, videoLoadOptions.loadData);
+      videoLoader.done.then((VideoElement videoElement) {
+        videoElement.width = videoElement.videoWidth;
+        videoElement.height = videoElement.videoHeight;
+        completer.complete(new Video(videoElement));
+      }).catchError((error) {
+        completer.completeError(new StateError("Failed to load video."));
+      });
     }
 
-    // necessary to get videoWidth and videoHeight
-    videoElement.style.display = 'none';
-    document.body.children.add(videoElement);
-
-    StreamSubscription onCanPlaySubscription;
-    StreamSubscription onErrorSubscription;
-
-    void onCanPlay(event) {
-      onCanPlaySubscription.cancel();
-      onErrorSubscription.cancel();
-
-      videoElement.width = videoElement.videoWidth;
-      videoElement.height = videoElement.videoHeight;
-
-      loadCompleter.complete(video);
-    };
-
-    void onError(event) {
-      if (videoUrls.length > 0) {
-        videoElement.src = videoUrls.removeAt(0);
-        videoElement.load();
-      } else {
-        onCanPlaySubscription.cancel();
-        onErrorSubscription.cancel();
-        loadCompleter.completeError(new StateError("Failed to load video."));
-      }
-    };
-
-    onCanPlaySubscription = videoElement.onCanPlayThrough.listen(onCanPlay);
-    onErrorSubscription = videoElement.onError.listen(onError);
-
-    videoElement.preload = "auto";
-    videoElement.src = videoUrls.removeAt(0);
-    videoElement.load();
-
-    return loadCompleter.future;
+    return completer.future;
   }
 
-
-  static Future<Video> loadDataUrl(String url, [VideoLoadOptions videoLoadOptions = null]) {
-    if (videoLoadOptions == null) videoLoadOptions = Video.defaultLoadOptions;
-
-    VideoElement videoElement;
-
-    var videoUrls = _getOptimalVideoUrls(url, videoLoadOptions);
-
-    var loadCompleter = new Completer<Video>();
-
-    var onCanPlaySubscription;
-    var onErrorSubscription;
-
-    onCanPlay(event) {
-      onCanPlaySubscription.cancel();
-      onErrorSubscription.cancel();
-
-      var video = new Video(videoElement);
-      videoElement.width = videoElement.videoWidth;
-      videoElement.height = videoElement.videoHeight;
-
-      loadCompleter.complete(video);
-    };
-
-    onData(HttpRequest request) {
-      FileReader reader = new FileReader();
-      reader.readAsDataUrl(request.response);
-
-      reader.onLoadEnd.first.then((e){
-        if(reader.readyState != FileReader.DONE) {
-          throw 'Error while reading ${url}';
-        }
-
-        videoElement = new VideoElement();
-
-        onCanPlaySubscription = videoElement.onCanPlayThrough.listen(onCanPlay);
-        onErrorSubscription = videoElement.onError.listen((_){
-          loadCompleter.completeError(new StateError("Failed to create video with data."));
-        });
-
-        videoElement.preload = "auto";
-        videoElement.src = reader.result;
-        videoElement.load();
-      });
-    };
-
-    onError(event) {
-      if (videoUrls.length > 0) {
-        HttpRequest.request(videoUrls.removeAt(0), responseType: 'blob')
-          .then(onData)
-          .catchError(onError);
-      } else {
-        loadCompleter.completeError(new StateError("Failed to load uri."));
-      }
-    };
-    HttpRequest.request(videoUrls.removeAt(0), responseType: 'blob')
-      .then(onData)
-      .catchError(onError);
-
-    return loadCompleter.future;
-  }
-
-
-  //-------------------------------------------------------------------------------------------------
-  // Clone the VideoElement
-  // so it can be played independantly from
-  // the previous base Video
+  /// Clone this video instance and the underlying HTML VideoElement to play
+  /// the new video independantly from this video.
 
   Video clone() {
-    var video = videoElement.clone(true);
-    video.width = videoElement.videoWidth;
-    video.height = videoElement.videoHeight;
-
-    video.load();
-
-    return new Video(video);
+    var videoElement = this.videoElement.clone(true);
+    videoElement.width = this.videoElement.width;
+    videoElement.height = this.videoElement.height;
+    videoElement.load();
+    return new Video(videoElement);
   }
 
-
-  //-------------------------------------------------------------------------------------------------
-  // video controls methods :
-  // more or less direct forward to the
-  // VideoElement html api methods
-
-  bool get isPlaying => !videoElement.paused;
+  /// Play the video.
 
   void play() {
     if (!isPlaying) {
@@ -176,33 +112,45 @@ class Video {
     }
   }
 
+  /// Pause the video.
+
   void pause() {
     if (isPlaying) {
       videoElement.pause();
     }
   }
 
+  /// Returns if the video is playing or not.
+
+  bool get isPlaying => !videoElement.paused;
+
+  /// Get or set if the video is muted.
+
   bool get muted => videoElement.muted;
   void set muted(bool muted) {
     videoElement.muted = muted;
   }
+
+  /// Get or set the volume of the video.
 
   num get volume => videoElement.volume;
   void set volume(num volume) {
     videoElement.volume = volume;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  // event front VideoElement api
+  /// Get or set the current time (playback position) of the video.
 
-  ElementStream<Event> get onEnded => videoElement.onEnded;
-  ElementStream<Event> get onPause => videoElement.onPause;
-  ElementStream<Event> get onPlay => videoElement.onPlay;
-  ElementStream<Event> get onError => videoElement.onError;
+  num get currentTime => videoElement.currentTime;
+  void set currentTime(num value) {
+    videoElement.currentTime = value;
+  }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void _onEnded(Event event) {
+
+    _endedEvent.add(null);
+
     // we autoloop manualy to avoid a bug in some browser :
     // http://stackoverflow.com/questions/17930964/
     //
@@ -219,8 +167,20 @@ class Video {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  void _onPause(Event event) {
+    _pauseEvent.add(null);
+  }
+
+  void _onError(Event event) {
+    _errorEvent.add(null);
+  }
+
+  void _onPlay(Event event) {
+    _playEvent.add(null);
+  }
+
+  //---------------------------------------------------------------------------
+
   // list the video formats suported by the browser
   // H.264 | Webm | Ogg
 
@@ -241,7 +201,6 @@ class Video {
     return supportedTypes;
   }
 
-  //-----------------------------------------------------------------------------------------------
   // Determine which video files is the most likely
   // to play smoothly, based on the suported types
   // and formats available

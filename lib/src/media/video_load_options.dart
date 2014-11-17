@@ -18,10 +18,9 @@ class VideoLoadOptions {
 
   List<String> alternativeUrls;
 
-  /// load the data from the video file
-  /// so the src of the VideoElement is
-  /// a base64 encode video data
-  /// and not a url
+  /// Do not stream the video but download the video file as a whole.
+  /// A DataUrl string will be used for the VideoElement source.
+
   bool loadData;
 
   //---------------------------------------------------------------------------
