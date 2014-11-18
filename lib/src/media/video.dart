@@ -37,10 +37,10 @@ class Video {
   VideoElement videoElement;
   bool loop = false;
 
-  final _endedEvent = new StreamController.broadcast();
-  final _pauseEvent = new StreamController.broadcast();
-  final _errorEvent = new StreamController.broadcast();
-  final _playEvent = new StreamController.broadcast();
+  final _endedEvent = new StreamController<Video>.broadcast();
+  final _pauseEvent = new StreamController<Video>.broadcast();
+  final _errorEvent = new StreamController<Video>.broadcast();
+  final _playEvent = new StreamController<Video>.broadcast();
 
   Video._(this.videoElement) {
     videoElement.onEnded.listen(_onEnded);
@@ -49,10 +49,10 @@ class Video {
     videoElement.onPlay.listen(_onPlay);
   }
 
-  Stream get onEnded => _endedEvent.stream;
-  Stream get onPause => _pauseEvent.stream;
-  Stream get onError => _errorEvent.stream;
-  Stream get onPlay => _playEvent.stream;
+  Stream<Video> get onEnded => _endedEvent.stream;
+  Stream<Video> get onPause => _pauseEvent.stream;
+  Stream<Video> get onError => _errorEvent.stream;
+  Stream<Video> get onPlay => _playEvent.stream;
 
   //---------------------------------------------------------------------------
 
@@ -149,7 +149,7 @@ class Video {
 
   void _onEnded(Event event) {
 
-    _endedEvent.add(null);
+    _endedEvent.add(this);
 
     // we autoloop manualy to avoid a bug in some browser :
     // http://stackoverflow.com/questions/17930964/
@@ -168,15 +168,15 @@ class Video {
   }
 
   void _onPause(Event event) {
-    _pauseEvent.add(null);
+    _pauseEvent.add(this);
   }
 
   void _onError(Event event) {
-    _errorEvent.add(null);
+    _errorEvent.add(this);
   }
 
   void _onPlay(Event event) {
-    _playEvent.add(null);
+    _playEvent.add(this);
   }
 
   //---------------------------------------------------------------------------
