@@ -39,7 +39,7 @@ part of stagexl.media;
 
 class Video {
 
-  VideoElement videoElement;
+  final VideoElement videoElement;
   bool loop = false;
 
   final _endedEvent = new StreamController<Video>.broadcast();
