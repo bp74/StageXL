@@ -218,13 +218,13 @@ class TextField extends InteractiveObject {
 
   @override
   Rectangle<num> get bounds {
-    return new Rectangle<num>(0.0, 0.0, _width, _height);
+    return new Rectangle<num>(0.0, 0.0, width, height);
   }
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-    if (localX < 0 || localX >= _width) return null;
-    if (localY < 0 || localY >= _height) return null;
+    if (localX < 0 || localX >= width) return null;
+    if (localY < 0 || localY >= height) return null;
     return this;
   }
 
