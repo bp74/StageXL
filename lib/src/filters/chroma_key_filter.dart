@@ -60,7 +60,7 @@ class ChromaKeyFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _ChromaKeyProgram extends _BitmapFilterProgram {
+class _ChromaKeyProgram extends BitmapFilterProgram {
 
   static final _ChromaKeyProgram instance = new _ChromaKeyProgram();
 

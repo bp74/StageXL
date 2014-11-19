@@ -61,7 +61,7 @@ class AlphaMaskFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _AlphaMaskProgram extends _BitmapFilterProgram {
+class _AlphaMaskProgram extends BitmapFilterProgram {
 
   static final _AlphaMaskProgram instance = new _AlphaMaskProgram();
 

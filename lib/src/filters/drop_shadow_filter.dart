@@ -114,7 +114,7 @@ class DropShadowFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _DropShadowProgram extends _BitmapFilterProgram {
+class _DropShadowProgram extends BitmapFilterProgram {
 
   static final _DropShadowProgram instance = new _DropShadowProgram();
 

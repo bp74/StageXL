@@ -1,6 +1,6 @@
 part of stagexl.filters;
 
-abstract class _BitmapFilterProgram extends RenderProgram {
+abstract class BitmapFilterProgram extends RenderProgram {
 
   String get vertexShaderSource => """
       attribute vec2 aVertexPosition;
