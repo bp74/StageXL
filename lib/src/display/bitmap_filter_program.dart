@@ -50,9 +50,9 @@ abstract class BitmapFilterProgram extends RenderProgram {
       _contextIdentifier = renderContext.contextIdentifier;
       _vertexBuffer = renderingContext.createBuffer();
 
-      renderingContext.enableVertexAttribArray(attribLocations["aVertexPosition"]);
-      renderingContext.enableVertexAttribArray(attribLocations["aVertexTextCoord"]);
-      renderingContext.enableVertexAttribArray(attribLocations["aVertexAlpha"]);
+      renderingContext.enableVertexAttribArray(attributeLocations["aVertexPosition"]);
+      renderingContext.enableVertexAttribArray(attributeLocations["aVertexTextCoord"]);
+      renderingContext.enableVertexAttribArray(attributeLocations["aVertexAlpha"]);
 
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
@@ -60,9 +60,9 @@ abstract class BitmapFilterProgram extends RenderProgram {
 
     renderingContext.useProgram(program);
     renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    renderingContext.vertexAttribPointer(attribLocations["aVertexPosition"], 2, gl.FLOAT, false, 20, 0);
-    renderingContext.vertexAttribPointer(attribLocations["aVertexTextCoord"], 2, gl.FLOAT, false, 20, 8);
-    renderingContext.vertexAttribPointer(attribLocations["aVertexAlpha"], 1, gl.FLOAT, false, 20, 16);
+    renderingContext.vertexAttribPointer(attributeLocations["aVertexPosition"], 2, gl.FLOAT, false, 20, 0);
+    renderingContext.vertexAttribPointer(attributeLocations["aVertexTextCoord"], 2, gl.FLOAT, false, 20, 8);
+    renderingContext.vertexAttribPointer(attributeLocations["aVertexAlpha"], 1, gl.FLOAT, false, 20, 16);
   }
 
   //-----------------------------------------------------------------------------------------------

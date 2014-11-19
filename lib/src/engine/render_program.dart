@@ -9,12 +9,12 @@ abstract class RenderProgram {
   gl.RenderingContext _renderingContext = null;
   gl.Program _program = null;
 
-  final Map<String, int> _attribLocations = new Map<String, int>();
+  final Map<String, int> _attributeLocations = new Map<String, int>();
   final Map<String, gl.UniformLocation> _uniformLocations = new Map<String, gl.UniformLocation>();
 
   gl.RenderingContext get renderingContext => _renderingContext;
   gl.Program get program => _program;
-  Map<String, int> get attribLocations => _attribLocations;
+  Map<String, int> get attributeLocations => _attributeLocations;
   Map<String, gl.UniformLocation> get uniformLocations => _uniformLocations;
 
   //-----------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ abstract class RenderProgram {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
       _program = renderingContext.createProgram();
-      _attribLocations.clear();
+      _attributeLocations.clear();
       _uniformLocations.clear();
 
       var vertexShader = _createShader(renderingContext, vertexShaderSource, gl.VERTEX_SHADER);
@@ -53,7 +53,7 @@ abstract class RenderProgram {
       for(int index = 0; index < activeAttributes; index++) {
         var activeInfo = renderingContext.getActiveAttrib(program, index);
         var location = renderingContext.getAttribLocation(program, activeInfo.name);
-        _attribLocations[activeInfo.name] = location;
+        _attributeLocations[activeInfo.name] = location;
       }
 
       for(int index = 0; index < activeUniforms; index++) {

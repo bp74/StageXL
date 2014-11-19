@@ -54,8 +54,8 @@ class RenderProgramTriangle extends RenderProgram {
       super.activate(renderContext);
 
       _vertexBuffer = renderingContext.createBuffer();
-      _aVertexPositionLocation = attribLocations["aVertexPosition"];
-      _aVertexColorLocation = attribLocations["aVertexColor"];
+      _aVertexPositionLocation = attributeLocations["aVertexPosition"];
+      _aVertexColorLocation = attributeLocations["aVertexColor"];
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
 
       renderingContext.enableVertexAttribArray(_aVertexPositionLocation);

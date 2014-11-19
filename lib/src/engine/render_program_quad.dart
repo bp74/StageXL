@@ -78,9 +78,9 @@ class RenderProgramQuad extends RenderProgram {
 
       _indexBuffer = renderingContext.createBuffer();
       _vertexBuffer = renderingContext.createBuffer();
-      _aVertexPositionLocation = attribLocations["aVertexPosition"];
-      _aVertexTextCoordLocation = attribLocations["aVertexTextCoord"];
-      _aVertexAlphaLocation = attribLocations["aVertexAlpha"];
+      _aVertexPositionLocation = attributeLocations["aVertexPosition"];
+      _aVertexTextCoordLocation = attributeLocations["aVertexTextCoord"];
+      _aVertexAlphaLocation = attributeLocations["aVertexAlpha"];
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
       _uSamplerLocation = uniformLocations["uSampler"];
 
