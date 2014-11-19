@@ -146,9 +146,12 @@ class _DisplacementMapProgram extends BitmapFilterProgram {
 
     var uMapScaleX = displacementMapFilter.scaleX / renderTextureQuad.textureWidth;
     var uMapScaleY = displacementMapFilter.scaleY / renderTextureQuad.textureHeight;
+    var uMapMatrixLocation = uniformLocations["uMapMatrix"];
+    var uMapSamplerLocation = uniformLocations["uMapSampler"];
+    var uMapScaleLocation = uniformLocations["uMapScale"];
 
-    _renderingContext.uniformMatrix3fv(_uniformLocations["uMapMatrix"], false, uMapMatrix);
-    _renderingContext.uniform1i(_uniformLocations["uMapSampler"], 1);
-    _renderingContext.uniform2f(_uniformLocations["uMapScale"], uMapScaleX, uMapScaleY);
+    renderingContext.uniformMatrix3fv(uMapMatrixLocation, false, uMapMatrix);
+    renderingContext.uniform1i(uMapSamplerLocation, 1);
+    renderingContext.uniform2f(uMapScaleLocation, uMapScaleX, uMapScaleY);
   }
 }

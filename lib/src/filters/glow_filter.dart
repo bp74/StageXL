@@ -125,12 +125,17 @@ class _GlowProgram extends BitmapFilterProgram {
       """;
 
    void configure(int color, num pixelX, num pixelY) {
+
      num r = colorGetR(color) / 255.0;
      num g = colorGetG(color) / 255.0;
      num b = colorGetB(color) / 255.0;
      num a = colorGetA(color) / 255.0;
-     _renderingContext.uniform2f(_uniformLocations["uPixel"], pixelX, pixelY);
-     _renderingContext.uniform4f(_uniformLocations["uColor"], r, g, b, a);
+
+     var uPixelLocation = uniformLocations["uPixel"];
+     var uColorLocation = uniformLocations["uColor"];
+
+     renderingContext.uniform2f(uPixelLocation, pixelX, pixelY);
+     renderingContext.uniform4f(uColorLocation, r, g, b, a);
    }
 }
 

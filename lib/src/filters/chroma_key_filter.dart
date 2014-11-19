@@ -93,13 +93,17 @@ class _ChromaKeyProgram extends BitmapFilterProgram {
       """;
 
   void configure(int color, int tolerance) {
+
     num r = colorGetR(color) / 255.0;
     num g = colorGetG(color) / 255.0;
     num b = colorGetB(color) / 255.0;
     num a = colorGetA(color) / 255.0;
 
-    num webGlTolerance = tolerance / 255.0;
-    _renderingContext.uniform4f(_uniformLocations["uAlphaColor"], r, g, b, a);
-    _renderingContext.uniform1f(_uniformLocations["uTolerance"], webGlTolerance);
+    var webGlTolerance = tolerance / 255.0;
+    var uAlphaColorLocation = uniformLocations["uAlphaColor"];
+    var uToleranceLocation = uniformLocations["uTolerance"];
+
+    renderingContext.uniform4f(uAlphaColorLocation, r, g, b, a);
+    renderingContext.uniform1f(uToleranceLocation, webGlTolerance);
   }
 }

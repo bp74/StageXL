@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:web_gl' as gl;
 import 'dart:math' as math;
 import 'dart:html' as html;
+import 'dart:typed_data';
 
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show ImageElement, VideoElement;
@@ -38,6 +39,7 @@ part 'display/bitmap_data_update_batch.dart';
 part 'display/bitmap_data_load_options.dart';
 part 'display/bitmap_drawable.dart';
 part 'display/bitmap_filter.dart';
+part 'display/bitmap_filter_program.dart';
 part 'display/caps_style.dart';
 part 'display/color_transform.dart';
 part 'display/display_object.dart';

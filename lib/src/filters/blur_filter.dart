@@ -115,6 +115,8 @@ class _BlurProgram extends BitmapFilterProgram {
       """;
 
    void configure(num pixelX, num pixelY) {
-     _renderingContext.uniform2f(_uniformLocations["uPixel"], pixelX, pixelY);
+
+     var uPixelLocation = uniformLocations["uPixel"];
+     renderingContext.uniform2f(uPixelLocation, pixelX, pixelY);
    }
 }
