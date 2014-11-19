@@ -32,21 +32,19 @@ abstract class BitmapFilterProgram extends RenderProgram {
   gl.Program _program;
   gl.Buffer _vertexBuffer;
 
-  gl.UniformLocation _uProjectionMatrixLocation;
-
   final Float32List _vertexList = new Float32List(4 * 5);
   final Map<String, gl.UniformLocation> _uniformLocations = new Map<String, gl.UniformLocation>();
   final Map<String, int> _attribLocations = new Map<String, int>();
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void set projectionMatrix(Matrix3D matrix) {
     gl.UniformLocation uProjectionMatrixLocation = _uniformLocations["uProjectionMatrix"];
     _renderingContext.uniformMatrix4fv(uProjectionMatrixLocation, false, matrix.data);
   }
 
-  //-----------------------------------------------------------------------------------------------
-
+  @override
   void activate(RenderContextWebGL renderContext) {
 
     if (_contextIdentifier != renderContext.contextIdentifier) {
@@ -57,14 +55,13 @@ abstract class BitmapFilterProgram extends RenderProgram {
       _vertexBuffer = _renderingContext.createBuffer();
 
       int activeAttributes = _renderingContext.getProgramParameter(_program, gl.ACTIVE_ATTRIBUTES);
+      int activeUniforms = _renderingContext.getProgramParameter(_program, gl.ACTIVE_UNIFORMS);
 
       for(int index = 0; index < activeAttributes; index++) {
         var activeInfo = _renderingContext.getActiveAttrib(_program, index);
         var location = _renderingContext.getAttribLocation(_program, activeInfo.name);
         _attribLocations[activeInfo.name] = location;
       }
-
-      int activeUniforms = _renderingContext.getProgramParameter(_program, gl.ACTIVE_UNIFORMS);
 
       for(int index = 0; index < activeUniforms; index++) {
         var activeInfo = _renderingContext.getActiveUniform(_program, index);
@@ -85,6 +82,10 @@ abstract class BitmapFilterProgram extends RenderProgram {
     _renderingContext.vertexAttribPointer(_attribLocations["aVertexPosition"], 2, gl.FLOAT, false, 20, 0);
     _renderingContext.vertexAttribPointer(_attribLocations["aVertexTextCoord"], 2, gl.FLOAT, false, 20, 8);
     _renderingContext.vertexAttribPointer(_attribLocations["aVertexAlpha"], 1, gl.FLOAT, false, 20, 16);
+  }
+
+  @override
+  void flush() {
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -140,7 +141,5 @@ abstract class BitmapFilterProgram extends RenderProgram {
     _renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
   }
 
-  void flush() {
-  }
 }
 
