@@ -35,10 +35,21 @@ abstract class BitmapFilterProgram extends RenderProgram {
 
   int _contextIdentifier = -1;
   gl.Buffer _vertexBuffer;
+  gl.UniformLocation _uProjectionMatrixLocation;
+  gl.UniformLocation _uSamplerLocation;
+
+  int _aVertexPositionLocation = 0;
+  int _aVertexTextCoordLocation = 0;
+  int _aVertexAlphaLocation = 0;
 
   final Float32List _vertexList = new Float32List(4 * 5);
 
   //-----------------------------------------------------------------------------------------------
+
+  @override
+  void set projectionMatrix(Matrix3D matrix) {
+    renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
+  }
 
   @override
   void activate(RenderContextWebGL renderContext) {
@@ -49,10 +60,15 @@ abstract class BitmapFilterProgram extends RenderProgram {
 
       _contextIdentifier = renderContext.contextIdentifier;
       _vertexBuffer = renderingContext.createBuffer();
+      _aVertexPositionLocation = attributeLocations["aVertexPosition"];
+      _aVertexTextCoordLocation = attributeLocations["aVertexTextCoord"];
+      _aVertexAlphaLocation = attributeLocations["aVertexAlpha"];
+      _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
+      _uSamplerLocation = uniformLocations["uSampler"];
 
-      renderingContext.enableVertexAttribArray(attributeLocations["aVertexPosition"]);
-      renderingContext.enableVertexAttribArray(attributeLocations["aVertexTextCoord"]);
-      renderingContext.enableVertexAttribArray(attributeLocations["aVertexAlpha"]);
+      renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
+      renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
+      renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
 
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
@@ -60,9 +76,10 @@ abstract class BitmapFilterProgram extends RenderProgram {
 
     renderingContext.useProgram(program);
     renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    renderingContext.vertexAttribPointer(attributeLocations["aVertexPosition"], 2, gl.FLOAT, false, 20, 0);
-    renderingContext.vertexAttribPointer(attributeLocations["aVertexTextCoord"], 2, gl.FLOAT, false, 20, 8);
-    renderingContext.vertexAttribPointer(attributeLocations["aVertexAlpha"], 1, gl.FLOAT, false, 20, 16);
+    renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 20, 0);
+    renderingContext.vertexAttribPointer(_aVertexTextCoordLocation, 2, gl.FLOAT, false, 20, 8);
+    renderingContext.vertexAttribPointer(_aVertexAlphaLocation, 1, gl.FLOAT, false, 20, 16);
+    renderingContext.uniform1i(_uSamplerLocation, 0);
   }
 
   //-----------------------------------------------------------------------------------------------
