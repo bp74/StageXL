@@ -4,7 +4,7 @@ part of stagexl.display;
 ///
 /// Most filter render programs share the same requirements. This
 /// abstract base class can be extended and the filter render program
-///  only needs to change the fragment shader source code.
+/// only needs to change the fragment shader source code.
 
 abstract class BitmapFilterProgram extends RenderProgram {
 
