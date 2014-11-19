@@ -27,13 +27,12 @@ abstract class BitmapFilterProgram extends RenderProgram {
       }
       """;
 
+  int _contextIdentifier = -1;
   gl.RenderingContext _renderingContext;
   gl.Program _program;
   gl.Buffer _vertexBuffer;
 
   gl.UniformLocation _uProjectionMatrixLocation;
-
-  StreamSubscription _contextRestoredSubscription;
 
   final Float32List _vertexList = new Float32List(4 * 5);
   final Map<String, gl.UniformLocation> _uniformLocations = new Map<String, gl.UniformLocation>();
@@ -50,14 +49,12 @@ abstract class BitmapFilterProgram extends RenderProgram {
 
   void activate(RenderContextWebGL renderContext) {
 
-    if (_program == null) {
+    if (_contextIdentifier != renderContext.contextIdentifier) {
 
-      if (_renderingContext == null) {
-        _renderingContext = renderContext.rawContext;
-        _contextRestoredSubscription = renderContext.onContextRestored.listen(_onContextRestored);
-      }
-
+      _contextIdentifier = renderContext.contextIdentifier;
+      _renderingContext = renderContext.rawContext;
       _program = createProgram(_renderingContext, vertexShaderSource, fragmentShaderSource);
+      _vertexBuffer = _renderingContext.createBuffer();
 
       int activeAttributes = _renderingContext.getProgramParameter(_program, gl.ACTIVE_ATTRIBUTES);
 
@@ -79,7 +76,6 @@ abstract class BitmapFilterProgram extends RenderProgram {
       _renderingContext.enableVertexAttribArray(_attribLocations["aVertexTextCoord"]);
       _renderingContext.enableVertexAttribArray(_attribLocations["aVertexAlpha"]);
 
-      _vertexBuffer = _renderingContext.createBuffer();
       _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }
@@ -145,10 +141,6 @@ abstract class BitmapFilterProgram extends RenderProgram {
   }
 
   void flush() {
-  }
-
-  _onContextRestored(RenderContextEvent e) {
-    _program = null;
   }
 }
 
