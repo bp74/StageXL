@@ -3,9 +3,7 @@ part of stagexl.display_ex;
 /// The VideoObject class is a display object to show and control videos.
 ///
 /// To show the video just add the VideoObject to the display list. Use
-/// the [play] abd [pause] method to control the video. Please note that
-/// the VideoObject will create a clone of the video and therefore the
-/// playback is independent from other VideoObject instances.
+/// the [play] abd [pause] method to control the video.
 ///
 ///     var resourceManager = new ResourceManager();
 ///     resourceManager.addVideo("vid1", "video.webm");
@@ -19,8 +17,8 @@ part of stagexl.display_ex;
 
 class VideoObject extends InteractiveObject {
 
-  Video _video;
-  RenderTexture _renderTexture;
+  final Video video;
+  final RenderTexture renderTexture;
 
   static const EventStreamProvider<Event> endedEvent = const EventStreamProvider<Event>("videoEnded");
   static const EventStreamProvider<Event> pauseEvent = const EventStreamProvider<Event>("videoPause");
@@ -32,18 +30,15 @@ class VideoObject extends InteractiveObject {
   EventStream<Event> get onError => VideoObject.errorEvent.forTarget(this);
   EventStream<Event> get onPlay  => VideoObject.playEvent.forTarget(this);
 
-  VideoObject(Video baseVideo, [bool autoplay = false, num pixelRatio = 1.0]) {
+  VideoObject(Video video, [bool autoplay = false, num pixelRatio = 1.0]) :
+    this.video = video,
+    this.renderTexture = new RenderTexture.fromVideoElement(video.videoElement, pixelRatio) {
 
-    var video = baseVideo.clone();
     var videoElement = video.videoElement;
-
     videoElement.onEnded.listen((e) => this.dispatchEvent(new Event("videoEnded")));
     videoElement.onPause.listen((e) => this.dispatchEvent(new Event("videoPause")));
     videoElement.onError.listen((e) => this.dispatchEvent(new Event("videoError")));
     videoElement.onPlay.listen((e) => this.dispatchEvent(new Event("videoPlay")));
-
-    _video = video;
-    _renderTexture = new RenderTexture.fromVideoElement(videoElement, pixelRatio);
 
     if (autoplay) play();
   }
@@ -52,45 +47,40 @@ class VideoObject extends InteractiveObject {
 
   @override
   Rectangle<num> get bounds {
-    return new Rectangle<num>(0.0, 0.0, _video.videoElement.width, _video.videoElement.height);
+    var width = this.renderTexture.width;
+    var height = this.renderTexture.height;
+    return new Rectangle<num>(0.0, 0.0, width, height);
   }
 
   @override
   render(RenderState renderState) {
-    // only render when the videoElement have a frame to give us
-    // avoid webGL error and black frame
-    if (_video.videoElement.readyState >= 3) {
-      renderState.renderQuad(_renderTexture.quad);
-    }
+    renderState.renderQuad(renderTexture.quad);
   }
 
   //----------------------------------------------------------------------------
 
-  Video get video => _video;
-  RenderTexture get renderTexture => _renderTexture;
-
   void play() {
-    _video.play();
+    video.play();
   }
 
   void pause() {
-    _video.pause();
+    video.pause();
   }
 
-  bool get muted => _video.muted;
+  bool get muted => video.muted;
   void set muted(muted) {
-    _video.muted = muted;
+    video.muted = muted;
   }
 
-  bool get loop => _video.loop;
+  bool get loop => video.loop;
   void set loop(loop) {
-    _video.loop = loop;
+    video.loop = loop;
   }
 
-  num get volume => _video.volume;
+  num get volume => video.volume;
   void set volume(volume) {
-    _video.volume = volume;
+    video.volume = volume;
   }
 
-  bool get isPlaying => _video.isPlaying;
+  bool get isPlaying => video.isPlaying;
 }

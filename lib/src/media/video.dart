@@ -1,30 +1,35 @@
 part of stagexl.media;
 
-/// The Video will be rendered to a RenderTexture, therefore it will work
-/// the same way as any other static BitmapData content. Please look at the
-/// sample below to see how it works:
+/// The Video class is used to load and control videos.
+///
+/// The video will be rendered to a RenderTexture and therefore can be
+/// used like any other static image content. The sample below creates
+/// a BitmapData from the video and also a VideoObject display object.
 ///
 ///     var resourceManager = new ResourceManager();
 ///     resourceManager.addVideo("vid1", "video.webm");
 ///     resourceManager.load().then((_) {
+///
 ///       var video = resourceManager.getVideo("vid1");
+///       video.play();
+///
+///       // create a BitmapData used with a Bitmap
 ///       var bitmapData = new BitmapData.fromVideoElement(video.videoElement);
 ///       var bitmap = new Bitmap(bitmapData);
 ///       stage.addChild(bitmap);
-///       video.play();
-///     });
 ///
-///  You can also use the more convenient VideoObject class. Please note that
-///  the VideoObject will create a clone of the video and therefore the
-///  playback is independent from other VideoObject instances.
-///
-///     var resourceManager = new ResourceManager();
-///     resourceManager.addVideo("vid1", "video.webm");
-///     resourceManager.load().then((_) {
-///       var video = resourceManager.getVideo("vid1");
+///       // create a convenient VideoObject display object
 ///       var videoObject = new VideoObject(video);
 ///       stage.addChild(videoObject);
-///       videoObject.play();
+///     });
+///
+/// Please note that a video can be used with more than one display objects.
+/// To control the video independantly from each other the [clone] method
+/// creates a clone of this instance.
+///
+///     video.clone().then((newVideo) => {
+///       var videoObject = new VideoObject(newVideo);
+///       stage.addChild(videoObject);
 ///     });
 ///
 /// If the video codec of the file is not supported by the browser, the
@@ -82,8 +87,6 @@ class Video {
 
       var videoLoader = new VideoLoader(videoUrls, videoLoadOptions.loadData);
       videoLoader.done.then((VideoElement videoElement) {
-        videoElement.width = videoElement.videoWidth;
-        videoElement.height = videoElement.videoHeight;
         completer.complete(new Video._(videoElement));
       }).catchError((error) {
         completer.completeError(new StateError("Failed to load video."));
@@ -96,12 +99,15 @@ class Video {
   /// Clone this video instance and the underlying HTML VideoElement to play
   /// the new video independantly from this video.
 
-  Video clone() {
-    var videoElement = this.videoElement.clone(true);
-    videoElement.width = this.videoElement.width;
-    videoElement.height = this.videoElement.height;
-    videoElement.load();
-    return new Video._(videoElement);
+  Future <Video> clone() {
+    var videoSource = this.videoElement.src;
+    var videoLoader = new VideoLoader([videoSource], false);
+    return videoLoader.done.then((videoElement) {
+      var video = new Video._(videoElement);
+      video.volume = this.volume;
+      video.muted = this.muted;
+      return video;
+    });
   }
 
   /// Play the video.
