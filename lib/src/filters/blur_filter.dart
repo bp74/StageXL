@@ -89,7 +89,7 @@ class BlurFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _BlurProgram extends _BitmapFilterProgram {
+class _BlurProgram extends BitmapFilterProgram {
 
   static final _BlurProgram instance = new _BlurProgram();
 

@@ -109,7 +109,7 @@ class DisplacementMapFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _DisplacementMapProgram extends _BitmapFilterProgram {
+class _DisplacementMapProgram extends BitmapFilterProgram {
 
   static final _DisplacementMapProgram instance = new _DisplacementMapProgram();
 

@@ -97,7 +97,7 @@ class GlowFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _GlowProgram extends _BitmapFilterProgram {
+class _GlowProgram extends BitmapFilterProgram {
 
   static final _GlowProgram instance = new _GlowProgram();
 

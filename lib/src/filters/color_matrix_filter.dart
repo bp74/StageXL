@@ -217,7 +217,7 @@ class ColorMatrixFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _ColorMatrixProgram extends _BitmapFilterProgram {
+class _ColorMatrixProgram extends BitmapFilterProgram {
 
   static final _ColorMatrixProgram instance = new _ColorMatrixProgram();
 
