@@ -25,8 +25,8 @@ class GlowFilter extends BitmapFilter {
 
   Rectangle<int> get overlap => new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
 
-  List<int> get renderPassSources => [0, 1, 0];
-  List<int> get renderPassTargets => [1, 2, 2];
+  List<int> get renderPassSources => const [0, 1, 0];
+  List<int> get renderPassTargets => const [1, 2, 2];
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
