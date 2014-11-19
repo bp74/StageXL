@@ -61,7 +61,7 @@ class RenderProgramTriangle extends RenderProgram {
       renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
       renderingContext.enableVertexAttribArray(_aVertexColorLocation);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }
 
     renderingContext.useProgram(program);
@@ -76,7 +76,7 @@ class RenderProgramTriangle extends RenderProgram {
     if (_triangleCount == 0) return;
     var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _triangleCount * 3 * 6);
 
-    renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, vertexUpdate);
+    renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
     renderingContext.drawArrays(gl.TRIANGLES, 0, _triangleCount * 3);
     _triangleCount = 0;
   }

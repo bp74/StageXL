@@ -84,9 +84,9 @@ class RenderProgramMesh extends RenderProgram {
       renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
       renderingContext.enableVertexAttribArray(_aVertexColorLocation);
       renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-      renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.DYNAMIC_DRAW);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+      renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.DYNAMIC_DRAW);
+      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }
 
     renderingContext.useProgram(program);
@@ -105,8 +105,8 @@ class RenderProgramMesh extends RenderProgram {
     var indexUpdate = new Int16List.view(_indexList.buffer, 0, _indexCount);
     var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _vertexCount * 8);
 
-    renderingContext.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, indexUpdate);
-    renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, vertexUpdate);
+    renderingContext.bufferSubDataTyped(gl.ELEMENT_ARRAY_BUFFER, 0, indexUpdate);
+    renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
     renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
 
     _indexCount = 0;

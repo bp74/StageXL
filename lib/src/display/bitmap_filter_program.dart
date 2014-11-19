@@ -55,7 +55,7 @@ abstract class BitmapFilterProgram extends RenderProgram {
       renderingContext.enableVertexAttribArray(attribLocations["aVertexAlpha"]);
 
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }
 
     renderingContext.useProgram(program);
@@ -114,7 +114,7 @@ abstract class BitmapFilterProgram extends RenderProgram {
     _vertexList[18] = uvList[7];
     _vertexList[19] = alpha;
 
-    renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, _vertexList);
+    renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, _vertexList);
     renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
   }
 

@@ -88,9 +88,9 @@ class RenderProgramQuad extends RenderProgram {
       renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
       renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
       renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-      renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+      renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
+      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }
 
     renderingContext.useProgram(program);
@@ -108,7 +108,7 @@ class RenderProgramQuad extends RenderProgram {
     if (_quadCount == 0) return;
     var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 5);
 
-    renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, vertexUpdate);
+    renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
     renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
 
     _quadCount = 0;
