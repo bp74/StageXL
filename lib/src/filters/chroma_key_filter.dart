@@ -1,34 +1,71 @@
 part of stagexl.filters;
 
+/// This filter provide a simple ChromaKey solution
+///  that can be aplied on bitmap or video
+///
+/// <int> backgroundColor
+/// @represent : the color you want to make transparent
+/// @default : 0xFF00FF00 > pure green
+///
+/// <int> solidThreshold
+/// @represent : this minimal diference for a color to be consider solid
+/// @default : 140
+/// @range : 0 <> 255
+///
+/// <int> invisibleThreshold
+/// @represent : this minimal similarity for a color to be consider completely invisible
+/// @default : 15
+/// @range : 0 <> 255
+///
+///
+///
+/// play with the solidThreshold and invisibleThreshold
+/// to have the best possible result for you image
+///
+
 class ChromaKeyFilter extends BitmapFilter {
 
-  int _alphaColor;
-  int _tolerance;
+  int _backgroundColor;
+  int _solidThreshold;
+  int _invisibleThreshold;
 
-  ChromaKeyFilter({int alphaColor: 0xFF00FF00, int tolerance: 10}) {
+  ChromaKeyFilter({int backgroundColor: 0xFF00FF00, int solidThreshold: 140, int invisibleThreshold: 20}) {
 
-    if (tolerance < 0) {
-      throw new ArgumentError("The minimum tolerance is 0.");
+    if (invisibleThreshold < 0) {
+      throw new ArgumentError("The minimum solidThreshold is 0.");
+    }
+    if (solidThreshold < invisibleThreshold) {
+      throw new ArgumentError("solidThreshold cannot be lower than invisibleThreshold");
     }
 
-    _alphaColor = alphaColor;
-    _tolerance = tolerance;
+    _backgroundColor = backgroundColor;
+    _solidThreshold = solidThreshold;
+    _invisibleThreshold = invisibleThreshold;
   }
 
-  int get alphaColor => _alphaColor;
-  int get tolerance => _tolerance;
+  int get backgroundColor => _backgroundColor;
+  int get solidThreshold => _solidThreshold;
+  int get invisibleThreshold => _invisibleThreshold;
 
-  void set alphaColor (int alphaColor) {
-    _alphaColor = alphaColor;
+  void set backgroundColor (int backgroundColor) {
+    _backgroundColor = backgroundColor;
   }
-  void set tolerance (int tolerance) {
-    if (tolerance < 0) {
-      throw new ArgumentError("The minimum tolerance is 0.");
+
+  void set solidThreshold (int solidThreshold) {
+    if (solidThreshold < _invisibleThreshold) {
+      throw new ArgumentError("solidThreshold cannot be lower than _invisibleThreshold");
     }
-    _tolerance = tolerance;
+    _solidThreshold = solidThreshold;
   }
 
-  BitmapFilter clone() => new ChromaKeyFilter(alphaColor: _alphaColor, tolerance: _tolerance);
+  void set invisibleThreshold (int invisibleThreshold) {
+    if (invisibleThreshold < 0) {
+      throw new ArgumentError("The minimum solidThreshold is 0.");
+    }
+    _invisibleThreshold = invisibleThreshold;
+  }
+
+  BitmapFilter clone() => new ChromaKeyFilter(backgroundColor: _backgroundColor, solidThreshold: _solidThreshold, invisibleThreshold: _invisibleThreshold);
 
   //-------------------------------------------------------------------------------------------------
 
@@ -39,7 +76,7 @@ class ChromaKeyFilter extends BitmapFilter {
         : bitmapData.renderTextureQuad.cut(rectangle);
 
     ImageData imageData = renderTextureQuad.getImageData();
-    // not web gl program here
+    // this filter is only WebGL compliant
     renderTextureQuad.putImageData(imageData);
   }
 
@@ -52,7 +89,7 @@ class ChromaKeyFilter extends BitmapFilter {
 
     renderContext.activateRenderProgram(chromaKeyProgram);
     renderContext.activateRenderTexture(renderTexture);
-    chromaKeyProgram.configure(alphaColor, tolerance);
+    chromaKeyProgram.configure(backgroundColor, solidThreshold, invisibleThreshold);
     chromaKeyProgram.renderQuad(renderState, renderTextureQuad);
   }
 }
@@ -68,42 +105,72 @@ class _ChromaKeyProgram extends BitmapFilterProgram {
       precision mediump float;
       uniform sampler2D uSampler;
       varying vec2 vTextCoord;
-      uniform vec4 uAlphaColor;
-      uniform float uTolerance;
+
+      uniform vec4 backgroundColor;
+      uniform float solidThreshold;
+      uniform float invisibleThreshold;
+
+      uniform float weight;
+
       void main() {
+        // -- get pixel color
         vec4 pixelColor = texture2D(uSampler, vTextCoord);
-        // calcul diference betwen requested alphaColor
-        // and actual pixelColor
-        float redDelta = pixelColor.r - uAlphaColor.r;
-        float greenDelta = pixelColor.g - uAlphaColor.g;
-        float blueDelta = pixelColor.b - uAlphaColor.b;
-        // if the diference is smaller than the tolerance
-        // we can trasform this pixel to a transparent one
-        bool redClose = redDelta > (uTolerance * -1.0) && redDelta < uTolerance;
-        bool greenClose = greenDelta > (uTolerance * -1.0) && greenDelta < uTolerance;
-        bool blueClose = blueDelta > (uTolerance * -1.0) && blueDelta < uTolerance;
-        if (redClose && greenClose && blueClose) {
-          // color match the transparentColor setting
-          // reduce color to 0 aka transparent
-          gl_FragColor = pixelColor * 0.0;
-        } else {
+
+        // -- calcul diference betwen chroma key color and actual pixelColor
+        float redDiff = abs(pixelColor.r - backgroundColor.r);
+        float greenDiff = abs(pixelColor.g - backgroundColor.g);
+        float blueDiff = abs(pixelColor.b - backgroundColor.b);
+
+        // is pixel close enouph to chroma key to be fully invisible
+        bool rCanBeInvisible = redDiff < invisibleThreshold;
+        bool gCanBeInvisible = greenDiff < invisibleThreshold;
+        bool bCanBeInvisible = blueDiff < invisibleThreshold;
+
+        // is pixel different enouph to chroma key to be fully visible
+        bool rCanBeSolid = redDiff > solidThreshold;
+        bool gCanBeSolid = greenDiff > solidThreshold;
+        bool bCanBeSolid = blueDiff > solidThreshold;
+
+        if (rCanBeSolid || gCanBeSolid || bCanBeSolid) {
           gl_FragColor = pixelColor;
+
+        } else if (rCanBeInvisible && gCanBeInvisible && bCanBeInvisible) {
+          gl_FragColor = pixelColor * 0.0;
+
+        } else {
+          // semi transparent color
+          float alpha = 1.0;
+
+          // try tyo calculate the alpha as cloase as possible
+          float rAlpha = clamp((redDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
+          float gAlpha = clamp((greenDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
+          float bAlpha = clamp((blueDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
+
+          alpha = min(rAlpha, gAlpha);
+          alpha = min(bAlpha, alpha);
+
+          // try to ge back the original color
+          float red = pixelColor.r - (1.0 - redDiff) * (1.0 - alpha) * backgroundColor.r * weight;
+          float green = pixelColor.g - (1.0 - greenDiff) * (1.0 - alpha) * backgroundColor.g * weight;
+          float blue = pixelColor.b - (1.0 - blueDiff) * (1.0 - alpha) * backgroundColor.b * weight;
+
+          gl_FragColor = vec4(red, green, blue, alpha);
         }
       }
       """;
 
-  void configure(int color, int tolerance) {
+  void configure(int backgroundColor, int solidThreshold, int invisibleThreshold) {
+    num r = colorGetR(backgroundColor) / 255.0;
+    num g = colorGetG(backgroundColor) / 255.0;
+    num b = colorGetB(backgroundColor) / 255.0;
 
-    num r = colorGetR(color) / 255.0;
-    num g = colorGetG(color) / 255.0;
-    num b = colorGetB(color) / 255.0;
-    num a = colorGetA(color) / 255.0;
+    renderingContext.uniform4f(uniformLocations["backgroundColor"], r, g, b, 1.0);
 
-    var webGlTolerance = tolerance / 255.0;
-    var uAlphaColorLocation = uniformLocations["uAlphaColor"];
-    var uToleranceLocation = uniformLocations["uTolerance"];
+    renderingContext.uniform1f(uniformLocations["solidThreshold"], solidThreshold / 255.0);
+    renderingContext.uniform1f(uniformLocations["invisibleThreshold"], invisibleThreshold / 255.0);
 
-    renderingContext.uniform4f(uAlphaColorLocation, r, g, b, a);
-    renderingContext.uniform1f(uToleranceLocation, webGlTolerance);
+    // this affect the color corection on semi transparent pixel, for now not public
+    // it is quite experimental
+    renderingContext.uniform1f(uniformLocations["weight"], 0.8);
   }
 }
