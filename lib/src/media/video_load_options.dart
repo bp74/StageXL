@@ -23,6 +23,11 @@ class VideoLoadOptions {
 
   bool loadData;
 
+  /// Use CORS to download the video. This is often necessary when you have
+  /// to download video from a third party server.
+
+  bool corsEnabled;
+
   //---------------------------------------------------------------------------
 
   VideoLoadOptions({
@@ -30,7 +35,8 @@ class VideoLoadOptions {
       this.webm: false,
       this.ogg: false,
       this.alternativeUrls: null,
-      this.loadData: false
+      this.loadData: false,
+      this.corsEnabled: false
     });
 
   VideoLoadOptions clone() => new VideoLoadOptions(

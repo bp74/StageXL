@@ -85,7 +85,10 @@ class Video {
 
     } else {
 
-      var videoLoader = new VideoLoader(videoUrls, videoLoadOptions.loadData);
+      var loadData = videoLoadOptions.loadData;
+      var corsEnabled = videoLoadOptions.corsEnabled;
+      var videoLoader = new VideoLoader(videoUrls, loadData, corsEnabled);
+
       videoLoader.done.then((VideoElement videoElement) {
         completer.complete(new Video._(videoElement));
       }).catchError((error) {
@@ -100,14 +103,30 @@ class Video {
   /// the new video independantly from this video.
 
   Future <Video> clone() {
-    var videoSource = this.videoElement.src;
-    var videoLoader = new VideoLoader([videoSource], false);
-    return videoLoader.done.then((videoElement) {
+
+    VideoElement videoElement = this.videoElement.clone(true);
+    Completer<Video> completer = new Completer<Video>();
+    StreamSubscription onCanPlaySubscription = null;
+    StreamSubscription onErrorSubscription = null;
+
+    void onCanPlay(e) {
       var video = new Video._(videoElement);
       video.volume = this.volume;
       video.muted = this.muted;
-      return video;
-    });
+      onCanPlaySubscription.cancel();
+      onErrorSubscription.cancel();
+      completer.complete(video);
+    }
+
+    void onError(e) {
+      onCanPlaySubscription.cancel();
+      onErrorSubscription.cancel();
+      completer.completeError(e);
+    }
+
+    onCanPlaySubscription = videoElement.onCanPlay.listen(onCanPlay);
+    onErrorSubscription = videoElement.onError.listen(onCanPlay);
+    return completer.future;
   }
 
   /// Play the video.

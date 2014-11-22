@@ -14,7 +14,12 @@ class VideoLoader {
   StreamSubscription _onCanPlaySubscription;
   StreamSubscription _onErrorSubscription;
 
-  VideoLoader(List<String> urls, bool loadData) {
+  VideoLoader(List<String> urls, bool loadData, bool corsEnabled) {
+
+    if (corsEnabled) {
+      video.crossOrigin = 'anonymous';
+    }
+
     _urls.addAll(urls);
     _loadData = loadData;
     _onCanPlaySubscription = video.onCanPlayThrough.listen((e) => _loadDone());
