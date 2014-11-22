@@ -22,7 +22,7 @@ class VideoLoader {
 
     _urls.addAll(urls);
     _loadData = loadData;
-    _onCanPlaySubscription = video.onCanPlayThrough.listen((e) => _loadDone());
+    _onCanPlaySubscription = video.onCanPlay.listen((e) => _loadDone());
     _onErrorSubscription = video.onError.listen((e) => _loadNextUrl());
     _loadNextUrl();
   }
