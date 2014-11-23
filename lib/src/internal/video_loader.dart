@@ -5,6 +5,8 @@ import 'dart:html';
 
 class VideoLoader {
 
+  static final List<String> supportedTypes = _getSupportedTypes();
+
   final VideoElement video = new VideoElement();
   final Completer<VideoElement> _completer = new Completer<VideoElement>();
 
@@ -73,6 +75,23 @@ class VideoLoader {
     video.preload = "auto";
     video.src = url;
     video.load();
+  }
+
+  //---------------------------------------------------------------------------
+
+  static List<String> _getSupportedTypes() {
+
+    var supportedTypes = new List<String>();
+    var video = new VideoElement();
+    var valid = ["maybe", "probably"];
+
+    if (valid.indexOf(video.canPlayType("video/webm", "")) != -1) supportedTypes.add("webm");
+    if (valid.indexOf(video.canPlayType("video/mp4", "")) != -1) supportedTypes.add("mp4");
+    if (valid.indexOf(video.canPlayType("video/ogg", "")) != -1) supportedTypes.add("ogg");
+
+    print("StageXL video types   : $supportedTypes");
+
+    return supportedTypes.toList(growable: false);
   }
 
 }

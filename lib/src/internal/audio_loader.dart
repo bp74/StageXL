@@ -5,6 +5,8 @@ import 'dart:html';
 
 class AudioLoader {
 
+  static final List<String> supportedTypes = _getSupportedTypes();
+
   final AudioElement audio = new AudioElement();
   final Completer<AudioElement> _completer = new Completer<AudioElement>();
 
@@ -15,6 +17,11 @@ class AudioLoader {
   StreamSubscription _onErrorSubscription;
 
   AudioLoader(List<String> urls, bool loadData, bool corsEnabled) {
+
+    // we have to add the AudioElement to the document,
+    // otherwise some browser won't start loading :(
+
+    document.body.children.add(audio);
 
     if (corsEnabled) {
       audio.crossOrigin = 'anonymous';
@@ -73,6 +80,25 @@ class AudioLoader {
     audio.preload = "auto";
     audio.src = url;
     audio.load();
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  static List<String> _getSupportedTypes() {
+
+    var supportedTypes = new List<String>();
+    var audio = new AudioElement();
+    var valid = ["maybe", "probably"];
+
+    if (valid.indexOf(audio.canPlayType("audio/mpeg", "")) != -1) supportedTypes.add("mp3");
+    if (valid.indexOf(audio.canPlayType("audio/mp4", "")) != -1) supportedTypes.add("mp4");
+    if (valid.indexOf(audio.canPlayType("audio/ogg", "")) != -1) supportedTypes.add("ogg");
+    if (valid.indexOf(audio.canPlayType("audio/ac3", "")) != -1) supportedTypes.add("ac3");
+    if (valid.indexOf(audio.canPlayType("audio/wav", "")) != -1) supportedTypes.add("wav");
+
+    print("StageXL audio types   : $supportedTypes");
+
+    return supportedTypes.toList(growable: false);
   }
 
 }

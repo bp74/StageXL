@@ -78,7 +78,7 @@ class Video {
     var completer = new Completer<Video>();
     var loadData = videoLoadOptions.loadData;
     var corsEnabled = videoLoadOptions.corsEnabled;
-    var videoUrls = _getOptimalVideoUrls(url, videoLoadOptions);
+    var videoUrls = videoLoadOptions.getOptimalVideoUrls(url);
     var videoLoader = new VideoLoader(videoUrls, loadData, corsEnabled);
 
     videoLoader.done.then((VideoElement videoElement) {
@@ -193,60 +193,6 @@ class Video {
 
   void _onPlay(Event event) {
     _playEvent.add(this);
-  }
-
-  //---------------------------------------------------------------------------
-
-  // list the video formats suported by the browser
-  // H.264 | Webm | Ogg
-
-  static final List<String> _supportedTypes = _getSupportedTypes();
-
-  static List<String> _getSupportedTypes() {
-
-    var supportedTypes = new List<String>();
-    var video = new VideoElement();
-    var valid = ["maybe", "probably"];
-
-    if (valid.indexOf(video.canPlayType("video/webm", "")) != -1) supportedTypes.add("webm");
-    if (valid.indexOf(video.canPlayType("video/mp4", "")) != -1) supportedTypes.add("mp4");
-    if (valid.indexOf(video.canPlayType("video/ogg", "")) != -1) supportedTypes.add("ogg");
-
-    print("StageXL video types : ${supportedTypes}");
-
-    return supportedTypes;
-  }
-
-  // Determine which video files is the most likely
-  // to play smoothly, based on the suported types
-  // and formats available
-
-  static List<String> _getOptimalVideoUrls(String primaryUrl, VideoLoadOptions videoLoadOptions) {
-
-    var availableTypes = _supportedTypes.toList();
-    if (!videoLoadOptions.webm) availableTypes.remove("webm");
-    if (!videoLoadOptions.mp4) availableTypes.remove("mp4");
-    if (!videoLoadOptions.ogg) availableTypes.remove("ogg");
-
-    var urls = new List<String>();
-    var regex = new RegExp(r"([A-Za-z0-9]+)$", multiLine:false, caseSensitive:true);
-    var primaryMatch = regex.firstMatch(primaryUrl);
-    if (primaryMatch == null) return urls;
-    if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
-
-    if (videoLoadOptions.alternativeUrls != null) {
-      for(var alternativeUrl in videoLoadOptions.alternativeUrls) {
-        var alternativeMatch = regex.firstMatch(alternativeUrl);
-        if (alternativeMatch == null) continue;
-        if (availableTypes.contains(alternativeMatch.group(1))) urls.add(alternativeUrl);
-      }
-    } else {
-      for(var availableType in availableTypes) {
-        urls.add(primaryUrl.replaceAll(regex, availableType));
-      }
-    }
-
-    return urls;
   }
 
 }

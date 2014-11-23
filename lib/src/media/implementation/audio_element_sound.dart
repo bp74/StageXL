@@ -9,7 +9,6 @@ class AudioElementSound extends Sound {
   AudioElementSound._(AudioElement audio) : _audio = audio {
     _audio.onEnded.listen(_onAudioEnded);
     _audioPool.add(_audio);
-    document.body.children.add(_audio);
   }
 
   //---------------------------------------------------------------------------
@@ -21,7 +20,7 @@ class AudioElementSound extends Sound {
     var completer = new Completer<Sound>();
     var loadData = true;
     var corsEnabled = soundLoadOptions.corsEnabled;
-    var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
+    var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
     var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
 
     audioLoader.done.then((AudioElement audioElement) {
