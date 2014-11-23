@@ -26,6 +26,7 @@ import 'dart:html';
 import 'dart:math';
 import 'dart:web_audio';
 
+import 'internal/audio_loader.dart';
 import 'internal/video_loader.dart';
 
 part 'media/sound.dart';

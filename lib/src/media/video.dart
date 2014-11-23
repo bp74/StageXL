@@ -71,30 +71,21 @@ class Video {
   /// Use this method to load a video from a given [url]. If you don't
   /// provide [videoLoadOptions] the [defaultLoadOptions] will be used.
 
-  static Future<Video> load(String url, [
-      VideoLoadOptions videoLoadOptions = null]) {
+  static Future<Video> load(String url, [VideoLoadOptions videoLoadOptions = null]) {
 
     if (videoLoadOptions == null) videoLoadOptions = Video.defaultLoadOptions;
 
-    var videoUrls = _getOptimalVideoUrls(url, videoLoadOptions);
     var completer = new Completer<Video>();
+    var loadData = videoLoadOptions.loadData;
+    var corsEnabled = videoLoadOptions.corsEnabled;
+    var videoUrls = _getOptimalVideoUrls(url, videoLoadOptions);
+    var videoLoader = new VideoLoader(videoUrls, loadData, corsEnabled);
 
-    if (videoUrls.length == 0) {
-
-      completer.completeError(new StateError("No url provided."));
-
-    } else {
-
-      var loadData = videoLoadOptions.loadData;
-      var corsEnabled = videoLoadOptions.corsEnabled;
-      var videoLoader = new VideoLoader(videoUrls, loadData, corsEnabled);
-
-      videoLoader.done.then((VideoElement videoElement) {
-        completer.complete(new Video._(videoElement));
-      }).catchError((error) {
-        completer.completeError(new StateError("Failed to load video."));
-      });
-    }
+    videoLoader.done.then((VideoElement videoElement) {
+      completer.complete(new Video._(videoElement));
+    }).catchError((error) {
+      completer.completeError(new StateError("Failed to load video."));
+    });
 
     return completer.future;
   }

@@ -15,17 +15,14 @@ class VideoLoadOptions {
   /// primary url does not work or the file type is not supported by the
   /// browser. If this value is null, the alternative urls are calcualted
   /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
-
   List<String> alternativeUrls;
 
   /// Do not stream the video but download the video file as a whole.
   /// A DataUrl string will be used for the VideoElement source.
-
   bool loadData;
 
   /// Use CORS to download the video. This is often necessary when you have
   /// to download video from a third party server.
-
   bool corsEnabled;
 
   //---------------------------------------------------------------------------

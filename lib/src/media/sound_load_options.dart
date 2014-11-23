@@ -17,15 +17,18 @@ class SoundLoadOptions {
   /// The application provides *wav* files as an option to load audio files.
   bool wav;
 
-  /// Ignore loading errors and use a silent audio sample instead.
-  bool ignoreErrors;
-
   /// A list of alternative urls for sound samples in the case where the
   /// primary url does not work or the file type is not supported by the
   /// browser. If this value is null, the alternative urls are calcualted
   /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
-
   List<String> alternativeUrls;
+
+  /// Ignore loading errors and use a silent audio sample instead.
+  bool ignoreErrors;
+
+  /// Use CORS to download the video. This is often necessary when you have
+  /// to download video from a third party server.
+  bool corsEnabled;
 
   //---------------------------------------------------------------------------
 
@@ -36,7 +39,8 @@ class SoundLoadOptions {
     this.ac3: false,
     this.wav: false,
     this.alternativeUrls: null,
-    this.ignoreErrors: true
+    this.ignoreErrors: true,
+    this.corsEnabled: false
   });
 
   SoundLoadOptions clone() => new SoundLoadOptions(
