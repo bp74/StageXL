@@ -18,14 +18,13 @@ class VideoLoader {
 
   VideoLoader(List<String> urls, bool loadData, bool corsEnabled) {
 
-    if (corsEnabled) {
-      video.crossOrigin = 'anonymous';
-    }
+    if (corsEnabled) video.crossOrigin = 'anonymous';
+
+    _onCanPlaySubscription = video.onCanPlay.listen((e) => _loadDone());
+    _onErrorSubscription = video.onError.listen((e) => _loadNextUrl());
 
     _urls.addAll(urls);
     _loadData = loadData;
-    _onCanPlaySubscription = video.onCanPlay.listen((e) => _loadDone());
-    _onErrorSubscription = video.onError.listen((e) => _loadNextUrl());
     _loadNextUrl();
   }
 
@@ -85,9 +84,9 @@ class VideoLoader {
     var video = new VideoElement();
     var valid = ["maybe", "probably"];
 
-    if (valid.indexOf(video.canPlayType("video/webm", "")) != -1) supportedTypes.add("webm");
-    if (valid.indexOf(video.canPlayType("video/mp4", "")) != -1) supportedTypes.add("mp4");
-    if (valid.indexOf(video.canPlayType("video/ogg", "")) != -1) supportedTypes.add("ogg");
+    if (valid.indexOf(video.canPlayType("video/webm")) != -1) supportedTypes.add("webm");
+    if (valid.indexOf(video.canPlayType("video/mp4")) != -1) supportedTypes.add("mp4");
+    if (valid.indexOf(video.canPlayType("video/ogg")) != -1) supportedTypes.add("ogg");
 
     print("StageXL video types   : $supportedTypes");
 

@@ -70,6 +70,11 @@ class Video {
 
   /// Use this method to load a video from a given [url]. If you don't
   /// provide [videoLoadOptions] the [defaultLoadOptions] will be used.
+  /// 
+  /// Please note that on most mobile devices the load method must be called
+  /// from an input event like MouseEvent or TouchEvent. The load method will
+  /// never complete if you call it elsewhere in your code. The same is true 
+  /// for the ResourceManager.addVideo method.
 
   static Future<Video> load(String url, [VideoLoadOptions videoLoadOptions = null]) {
 

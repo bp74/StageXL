@@ -23,9 +23,7 @@ class AudioLoader {
 
     document.body.children.add(audio);
 
-    if (corsEnabled) {
-      audio.crossOrigin = 'anonymous';
-    }
+    if (corsEnabled) audio.crossOrigin = 'anonymous';
 
     _urls.addAll(urls);
     _loadData = loadData;
@@ -90,11 +88,11 @@ class AudioLoader {
     var audio = new AudioElement();
     var valid = ["maybe", "probably"];
 
-    if (valid.indexOf(audio.canPlayType("audio/mpeg", "")) != -1) supportedTypes.add("mp3");
-    if (valid.indexOf(audio.canPlayType("audio/mp4", "")) != -1) supportedTypes.add("mp4");
-    if (valid.indexOf(audio.canPlayType("audio/ogg", "")) != -1) supportedTypes.add("ogg");
-    if (valid.indexOf(audio.canPlayType("audio/ac3", "")) != -1) supportedTypes.add("ac3");
-    if (valid.indexOf(audio.canPlayType("audio/wav", "")) != -1) supportedTypes.add("wav");
+    if (valid.indexOf(audio.canPlayType("audio/mpeg")) != -1) supportedTypes.add("mp3");
+    if (valid.indexOf(audio.canPlayType("audio/mp4")) != -1) supportedTypes.add("mp4");
+    if (valid.indexOf(audio.canPlayType("audio/ogg")) != -1) supportedTypes.add("ogg");
+    if (valid.indexOf(audio.canPlayType("audio/ac3")) != -1) supportedTypes.add("ac3");
+    if (valid.indexOf(audio.canPlayType("audio/wav")) != -1) supportedTypes.add("wav");
 
     print("StageXL audio types   : $supportedTypes");
 
