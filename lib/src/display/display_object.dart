@@ -372,7 +372,11 @@ abstract class DisplayObject
     _name = value;
   }
 
-  // TODO (marcojakob): Document the cache.
+  /// This getter gives you access to the underlying [RenderTextureQuad] if
+  /// a cache is applied to this display object. If no cache is applied this
+  /// value is ´null´.
+  ///
+  /// See also [applyCache], [refreshCache] and [removeCache].
 
   RenderTextureQuad get cache => _cacheTextureQuad;
 
