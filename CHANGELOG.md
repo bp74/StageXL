@@ -3,6 +3,17 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.10.2
+  * Added lots of API documentations (thanks to @marcojakob)
+  * Added Video and VideoObject classes (thanks fot @sebgeelen)
+  * Added BitmapData.fromVideoElement constructor.
+  * Added Tween.animate3D for 3D tween animations.  
+  * Added DisplayObject.getObjectsUnderPoint method.
+  * Improved DisplayObject bounds calculations.
+  * Improved support for custom WebGL filters/shaders.
+  * Improved Sprite3D calculations.
+  * Improved global2local and local2global calculations.
+
 #### Pub version 0.10.1
   * Added Sprite3D for 3D transformations of display objects.
   * Added RenderTexture.filtering option for pixel art games.
