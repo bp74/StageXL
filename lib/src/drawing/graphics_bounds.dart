@@ -2,25 +2,36 @@ part of stagexl.drawing;
 
 class _GraphicsBounds {
 
-  // matrix tranformed coordinates
+  // cursor coordinates
+  num cursorX = double.NAN;
+  num cursorY = double.NAN;
+
+  // path bounds
   num pathLeft = double.INFINITY;
   num pathRight = double.NEGATIVE_INFINITY;
   num pathTop = double.INFINITY;
   num pathBottom = double.NEGATIVE_INFINITY;
+
+  // actual bounds
   num boundsLeft = double.INFINITY;
   num boundsRight = double.NEGATIVE_INFINITY;
   num boundsTop = double.INFINITY;
   num boundsBottom = double.NEGATIVE_INFINITY;
 
-  // local coordinates
-  num cursorX = double.NAN;
-  num cursorY = double.NAN;
-
   //---------------------------------------------------------------
 
-  bool get hasCursor => !cursorX.isNaN && !cursorY.isNaN;
-  bool get hasPath => !pathLeft.isInfinite && !pathRight.isInfinite && !pathTop.isInfinite && !pathBottom.isInfinite;
-  bool get hasBounds => !boundsLeft.isInfinite && !boundsRight.isInfinite && !boundsTop.isInfinite && !boundsBottom.isInfinite;
+  bool get hasCursor =>
+      !cursorX.isNaN && !cursorY.isNaN;
+
+  bool get hasPath =>
+      !pathLeft.isInfinite && !pathRight.isInfinite &&
+      !pathTop.isInfinite && !pathBottom.isInfinite;
+
+  bool get hasBounds =>
+      !boundsLeft.isInfinite && !boundsRight.isInfinite &&
+      !boundsTop.isInfinite && !boundsBottom.isInfinite;
+
+  //---------------------------------------------------------------
 
   resetPath() {
     cursorX = cursorY = double.NAN;
