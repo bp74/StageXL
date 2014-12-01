@@ -26,11 +26,16 @@ import 'dart:html';
 import 'dart:math';
 import 'dart:web_audio';
 
+import 'internal/audio_loader.dart';
+import 'internal/video_loader.dart';
+
 part 'media/sound.dart';
 part 'media/sound_channel.dart';
 part 'media/sound_load_options.dart';
 part 'media/sound_mixer.dart';
 part 'media/sound_transform.dart';
+part 'media/video.dart';
+part 'media/video_load_options.dart';
 part 'media/implementation/audio_element_mixer.dart';
 part 'media/implementation/audio_element_sound.dart';
 part 'media/implementation/audio_element_sound_channel.dart';

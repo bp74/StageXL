@@ -18,9 +18,10 @@ import 'dart:async';
 import 'dart:web_gl' as gl;
 import 'dart:math' as math;
 import 'dart:html' as html;
+import 'dart:typed_data';
 
 import 'dart:math' hide Point, Rectangle;
-import 'dart:html' show ImageElement;
+import 'dart:html' show ImageElement, VideoElement;
 import 'dart:html' show CanvasElement, CanvasRenderingContext2D, CanvasGradient, CanvasPattern;
 
 import 'animation.dart';
@@ -38,10 +39,12 @@ part 'display/bitmap_data_update_batch.dart';
 part 'display/bitmap_data_load_options.dart';
 part 'display/bitmap_drawable.dart';
 part 'display/bitmap_filter.dart';
+part 'display/bitmap_filter_program.dart';
 part 'display/caps_style.dart';
 part 'display/color_transform.dart';
 part 'display/display_object.dart';
 part 'display/display_object_container.dart';
+part 'display/display_object_container_3d.dart';
 part 'display/graphics.dart';
 part 'display/graphics_command.dart';
 part 'display/graphics_gradient.dart';
@@ -53,11 +56,14 @@ part 'display/render_loop.dart';
 part 'display/shape.dart';
 part 'display/simple_button.dart';
 part 'display/sprite.dart';
+part 'display/sprite_3d.dart';
 part 'display/stage.dart';
 
+final Matrix _tmpMatrix = new Matrix.fromIdentity();
 final Matrix _identityMatrix = new Matrix.fromIdentity();
 final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
 final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
+
 
 //-----------------------------------------------------------------------------
 

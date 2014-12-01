@@ -22,8 +22,6 @@ abstract class _GraphicsCommand {
 
 class _GraphicsBounds {
 
-  Matrix matrix;
-
   // matrix tranformed coordinates
   num pathLeft = double.INFINITY;
   num pathRight = double.NEGATIVE_INFINITY;
@@ -37,8 +35,6 @@ class _GraphicsBounds {
   // local coordinates
   num cursorX = double.NAN;
   num cursorY = double.NAN;
-
-  _GraphicsBounds(this.matrix);
 
   //---------------------------------------------------------------
 
@@ -57,23 +53,20 @@ class _GraphicsBounds {
     cursorY = y;
   }
 
-  updatePath(num x, num y, [bool transformed = false]) {
+  updatePath(num x, num y) {
     if (hasCursor) {
       x = x.toDouble();
       y = y.toDouble();
-      num px = transformed ? x : x * matrix.a + y * matrix.c + matrix.tx;
-      num py = transformed ? y : x * matrix.b + y * matrix.d + matrix.ty;
-
-      if (pathLeft > px) pathLeft = px;
-      if (pathRight < px) pathRight = px;
-      if (pathTop > py) pathTop = py;
-      if (pathBottom < py) pathBottom = py;
+      if (pathLeft > x) pathLeft = x;
+      if (pathRight < x) pathRight = x;
+      if (pathTop > y) pathTop = y;
+      if (pathBottom < y) pathBottom = y;
     }
   }
 
   stroke(num lineWidth) {
     if (hasPath) {
-      var lw = sqrt(matrix.det) * lineWidth / 2;
+      var lw = lineWidth / 2;
       var left = pathLeft - lw;
       var right = pathRight + lw;
       var top = pathTop - lw;
@@ -283,19 +276,19 @@ class _GraphicsCommandQuadraticCurveTo extends _GraphicsCommand {
       bounds.updateCursor(_controlX, _controlY);
     }
 
-    var start = bounds.matrix.transformVector(new Vector(bounds.cursorX, bounds.cursorY));
-    var control = bounds.matrix.transformVector(new Vector(_controlX, _controlY));
-    var end = bounds.matrix.transformVector(new Vector(_endX, _endY));
+    var start = new Vector(bounds.cursorX, bounds.cursorY);
+    var control = new Vector(_controlX, _controlY);
+    var end = new Vector(_endX, _endY);
 
-    bounds.updatePath(start.x, start.y, true);
+    bounds.updatePath(start.x, start.y);
 
     num tx = _computeQuadraticFirstDerivativeRoot(start.x, control.x, end.x);
     num ty = _computeQuadraticFirstDerivativeRoot(start.y, control.y, end.y);
     num xm = (tx >= 0 && tx <= 1) ? _computeQuadraticBaseValue(tx, start.x, control.x, end.x) : start.x;
     num ym = (ty >= 0 && ty <= 1) ? _computeQuadraticBaseValue(ty, start.y, control.y, end.y) : start.y;
 
-    bounds.updatePath(xm, ym, true);
-    bounds.updatePath(end.x, end.y, true);
+    bounds.updatePath(xm, ym);
+    bounds.updatePath(end.x, end.y);
     bounds.updateCursor(_endX, _endY);
   }
 }
@@ -345,10 +338,10 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
       bounds.updateCursor(_controlX1, _controlY1);
     }
 
-    var start = bounds.matrix.transformVector(new Vector(bounds.cursorX, bounds.cursorY));
-    var control1 = bounds.matrix.transformVector(new Vector(_controlX1, _controlY1));
-    var control2 = bounds.matrix.transformVector(new Vector(_controlX2, _controlY2));
-    var end = bounds.matrix.transformVector(new Vector(_endX, _endY));
+    var start = new Vector(bounds.cursorX, bounds.cursorY);
+    var control1 = new Vector(_controlX1, _controlY1);
+    var control2 = new Vector(_controlX2, _controlY2);
+    var end = new Vector(_endX, _endY);
 
     // Workaround: if the control points have the same X or Y coordinate,
     // the derivative root calculations returns [-1, -1].
@@ -356,7 +349,7 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
     if (control1.x == control2.x) control1 = control1 + new Vector(0.0123, 0.0);
     if (control1.y == control2.y) control1 = control1 + new Vector(0.0, 0.0123);
 
-    bounds.updatePath(start.x, start.y, true);
+    bounds.updatePath(start.x, start.y);
 
     List<num> txs = _computeCubicFirstDerivativeRoots(start.x, control1.x, control2.x, end.x);
     List<num> tys = _computeCubicFirstDerivativeRoots(start.y, control1.y, control2.y, end.y);
@@ -366,10 +359,10 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
       num ty = tys[i].toDouble();
       num xm = (tx >= 0 && tx <= 1) ? _computeCubicBaseValue(tx, start.x, control1.x, control2.x, end.x) : start.x;
       num ym = (ty >= 0 && ty <= 1) ? _computeCubicBaseValue(ty, start.y, control1.y, control2.y, end.y) : start.y;
-      bounds.updatePath(xm, ym, true);
+      bounds.updatePath(xm, ym);
     }
 
-    bounds.updatePath(end.x, end.y, true);
+    bounds.updatePath(end.x, end.y);
     bounds.updateCursor(_endX, _endY);
   }
 }

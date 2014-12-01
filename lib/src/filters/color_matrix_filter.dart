@@ -217,7 +217,7 @@ class ColorMatrixFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _ColorMatrixProgram extends _BitmapFilterProgram {
+class _ColorMatrixProgram extends BitmapFilterProgram {
 
   static final _ColorMatrixProgram instance = new _ColorMatrixProgram();
 
@@ -238,11 +238,13 @@ class _ColorMatrixProgram extends _BitmapFilterProgram {
       """;
 
   void configure(ColorMatrixFilter colorMatrixFilter) {
+
     var colorMatrixList = colorMatrixFilter._colorMatrixList;
     var colorOffsetList = colorMatrixFilter._colorOffsetList;
-    var uColorMatrixLocation = _uniformLocations["uColorMatrix"];
-    var uColorOffsetLocation = _uniformLocations["uColorOffset"];
-    _renderingContext.uniformMatrix4fv(uColorMatrixLocation, false, colorMatrixList);
-    _renderingContext.uniform4fv(uColorOffsetLocation, colorOffsetList);
+    var uColorMatrixLocation = uniformLocations["uColorMatrix"];
+    var uColorOffsetLocation = uniformLocations["uColorOffset"];
+
+    renderingContext.uniformMatrix4fv(uColorMatrixLocation, false, colorMatrixList);
+    renderingContext.uniform4fv(uColorOffsetLocation, colorOffsetList);
   }
 }

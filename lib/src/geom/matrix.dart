@@ -6,6 +6,7 @@ import 'dart:typed_data';
 
 import 'point.dart';
 import 'vector.dart';
+import 'rectangle.dart';
 
 class Matrix {
 
@@ -52,32 +53,123 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   num get a =>  _data[0];
+  void set a (num n){
+    _data[0] = n.toDouble();
+  }
   num get b =>  _data[1];
+  void set b (num n){
+    _data[1] = n.toDouble();
+  }
   num get c =>  _data[2];
+  void set c (num n){
+    _data[2] = n.toDouble();
+  }
   num get d =>  _data[3];
+  void set d (num n){
+    _data[3] = n.toDouble();
+  }
   num get tx => _data[4];
+  void set tx (num n){
+    _data[4] = n.toDouble();
+  }
   num get ty => _data[5];
+  void set ty (num n){
+    _data[5] = n.toDouble();
+  }
 
   num get det => a * d - b * c;
 
   //-------------------------------------------------------------------------------------------------
 
-  Point<num> deltaTransformPoint(math.Point<num> p) {
-    var x = p.x.toDouble();
-    var y = p.y.toDouble();
-    return new Point<num>(x * this.a + y * this.c, x * this.b + y * this.d);
+  Vector transformVector(Vector vector) {
+
+    var vx = vector.x.toDouble();
+    var vy = vector.y.toDouble();
+    var tx = vx * this.a + vy * this.c + this.tx;
+    var ty = vx * this.b + vy * this.d + this.ty;
+
+    return new Vector(tx, ty);
   }
 
-  Point<num> transformPoint(math.Point<num> p) {
-    var x = p.x.toDouble();
-    var y = p.y.toDouble();
-    return new Point<num>(x * this.a + y * this.c + this.tx, x * this.b + y * this.d + this.ty);
+  Point<num> deltaTransformPoint(math.Point<num> point, [Point<num> returnPoint]) {
+
+    var px = point.x.toDouble();
+    var py = point.y.toDouble();
+    var tx = px * this.a + py * this.c;
+    var ty = px * this.b + py * this.d;
+
+    if (returnPoint is Point) {
+      returnPoint.setTo(tx, ty);
+      return returnPoint;
+    } else {
+      return new Point<num>(tx, ty);
+    }
   }
 
-  Vector transformVector(Vector v) {
-    var x = v.x.toDouble();
-    var y = v.y.toDouble();
-    return new Vector(x * this.a + y * this.c + this.tx, x * this.b + y * this.d + this.ty);
+  Point<num> transformPoint(math.Point<num> point, [Point<num> returnPoint]) {
+
+    var px = point.x.toDouble();
+    var py = point.y.toDouble();
+    var tx = px * this.a + py * this.c + this.tx;
+    var ty = px * this.b + py * this.d + this.ty;
+
+    if (returnPoint is Point) {
+      returnPoint.setTo(tx, ty);
+      return returnPoint;
+    } else {
+      return new Point<num>(tx, ty);
+    }
+  }
+
+  Rectangle<num> transformRectangle(math.Rectangle<num> rectangle, [Rectangle<num> returnRectangle]) {
+
+    num rl = rectangle.left.toDouble();
+    num rr = rectangle.right.toDouble();
+    num rt = rectangle.top.toDouble();
+    num rb = rectangle.bottom.toDouble();
+
+    // transform rectangle corners
+
+    num x1 = rl * a + rt * c;
+    num y1 = rl * b + rt * d;
+    num x2 = rr * a + rt * c;
+    num y2 = rr * b + rt * d;
+    num x3 = rr * a + rb * c;
+    num y3 = rr * b + rb * d;
+    num x4 = rl * a + rb * c;
+    num y4 = rl * b + rb * d;
+
+    // find minima and maxima
+
+    num left = x1;
+    if (left > x2) left = x2;
+    if (left > x3) left = x3;
+    if (left > x4) left = x4;
+
+    num top = y1;
+    if (top > y2 ) top = y2;
+    if (top > y3 ) top = y3;
+    if (top > y4 ) top = y4;
+
+    num right = x1;
+    if (right < x2) right = x2;
+    if (right < x3) right = x3;
+    if (right < x4) right = x4;
+
+    num bottom = y1;
+    if (bottom < y2 ) bottom = y2;
+    if (bottom < y3 ) bottom = y3;
+    if (bottom < y4 ) bottom = y4;
+
+    num width = right - left;
+    num heigth = bottom - top;
+
+    if (returnRectangle is Rectangle) {
+      returnRectangle.setTo(tx + left, ty + top, width, heigth);
+      return returnRectangle;
+    } else {
+      return new Rectangle<num>(tx + left, ty + top, width, heigth);
+    }
   }
 
   //-------------------------------------------------------------------------------------------------

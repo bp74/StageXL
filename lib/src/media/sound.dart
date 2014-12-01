@@ -6,6 +6,9 @@ abstract class Sound {
     var initEngine = SoundMixer.engine;
   }
 
+  static SoundLoadOptions defaultLoadOptions = new SoundLoadOptions(
+      mp3:true, mp4:true, ogg:true, ac3: true, wav:true);
+
   static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
 
     switch(SoundMixer.engine) {
@@ -14,9 +17,6 @@ abstract class Sound {
       default            : return MockSound.load(url, soundLoadOptions);
     }
   }
-
-  static SoundLoadOptions defaultLoadOptions= new SoundLoadOptions(
-      mp3:true, mp4:true, ogg:true, ac3: true, wav:true);
 
   //-------------------------------------------------------------------------------------------------
 

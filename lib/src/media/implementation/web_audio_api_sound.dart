@@ -19,7 +19,7 @@ class WebAudioApiSound extends Sound {
 
     var sound = new WebAudioApiSound._();
     var loadCompleter = new Completer<Sound>();
-    var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
+    var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
 
     if (audioUrls.length == 0) {

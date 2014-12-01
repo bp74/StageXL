@@ -1,5 +1,6 @@
 part of stagexl.events;
 
+/// Provides constant values for the eventPhase property of the [Event] class.
 class EventPhase {
 
   final int _ordinal;

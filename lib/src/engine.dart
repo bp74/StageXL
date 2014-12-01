@@ -19,14 +19,14 @@ import 'dart:typed_data';
 
 import 'dart:html' show window,
     Element, ImageElement, CanvasElement, CanvasRenderingContext2D,
-    CanvasImageSource, CanvasPattern, CanvasGradient, ImageData;
+    CanvasImageSource, CanvasPattern, CanvasGradient, ImageData,
+    VideoElement;
 
 import 'geom/matrix.dart';
 import 'geom/matrix_3d.dart';
 import 'geom/rectangle.dart';
 import 'internal/image_loader.dart';
 import 'internal/tools.dart';
-import 'ui/color.dart';
 
 part 'engine/blend_mode.dart';
 part 'engine/render_context.dart';

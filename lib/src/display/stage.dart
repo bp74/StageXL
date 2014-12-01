@@ -524,6 +524,7 @@ class Stage extends DisplayObjectContainer {
 
     InteractiveObject target = null;
     Point stagePoint = _clientTransformation.transformPoint(event.client);
+    Point localPoint = new Point<num>(0.0, 0.0);
 
     if (button < 0 || button > 2) return;
     if (event.type == "mousemove" && _mousePosition.equals(stagePoint)) return;
@@ -568,7 +569,7 @@ class Stage extends DisplayObjectContainer {
       }
 
       if (oldTarget != null) {
-        Point localPoint = oldTarget.globalToLocal(stagePoint);
+        oldTarget.globalToLocal(stagePoint, localPoint);
         oldTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT, true,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
             mouseButton.buttonDown, 0, event.altKey, event.ctrlKey, event.shiftKey));
@@ -576,7 +577,7 @@ class Stage extends DisplayObjectContainer {
 
       for(int i = 0; i < oldTargetList.length - commonCount; i++) {
         DisplayObject target = oldTargetList[i];
-        Point localPoint = target.globalToLocal(stagePoint);
+        target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT, false,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
             mouseButton.buttonDown, 0, event.altKey, event.ctrlKey, event.shiftKey));
@@ -584,14 +585,14 @@ class Stage extends DisplayObjectContainer {
 
       for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
         DisplayObject target = newTargetList[i];
-        Point localPoint = target.globalToLocal(stagePoint);
+        target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER, false,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
             mouseButton.buttonDown, 0, event.altKey, event.ctrlKey, event.shiftKey));
       }
 
       if (newTarget != null) {
-        Point localPoint = newTarget.globalToLocal(stagePoint);
+        newTarget.globalToLocal(stagePoint, localPoint);
         newTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER, true,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
             mouseButton.buttonDown, 0, event.altKey, event.ctrlKey, event.shiftKey));
@@ -645,8 +646,7 @@ class Stage extends DisplayObjectContainer {
 
     if (mouseEventType != null && target != null) {
 
-      Point localPoint = target.globalToLocal(stagePoint);
-
+      target.globalToLocal(stagePoint, localPoint);
       target.dispatchEvent(new MouseEvent(mouseEventType, true,
           localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
           mouseButton.buttonDown, mouseButton.clickCount,
@@ -670,10 +670,12 @@ class Stage extends DisplayObjectContainer {
   _onMouseWheelEvent(html.WheelEvent event) {
 
     var stagePoint = _clientTransformation.transformPoint(event.client);
+    var localPoint = new Point<num>(0.0, 0.0);
+
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
     if (target == null) return;
 
-    var localPoint = target.globalToLocal(stagePoint);
+    target.globalToLocal(stagePoint, localPoint);
     var mouseEvent = new MouseEvent(MouseEvent.MOUSE_WHEEL, true,
         localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, event.deltaX, event.deltaY,
         false, 0, event.altKey, event.ctrlKey, event.shiftKey);
@@ -751,6 +753,7 @@ class Stage extends DisplayObjectContainer {
                          bool altKey, bool ctrlKey, bool shiftKey) {
 
     var stagePoint = _clientTransformation.transformPoint(client);
+    var localPoint = new Point<num>(0.0, 0.0);
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
     var touch = _touches.putIfAbsent(identifier, () => new _Touch(target, _touches.isEmpty));
 
@@ -779,7 +782,7 @@ class Stage extends DisplayObjectContainer {
       }
 
       if (oldTarget != null) {
-        Point localPoint = oldTarget.globalToLocal(stagePoint);
+        oldTarget.globalToLocal(stagePoint, localPoint);
         oldTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true,
             touch.touchPointID, touch.primaryTouchPoint,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
@@ -788,7 +791,7 @@ class Stage extends DisplayObjectContainer {
 
       for(int i = 0; i < oldTargetList.length - commonCount; i++) {
         DisplayObject target = oldTargetList[i];
-        Point localPoint = target.globalToLocal(stagePoint);
+        target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OUT, false,
             touch.touchPointID, touch.primaryTouchPoint,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
@@ -797,7 +800,7 @@ class Stage extends DisplayObjectContainer {
 
       for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
         DisplayObject target = newTargetList[i];
-        Point localPoint = target.globalToLocal(stagePoint);
+        target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OVER, false,
             touch.touchPointID, touch.primaryTouchPoint,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
@@ -805,7 +808,7 @@ class Stage extends DisplayObjectContainer {
       }
 
       if (newTarget != null) {
-        Point localPoint = newTarget.globalToLocal(stagePoint);
+        newTarget.globalToLocal(stagePoint, localPoint);
         newTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true,
             touch.touchPointID, touch.primaryTouchPoint,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
@@ -842,8 +845,8 @@ class Stage extends DisplayObjectContainer {
     }
 
     if (touchEventType != null && target != null) {
-      Point localPoint = target.globalToLocal(stagePoint);
 
+      target.globalToLocal(stagePoint, localPoint);
       target.dispatchEvent(new TouchEvent(touchEventType, true,
           touch.touchPointID, touch.primaryTouchPoint,
           localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,

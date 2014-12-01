@@ -2,44 +2,44 @@ part of stagexl.display_ex;
 
 class _BitmapContainerProgram extends RenderProgram {
 
-  var _vertexShaderSource = """
-      attribute vec2 aPosition;
-      attribute vec2 aOffset;
-      attribute vec2 aScale;
-      attribute vec2 aSkew;
-      attribute vec2 aTextCoord;
-      attribute float aAlpha;
-      uniform mat4 uProjectionMatrix;
-      uniform mat3 uGlobalMatrix;
-      uniform float uGlobalAlpha;
-      varying vec2 vTextCoord;
-      varying float vAlpha;
+  String get vertexShaderSource => """
+    attribute vec2 aPosition;
+    attribute vec2 aOffset;
+    attribute vec2 aScale;
+    attribute vec2 aSkew;
+    attribute vec2 aTextCoord;
+    attribute float aAlpha;
+    uniform mat4 uProjectionMatrix;
+    uniform mat3 uGlobalMatrix;
+    uniform float uGlobalAlpha;
+    varying vec2 vTextCoord;
+    varying float vAlpha;
 
-      void main() {
-        float skewX = aSkew[0];
-        float skewY = aSkew[1];
-        vec2 offsetScaled = aOffset * aScale;
-        vec2 offsetSkewed = vec2(
-             offsetScaled.x * cos(skewY) - offsetScaled.y * sin(skewX), 
-             offsetScaled.x * sin(skewY) + offsetScaled.y * cos(skewX));
+    void main() {
+      float skewX = aSkew[0];
+      float skewY = aSkew[1];
+      vec2 offsetScaled = aOffset * aScale;
+      vec2 offsetSkewed = vec2(
+           offsetScaled.x * cos(skewY) - offsetScaled.y * sin(skewX), 
+           offsetScaled.x * sin(skewY) + offsetScaled.y * cos(skewX));
 
-        vec3 position = vec3(aPosition + offsetSkewed, 1.0);
-        gl_Position = vec4(position.xy, 0.0, 1.0) * mat4(uGlobalMatrix) * uProjectionMatrix;
-        vTextCoord = aTextCoord;
-        vAlpha = aAlpha * uGlobalAlpha;
-      }
-      """;
+      vec3 position = vec3(aPosition + offsetSkewed, 1.0);
+      gl_Position = vec4(position.xy, 0.0, 1.0) * mat4(uGlobalMatrix) * uProjectionMatrix;
+      vTextCoord = aTextCoord;
+      vAlpha = aAlpha * uGlobalAlpha;
+    }
+    """;
 
-  var _fragmentShaderSource = """
-      precision mediump float;
-      uniform sampler2D uSampler;
-      varying vec2 vTextCoord;
-      varying float vAlpha;
+  String get fragmentShaderSource => """
+    precision mediump float;
+    uniform sampler2D uSampler;
+    varying vec2 vTextCoord;
+    varying float vAlpha;
 
-      void main() {
-         gl_FragColor = texture2D(uSampler, vTextCoord) * vAlpha;
-      }
-      """;
+    void main() {
+       gl_FragColor = texture2D(uSampler, vTextCoord) * vAlpha;
+    }
+    """;
 
   //---------------------------------------------------------------------------
   // aPosition  : Float32(x), Float32(y)
@@ -54,17 +54,11 @@ class _BitmapContainerProgram extends RenderProgram {
   static final _BitmapContainerProgram instance = new _BitmapContainerProgram();
 
   int _contextIdentifier = -1;
-  gl.RenderingContext _renderingContext = null;
-  gl.Program _program = null;
   gl.Buffer _vertexBuffer = null;
   gl.Buffer _indexBuffer = null;
-
   gl.UniformLocation _uProjectionMatrixLocation = null;
   gl.UniformLocation _uGlobalMatrix = null;
   gl.UniformLocation _uGlobalAlpha = null;
-
-  Int16List _indexList = new Int16List(_maxQuadCount * 6);
-  Float32List _vertexList = new Float32List(_maxQuadCount * 4 * 11);
 
   int _aPositionLocation = 0;
   int _aOffsetLocation = 0;
@@ -73,6 +67,11 @@ class _BitmapContainerProgram extends RenderProgram {
   int _aTextCoordLocation = 0;
   int _aAlphaLocation = 0;
   int _quadCount = 0;
+
+  final Int16List _indexList = new Int16List(_maxQuadCount * 6);
+  final Float32List _vertexList = new Float32List(_maxQuadCount * 4 * 11);
+
+  //-----------------------------------------------------------------------------------------------
 
   _BitmapContainerProgram() {
     for(int i = 0, j = 0; i <= _indexList.length - 6; i += 6, j +=4 ) {
@@ -85,58 +84,66 @@ class _BitmapContainerProgram extends RenderProgram {
     }
   }
 
-//-----------------------------------------------------------------------------------------------
-
-  void set projectionMatrix(Matrix3D matrix) {
-    _renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
-  }
-
   //-----------------------------------------------------------------------------------------------
 
+  @override
+  void set projectionMatrix(Matrix3D matrix) {
+    renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
+  }
+
+  @override
   void activate(RenderContextWebGL renderContext) {
 
     if (_contextIdentifier != renderContext.contextIdentifier) {
 
+      super.activate(renderContext);
+
       _contextIdentifier = renderContext.contextIdentifier;
-      _renderingContext = renderContext.rawContext;
-      _program = createProgram(_renderingContext, _vertexShaderSource, _fragmentShaderSource);
-      _indexBuffer = _renderingContext.createBuffer();
-      _vertexBuffer = _renderingContext.createBuffer();
+      _indexBuffer = renderingContext.createBuffer();
+      _vertexBuffer = renderingContext.createBuffer();
+      _aPositionLocation = attributeLocations["aPosition"];
+      _aOffsetLocation = attributeLocations["aOffset"];
+      _aScaleLocation = attributeLocations["aScale"];
+      _aSkewLocation = attributeLocations["aSkew"];
+      _aTextCoordLocation = attributeLocations["aTextCoord"];
+      _aAlphaLocation = attributeLocations["aAlpha"];
+      _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
+      _uGlobalMatrix = uniformLocations["uGlobalMatrix"];
+      _uGlobalAlpha = uniformLocations["uGlobalAlpha"];
 
-      _aPositionLocation = _renderingContext.getAttribLocation(_program, "aPosition");
-      _aOffsetLocation = _renderingContext.getAttribLocation(_program, "aOffset");
-      _aScaleLocation = _renderingContext.getAttribLocation(_program, "aScale");
-      _aSkewLocation = _renderingContext.getAttribLocation(_program, "aSkew");
-      _aTextCoordLocation = _renderingContext.getAttribLocation(_program, "aTextCoord");
-      _aAlphaLocation = _renderingContext.getAttribLocation(_program, "aAlpha");
-
-      _uProjectionMatrixLocation = _renderingContext.getUniformLocation(_program, "uProjectionMatrix");
-      _uGlobalMatrix = _renderingContext.getUniformLocation(_program, "uGlobalMatrix");
-      _uGlobalAlpha = _renderingContext.getUniformLocation(_program, "uGlobalAlpha");
-
-      _renderingContext.enableVertexAttribArray(_aPositionLocation);
-      _renderingContext.enableVertexAttribArray(_aOffsetLocation);
-      _renderingContext.enableVertexAttribArray(_aScaleLocation);
-      _renderingContext.enableVertexAttribArray(_aSkewLocation);
-      _renderingContext.enableVertexAttribArray(_aTextCoordLocation);
-      _renderingContext.enableVertexAttribArray(_aAlphaLocation);
-
-      _renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-      _renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
-
-      _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+      renderingContext.enableVertexAttribArray(_aPositionLocation);
+      renderingContext.enableVertexAttribArray(_aOffsetLocation);
+      renderingContext.enableVertexAttribArray(_aScaleLocation);
+      renderingContext.enableVertexAttribArray(_aSkewLocation);
+      renderingContext.enableVertexAttribArray(_aTextCoordLocation);
+      renderingContext.enableVertexAttribArray(_aAlphaLocation);
+      renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
+      renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
+      renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+      renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }
 
-    _renderingContext.useProgram(_program);
-    _renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    _renderingContext.vertexAttribPointer(_aPositionLocation, 2, gl.FLOAT, false, 44, 0);
-    _renderingContext.vertexAttribPointer(_aOffsetLocation, 2, gl.FLOAT, false, 44, 8);
-    _renderingContext.vertexAttribPointer(_aScaleLocation, 2, gl.FLOAT, false, 44, 16);
-    _renderingContext.vertexAttribPointer(_aSkewLocation, 2, gl.FLOAT, false, 44, 24);
-    _renderingContext.vertexAttribPointer(_aTextCoordLocation, 2, gl.FLOAT, false, 44, 32);
-    _renderingContext.vertexAttribPointer(_aAlphaLocation, 1, gl.FLOAT, false, 44, 40);
+    renderingContext.useProgram(program);
+    renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
+    renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+    renderingContext.vertexAttribPointer(_aPositionLocation, 2, gl.FLOAT, false, 44, 0);
+    renderingContext.vertexAttribPointer(_aOffsetLocation, 2, gl.FLOAT, false, 44, 8);
+    renderingContext.vertexAttribPointer(_aScaleLocation, 2, gl.FLOAT, false, 44, 16);
+    renderingContext.vertexAttribPointer(_aSkewLocation, 2, gl.FLOAT, false, 44, 24);
+    renderingContext.vertexAttribPointer(_aTextCoordLocation, 2, gl.FLOAT, false, 44, 32);
+    renderingContext.vertexAttribPointer(_aAlphaLocation, 1, gl.FLOAT, false, 44, 40);
+  }
+
+  @override
+  void flush() {
+
+    if (_quadCount == 0) return;
+    var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 11);
+
+    renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, vertexUpdate);
+    renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
+
+    _quadCount = 0;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -148,8 +155,9 @@ class _BitmapContainerProgram extends RenderProgram {
         globalMatrix.b, globalMatrix.d, globalMatrix.ty,
         0.0, 0.0, 0.0]);
 
-    _renderingContext.uniformMatrix3fv(_uGlobalMatrix, false, uGlobalMatrix);
-    _renderingContext.uniform1f(_uGlobalAlpha, globalAlpha);
+    renderingContext.uniformMatrix3fv(_uGlobalMatrix, false, uGlobalMatrix);
+    renderingContext.uniform1f(_uGlobalAlpha, globalAlpha);
+
     _quadCount = 0;
   }
 
@@ -240,23 +248,6 @@ class _BitmapContainerProgram extends RenderProgram {
     _quadCount += 1;
 
     if (_quadCount == _maxQuadCount) flush();
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  void flush() {
-
-    Float32List vertexUpdate = _vertexList;
-
-    if (_quadCount == 0) {
-      return;
-    } else if (_quadCount < _maxQuadCount) {
-      vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 11);
-    }
-
-    _renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, vertexUpdate);
-    _renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
-    _quadCount = 0;
   }
 
 }

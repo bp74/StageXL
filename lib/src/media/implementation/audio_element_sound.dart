@@ -2,69 +2,41 @@ part of stagexl.media;
 
 class AudioElementSound extends Sound {
 
-  final AudioElement _audio = new AudioElement();
+  final AudioElement _audio;
   final List<AudioElement> _audioPool = new List<AudioElement>();
   final List<AudioElementSoundChannel> _soundChannels = new List<AudioElementSoundChannel>();
 
-  AudioElementSound._() {
+  AudioElementSound._(AudioElement audio) : _audio = audio {
     _audio.onEnded.listen(_onAudioEnded);
     _audioPool.add(_audio);
-
-    document.body.children.add(_audio);
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
 
     if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
 
-    var sound = new AudioElementSound._();
-    var audio = sound._audio;
-    var audioUrls = SoundMixer._getOptimalAudioUrls(url, soundLoadOptions);
-    var loadCompleter = new Completer<Sound>();
+    var completer = new Completer<Sound>();
+    var loadData = true;
+    var corsEnabled = soundLoadOptions.corsEnabled;
+    var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
+    var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
 
-    if (audioUrls.length == 0) {
-      return MockSound.load(url, soundLoadOptions);
-    }
-
-    StreamSubscription onCanPlaySubscription;
-    StreamSubscription onErrorSubscription;
-
-    onCanPlay(event) {
-      onCanPlaySubscription.cancel();
-      onErrorSubscription.cancel();
-      loadCompleter.complete(sound);
-    };
-
-    onError(event) {
-      if (audioUrls.length > 0) {
-        audio.src = audioUrls.removeAt(0);
-        audio.load();
+    audioLoader.done.then((AudioElement audioElement) {
+      completer.complete(new AudioElementSound._(audioElement));
+    }).catchError((error) {
+      if (soundLoadOptions.ignoreErrors) {
+        MockSound.load(url, soundLoadOptions).then((s) => completer.complete(s));
       } else {
-        onCanPlaySubscription.cancel();
-        onErrorSubscription.cancel();
-
-        if (soundLoadOptions.ignoreErrors) {
-          MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
-        } else {
-          loadCompleter.completeError(new StateError("Failed to load audio."));
-        }
+        completer.completeError(new StateError("Failed to load audio."));
       }
-    };
+    });
 
-    onCanPlaySubscription = audio.onCanPlay.listen(onCanPlay);
-    onErrorSubscription = audio.onError.listen(onError);
-
-    audio.src = audioUrls.removeAt(0);
-    audio.load();
-
-    return loadCompleter.future;
+    return completer.future;
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   num get length => _audio.duration;
 
@@ -80,8 +52,7 @@ class AudioElementSound extends Sound {
     return new AudioElementSoundChannel(this, startTime, duration, loop, soundTransform);
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   Future<AudioElement> _requestAudioElement(AudioElementSoundChannel soundChannel) {
 
@@ -104,10 +75,9 @@ class AudioElementSound extends Sound {
     _audioPool.add(audio);
   }
 
-  //-------------------------------------------------------------------------------------------------
-
   void _onAudioEnded(Event event) {
-    var soundChannel = _soundChannels.firstWhere((sc) => identical(sc._audio, event.target), orElse: () => null);
+    var soundChannel = _soundChannels.firstWhere(
+        (sc) => identical(sc._audio, event.target), orElse: () => null);
     if (soundChannel != null) soundChannel.stop();
   }
 

@@ -3,6 +3,26 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.10.2
+  * Added lots of API documentations (thanks to @marcojakob)
+  * Added Video and VideoObject classes (thanks fot @sebgeelen)
+  * Added BitmapData.fromVideoElement constructor.
+  * Added Tween.animate3D for 3D tween animations.  
+  * Added DisplayObject.getObjectsUnderPoint method.
+  * Improved DisplayObject bounds calculations.
+  * Improved support for custom WebGL filters/shaders.
+  * Improved Sprite3D calculations.
+  * Improved global2local and local2global calculations.
+
+#### Pub version 0.10.1
+  * Added Sprite3D for 3D transformations of display objects.
+  * Added RenderTexture.filtering option for pixel art games.
+  * Added InteractiveObject.mouseCursor property.
+  * Fixed MouseCursor definitions and added new ones.
+  * Fixed nested masks with WebGL renderer.
+  * Fixed Stage.autoHiDpi heuristics.
+  * Bugfixes and performance improvements.
+
 #### Pub version 0.10.0
   * Added DisplayObject.blendMode property.
   * Added BitmapDataUpdateBatch class for better BitmapData update performance.
@@ -21,6 +41,12 @@ This version contains a few minor breaking changes. If you experience
 a problem please report the issue either in the 
 [StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
 or in the [StageXL Forum](http://www.stagexl.org/forum.html).
+
+#### Pub version 0.9.4+2
+  * Fixed an issue with TouchEvents in Dartium.
+
+#### Pub version 0.9.4+1
+  * Fixed an issue with WebGL masks in combination with WebGL filters.
 
 #### Pub version 0.9.4
   * Added TouchEvents TOUCH\_ROLL\_OUT, TOUCH\_ROLL\_OVER, TOUCH\_TAP.
