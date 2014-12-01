@@ -10,7 +10,10 @@ class _GraphicsCommandStrokeGradient extends _GraphicsCommandStroke {
     _gradient = gradient;
   }
 
-  render(CanvasRenderingContext2D context) {
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
     context.strokeStyle = _gradient.getCanvasGradient(context);
     context.lineWidth = _lineWidth;
     context.lineJoin = _lineJoin;

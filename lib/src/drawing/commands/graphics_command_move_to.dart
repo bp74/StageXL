@@ -9,11 +9,16 @@ class _GraphicsCommandMoveTo extends _GraphicsCommand {
     _y = y.toDouble();
   }
 
-  render(CanvasRenderingContext2D context) {
+  //---------------------------------------------------------------------------
+
+  @override
+  void updateBounds(_GraphicsBounds bounds) {
+    bounds.updateCursor(_x, _y);
+  }
+
+  @override
+  void render(CanvasRenderingContext2D context) {
     context.moveTo(_x, _y);
   }
 
-  updateBounds(_GraphicsBounds bounds) {
-    bounds.updateCursor(_x, _y);
-  }
 }

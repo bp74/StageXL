@@ -12,16 +12,20 @@ class _GraphicsCommandRect extends _GraphicsCommand {
     _height = height.toDouble();
   }
 
-  render(CanvasRenderingContext2D context) {
-    context.rect(_x, _y, _width, _height);
-  }
+  //---------------------------------------------------------------------------
 
-  updateBounds(_GraphicsBounds bounds) {
+  @override
+  void updateBounds(_GraphicsBounds bounds) {
 
     bounds.updateCursor(_x, _y);
     bounds.updatePath(_x, _y);
     bounds.updatePath(_x + _width, _y);
     bounds.updatePath(_x + _width, _y + _height);
     bounds.updatePath(_x, _y + _height);
+  }
+
+  @override
+  void render(CanvasRenderingContext2D context) {
+    context.rect(_x, _y, _width, _height);
   }
 }

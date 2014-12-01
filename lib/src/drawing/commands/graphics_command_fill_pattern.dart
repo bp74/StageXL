@@ -8,7 +8,10 @@ class _GraphicsCommandFillPattern extends _GraphicsCommandFill {
     _pattern = pattern;
   }
 
-  render(CanvasRenderingContext2D context) {
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
 
     context.fillStyle = _pattern.getCanvasPattern(context);
     var matrix = _pattern.matrix;

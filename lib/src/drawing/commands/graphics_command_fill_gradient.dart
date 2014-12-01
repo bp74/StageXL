@@ -8,7 +8,10 @@ class _GraphicsCommandFillGradient extends _GraphicsCommandFill {
     _gradient = gradient;
   }
 
-  render(CanvasRenderingContext2D context) {
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
     context.fillStyle = _gradient.getCanvasGradient(context);
     context.fill();
   }

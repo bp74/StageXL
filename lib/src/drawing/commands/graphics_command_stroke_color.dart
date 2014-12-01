@@ -10,7 +10,10 @@ class _GraphicsCommandStrokeColor extends _GraphicsCommandStroke {
     _color = color;
   }
 
-  render(CanvasRenderingContext2D context) {
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
     context.strokeStyle = _color;
     context.lineWidth = _lineWidth;
     context.lineJoin = _lineJoin;

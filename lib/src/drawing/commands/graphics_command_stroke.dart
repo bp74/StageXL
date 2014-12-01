@@ -12,6 +12,9 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
     _lineCap = lineCap;
   }
 
+  //---------------------------------------------------------------------------
+
+  @override
   bool hitTest(CanvasRenderingContext2D context, num localX, num localY) {
     context.lineWidth = _lineWidth;
     context.lineJoin = _lineJoin;
@@ -24,11 +27,13 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
     }
   }
 
-  drawPath(CanvasRenderingContext2D context) {
+  @override
+  void drawPath(CanvasRenderingContext2D context) {
     // no action
   }
 
-  updateBounds(_GraphicsBounds bounds) {
+  @override
+  void updateBounds(_GraphicsBounds bounds) {
     bounds.stroke(_lineWidth);
   }
 }

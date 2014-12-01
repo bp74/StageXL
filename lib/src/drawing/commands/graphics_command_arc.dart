@@ -15,11 +15,10 @@ class _GraphicsCommandArc extends _GraphicsCommand {
     _antiClockwise = antiClockwise;
   }
 
-  render(CanvasRenderingContext2D context) {
-    context.arc(_x, _y, _radius, _startAngle, _endAngle, _antiClockwise);
-  }
+  //---------------------------------------------------------------------------
 
-  updateBounds(_GraphicsBounds bounds) {
+  @override
+  void updateBounds(_GraphicsBounds bounds) {
 
     var initPoint = new Vector(_radius, 0);
     var startPoint = initPoint.rotate(_startAngle);
@@ -50,5 +49,13 @@ class _GraphicsCommandArc extends _GraphicsCommand {
 
     bounds.updateCursor(_x + endPoint.x, _y + endPoint.y);
   }
+
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
+    context.arc(_x, _y, _radius, _startAngle, _endAngle, _antiClockwise);
+  }
+
 }
 

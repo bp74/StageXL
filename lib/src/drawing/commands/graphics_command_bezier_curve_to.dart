@@ -15,9 +15,7 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
     _endY = endY.toDouble();
   }
 
-  render(CanvasRenderingContext2D context) {
-    context.bezierCurveTo(_controlX1, _controlY1, _controlX2, _controlY2, _endX, _endY);
-  }
+  //---------------------------------------------------------------------------
 
   // first derivative root finding for cubic Bézier curves
   // http://processingjs.nihongoresources.com/bezierinfo/
@@ -37,7 +35,10 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
     return (dn != 0) ? <num>[(tl + tr) / dn, (tl - tr) / dn] : <num>[-1, -1];
   }
 
-  updateBounds(_GraphicsBounds bounds) {
+  //---------------------------------------------------------------------------
+
+  @override
+  void updateBounds(_GraphicsBounds bounds) {
 
     if (bounds.hasCursor == false) {
       bounds.updateCursor(_controlX1, _controlY1);
@@ -70,5 +71,13 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
     bounds.updatePath(end.x, end.y);
     bounds.updateCursor(_endX, _endY);
   }
+
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
+    context.bezierCurveTo(_controlX1, _controlY1, _controlX2, _controlY2, _endX, _endY);
+  }
+
 }
 

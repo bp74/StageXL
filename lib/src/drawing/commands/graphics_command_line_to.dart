@@ -9,11 +9,10 @@ class _GraphicsCommandLineTo extends _GraphicsCommand {
     _y = y.toDouble();
   }
 
-  render(CanvasRenderingContext2D context) {
-    context.lineTo(_x, _y);
-  }
+  //---------------------------------------------------------------------------
 
-  updateBounds(_GraphicsBounds bounds) {
+  @override
+  void updateBounds(_GraphicsBounds bounds) {
 
     if (bounds.hasCursor == false) {
       bounds.updateCursor(_x, _y);
@@ -23,4 +22,10 @@ class _GraphicsCommandLineTo extends _GraphicsCommand {
     bounds.updatePath(_x, _y);
     bounds.updateCursor(_x, _y);
   }
+
+  @override
+  void render(CanvasRenderingContext2D context) {
+    context.lineTo(_x, _y);
+  }
+
 }

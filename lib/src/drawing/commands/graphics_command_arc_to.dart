@@ -14,11 +14,10 @@ class _GraphicsCommandArcTo extends _GraphicsCommand {
     _radius = radius.toDouble();
   }
 
-  render(CanvasRenderingContext2D context) {
-    context.arcTo(_controlX, _controlY, _endX, _endY, _radius);
-  }
+  //---------------------------------------------------------------------------
 
-  updateBounds(_GraphicsBounds bounds) {
+  @override
+  void updateBounds(_GraphicsBounds bounds) {
 
     if (bounds.hasCursor) {
 
@@ -60,4 +59,12 @@ class _GraphicsCommandArcTo extends _GraphicsCommand {
       bounds.updateCursor(_controlX, _controlY);
     }
   }
+
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
+    context.arcTo(_controlX, _controlY, _endX, _endY, _radius);
+  }
+
 }

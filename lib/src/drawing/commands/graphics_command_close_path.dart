@@ -4,7 +4,10 @@ class _GraphicsCommandClosePath extends _GraphicsCommand {
 
   _GraphicsCommandClosePath();
 
-  render(CanvasRenderingContext2D context) {
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
     context.closePath();
   }
 }

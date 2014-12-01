@@ -10,7 +10,10 @@ class _GraphicsCommandStrokePattern extends _GraphicsCommandStroke {
     _pattern = pattern;
   }
 
-  render(CanvasRenderingContext2D context) {
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
     context.strokeStyle = _pattern.getCanvasPattern(context);
     context.lineWidth = _lineWidth;
     context.lineJoin = _lineJoin;

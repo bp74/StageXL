@@ -12,9 +12,7 @@ class _GraphicsCommandQuadraticCurveTo extends _GraphicsCommand {
     _endY = endY.toDouble();
   }
 
-  render(CanvasRenderingContext2D context) {
-    context.quadraticCurveTo(_controlX, _controlY, _endX, _endY);
-  }
+  //---------------------------------------------------------------------------
 
   // first derivative root finding for quadratic Bézier curves
   // http://processingjs.nihongoresources.com/bezierinfo/
@@ -31,7 +29,10 @@ class _GraphicsCommandQuadraticCurveTo extends _GraphicsCommand {
     return (denominator != 0) ? (a - b) / denominator : t;
   }
 
-  updateBounds(_GraphicsBounds bounds) {
+  //---------------------------------------------------------------------------
+
+  @override
+  void updateBounds(_GraphicsBounds bounds) {
 
     if (bounds.hasCursor == false) {
       bounds.updateCursor(_controlX, _controlY);
@@ -52,4 +53,12 @@ class _GraphicsCommandQuadraticCurveTo extends _GraphicsCommand {
     bounds.updatePath(end.x, end.y);
     bounds.updateCursor(_endX, _endY);
   }
+
+  //---------------------------------------------------------------------------
+
+  @override
+  void render(CanvasRenderingContext2D context) {
+    context.quadraticCurveTo(_controlX, _controlY, _endX, _endY);
+  }
+
 }
