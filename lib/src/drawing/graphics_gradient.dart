@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of stagexl.drawing;
 
 class GraphicsGradient {
 

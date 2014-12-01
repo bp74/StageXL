@@ -166,7 +166,7 @@ class Sprite extends DisplayObjectContainer {
 
     var target = super.hitTestInput(localX, localY);
     if (target == null && graphics != null) {
-      target = graphics.hitTestInput(localX, localY) ? this : null;
+      target = graphics.hitTest(localX, localY) ? this : null;
     }
 
     return target;

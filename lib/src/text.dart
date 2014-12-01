@@ -13,6 +13,7 @@ import 'dart:html' show CanvasElement, CanvasRenderingContext2D, Element;
 import 'dart:math' hide Point, Rectangle;
 
 import 'display.dart';
+import 'drawing.dart';
 import 'engine.dart';
 import 'events.dart';
 import 'geom.dart';

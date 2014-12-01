@@ -33,7 +33,7 @@ abstract class Mask implements RenderMask {
 
   Mask();
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Create a rectangluar mask.
   ///
@@ -61,7 +61,7 @@ abstract class Mask implements RenderMask {
     return new _ShapeMask(shape);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   bool hitTest(num x, num y);
 
@@ -69,8 +69,8 @@ abstract class Mask implements RenderMask {
 
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 abstract class _TransformedMask extends Mask {
 
@@ -98,8 +98,8 @@ abstract class _TransformedMask extends Mask {
   }
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 class _RectangleMask extends _TransformedMask {
 
@@ -135,7 +135,7 @@ class _RectangleMask extends _TransformedMask {
   }
 }
 
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 class _CirlceMask extends _TransformedMask {
 
@@ -160,6 +160,7 @@ class _CirlceMask extends _TransformedMask {
     } else {
 
       var steps = 40;
+      var color = Color.Magenta;
       var centerX = _circle.x;
       var centerY = _circle.y;
       var currentX = centerX + _circle.radius;
@@ -172,7 +173,8 @@ class _CirlceMask extends _TransformedMask {
       for (int s = 0; s <= steps; s++) {
         var nextX = currentX * cosR - currentY * sinR + tx;
         var nextY = currentX * sinR + currentY * cosR + ty;
-        renderState.renderTriangle(centerX, centerY, currentX, currentY, nextX, nextY, Color.Magenta);
+        renderState.renderTriangle(
+            centerX, centerY, currentX, currentY, nextX, nextY, color);
         currentX = nextX;
         currentY = nextY;
       }
@@ -180,7 +182,7 @@ class _CirlceMask extends _TransformedMask {
   }
 }
 
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 class _CustomMask extends _TransformedMask {
 
@@ -218,13 +220,15 @@ class _CustomMask extends _TransformedMask {
         var p1 = points[triangles[i + 0]];
         var p2 = points[triangles[i + 1]];
         var p3 = points[triangles[i + 2]];
-        renderState.renderTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, Color.Magenta);
+        renderState.renderTriangle(
+            p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, Color.Magenta);
       }
     }
   }
 }
 
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
 
 class _ShapeMask extends _TransformedMask {
 
@@ -234,18 +238,24 @@ class _ShapeMask extends _TransformedMask {
 
   bool hitTestTransformed(num x, num y) {
 
+    // TODO: Bring back ShapeMask
+    return true;
+
+    /*
     var context = _dummyCanvasContext;
     var mtx = _shape.transformationMatrix;
     context.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
     context.beginPath();
-
     _shape.graphics._drawPath(context);
-
     return context.isPointInPath(x, y);
+    */
   }
 
   void renderMaskTransformed(RenderState renderState) {
 
+    // TODO: Bring back ShapeMask
+
+    /*
     var renderContext = renderState.renderContext;
 
     if (renderContext is RenderContextCanvas) {
@@ -260,5 +270,6 @@ class _ShapeMask extends _TransformedMask {
       // TODO: ShapeMask for WebGL
 
     }
+    */
   }
 }

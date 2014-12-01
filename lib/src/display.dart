@@ -25,6 +25,7 @@ import 'dart:html' show ImageElement, VideoElement;
 import 'dart:html' show CanvasElement, CanvasRenderingContext2D, CanvasGradient, CanvasPattern;
 
 import 'animation.dart';
+import 'drawing.dart';
 import 'geom.dart';
 import 'engine.dart';
 import 'events.dart';
@@ -40,17 +41,11 @@ part 'display/bitmap_data_load_options.dart';
 part 'display/bitmap_drawable.dart';
 part 'display/bitmap_filter.dart';
 part 'display/bitmap_filter_program.dart';
-part 'display/caps_style.dart';
 part 'display/color_transform.dart';
 part 'display/display_object.dart';
 part 'display/display_object_container.dart';
 part 'display/display_object_container_3d.dart';
-part 'display/graphics.dart';
-part 'display/graphics_command.dart';
-part 'display/graphics_gradient.dart';
-part 'display/graphics_pattern.dart';
 part 'display/interactive_object.dart';
-part 'display/joint_style.dart';
 part 'display/mask.dart';
 part 'display/render_loop.dart';
 part 'display/shape.dart';
@@ -61,9 +56,6 @@ part 'display/stage.dart';
 
 final Matrix _tmpMatrix = new Matrix.fromIdentity();
 final Matrix _identityMatrix = new Matrix.fromIdentity();
-final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
-final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
-
 
 //-----------------------------------------------------------------------------
 

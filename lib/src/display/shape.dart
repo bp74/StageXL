@@ -25,7 +25,7 @@ class Shape extends DisplayObject {
   @override
   DisplayObject hitTestInput(num localX, num localY) {
     if (graphics == null) return null;
-    if (graphics.hitTestInput(localX, localY)) return this;
+    if (graphics.hitTest(localX, localY)) return this;
     return null;
   }
 

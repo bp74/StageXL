@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of stagexl.drawing;
 
 /// A vector graphics drawing surface.
 ///
@@ -205,22 +205,21 @@ class Graphics {
 
   //----------------------------------------------------------------------------
 
-  bool hitTestInput(num localX, num localY) {
+  bool hitTest(num localX, num localY) {
 
     if (this.bounds.contains(localX, localY)) {
 
-      if (env.isCocoonJS) {
-        // CocoonJS does not support "isPointInPath", therefore we just
-        // check the rectangular bounds of the graphics shape.
-        return true;
-      }
+      // CocoonJS does not support "isPointInPath", therefore we just
+      // check the rectangular bounds of the graphics shape.
+
+      if (env.isCocoonJS) return true;
 
       var context = _dummyCanvasContext;
       context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
       context.beginPath();
 
       for(int i = 0; i < _commands.length; i++) {
-        if (_commands[i].hitTestInput(context, localX, localY)) {
+        if (_commands[i].hitTest(context, localX, localY)) {
           return true;
         }
       }
