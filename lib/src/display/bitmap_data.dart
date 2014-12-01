@@ -188,7 +188,7 @@ class BitmapData implements BitmapDrawable {
   /// to customize how two pixels are blended.
   void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint, [BlendMode blendMode]) {
     var updateBatch = new BitmapDataUpdateBatch(this);
-    updateBatch.drawPixels(source, sourceRect, destPoint);
+    updateBatch.drawPixels(source, sourceRect, destPoint, blendMode);
     updateBatch.update();
   }
 
