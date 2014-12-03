@@ -18,7 +18,7 @@ class AudioElementSound extends Sound {
     if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
 
     var completer = new Completer<Sound>();
-    var loadData = true;
+    var loadData = false;
     var corsEnabled = soundLoadOptions.corsEnabled;
     var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
     var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
