@@ -89,12 +89,14 @@ void main() {
 
     var sub1 = dispatcher.on(eventType).listen(listener1);
     var sub2 = dispatcher.on(eventType).listen(listener2);
-    var sub3 = dispatcher.on(eventType).listen((Event event) => actual.add(
-        "listener3"));
+    var sub3 = dispatcher.on(eventType).listen((Event event) => actual.add("listener3"));
 
     sub2.cancel();
-
     dispatcher.dispatchEvent(new Event(eventType));
+
+    expect(sub1.isCanceled, equals(false));
+    expect(sub2.isCanceled, equals(true));
+    expect(sub3.isCanceled, equals(false));
     expect(actual, equals(expected));
   });
 

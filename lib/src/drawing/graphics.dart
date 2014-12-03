@@ -263,13 +263,13 @@ class Graphics {
   }
 
   //----------------------------------------------------------------------------
-
+/*
   void _drawPath(CanvasRenderingContext2D context) {
 
     for(int i = 0; i < _commands.length; i++) {
       _commands[i].drawPath(context);
     }
   }
-
+*/
 
 }

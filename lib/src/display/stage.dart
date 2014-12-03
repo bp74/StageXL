@@ -4,8 +4,8 @@ part of stagexl.display;
 
 class StageScaleMode {
 
-  final int _ordinal;
-  const StageScaleMode._(this._ordinal);
+  final int index;
+  const StageScaleMode._(this.index);
 
   static const StageScaleMode EXACT_FIT = const StageScaleMode._(0);
   static const StageScaleMode NO_BORDER = const StageScaleMode._(1);
@@ -19,8 +19,8 @@ class StageScaleMode {
 
 class StageAlign {
 
-  final int _ordinal;
-  const StageAlign._(this._ordinal);
+  final int index;
+  const StageAlign._(this.index);
 
   static const StageAlign BOTTOM = const StageAlign._(0);
   static const StageAlign BOTTOM_LEFT = const StageAlign._(1);
@@ -38,8 +38,8 @@ class StageAlign {
 
 class StageRenderMode {
 
-  final int _ordinal;
-  const StageRenderMode._(this._ordinal);
+  final int index;
+  const StageRenderMode._(this.index);
 
   static const StageRenderMode AUTO = const StageRenderMode._(0);
   static const StageRenderMode STOP = const StageRenderMode._(1);

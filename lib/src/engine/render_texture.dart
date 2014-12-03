@@ -12,7 +12,6 @@ class RenderTexture {
 
   CanvasImageSource _source;
   CanvasElement _canvas;
-  VideoElement _video;
   RenderTextureQuad _quad;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
 
@@ -124,6 +123,7 @@ class RenderTexture {
 
   int get width => _width;
   int get height => _height;
+  bool get transparent => _transparent;
 
   int get storeWidth => _storeWidth;
   int get storeHeight => _storeHeight;

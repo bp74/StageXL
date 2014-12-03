@@ -4,8 +4,8 @@ part of stagexl.events;
 /// [KeyboardEvent.getKeyLocation].
 class KeyLocation {
 
-  final int _ordinal;
-  const KeyLocation._(this._ordinal);
+  final int index;
+  const KeyLocation._(this.index);
 
   /// The event key is not distinguished as the left or right version
   /// of the key, and did not originate from the numeric keypad (or did not
