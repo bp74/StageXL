@@ -5,7 +5,6 @@ import 'dart:html' show CanvasElement, CanvasRenderingContext2D, CanvasGradient,
 
 import 'geom.dart';
 import 'engine.dart';
-import 'internal/environment.dart' as env;
 import 'internal/tools.dart';
 
 part 'drawing/caps_style.dart';
