@@ -44,4 +44,10 @@ abstract class InputEvent {
 
   /// Indicates whether the Shift key is active (true) or inactive (false).
   bool get shiftKey;
+
+  /// The mouse or touch event that is currently dispatched. The value is only
+  /// set if the code is running in the context of a mouse or touch event
+  /// propagation, otherwise the value is `null`.
+  static InputEvent current;
+
 }
