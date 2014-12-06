@@ -2,18 +2,25 @@ part of stagexl.drawing;
 
 class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
 
-  num _controlX1, _controlY1;
-  num _controlX2, _controlY2;
-  num _endX, _endY;
+  final double controlX1;
+  final double controlY1;
+  final double controlX2;
+  final double controlY2;
+  final double endX;
+  final double endY;
 
-  _GraphicsCommandBezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
-    _controlX1 = controlX1.toDouble();
-    _controlY1 = controlY1.toDouble();
-    _controlX2 = controlX2.toDouble();
-    _controlY2 = controlY2.toDouble();
-    _endX = endX.toDouble();
-    _endY = endY.toDouble();
-  }
+  _GraphicsCommandBezierCurveTo(
+      num controlX1, num controlY1,
+      num controlX2, num controlY2,
+      num endX, num endY) :
+
+    controlX1 = controlX1.toDouble(),
+    controlY1 = controlY1.toDouble(),
+    controlX2 = controlX2.toDouble(),
+    controlY2 = controlY2.toDouble(),
+    endX = endX.toDouble(),
+    endY = endY.toDouble();
+
 
   //---------------------------------------------------------------------------
 
@@ -21,18 +28,16 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
   // http://processingjs.nihongoresources.com/bezierinfo/
   // http://processingjs.nihongoresources.com/bezierinfo/sketchsource.php?sketch=simpleQuadraticBezier
 
-  num _computeCubicBaseValue(num t, num a, num b, num c, num d) {
-    num mt = 1 - t;
-    return mt * mt * mt * a + 3 * mt * mt * t * b + 3 * mt * t * t * c + t * t * t * d;
+  double _computeCubicBaseValue(double t, double a, double b, double c, double d) {
+    double mt = 1.0 - t;
+    return mt * mt * mt * a + 3.0 * mt * mt * t * b + 3.0 * mt * t * t * c + t * t * t * d;
   }
 
-  List<num> _computeCubicFirstDerivativeRoots(num a, num b, num c, num d) {
-
-    num tl = -a + 2 * b - c;
-    num tr = -sqrt(-a * (c - d) + b * b - b * (c + d) + c * c);
-    num dn = -a + 3 * b - 3 * c + d;
-
-    return (dn != 0) ? <num>[(tl + tr) / dn, (tl - tr) / dn] : <num>[-1, -1];
+  List<double> _computeCubicFirstDerivativeRoots(double a, double b, double c, double d) {
+    double tl = -a + 2.0 * b - c;
+    double tr = -sqrt(a * (d - c) + b * b - b * (c + d) + c * c);
+    double dn = -a + 3.0 * b - 3.0 * c + d;
+    return dn != 0.0 ? <double>[(tl + tr) / dn, (tl - tr) / dn] : <double>[-1.0, -1.0];
   }
 
   //---------------------------------------------------------------------------
@@ -41,42 +46,47 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
   void updateBounds(_GraphicsBounds bounds) {
 
     if (bounds.hasCursor == false) {
-      bounds.updateCursor(_controlX1, _controlY1);
+      bounds.updateCursor(controlX1, controlY1);
     }
 
-    var start = new Vector(bounds.cursorX, bounds.cursorY);
-    var control1 = new Vector(_controlX1, _controlY1);
-    var control2 = new Vector(_controlX2, _controlY2);
-    var end = new Vector(_endX, _endY);
+    double sx = bounds.cursorX.toDouble();
+    double sy = bounds.cursorY.toDouble();
+    double ax = controlX1;
+    double ay = controlY1;
+    double bx = controlX2;
+    double by = controlY2;
+    double ex = endX;
+    double ey = endY;
 
     // Workaround: if the control points have the same X or Y coordinate,
     // the derivative root calculations returns [-1, -1].
     //..moveTo(230, 150)..bezierCurveTo(250, 180, 320, 180, 340, 150)
-    if (control1.x == control2.x) control1 = control1 + new Vector(0.0123, 0.0);
-    if (control1.y == control2.y) control1 = control1 + new Vector(0.0, 0.0123);
 
-    bounds.updatePath(start.x, start.y);
+    if (ax == bx) ax += 0.0123;
+    if (ay == by) ay += 0.0123;
 
-    List<num> txs = _computeCubicFirstDerivativeRoots(start.x, control1.x, control2.x, end.x);
-    List<num> tys = _computeCubicFirstDerivativeRoots(start.y, control1.y, control2.y, end.y);
+    bounds.updatePath(sx, sy);
+
+    List<double> txs = _computeCubicFirstDerivativeRoots(sx, ax, bx, ex);
+    List<double> tys = _computeCubicFirstDerivativeRoots(sy, ay, by, ey);
 
     for (int i = 0; i < 2; i++) {
-      num tx = txs[i].toDouble();
-      num ty = tys[i].toDouble();
-      num xm = (tx >= 0 && tx <= 1) ? _computeCubicBaseValue(tx, start.x, control1.x, control2.x, end.x) : start.x;
-      num ym = (ty >= 0 && ty <= 1) ? _computeCubicBaseValue(ty, start.y, control1.y, control2.y, end.y) : start.y;
-      bounds.updatePath(xm, ym);
+      double tx = txs[i];
+      double ty = tys[i];
+      double mx = (tx >= 0.0 && tx <= 1.0) ? _computeCubicBaseValue(tx, sx, ax, bx, ex) : sx;
+      double my = (ty >= 0.0 && ty <= 1.0) ? _computeCubicBaseValue(ty, sy, ay, by, ey) : sy;
+      bounds.updatePath(mx, my);
     }
 
-    bounds.updatePath(end.x, end.y);
-    bounds.updateCursor(_endX, _endY);
+    bounds.updatePath(ex, ey);
+    bounds.updateCursor(endX, endY);
   }
 
   //---------------------------------------------------------------------------
 
   @override
-  void render(CanvasRenderingContext2D context) {
-    context.bezierCurveTo(_controlX1, _controlY1, _controlX2, _controlY2, _endX, _endY);
+  void draw(CanvasRenderingContext2D context) {
+    context.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
 
 }

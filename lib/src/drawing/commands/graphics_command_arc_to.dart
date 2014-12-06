@@ -2,17 +2,21 @@ part of stagexl.drawing;
 
 class _GraphicsCommandArcTo extends _GraphicsCommand {
 
-  num _controlX, _controlY;
-  num _endX, _endY;
-  num _radius;
+  final double controlX;
+  final double controlY;
+  final double endX;
+  final double endY;
+  final double radius;
 
-  _GraphicsCommandArcTo(num controlX, num controlY, num endX, num endY, num radius) {
-    _controlX = controlX.toDouble();
-    _controlY = controlY.toDouble();
-    _endX = endX.toDouble();
-    _endY = endY.toDouble();
-    _radius = radius.toDouble();
-  }
+  _GraphicsCommandArcTo(
+      num controlX, num controlY,
+      num endX, num endY, num radius) :
+
+    controlX = controlX.toDouble(),
+    controlY = controlY.toDouble(),
+    endX = endX.toDouble(),
+    endY = endY.toDouble(),
+    radius = radius.toDouble();
 
   //---------------------------------------------------------------------------
 
@@ -22,14 +26,14 @@ class _GraphicsCommandArcTo extends _GraphicsCommand {
     if (bounds.hasCursor) {
 
       var v0 = new Vector(bounds.cursorX, bounds.cursorY);
-      var v1 = new Vector(_controlX, _controlY);
-      var v2 = new Vector(_endX, _endY);
+      var v1 = new Vector(controlX, controlY);
+      var v2 = new Vector(endX, endY);
       var v01 = v1 - v0;
       var v12 = v2 - v1;
 
       var rads = v01.rads - v12.rads;
       var tn = tan(rads / 2);
-      var ra = (tn > 0) ? _radius : -_radius;
+      var ra = (tn > 0) ? radius : -radius;
       var tangent1 = v1 - v01.scaleLength(tn * ra);
       var tangent2 = v1 + v12.scaleLength(tn * ra);
       var center = tangent1 + v01.normalLeft().scaleLength(ra);
@@ -56,15 +60,15 @@ class _GraphicsCommandArcTo extends _GraphicsCommand {
 
       bounds.updateCursor(tangent2.x, tangent2.y);
     } else {
-      bounds.updateCursor(_controlX, _controlY);
+      bounds.updateCursor(controlX, controlY);
     }
   }
 
   //---------------------------------------------------------------------------
 
   @override
-  void render(CanvasRenderingContext2D context) {
-    context.arcTo(_controlX, _controlY, _endX, _endY, _radius);
+  void draw(CanvasRenderingContext2D context) {
+    context.arcTo(controlX, controlY, endX, endY, radius);
   }
 
 }

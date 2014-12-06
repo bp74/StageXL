@@ -2,17 +2,13 @@ part of stagexl.drawing;
 
 class _GraphicsCommandFillColor extends _GraphicsCommandFill {
 
-  String _color;
+  final String color;
 
-  _GraphicsCommandFillColor(String color) {
-    _color = color;
-  }
-
-  //---------------------------------------------------------------------------
+  _GraphicsCommandFillColor(this.color);
 
   @override
-  void render(CanvasRenderingContext2D context) {
-    context.fillStyle = _color;
+  void draw(CanvasRenderingContext2D context) {
+    context.fillStyle = color;
     context.fill();
   }
 }

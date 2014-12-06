@@ -4,15 +4,13 @@ class _GraphicsCommandBeginPath extends _GraphicsCommand {
 
   _GraphicsCommandBeginPath();
 
-  //---------------------------------------------------------------------------
-
   @override
   void updateBounds(_GraphicsBounds bounds) {
     bounds.resetPath();
   }
 
   @override
-  void render(CanvasRenderingContext2D context) {
+  void draw(CanvasRenderingContext2D context) {
     context.beginPath();
   }
 

@@ -2,19 +2,15 @@ part of stagexl.drawing;
 
 class _GraphicsCommandFillPattern extends _GraphicsCommandFill {
 
-  GraphicsPattern _pattern;
+  final GraphicsPattern pattern;
 
-  _GraphicsCommandFillPattern(GraphicsPattern pattern) {
-    _pattern = pattern;
-  }
-
-  //---------------------------------------------------------------------------
+  _GraphicsCommandFillPattern(this.pattern);
 
   @override
-  void render(CanvasRenderingContext2D context) {
+  void draw(CanvasRenderingContext2D context) {
 
-    context.fillStyle = _pattern.getCanvasPattern(context);
-    var matrix = _pattern.matrix;
+    context.fillStyle = pattern.getCanvasPattern(context);
+    var matrix = pattern.matrix;
 
     if (matrix != null) {
       context.save();

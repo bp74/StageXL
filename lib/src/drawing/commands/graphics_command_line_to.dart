@@ -2,30 +2,28 @@ part of stagexl.drawing;
 
 class _GraphicsCommandLineTo extends _GraphicsCommand {
 
-  num _x, _y;
+  final double x;
+  final double y;
 
-  _GraphicsCommandLineTo(num x, num y) {
-    _x = x.toDouble();
-    _y = y.toDouble();
-  }
-
-  //---------------------------------------------------------------------------
+  _GraphicsCommandLineTo(num x, num y) :
+    x = x.toDouble(),
+    y = y.toDouble();
 
   @override
   void updateBounds(_GraphicsBounds bounds) {
 
     if (bounds.hasCursor == false) {
-      bounds.updateCursor(_x, _y);
+      bounds.updateCursor(x, y);
     }
 
     bounds.updatePath(bounds.cursorX, bounds.cursorY);
-    bounds.updatePath(_x, _y);
-    bounds.updateCursor(_x, _y);
+    bounds.updatePath(x, y);
+    bounds.updateCursor(x, y);
   }
 
   @override
-  void render(CanvasRenderingContext2D context) {
-    context.lineTo(_x, _y);
+  void draw(CanvasRenderingContext2D context) {
+    context.lineTo(x, y);
   }
 
 }

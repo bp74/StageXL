@@ -2,23 +2,32 @@ part of stagexl.drawing;
 
 abstract class _GraphicsCommandStroke extends _GraphicsCommand {
 
-  num _lineWidth;
-  String _lineJoin;
-  String _lineCap;
+  final double lineWidth;
+  final String lineJoin;
+  final String lineCap;
 
-  _GraphicsCommandStroke(num lineWidth, String lineJoin, String lineCap) {
-    _lineWidth = lineWidth.toDouble();
-    _lineJoin = lineJoin;
-    _lineCap = lineCap;
-  }
+  _GraphicsCommandStroke(num lineWidth, String lineJoin, String lineCap) :
+
+    lineWidth = lineWidth.toDouble(),
+    lineJoin = lineJoin,
+    lineCap = lineCap;
 
   //---------------------------------------------------------------------------
 
   @override
+  void updateBounds(_GraphicsBounds bounds) {
+    bounds.stroke(lineWidth);
+  }
+
+  @override
   bool hitTest(CanvasRenderingContext2D context, num localX, num localY) {
-    context.lineWidth = _lineWidth;
-    context.lineJoin = _lineJoin;
-    context.lineCap = _lineCap;
+
+    context.lineWidth = lineWidth;
+    context.lineJoin = lineJoin;
+    context.lineCap = lineCap;
+
+    // if a browser does not support isPointInStroke we
+    // assume that in most cases it isn't a hit.
 
     try {
       return context.isPointInStroke(localX, localY);
@@ -28,12 +37,8 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
   }
 
   @override
-  void drawPath(CanvasRenderingContext2D context) {
+  void renderMask(CanvasRenderingContext2D context) {
     // no action
   }
 
-  @override
-  void updateBounds(_GraphicsBounds bounds) {
-    bounds.stroke(_lineWidth);
-  }
 }

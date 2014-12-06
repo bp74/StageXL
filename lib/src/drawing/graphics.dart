@@ -31,8 +31,8 @@ class Graphics {
     "4":56,"5":57,"6":58,"7":59,"8":60,"9":61,"+":62,"/":63};
 
   final List<_GraphicsCommand> _commands = new List<_GraphicsCommand>();
+  final Rectangle<num> _boundsRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
 
-  Rectangle<num> _boundsRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
   bool _boundsRefresh = true;
 
   void clear() {
@@ -45,7 +45,7 @@ class Graphics {
     _boundsRefresh = true;
   }
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Start drawing a freeform path.
   void beginPath() =>
@@ -107,7 +107,7 @@ class Graphics {
   void fillPattern(GraphicsPattern pattern) =>
     _addCommand(new _GraphicsCommandFillPattern(pattern));
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Draw a rounded rectangle at [x] and [y].
   void rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
@@ -123,7 +123,7 @@ class Graphics {
     _addCommand(new _GraphicsCommandQuadraticCurveTo(x, y, x + ellipseWidth, y));
   }
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Draw a circle at [x] and [y]
   void circle(num x, num y, num radius) {
@@ -132,7 +132,7 @@ class Graphics {
     _addCommand(new _GraphicsCommandArc(x, y, radius, 0, PI * 2, false));
   }
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Draw an ellipse at [x] and [y]
   void ellipse(num x, num y, num width, num height) {
@@ -154,7 +154,7 @@ class Graphics {
     _addCommand(new _GraphicsCommandBezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym));
   }
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void decode(String str)  {
 
@@ -171,8 +171,7 @@ class Graphics {
       var fi = n>>3; // highest order bits 1-3 code for operation.
       var f = instructions[fi];
       // check that we have a valid instruction & that the unused bits are empty:
-      if (f == null || (n&3) > 0)
-        throw("bad path data (@$i): $c");
+      if (f == null || (n&3) > 0) throw new StateError("bad path data (@$i): $c");
       var pl = paramCount[fi];
       if (fi == 0) x=y=0; // move operations reset the position.
       params.length = 0;
@@ -193,83 +192,96 @@ class Graphics {
     }
   }
 
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   Rectangle<num> get bounds {
 
     if (_boundsRefresh){
 
       var graphicsBounds = new _GraphicsBounds();
+      var commands = _commands;
 
-      for(int i = 0; i < _commands.length; i++) {
-        _commands[i].updateBounds(graphicsBounds);
+      for(int i = 0; i < commands.length; i++) {
+        commands[i].updateBounds(graphicsBounds);
       }
 
       _boundsRefresh = false;
-      _boundsRectangle = graphicsBounds.getRectangle();
+      _boundsRectangle.copyFrom(graphicsBounds.getRectangle());
     }
 
     return _boundsRectangle.clone();
   }
 
-  //----------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   bool hitTest(num localX, num localY) {
 
+    var hit = false;
+    var context = _dummyCanvasContext;
+    var commands = _commands;
+
     if (this.bounds.contains(localX, localY)) {
-
-      // CocoonJS does not support "isPointInPath", therefore we just
-      // check the rectangular bounds of the graphics shape.
-
-      if (env.isCocoonJS) return true;
-
-      var context = _dummyCanvasContext;
       context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
       context.beginPath();
-
-      for(int i = 0; i < _commands.length; i++) {
-        if (_commands[i].hitTest(context, localX, localY)) {
-          return true;
-        }
+      for(int i = 0; i < commands.length && hit == false; i++) {
+        hit = commands[i].hitTest(context, localX, localY);
       }
     }
-
-    return false;
+    return hit;
   }
-  //----------------------------------------------------------------------------
+
+  //---------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-
-    var renderContext = renderState.renderContext;
-    if (renderContext is RenderContextCanvas) {
-
-      renderContext.setTransform(renderState.globalMatrix);
-      renderContext.setAlpha(renderState.globalAlpha);
-
-      var rawContext = renderContext.rawContext;
-      rawContext.beginPath();
-
-      for(int i = 0; i < _commands.length; i++) {
-        _commands[i].render(rawContext);
-      }
-
+    if (renderState.renderContext is RenderContextWebGL) {
+      _renderWebGL(renderState);
     } else {
-
-      // TODO: Native support for Graphics in WebGL will be added later.
-      // For now please use the applyCache feature of DisplayObject.
-
+      _renderCanvas2D(renderState);
     }
   }
 
-  //----------------------------------------------------------------------------
-/*
-  void _drawPath(CanvasRenderingContext2D context) {
-
-    for(int i = 0; i < _commands.length; i++) {
-      _commands[i].drawPath(context);
+  void renderMask(RenderState renderState) {
+    if (renderState.renderContext is RenderContextWebGL) {
+      _renderWebGL(renderState);
+    }else {
+      _renderMaskCanvas2D(renderState);
     }
   }
-*/
+
+  //---------------------------------------------------------------------------
+
+  void _renderWebGL(RenderState renderState) {
+    // TODO: Native support for Graphics in WebGL will be added later.
+  }
+
+  void _renderCanvas2D(RenderState renderState) {
+
+    RenderContextCanvas renderContext = renderState.renderContext;
+    var rawContext = renderContext.rawContext;
+    var commands = _commands;
+
+    renderContext.setTransform(renderState.globalMatrix);
+    renderContext.setAlpha(renderState.globalAlpha);
+    rawContext.beginPath();
+
+    for(int i = 0; i < commands.length; i++) {
+      commands[i].render(rawContext);
+    }
+  }
+
+  void _renderMaskCanvas2D(RenderState renderState) {
+
+    RenderContextCanvas renderContext = renderState.renderContext;
+    var rawContext = renderContext.rawContext;
+    var commands = _commands;
+
+    renderContext.setTransform(renderState.globalMatrix);
+    rawContext.beginPath();
+
+    for(int i = 0; i < commands.length; i++) {
+      commands[i].renderMask(rawContext);
+    }
+  }
 
 }
