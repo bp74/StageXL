@@ -42,8 +42,8 @@ class _GraphicsCommandQuadraticCurveTo extends _GraphicsCommand {
       bounds.updateCursor(controlX, controlY);
     }
 
-    double sx = bounds.cursorX;
-    double sy = bounds.cursorY;
+    double sx = bounds.cursorX.toDouble();
+    double sy = bounds.cursorY.toDouble();
     double cx = controlX;
     double cy = controlY;
     double ex = endX;
