@@ -53,19 +53,19 @@ class Sprite extends DisplayObjectContainer {
 
     if (inputEvent == null && stage != null) {
       globalPoint.copyFrom(stage.mousePosition);
-      this.globalToLocal(globalPoint, anchorPoint);
-      touchPointID = 0;
-    } else if (inputEvent is TouchEvent) {
-      globalPoint.setTo(inputEvent.stageX, inputEvent.stageY);
-      anchorPoint.setTo(inputEvent.localX, inputEvent.localY);
-      touchPointID = inputEvent.touchPointID;
     } else if (inputEvent is MouseEvent) {
       globalPoint.setTo(inputEvent.stageX, inputEvent.stageY);
-      anchorPoint.setTo(inputEvent.localX, inputEvent.localY);
-      touchPointID = 0;
+    } else if (inputEvent is TouchEvent) {
+      globalPoint.setTo(inputEvent.stageX, inputEvent.stageY);
+      touchPointID = inputEvent.touchPointID;
     }
 
-    anchorPoint = lockCenter ? this.bounds.center : anchorPoint;
+    if (lockCenter) {
+      anchorPoint = this.bounds.center;
+    } else {
+      globalToLocal(globalPoint, anchorPoint);
+    }
+
     stage._startDrag(this, globalPoint, anchorPoint, bounds, touchPointID);
   }
 
