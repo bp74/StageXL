@@ -1,47 +1,22 @@
 part of stagexl.display;
 
 /// The Sprite class is a basic display list building block.
-/// 
-/// It is a display list node that can display graphics and can also contain 
+///
+/// It is a display list node that can display graphics and can also contain
 /// children.
 class Sprite extends DisplayObjectContainer {
 
-  /// Specifies the button mode of this sprite.
-  /// 
-  /// If true, this sprite behaves as a button, which means that it triggers the
-  /// display of the hand cursor when the pointer passes over the sprite and can
-  /// receive a click event if the enter or space keys are pressed when the
-  /// sprite has focus. You can suppress the display of the hand cursor by
-  /// setting the [useHandCursor] property to false, in which case the pointer
-  /// is displayed.
-  /// 
-  /// Although it is better to use the [SimpleButton] class to create buttons,
-  /// you can use the [buttonMode] property to give a sprite some button-like
-  /// functionality.
-  /// 
-  /// To exclude a sprite from the tab order, set the [tabEnabled] property
-  /// (inherited from the [InteractiveObject] class and true by default) to
-  /// false. 
-  /// 
-  /// Additionally, consider whether you want the children of your sprite to be
-  /// user input enabled. Most buttons do not enable user input interactivity
-  /// for their child objects because it confuses the event flow. To disable
-  /// user input interactivity for all child objects, you must set the
-  /// [mouseChildren] property (inherited from the [DisplayObjectContainer]
-  /// class) to false.
-  bool buttonMode = false;
-  
   /// Designates another sprite to serve as the hit area for a sprite.
-  /// 
+  ///
   /// If the hitArea is null (the default), the sprite itself is used as the hit
   /// area. The value of the hitArea property can be a reference to a Sprite
   /// object.
-  /// 
+  ///
   /// You can change the hitArea property at any time; the modified sprite
   /// immediately uses the new hit area behavior. The sprite designated as the
   /// hit area does not need to be visible; its graphical shape, although not
   /// visible, is still detected as the hit area.
-  /// 
+  ///
   /// Note: You must set to false the [mouseEnabled] property of the sprite
   /// designated as the hit area. Otherwise, your sprite button might not work
   /// because the sprite designated as the hit area receives the user input
@@ -51,7 +26,7 @@ class Sprite extends DisplayObjectContainer {
   Graphics _graphics = null;
   DisplayObject _dropTarget = null;
 
-  /// Specifies the Graphics object that belongs to this sprite where vector 
+  /// Specifies the Graphics object that belongs to this sprite where vector
   /// drawing commands can occur.
   Graphics get graphics {
     return (_graphics != null) ? _graphics : _graphics = new Graphics();
@@ -66,16 +41,16 @@ class Sprite extends DisplayObjectContainer {
   static Point<num> _dragSpriteCenter = null;
   static Rectangle<num> _dragSpriteBounds = null;
 
-  /// Lets the user drag the specified sprite. 
-  /// 
-  /// The sprite remains draggable until explicitly stopped through a call to 
+  /// Lets the user drag the specified sprite.
+  ///
+  /// The sprite remains draggable until explicitly stopped through a call to
   /// the [stopDrag] method, or until another sprite is made draggable. Only one
   /// sprite is draggable at a time.
-  /// 
+  ///
   /// With [lockCenter] you can specify whether the draggable sprite is locked
   /// to the center of the pointer position (true), or locked to the point where
   /// the user first clicked the sprite (false).
-  /// 
+  ///
   /// [bounds] is the value relative to the coordinates of the Sprite's parent
   /// that specify a constraint rectangle for the Sprite.
   startDrag([bool lockCenter = false, Rectangle<num> bounds = null]) {
@@ -94,7 +69,7 @@ class Sprite extends DisplayObjectContainer {
   }
 
   /// Ends the [startDrag] method.
-  /// 
+  ///
   /// A sprite that was made draggable with the [startDrag] method remains
   /// draggable until a [stopDrag] method is added, or until another sprite
   /// becomes draggable. Only one sprite is draggable at a time.
