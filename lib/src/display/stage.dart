@@ -104,7 +104,7 @@ class Stage extends DisplayObjectContainer {
     Mouse.onCursorChanged.listen((cursorName) => _updateMouseCursor());
     Multitouch.onInputModeChanged.listen(_onMultitouchInputModeChanged);
 
-    _onMultitouchInputModeChanged(null);
+    _onMultitouchInputModeChanged(Multitouch.inputMode);
   }
 
   //----------------------------------------------------------------------------
