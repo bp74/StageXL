@@ -430,19 +430,18 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  void _startDrag(DisplayObject object,
-                  Point<num> globalPoint, Point<num> anchorPoint,
+  void _startDrag(Sprite sprite, Point<num> globalPoint, Point<num> anchorPoint,
                   Rectangle<num> bounds, int touchPointID) {
 
-    var drag = new _Drag(this, object, anchorPoint, bounds, touchPointID);
+    var drag = new _Drag(this, sprite, anchorPoint, bounds, touchPointID);
     drag.update(touchPointID, globalPoint);
 
-    _drags.removeWhere((d) => d.touchPointID == touchPointID || d.sprite == object);
+    _drags.removeWhere((d) => d.touchPointID == touchPointID || d.sprite == sprite);
     _drags.add(drag);
   }
 
-  void _stopDrag(DisplayObject object) {
-    _drags.removeWhere((d) => identical(d.sprite, object));
+  void _stopDrag(Sprite sprite) {
+    _drags.removeWhere((d) => d.sprite == sprite);
   }
 
   //----------------------------------------------------------------------------
