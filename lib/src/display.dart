@@ -53,6 +53,10 @@ part 'display/simple_button.dart';
 part 'display/sprite.dart';
 part 'display/sprite_3d.dart';
 part 'display/stage.dart';
+part 'display/stage_align.dart';
+part 'display/stage_render_mode.dart';
+part 'display/stage_scale_mode.dart';
+part 'display/stage_tools.dart';
 
 final Matrix _tmpMatrix = new Matrix.fromIdentity();
 final Matrix _identityMatrix = new Matrix.fromIdentity();
