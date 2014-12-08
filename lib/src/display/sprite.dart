@@ -58,7 +58,7 @@ class Sprite extends DisplayObjectContainer {
     } else if (inputEvent is TouchEvent) {
       globalPoint.setTo(inputEvent.stageX, inputEvent.stageY);
       touchPointID = inputEvent.touchPointID;
-    }
+    } else return;
 
     if (lockCenter) {
       anchorPoint = this.bounds.center;
