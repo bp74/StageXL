@@ -12,7 +12,7 @@ part of stagexl.events;
 ///
 ///     sprite.onMouseClick.listen(_onMouseClick);
 
-class MouseEvent extends Event implements InputEvent {
+class MouseEvent extends InputEvent {
 
   static const String CLICK = "click";
   static const String DOUBLE_CLICK = "doubleClick";
@@ -35,29 +35,18 @@ class MouseEvent extends Event implements InputEvent {
   static const String ROLL_OUT = "rollOut";
   static const String ROLL_OVER = "rollOver";
 
-  //----------------------------------------------------------------------------
-
-  /// The x-coordinate at which the event occurred relative to the containing
-  /// display object.
-  final num localX;
-
-  /// The y-coordinate at which the event occurred relative to the containing
-  /// display object.
-  final num localY;
-
-  /// The x-coordinate at which the event occurred relative to the stage.
-  final num stageX;
-
-  /// The y-coordinate at which the event occurred relative to the stage.
-  final num stageY;
+  //---------------------------------------------------------------------------
 
   /// The amount that is expected to scroll horizontally.
+
   final num deltaX;
 
   /// The amount that is expected to scroll vertically.
+
   final num deltaY;
 
   /// Indicates whether the primary mouse button is pressed (true) or not (false).
+
   final bool buttonDown;
 
   /// Indicates whether or not the mouse down event is part of a multi-click
@@ -77,23 +66,16 @@ class MouseEvent extends Event implements InputEvent {
   /// sequence is interrupted for some reason, then the next
   /// [MouseEvent.MOUSE_DOWN] will have a [clickCount] of 1. The
   /// [MouseEvent.DOUBLE_CLICK] event will continue to fire as expected.
+
   final int clickCount;
 
-  /// Indicates whether the Alt key is active (true) or inactive (false).
-  final bool altKey;
-
-  /// Indicates whether the Ctrl key is active (true) or inactive (false).
-  final bool ctrlKey;
-
-  /// Indicates whether the Shift key is active (true) or inactive (false).
-  final bool shiftKey;
-
   /// Creates a new [MouseEvent].
-  MouseEvent(String type, bool bubbles,
-      this.localX, this.localY,
-      this.stageX, this.stageY,
-      this.deltaX, this.deltaY,
-      this.buttonDown, this.clickCount,
-      this.altKey, this.ctrlKey, this.shiftKey) : super(type, bubbles);
 
+  MouseEvent(
+      String type, bool bubbles,
+      num localX, num localY, num stageX, num stageY,
+      bool altKey, bool ctrlKey, bool shiftKey,
+      this.deltaX, this.deltaY, this.buttonDown, this.clickCount) : super(
+          type, bubbles, localX, localY, stageX, stageY,
+          altKey, ctrlKey, shiftKey);
 }

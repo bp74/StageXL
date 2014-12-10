@@ -507,8 +507,8 @@ class Stage extends DisplayObjectContainer {
         oldTarget.globalToLocal(stagePoint, localPoint);
         oldTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT, true,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            0.0, 0.0, mouseButton.buttonDown, 0,
-            event.altKey, event.ctrlKey, event.shiftKey));
+            event.altKey, event.ctrlKey, event.shiftKey,
+            0.0, 0.0, mouseButton.buttonDown, 0));
       }
 
       for(int i = 0; i < oldTargetList.length - commonCount; i++) {
@@ -516,8 +516,8 @@ class Stage extends DisplayObjectContainer {
         target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT, false,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            0.0, 0.0, mouseButton.buttonDown, 0,
-            event.altKey, event.ctrlKey, event.shiftKey));
+            event.altKey, event.ctrlKey, event.shiftKey,
+            0.0, 0.0, mouseButton.buttonDown, 0));
       }
 
       for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
@@ -525,16 +525,16 @@ class Stage extends DisplayObjectContainer {
         target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER, false,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            0.0, 0.0, mouseButton.buttonDown, 0,
-            event.altKey, event.ctrlKey, event.shiftKey));
+            event.altKey, event.ctrlKey, event.shiftKey,
+            0.0, 0.0, mouseButton.buttonDown, 0));
       }
 
       if (newTarget != null) {
         newTarget.globalToLocal(stagePoint, localPoint);
         newTarget.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER, true,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            0.0, 0.0, mouseButton.buttonDown, 0,
-            event.altKey, event.ctrlKey, event.shiftKey));
+            event.altKey, event.ctrlKey, event.shiftKey,
+            0.0, 0.0, mouseButton.buttonDown, 0));
       }
 
       _mouseTarget = newTarget;
@@ -587,9 +587,9 @@ class Stage extends DisplayObjectContainer {
 
       target.globalToLocal(stagePoint, localPoint);
       target.dispatchEvent(new MouseEvent(mouseEventType, true,
-          localPoint.x, localPoint.y, stagePoint.x, stagePoint.y, 0.0, 0.0,
-          mouseButton.buttonDown, mouseButton.clickCount,
-          event.altKey, event.ctrlKey, event.shiftKey));
+          localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+          event.altKey, event.ctrlKey, event.shiftKey,
+          0.0, 0.0, mouseButton.buttonDown, mouseButton.clickCount));
 
       if (isClick) {
 
@@ -599,8 +599,8 @@ class Stage extends DisplayObjectContainer {
 
         target.dispatchEvent(new MouseEvent(mouseEventType, true,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            0.0, 0.0, mouseButton.buttonDown, 0,
-            event.altKey, event.ctrlKey, event.shiftKey));
+            event.altKey, event.ctrlKey, event.shiftKey,
+            0.0, 0.0, mouseButton.buttonDown, 0));
       }
     }
   }
@@ -618,8 +618,8 @@ class Stage extends DisplayObjectContainer {
     target.globalToLocal(stagePoint, localPoint);
     var mouseEvent = new MouseEvent(MouseEvent.MOUSE_WHEEL, true,
         localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-        event.deltaX, event.deltaY, false, 0,
-        event.altKey, event.ctrlKey, event.shiftKey);
+        event.altKey, event.ctrlKey, event.shiftKey,
+        event.deltaX, event.deltaY, false, 0);
 
     target.dispatchEvent(mouseEvent);
     if (mouseEvent.stopsPropagation) event.preventDefault();
@@ -692,10 +692,14 @@ class Stage extends DisplayObjectContainer {
     var stagePoint = _clientTransformation.transformPoint(client);
     var localPoint = new Point<num>(0.0, 0.0);
     var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
-    var touchPoint = _touchPoints.putIfAbsent(identifier,
-        () => new _TouchPoint(target, _touchPoints.isEmpty));
 
-    _drags.forEach((d) => d.update(touchPoint.touchPointID, stagePoint));
+    var touchPoint = _touchPoints.putIfAbsent(identifier, () =>
+        new _TouchPoint(target, _touchPoints.isEmpty));
+
+    var touchPointID = touchPoint.touchPointID;
+    var primaryTouchPoint = touchPoint.primaryTouchPoint;
+
+    _drags.forEach((d) => d.update(touchPointID, stagePoint));
 
     if (touchPoint.currentTarget != target) {
 
@@ -724,35 +728,31 @@ class Stage extends DisplayObjectContainer {
       if (oldTarget != null) {
         oldTarget.globalToLocal(stagePoint, localPoint);
         oldTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true,
-            touchPoint.touchPointID, touchPoint.primaryTouchPoint,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            altKey, ctrlKey, shiftKey));
+            altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
       }
 
       for(int i = 0; i < oldTargetList.length - commonCount; i++) {
         DisplayObject target = oldTargetList[i];
         target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OUT, false,
-            touchPoint.touchPointID, touchPoint.primaryTouchPoint,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            altKey, ctrlKey, shiftKey));
+            altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
       }
 
       for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
         DisplayObject target = newTargetList[i];
         target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OVER, false,
-            touchPoint.touchPointID, touchPoint.primaryTouchPoint,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            altKey, ctrlKey, shiftKey));
+            altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
       }
 
       if (newTarget != null) {
         newTarget.globalToLocal(stagePoint, localPoint);
         newTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true,
-            touchPoint.touchPointID, touchPoint.primaryTouchPoint,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            altKey, ctrlKey, shiftKey));
+            altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
       }
 
       touchPoint.currentTarget = newTarget;
@@ -788,15 +788,13 @@ class Stage extends DisplayObjectContainer {
 
       target.globalToLocal(stagePoint, localPoint);
       target.dispatchEvent(new TouchEvent(touchEventType, true,
-          touchPoint.touchPointID, touchPoint.primaryTouchPoint,
           localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-          altKey, ctrlKey, shiftKey));
+          altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
 
       if (isTap) {
         target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_TAP, true,
-            touchPoint.touchPointID, touchPoint.primaryTouchPoint,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            altKey, ctrlKey, shiftKey));
+            altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
       }
     }
   }

@@ -7,7 +7,7 @@ part of stagexl.events;
 /// touch interaction, and to manage the support of touch interaction if the
 /// current environment supports it.
 
-class TouchEvent extends Event implements InputEvent {
+class TouchEvent extends InputEvent {
 
   static const String TOUCH_BEGIN = "touchBegin";
   static const String TOUCH_END = "touchEnd";
@@ -19,42 +19,25 @@ class TouchEvent extends Event implements InputEvent {
 
   static const String TOUCH_ROLL_OUT = "touchRollOut";
   static const String TOUCH_ROLL_OVER  = "touchRollOver";
-  static const String TOUCH_TAP  = "touchTap";              // ToDo
+  static const String TOUCH_TAP  = "touchTap";
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// A unique identification number assigned to the touch point.
+
   final int touchPointID;
 
   /// Indicates whether the first point of contact is mapped to mouse events.
+
   final bool isPrimaryTouchPoint;
 
-  /// The x-coordinate at which the event occurred relative to the containing
-  /// display object.
-  final num localX;
-
-  /// The y-coordinate at which the event occurred relative to the containing
-  /// display object.
-  final num localY;
-
-  /// The x-coordinate at which the event occurred relative to the stage.
-  final num stageX;
-
-  /// The y-coordinate at which the event occurred relative to the stage.
-  final num stageY;
-
-  /// Indicates whether the Alt key is active (true) or inactive (false).
-  final bool altKey;
-
-  /// Indicates whether the Ctrl key is active (true) or inactive (false).
-  final bool ctrlKey;
-
-  /// Indicates whether the Shift key is active (true) or inactive (false).
-  final bool shiftKey;
-
   /// Creates a new [TouchEvent].
-  TouchEvent(String type, bool bubbles,
-      this.touchPointID, this.isPrimaryTouchPoint,
-      this.localX, this.localY, this.stageX, this.stageY,
-      this.altKey, this.ctrlKey, this.shiftKey) : super(type, bubbles);
+
+  TouchEvent(
+      String type, bool bubbles,
+      num localX, num localY, num stageX, num stageY,
+      bool altKey, bool ctrlKey, bool shiftKey,
+      this.touchPointID, this.isPrimaryTouchPoint) : super(
+          type, bubbles, localX, localY, stageX, stageY,
+          altKey, ctrlKey, shiftKey);
 }
