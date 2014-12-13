@@ -10,7 +10,7 @@ class _GraphicsCommandBeginPath extends _GraphicsCommand {
   }
 
   @override
-  void draw(CanvasRenderingContext2D context) {
+  void drawCanvas(CanvasRenderingContext2D context) {
     context.beginPath();
   }
 

@@ -26,7 +26,7 @@ class _GraphicsCommandRect extends _GraphicsCommand {
   }
 
   @override
-  void draw(CanvasRenderingContext2D context) {
+  void drawCanvas(CanvasRenderingContext2D context) {
     context.rect(x, y, width, height);
   }
 }

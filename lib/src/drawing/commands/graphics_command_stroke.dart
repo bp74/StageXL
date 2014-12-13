@@ -37,7 +37,7 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
   }
 
   @override
-  void renderMask(CanvasRenderingContext2D context) {
+  void renderMaskCanvas(CanvasRenderingContext2D context) {
     // no action
   }
 

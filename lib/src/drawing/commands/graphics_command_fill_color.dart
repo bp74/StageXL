@@ -7,7 +7,7 @@ class _GraphicsCommandFillColor extends _GraphicsCommandFill {
   _GraphicsCommandFillColor(this.color);
 
   @override
-  void draw(CanvasRenderingContext2D context) {
+  void drawCanvas(CanvasRenderingContext2D context) {
     context.fillStyle = color;
     context.fill();
   }

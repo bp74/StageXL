@@ -67,7 +67,7 @@ class _GraphicsCommandArcTo extends _GraphicsCommand {
   //---------------------------------------------------------------------------
 
   @override
-  void draw(CanvasRenderingContext2D context) {
+  void drawCanvas(CanvasRenderingContext2D context) {
     context.arcTo(controlX, controlY, endX, endY, radius);
   }
 

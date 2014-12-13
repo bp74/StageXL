@@ -22,7 +22,7 @@ class _GraphicsCommandLineTo extends _GraphicsCommand {
   }
 
   @override
-  void draw(CanvasRenderingContext2D context) {
+  void drawCanvas(CanvasRenderingContext2D context) {
     context.lineTo(x, y);
   }
 

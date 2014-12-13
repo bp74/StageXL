@@ -9,7 +9,7 @@ class _GraphicsCommandStrokeGradient extends _GraphicsCommandStroke {
         super (lineWidth, lineJoin, lineCap),  gradient = gradient;
 
   @override
-  void draw(CanvasRenderingContext2D context) {
+  void drawCanvas(CanvasRenderingContext2D context) {
     context.strokeStyle = gradient.getCanvasGradient(context);
     context.lineWidth = lineWidth;
     context.lineJoin = lineJoin;

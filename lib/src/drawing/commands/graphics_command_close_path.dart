@@ -5,7 +5,7 @@ class _GraphicsCommandClosePath extends _GraphicsCommand {
   _GraphicsCommandClosePath();
 
   @override
-  void draw(CanvasRenderingContext2D context) {
+  void drawCanvas(CanvasRenderingContext2D context) {
     context.closePath();
   }
 }

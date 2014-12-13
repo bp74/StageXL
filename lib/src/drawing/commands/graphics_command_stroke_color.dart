@@ -9,7 +9,7 @@ class _GraphicsCommandStrokeColor extends _GraphicsCommandStroke {
         super (lineWidth, lineJoin, lineCap), color = color;
 
   @override
-  void draw(CanvasRenderingContext2D context) {
+  void drawCanvas(CanvasRenderingContext2D context) {
     context.strokeStyle = color;
     context.lineWidth = lineWidth;
     context.lineJoin = lineJoin;

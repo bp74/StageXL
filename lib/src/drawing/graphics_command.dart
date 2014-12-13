@@ -3,24 +3,32 @@ part of stagexl.drawing;
 abstract class _GraphicsCommand {
 
   void updateBounds(_GraphicsBounds bounds) {
-    // override if command.
+    // override in command.
   }
 
-  void draw(CanvasRenderingContext2D context) {
-    // override if command.
+  void drawCanvas(CanvasRenderingContext2D context) {
+    // override in command.
   }
+
+  void drawWebGL(RenderState renderState) {
+    // override in command.
+  }
+
+  //---------------------------------------------------------------------------
 
   bool hitTest(CanvasRenderingContext2D context, num localX, num localY) {
-    draw(context);
+    drawCanvas(context);
     return false;
   }
 
-  void render(CanvasRenderingContext2D context) {
-    draw(context);
+  //---------------------------------------------------------------------------
+
+  void renderCanvas(CanvasRenderingContext2D context) {
+    drawCanvas(context);
   }
 
-  void renderMask(CanvasRenderingContext2D context) {
-    draw(context);
+  void renderMaskCanvas(CanvasRenderingContext2D context) {
+    drawCanvas(context);
   }
 
 }

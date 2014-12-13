@@ -85,7 +85,7 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
   //---------------------------------------------------------------------------
 
   @override
-  void draw(CanvasRenderingContext2D context) {
+  void drawCanvas(CanvasRenderingContext2D context) {
     context.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
 

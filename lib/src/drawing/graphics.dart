@@ -237,25 +237,31 @@ class Graphics {
     if (renderState.renderContext is RenderContextWebGL) {
       _renderWebGL(renderState);
     } else {
-      _renderCanvas2D(renderState);
+      _renderCanvas(renderState);
     }
   }
 
   void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextWebGL) {
-      _renderWebGL(renderState);
+      _renderMaskWebGL(renderState);
     }else {
-      _renderMaskCanvas2D(renderState);
+      _renderMaskCanvas(renderState);
     }
   }
 
   //---------------------------------------------------------------------------
 
+  // TODO: Native support for Graphics in WebGL will be added later.
+
   void _renderWebGL(RenderState renderState) {
-    // TODO: Native support for Graphics in WebGL will be added later.
   }
 
-  void _renderCanvas2D(RenderState renderState) {
+  void _renderMaskWebGL(RenderState renderState) {
+  }
+
+  //---------------------------------------------------------------------------
+
+  void _renderCanvas(RenderState renderState) {
 
     RenderContextCanvas renderContext = renderState.renderContext;
     var rawContext = renderContext.rawContext;
@@ -266,11 +272,11 @@ class Graphics {
     rawContext.beginPath();
 
     for(int i = 0; i < commands.length; i++) {
-      commands[i].render(rawContext);
+      commands[i].renderCanvas(rawContext);
     }
   }
 
-  void _renderMaskCanvas2D(RenderState renderState) {
+  void _renderMaskCanvas(RenderState renderState) {
 
     RenderContextCanvas renderContext = renderState.renderContext;
     var rawContext = renderContext.rawContext;
@@ -280,7 +286,7 @@ class Graphics {
     rawContext.beginPath();
 
     for(int i = 0; i < commands.length; i++) {
-      commands[i].renderMask(rawContext);
+      commands[i].renderMaskCanvas(rawContext);
     }
   }
 
