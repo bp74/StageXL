@@ -50,6 +50,38 @@ class Mesh extends DisplayObject {
     _uvTemp = new Float32List(vertexCount * 2),
     _bounds = new Rectangle<double>(0.0, 0.0, 0.0, 0.0);
 
+  factory Mesh.fromGrid(BitmapData bitmapData, int columns, int rows) {
+
+    var width = bitmapData.width;
+    var height = bitmapData.height;
+    var vertexCount = (columns + 1) * (rows + 1);
+    var indexCount = 3 * 2 * columns * rows;
+    var mesh = new Mesh(bitmapData, vertexCount, indexCount);
+
+    for (int r = 0, vertex = 0; r <= rows; r++) {
+      for(int c = 0; c <= columns; c++) {
+        var u = c / columns;
+        var v = r / rows;
+        var x = width * u;
+        var y = height * v;
+        mesh.setVertex(vertex++, x, y, u, v);
+      }
+    }
+
+    for (int r = 0, triangle = 0; r < rows; r++) {
+      for(int c = 0; c < columns; c++) {
+        var v0 = (r + 0) * (columns + 1) + c + 0;
+        var v1 = (r + 0) * (columns + 1) + c + 1;
+        var v2 = (r + 1) * (columns + 1) + c + 1;
+        var v3 = (r + 1) * (columns + 1) + c + 0;
+        mesh.setIndexTriangle(triangle++, v0, v1, v3);
+        mesh.setIndexTriangle(triangle++, v1, v3, v2);
+      }
+    }
+
+    return mesh;
+  }
+
   //---------------------------------------------------------------------------
 
  /// Change the XY and UV values of the vertex.
