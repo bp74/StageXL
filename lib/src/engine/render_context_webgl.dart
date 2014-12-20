@@ -111,7 +111,9 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
-  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+  void renderQuad(
+    RenderState renderState, RenderTextureQuad renderTextureQuad) {
+
     activateRenderProgram(renderProgramQuad);
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(renderTextureQuad.renderTexture);
@@ -120,12 +122,31 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderTriangle(RenderState renderState,
-                      num x1, num y1, num x2, num y2, num x3, num y3, int color) {
+  void renderTriangle(
+    RenderState renderState,
+    num x1, num y1, num x2, num y2, num x3, num y3, int color) {
 
     activateRenderProgram(renderProgramTriangle);
     activateBlendMode(renderState.globalBlendMode);
     renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void renderMesh(
+    RenderState renderState, RenderTexture renderTexture,
+    int indexCount, Int16List indexList,
+    int vertexCount, Float32List xyList, Float32List uvList) {
+
+    activateRenderProgram(renderProgramMesh);
+    activateBlendMode(renderState.globalBlendMode);
+    activateRenderTexture(renderTexture);
+
+    renderProgramMesh.globalMatrix = renderState.globalMatrix;
+    renderProgramMesh.renderMesh(
+        indexCount, indexList,
+        vertexCount, xyList, uvList,
+        1.0, 1.0, 1.0, renderState.globalAlpha);
   }
 
   //-----------------------------------------------------------------------------------------------

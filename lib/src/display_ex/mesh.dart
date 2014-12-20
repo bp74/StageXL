@@ -195,24 +195,10 @@ class Mesh extends DisplayObject {
 
   @override
   void render(RenderState renderState) {
-    if (this.bitmapData != null) {
-      if (renderState.renderContext is RenderContextWebGL) {
-        _renderWebGL(renderState);
-      } else {
-        _renderMaskCanvas(renderState);
-      }
-    }
-  }
 
-  //---------------------------------------------------------------------------
-
-  void _renderWebGL(RenderState renderState) {
-
-    RenderContextWebGL renderContext = renderState.renderContext;
-    var renderProgram = renderContext.renderProgramMesh;
+    var renderContext = renderState.renderContext;
     var renderTextureQuad = bitmapData.renderTextureQuad;
-    var globalMatrix = renderState.globalMatrix;
-    var globalAlpha = renderState.globalAlpha;
+    var renderTexture = bitmapData.renderTexture;
 
     var u1 = renderTextureQuad.uvList[0];
     var v1 = renderTextureQuad.uvList[1];
@@ -231,19 +217,9 @@ class Mesh extends DisplayObject {
       }
     }
 
-    renderContext.activateRenderProgram(renderProgram);
-    renderContext.activateBlendMode(renderState.globalBlendMode);
-    renderContext.activateRenderTexture(renderTextureQuad.renderTexture);
-
-    renderProgram.globalMatrix = globalMatrix;
-    renderProgram.renderMesh(
+    renderContext.renderMesh(
+        renderState, renderTexture,
         indexCount, indexList,
-        vertexCount, xyList, _uvTemp,
-        1.0, 1.0, 1.0, globalAlpha);
+        vertexCount, xyList, _uvTemp);
   }
-
-  void _renderMaskCanvas(RenderState renderState) {
-    // TODO: Render Mesh for Canvas2D
-  }
-
 }
