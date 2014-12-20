@@ -3,14 +3,14 @@ part of stagexl.display_ex;
 /// The [Mesh] class allows free form deformations of a [BitmapData] instance
 /// by using triangles to form an arbitrary shape.
 ///
-/// Use the vertex- and index-list to build a mesh of triangles. Later you can
-/// change the vertices or indices to animate or change the mesh in any way
-/// you want. A triangle is defined by 3 vertices. Vertices are shared between
-/// triangles and therefore you need less vertices than indices.
+/// The vertices of the triangles are shared between different triangles.
+/// Therefore you should define the vertices first and afterwards define the
+/// triangles with the index number of the vertices. Each triangle needs three
+/// indices, so the number of indices is three times the number of triangles.
 ///
-/// Below are two simple meshes:
-/// The left mesh uses 9 vertices and 24 indices for 8 triangles.
-/// The right mesh uses 7 vertices and 18 indices for 6 triangles.
+/// To get a better understanding, let's take a look at two simple meshes:
+/// The left mesh uses 9 vertices and 8 triangles (24 indices).
+/// The right mesh uses 7 vertices and 6 triangles (18 indices).
 ///
 ///     0─────1─────2          0───────1
 ///     │   / │   / │         / \     / \
@@ -22,11 +22,11 @@ part of stagexl.display_ex;
 ///     │ /   │ /   │         \ /     \ /
 ///     6─────7─────8          4───────3
 ///
-/// Use the [setVertex] or [setIndex] methods to deform this meshes. A vertex
-/// is defined by the XY and UV values. The XY values define the position of
-/// the vertex in the local coordinate system of the Display Object. The UV
-/// values define the pixel location in a 0.0 to 1.0 coordinate system of the
-/// BitmapData.
+/// Use the [setVertex] and [setTriangleIndices] methods to form the mesh.
+/// A vertex is defined by the XY and UV values. The XY values define the
+/// position of the vertex in the local coordinate system of the Display
+/// Object. The UV values define the pixel location in a 0.0 to 1.0
+/// coordinate system of the BitmapData.
 
 class Mesh extends DisplayObject {
 
@@ -34,29 +34,35 @@ class Mesh extends DisplayObject {
 
   final int vertexCount;
   final int indexCount;
+  final int triangleCount;
   final Float32List xyList;
   final Float32List uvList;
   final Int16List indexList;
 
   final Float32List _uvTemp;
-  final Rectangle<num> _bounds;
 
-  Mesh(this.bitmapData, int vertexCount, int indexCount) :
+  /// Create a new Mesh with [vertexCount] vertices and [triangleCount]
+  /// triangles.
+
+  Mesh(this.bitmapData, int vertexCount, int triangleCount) :
     vertexCount = vertexCount,
-    indexCount = indexCount,
+    triangleCount = triangleCount,
+    indexCount = triangleCount * 3,
     xyList = new Float32List(vertexCount * 2),
     uvList = new Float32List(vertexCount * 2),
-    indexList = new Int16List(indexCount),
-    _uvTemp = new Float32List(vertexCount * 2),
-    _bounds = new Rectangle<double>(0.0, 0.0, 0.0, 0.0);
+    indexList = new Int16List(triangleCount * 3),
+    _uvTemp = new Float32List(vertexCount * 2);
+
+  /// Create a new grid shaped Mesh with the desired number of [columns]
+  /// and [rows]. A 2x2 grid will create 9 vertices.
 
   factory Mesh.fromGrid(BitmapData bitmapData, int columns, int rows) {
 
     var width = bitmapData.width;
     var height = bitmapData.height;
     var vertexCount = (columns + 1) * (rows + 1);
-    var indexCount = 3 * 2 * columns * rows;
-    var mesh = new Mesh(bitmapData, vertexCount, indexCount);
+    var triangleCount = 2 * columns * rows;
+    var mesh = new Mesh(bitmapData, vertexCount, triangleCount);
 
     for (int r = 0, vertex = 0; r <= rows; r++) {
       for(int c = 0; c <= columns; c++) {
@@ -74,8 +80,8 @@ class Mesh extends DisplayObject {
         var v1 = (r + 0) * (columns + 1) + c + 1;
         var v2 = (r + 1) * (columns + 1) + c + 1;
         var v3 = (r + 1) * (columns + 1) + c + 0;
-        mesh.setIndexTriangle(triangle++, v0, v1, v3);
-        mesh.setIndexTriangle(triangle++, v1, v3, v2);
+        mesh.setTriangleIndices(triangle++, v0, v1, v3);
+        mesh.setTriangleIndices(triangle++, v1, v3, v2);
       }
     }
 
@@ -84,7 +90,7 @@ class Mesh extends DisplayObject {
 
   //---------------------------------------------------------------------------
 
- /// Change the XY and UV values of the vertex.
+ /// Set the XY and UV values of a vertex.
  ///
   void setVertex(int vertex, num x, num y, num u, num v) {
     xyList[vertex * 2 + 0] = x.toDouble();
@@ -93,7 +99,7 @@ class Mesh extends DisplayObject {
     uvList[vertex * 2 + 1] = v.toDouble();
   }
 
-  /// Change the XY values of the vertex.
+  /// Set the XY values of a vertex.
   ///
   /// The XY values define the position of the vertex in the local coordinate
   /// system of the Display Object.
@@ -103,7 +109,7 @@ class Mesh extends DisplayObject {
     xyList[vertex * 2 + 1] = y.toDouble();
   }
 
-  /// Change the UV values of the vertex.
+  /// Set the UV values of a vertex.
   ///
   /// The UV values define the pixel location in a 0.0 to 1.0 coordinate system
   /// of the BitmapData.
@@ -113,15 +119,15 @@ class Mesh extends DisplayObject {
     uvList[vertex * 2 + 1] = v.toDouble();
   }
 
-  /// Change the vertex for a given index.
+  /// Set the corresponding vertex for an index.
 
   void setIndex(int index, int vertex) {
     indexList[index] = vertex;
   }
 
-  /// Change the vertices for a given triangle.
+  /// Set the corresponding vertices for the triangle indices.
 
-  void setIndexTriangle(int triangle, int v1, int v2, int v3) {
+  void setTriangleIndices(int triangle, int v1, int v2, int v3) {
     indexList[triangle * 3 + 0] = v1;
     indexList[triangle * 3 + 1] = v2;
     indexList[triangle * 3 + 2] = v3;
