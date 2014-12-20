@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class GraphicsGradient {
-
   String _kind;
   num _startX;
   num _startY;

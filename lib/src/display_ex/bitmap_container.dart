@@ -16,7 +16,6 @@ part of stagexl.display_ex;
 /// Canvas renderer.
 ///
 class BitmapContainer extends DisplayObjectContainer {
-
   void addChildAt(DisplayObject child, int index) {
     if (child is! Bitmap) {
       throw new ArgumentError("BitmapBatch only supports Bitmap children.");
@@ -43,7 +42,6 @@ class BitmapContainer extends DisplayObjectContainer {
   //-----------------------------------------------------------------------------------------------
 
   void _renderWebGL(RenderState renderState) {
-
     var globalMatrix = renderState.globalMatrix;
     var globalAlpha = renderState.globalAlpha;
     var renderContext = renderState.renderContext;
@@ -67,7 +65,6 @@ class BitmapContainer extends DisplayObjectContainer {
   //-----------------------------------------------------------------------------------------------
 
   void _renderCanvas(RenderState renderState) {
-
     var renderContext = renderState.renderContext;
     var renderContextCanvas = renderContext as RenderContextCanvas;
 
@@ -83,5 +80,4 @@ class BitmapContainer extends DisplayObjectContainer {
       }
     }
   }
-
 }

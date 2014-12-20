@@ -243,7 +243,6 @@ class _PolygonMask extends _TransformedMask {
 //-----------------------------------------------------------------------------
 
 class _GraphicsMask extends _TransformedMask {
-
   final Graphics graphics;
 
   _GraphicsMask(this.graphics);
@@ -262,7 +261,6 @@ class _GraphicsMask extends _TransformedMask {
 //-----------------------------------------------------------------------------
 
 class _ShapeMask extends _TransformedMask {
-
   final Shape shape;
 
   _ShapeMask(this.shape);

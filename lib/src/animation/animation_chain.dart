@@ -1,7 +1,7 @@
 part of stagexl.animation;
 
 /// The [AnimationChain] class is used to animate multiple [Animatable]s.
-/// 
+///
 /// Those animatables are animated one after the other and the [onComplete]
 /// callback is called when the last animatable has completed.
 ///
@@ -23,7 +23,6 @@ part of stagexl.animation;
 ///        ..onComplete = () => print("complete");
 ///
 class AnimationChain implements Animatable {
-
   final List<Animatable> _animatables = new List<Animatable>();
 
   Function _onStart;
@@ -43,7 +42,6 @@ class AnimationChain implements Animatable {
 
   @override
   bool advanceTime(num time) {
-
     _time += time;
 
     if (_started == false) {
@@ -73,8 +71,8 @@ class AnimationChain implements Animatable {
   //----------------------------------------------------------------------------
 
   /// The delay this [AnimatableChain] waits until it starts animating.
-  /// 
-  /// The delay may be changed as long as the animation has not been started. 
+  ///
+  /// The delay may be changed as long as the animation has not been started.
   num get delay => _delay;
 
   set delay(num value) {
@@ -83,14 +81,14 @@ class AnimationChain implements Animatable {
       _delay = value;
     }
   }
-  
+
   /// Indicates if this [AnimatableChain] is completed.
   bool get isComplete => _completed;
 
   //----------------------------------------------------------------------------
 
   /// The function that is called when an [AnimationChain] starts.
-  /// 
+  ///
   /// This happens after the specified [delay].
   void set onStart(void function()) {
     _onStart = function;

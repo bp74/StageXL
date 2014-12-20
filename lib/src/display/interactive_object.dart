@@ -1,9 +1,9 @@
 part of stagexl.display;
 
-/// The [InteractiveObject] class is the abstract base class for all display 
+/// The [InteractiveObject] class is the abstract base class for all display
 /// objects with which the user can interact, using the mouse, keyboard, or
 /// other user input device.
-/// 
+///
 /// The [InteractiveObject] class itself does not include any APIs for rendering
 /// content onscreen. To create a custom subclass of the [InteractiveObject]
 /// class, extend one of the subclasses that do have APIs for rendering content
@@ -11,20 +11,20 @@ part of stagexl.display;
 abstract class InteractiveObject extends DisplayObject {
 
   /// Specifies whether the object receives doubleClick events.
-  /// 
+  ///
   /// The default value is false, which means that by default an
   /// [InteractiveObject] instance does not receive doubleClick events. If the
   /// [doubleClickEnabled] property is set to true, the instance receives
   /// doubleClick events within its bounds. The [mouseEnabled] property of this
   /// [InteractiveObject] must also be set to true for the object to receive
   /// doubleClick events.
-  /// 
+  ///
   /// No event is dispatched by setting this property.
   bool doubleClickEnabled = false;
-  
-  /// Specifies whether this object receives mouse, or other user input, 
+
+  /// Specifies whether this object receives mouse, or other user input,
   /// messages.
-  /// 
+  ///
   /// The default value is true, which means that by default any
   /// [InteractiveObject] instance that is on the display list receives mouse
   /// events or other user input events. If [mouseEnabled] is set to false, the
@@ -33,21 +33,21 @@ abstract class InteractiveObject extends DisplayObject {
   /// are not affected. To change the [mouseEnabled] behavior for all children
   /// of an object on the display list, use
   /// [DisplayObjectContainer.mouseChildren].
-  /// 
+  ///
   /// No event is dispatched by setting this property.
   bool mouseEnabled = true;
-  
+
   /// Defines the mouse cursor that is displayed on this interactive object.
   String mouseCursor = MouseCursor.AUTO;
 
   /// Specifies whether this object is in the tab order.
-  /// 
+  ///
   /// If this object is in the tab order, the value is true; otherwise, the
   /// value is false. By default, the value is true.
   bool tabEnabled = true;
-  
+
   /// Specifies the tab ordering of objects.
-  /// 
+  ///
   /// The [tabIndex] property is 0 by default.
   int tabIndex = 0;
 

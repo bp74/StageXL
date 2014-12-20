@@ -8,7 +8,6 @@ part of stagexl.display_ex;
 /// time gauges used in games.
 ///
 class TimeGauge extends Gauge implements Animatable {
-
   static const String TIME_OUT = 'TIME_OUT';
   static const String TIME_SHORT = 'TIME_SHORT';
 
@@ -95,7 +94,6 @@ class TimeGauge extends Gauge implements Animatable {
   }
 
   void set ratio(num value) {
-
     num oldRatio = ratio;
     super.ratio = value;
 
@@ -107,5 +105,4 @@ class TimeGauge extends Gauge implements Animatable {
       });
     }
   }
-
 }

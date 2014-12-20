@@ -22,7 +22,6 @@ part of stagexl.animation;
 ///        ..onComplete = () => print("complete");
 ///
 class AnimationGroup implements Animatable {
-
   final List<Animatable> _animatables = new List<Animatable>();
 
   Function _onStart;
@@ -42,7 +41,6 @@ class AnimationGroup implements Animatable {
 
   @override
   bool advanceTime(num time) {
-
     _time += time;
 
     if (_started == false) {
@@ -74,7 +72,7 @@ class AnimationGroup implements Animatable {
   //----------------------------------------------------------------------------
 
   /// The delay this [AnimatableGroup] waits until it starts animating.
-  /// 
+  ///
   /// The delay may be changed as long as the animation has not been started.
   num get delay => _delay;
 
@@ -87,11 +85,11 @@ class AnimationGroup implements Animatable {
 
   /// Indicates if this [AnimatableGroup] is completed.
   bool get isComplete => _completed;
-  
+
   //----------------------------------------------------------------------------
 
   /// The function that is called when an [AnimationGroup] starts.
-  /// 
+  ///
   /// This happens after the specified [delay].
   void set onStart(void function()) {
     _onStart = function;

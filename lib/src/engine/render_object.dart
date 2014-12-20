@@ -6,7 +6,6 @@ part of stagexl.engine;
 /// rendered by the engine.
 ///
 abstract class RenderObject {
-
   Matrix get transformationMatrix;
   BlendMode get blendMode;
   num get alpha;

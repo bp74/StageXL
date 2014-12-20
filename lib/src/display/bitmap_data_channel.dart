@@ -1,7 +1,6 @@
 part of stagexl.display;
 
 class BitmapDataChannel {
-
   static const int RED = 1;
   static const int GREEN = 2;
   static const int BLUE = 4;
@@ -23,5 +22,4 @@ class BitmapDataChannel {
     if (bitmapDataChannel & BitmapDataChannel.ALPHA != 0) return 3;
     throw new ArgumentError("Invalid bitmapDataChannel");
   }
-
 }

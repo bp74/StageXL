@@ -5,7 +5,6 @@ part of stagexl.display;
 /// Stage will be placed on the Canvas.
 
 class StageAlign {
-
   final int index;
   const StageAlign._(this.index);
 

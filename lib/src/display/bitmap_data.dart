@@ -5,7 +5,6 @@ part of stagexl.display;
 /// If you need to batch drawing operations for better performance,
 /// please use [BitmapDataUpdateBatch] instead.
 class BitmapData implements BitmapDrawable {
-
   int _width = 0;
   int _height = 0;
 
@@ -231,5 +230,4 @@ class BitmapData implements BitmapDrawable {
   render(RenderState renderState) {
     renderState.renderQuad(_renderTextureQuad);
   }
-
 }

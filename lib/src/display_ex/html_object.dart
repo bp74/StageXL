@@ -36,7 +36,6 @@ part of stagexl.display_ex;
  */
 
 class HtmlObject extends DisplayObject {
-
   final Element element;
 
   CssStyleDeclaration _style;
@@ -45,7 +44,6 @@ class HtmlObject extends DisplayObject {
   String _styleVisibility = "";
 
   HtmlObject(this.element) {
-
     _style = this.element.style;
     _style.position = "absolute";
     _style.left = "0px";
@@ -79,7 +77,6 @@ class HtmlObject extends DisplayObject {
   //-----------------------------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-
     var globalMatrix = renderState.globalMatrix;
     var globalAlpha = renderState.globalAlpha;
     var visibility = this.visible && this.off == false;
@@ -107,5 +104,4 @@ class HtmlObject extends DisplayObject {
       _style.transform = _styleTransform = styleTransform;
     }
   }
-
 }

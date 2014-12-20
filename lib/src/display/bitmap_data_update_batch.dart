@@ -32,7 +32,6 @@ class BitmapDataUpdateBatch {
   //-----------------------------------------------------------------------------------------------
 
   void colorTransform(Rectangle<int> rect, ColorTransform transform) {
-
     bool isLittleEndianSystem = env.isLittleEndianSystem;
 
     int redMultiplier = (1024 * transform.redMultiplier).toInt();
@@ -60,7 +59,6 @@ class BitmapDataUpdateBatch {
     var data = imageData.data;
 
     for (int i = 0; i <= data.length - 4; i += 4) {
-
       int c0 = data[i + 0];
       int c1 = data[i + 1];
       int c2 = data[i + 2];
@@ -103,7 +101,6 @@ class BitmapDataUpdateBatch {
   //-----------------------------------------------------------------------------------------------
 
   void draw(BitmapDrawable source, [Matrix matrix]) {
-
     var renderState = new RenderState(_renderContext, _drawMatrix);
     if (matrix != null) renderState.globalMatrix.prepend(matrix);
     source.render(renderState);
@@ -183,5 +180,4 @@ class BitmapDataUpdateBatch {
     _renderContext.rawContext.clearRect(x, y, 1, 1);
     _renderContext.rawContext.fillRect(x, y, 1, 1);
   }
-
 }

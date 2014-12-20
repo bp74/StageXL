@@ -5,7 +5,6 @@ part of stagexl.display;
 /// It is a display list node that can display graphics and can also contain
 /// children.
 class Sprite extends DisplayObjectContainer {
-
   Graphics _graphics = null;
 
   /// Specifies the Graphics object that belongs to this sprite where vector
@@ -44,7 +43,6 @@ class Sprite extends DisplayObjectContainer {
   /// parent that specify a constraint rectangle for the Sprite.
 
   void startDrag([bool lockCenter = false, Rectangle<num> bounds = null]) {
-
     var stage = this.stage;
     var inputEvent = InputEvent.current;
     var globalPoint = new Point<num>(0.0, 0.0);
@@ -111,9 +109,7 @@ class Sprite extends DisplayObjectContainer {
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-
     if (this.hitArea != null) {
-
       var point = new Point(localX, localY);
       this.localToGlobal(point, point);
       this.hitArea.globalToLocal(point, point);
@@ -135,5 +131,4 @@ class Sprite extends DisplayObjectContainer {
     if (_graphics != null) _graphics.render(renderState);
     super.render(renderState);
   }
-
 }

@@ -6,7 +6,6 @@ part of stagexl.display_ex;
 /// the size defined by the [width] and [height] properties.
 
 class Scale9Bitmap extends Bitmap {
-
   BitmapData _bitmapData;
   Rectangle<int> _grid;
   int _width;
@@ -75,7 +74,6 @@ class Scale9Bitmap extends Bitmap {
 
   @override
   void render(RenderState renderState) {
-
     var x1 = _grid.left;
     var x2 = _grid.right;
     var x3 = ensureInt(bitmapData.width);
@@ -89,10 +87,10 @@ class Scale9Bitmap extends Bitmap {
     var renderContext = renderState.renderContext;
     var tempMatrix = globalMatrix.clone();
 
-    for(int x = 0; x < 3; x++) {
+    for (int x = 0; x < 3; x++) {
       var a = (x == 1) ? (width - x1 - x3 + x2) / (x2 - x1) : 1.0;
       var tx = (x == 1) ? x1 : ((x == 2) ? width - x3 + x2 : 0);
-      for(int y = 0; y < 3; y++) {
+      for (int y = 0; y < 3; y++) {
         var d = (y == 1) ? (height - y1 - y3 + y2) / (y2 - y1) : 1.0;
         var ty = (y == 1) ? y1 : ((y == 2) ? height - y3 + y2 : 0);
         globalMatrix.setTo(a, 0, 0, d, tx, ty);
@@ -107,7 +105,6 @@ class Scale9Bitmap extends Bitmap {
   //---------------------------------------------------------------------------
 
   _updateRenderTextureQuads() {
-
     var x0 = 0;
     var x1 = _grid.left;
     var x2 = _grid.right;

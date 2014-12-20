@@ -164,7 +164,6 @@ class _BitmapContainerProgram extends RenderProgram {
   //-----------------------------------------------------------------------------------------------
 
   void renderBitmap(Bitmap bitmap) {
-
     BitmapData bitmapData = bitmap.bitmapData;
     RenderTextureQuad renderTextureQuad = bitmapData.renderTextureQuad;
 
@@ -249,5 +248,4 @@ class _BitmapContainerProgram extends RenderProgram {
 
     if (_quadCount == _maxQuadCount) flush();
   }
-
 }

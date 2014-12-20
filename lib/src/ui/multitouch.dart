@@ -90,5 +90,4 @@ class Multitouch {
       return false;
     }
   }
-
 }

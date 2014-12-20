@@ -10,12 +10,11 @@ bool _frameLoopInitializer() {
 }
 
 void _animationFrame(num frameTime) {
-
-  var frameListeners = _globalFrameListeners.toList(growable:false);
+  var frameListeners = _globalFrameListeners.toList(growable: false);
   var currentFrameTime = ensureNum(frameTime) / 1000.0;
   var deltaTime = currentFrameTime - _globalFrameTime;
 
-  for(int i = 0; i < frameListeners.length; i++) {
+  for (int i = 0; i < frameListeners.length; i++) {
     frameListeners[i](deltaTime);
   }
 
@@ -27,7 +26,6 @@ void _animationFrame(num frameTime) {
 //-----------------------------------------------------------------------------
 
 abstract class RenderLoopBase {
-
   bool _running = false;
 
   RenderLoopBase() {

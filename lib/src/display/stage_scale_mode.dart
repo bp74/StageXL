@@ -3,7 +3,6 @@ part of stagexl.display;
 /// The StageScaleMode defines how the Stage is scaled inside of the Canvas.
 
 class StageScaleMode {
-
   final int index;
   const StageScaleMode._(this.index);
 

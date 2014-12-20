@@ -4,7 +4,6 @@ part of stagexl.display;
 /// the [RenderLoop] where the Stage is attached to.
 
 class StageRenderMode {
-
   final int index;
   const StageRenderMode._(this.index);
 

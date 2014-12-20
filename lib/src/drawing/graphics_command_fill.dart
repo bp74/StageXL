@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 abstract class _GraphicsCommandFill extends _GraphicsCommand {
-
   @override
   void updateBounds(_GraphicsBounds bounds) {
     bounds.fill();
@@ -15,7 +14,7 @@ abstract class _GraphicsCommandFill extends _GraphicsCommand {
 
     try {
       return context.isPointInPath(localX, localY);
-    } catch(e) {
+    } catch (e) {
       return true;
     }
   }

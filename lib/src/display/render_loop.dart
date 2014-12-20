@@ -1,7 +1,6 @@
 part of stagexl.display;
 
 class RenderLoop extends RenderLoopBase {
-
   final Juggler juggler = new Juggler();
 
   List<Stage> _stages = new List<Stage>();
@@ -23,7 +22,6 @@ class RenderLoop extends RenderLoopBase {
   }
 
   void addStage(Stage stage) {
-
     if (stage.renderLoop != null) {
       stage.renderLoop.removeStage(stage);
     }
@@ -33,7 +31,6 @@ class RenderLoop extends RenderLoopBase {
   }
 
   void removeStage(Stage stage) {
-
     if (stage.renderLoop == this) {
       _stages.remove(stage);
       stage._renderLoop = null;
@@ -43,7 +40,6 @@ class RenderLoop extends RenderLoopBase {
   //-------------------------------------------------------------------------------------------------
 
   void advanceTime(num deltaTime) {
-
     _currentTime += deltaTime;
 
     _enterFrameEvent.passedTime = deltaTime;
@@ -66,5 +62,4 @@ class RenderLoop extends RenderLoopBase {
 
     _exitFrameEvent.dispatch();
   }
-
 }

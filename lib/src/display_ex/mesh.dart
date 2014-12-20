@@ -90,8 +90,8 @@ class Mesh extends DisplayObject {
 
   //---------------------------------------------------------------------------
 
- /// Set the XY and UV values of a vertex.
- ///
+  /// Set the XY and UV values of a vertex.
+  ///
   void setVertex(int vertex, num x, num y, num u, num v) {
     xyList[vertex * 2 + 0] = x.toDouble();
     xyList[vertex * 2 + 1] = y.toDouble();
@@ -137,13 +137,12 @@ class Mesh extends DisplayObject {
 
   @override
   Rectangle<num> get bounds {
-
     double left = double.INFINITY;
     double top = double.INFINITY;
     double right = double.NEGATIVE_INFINITY;
     double bottom = double.NEGATIVE_INFINITY;
 
-    for(int i = 0; i < indexList.length; i++) {
+    for (int i = 0; i < indexList.length; i++) {
       int index = indexList[i + 0];
       num vertexX = xyList[index * 2 + 0];
       num vertexY = xyList[index * 2 + 1];
@@ -158,9 +157,7 @@ class Mesh extends DisplayObject {
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-
-    for(int i = 0; i < indexList.length - 2; i += 3) {
-
+    for (int i = 0; i < indexList.length - 2; i += 3) {
       int i1 = indexList[i + 0];
       int i2 = indexList[i + 1];
       int i3 = indexList[i + 2];
@@ -201,7 +198,6 @@ class Mesh extends DisplayObject {
 
   @override
   void render(RenderState renderState) {
-
     var renderContext = renderState.renderContext;
     var renderTextureQuad = bitmapData.renderTextureQuad;
     var renderTexture = bitmapData.renderTexture;

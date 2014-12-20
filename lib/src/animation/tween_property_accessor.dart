@@ -14,7 +14,6 @@ abstract class TweenPropertyAccessor {
 /// [Tween.animate] getter.
 
 class TweenPropertyAccessor2D implements TweenPropertyAccessor {
-
   final Tween _tween;
   final TweenObject2D _tweenObject;
 

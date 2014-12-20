@@ -7,10 +7,8 @@ part of stagexl.display;
 /// display object in 3D space. Use the [offsetX], [offsetY] and [offsetZ]
 /// properties to move the display object in 3D space.
 ///
-abstract class DisplayObjectContainer3D
-    extends DisplayObjectContainer
+abstract class DisplayObjectContainer3D extends DisplayObjectContainer
     implements TweenObject3D {
-
   PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
 
   num _offsetX = 0.0;
@@ -84,7 +82,6 @@ abstract class DisplayObjectContainer3D
   //---------------------------------------------------------------------------
 
   Matrix3D get transformationMatrix3D {
-
     if (_transformationMatrix3DRefresh) {
       _transformationMatrix3DRefresh = false;
       _transformationMatrix3D.setIdentity();
@@ -107,7 +104,6 @@ abstract class DisplayObjectContainer3D
   //---------------------------------------------------------------------------
 
   bool get isForwardFacing {
-
     var matrix = this.globalTransformationMatrix3D;
 
     num m00 = matrix.m00;
@@ -127,7 +123,7 @@ abstract class DisplayObjectContainer3D
     num x3 = (m10 + m30) / (m13 + m33);
     num y3 = (m11 + m31) / (m13 + m33);
 
-    return x1 * (y3 - y2) + x2 * (y1  - y3) + x3 * (y2 - y1) <= 0;
+    return x1 * (y3 - y2) + x2 * (y1 - y3) + x3 * (y2 - y1) <= 0;
   }
 
   //---------------------------------------------------------------------------
@@ -135,7 +131,6 @@ abstract class DisplayObjectContainer3D
 
   @override
   Rectangle<num> get boundsTransformed {
-
     _calculateProjectionMatrix(this.transformationMatrix);
 
     var rectangle = this.bounds;
@@ -146,7 +141,6 @@ abstract class DisplayObjectContainer3D
 
   @override
   Point<num> localToParent(Point<num> localPoint, [Point<num> returnPoint]) {
-
     _calculateProjectionMatrix(this.transformationMatrix);
 
     num m00 = _projectionMatrix3D.m00;
@@ -177,7 +171,6 @@ abstract class DisplayObjectContainer3D
 
   @override
   Point<num> parentToLocal(Point<num> parentPoint, [Point<num> returnPoint]) {
-
     _calculateProjectionMatrix(this.transformationMatrix);
 
     num m00 = _projectionMatrix3D.m00;
@@ -208,7 +201,6 @@ abstract class DisplayObjectContainer3D
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-
     _calculateProjectionMatrix(_identityMatrix);
 
     num m00 = _projectionMatrix3D.m00;
@@ -235,10 +227,8 @@ abstract class DisplayObjectContainer3D
 
   @override
   void render(RenderState renderState) {
-
     var renderContext = renderState.renderContext;
     if (renderContext is RenderContextWebGL) {
-
       var activeProjectionMatrix = renderContext.activeProjectionMatrix;
       var globalMatrix = renderState.globalMatrix;
 
@@ -252,7 +242,6 @@ abstract class DisplayObjectContainer3D
       renderContext.activateProjectionMatrix(_projectionMatrix3D);
       super.render(renderState);
       renderContext.activateProjectionMatrix(_oldProjectionMatrix3D);
-
     } else {
 
       // TODO: We could simulate the 3d-transformation with 2d scales
@@ -264,7 +253,6 @@ abstract class DisplayObjectContainer3D
   //---------------------------------------------------------------------------
 
   void _calculateProjectionMatrix(Matrix matrix) {
-
     var perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
     var transformationMatrix3D = this.transformationMatrix3D;
     var pivotX = this.pivotX.toDouble();
@@ -276,8 +264,4 @@ abstract class DisplayObjectContainer3D
     _projectionMatrix3D.prepend(transformationMatrix3D);
     _projectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
   }
-
 }
-
-
-

@@ -4,7 +4,6 @@ part of stagexl.display_ex;
 /// are a set of images to simulate a moving/animated body.
 ///
 class FlipBook extends InteractiveObject implements Animatable {
-
   List<BitmapData> _bitmapDatas;
   List<double> _frameDurations;
 
@@ -53,7 +52,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   List<num> get frameDurations => _frameDurations;
 
   set frameDurations(List<num> value) {
-    for(var i = 0; i < _frameDurations.length; i++) {
+    for (var i = 0; i < _frameDurations.length; i++) {
       _frameDurations[i] = (i < value.length) ? value[i] : value.last;
     }
   }
@@ -140,7 +139,6 @@ class FlipBook extends InteractiveObject implements Animatable {
     return true;
   }
 
-
   //-------------------------------------------------------------------------------------------------
 
   @override
@@ -162,5 +160,4 @@ class FlipBook extends InteractiveObject implements Animatable {
     var bitmapData = _bitmapDatas[_currentFrame];
     bitmapData.render(renderState);
   }
-
 }

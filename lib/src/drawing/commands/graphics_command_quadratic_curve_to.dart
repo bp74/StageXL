@@ -37,7 +37,6 @@ class _GraphicsCommandQuadraticCurveTo extends _GraphicsCommand {
 
   @override
   void updateBounds(_GraphicsBounds bounds) {
-
     if (bounds.hasCursor == false) {
       bounds.updateCursor(controlX, controlY);
     }
@@ -67,5 +66,4 @@ class _GraphicsCommandQuadraticCurveTo extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.quadraticCurveTo(controlX, controlY, endX, endY);
   }
-
 }

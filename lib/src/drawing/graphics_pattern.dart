@@ -1,22 +1,21 @@
 part of stagexl.drawing;
 
 class GraphicsPattern {
-
   final RenderTextureQuad renderTextureQuad;
   final Matrix matrix;
   final String repeatOption;
 
   GraphicsPattern.repeat(this.renderTextureQuad, [this.matrix])
-    : repeatOption = "repeat";
+      : repeatOption = "repeat";
 
   GraphicsPattern.repeatX(this.renderTextureQuad, [this.matrix])
-    : repeatOption = "repeat-x";
+      : repeatOption = "repeat-x";
 
   GraphicsPattern.repeatY(this.renderTextureQuad, [this.matrix])
-    : repeatOption = "repeat-y";
+      : repeatOption = "repeat-y";
 
   GraphicsPattern.noRepeat(this.renderTextureQuad, [this.matrix])
-    : repeatOption = "no-repeat";
+      : repeatOption = "no-repeat";
 
   //---------------------------------------------------------------------------
 
@@ -24,5 +23,4 @@ class GraphicsPattern {
     var renderTexture = renderTextureQuad.renderTexture;
     return context.createPattern(renderTexture.canvas, repeatOption);
   }
-
 }

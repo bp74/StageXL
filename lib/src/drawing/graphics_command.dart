@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 abstract class _GraphicsCommand {
-
   void updateBounds(_GraphicsBounds bounds) {
     // override in command.
   }
@@ -30,5 +29,4 @@ abstract class _GraphicsCommand {
   void renderMaskCanvas(CanvasRenderingContext2D context) {
     drawCanvas(context);
   }
-
 }

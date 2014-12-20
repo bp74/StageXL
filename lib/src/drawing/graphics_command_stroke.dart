@@ -21,7 +21,6 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
 
   @override
   bool hitTest(CanvasRenderingContext2D context, num localX, num localY) {
-
     context.lineWidth = lineWidth;
     context.lineJoin = lineJoin;
     context.lineCap = lineCap;
@@ -40,5 +39,4 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
   void renderMaskCanvas(CanvasRenderingContext2D context) {
     // no action
   }
-
 }
