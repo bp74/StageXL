@@ -131,15 +131,27 @@ class Mesh extends DisplayObject {
 
   @override
   Rectangle<num> get bounds {
-    return _updateBounds().clone();
+
+    double left = double.INFINITY;
+    double top = double.INFINITY;
+    double right = double.NEGATIVE_INFINITY;
+    double bottom = double.NEGATIVE_INFINITY;
+
+    for(int i = 0; i < indexList.length; i++) {
+      int index = indexList[i + 0];
+      num vertexX = xyList[index * 2 + 0];
+      num vertexY = xyList[index * 2 + 1];
+      if (left > vertexX) left = vertexX;
+      if (right < vertexX) right = vertexX;
+      if (top > vertexY) top = vertexY;
+      if (bottom < vertexY) bottom = vertexY;
+    }
+
+    return new Rectangle<num>(left, top, right - left, bottom - top);
   }
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-
-    if (_updateBounds().contains(localX, localY) == false) {
-      return null;
-    }
 
     for(int i = 0; i < indexList.length - 2; i += 3) {
 
@@ -154,6 +166,11 @@ class Mesh extends DisplayObject {
       num cx = xyList[i3 * 2 + 0];
       num cy = xyList[i3 * 2 + 1];
 
+      if (localX < ax && localX < bx && localX < cx) continue;
+      if (localX > ax && localX > bx && localX > cx) continue;
+      if (localY < ay && localY < by && localY < cy) continue;
+      if (localY > ay && localY > by && localY > cy) continue;
+
       num v0x = cx - ax;
       num v0y = cy - ay;
       num v1x = bx - ax;
@@ -167,9 +184,8 @@ class Mesh extends DisplayObject {
       num dot11 = v1x * v1x + v1y * v1y;
       num dot12 = v1x * v2x + v1y * v2y;
 
-      num invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-      num u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-      num v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+      num u = (dot11 * dot02 - dot01 * dot12) / (dot00 * dot11 - dot01 * dot01);
+      num v = (dot00 * dot12 - dot01 * dot02) / (dot00 * dot11 - dot01 * dot01);
 
       if ((u >= 0) && (v >= 0) && (u + v < 1)) return this;
     }
@@ -228,30 +244,6 @@ class Mesh extends DisplayObject {
 
   void _renderMaskCanvas(RenderState renderState) {
     // TODO: Render Mesh for Canvas2D
-  }
-
-  //---------------------------------------------------------------------------
-
-  Rectangle<double> _updateBounds() {
-
-    num left = double.INFINITY;
-    num top = double.INFINITY;
-    num right = double.NEGATIVE_INFINITY;
-    num bottom = double.NEGATIVE_INFINITY;
-
-    for(int i = 0; i < indexList.length; i++) {
-      int index = indexList[i + 0];
-      num vertexX = xyList[index * 2 + 0];
-      num vertexY = xyList[index * 2 + 1];
-      if (left > vertexX) left = vertexX;
-      if (right < vertexX) right = vertexX;
-      if (top > vertexY) top = vertexY;
-      if (bottom < vertexY) bottom = vertexY;
-    }
-
-    _bounds.setTo(left, top, right - left, bottom - top);
-
-    return _bounds;
   }
 
 }
