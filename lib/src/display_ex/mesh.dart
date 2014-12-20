@@ -204,17 +204,14 @@ class Mesh extends DisplayObject {
     var v1 = renderTextureQuad.uvList[1];
     var u2 = renderTextureQuad.uvList[4];
     var v2 = renderTextureQuad.uvList[5];
+    var rotation = renderTextureQuad.rotation;
+    var horizontal = rotation == 0 || rotation == 2;
 
-    if (renderTextureQuad.rotation == 0 || renderTextureQuad.rotation == 2) {
-      for (int i = 0; i < uvList.length - 1; i += 2) {
-        _uvTemp[i + 0] = u1 + uvList[i + 0] * (u2 - u1);
-        _uvTemp[i + 1] = v1 + uvList[i + 1] * (v2 - v1);
-      }
-    } else {
-      for (int i = 0; i < uvList.length - 1; i += 2) {
-        _uvTemp[i + 0] = u1 + uvList[i + 1] * (u2 - u1);
-        _uvTemp[i + 1] = v1 + uvList[i + 0] * (v2 - v1);
-      }
+    for (int i = 0; i < uvList.length - 1; i += 2) {
+      var u = horizontal ? uvList[i + 0] : uvList[i + 1];
+      var v = horizontal ? uvList[i + 1] : uvList[i + 0];
+      _uvTemp[i + 0] = u1 + (u2 - u1) * u;
+      _uvTemp[i + 1] = v1 + (v2 - v1) * v;
     }
 
     renderContext.renderMesh(
