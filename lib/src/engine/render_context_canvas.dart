@@ -193,6 +193,8 @@ class RenderContextCanvas extends RenderContext {
 
     for(int i = 0; i < indexList.length - 2; i += 3) {
 
+      if (i > indexCount - 3) break;
+
       int i1 = indexList[i + 0] * 2;
       num x1 = xyList[i1 + 0];
       num u1 = uvList[i1 + 0];
