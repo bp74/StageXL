@@ -159,33 +159,33 @@ class Mesh extends DisplayObject {
       int i2 = indexList[i + 1];
       int i3 = indexList[i + 2];
 
-      num ax = xyList[i1 * 2 + 0];
-      num ay = xyList[i1 * 2 + 1];
-      num bx = xyList[i2 * 2 + 0];
-      num by = xyList[i2 * 2 + 1];
-      num cx = xyList[i3 * 2 + 0];
-      num cy = xyList[i3 * 2 + 1];
+      num x1 = xyList[i1 * 2 + 0];
+      num y1 = xyList[i1 * 2 + 1];
+      num x2 = xyList[i2 * 2 + 0];
+      num y2 = xyList[i2 * 2 + 1];
+      num x3 = xyList[i3 * 2 + 0];
+      num y3 = xyList[i3 * 2 + 1];
 
-      if (localX < ax && localX < bx && localX < cx) continue;
-      if (localX > ax && localX > bx && localX > cx) continue;
-      if (localY < ay && localY < by && localY < cy) continue;
-      if (localY > ay && localY > by && localY > cy) continue;
+      if (localX < x1 && localX < x2 && localX < x3) continue;
+      if (localX > x1 && localX > x2 && localX > x3) continue;
+      if (localY < y1 && localY < y2 && localY < y3) continue;
+      if (localY > y1 && localY > y2 && localY > y3) continue;
 
-      num v0x = cx - ax;
-      num v0y = cy - ay;
-      num v1x = bx - ax;
-      num v1y = by - ay;
-      num v2x = localX - ax;
-      num v2y = localY - ay;
+      num vx1 = x3 - x1;
+      num vy1 = y3 - y1;
+      num vx2 = x2 - x1;
+      num vy2 = y2 - y1;
+      num vx3 = localX - x1;
+      num vy3 = localY - y1;
 
-      num dot00 = v0x * v0x + v0y * v0y;
-      num dot01 = v0x * v1x + v0y * v1y;
-      num dot02 = v0x * v2x + v0y * v2y;
-      num dot11 = v1x * v1x + v1y * v1y;
-      num dot12 = v1x * v2x + v1y * v2y;
+      num dot11 = vx1 * vx1 + vy1 * vy1;
+      num dot12 = vx1 * vx2 + vy1 * vy2;
+      num dot13 = vx1 * vx3 + vy1 * vy3;
+      num dot22 = vx2 * vx2 + vy2 * vy2;
+      num dot23 = vx2 * vx3 + vy2 * vy3;
 
-      num u = (dot11 * dot02 - dot01 * dot12) / (dot00 * dot11 - dot01 * dot01);
-      num v = (dot00 * dot12 - dot01 * dot02) / (dot00 * dot11 - dot01 * dot01);
+      num u = (dot22 * dot13 - dot12 * dot23) / (dot11 * dot22 - dot12 * dot12);
+      num v = (dot11 * dot23 - dot12 * dot13) / (dot11 * dot22 - dot12 * dot12);
 
       if ((u >= 0) && (v >= 0) && (u + v < 1)) return this;
     }

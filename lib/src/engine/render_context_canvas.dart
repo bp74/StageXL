@@ -175,6 +175,8 @@ class RenderContextCanvas extends RenderContext {
 
     var context = _renderingContext;
     var source = renderTexture.source;
+    var sourceWidth = renderTexture.storeWidth;
+    var sourceHeight = renderTexture.storeHeight;
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
     var blendMode = renderState.globalBlendMode;
@@ -197,30 +199,21 @@ class RenderContextCanvas extends RenderContext {
 
       int i1 = indexList[i + 0] * 2;
       num x1 = xyList[i1 + 0];
-      num u1 = uvList[i1 + 0];
       num y1 = xyList[i1 + 1];
-      num v1 = uvList[i1 + 1];
+      num u1 = uvList[i1 + 0] * sourceWidth;
+      num v1 = uvList[i1 + 1] * sourceHeight;
 
       int i2 = indexList[i + 1] * 2;
       num x2 = xyList[i2 + 0];
-      num u2 = uvList[i2 + 0];
       num y2 = xyList[i2 + 1];
-      num v2 = uvList[i2 + 1];
+      num u2 = uvList[i2 + 0] * sourceWidth;
+      num v2 = uvList[i2 + 1] * sourceHeight;
 
       int i3 = indexList[i + 2] * 2;
       num x3 = xyList[i3 + 0];
-      num u3 = uvList[i3 + 0];
       num y3 = xyList[i3 + 1];
-      num v3 = uvList[i3 + 1];
-
-      u1 = u1 * renderTexture.storeWidth;
-      u2 = u2 * renderTexture.storeWidth;
-      u3 = u3 * renderTexture.storeWidth;
-      v1 = v1 * renderTexture.storeHeight;
-      v2 = v2 * renderTexture.storeHeight;
-      v3 = v3 * renderTexture.storeHeight;
-
-      // This is crazy slow, but the only way to make it work
+      num u3 = uvList[i3 + 0] * sourceWidth;
+      num v3 = uvList[i3 + 1] * sourceHeight;
 
       num mm = v1 * (u3 - u2) + v2 * (u1 - u3) + v3 * (u2 - u1);
       num ma = x1 * (v2 - v3) + x2 * (v3 - v1) + x3 * (v1 - v2);
