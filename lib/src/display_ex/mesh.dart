@@ -90,8 +90,12 @@ class Mesh extends DisplayObject {
 
   //---------------------------------------------------------------------------
 
- /// Set the XY and UV values of a vertex.
- ///
+  /// Set the XY and UV values of a vertex.
+  ///
+  /// The XY values define the position of the vertex in the local coordinate
+  /// system of the Display Object. The UV values define the pixel location in
+  /// a 0.0 to 1.0 coordinate system of the BitmapData.
+
   void setVertex(int vertex, num x, num y, num u, num v) {
     xyList[vertex * 2 + 0] = x.toDouble();
     xyList[vertex * 2 + 1] = y.toDouble();
