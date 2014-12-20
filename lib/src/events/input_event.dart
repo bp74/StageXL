@@ -1,10 +1,10 @@
 part of stagexl.events;
 
-/// The [InputEvent] is a common interface for [MouseEvent] and [TouchEvent].
+/// The [InputEvent] is a common base class for [MouseEvent] and [TouchEvent].
 ///
-/// This makes it easy to use the same event listener for mouse and touch
-/// events. The fields that are the same in mouse and touch events are
-/// defined in the interface of [TouchEvent].
+/// This makes it more convenient to use the same event listener for mouse
+/// and touch events. The fields that are the same in mouse and touch events
+/// are defined in the [InputEvent] class.
 ///
 /// Example:
 ///
