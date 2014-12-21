@@ -74,7 +74,7 @@ class AnimationGroup implements Animatable {
   //----------------------------------------------------------------------------
 
   /// The delay this [AnimatableGroup] waits until it starts animating.
-  /// 
+  ///
   /// The delay may be changed as long as the animation has not been started.
   num get delay => _delay;
 
@@ -87,11 +87,11 @@ class AnimationGroup implements Animatable {
 
   /// Indicates if this [AnimatableGroup] is completed.
   bool get isComplete => _completed;
-  
+
   //----------------------------------------------------------------------------
 
   /// The function that is called when an [AnimationGroup] starts.
-  /// 
+  ///
   /// This happens after the specified [delay].
   void set onStart(void function()) {
     _onStart = function;

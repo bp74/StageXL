@@ -9,6 +9,7 @@ part of stagexl.display;
 /// organizing the z-order of the objects. The z-order is the front-to-back
 /// order that determines which object is drawn in front, which is behind, and
 /// so on.
+
 abstract class DisplayObjectContainer extends InteractiveObject {
 
   final List<DisplayObject> _children = new List<DisplayObject>();
@@ -146,7 +147,6 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// [DisplayObjectContainer] are decreased by 1.
 
   void removeChildAt(int index) {
-
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     }
@@ -330,7 +330,6 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     }
 
     for (int i = 0; i < _children.length; i++) {
-
       var child = _children[i];
       child.parentToLocal(point, tmpPoint);
 
@@ -358,7 +357,6 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     num bottom = double.NEGATIVE_INFINITY;
 
     for (int i = 0; i < _children.length; i++) {
-
       var rectangle = _children[i].boundsTransformed;
 
       if (rectangle.left < left) left = rectangle.left;
@@ -381,13 +379,11 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     DisplayObject hit = null;
 
     for (int i = _children.length - 1; i >= 0; i--) {
-
       var child = _children[i];
       var mask = child.mask;
       var matrix = child.transformationMatrix;
 
       if (child.visible && child.off == false) {
-
         num deltaX = localX - matrix.tx;
         num deltaY = localY - matrix.ty;
         num childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
@@ -417,7 +413,6 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
   @override
   void render(RenderState renderState) {
-
     for (int i = 0; i < _children.length; i++) {
       DisplayObject child = _children[i];
       if (child.visible && child.off == false) {
@@ -450,6 +445,4 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       descendants[i].dispatchEvent(event);
     }
   }
-
-
 }

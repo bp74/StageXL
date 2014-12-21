@@ -41,5 +41,4 @@ class ColorTransform {
     // ToDo
     throw new UnimplementedError("Feature is not available at this time.");
   }
-
 }

@@ -15,7 +15,7 @@ abstract class _GraphicsCommandFill extends _GraphicsCommand {
 
     try {
       return context.isPointInPath(localX, localY);
-    } catch(e) {
+    } catch (e) {
       return true;
     }
   }

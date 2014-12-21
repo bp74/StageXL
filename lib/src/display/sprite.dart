@@ -4,6 +4,7 @@ part of stagexl.display;
 ///
 /// It is a display list node that can display graphics and can also contain
 /// children.
+
 class Sprite extends DisplayObjectContainer {
 
   Graphics _graphics = null;
@@ -113,7 +114,6 @@ class Sprite extends DisplayObjectContainer {
   DisplayObject hitTestInput(num localX, num localY) {
 
     if (this.hitArea != null) {
-
       var point = new Point(localX, localY);
       this.localToGlobal(point, point);
       this.hitArea.globalToLocal(point, point);
@@ -135,5 +135,4 @@ class Sprite extends DisplayObjectContainer {
     if (_graphics != null) _graphics.render(renderState);
     super.render(renderState);
   }
-
 }

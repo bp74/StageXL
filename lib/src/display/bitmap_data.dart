@@ -4,6 +4,7 @@ part of stagexl.display;
 ///
 /// If you need to batch drawing operations for better performance,
 /// please use [BitmapDataUpdateBatch] instead.
+
 class BitmapData implements BitmapDrawable {
 
   int _width = 0;
@@ -151,6 +152,7 @@ class BitmapData implements BitmapDrawable {
   }
 
   /// Clear the entire rendering surface.
+
   void clear() {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.clear();
@@ -175,6 +177,7 @@ class BitmapData implements BitmapDrawable {
   /// then draws over it.
   ///
   /// NOTE: [drawPixels] is more performant.
+
   void copyPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.copyPixels(source, sourceRect, destPoint);
@@ -186,6 +189,7 @@ class BitmapData implements BitmapDrawable {
   /// Unlike [copyPixels], the target location is not erased first. That means pixels on this
   /// BitmapData may be visible if pixels from [source] are transparent. Select a [blendMode]
   /// to customize how two pixels are blended.
+
   void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint, [BlendMode blendMode]) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.drawPixels(source, sourceRect, destPoint, blendMode);
@@ -195,12 +199,14 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   /// Get a single RGB pixel
+
   int getPixel(int x, int y) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     return updateBatch.getPixel32(x, y) & 0x00FFFFFF;
   }
 
   /// Get a single RGBA pixel
+
   int getPixel32(int x, int y) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     return updateBatch.getPixel32(x, y);
@@ -210,6 +216,7 @@ class BitmapData implements BitmapDrawable {
   ///
   /// setPixel updates the underlying texture. If you need to make multiple calls,
   /// use [BitmapDataUpdateBatch] instead.
+
   void setPixel(int x, int y, int color) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.setPixel32(x, y, color | 0xFF000000);
@@ -220,6 +227,7 @@ class BitmapData implements BitmapDrawable {
   ///
   /// setPixel32 updates the underlying texture. If you need to make multiple calls,
   /// use [BitmapDataUpdateBatch] instead.
+
   void setPixel32(int x, int y, int color) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.setPixel32(x, y, color);
@@ -231,5 +239,4 @@ class BitmapData implements BitmapDrawable {
   render(RenderState renderState) {
     renderState.renderQuad(_renderTextureQuad);
   }
-
 }

@@ -79,7 +79,7 @@ class Stage extends DisplayObjectContainer {
     if (webGL && gl.RenderingContext.supported) {
       try {
         _renderContext = new RenderContextWebGL(canvas, alpha: alpha);
-      } catch(e) {
+      } catch (e) {
         _renderContext = new RenderContextCanvas(canvas);
       }
     } else {
@@ -361,7 +361,7 @@ class Stage extends DisplayObjectContainer {
         break;
     }
 
-    switch(_stageAlign) {
+    switch (_stageAlign) {
       case StageAlign.TOP_RIGHT:
       case StageAlign.RIGHT:
       case StageAlign.BOTTOM_RIGHT:
@@ -374,7 +374,7 @@ class Stage extends DisplayObjectContainer {
         break;
     }
 
-    switch(_stageAlign) {
+    switch (_stageAlign) {
       case StageAlign.BOTTOM_LEFT:
       case StageAlign.BOTTOM:
       case StageAlign.BOTTOM_RIGHT:
@@ -419,7 +419,6 @@ class Stage extends DisplayObjectContainer {
 
       if (_canvas.clientWidth != clientWidth ||
           _canvas.clientHeight != clientHeight) {
-
         _canvas.style.width = "${clientWidth}px";
         _canvas.style.height = "${clientHeight}px";
       }
@@ -487,15 +486,15 @@ class Stage extends DisplayObjectContainer {
       List newTargetList = [];
       int commonCount = 0;
 
-      for(DisplayObject p = oldTarget; p != null; p = p.parent) {
+      for (DisplayObject p = oldTarget; p != null; p = p.parent) {
         oldTargetList.add(p);
       }
 
-      for(DisplayObject p = newTarget; p != null; p = p.parent) {
+      for (DisplayObject p = newTarget; p != null; p = p.parent) {
         newTargetList.add(p);
       }
 
-      for(;;commonCount++) {
+      for ( ; ; commonCount++) {
         if (commonCount == oldTargetList.length) break;
         if (commonCount == newTargetList.length) break;
         var ot = oldTargetList[oldTargetList.length - commonCount - 1];
@@ -511,7 +510,7 @@ class Stage extends DisplayObjectContainer {
             0.0, 0.0, mouseButton.buttonDown, 0));
       }
 
-      for(int i = 0; i < oldTargetList.length - commonCount; i++) {
+      for (int i = 0; i < oldTargetList.length - commonCount; i++) {
         DisplayObject target = oldTargetList[i];
         target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT, false,
@@ -520,7 +519,7 @@ class Stage extends DisplayObjectContainer {
             0.0, 0.0, mouseButton.buttonDown, 0));
       }
 
-      for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
+      for (int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
         DisplayObject target = newTargetList[i];
         target.globalToLocal(stagePoint, localPoint);
         target.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER, false,

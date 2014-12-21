@@ -40,5 +40,4 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
   void renderMaskCanvas(CanvasRenderingContext2D context) {
     // no action
   }
-
 }
