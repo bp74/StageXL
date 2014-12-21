@@ -31,4 +31,3 @@ part 'text/text_line_metrics.dart';
 
 final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
 final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
-

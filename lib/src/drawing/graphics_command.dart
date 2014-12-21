@@ -30,5 +30,4 @@ abstract class _GraphicsCommand {
   void renderMaskCanvas(CanvasRenderingContext2D context) {
     drawCanvas(context);
   }
-
 }

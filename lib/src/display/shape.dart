@@ -1,10 +1,10 @@
 part of stagexl.display;
 
 /// This class is used to create lightweight shapes.
-/// 
+///
 /// The Shape class includes a [graphics] property, which lets you access
 /// methods from the [Graphics] class.
-/// 
+///
 /// The [Sprite] class also includes a graphic sproperty, and it includes other
 /// features not available to the [Shape] class. For example, a [Sprite] object
 /// is a display object container, whereas a [Shape] object is not (and cannot

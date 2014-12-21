@@ -7,8 +7,7 @@ part of stagexl.display;
 /// display object in 3D space. Use the [offsetX], [offsetY] and [offsetZ]
 /// properties to move the display object in 3D space.
 ///
-abstract class DisplayObjectContainer3D
-    extends DisplayObjectContainer
+abstract class DisplayObjectContainer3D extends DisplayObjectContainer
     implements TweenObject3D {
 
   PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
@@ -127,7 +126,7 @@ abstract class DisplayObjectContainer3D
     num x3 = (m10 + m30) / (m13 + m33);
     num y3 = (m11 + m31) / (m13 + m33);
 
-    return x1 * (y3 - y2) + x2 * (y1  - y3) + x3 * (y2 - y1) <= 0;
+    return x1 * (y3 - y2) + x2 * (y1 - y3) + x3 * (y2 - y1) <= 0;
   }
 
   //---------------------------------------------------------------------------
@@ -276,8 +275,4 @@ abstract class DisplayObjectContainer3D
     _projectionMatrix3D.prepend(transformationMatrix3D);
     _projectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
   }
-
 }
-
-
-

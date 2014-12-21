@@ -10,7 +10,7 @@ part of stagexl.display_ex;
 ///     stage.addChild(gauge);
 ///
 ///     resourceManager.onProgress.listen((progress) => gauge.ratio = progress);
-///
+
 class Gauge extends DisplayObject {
 
   static const String DIRECTION_UP = 'DIRECTION_UP';
@@ -82,5 +82,4 @@ class Gauge extends DisplayObject {
     var quad = bitmapData.renderTextureQuad.clip(rectangle);
     renderState.renderQuad(quad);
   }
-
 }

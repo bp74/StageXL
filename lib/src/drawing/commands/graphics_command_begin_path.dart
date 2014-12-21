@@ -13,6 +13,4 @@ class _GraphicsCommandBeginPath extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.beginPath();
   }
-
 }
-

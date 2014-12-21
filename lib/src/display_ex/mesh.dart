@@ -147,7 +147,7 @@ class Mesh extends DisplayObject {
     double right = double.NEGATIVE_INFINITY;
     double bottom = double.NEGATIVE_INFINITY;
 
-    for(int i = 0; i < indexList.length; i++) {
+    for (int i = 0; i < indexList.length; i++) {
       int index = indexList[i + 0];
       num vertexX = xyList[index * 2 + 0];
       num vertexY = xyList[index * 2 + 1];
@@ -163,7 +163,7 @@ class Mesh extends DisplayObject {
   @override
   DisplayObject hitTestInput(num localX, num localY) {
 
-    for(int i = 0; i < indexList.length - 2; i += 3) {
+    for (int i = 0; i < indexList.length - 2; i += 3) {
 
       int i1 = indexList[i + 0];
       int i2 = indexList[i + 1];

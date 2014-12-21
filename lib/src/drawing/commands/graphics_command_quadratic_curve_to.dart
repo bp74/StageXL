@@ -67,5 +67,4 @@ class _GraphicsCommandQuadraticCurveTo extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.quadraticCurveTo(controlX, controlY, endX, endY);
   }
-
 }

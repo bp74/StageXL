@@ -5,7 +5,7 @@ part of stagexl.display;
 /// This improves the performance for multiple updates to the BitmapData.
 /// Once all updates are done, call the [update] method to update the
 /// underlying WebGL texture.
-///
+
 class BitmapDataUpdateBatch {
 
   final BitmapData bitmapData;
@@ -18,9 +18,8 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * Update the underlying rendering surface.
-   */
+  /// Update the underlying rendering surface.
+
   update() => this.bitmapData.renderTexture.update();
 
   //-----------------------------------------------------------------------------------------------
@@ -60,7 +59,6 @@ class BitmapDataUpdateBatch {
     var data = imageData.data;
 
     for (int i = 0; i <= data.length - 4; i += 4) {
-
       int c0 = data[i + 0];
       int c1 = data[i + 1];
       int c2 = data[i + 2];
@@ -82,9 +80,8 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * See [BitmapData.clear]
-   */
+  /// See [BitmapData.clear]
+
   void clear() {
 
     _renderContext.setTransform(_drawMatrix);
@@ -103,7 +100,6 @@ class BitmapDataUpdateBatch {
   //-----------------------------------------------------------------------------------------------
 
   void draw(BitmapDrawable source, [Matrix matrix]) {
-
     var renderState = new RenderState(_renderContext, _drawMatrix);
     if (matrix != null) renderState.globalMatrix.prepend(matrix);
     source.render(renderState);
@@ -111,9 +107,8 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * See [BitmapData.copyPixels]
-   */
+  /// See [BitmapData.copyPixels]
+
   void copyPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint) {
 
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
@@ -126,9 +121,8 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * See [BitmapData.drawPixels]
-   */
+  /// See [BitmapData.drawPixels]
+
   void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint,
                   [BlendMode blendMode]) {
 
@@ -140,9 +134,8 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * See [BitmapData.getPixel32]
-   */
+  /// See [BitmapData.getPixel32]
+
   int getPixel32(int x, int y) {
 
     int r = 0, g = 0, b = 0, a = 0;
@@ -174,14 +167,12 @@ class BitmapDataUpdateBatch {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * See [BitmapData.setPixel32]
-   */
+  /// See [BitmapData.setPixel32]
+
   void setPixel32(int x, int y, int color) {
     _renderContext.setTransform(_drawMatrix);
     _renderContext.rawContext.fillStyle = color2rgba(color);
     _renderContext.rawContext.clearRect(x, y, 1, 1);
     _renderContext.rawContext.fillRect(x, y, 1, 1);
   }
-
 }

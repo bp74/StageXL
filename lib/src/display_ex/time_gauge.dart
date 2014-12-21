@@ -107,5 +107,4 @@ class TimeGauge extends Gauge implements Animatable {
       });
     }
   }
-
 }
