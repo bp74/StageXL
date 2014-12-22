@@ -48,7 +48,6 @@ class RenderProgramMesh extends RenderProgram {
 
   final Int16List _indexList = new Int16List(2048);
   final Float32List _vertexList = new Float32List(8192);
-  final Matrix3D _globalMatrix = new Matrix3D.fromIdentity();
 
   //-----------------------------------------------------------------------------------------------
 
