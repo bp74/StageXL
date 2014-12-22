@@ -142,14 +142,11 @@ class RenderContextWebGL extends RenderContext {
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(renderTexture);
 
-    renderProgramMesh.globalMatrix = renderState.globalMatrix;
     renderProgramMesh.renderMesh(
+        renderState,
         indexCount, indexList,
         vertexCount, xyList, uvList,
-        1.0, 1.0, 1.0, renderState.globalAlpha);
-
-    // we need to flush because the globalMatrix uniform is not batchable.
-    renderProgramMesh.flush();
+        1.0, 1.0, 1.0, 1.0);
   }
 
   //-----------------------------------------------------------------------------------------------
