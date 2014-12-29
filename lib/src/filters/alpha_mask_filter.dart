@@ -61,7 +61,7 @@ class AlphaMaskFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _AlphaMaskProgram extends _BitmapFilterProgram {
+class _AlphaMaskProgram extends BitmapFilterProgram {
 
   static final _AlphaMaskProgram instance = new _AlphaMaskProgram();
 
@@ -95,7 +95,10 @@ class _AlphaMaskProgram extends _BitmapFilterProgram {
         matrix.b, matrix.d, matrix.ty,
         0.0, 0.0, 1.0]);
 
-    _renderingContext.uniformMatrix3fv(_uniformLocations["uMaskMatrix"], false, uMaskMatrix);
-    _renderingContext.uniform1i(_uniformLocations["uMaskSampler"], 1);
+    var uMaskMatrixLocation = uniformLocations["uMaskMatrix"];
+    var uMaskSamplerLocation = uniformLocations["uMaskSampler"];
+
+    renderingContext.uniformMatrix3fv(uMaskMatrixLocation, false, uMaskMatrix);
+    renderingContext.uniform1i(uMaskSamplerLocation, 1);
   }
 }

@@ -13,6 +13,7 @@ import 'dart:html' show CanvasElement, CanvasRenderingContext2D, Element;
 import 'dart:math' hide Point, Rectangle;
 
 import 'display.dart';
+import 'drawing.dart';
 import 'engine.dart';
 import 'events.dart';
 import 'geom.dart';
@@ -30,4 +31,3 @@ part 'text/text_line_metrics.dart';
 
 final CanvasElement _dummyCanvas = new CanvasElement(width: 16, height: 16);
 final CanvasRenderingContext2D _dummyCanvasContext = _dummyCanvas.context2D;
-

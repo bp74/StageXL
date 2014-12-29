@@ -21,23 +21,31 @@ class DelayedCall implements Animatable {
   num _totalTime = 0.0;
   int _repeatCount = 1;
 
-  DelayedCall(Function action, num delay) : _action = action {
+  /// Creates a new [DelayedCall].
+  ///
+  /// The [action] function will be called after the specified [delay] (in
+  /// seconds).
+  ///
+  /// The optional [repeatCount] specifies the number of times the delayed call
+  /// should be executed.
+  DelayedCall(Function action, num delay, {int repeatCount: 1})
+      : _action = action,
+        _repeatCount = repeatCount {
     _totalTime = max(delay, 0.0001);
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  @override
   bool advanceTime(num time) {
 
     num newTime = _currentTime + time;
 
     while (newTime >= _totalTime && _repeatCount > 0) {
-
       _currentTime = _totalTime;
       _repeatCount--;
       _action();
-
       newTime -= _totalTime;
     }
 
@@ -46,14 +54,20 @@ class DelayedCall implements Animatable {
     return (_repeatCount > 0);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// The total time of the delay.
   num get totalTime => _totalTime;
+
+  /// The current time.
   num get currentTime => _currentTime;
+
+  /// The number of times the delayed call should be executed.
+  ///
+  /// Default is 1.
   int get repeatCount => _repeatCount;
 
   set repeatCount(int value) {
     _repeatCount = value;
   }
-
 }

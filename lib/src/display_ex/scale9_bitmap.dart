@@ -21,7 +21,7 @@ class Scale9Bitmap extends Bitmap {
     _updateRenderTextureQuads();
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Gets and sets the width of this Scale9Bitmap. In contrast to other
   /// display objects, this does not affect the scaleX factor.
@@ -59,16 +59,21 @@ class Scale9Bitmap extends Bitmap {
     _updateRenderTextureQuads();
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-    return getBoundsTransformedHelper(matrix, _width, _height, returnRectangle);
+  @override
+  Rectangle<num> get bounds {
+    return new Rectangle<num>(0.0, 0.0, _width, _height);
   }
 
-  DisplayObject hitTestInput(num localX, num localY) =>
-    localX >= 0.0 && localY >= 0.0 &&
-    localX < _width && localY < _height ? this : null;
+  @override
+  DisplayObject hitTestInput(num localX, num localY) {
+    if (localX < 0.0 || localX >= _width) return null;
+    if (localY < 0.0 || localY >= _height) return null;
+    return this;
+  }
 
+  @override
   void render(RenderState renderState) {
 
     var x1 = _grid.left;
@@ -84,10 +89,10 @@ class Scale9Bitmap extends Bitmap {
     var renderContext = renderState.renderContext;
     var tempMatrix = globalMatrix.clone();
 
-    for(int x = 0; x < 3; x++) {
+    for (int x = 0; x < 3; x++) {
       var a = (x == 1) ? (width - x1 - x3 + x2) / (x2 - x1) : 1.0;
       var tx = (x == 1) ? x1 : ((x == 2) ? width - x3 + x2 : 0);
-      for(int y = 0; y < 3; y++) {
+      for (int y = 0; y < 3; y++) {
         var d = (y == 1) ? (height - y1 - y3 + y2) / (y2 - y1) : 1.0;
         var ty = (y == 1) ? y1 : ((y == 2) ? height - y3 + y2 : 0);
         globalMatrix.setTo(a, 0, 0, d, tx, ty);
@@ -99,7 +104,7 @@ class Scale9Bitmap extends Bitmap {
     globalMatrix.copyFrom(tempMatrix);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   _updateRenderTextureQuads() {
 

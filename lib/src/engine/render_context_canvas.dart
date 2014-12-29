@@ -47,10 +47,11 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+  void renderQuad(
+    RenderState renderState, RenderTextureQuad renderTextureQuad) {
 
     var context = _renderingContext;
-    var source = renderTextureQuad.renderTexture.canvas;
+    var source = renderTextureQuad.renderTexture.source;
     var rotation = renderTextureQuad.rotation;
     var xyList = renderTextureQuad.xyList;
     var matrix = renderState.globalMatrix;
@@ -133,7 +134,11 @@ class RenderContextCanvas extends RenderContext {
     }
   }
 
-  void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color) {
+  //-----------------------------------------------------------------------------------------------
+
+  void renderTriangle(
+    RenderState renderState,
+    num x1, num y1, num x2, num y2, num x3, num y3, int color) {
 
     var context = _renderingContext;
     var matrix = renderState.globalMatrix;
@@ -159,6 +164,75 @@ class RenderContextCanvas extends RenderContext {
     context.closePath();
     context.fillStyle = color2rgba(color);
     context.fill();
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void renderMesh(
+    RenderState renderState, RenderTexture renderTexture,
+    int indexCount, Int16List indexList,
+    int vertexCount, Float32List xyList, Float32List uvList) {
+
+    var context = _renderingContext;
+    var source = renderTexture.source;
+    var sourceWidth = renderTexture.storeWidth;
+    var sourceHeight = renderTexture.storeHeight;
+    var matrix = renderState.globalMatrix;
+    var alpha = renderState.globalAlpha;
+    var blendMode = renderState.globalBlendMode;
+
+    if (_activeAlpha != alpha) {
+      _activeAlpha = alpha;
+      context.globalAlpha = alpha;
+    }
+
+    if (_activeBlendMode != blendMode) {
+      _activeBlendMode = blendMode;
+      context.globalCompositeOperation = blendMode.compositeOperation;
+    }
+
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+
+    for(int i = 0; i < indexList.length - 2; i += 3) {
+
+      if (i > indexCount - 3) break;
+
+      int i1 = indexList[i + 0] * 2;
+      num x1 = xyList[i1 + 0];
+      num y1 = xyList[i1 + 1];
+      num u1 = uvList[i1 + 0] * sourceWidth;
+      num v1 = uvList[i1 + 1] * sourceHeight;
+
+      int i2 = indexList[i + 1] * 2;
+      num x2 = xyList[i2 + 0];
+      num y2 = xyList[i2 + 1];
+      num u2 = uvList[i2 + 0] * sourceWidth;
+      num v2 = uvList[i2 + 1] * sourceHeight;
+
+      int i3 = indexList[i + 2] * 2;
+      num x3 = xyList[i3 + 0];
+      num y3 = xyList[i3 + 1];
+      num u3 = uvList[i3 + 0] * sourceWidth;
+      num v3 = uvList[i3 + 1] * sourceHeight;
+
+      num mm = v1 * (u3 - u2) + v2 * (u1 - u3) + v3 * (u2 - u1);
+      num ma = x1 * (v2 - v3) + x2 * (v3 - v1) + x3 * (v1 - v2);
+      num mb = y1 * (v2 - v3) + y2 * (v3 - v1) + y3 * (v1 - v2);
+      num mc = x1 * (u3 - u2) + x2 * (u1 - u3) + x3 * (u2 - u1);
+      num md = y1 * (u3 - u2) + y2 * (u1 - u3) + y3 * (u2 - u1);
+      num mx = x1 * (v3 * u2 - v2 * u3) + x2 * (v1 * u3 - v3 * u1) + x3 * (v2 * u1 - v1 * u2);
+      num my = y1 * (v3 * u2 - v2 * u3) + y2 * (v1 * u3 - v3 * u1) + y3 * (v2 * u1 - v1 * u2);
+
+      context.save();
+      context.beginPath();
+      context.moveTo(x1, y1);
+      context.lineTo(x2, y2);
+      context.lineTo(x3, y3);
+      context.clip();
+      context.transform(ma / mm, mb / mm, mc / mm, md / mm, mx / mm, my / mm);
+      context.drawImage(source, 0, 0);
+      context.restore();
+    }
   }
 
   //-----------------------------------------------------------------------------------------------

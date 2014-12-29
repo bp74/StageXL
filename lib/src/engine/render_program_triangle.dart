@@ -2,26 +2,26 @@ part of stagexl.engine;
 
 class RenderProgramTriangle extends RenderProgram {
 
-  var _vertexShaderSource = """
-      attribute vec2 aVertexPosition;
-      attribute vec4 aVertexColor;
-      uniform mat4 uProjectionMatrix;
-      varying vec4 vColor;
+  String get vertexShaderSource => """
+    attribute vec2 aVertexPosition;
+    attribute vec4 aVertexColor;
+    uniform mat4 uProjectionMatrix;
+    varying vec4 vColor;
 
-      void main() {
-        vColor = aVertexColor;
-        gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
-      }
-      """;
+    void main() {
+      vColor = aVertexColor;
+      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
+    }
+    """;
 
-  var _fragmentShaderSource = """
-      precision mediump float;
-      varying vec4 vColor;
+  String get fragmentShaderSource => """
+    precision mediump float;
+    varying vec4 vColor;
 
-      void main() {
-        gl_FragColor = vColor; 
-      }
-      """;
+    void main() {
+      gl_FragColor = vColor; 
+    }
+    """;
 
   //---------------------------------------------------------------------------
   // aVertexPosition:   Float32(x), Float32(y)
@@ -30,52 +30,55 @@ class RenderProgramTriangle extends RenderProgram {
 
   static const int _maxTriangleCount = 256;
 
-  int _contextIdentifier = -1;
-  gl.RenderingContext _renderingContext = null;
-  gl.Program _program = null;
   gl.Buffer _vertexBuffer = null;
-
-  Float32List _vertexList = new Float32List(_maxTriangleCount * 3 * 6);
-
   gl.UniformLocation _uProjectionMatrixLocation;
 
   int _aVertexPositionLocation = 0;
   int _aVertexColorLocation = 0;
   int _triangleCount = 0;
 
+  final Float32List _vertexList = new Float32List(_maxTriangleCount * 3 * 6);
+
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void set projectionMatrix(Matrix3D matrix) {
-    _renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
+    renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
   }
 
-  //-----------------------------------------------------------------------------------------------
-
+  @override
   void activate(RenderContextWebGL renderContext) {
 
     if (_contextIdentifier != renderContext.contextIdentifier) {
 
-      _contextIdentifier = renderContext.contextIdentifier;
-      _renderingContext = renderContext.rawContext;
-      _program = createProgram(_renderingContext, _vertexShaderSource, _fragmentShaderSource);
-      _vertexBuffer = _renderingContext.createBuffer();
+      super.activate(renderContext);
 
-      _aVertexPositionLocation = _renderingContext.getAttribLocation(_program, "aVertexPosition");
-      _aVertexColorLocation = _renderingContext.getAttribLocation(_program, "aVertexColor");
+      _vertexBuffer = renderingContext.createBuffer();
+      _aVertexPositionLocation = attributeLocations["aVertexPosition"];
+      _aVertexColorLocation = attributeLocations["aVertexColor"];
+      _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
 
-      _uProjectionMatrixLocation = _renderingContext.getUniformLocation(_program, "uProjectionMatrix");
-
-      _renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-      _renderingContext.enableVertexAttribArray(_aVertexColorLocation);
-
-      _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      _renderingContext.bufferData(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
+      renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
+      renderingContext.enableVertexAttribArray(_aVertexColorLocation);
+      renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }
 
-    _renderingContext.useProgram(_program);
-    _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    _renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 24, 0);
-    _renderingContext.vertexAttribPointer(_aVertexColorLocation, 4, gl.FLOAT, false, 24, 8);
+    renderingContext.useProgram(program);
+    renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
+    renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 24, 0);
+    renderingContext.vertexAttribPointer(_aVertexColorLocation, 4, gl.FLOAT, false, 24, 8);
+  }
+
+  @override
+  void flush() {
+
+    if (_triangleCount == 0) return;
+    var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _triangleCount * 3 * 6);
+
+    renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+    renderingContext.drawArrays(gl.TRIANGLES, 0, _triangleCount * 3);
+    _triangleCount = 0;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -127,23 +130,6 @@ class RenderProgramTriangle extends RenderProgram {
     _triangleCount += 3;
 
     if (_triangleCount == _maxTriangleCount) flush();
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  void flush() {
-
-    Float32List vertexUpdate = _vertexList;
-
-    if (_triangleCount == 0) {
-      return;
-    } else if (_triangleCount < _maxTriangleCount) {
-      vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _triangleCount * 3 * 6);
-    }
-
-    _renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, vertexUpdate);
-    _renderingContext.drawArrays(gl.TRIANGLES, 0, _triangleCount * 3);
-    _triangleCount = 0;
   }
 
 }

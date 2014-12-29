@@ -2,7 +2,7 @@ part of stagexl.display_ex;
 
 /// A display object to play sprite sheet animations. Sprite sheet animations
 /// are a set of images to simulate a moving/animated body.
-///
+
 class FlipBook extends InteractiveObject implements Animatable {
 
   List<BitmapData> _bitmapDatas;
@@ -53,7 +53,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   List<num> get frameDurations => _frameDurations;
 
   set frameDurations(List<num> value) {
-    for(var i = 0; i < _frameDurations.length; i++) {
+    for (var i = 0; i < _frameDurations.length; i++) {
       _frameDurations[i] = (i < value.length) ? value[i] : value.last;
     }
   }
@@ -140,27 +140,25 @@ class FlipBook extends InteractiveObject implements Animatable {
     return true;
   }
 
-
-  //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
+  @override
+  Rectangle<num> get bounds {
     var bitmapData = _bitmapDatas[_currentFrame];
-    return getBoundsTransformedHelper(matrix, bitmapData.width, bitmapData.height, returnRectangle);
+    return new Rectangle<num>(0.0, 0.0, bitmapData.width, bitmapData.height);
   }
 
-  //-------------------------------------------------------------------------------------------------
-
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
     var bitmapData = _bitmapDatas[_currentFrame];
-    return localX >= 0.0 && localY >= 0.0 &&
-           localX < bitmapData.width && localY < bitmapData.height ? this : null;
+    if (localX < 0.0 || localX >= bitmapData.width) return null;
+    if (localY < 0.0 || localY >= bitmapData.height) return null;
+    return this;
   }
 
-  //-------------------------------------------------------------------------------------------------
-
+  @override
   void render(RenderState renderState) {
-    _bitmapDatas[_currentFrame].render(renderState);
+    var bitmapData = _bitmapDatas[_currentFrame];
+    bitmapData.render(renderState);
   }
-
 }

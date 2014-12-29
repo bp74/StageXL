@@ -24,8 +24,8 @@ class BlurFilter extends BitmapFilter {
 
   BitmapFilter clone() => new BlurFilter(blurX, blurY);
   Rectangle<int> get overlap => new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
-  List<int> get renderPassSources => [0, 1];
-  List<int> get renderPassTargets => [1, 2];
+  List<int> get renderPassSources => const [0, 1];
+  List<int> get renderPassTargets => const [1, 2];
 
   //-------------------------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ class BlurFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _BlurProgram extends _BitmapFilterProgram {
+class _BlurProgram extends BitmapFilterProgram {
 
   static final _BlurProgram instance = new _BlurProgram();
 
@@ -115,6 +115,8 @@ class _BlurProgram extends _BitmapFilterProgram {
       """;
 
    void configure(num pixelX, num pixelY) {
-     _renderingContext.uniform2f(_uniformLocations["uPixel"], pixelX, pixelY);
+
+     var uPixelLocation = uniformLocations["uPixel"];
+     renderingContext.uniform2f(uPixelLocation, pixelX, pixelY);
    }
 }

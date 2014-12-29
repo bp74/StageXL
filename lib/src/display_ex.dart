@@ -13,6 +13,7 @@ import 'engine.dart';
 import 'events.dart';
 import 'display.dart';
 import 'geom.dart';
+import 'media.dart' show Video;
 import 'internal/tools.dart';
 import 'ui/color.dart';
 
@@ -23,8 +24,10 @@ part 'display_ex/flip_book.dart';
 part 'display_ex/gauge.dart';
 part 'display_ex/glass_plate.dart';
 part 'display_ex/html_object.dart';
+part 'display_ex/mesh.dart';
 part 'display_ex/scale9_bitmap.dart';
 part 'display_ex/time_gauge.dart';
+part 'display_ex/video_object.dart';
 part 'display_ex/warp.dart';
 
 final Matrix _identityMatrix = new Matrix.fromIdentity();

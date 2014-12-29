@@ -35,8 +35,8 @@ class DropShadowFilter extends BitmapFilter {
     return sRect.boundingBox(dRect);
   }
 
-  List<int> get renderPassSources => [0, 1, 0];
-  List<int> get renderPassTargets => [1, 2, 2];
+  List<int> get renderPassSources => const [0, 1, 0];
+  List<int> get renderPassTargets => const [1, 2, 2];
 
   //-------------------------------------------------------------------------------------------------
 
@@ -114,7 +114,7 @@ class DropShadowFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _DropShadowProgram extends _BitmapFilterProgram {
+class _DropShadowProgram extends BitmapFilterProgram {
 
   static final _DropShadowProgram instance = new _DropShadowProgram();
 
@@ -144,12 +144,18 @@ class _DropShadowProgram extends _BitmapFilterProgram {
       """;
 
    void configure(int color, num shiftX, num shiftY, num pixelX, num pixelY) {
+
      num r = colorGetR(color) / 255.0;
      num g = colorGetG(color) / 255.0;
      num b = colorGetB(color) / 255.0;
      num a = colorGetA(color) / 255.0;
-     _renderingContext.uniform2f(_uniformLocations["uShift"], shiftX, shiftY);
-     _renderingContext.uniform2f(_uniformLocations["uPixel"], pixelX, pixelY);
-     _renderingContext.uniform4f(_uniformLocations["uColor"], r, g, b, a);
+
+     var uShiftLocation = uniformLocations["uShift"];
+     var uPixelLocation = uniformLocations["uPixel"];
+     var uColorLocation = uniformLocations["uColor"];
+
+     renderingContext.uniform2f(uShiftLocation, shiftX, shiftY);
+     renderingContext.uniform2f(uPixelLocation, pixelX, pixelY);
+     renderingContext.uniform4f(uColorLocation, r, g, b, a);
    }
 }

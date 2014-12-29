@@ -7,7 +7,8 @@ part of stagexl.display;
 /// display object in 3D space. Use the [offsetX], [offsetY] and [offsetZ]
 /// properties to move the display object in 3D space.
 ///
-abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
+abstract class DisplayObjectContainer3D extends DisplayObjectContainer
+    implements TweenObject3D {
 
   PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
 
@@ -20,56 +21,66 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
 
   bool _transformationMatrix3DRefresh = false;
   final Matrix3D _transformationMatrix3D = new Matrix3D.fromIdentity();
+  final Matrix3D _projectionMatrix3D = new Matrix3D.fromIdentity();
   final Matrix3D _oldProjectionMatrix3D = new Matrix3D.fromIdentity();
-  final Matrix3D _newProjectionMatrix3D = new Matrix3D.fromIdentity();
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// The offset to the x-axis for all children in 3D space.
-  num get offsetX => _offsetX;
-  /// The offset to the y-axis for all children in 3D space.
-  num get offsetY => _offsetY;
-  /// The offset to the z-axis for all children in 3D space.
-  num get offsetZ => _offsetZ;
 
-  /// The x-axis rotation in 3D space.
-  num get rotationX => _rotationX;
-  /// The y-axis rotation in 3D space.
-  num get rotationY => _rotationY;
-  /// The z-axis rotation in 3D space.
-  num get rotationZ => _rotationZ;
+  num get offsetX => _offsetX;
 
   set offsetX(num value) {
     if (value is num) _offsetX = value;
     _transformationMatrix3DRefresh = true;
   }
 
+  /// The offset to the y-axis for all children in 3D space.
+
+  num get offsetY => _offsetY;
+
   set offsetY(num value) {
     if (value is num) _offsetY = value;
     _transformationMatrix3DRefresh = true;
   }
+
+  /// The offset to the z-axis for all children in 3D space.
+
+  num get offsetZ => _offsetZ;
 
   set offsetZ(num value) {
     if (value is num) _offsetZ = value;
     _transformationMatrix3DRefresh = true;
   }
 
+  /// The x-axis rotation in 3D space.
+
+  num get rotationX => _rotationX;
+
   set rotationX(num value) {
     if (value is num) _rotationX = value;
     _transformationMatrix3DRefresh = true;
   }
+
+  /// The y-axis rotation in 3D space.
+
+  num get rotationY => _rotationY;
 
   set rotationY(num value) {
     if (value is num) _rotationY = value;
     _transformationMatrix3DRefresh = true;
   }
 
+  /// The z-axis rotation in 3D space.
+
+  num get rotationZ => _rotationZ;
+
   set rotationZ(num value) {
     if (value is num) _rotationZ = value;
     _transformationMatrix3DRefresh = true;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   Matrix3D get transformationMatrix3D {
 
@@ -85,221 +96,183 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer {
     return _transformationMatrix3D;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-
-    // This calculation is simplified for optimal performance. To get a more
-    // accurate result we would need to transform all children to 3D space.
-    // The current calculation should be sufficient for most use cases.
-
-    Rectangle rectangle = super.getBoundsTransformed(_identityMatrix, returnRectangle);
-    num rl = rectangle.left.toDouble();
-    num rr = rectangle.right.toDouble();
-    num rt = rectangle.top.toDouble();
-    num rb = rectangle.bottom.toDouble();
-
-    // transform rectangle corners
-
-    _calculateNewProjectionMatrix3D(matrix);
-
-    num m00 = _newProjectionMatrix3D.m00;
-    num m10 = _newProjectionMatrix3D.m10;
-    num m30 = _newProjectionMatrix3D.m30;
-    num m01 = _newProjectionMatrix3D.m01;
-    num m11 = _newProjectionMatrix3D.m11;
-    num m31 = _newProjectionMatrix3D.m31;
-    num m03 = _newProjectionMatrix3D.m03;
-    num m13 = _newProjectionMatrix3D.m13;
-    num m33 = _newProjectionMatrix3D.m33;
-
-    num d1 = (m03 * rl + m13 * rt + m33);
-    num x1 = (m00 * rl + m10 * rt + m30) / d1;
-    num y1 = (m01 * rl + m11 * rt + m31) / d1;
-    num d2 = (m03 * rr + m13 * rt + m33);
-    num x2 = (m00 * rr + m10 * rt + m30) / d2;
-    num y2 = (m01 * rr + m11 * rt + m31) / d2;
-    num d3 = (m03 * rr + m13 * rb + m33);
-    num x3 = (m00 * rr + m10 * rb + m30) / d3;
-    num y3 = (m01 * rr + m11 * rb + m31) / d3;
-    num d4 = (m03 * rl + m13 * rb + m33);
-    num x4 = (m00 * rl + m10 * rb + m30) / d4;
-    num y4 = (m01 * rl + m11 * rb + m31) / d4;
-
-    // find minima and maxima
-
-    num left = x1;
-    if (left > x2) left = x2;
-    if (left > x3) left = x3;
-    if (left > x4) left = x4;
-
-    num top = y1;
-    if (top > y2) top = y2;
-    if (top > y3) top = y3;
-    if (top > y4) top = y4;
-
-    num right = x1;
-    if (right < x2) right = x2;
-    if (right < x3) right = x3;
-    if (right < x4) right = x4;
-
-    num bottom = y1;
-    if (bottom < y2) bottom = y2;
-    if (bottom < y3) bottom = y3;
-    if (bottom < y4) bottom = y4;
-
-    rectangle.setTo(left, top, right - left, bottom - top);
-
-    return rectangle;
+  Matrix3D get projectionMatrix3D {
+    _calculateProjectionMatrix(_identityMatrix);
+    return _projectionMatrix3D;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
+  bool get isForwardFacing {
+
+    var matrix = this.globalTransformationMatrix3D;
+
+    num m00 = matrix.m00;
+    num m10 = matrix.m10;
+    num m30 = matrix.m30;
+    num m01 = matrix.m01;
+    num m11 = matrix.m11;
+    num m31 = matrix.m31;
+    num m03 = matrix.m03;
+    num m13 = matrix.m13;
+    num m33 = matrix.m33;
+
+    num x1 = (0.0 + m30) / (0.0 + m33);
+    num y1 = (0.0 + m31) / (0.0 + m33);
+    num x2 = (m00 + m30) / (m03 + m33);
+    num y2 = (m01 + m31) / (m03 + m33);
+    num x3 = (m10 + m30) / (m13 + m33);
+    num y3 = (m11 + m31) / (m13 + m33);
+
+    return x1 * (y3 - y2) + x2 * (y1 - y3) + x3 * (y2 - y1) <= 0;
+  }
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  @override
+  Rectangle<num> get boundsTransformed {
+
+    _calculateProjectionMatrix(this.transformationMatrix);
+
+    var rectangle = this.bounds;
+    return _projectionMatrix3D.transformRectangle(rectangle, rectangle);
+  }
+
+  //---------------------------------------------------------------------------
+
+  @override
+  Point<num> localToParent(Point<num> localPoint, [Point<num> returnPoint]) {
+
+    _calculateProjectionMatrix(this.transformationMatrix);
+
+    num m00 = _projectionMatrix3D.m00;
+    num m10 = _projectionMatrix3D.m10;
+    num m30 = _projectionMatrix3D.m30;
+    num m01 = _projectionMatrix3D.m01;
+    num m11 = _projectionMatrix3D.m11;
+    num m31 = _projectionMatrix3D.m31;
+    num m03 = _projectionMatrix3D.m03;
+    num m13 = _projectionMatrix3D.m13;
+    num m33 = _projectionMatrix3D.m33;
+
+    var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
+    var x = localPoint.x.toDouble();
+    var y = localPoint.y.toDouble();
+
+    var td = m03 * x + m13 * y + m33;
+    var tx = m00 * x + m10 * y + m30;
+    var ty = m01 * x + m11 * y + m31;
+
+    p.x = tx / td;
+    p.y = ty / td;
+
+    return p;
+  }
+
+  //---------------------------------------------------------------------------
+
+  @override
+  Point<num> parentToLocal(Point<num> parentPoint, [Point<num> returnPoint]) {
+
+    _calculateProjectionMatrix(this.transformationMatrix);
+
+    num m00 = _projectionMatrix3D.m00;
+    num m10 = _projectionMatrix3D.m10;
+    num m30 = _projectionMatrix3D.m30;
+    num m01 = _projectionMatrix3D.m01;
+    num m11 = _projectionMatrix3D.m11;
+    num m31 = _projectionMatrix3D.m31;
+    num m03 = _projectionMatrix3D.m03;
+    num m13 = _projectionMatrix3D.m13;
+    num m33 = _projectionMatrix3D.m33;
+
+    var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
+    var x = parentPoint.x.toDouble();
+    var y = parentPoint.y.toDouble();
+
+    var td = x * (m01 * m13 - m03 * m11) + y * (m10 * m03 - m00 * m13) + m00 * m11 - m10 * m01;
+    var tx = x * (m11 * m33 - m13 * m31) + y * (m30 * m13 - m10 * m33) + m10 * m31 - m30 * m11;
+    var ty = x * (m03 * m31 - m01 * m33) + y * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
+
+    p.x = tx / td;
+    p.y = ty / td;
+
+    return p;
+  }
+
+  //---------------------------------------------------------------------------
+
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
 
-    _calculateNewProjectionMatrix3D(_identityMatrix);
+    _calculateProjectionMatrix(_identityMatrix);
 
-    num m00 = _newProjectionMatrix3D.m00;
-    num m10 = _newProjectionMatrix3D.m10;
-    num m30 = _newProjectionMatrix3D.m30;
-    num m01 = _newProjectionMatrix3D.m01;
-    num m11 = _newProjectionMatrix3D.m11;
-    num m31 = _newProjectionMatrix3D.m31;
-    num m03 = _newProjectionMatrix3D.m03;
-    num m13 = _newProjectionMatrix3D.m13;
-    num m33 = _newProjectionMatrix3D.m33;
+    num m00 = _projectionMatrix3D.m00;
+    num m10 = _projectionMatrix3D.m10;
+    num m30 = _projectionMatrix3D.m30;
+    num m01 = _projectionMatrix3D.m01;
+    num m11 = _projectionMatrix3D.m11;
+    num m31 = _projectionMatrix3D.m31;
+    num m03 = _projectionMatrix3D.m03;
+    num m13 = _projectionMatrix3D.m13;
+    num m33 = _projectionMatrix3D.m33;
 
     num px = localX.toDouble();
     num py = localY.toDouble();
 
-    num d = px * (m01 * m13 - m03 * m11) + py * (m10 * m03 - m00 * m13) + m00 * m11 - m10 * m01;
-    num x = px * (m11 * m33 - m13 * m31) + py * (m30 * m13 - m10 * m33) + m10 * m31 - m30 * m11;
-    num y = px * (m03 * m31 - m01 * m33) + py * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
+    num td = px * (m01 * m13 - m03 * m11) + py * (m10 * m03 - m00 * m13) + m00 * m11 - m10 * m01;
+    num tx = px * (m11 * m33 - m13 * m31) + py * (m30 * m13 - m10 * m33) + m10 * m31 - m30 * m11;
+    num ty = px * (m03 * m31 - m01 * m33) + py * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
 
-    return super.hitTestInput(x / d, y / d);
+    return super.hitTestInput(tx / td, ty / td);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  Point<num> localToGlobal(Point<num> localPoint) {
-
-    _tmpMatrix.identity();
-
-    for (var current = this; current != null; current = current._parent) {
-      _tmpMatrix.concat(current.transformationMatrix);
-    }
-
-    _calculateNewProjectionMatrix3D(_tmpMatrix);
-
-    num m00 = _newProjectionMatrix3D.m00;
-    num m10 = _newProjectionMatrix3D.m10;
-    num m30 = _newProjectionMatrix3D.m30;
-    num m01 = _newProjectionMatrix3D.m01;
-    num m11 = _newProjectionMatrix3D.m11;
-    num m31 = _newProjectionMatrix3D.m31;
-    num m03 = _newProjectionMatrix3D.m03;
-    num m13 = _newProjectionMatrix3D.m13;
-    num m33 = _newProjectionMatrix3D.m33;
-
-    num px = localPoint.x.toDouble();
-    num py = localPoint.y.toDouble();
-
-    num d = m03 * px + m13 * py + m33;
-    num x = m00 * px + m10 * py + m30;
-    num y = m01 * px + m11 * py + m31;
-
-    return new Point<num>(x / d, y / d);
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
-  Point<num> globalToLocal(Point<num> globalPoint) {
-
-    _tmpMatrix.identity();
-
-    for (var current = this; current != null; current = current._parent) {
-      _tmpMatrix.concat(current.transformationMatrix);
-    }
-
-    _calculateNewProjectionMatrix3D(_tmpMatrix);
-
-    num m00 = _newProjectionMatrix3D.m00;
-    num m10 = _newProjectionMatrix3D.m10;
-    num m30 = _newProjectionMatrix3D.m30;
-    num m01 = _newProjectionMatrix3D.m01;
-    num m11 = _newProjectionMatrix3D.m11;
-    num m31 = _newProjectionMatrix3D.m31;
-    num m03 = _newProjectionMatrix3D.m03;
-    num m13 = _newProjectionMatrix3D.m13;
-    num m33 = _newProjectionMatrix3D.m33;
-
-    num px = globalPoint.x.toDouble();
-    num py = globalPoint.y.toDouble();
-
-    num d = px * (m01 * m13 - m03 * m11) + py * (m10 * m03 - m00 * m13) + m00 * m11 - m10 * m01;
-    num x = px * (m11 * m33 - m13 * m31) + py * (m30 * m13 - m10 * m33) + m10 * m31 - m30 * m11;
-    num y = px * (m03 * m31 - m01 * m33) + py * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
-
-    return new Point<num>(x / d, y / d);
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
+  @override
   void render(RenderState renderState) {
+
     var renderContext = renderState.renderContext;
     if (renderContext is RenderContextWebGL) {
-      _renderWebGL(renderState);
+
+      var activeProjectionMatrix = renderContext.activeProjectionMatrix;
+      var globalMatrix = renderState.globalMatrix;
+
+      _oldProjectionMatrix3D.copyFromMatrix3D(activeProjectionMatrix);
+
+      _calculateProjectionMatrix(globalMatrix);
+      _tmpMatrix.copyFromAndInvert(globalMatrix);
+      _projectionMatrix3D.concat(activeProjectionMatrix);
+      _projectionMatrix3D.prepend2D(_tmpMatrix);
+
+      renderContext.activateProjectionMatrix(_projectionMatrix3D);
+      super.render(renderState);
+      renderContext.activateProjectionMatrix(_oldProjectionMatrix3D);
+
     } else {
-      _renderCanvas(renderState);
+
+      // TODO: We could simulate the 3d-transformation with 2d scales
+      // and 2d transformations - not perfect but better than nothing.
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  void _calculateNewProjectionMatrix3D(Matrix matrix) {
+  void _calculateProjectionMatrix(Matrix matrix) {
 
-    Matrix3D perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
-    Matrix3D transformationMatrix3D = this.transformationMatrix3D;
-    double pivotX = this.pivotX.toDouble();
-    double pivotY = this.pivotY.toDouble();
+    var perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
+    var transformationMatrix3D = this.transformationMatrix3D;
+    var pivotX = this.pivotX.toDouble();
+    var pivotY = this.pivotY.toDouble();
 
-    _newProjectionMatrix3D.copyFromMatrix2D(matrix);
-    _newProjectionMatrix3D.prependTranslation(pivotX, pivotY, 0.0);
-    _newProjectionMatrix3D.prepend(perspectiveMatrix3D);
-    _newProjectionMatrix3D.prepend(transformationMatrix3D);
-    _newProjectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  void _renderWebGL(RenderState renderState) {
-
-    var renderContext = renderState.renderContext as RenderContextWebGL;
-    var activeProjectionMatrix = renderContext.activeProjectionMatrix;
-    var globalMatrix = renderState.globalMatrix;
-
-    _calculateNewProjectionMatrix3D(globalMatrix);
-
-    _tmpMatrix.copyFromAndInvert(globalMatrix);
-    _newProjectionMatrix3D.concat(activeProjectionMatrix);
-    _newProjectionMatrix3D.prepend2D(_tmpMatrix);
-    _oldProjectionMatrix3D.copyFromMatrix3D(activeProjectionMatrix);
-
-    renderContext.activateProjectionMatrix(_newProjectionMatrix3D);
-    super.render(renderState);
-    renderContext.activateProjectionMatrix(_oldProjectionMatrix3D);
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  void _renderCanvas(RenderState renderState) {
-
-    // TODO: We could simulate the 3d-transformation with 2d scales
-    // and 2d transformations - not perfect but better than nothing.
-
+    _projectionMatrix3D.copyFromMatrix2D(matrix);
+    _projectionMatrix3D.prependTranslation(pivotX, pivotY, 0.0);
+    _projectionMatrix3D.prepend(perspectiveMatrix3D);
+    _projectionMatrix3D.prepend(transformationMatrix3D);
+    _projectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
   }
 }
-
-
-

@@ -1,11 +1,10 @@
 part of stagexl.display;
 
-/**
- * A drawable Bitmap surface
- *
- * If you need to batch drawing operations for better performance,
- * please use [BitmapDataUpdateBatch] instead.
- **/
+/// A drawable Bitmap surface.
+///
+/// If you need to batch drawing operations for better performance,
+/// please use [BitmapDataUpdateBatch] instead.
+
 class BitmapData implements BitmapDrawable {
 
   int _width = 0;
@@ -16,7 +15,7 @@ class BitmapData implements BitmapDrawable {
 
   static BitmapDataLoadOptions defaultLoadOptions = new BitmapDataLoadOptions();
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   BitmapData(int width, int height, [
       bool transparent = true, int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
@@ -28,7 +27,14 @@ class BitmapData implements BitmapDrawable {
   }
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
-    _renderTexture = new RenderTexture.fromImage(imageElement, pixelRatio);
+    _renderTexture = new RenderTexture.fromImageElement(imageElement, pixelRatio);
+    _renderTextureQuad = _renderTexture.quad;
+    _width = ensureInt(_renderTexture.width);
+    _height = ensureInt(_renderTexture.height);
+  }
+
+  BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
+    _renderTexture = new RenderTexture.fromVideoElement(videoElement, pixelRatio);
     _renderTextureQuad = _renderTexture.quad;
     _width = ensureInt(_renderTexture.width);
     _height = ensureInt(_renderTexture.height);
@@ -50,12 +56,9 @@ class BitmapData implements BitmapDrawable {
     _renderTextureQuad = renderTextureQuad;
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  /**
-   * Loads a BitmapData from the given url.
-   */
-
+  /// Loads a BitmapData from the given url.
   static Future<BitmapData> load(String url, [BitmapDataLoadOptions bitmapDataLoadOptions]) {
 
     if (bitmapDataLoadOptions == null) {
@@ -70,12 +73,9 @@ class BitmapData implements BitmapDrawable {
     return loader.then((renderTexture) => new BitmapData.fromRenderTextureQuad(renderTexture.quad));
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  /**
-   * Returns a new BitmapData with a copy of this BitmapData's texture.
-   */
-
+  /// Returns a new BitmapData with a copy of this BitmapData's texture.
   BitmapData clone([num pixelRatio]) {
     if (pixelRatio == null) pixelRatio = _renderTexture.storePixelRatio;
     var bitmapData = new BitmapData(_width, _height, true, 0, pixelRatio);
@@ -83,10 +83,7 @@ class BitmapData implements BitmapDrawable {
     return bitmapData;
   }
 
-  /**
-   * Return a dataUrl for this BitmapData.
-   */
-
+  /// Return a dataUrl for this BitmapData.
   String toDataUrl([String type = 'image/png', num quality]) {
     if (identical(_renderTextureQuad, _renderTexture.quad)) {
       return _renderTexture.canvas.toDataUrl(type, quality);
@@ -95,22 +92,19 @@ class BitmapData implements BitmapDrawable {
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  /**
-   * Returns an array of BitmapData based on this BitmapData's texture.
-   *
-   * This function is used to "slice" a spritesheet, tileset, or spritemap into
-   * several different frames. All BitmapData's produced by this method are linked
-   * to this BitmapData's texture for performance.
-   *
-   * The optional frameCount parameter will limit the number of frames generated,
-   * in case you have empty frames you don't care about due to the width / height
-   * of this BitmapData. If your frames are also separated by space or have an
-   * additional margin for each frame, you can specify this with the spacing or
-   * margin parameter (in pixel).
-   */
-
+  /// Returns an array of BitmapData based on this BitmapData's texture.
+  ///
+  /// This function is used to "slice" a spritesheet, tileset, or spritemap into
+  /// several different frames. All BitmapData's produced by this method are linked
+  /// to this BitmapData's texture for performance.
+  ///
+  /// The optional frameCount parameter will limit the number of frames generated,
+  /// in case you have empty frames you don't care about due to the width / height
+  /// of this BitmapData. If your frames are also separated by space or have an
+  /// additional margin for each frame, you can specify this with the spacing or
+  /// margin parameter (in pixel).
   List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, {
     int frameCount: null, int frameSpacing: 0, int frameMargin: 0 }) {
 
@@ -133,8 +127,8 @@ class BitmapData implements BitmapDrawable {
     return frames;
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   int get width => _width;
   int get height => _height;
@@ -143,7 +137,7 @@ class BitmapData implements BitmapDrawable {
   RenderTexture get renderTexture => _renderTextureQuad.renderTexture;
   RenderTextureQuad get renderTextureQuad => _renderTextureQuad;
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   void applyFilter(BitmapFilter filter, [Rectangle<int> rectangle]) {
     var updateBatch = new BitmapDataUpdateBatch(this);
@@ -157,9 +151,8 @@ class BitmapData implements BitmapDrawable {
     updateBatch.update();
   }
 
-  /**
-   * Clear the entire rendering surface.
-   */
+  /// Clear the entire rendering surface.
+
   void clear() {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.clear();
@@ -178,79 +171,72 @@ class BitmapData implements BitmapDrawable {
     updateBatch.update();
   }
 
-  /**
-   * Copy pixels from [source], completely replacing the pixels at [destPoint].
-   *
-   * copyPixels erases the target location specified by [destPoint] and [sourceRect],
-   * then draws over it.
-   *
-   * NOTE: [drawPixels] is more performant.
-   */
+  /// Copy pixels from [source], completely replacing the pixels at [destPoint].
+  ///
+  /// copyPixels erases the target location specified by [destPoint] and [sourceRect],
+  /// then draws over it.
+  ///
+  /// NOTE: [drawPixels] is more performant.
+
   void copyPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.copyPixels(source, sourceRect, destPoint);
     updateBatch.update();
   }
 
-  /**
-   * Draws pixels from [source] onto this object.
-   *
-   * Unlike [copyPixels], the target location is not erased first. That means pixels on this
-   * BitmapData may be visible if pixels from [source] are transparent. Select a [blendMode]
-   * to customize how two pixels are blended.
-   */
+  /// Draws pixels from [source] onto this object.
+  ///
+  /// Unlike [copyPixels], the target location is not erased first. That means pixels on this
+  /// BitmapData may be visible if pixels from [source] are transparent. Select a [blendMode]
+  /// to customize how two pixels are blended.
+
   void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint, [BlendMode blendMode]) {
     var updateBatch = new BitmapDataUpdateBatch(this);
-    updateBatch.drawPixels(source, sourceRect, destPoint);
+    updateBatch.drawPixels(source, sourceRect, destPoint, blendMode);
     updateBatch.update();
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  /**
-   * Get a single RGB pixel
-   */
+  /// Get a single RGB pixel
+
   int getPixel(int x, int y) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     return updateBatch.getPixel32(x, y) & 0x00FFFFFF;
   }
 
-  /**
-   * Get a single RGBA pixel
-   */
+  /// Get a single RGBA pixel
+
   int getPixel32(int x, int y) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     return updateBatch.getPixel32(x, y);
   }
 
-  /**
-   * Draw an RGB pixel at the given coordinates.
-   *
-   * setPixel updates the underlying texture. If you need to make multiple calls,
-   * use [BitmapDataUpdateBatch] instead.
-   */
+  /// Draw an RGB pixel at the given coordinates.
+  ///
+  /// setPixel updates the underlying texture. If you need to make multiple calls,
+  /// use [BitmapDataUpdateBatch] instead.
+
   void setPixel(int x, int y, int color) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.setPixel32(x, y, color | 0xFF000000);
     updateBatch.update();
   }
 
-  /**
-   * Draw an RGBA pixel at the given coordinates.
-   *
-   * setPixel32 updates the underlying texture. If you need to make multiple calls,
-   * use [BitmapDataUpdateBatch] instead.
-   */
+  /// Draw an RGBA pixel at the given coordinates.
+  ///
+  /// setPixel32 updates the underlying texture. If you need to make multiple calls,
+  /// use [BitmapDataUpdateBatch] instead.
+
   void setPixel32(int x, int y, int color) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.setPixel32(x, y, color);
     updateBatch.update();
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   render(RenderState renderState) {
     renderState.renderQuad(_renderTextureQuad);
   }
-
 }

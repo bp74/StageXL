@@ -12,6 +12,7 @@ import 'dart:math' hide Point, Rectangle;
 
 import 'animation.dart';
 import 'display.dart';
+import 'drawing.dart';
 import 'engine.dart';
 import 'events.dart';
 import 'text.dart';

@@ -1,11 +1,15 @@
 Below is a list of people and organizations who have contributed to StageXL.
 
-Bernhard Pichler \<bernhard.robert.pichler@gmail.com\>
+In alphabetical order:
 
-Alex Gann \<k.alexgann@gmail.com\>  
-Arron Washington \<arron@theradicaledwards.com\>  
-Kevin Moore \<github@j832.com\>  
-Michael Randolph \<mrand01@gmail.com\>  
-Philippe Elsass \<elsass@adobe.com\>  
-Wilker Lúcio \<wilkerlucio@gmail.com\>  
-Xavier Hainaux \<xavier.hainaux@produweb.be\>  
+Alex Gann <https://github.com/alexgann>  
+Arron Washington <https://github.com/radicaled>  
+Bernhard Pichler <https://github.com/bp74>  
+Kevin Moore <https://github.com/kevmoo>  
+Marco Jakob <https://github.com/marcojakob>  
+Michael Randolph <https://github.com/mrand01>  
+Nils Döhring <https://github.com/nilsdoehring>  
+Philippe Elsass <https://github.com/elsassph>  
+Sébastien Geelen <https://github.com/sebgeelen>  
+Wilker Lúcio <https://github.com/wilkerlucio>  
+Xavier Hainaux <https://github.com/xavierhainaux>  

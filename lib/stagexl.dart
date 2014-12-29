@@ -3,20 +3,23 @@ library stagexl;
 //==========================================================
 // StageXL Library Hierarchy (bottom-up)
 //==========================================================
-// displayex, toolkit
+// display_ex, toolkit
 //----------------------------------------------------------
 // filters, resources, text
 //----------------------------------------------------------
 // display
 //----------------------------------------------------------
-// engine, internal.tools
+// drawing
 //----------------------------------------------------------
-// events, media, animation, ui, geom.*, internal.*
+// engine, media
+//----------------------------------------------------------
+// events, animation, ui, geom.*, internal.*
 //==========================================================
 
 export 'src/animation.dart';
 export 'src/display.dart';
 export 'src/display_ex.dart';
+export 'src/drawing.dart';
 export 'src/engine.dart';
 export 'src/events.dart';
 export 'src/filters.dart';

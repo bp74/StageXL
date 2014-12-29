@@ -14,8 +14,7 @@ class ImageLoader {
   StreamSubscription _onLoadSubscription;
   StreamSubscription _onErrorSubscription;
 
-  ImageLoader(String url, bool webpAvailable, bool corsEnabled)
-      : _url = url {
+  ImageLoader(String url, bool webpAvailable, bool corsEnabled) : _url = url {
 
     _onLoadSubscription = image.onLoad.listen(_onImageLoad);
     _onErrorSubscription = image.onError.listen(_onImageError);

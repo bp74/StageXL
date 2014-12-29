@@ -1,8 +1,9 @@
 part of stagexl.animation;
 
-/// The [AnimationChain] class is used to animate multiple Animatables.
-/// Those Animatables are animated one after the other and the onComplete
-/// callback is called when the last Animatable has completed.
+/// The [AnimationChain] class is used to animate multiple [Animatable]s.
+///
+/// Those animatables are animated one after the other and the [onComplete]
+/// callback is called when the last animatable has completed.
 ///
 /// See also: [Juggler], [AnimationChain], [Animatable]
 ///
@@ -33,12 +34,14 @@ class AnimationChain implements Animatable {
   bool _started = false;
   bool _completed = false;
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Adds the [animatable] to this [AnimationChain].
   void add(Animatable animatable) {
     _animatables.add(animatable);
   }
 
+  @override
   bool advanceTime(num time) {
 
     _time += time;
@@ -67,10 +70,12 @@ class AnimationChain implements Animatable {
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// The delay this [AnimatableChain] waits until it starts animating.
+  ///
+  /// The delay may be changed as long as the animation has not been started.
   num get delay => _delay;
-  bool get isComplete => _completed;
 
   set delay(num value) {
     if (_started == false) {
@@ -79,17 +84,19 @@ class AnimationChain implements Animatable {
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
+  /// Indicates if this [AnimatableChain] is completed.
+  bool get isComplete => _completed;
 
-  /* The function that is called when a [AnimationChain] starts.
-   * This happens after the specified delay.
-   */
+  //----------------------------------------------------------------------------
+
+  /// The function that is called when an [AnimationChain] starts.
+  ///
+  /// This happens after the specified [delay].
   void set onStart(void function()) {
     _onStart = function;
   }
 
-  /* The function that is called when a [AnimationChain] is completed.
-   */
+  /// The function that is called when an [AnimationChain] is completed.
   void set onComplete(void function()) {
     _onComplete = function;
   }

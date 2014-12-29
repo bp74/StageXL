@@ -33,12 +33,14 @@ class AnimationGroup implements Animatable {
   bool _started = false;
   bool _completed = false;
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// Adds the [animatable] to this [AnimationGroup].
   void add(Animatable animatable) {
     _animatables.add(animatable);
   }
 
+  @override
   bool advanceTime(num time) {
 
     _time += time;
@@ -69,10 +71,12 @@ class AnimationGroup implements Animatable {
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  /// The delay this [AnimatableGroup] waits until it starts animating.
+  ///
+  /// The delay may be changed as long as the animation has not been started.
   num get delay => _delay;
-  bool get isComplete => _completed;
 
   set delay(num value) {
     if (_started == false) {
@@ -81,10 +85,14 @@ class AnimationGroup implements Animatable {
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
+  /// Indicates if this [AnimatableGroup] is completed.
+  bool get isComplete => _completed;
 
-  /// The function that is called when a [AnimationGroup] starts.
-  /// This happens after the specified delay.
+  //----------------------------------------------------------------------------
+
+  /// The function that is called when an [AnimationGroup] starts.
+  ///
+  /// This happens after the specified [delay].
   void set onStart(void function()) {
     _onStart = function;
   }

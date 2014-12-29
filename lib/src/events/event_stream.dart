@@ -1,9 +1,13 @@
 part of stagexl.events;
 
+/// Provides a stream of [Event]s.
 class EventStream<T extends Event> extends Stream<T> {
 
-  final EventDispatcher _target;
-  final String _eventType;
+  /// The event target.
+  final EventDispatcher target;
+
+  /// The event type of this stream.
+  final String eventType;
 
   // We store the subscriptions in a immutable fixed length list.
   // If subscriptions are added or canceled we create a new list.
@@ -12,12 +16,14 @@ class EventStream<T extends Event> extends Stream<T> {
   List<EventStreamSubscription> _subscriptions = new List(0);
   int _capturingSubscriptionCount = 0;
 
-  EventStream._internal(this._target, this._eventType);
+  EventStream._(this.target, this.eventType);
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
+  @override
   bool get isBroadcast => true;
 
+  @override
   Stream<T> asBroadcastStream({
     void onListen(StreamSubscription subscription),
     void onCancel(StreamSubscription subscription)}) => this;
@@ -26,25 +32,58 @@ class EventStream<T extends Event> extends Stream<T> {
   bool get hasCapturingSubscriptions => _capturingSubscriptionCount > 0;
   bool get hasBubblingSubscriptions => _subscriptions.length > _capturingSubscriptionCount;
 
-  EventDispatcher get target => _target;
-  String get eventType => _eventType;
+  //----------------------------------------------------------------------------
 
-  //-----------------------------------------------------------------------------------------------
+  /// Adds a subscription to this stream that processes the event during the
+  /// target or bubbling phase.
+  ///
+  /// In contrast, the [capture] method processes the event during the capture
+  /// phase.
+  ///
+  /// On each data event from this stream, the subscriber's [onData] handler
+  /// is called.
+  ///
+  /// The [priority] level of the event listener can be specified. The higher
+  /// the number, the higher the priority. All listeners with priority n are
+  /// processed before listeners of priority n-1. If two or more listeners share
+  /// the same priority, they are processed in the order in which they were
+  /// added. The default priority is 0.
+  ///
+  /// Note: The [onError] and [onDone] handlers and [cancelOnError] are not used
+  /// as the stream has no errors and is never done.
 
-  EventStreamSubscription<T> listen(void onData(T event), { Function onError, void onDone(),
+  @override
+  EventStreamSubscription<T> listen(void onData(T event), {
+    void onError(error), void onDone(),
     bool cancelOnError: false, int priority: 0 }) {
 
     return _subscribe(onData, false, priority);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+
+  /// Adds a subscription to this stream that processes the event during the
+  /// capture phase.
+  ///
+  /// In contrast, the [listen] method processes the event during the target or
+  /// bubbling phase.
+  ///
+  /// On each data event from this stream, the subscriber's [onData] handler
+  /// is called.
+  ///
+  /// The [priority] level of the event listener can be specified. The higher
+  /// the number, the higher the priority. All listeners with priority n are
+  /// processed before listeners of priority n-1. If two or more listeners share
+  /// the same priority, they are processed in the order in which they were
+  /// added. The default priority is 0.
 
   EventStreamSubscription<T> capture(void onData(T event), { int priority: 0 }) {
-
     return _subscribe(onData, true, priority);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+
+  /// Cancels all subscriptions to this stream.
 
   void cancelSubscriptions() {
 
@@ -55,13 +94,14 @@ class EventStream<T extends Event> extends Stream<T> {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  EventStreamSubscription<T> _subscribe(EventListener eventListener, bool captures, int priority) {
+  EventStreamSubscription<T> _subscribe(
+      EventListener eventListener, bool captures, int priority) {
 
-    var subscription = new EventStreamSubscription<T>._internal(
-        this, eventListener, captures, priority);
+    var subscription = new EventStreamSubscription<T>._(this,
+        eventListener, captures, priority);
 
     // Insert the new subscription according to its priority.
 
@@ -84,7 +124,7 @@ class EventStream<T extends Event> extends Stream<T> {
     if (captures) {
       _capturingSubscriptionCount += 1;
     } else {
-      switch(_eventType) {
+      switch(this.eventType) {
         case Event.ENTER_FRAME: _enterFrameSubscriptions.add(subscription); break;
         case Event.EXIT_FRAME: _exitFrameSubscriptions.add(subscription); break;
         case Event.RENDER: _renderSubscriptions.add(subscription); break;
@@ -94,7 +134,7 @@ class EventStream<T extends Event> extends Stream<T> {
     return subscription;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   _unsubscribe(EventListener eventListener, bool captures) {
 
@@ -108,7 +148,7 @@ class EventStream<T extends Event> extends Stream<T> {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   _cancelSubscription(EventStreamSubscription eventStreamSubscription) {
 
@@ -133,22 +173,27 @@ class EventStream<T extends Event> extends Stream<T> {
     _subscriptions = newSubscriptions;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   _dispatchEventInternal(T event, EventDispatcher target, EventPhase eventPhase)  {
 
     var subscriptions = _subscriptions;
+    var isCapturing = eventPhase == EventPhase.CAPTURING_PHASE;
+    var inputEvent = event is InputEvent ? event : null;
 
     for(var i = 0; i < subscriptions.length; i++) {
 
       var subscription = subscriptions[i];
       if (subscription.isCanceled || subscription.isPaused ||
-          subscription.isCapturing != (eventPhase == EventPhase.CAPTURING_PHASE)) continue;
+          subscription.isCapturing != isCapturing) continue;
 
       event._target = target;
-      event._currentTarget = _target;
+      event._currentTarget = this.target;
       event._eventPhase = eventPhase;
+
+      InputEvent.current = inputEvent;
       subscription.eventListener(event);
+      InputEvent.current = null;
 
       if (event.stopsImmediatePropagation) return;
     }

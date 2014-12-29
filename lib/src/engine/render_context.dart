@@ -23,8 +23,17 @@ abstract class RenderContext {
   void clear(int color);
   void flush();
 
-  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad);
-  void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color);
+  void renderQuad(
+    RenderState renderState, RenderTextureQuad renderTextureQuad);
+
+  void renderTriangle(
+    RenderState renderState,
+    num x1, num y1, num x2, num y2, num x3, num y3, int color);
+
+  void renderMesh(
+    RenderState renderState, RenderTexture renderTexture,
+    int indexCount, Int16List indexList,
+    int vertexCount, Float32List xyList, Float32List uvList);
 
   void beginRenderMask(RenderState renderState, RenderMask mask);
   void endRenderMask(RenderState renderState, RenderMask mask);

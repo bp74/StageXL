@@ -10,7 +10,7 @@ part of stagexl.display_ex;
 ///     stage.addChild(gauge);
 ///
 ///     resourceManager.onProgress.listen((progress) => gauge.ratio = progress);
-///
+
 class Gauge extends DisplayObject {
 
   static const String DIRECTION_UP = 'DIRECTION_UP';
@@ -18,25 +18,23 @@ class Gauge extends DisplayObject {
   static const String DIRECTION_DOWN = 'DIRECTION_DOWN';
   static const String DIRECTION_LEFT = 'DIRECTION_LEFT';
 
-  String _direction;
-  num _ratio;
-  BitmapData _bitmapData;
-  RenderTextureQuad _renderTextureQuad;
+  BitmapData bitmapData;
+  String direction;
 
-  Gauge(BitmapData bitmapData, [String direction = DIRECTION_LEFT]) {
+  num _ratio = 1.0;
 
-    if (direction != DIRECTION_UP && direction != DIRECTION_DOWN &&
-        direction != DIRECTION_LEFT && direction != DIRECTION_RIGHT) {
-      throw new ArgumentError('Invalid Gauge direction!');
-    }
+  Gauge(this.bitmapData, [this.direction = DIRECTION_LEFT]) {
 
-    _direction = direction;
-    _bitmapData = bitmapData;
-    _ratio = 1.0;
+    var validDirection = false;
+    validDirection = validDirection || direction == DIRECTION_UP;
+    validDirection = validDirection || direction == DIRECTION_DOWN;
+    validDirection = validDirection || direction == DIRECTION_LEFT;
+    validDirection = validDirection || direction == DIRECTION_RIGHT;
+
+    if (!validDirection) throw new ArgumentError('Invalid Gauge direction!');
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   num get ratio => _ratio;
 
@@ -46,54 +44,42 @@ class Gauge extends DisplayObject {
     _ratio = value;
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  BitmapData get bitmapData => _bitmapData;
-
-  set bitmapData(BitmapData value) {
-    _bitmapData = value;
+  @override
+  Rectangle<num> get bounds {
+    return bitmapData == null
+      ? new Rectangle<num>(0.0, 0.0, 0.0 ,0.0)
+      : new Rectangle<num>(0.0, 0.0, bitmapData.width, bitmapData.height);
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  Rectangle<num> getBoundsTransformed(Matrix matrix, [Rectangle<num> returnRectangle]) {
-
-    int width = (_bitmapData != null) ? _bitmapData.width : 0;
-    int height = (_bitmapData != null) ? _bitmapData.height : 0;
-
-    return getBoundsTransformedHelper(matrix, width, height, returnRectangle);
-  }
-
-  //-------------------------------------------------------------------------------------------------
-
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
-
-    return bitmapData != null &&
-      localX >= 0.0 && localY >= 0.0 &&
-      localX < _bitmapData.width && localY < _bitmapData.height ? this : null;
+    if (bitmapData == null) return null;
+    if (localX < 0.0 || localX >= bitmapData.width) return null;
+    if (localY < 0.0 || localY >= bitmapData.height) return null;
+    return this;
   }
 
-  //-------------------------------------------------------------------------------------------------
-
+  @override
   void render(RenderState renderState) {
 
-    if (_bitmapData != null) {
+    if (bitmapData == null) return;
 
-      var width = _bitmapData.width;
-      var height = _bitmapData.height;
-      var left = 0, top = 0;
-      var right = width, bottom = height;
+    var width = bitmapData.width;
+    var height = bitmapData.height;
+    var left = 0;
+    var top = 0;
+    var right = width;
+    var bottom = height;
 
-      if (_direction == DIRECTION_LEFT) left = ((1.0 - _ratio) * width).round();
-      if (_direction == DIRECTION_UP) top = ((1.0 - _ratio) * height).round();
-      if (_direction == DIRECTION_RIGHT) right = (_ratio * width).round();
-      if (_direction == DIRECTION_DOWN) bottom = (_ratio * height).round();
+    if (direction == DIRECTION_LEFT) left = ((1.0 - _ratio) * width).round();
+    if (direction == DIRECTION_UP) top = ((1.0 - _ratio) * height).round();
+    if (direction == DIRECTION_RIGHT) right = (_ratio * width).round();
+    if (direction == DIRECTION_DOWN) bottom = (_ratio * height).round();
 
-      var rectangle = new Rectangle(left, top, right - left, bottom - top);
-      var quad = _bitmapData.renderTextureQuad.clip(rectangle);
-      renderState.renderQuad(quad);
-    }
+    var rectangle = new Rectangle(left, top, right - left, bottom - top);
+    var quad = bitmapData.renderTextureQuad.clip(rectangle);
+    renderState.renderQuad(quad);
   }
-
 }

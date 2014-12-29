@@ -1,49 +1,53 @@
 part of stagexl.engine;
 
-abstract class RenderLoopBase {
+List _globalFrameListeners = new List();
+bool _globalFrameLoop = _frameLoopInitializer();
+num _globalFrameTime = double.MAX_FINITE;
 
-  num _renderTime = double.MAX_FINITE;
-  int _requestId = null;
+bool _frameLoopInitializer() {
+  window.requestAnimationFrame(_animationFrame);
+  return true;
+}
 
-  //-------------------------------------------------------------------------------------------------
+void _animationFrame(num frameTime) {
 
-  void start() {
-    _renderTime = double.MAX_FINITE;
-    _requestAnimationFrame();
+  var frameListeners = _globalFrameListeners.toList(growable: false);
+  var currentFrameTime = ensureNum(frameTime) / 1000.0;
+  var deltaTime = currentFrameTime - _globalFrameTime;
+
+  for (int i = 0; i < frameListeners.length; i++) {
+    frameListeners[i](deltaTime);
   }
 
-  void stop() {
-    _cancelAnimationFrame();
+  _globalFrameTime = currentFrameTime;
+  window.requestAnimationFrame(_animationFrame);
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+abstract class RenderLoopBase {
+  bool _running = false;
+
+  RenderLoopBase() {
+    var initialize = _globalFrameLoop;
   }
 
   void advanceTime(num deltaTime);
 
-  //-------------------------------------------------------------------------------------------------
-
-  _requestAnimationFrame() {
-    if (_requestId == null) {
-      _requestId = window.requestAnimationFrame(_onAnimationFrame);
-    }
+  void start() {
+    _running = true;
+    _globalFrameListeners.add(_onGlobalFrame);
   }
 
-  _cancelAnimationFrame() {
-    if (_requestId != null) {
-      window.cancelAnimationFrame(_requestId);
-      _requestId = null;
-    }
+  void stop() {
+    _running = false;
+    _globalFrameListeners.remove(_onGlobalFrame);
   }
 
-  _onAnimationFrame(num time) {
-
-    _requestId = null;
-    _requestAnimationFrame();
-
-    num oldRenderTime = _renderTime;
-    num newRenderTime = _renderTime = ensureNum(time) / 1000.0;
-
-    if (newRenderTime > oldRenderTime) {
-      this.advanceTime(newRenderTime - oldRenderTime);
+  void _onGlobalFrame(num deltaTime) {
+    if (_running && deltaTime >= 0) {
+      if (deltaTime is num) this.advanceTime(deltaTime);
     }
   }
-
 }
