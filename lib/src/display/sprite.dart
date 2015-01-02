@@ -85,9 +85,9 @@ class Sprite extends DisplayObjectContainer {
 
   @override
   Rectangle<num> get bounds {
-    var rectangle = super.bounds;
-    if (graphics != null) rectangle.boundingBox(graphics.bounds);
-    return rectangle;
+    return graphics != null
+      ? super.bounds.boundingBox(graphics.bounds)
+      : super.bounds;
   }
 
   //----------------------------------------------------------------------------
