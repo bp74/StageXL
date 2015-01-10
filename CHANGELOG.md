@@ -3,6 +3,16 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.10.3
+  * Added InputEvent as base class for MouseEvent and TouchEvent.
+  * Added InputEvent.current for current propagating InputEvent.
+  * Added Sprite drag support for multi touch.
+  * Added Mesh display object for BitmapData free form deformation.
+  * Added batch drawing support for meshes.
+  * Added stagexl.drawing mini-lib for future WebGL support.
+  * Remove Sprite.buttonMode since it has no use.
+  * Bugfixes.
+
 #### Pub version 0.10.2
   * Added lots of API documentations (thanks to @marcojakob)
   * Added Video and VideoObject classes (thanks fot @sebgeelen)
