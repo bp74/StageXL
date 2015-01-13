@@ -6,7 +6,7 @@ class AudioElementSound extends Sound {
   final List<AudioElement> _audioPool = new List<AudioElement>();
   final List<AudioElementSoundChannel> _soundChannels = new List<AudioElementSoundChannel>();
 
-  AudioElementSound._(AudioElement audio) : _audio = audio {
+  AudioElementSound(AudioElement audio) : _audio = audio {
     _audio.onEnded.listen(_onAudioEnded);
     _audioPool.add(_audio);
   }
@@ -24,7 +24,7 @@ class AudioElementSound extends Sound {
     var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
 
     audioLoader.done.then((AudioElement audioElement) {
-      completer.complete(new AudioElementSound._(audioElement));
+      completer.complete(new AudioElementSound(audioElement));
     }).catchError((error) {
       if (soundLoadOptions.ignoreErrors) {
         MockSound.load(url, soundLoadOptions).then((s) => completer.complete(s));
