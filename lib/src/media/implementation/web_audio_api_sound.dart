@@ -58,6 +58,43 @@ class WebAudioApiSound extends Sound {
     return loadCompleter.future;
   }
 
+  static Future<Sound> loadDataUri(String dataUri) {
+    String byteString = window.atob(dataUri.split(',')[1]);
+    Uint8List bytes = new Uint8List(byteString.length);
+    for (int i = 0; i < byteString.length; i++) {
+      bytes[i] = byteString.codeUnitAt(i);
+    }
+
+    FileReader fileReader = new FileReader();
+    fileReader.readAsArrayBuffer(new Blob([bytes]));
+
+    Completer completer = new Completer();
+
+    StreamSubscription onLoadSubscription, onErrorSubscription;
+    onLoadSubscription = fileReader.onLoad.listen((_) {
+      onLoadSubscription.cancel();
+      onErrorSubscription.cancel();
+
+      var result = fileReader.result;
+      ByteBuffer buffer = result.buffer;
+      WebAudioApiMixer.audioContext.decodeAudioData(buffer).then((AudioBuffer audioBuffer) {
+        WebAudioApiSound sound = new WebAudioApiSound._()
+          .._buffer = audioBuffer;
+        completer.complete(sound);
+      }).catchError((_) {
+        completer.completeError(new StateError("Failed to load audio."));
+      });
+    });
+
+    onErrorSubscription = fileReader.onError.listen((_) {
+      onLoadSubscription.cancel();
+      onErrorSubscription.cancel();
+      completer.completeError(new StateError("Failed to load audio."));
+    });
+
+    return completer.future;
+  }
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
