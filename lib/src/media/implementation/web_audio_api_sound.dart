@@ -2,9 +2,9 @@ part of stagexl.media;
 
 class WebAudioApiSound extends Sound {
 
-  AudioBuffer _buffer;
+  final AudioBuffer _buffer;
 
-  WebAudioApiSound._() {
+  WebAudioApiSound(this._buffer) {
     if (SoundMixer.engine != "WebAudioApi") {
       throw new UnsupportedError("This browser does not support Web Audio API.");
     }
@@ -17,7 +17,6 @@ class WebAudioApiSound extends Sound {
 
     if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
 
-    var sound = new WebAudioApiSound._();
     var loadCompleter = new Completer<Sound>();
     var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
@@ -28,7 +27,7 @@ class WebAudioApiSound extends Sound {
 
     audioRequestFinished(request) {
       audioContext.decodeAudioData(request.response).then((AudioBuffer buffer) {
-        sound._buffer = buffer;
+        var sound = new WebAudioApiSound(buffer);
         loadCompleter.complete(sound);
       }).catchError((error) {
         if (soundLoadOptions.ignoreErrors) {
