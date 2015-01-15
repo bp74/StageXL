@@ -36,6 +36,29 @@ class AudioElementSound extends Sound {
     return completer.future;
   }
 
+  static Future<Sound> loadDataUri(String dataUri) {
+    AudioElement audio = new AudioElement();
+    document.body.children.add(audio);
+    Completer completer = new Completer();
+
+    StreamSubscription onCanPlaySubscription, onErrorSubscription;
+    onCanPlaySubscription = audio.onCanPlay.listen((_) {
+      onCanPlaySubscription.cancel();
+      onErrorSubscription.cancel();
+      completer.complete(new AudioElementSound._(audio));
+    });
+
+    onErrorSubscription = audio.onError.listen((_) {
+      onCanPlaySubscription.cancel();
+      onErrorSubscription.cancel();
+      completer.completeError(new StateError("Failed to load audio."));
+    });
+
+    audio.src = dataUri;
+
+    return completer.future;
+  }
+
   //---------------------------------------------------------------------------
 
   num get length => _audio.duration;

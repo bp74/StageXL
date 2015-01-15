@@ -18,6 +18,20 @@ abstract class Sound {
     }
   }
 
+  /// Loads a sound encoded in the data URI scheme.
+  ///
+  ///     Sound.loadDataUri("data:audio/mpeg;base64,<data>")
+  ///         .then((Sound sound) {
+  ///       sound.play();
+  ///     });
+  static Future<Sound> loadDataUri(String dataUri) {
+    switch(SoundMixer.engine) {
+      case "WebAudioApi" : return WebAudioApiSound.loadDataUri(dataUri);
+      case "AudioElement": return AudioElementSound.loadDataUri(dataUri);
+      default            : return new Future<Sound>.value(new MockSound._());
+    }
+  }
+
   //-------------------------------------------------------------------------------------------------
 
   num get length;

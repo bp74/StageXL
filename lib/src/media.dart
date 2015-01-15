@@ -24,6 +24,7 @@ library stagexl.media;
 import 'dart:async';
 import 'dart:html';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:web_audio';
 
 import 'internal/audio_loader.dart';
