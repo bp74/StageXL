@@ -72,11 +72,15 @@ void main() {
   });
 
   test('#add', () {
-    testPoint(point12().add(point12()), x: 2, y: 4);
+    testPoint(point12() + point12(), x: 2, y: 4);
   });
 
   test('#subtract', () {
-    testPoint(point12().subtract(point12()), x: 0, y: 0);
+    testPoint(point12() - point12(), x: 0, y: 0);
+  });
+
+  test('#multiply', () {
+    testPoint(point12() * 5, x: 5, y: 10);
   });
 
   test('#copyFrom', () {
@@ -98,8 +102,8 @@ void main() {
   });
 
   test('#equals', () {
-    expect(point12().equals(point12()), isTrue);
-    expect(point12().equals(point00()), isFalse);
+    expect(point12() == point12(), isTrue);
+    expect(point12() == point00(), isFalse);
   });
 
   test('#offset', () {
