@@ -36,10 +36,10 @@ class AudioElementSound extends Sound {
     return completer.future;
   }
 
-  static Future<Sound> loadDataUri(String dataUri) {
+  static Future<Sound> loadDataUrl(String dataUrl) {
 
     var completer = new Completer<Sound>();
-    var audioUrls = [dataUri];
+    var audioUrls = [dataUrl];
     var loadData = false;
     var corsEnabled = false;
     var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
