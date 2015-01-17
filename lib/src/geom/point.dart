@@ -29,11 +29,6 @@ class Point<T extends num> implements math.Point<T> {
 
   //---------------------------------------------------------------------------
 
-  /// Get the straight line (Euclidean) distance between the
-  /// origin (0, 0) and this point.
-
-  double get magnitude => sqrt(x * x + y * y);
-
   /// A `Point` is only equal to another `Point` with the same coordinates.
   ///
   /// This point is equal to `other` if, and only if, `other` is a `Point`
@@ -71,6 +66,13 @@ class Point<T extends num> implements math.Point<T> {
   Point<T> operator *(num factor) {
     return new Point<T>(x * factor, y * factor);
   }
+
+  //-------------------------------------------------------------------------------------------------
+
+  /// Get the straight line (Euclidean) distance between the
+  /// origin (0, 0) and this point.
+
+  double get magnitude => sqrt(x * x + y * y);
 
   //-------------------------------------------------------------------------------------------------
 
@@ -141,6 +143,6 @@ class Point<T extends num> implements math.Point<T> {
   /// This method is deprecated. Please use the == operator instead.
 
   @deprecated
-  bool equals(Point point) => this == point;
+  bool equals(math.Point<T> other) => this == other;
 
 }
