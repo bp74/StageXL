@@ -2,23 +2,20 @@ part of stagexl.media;
 
 class WebAudioApiSound extends Sound {
 
-  AudioBuffer _buffer;
+  AudioBuffer _audioBuffer;
 
-  WebAudioApiSound._() {
-    if (SoundMixer.engine != "WebAudioApi") {
-      throw new UnsupportedError("This browser does not support Web Audio API.");
+  WebAudioApiSound._(AudioBuffer audioBuffer) : _audioBuffer = audioBuffer;
+
+  //---------------------------------------------------------------------------
+
+  static Future<Sound> load(String url, [
+    SoundLoadOptions soundLoadOptions = null]) {
+
+    if (soundLoadOptions == null) {
+      soundLoadOptions = Sound.defaultLoadOptions;
     }
-  }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
-
-    if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
-
-    var sound = new WebAudioApiSound._();
-    var loadCompleter = new Completer<Sound>();
+    var completer = new Completer<Sound>();
     var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
 
@@ -26,92 +23,76 @@ class WebAudioApiSound extends Sound {
       return MockSound.load(url, soundLoadOptions);
     }
 
-    audioRequestFinished(request) {
-      audioContext.decodeAudioData(request.response).then((AudioBuffer buffer) {
-        sound._buffer = buffer;
-        loadCompleter.complete(sound);
+    void audioRequestFinished(request) {
+      audioContext.decodeAudioData(request.response).then((AudioBuffer audioBuffer) {
+        completer.complete(new WebAudioApiSound._(audioBuffer));
       }).catchError((error) {
         if (soundLoadOptions.ignoreErrors) {
-          MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
+          MockSound.load(url, soundLoadOptions).then((s) => completer.complete(s));
         } else {
-          loadCompleter.completeError(new StateError("Failed to decode audio."));
+          completer.completeError(new StateError("Failed to decode audio."));
         }
       });
     }
 
-    audioRequestNext(error) {
+    void  audioRequestNext(error) {
       if (audioUrls.length > 0) {
         HttpRequest.request(audioUrls.removeAt(0), responseType: 'arraybuffer')
         .then(audioRequestFinished)
         .catchError(audioRequestNext);
       } else {
         if (soundLoadOptions.ignoreErrors) {
-          MockSound.load(url, soundLoadOptions).then((s) => loadCompleter.complete(s));
+          MockSound.load(url, soundLoadOptions).then((s) => completer.complete(s));
         } else {
-          loadCompleter.completeError(new StateError("Failed to load audio."));
+          completer.completeError(new StateError("Failed to load audio."));
         }
       }
     }
 
     audioRequestNext(null);
 
-    return loadCompleter.future;
+    return completer.future;
   }
 
+  //---------------------------------------------------------------------------
+
   static Future<Sound> loadDataUri(String dataUri) {
-    String byteString = window.atob(dataUri.split(',')[1]);
-    Uint8List bytes = new Uint8List(byteString.length);
+
+    var completer = new Completer();
+    var audioContext = WebAudioApiMixer.audioContext;
+    var byteString = window.atob(dataUri.split(',')[1]);
+    var bytes = new Uint8List(byteString.length);
+
     for (int i = 0; i < byteString.length; i++) {
       bytes[i] = byteString.codeUnitAt(i);
     }
 
-    FileReader fileReader = new FileReader();
-    fileReader.readAsArrayBuffer(new Blob([bytes]));
-
-    Completer completer = new Completer();
-
-    StreamSubscription onLoadSubscription, onErrorSubscription;
-    onLoadSubscription = fileReader.onLoad.listen((_) {
-      onLoadSubscription.cancel();
-      onErrorSubscription.cancel();
-
-      var result = fileReader.result;
-      ByteBuffer buffer = result.buffer;
-      WebAudioApiMixer.audioContext.decodeAudioData(buffer).then((AudioBuffer audioBuffer) {
-        WebAudioApiSound sound = new WebAudioApiSound._()
-          .._buffer = audioBuffer;
-        completer.complete(sound);
-      }).catchError((_) {
-        completer.completeError(new StateError("Failed to load audio."));
-      });
-    });
-
-    onErrorSubscription = fileReader.onError.listen((_) {
-      onLoadSubscription.cancel();
-      onErrorSubscription.cancel();
+    audioContext.decodeAudioData(bytes.buffer).then((AudioBuffer audioBuffer) {
+      completer.complete(new WebAudioApiSound._(audioBuffer));
+    }).catchError((_) {
       completer.completeError(new StateError("Failed to load audio."));
     });
 
     return completer.future;
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   num get length {
-    return _buffer.duration;
+    return _audioBuffer.duration;
   }
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-    if (soundTransform == null) soundTransform = new SoundTransform();
-    return new WebAudioApiSoundChannel(this, 0, this.length, loop, soundTransform);
+  SoundChannel play([bool loop = false, SoundTransform soundTransform = null]) {
+
+    return new WebAudioApiSoundChannel(
+        this, 0, this.length, loop, soundTransform);
   }
 
   SoundChannel playSegment(num startTime, num duration, [
-                           bool loop = false, SoundTransform soundTransform]) {
+    bool loop = false, SoundTransform soundTransform = null]) {
 
-    if (soundTransform == null) soundTransform = new SoundTransform();
-    return new WebAudioApiSoundChannel(this, startTime, duration, loop, soundTransform);
+    return new WebAudioApiSoundChannel(
+        this, startTime, duration, loop, soundTransform);
   }
 
 }

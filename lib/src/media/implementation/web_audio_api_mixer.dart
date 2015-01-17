@@ -1,6 +1,7 @@
 part of stagexl.media;
 
 class WebAudioApiMixer {
+
   static final AudioContext audioContext = new AudioContext();
 
   AudioNode _inputNode;
