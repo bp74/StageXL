@@ -37,24 +37,18 @@ class AudioElementSound extends Sound {
   }
 
   static Future<Sound> loadDataUri(String dataUri) {
-    AudioElement audio = new AudioElement();
-    document.body.children.add(audio);
-    Completer completer = new Completer();
 
-    StreamSubscription onCanPlaySubscription, onErrorSubscription;
-    onCanPlaySubscription = audio.onCanPlay.listen((_) {
-      onCanPlaySubscription.cancel();
-      onErrorSubscription.cancel();
-      completer.complete(new AudioElementSound._(audio));
-    });
+    var completer = new Completer<Sound>();
+    var audioUrls = [dataUri];
+    var loadData = false;
+    var corsEnabled = false;
+    var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
 
-    onErrorSubscription = audio.onError.listen((_) {
-      onCanPlaySubscription.cancel();
-      onErrorSubscription.cancel();
+    audioLoader.done.then((AudioElement audioElement) {
+      completer.complete(new AudioElementSound._(audioElement));
+    }).catchError((error) {
       completer.completeError(new StateError("Failed to load audio."));
     });
-
-    audio.src = dataUri;
 
     return completer.future;
   }
