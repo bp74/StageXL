@@ -20,10 +20,6 @@ class SoundMixer {
     return _soundTransform;
   }
 
-  static List<String> get supportedTypes {
-    return AudioLoader.supportedTypes.toList(growable: false);
-  }
-
   static set soundTransform(SoundTransform value) {
 
     var initEngine = SoundMixer.engine;
