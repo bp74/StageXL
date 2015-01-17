@@ -17,7 +17,7 @@ abstract class Sound {
   static SoundLoadOptions defaultLoadOptions = new SoundLoadOptions(
       mp3:true, mp4:true, ogg:true, ac3: true, wav:true);
 
-  /// Loads a sound from an url.
+  /// Loads a sound from a file url.
   ///
   /// The file extension in the url will be replaced according to the browser's
   /// capability to playback certain kinds of audio types. For example if the
@@ -33,12 +33,12 @@ abstract class Sound {
     }
   }
 
-  /// Loads a sound encoded in the data URI scheme.
+  /// Loads a sound from a data url.
   ///
   /// Please be aware that browsers do support different kinds of audio types.
   /// You can get a list of supported types here: [Sound.supportedTypes]
   ///
-  ///     var future = Sound.loadDataUri("data:audio/mpeg;base64,<data>");
+  ///     var future = Sound.loadDataUrl("data:audio/mpeg;base64,<data>");
   ///     future.then((Sound sound)  => sound.play());
 
   static Future<Sound> loadDataUrl(String dataUrl) {
