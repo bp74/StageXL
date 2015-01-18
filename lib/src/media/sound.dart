@@ -23,7 +23,10 @@ abstract class Sound {
   /// capability to playback certain kinds of audio types. For example if the
   /// url ends with the 'mp3' extension and the browser does not support mp3
   /// playback, the file extension will be replaced with 'ogg' or 'ac3'. You
-  /// can customize this feature by changing the [soundLoadOptions].
+  /// can customize this behavior by changing the [soundLoadOptions].
+  ///
+  ///     var future = Sound.load("assets/audio/hello.mp3");
+  ///     future.then((Sound sound) => sound.play());
 
   static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
     switch(SoundMixer.engine) {
@@ -39,7 +42,7 @@ abstract class Sound {
   /// You can get a list of supported types here: [Sound.supportedTypes]
   ///
   ///     var future = Sound.loadDataUrl("data:audio/mpeg;base64,<data>");
-  ///     future.then((Sound sound)  => sound.play());
+  ///     future.then((Sound sound) => sound.play());
 
   static Future<Sound> loadDataUrl(String dataUrl) {
     switch(SoundMixer.engine) {
