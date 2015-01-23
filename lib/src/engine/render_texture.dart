@@ -120,6 +120,7 @@ class RenderTexture {
   RenderTextureFiltering get filtering => _filtering;
 
   gl.Texture get texture => _texture;
+  int get contextIdentifier => _contextIdentifier;
 
   int get width => _width;
   int get height => _height;
@@ -201,7 +202,7 @@ class RenderTexture {
 
   void activate(RenderContextWebGL renderContext, int textureSlot) {
 
-    if (_contextIdentifier != renderContext.contextIdentifier) {
+    if (this.contextIdentifier != renderContext.contextIdentifier) {
 
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
