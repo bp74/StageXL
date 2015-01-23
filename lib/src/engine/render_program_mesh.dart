@@ -59,7 +59,7 @@ class RenderProgramMesh extends RenderProgram {
   @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (_contextIdentifier != renderContext.contextIdentifier) {
+    if (this.contextIdentifier != renderContext.contextIdentifier) {
 
       super.activate(renderContext);
 

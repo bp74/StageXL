@@ -12,6 +12,7 @@ abstract class RenderProgram {
   final Map<String, int> _attributeLocations = new Map<String, int>();
   final Map<String, gl.UniformLocation> _uniformLocations = new Map<String, gl.UniformLocation>();
 
+  int get contextIdentifier => _contextIdentifier;
   gl.RenderingContext get renderingContext => _renderingContext;
   gl.Program get program => _program;
   Map<String, int> get attributeLocations => _attributeLocations;
@@ -26,7 +27,7 @@ abstract class RenderProgram {
 
   void activate(RenderContextWebGL renderContext) {
 
-    if (_contextIdentifier != renderContext.contextIdentifier) {
+    if (this.contextIdentifier != renderContext.contextIdentifier) {
 
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;

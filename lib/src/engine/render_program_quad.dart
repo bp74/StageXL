@@ -72,7 +72,7 @@ class RenderProgramQuad extends RenderProgram {
   @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (_contextIdentifier != renderContext.contextIdentifier) {
+    if (this.contextIdentifier != renderContext.contextIdentifier) {
 
       super.activate(renderContext);
 

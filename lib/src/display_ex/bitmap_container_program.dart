@@ -53,7 +53,6 @@ class _BitmapContainerProgram extends RenderProgram {
   static const int _maxQuadCount = 256;
   static final _BitmapContainerProgram instance = new _BitmapContainerProgram();
 
-  int _contextIdentifier = -1;
   gl.Buffer _vertexBuffer = null;
   gl.Buffer _indexBuffer = null;
   gl.UniformLocation _uProjectionMatrixLocation = null;
@@ -94,11 +93,10 @@ class _BitmapContainerProgram extends RenderProgram {
   @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (_contextIdentifier != renderContext.contextIdentifier) {
+    if (this.contextIdentifier != renderContext.contextIdentifier) {
 
       super.activate(renderContext);
 
-      _contextIdentifier = renderContext.contextIdentifier;
       _indexBuffer = renderingContext.createBuffer();
       _vertexBuffer = renderingContext.createBuffer();
       _aPositionLocation = attributeLocations["aPosition"];
