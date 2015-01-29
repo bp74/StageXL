@@ -5,7 +5,14 @@ part of stagexl.display;
 class StageScaleMode {
 
   final int index;
-  const StageScaleMode._(this.index);
+  
+  final double scaleX = 1.0;      //It's ugly, but specific scaling of the scene is a must
+  final double scaleY = 1.0;
+  
+  const StageScaleMode(this.index,[double scaleX,double scaleY]) {
+      if(?scaleX) { this.scaleX = scaleX; }
+      if(?scaleY) { this.scaleY = scaleY; }
+  }
 
   static const StageScaleMode EXACT_FIT = const StageScaleMode._(0);
   static const StageScaleMode NO_BORDER = const StageScaleMode._(1);
