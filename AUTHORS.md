@@ -3,6 +3,7 @@ Below is a list of people and organizations who have contributed to StageXL.
 In alphabetical order:
 
 Alex Gann <https://github.com/alexgann>  
+Andrew Gerard <https://github.com/kinetifex>  
 Arron Washington <https://github.com/radicaled>  
 Bernhard Pichler <https://github.com/bp74>  
 Kevin Moore <https://github.com/kevmoo>  
