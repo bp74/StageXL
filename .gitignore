@@ -11,3 +11,7 @@ packages
 
 # Include when developing application packages.
 pubspec.lock
+
+# IDE files
+.idea/
+*.iml
