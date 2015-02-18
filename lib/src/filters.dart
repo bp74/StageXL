@@ -13,7 +13,6 @@ library stagexl.filters;
 
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show CanvasElement, CanvasRenderingContext2D, ImageData;
-import 'dart:web_gl' as gl;
 import 'dart:typed_data';
 
 import 'display.dart';
