@@ -255,7 +255,9 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateRenderTextureAt(RenderTexture renderTexture, int index) {
-    if (index == 0) {
+    if (index < 0 || index > 10) {
+      throw new RangeError.range(index, 0, 10, "index");
+    } else if (index == 0) {
       activateRenderTexture(renderTexture);
     } else if (!identical(renderTexture, _activeRenderTextures[index])) {
       _activeRenderProgram.flush();
