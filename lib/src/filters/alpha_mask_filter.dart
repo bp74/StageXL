@@ -51,8 +51,8 @@ class AlphaMaskFilter extends BitmapFilter {
     _AlphaMaskProgram alphaMaskProgram = _AlphaMaskProgram.instance;
 
     renderContext.activateRenderProgram(alphaMaskProgram);
-    renderContext.activateRenderTexture(renderTexture);
-    bitmapData.renderTexture.activate(renderContext, gl.TEXTURE1);
+    renderContext.activateRenderTextureAt(renderTexture, 0);
+    renderContext.activateRenderTextureAt(bitmapData.renderTexture, 1);
     alphaMaskProgram.configure(this, renderTextureQuad);
     alphaMaskProgram.renderQuad(renderState, renderTextureQuad);
   }

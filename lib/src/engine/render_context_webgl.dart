@@ -11,6 +11,7 @@ class RenderContextWebGL extends RenderContext {
   final RenderProgramMesh renderProgramMesh = new RenderProgramMesh();
 
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
+  final Map<int, RenderTexture> _activeRenderTextures = new  Map<int, RenderTexture>();
 
   gl.RenderingContext _renderingContext = null;
   Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
@@ -203,7 +204,7 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void activateRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    if (identical(renderFrameBuffer, _activeRenderFrameBuffer) == false) {
+    if (!identical(renderFrameBuffer, _activeRenderFrameBuffer)) {
       _activeRenderProgram.flush();
       _activeRenderFrameBuffer = renderFrameBuffer;
 
@@ -229,7 +230,7 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateRenderProgram(RenderProgram renderProgram) {
-    if (identical(renderProgram, _activeRenderProgram) == false) {
+    if (!identical(renderProgram, _activeRenderProgram)) {
       _activeRenderProgram.flush();
       _activeRenderProgram = renderProgram;
       _activeRenderProgram.activate(this);
@@ -238,7 +239,7 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateBlendMode(BlendMode blendMode) {
-    if (identical(blendMode, _activeBlendMode) == false) {
+    if (!identical(blendMode, _activeBlendMode)) {
       _activeRenderProgram.flush();
       _activeBlendMode = blendMode;
       _renderingContext.blendFunc(blendMode.srcFactor, blendMode.dstFactor);
@@ -246,10 +247,20 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateRenderTexture(RenderTexture renderTexture) {
-    if (identical(renderTexture, _activeRenderTexture) == false) {
+    if (!identical(renderTexture, _activeRenderTexture)) {
       _activeRenderProgram.flush();
       _activeRenderTexture = renderTexture;
       _activeRenderTexture.activate(this, gl.TEXTURE0);
+    }
+  }
+
+  void activateRenderTextureAt(RenderTexture renderTexture, int index) {
+    if (index == 0) {
+      activateRenderTexture(renderTexture);
+    } else if (!identical(renderTexture, _activeRenderTextures[index])) {
+      _activeRenderProgram.flush();
+      _activeRenderTextures[index] = renderTexture;
+      renderTexture.activate(this, gl.TEXTURE0 + index);
     }
   }
 

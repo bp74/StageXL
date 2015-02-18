@@ -99,8 +99,8 @@ class DisplacementMapFilter extends BitmapFilter {
     _DisplacementMapProgram displacementMapProgram = _DisplacementMapProgram.instance;
 
     renderContext.activateRenderProgram(displacementMapProgram);
-    renderContext.activateRenderTexture(renderTexture);
-    bitmapData.renderTexture.activate(renderContext, gl.TEXTURE1);
+    renderContext.activateRenderTextureAt(renderTexture, 0);
+    renderContext.activateRenderTextureAt(bitmapData.renderTexture, 1);
     displacementMapProgram.configure(this, renderTextureQuad);
     displacementMapProgram.renderQuad(renderState, renderTextureQuad);
   }
