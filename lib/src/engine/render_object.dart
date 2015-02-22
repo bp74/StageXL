@@ -38,10 +38,9 @@ class _RenderTextureQuadObject extends RenderObject {
 
   _RenderTextureQuadObject(this.renderTextureQuad, this.filters);
 
-  Rectangle<num> get bounds {
-    var rtq = this.renderTextureQuad;
-    return new Rectangle<num>(0, 0, rtq.textureWidth, rtq.textureHeight);
-  }
+  Rectangle<num> get bounds => new Rectangle<num>(
+      renderTextureQuad.offsetX, renderTextureQuad.offsetY,
+      renderTextureQuad.textureWidth, renderTextureQuad.textureHeight);
 
   void render(RenderState renderState) {
     renderState.renderQuad(this.renderTextureQuad);
