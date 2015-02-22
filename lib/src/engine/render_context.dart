@@ -38,6 +38,10 @@ abstract class RenderContext {
   void renderFiltered(
     RenderState renderState, RenderObject renderObject);
 
+  void renderFilteredFast(
+    RenderState renderState,
+    RenderTextureQuad renderTextureQuad, RenderFilter renderFilter);
+
   void beginRenderMask(RenderState renderState, RenderMask mask);
   void endRenderMask(RenderState renderState, RenderMask mask);
 }

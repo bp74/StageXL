@@ -92,6 +92,10 @@ class RenderState {
     _renderContext.renderFiltered(this, renderObject);
   }
 
+  void renderFilteredFast(RenderTextureQuad renderTextureQuad, RenderFilter renderFilter) {
+    _renderContext.renderFilteredFast(this, renderTextureQuad, renderFilter);
+  }
+
   void flush() {
     _renderContext.flush();
   }

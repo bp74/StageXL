@@ -268,6 +268,19 @@ class RenderContextWebGL extends RenderContext {
   }
 
   //-----------------------------------------------------------------------------------------------
+
+  void renderFilteredFast(
+    RenderState renderState,
+    RenderTextureQuad renderTextureQuad, RenderFilter renderFilter) {
+
+    if (renderFilter.renderPassSources.length != 1) {
+      throw new StateError("Only one pass filters are allowed for the fast path.");
+    }
+
+    renderFilter.renderFilter(renderState, renderTextureQuad, 0);
+  }
+
+  //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
   void beginRenderMask(RenderState renderState, RenderMask mask) {

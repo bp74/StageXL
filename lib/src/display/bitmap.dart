@@ -47,4 +47,17 @@ class Bitmap extends DisplayObject {
   void render(RenderState renderState) {
     if (bitmapData != null) bitmapData.render(renderState);
   }
+
+  @override
+  void renderFiltered(RenderState renderState) {
+    if (bitmapData != null) {
+      var filters = this.filters;
+      if (filters.length == 1 && filters[0].renderPassSources.length == 1) {
+        renderState.renderFilteredFast(bitmapData.renderTextureQuad, filters[0]);
+      } else {
+        super.renderFiltered(renderState);
+      }
+    }
+  }
+
 }
