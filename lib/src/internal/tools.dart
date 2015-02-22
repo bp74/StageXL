@@ -22,6 +22,12 @@ String color2rgba(int color) {
 
 //-----------------------------------------------------------------------------
 
+int minInt(int a, int b) => a < b ? a : b;
+
+int maxInt(int a, int b) => a > b ? a : b;
+
+//-----------------------------------------------------------------------------
+
 bool ensureBool(bool value) {
   if (value is bool) {
     return value;
