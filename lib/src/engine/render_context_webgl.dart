@@ -272,13 +272,15 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void renderQuadFiltered(
-    RenderState renderState,
-    RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
+    RenderState renderState, RenderTextureQuad renderTextureQuad,
+    List<RenderFilter> renderFilters) {
 
-    var renderFilter = renderFilters.length == 1 ? renderFilters[0] : null;
+    var firstFilter = renderFilters.length == 1 ? renderFilters[0] : null;
 
-    if (renderFilter is RenderFilter && renderFilter.isSimple) {
-      renderFilter.renderFilter(renderState, renderTextureQuad, 0);
+    if (renderFilters.length == 0) {
+      this.renderQuad(renderState, renderTextureQuad);
+    } else if (firstFilter is RenderFilter && firstFilter.isSimple) {
+      firstFilter.renderFilter(renderState, renderTextureQuad, 0);
     } else {
       var renderObject = new _RenderTextureQuadObject(renderTextureQuad, renderFilters);
       this.renderObjectFiltered(renderState, renderObject);

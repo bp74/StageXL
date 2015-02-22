@@ -39,8 +39,8 @@ abstract class RenderContext {
     RenderState renderState, RenderObject renderObject);
 
   void renderQuadFiltered(
-    RenderState renderState,
-    RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters);
+    RenderState renderState, RenderTextureQuad renderTextureQuad,
+    List<RenderFilter> renderFilters);
 
   void beginRenderMask(RenderState renderState, RenderMask mask);
   void endRenderMask(RenderState renderState, RenderMask mask);
