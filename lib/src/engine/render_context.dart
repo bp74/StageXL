@@ -35,6 +35,9 @@ abstract class RenderContext {
     int indexCount, Int16List indexList,
     int vertexCount, Float32List xyList, Float32List uvList);
 
+  void renderFiltered(
+    RenderState renderState, RenderObject renderObject);
+
   void beginRenderMask(RenderState renderState, RenderMask mask);
   void endRenderMask(RenderState renderState, RenderMask mask);
 }

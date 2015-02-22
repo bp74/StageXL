@@ -151,6 +151,123 @@ class RenderContextWebGL extends RenderContext {
   }
 
   //-----------------------------------------------------------------------------------------------
+
+  void renderFiltered(RenderState renderState, RenderObject renderObject) {
+
+    var bounds = renderObject.bounds;
+    var filters = renderObject.filters;
+
+    var boundsLeft = bounds.left.floor();
+    var boundsTop = bounds.top.floor();
+    var boundsRight = bounds.right.ceil();
+    var boundsBottom = bounds.bottom.ceil();
+
+    for (int i = 0; i < filters.length; i++) {
+      var overlap = filters[i].overlap;
+      boundsLeft += overlap.left;
+      boundsTop += overlap.top;
+      boundsRight += overlap.right;
+      boundsBottom += overlap.bottom;
+    }
+
+    var boundsWidth = boundsRight - boundsLeft;
+    var boundsHeight = boundsBottom - boundsTop;
+
+    var initialRenderFrameBuffer = this.activeRenderFrameBuffer;
+    var initialProjectionMatrix = this.activeProjectionMatrix.clone();
+
+    var flattenRenderFrameBuffer = this.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+    var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
+    var flattenRenderTextureQuad = new RenderTextureQuad(
+        flattenRenderTexture, 0, boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
+    var flattenRenderState = new RenderState(this, flattenRenderTextureQuad.bufferMatrix);
+    var flattenProjectionMatrix = new Matrix3D.fromIdentity();
+
+    // TODO: We should remove the flattenRenderTextureQuad and use the flattenProjectionMatrix
+    // for the transformation. This is also useful for the filterRenderState resets later in
+    // the code. Less code and less memore allocations. But this also affects filters like
+    // AlphaMaskFilter or DisplacementFilter.
+
+    this.activateRenderFrameBuffer(flattenRenderFrameBuffer);
+    this.activateProjectionMatrix(flattenProjectionMatrix);
+    this.clear(0);
+
+    renderObject.render(flattenRenderState);
+
+    //----------------------------------------------
+
+    var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
+    renderFrameBufferMap[0] = flattenRenderFrameBuffer;
+
+    RenderTextureQuad sourceRenderTextureQuad = null;
+    RenderFrameBuffer sourceRenderFrameBuffer = null;
+    RenderFrameBuffer targetRenderFrameBuffer = null;
+    RenderState filterRenderState = flattenRenderState;
+
+    for (int i = 0; i < filters.length; i++) {
+
+      RenderFilter filter = filters[i];
+      List<int> renderPassSources = filter.renderPassSources;
+      List<int> renderPassTargets = filter.renderPassTargets;
+
+      for (int pass = 0; pass < renderPassSources.length; pass++) {
+
+        int renderPassSource = renderPassSources[pass];
+        int renderPassTarget = renderPassTargets[pass];
+
+        // get sourceRenderTextureQuad
+
+        if (renderFrameBufferMap.containsKey(renderPassSource)) {
+          sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
+          sourceRenderTextureQuad = new RenderTextureQuad(
+              sourceRenderFrameBuffer.renderTexture, 0,
+              boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
+        } else {
+          throw new StateError("Invalid renderPassSource!");
+        }
+
+        // get targetRenderFrameBuffer
+
+        if (i == filters.length - 1 && renderPassTarget == renderPassTargets.last) {
+          targetRenderFrameBuffer = initialRenderFrameBuffer;
+          filterRenderState.copyFrom(renderState);
+          this.activateRenderFrameBuffer(targetRenderFrameBuffer);
+          this.activateBlendMode(filterRenderState.globalBlendMode);
+          this.activateProjectionMatrix(initialProjectionMatrix);
+        } else if (renderFrameBufferMap.containsKey(renderPassTarget)) {
+          targetRenderFrameBuffer = renderFrameBufferMap[renderPassTarget];
+          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
+          filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
+          this.activateRenderFrameBuffer(targetRenderFrameBuffer);
+          this.activateBlendMode(BlendMode.NORMAL);
+        } else {
+          targetRenderFrameBuffer = this.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
+          filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
+          renderFrameBufferMap[renderPassTarget] = targetRenderFrameBuffer;
+          this.activateRenderFrameBuffer(targetRenderFrameBuffer);
+          this.activateBlendMode(BlendMode.NORMAL);
+          this.clear(0);
+        }
+
+        // render filter
+
+        filter.renderFilter(filterRenderState, sourceRenderTextureQuad, pass);
+
+        // release obsolete source RenderFrameBuffer
+
+        if (renderPassSources.skip(pass + 1).every((rps) => rps != renderPassSource)) {
+          renderFrameBufferMap.remove(renderPassSource);
+          this.releaseRenderFrameBuffer(sourceRenderFrameBuffer);
+        }
+      }
+
+      renderFrameBufferMap.clear();
+      renderFrameBufferMap[0] = targetRenderFrameBuffer;
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
   void beginRenderMask(RenderState renderState, RenderMask mask) {

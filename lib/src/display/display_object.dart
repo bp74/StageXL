@@ -970,9 +970,25 @@ abstract class DisplayObject
     }
   }
 
-  /// Renders this display object with the given [renderState].
+  //----------------------------------------------------------------------------
 
-  void render(RenderState renderState);
+  /// Renders this display object with the given [renderState].
+  /// The display object is rendered without its filters.
+
+  void render(RenderState renderState) {
+    // implement in derived class.
+  }
+
+  /// Renders this display object with the given [renderState].
+  /// The display object is rendered with its filters.
+  ///
+  /// Note: You do not need to override this method in a derived
+  /// class since the [render] method will be used by default.
+  /// Only implement this method for performance optimizations.
+
+  void renderFiltered(RenderState renderState) {
+    renderState.renderFiltered(this);
+  }
 
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------

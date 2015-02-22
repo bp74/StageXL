@@ -18,4 +18,5 @@ abstract class RenderObject {
   Rectangle<num> get bounds;
 
   void render(RenderState renderState);
+  void renderFiltered(RenderState renderState);
 }
