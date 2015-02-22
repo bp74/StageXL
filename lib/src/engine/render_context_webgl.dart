@@ -176,6 +176,8 @@ class RenderContextWebGL extends RenderContext {
     var initialRenderFrameBuffer = this.activeRenderFrameBuffer;
     var initialProjectionMatrix = this.activeProjectionMatrix.clone();
 
+    // TODO: Simplify if renderObject is a _RenderTextureQuadObject.
+
     var flattenRenderFrameBuffer = this.requestRenderFrameBuffer(boundsWidth, boundsHeight);
     var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
     var flattenRenderTextureQuad = new RenderTextureQuad(
