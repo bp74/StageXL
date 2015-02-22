@@ -152,7 +152,7 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderFiltered(RenderState renderState, RenderObject renderObject) {
+  void renderObjectFiltered(RenderState renderState, RenderObject renderObject) {
 
     var bounds = renderObject.bounds;
     var filters = renderObject.filters;
@@ -269,15 +269,28 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderFilteredFast(
+  void renderQuadFiltered(
     RenderState renderState,
-    RenderTextureQuad renderTextureQuad, RenderFilter renderFilter) {
+    RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
 
-    if (renderFilter.renderPassSources.length != 1) {
-      throw new StateError("Only one pass filters are allowed for the fast path.");
+    var offsetX = renderTextureQuad.offsetX;
+    var offsetY = renderTextureQuad.offsetY;
+    var renderFilter = renderFilters.length == 1 ? renderFilters[0] : null;
+
+    if (offsetX != 0 || offsetY != 0) {
+      renderState.globalMatrix.prependTranslation(offsetX, offsetY);
     }
 
-    renderFilter.renderFilter(renderState, renderTextureQuad, 0);
+    if (renderFilter != null && renderFilter.isSimple) {
+      renderFilter.renderFilter(renderState, renderTextureQuad, 0);
+    } else {
+      var renderObject = new _RenderTextureQuadObject(renderTextureQuad, renderFilters);
+      this.renderObjectFiltered(renderState, renderObject);
+    }
+
+    if (offsetX != 0 || offsetY != 0) {
+      renderState.globalMatrix.prependTranslation(0.0 - offsetX, 0.0 - offsetY);
+    }
   }
 
   //-----------------------------------------------------------------------------------------------

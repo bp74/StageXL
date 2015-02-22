@@ -987,7 +987,7 @@ abstract class DisplayObject
   /// Only implement this method for performance optimizations.
 
   void renderFiltered(RenderState renderState) {
-    renderState.renderFiltered(this);
+    renderState.renderObjectFiltered(this);
   }
 
   //----------------------------------------------------------------------------

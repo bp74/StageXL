@@ -88,12 +88,12 @@ class RenderState {
     _renderContext.renderTriangle(this, x1, y1, x2, y2, x3, y3, color);
   }
 
-  void renderFiltered(RenderObject renderObject) {
-    _renderContext.renderFiltered(this, renderObject);
+  void renderObjectFiltered(RenderObject renderObject) {
+    _renderContext.renderObjectFiltered(this, renderObject);
   }
 
-  void renderFilteredFast(RenderTextureQuad renderTextureQuad, RenderFilter renderFilter) {
-    _renderContext.renderFilteredFast(this, renderTextureQuad, renderFilter);
+  void renderQuadFiltered(RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
+    _renderContext.renderQuadFiltered(this, renderTextureQuad, renderFilters);
   }
 
   void flush() {

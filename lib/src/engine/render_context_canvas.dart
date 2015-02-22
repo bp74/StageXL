@@ -237,7 +237,7 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderFiltered(RenderState renderState, RenderObject renderObject) {
+  void renderObjectFiltered(RenderState renderState, RenderObject renderObject) {
 
     // It would be to slow to render filters in real time using the
     // Canvas2D context. This is only feasible with the WebGL context.
@@ -245,17 +245,9 @@ class RenderContextCanvas extends RenderContext {
     renderObject.render(renderState);
   }
 
-  void renderFilteredFast(
+  void renderQuadFiltered(
     RenderState renderState,
-    RenderTextureQuad renderTextureQuad, RenderFilter renderFilter) {
-
-    // Apply same restriction as in the WebGL context. This wouldn't
-    // be necessary in the Canvas2D context but both contexts should
-    // behave the same way.
-
-    if (renderFilter.renderPassSources.length != 1) {
-      throw new StateError("Only one pass filters are allowed for the fast path.");
-    }
+    RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilter) {
 
     // It would be to slow to render filters in real time using the
     // Canvas2D context. This is only feasible with the WebGL context.
