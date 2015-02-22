@@ -63,8 +63,23 @@ class Gauge extends DisplayObject {
 
   @override
   void render(RenderState renderState) {
+    if (bitmapData != null) {
+      var renderTextureQuad = _getRenderTextureQuad();
+      renderState.renderQuad(renderTextureQuad);
+    }
+  }
 
-    if (bitmapData == null) return;
+  @override
+  void renderFiltered(RenderState renderState) {
+    if (bitmapData != null) {
+      var renderTextureQuad = _getRenderTextureQuad();
+      renderState.renderQuadFiltered(renderTextureQuad, this.filters);
+    }
+  }
+
+  //---------------------------------------------------------------------------
+
+  RenderTextureQuad _getRenderTextureQuad() {
 
     var width = bitmapData.width;
     var height = bitmapData.height;
@@ -79,7 +94,9 @@ class Gauge extends DisplayObject {
     if (direction == DIRECTION_DOWN) bottom = (_ratio * height).round();
 
     var rectangle = new Rectangle(left, top, right - left, bottom - top);
-    var quad = bitmapData.renderTextureQuad.clip(rectangle);
-    renderState.renderQuad(quad);
+    var renderTextureQuad = bitmapData.renderTextureQuad.clip(rectangle);
+
+    return renderTextureQuad;
   }
+
 }
