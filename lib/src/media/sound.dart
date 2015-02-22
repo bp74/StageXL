@@ -28,7 +28,7 @@ abstract class Sound {
   ///     var future = Sound.load("assets/audio/hello.mp3");
   ///     future.then((Sound sound) => sound.play());
 
-  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
+  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions]) {
     switch(SoundMixer.engine) {
       case "WebAudioApi" : return WebAudioApiSound.load(url, soundLoadOptions);
       case "AudioElement": return AudioElementSound.load(url, soundLoadOptions);
@@ -56,8 +56,10 @@ abstract class Sound {
 
   num get length;
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]);
+  SoundChannel play([
+    bool loop = false, SoundTransform soundTransform]);
 
   SoundChannel playSegment(num startTime, num duration, [
-                           bool loop = false, SoundTransform soundTransform]);
+    bool loop = false, SoundTransform soundTransform]);
+
 }

@@ -2,99 +2,104 @@ part of stagexl.media;
 
 class AudioElementSound extends Sound {
 
-  final AudioElement _audio;
-  final List<AudioElement> _audioPool = new List<AudioElement>();
-  final List<AudioElementSoundChannel> _soundChannels = new List<AudioElementSoundChannel>();
+  final AudioElement _audioElement;
+  final Map<AudioElement, AudioElementSoundChannel> _soundChannels;
 
-  AudioElementSound._(AudioElement audio) : _audio = audio {
-    _audio.onEnded.listen(_onAudioEnded);
-    _audioPool.add(_audio);
+  AudioElementSound._(AudioElement audioElement) :
+    _audioElement = audioElement,
+    _soundChannels = new Map<AudioElement, AudioElementSoundChannel>() {
+
+    _audioElement.onEnded.listen(_onAudioEnded);
+    _soundChannels[audioElement] = null;
   }
 
   //---------------------------------------------------------------------------
 
-  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
+  static Future<Sound> load(String url, [
+    SoundLoadOptions soundLoadOptions]) async {
 
-    if (soundLoadOptions == null) soundLoadOptions = Sound.defaultLoadOptions;
+    if (soundLoadOptions == null) {
+      soundLoadOptions = Sound.defaultLoadOptions;
+    }
 
-    var completer = new Completer<Sound>();
     var loadData = false;
     var corsEnabled = soundLoadOptions.corsEnabled;
     var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
-    var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
 
-    audioLoader.done.then((AudioElement audioElement) {
-      completer.complete(new AudioElementSound._(audioElement));
-    }).catchError((error) {
+    try {
+      var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
+      var audioElement = await audioLoader.done;
+      return new AudioElementSound._(audioElement);
+    } catch (e) {
       if (soundLoadOptions.ignoreErrors) {
-        MockSound.load(url, soundLoadOptions).then((s) => completer.complete(s));
+        return MockSound.load(url, soundLoadOptions);
       } else {
-        completer.completeError(new StateError("Failed to load audio."));
+        throw new StateError("Failed to load audio.");
       }
-    });
-
-    return completer.future;
+    }
   }
 
-  static Future<Sound> loadDataUrl(String dataUrl) {
+  static Future<Sound> loadDataUrl(String dataUrl) async {
 
-    var completer = new Completer<Sound>();
     var audioUrls = [dataUrl];
     var loadData = false;
     var corsEnabled = false;
-    var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
 
-    audioLoader.done.then((AudioElement audioElement) {
-      completer.complete(new AudioElementSound._(audioElement));
-    }).catchError((error) {
-      completer.completeError(new StateError("Failed to load audio."));
-    });
-
-    return completer.future;
+    try {
+      var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
+      var audioElement = await audioLoader.done;
+      return new AudioElementSound._(audioElement);
+    } catch (e) {
+      throw new StateError("Failed to load audio.");
+    }
   }
 
   //---------------------------------------------------------------------------
 
-  num get length => _audio.duration;
+  num get length => _audioElement.duration;
 
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-    if (soundTransform == null) soundTransform = new SoundTransform();
-    return new AudioElementSoundChannel(this, 0, 3600, loop, soundTransform);
+  SoundChannel play([
+    bool loop = false, SoundTransform soundTransform]) {
+
+    return new AudioElementSoundChannel(
+        this, 0, 3600, loop, soundTransform);
   }
 
   SoundChannel playSegment(num startTime, num duration, [
-                           bool loop = false, SoundTransform soundTransform]) {
+    bool loop = false, SoundTransform soundTransform]) {
 
-    if (soundTransform == null) soundTransform = new SoundTransform();
-    return new AudioElementSoundChannel(this, startTime, duration, loop, soundTransform);
+    return new AudioElementSoundChannel(
+        this, startTime, duration, loop, soundTransform);
   }
 
   //---------------------------------------------------------------------------
 
-  Future<AudioElement> _requestAudioElement(AudioElementSoundChannel soundChannel) {
+  Future<AudioElement> _requestAudioElement(
+      AudioElementSoundChannel soundChannel) async {
 
-    _soundChannels.add(soundChannel);
-
-    if (_audioPool.length > 0) {
-      return new Future.value(_audioPool.removeAt(0));
+    for(var audioElement in _soundChannels.keys) {
+      if (_soundChannels[audioElement] == null) {
+        _soundChannels[audioElement] = soundChannel;
+        return audioElement;
+      }
     }
 
-    var audio = _audio.clone(true);
-    audio.onEnded.listen(_onAudioEnded);
+    var audioElement = _audioElement.clone(true);
+    var audioCanPlay = audioElement.onCanPlay.first;
+    if (audioElement.readyState == 0) await audioCanPlay;
+    audioElement.onEnded.listen(_onAudioEnded);
 
-    return audio.readyState == 0
-        ? audio.onCanPlay.first.then((_) => audio)
-        : new Future.value(audio);
+    _soundChannels[audioElement] = soundChannel;
+    return audioElement;
   }
 
-  void _releaseAudioElement(AudioElementSoundChannel soundChannel, AudioElement audio) {
-    _soundChannels.remove(soundChannel);
-    _audioPool.add(audio);
+  void _releaseAudioElement(AudioElement audioElement) {
+    _soundChannels[audioElement] = null;
   }
 
   void _onAudioEnded(Event event) {
-    var soundChannel = _soundChannels.firstWhere(
-        (sc) => identical(sc._audio, event.target), orElse: () => null);
+    var audioElement = event.target;
+    var soundChannel = _soundChannels[audioElement];
     if (soundChannel != null) soundChannel.stop();
   }
 

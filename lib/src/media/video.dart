@@ -76,23 +76,23 @@ class Video {
   /// never complete if you call it elsewhere in your code. The same is true
   /// for the ResourceManager.addVideo method.
 
-  static Future<Video> load(String url, [VideoLoadOptions videoLoadOptions = null]) {
+  static Future<Video> load(String url, [VideoLoadOptions videoLoadOptions]) async {
 
-    if (videoLoadOptions == null) videoLoadOptions = Video.defaultLoadOptions;
+    if (videoLoadOptions == null) {
+      videoLoadOptions = Video.defaultLoadOptions;
+    }
 
-    var completer = new Completer<Video>();
     var loadData = videoLoadOptions.loadData;
     var corsEnabled = videoLoadOptions.corsEnabled;
     var videoUrls = videoLoadOptions.getOptimalVideoUrls(url);
-    var videoLoader = new VideoLoader(videoUrls, loadData, corsEnabled);
 
-    videoLoader.done.then((VideoElement videoElement) {
-      completer.complete(new Video._(videoElement));
-    }).catchError((error) {
-      completer.completeError(new StateError("Failed to load video."));
-    });
-
-    return completer.future;
+    try {
+      var videoLoader = new VideoLoader(videoUrls, loadData, corsEnabled);
+      var videoElement = await videoLoader.done;
+      return new Video._(videoElement);
+    } catch (e) {
+      throw new StateError("Failed to load video.");
+    }
   }
 
   /// Clone this video instance and the underlying HTML VideoElement to play
