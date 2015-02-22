@@ -273,23 +273,13 @@ class RenderContextWebGL extends RenderContext {
     RenderState renderState,
     RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
 
-    var offsetX = renderTextureQuad.offsetX;
-    var offsetY = renderTextureQuad.offsetY;
     var renderFilter = renderFilters.length == 1 ? renderFilters[0] : null;
-
-    if (offsetX != 0 || offsetY != 0) {
-      renderState.globalMatrix.prependTranslation(offsetX, offsetY);
-    }
 
     if (renderFilter != null && renderFilter.isSimple) {
       renderFilter.renderFilter(renderState, renderTextureQuad, 0);
     } else {
       var renderObject = new _RenderTextureQuadObject(renderTextureQuad, renderFilters);
       this.renderObjectFiltered(renderState, renderObject);
-    }
-
-    if (offsetX != 0 || offsetY != 0) {
-      renderState.globalMatrix.prependTranslation(0.0 - offsetX, 0.0 - offsetY);
     }
   }
 
