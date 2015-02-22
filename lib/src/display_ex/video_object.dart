@@ -53,8 +53,13 @@ class VideoObject extends InteractiveObject {
   }
 
   @override
-  render(RenderState renderState) {
+  void render(RenderState renderState) {
     renderState.renderQuad(renderTexture.quad);
+  }
+
+  @override
+  void renderFiltered(RenderState renderState) {
+    renderState.renderQuadFiltered(renderTexture.quad, this.filters);
   }
 
   //----------------------------------------------------------------------------
