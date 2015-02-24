@@ -300,7 +300,9 @@ class RenderContextWebGL extends RenderContext {
 
   void _renderMask(RenderState renderState, RenderMask mask, int depthDelta) {
 
-    int stencilDepth = _getStencilDepth();
+    int stencilDepth = _activeRenderFrameBuffer != null
+        ? _activeRenderFrameBuffer.stencilDepth
+        : _stencilDepth;
 
     _activeRenderProgram.flush();
 
@@ -424,12 +426,6 @@ class RenderContextWebGL extends RenderContext {
   }
 
   //-----------------------------------------------------------------------------------------------
-
-  int _getStencilDepth() {
-    return _activeRenderFrameBuffer != null
-        ? _activeRenderFrameBuffer._stencilDepth
-        : _stencilDepth;
-  }
 
   _updateStencilDepth(int stencilDepth) {
     if (_activeRenderFrameBuffer != null) {
