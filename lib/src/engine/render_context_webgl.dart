@@ -300,9 +300,8 @@ class RenderContextWebGL extends RenderContext {
 
   void _renderMask(RenderState renderState, RenderMask mask, int depthDelta) {
 
-    int stencilDepth = _activeRenderFrameBuffer != null
-        ? _activeRenderFrameBuffer.stencilDepth
-        : _stencilDepth;
+    var arfb = _activeRenderFrameBuffer;
+    var stencilDepth = arfb != null ? arfb.stencilDepth : _stencilDepth;
 
     _activeRenderProgram.flush();
 
@@ -364,7 +363,7 @@ class RenderContextWebGL extends RenderContext {
 
       _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
       _renderingContext.viewport(0, 0, width, height);
-      _updateStencilState(stencilDepth);
+      _updateStencilTest(stencilDepth);
     }
   }
 
@@ -429,19 +428,15 @@ class RenderContextWebGL extends RenderContext {
 
   _updateStencilDepth(int stencilDepth) {
     if (_activeRenderFrameBuffer != null) {
-      if (_activeRenderFrameBuffer._stencilDepth != stencilDepth) {
-        _activeRenderFrameBuffer._stencilDepth = stencilDepth;
-        _updateStencilState(stencilDepth);
-      }
+      _activeRenderFrameBuffer._stencilDepth = stencilDepth;
+      _updateStencilTest(stencilDepth);
     } else {
-      if (_stencilDepth != stencilDepth) {
-        _stencilDepth = stencilDepth;
-        _updateStencilState(stencilDepth);
-      }
+      _stencilDepth = stencilDepth;
+      _updateStencilTest(stencilDepth);
     }
   }
 
-  _updateStencilState(int stencilDepth) {
+  _updateStencilTest(int stencilDepth) {
     if (stencilDepth == 0) {
       _renderingContext.disable(gl.STENCIL_TEST);
     } else {
