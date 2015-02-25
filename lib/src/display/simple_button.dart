@@ -70,8 +70,10 @@ class SimpleButton extends InteractiveObject {
   bool get enabled => _enabled;
 
   void set enabled(bool value) {
-    _enabled = value;
-    _state = SimpleButtonState.Up;
+    if (_enabled != value) {
+      _enabled = value;
+      _state = SimpleButtonState.Up;
+    }
   }
 
   bool _enabled = true;
