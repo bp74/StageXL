@@ -25,16 +25,15 @@ abstract class RenderObject {
 /// the [RenderContext.renderObjectFiltered] method. It is necessary as a
 /// fallback if the [RenderTextureQuad] can't be rendered in the fast path.
 
-class _RenderTextureQuadObject extends RenderObject {
+class _RenderTextureQuadObject implements RenderObject {
 
-  RenderTextureQuad renderTextureQuad;
-  List<RenderFilter> filters;
-
-  Matrix transformationMatrix = new Matrix.fromIdentity();
-  BlendMode blendMode = BlendMode.NORMAL;
-  RenderTextureQuad cache = null;
-  RenderMask mask = null;
-  num alpha = 1.0;
+  final RenderTextureQuad renderTextureQuad;
+  final List<RenderFilter> filters;
+  final Matrix transformationMatrix = new Matrix.fromIdentity();
+  final BlendMode blendMode = BlendMode.NORMAL;
+  final RenderTextureQuad cache = null;
+  final RenderMask mask = null;
+  final num alpha = 1.0;
 
   _RenderTextureQuadObject(this.renderTextureQuad, this.filters);
 
