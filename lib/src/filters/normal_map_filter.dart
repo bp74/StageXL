@@ -59,21 +59,6 @@ class NormalMapFilterProgram extends BitmapFilterProgram {
   // https://www.desmos.com/calculator/nmnaud1hrw
   // https://www.desmos.com/calculator/kp89d5khyb
 
-  String get vertexShaderSource => """
-    attribute vec2 aVertexPosition;
-    attribute vec2 aVertexTextCoord;
-    attribute float aVertexAlpha;
-    uniform mat4 uProjectionMatrix;
-    varying vec2 vTextCoord;
-    varying float vAlpha;
-
-    void main() {
-      vTextCoord = aVertexTextCoord;
-      vAlpha = aVertexAlpha;
-      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
-    }
-    """;
-
   String get fragmentShaderSource => """
       precision mediump float;
       uniform sampler2D uTexSampler;
