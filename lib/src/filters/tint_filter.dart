@@ -1,0 +1,69 @@
+part of stagexl.filters;
+
+class TintFilter extends BitmapFilter {
+
+  num factorR;
+  num factorG;
+  num factorB;
+  num factorA;
+
+  TintFilter(this.factorR, this.factorG, this.factorB, this.factorA);
+
+  TintFilter.fromColor(int color) :
+    this.factorR = colorGetR(color) / 255.0,
+    this.factorG = colorGetG(color) / 255.0,
+    this.factorB = colorGetB(color) / 255.0,
+    this.factorA = colorGetA(color) / 255.0;
+
+  BitmapFilter clone() => new TintFilter(factorR, factorG, factorB, factorA);
+
+  //-----------------------------------------------------------------------------------------------
+
+  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
+
+    bool isLittleEndianSystem = env.isLittleEndianSystem;
+
+    int d0 = ((isLittleEndianSystem ? this.factorR : this.factorA) * 65536).round();
+    int d1 = ((isLittleEndianSystem ? this.factorG : this.factorB) * 65536).round();
+    int d2 = ((isLittleEndianSystem ? this.factorB : this.factorG) * 65536).round();
+    int d3 = ((isLittleEndianSystem ? this.factorA : this.factorR) * 65536).round();
+
+    RenderTextureQuad renderTextureQuad = rectangle == null
+        ? bitmapData.renderTextureQuad
+        : bitmapData.renderTextureQuad.cut(rectangle);
+
+    ImageData imageData = renderTextureQuad.getImageData();
+    List<int> data = imageData.data;
+
+    for(int index = 0 ; index <= data.length - 4; index += 4) {
+      int c0 = data[index + 0];
+      int c1 = data[index + 1];
+      int c2 = data[index + 2];
+      int c3 = data[index + 3];
+      data[index + 0] = ((d0 * c0) | 0) >> 16;
+      data[index + 1] = ((d1 * c1) | 0) >> 16;
+      data[index + 2] = ((d2 * c2) | 0) >> 16;
+      data[index + 3] = ((d3 * c3) | 0) >> 16;
+    }
+
+    renderTextureQuad.putImageData(imageData);
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  static final TintProgram _program = new TintProgram();
+
+  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+
+    RenderContextWebGL renderContext = renderState.renderContext;
+    RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    TintProgram tintProgram = _program;
+
+    renderContext.activateRenderProgram(tintProgram);
+    renderContext.activateRenderTexture(renderTexture);
+
+    tintProgram.renderQuad(
+        renderState, renderTextureQuad,
+        factorR, factorG, factorB, factorA);
+  }
+}

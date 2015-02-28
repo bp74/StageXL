@@ -22,6 +22,8 @@ import 'internal/environment.dart' as env;
 import 'internal/filter_helpers.dart';
 import 'internal/tools.dart';
 
+import 'filters/tint_program.dart';
+
 part 'filters/alpha_mask_filter.dart';
 part 'filters/blur_filter.dart';
 part 'filters/chroma_key_filter.dart';
@@ -30,3 +32,4 @@ part 'filters/displacement_map_filter.dart';
 part 'filters/drop_shadow_filter.dart';
 part 'filters/flatten_filter.dart';
 part 'filters/glow_filter.dart';
+part 'filters/tint_filter.dart';
