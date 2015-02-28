@@ -71,10 +71,7 @@ class TintFilter extends BitmapFilter {
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
-
-    renderProgram.renderQuad(
-        renderState, renderTextureQuad,
-        factorR, factorG, factorB, factorA);
+    renderProgram.renderTintFilterQuad(renderState, renderTextureQuad, this);
   }
 }
 
@@ -195,8 +192,8 @@ class TintFilterProgram extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad,
-                  num factorR, num factorG, num factorB, num factorA) {
+  void renderTintFilterQuad(
+    RenderState renderState, RenderTextureQuad renderTextureQuad, TintFilter tintFilter) {
 
     Matrix matrix = renderState.globalMatrix;
     num alpha = renderState.globalAlpha;
@@ -207,10 +204,10 @@ class TintFilterProgram extends RenderProgram {
     int offsetY = renderTextureQuad.offsetY;
     Float32List uvList = renderTextureQuad.uvList;
 
-    num colorR = factorR.toDouble();
-    num colorG = factorG.toDouble();
-    num colorB = factorB.toDouble();
-    num colorA = factorA.toDouble() * alpha;
+    num colorR = tintFilter.factorR.toDouble();
+    num colorG = tintFilter.factorG.toDouble();
+    num colorB = tintFilter.factorB.toDouble();
+    num colorA = tintFilter.factorA.toDouble() * alpha;
 
     // x' = tx + a * x + c * y
     // y' = ty + b * x + d * y
