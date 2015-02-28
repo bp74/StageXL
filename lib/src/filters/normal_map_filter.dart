@@ -9,11 +9,6 @@ import '../geom.dart';
 import '../ui/color.dart';
 import '../internal/tools.dart';
 
-class NormalMapLight {
-  num x, y;
-  num r, g, b, a;
-}
-
 class NormalMapFilter extends BitmapFilter {
 
   final BitmapData bitmapData;
@@ -21,7 +16,9 @@ class NormalMapFilter extends BitmapFilter {
   int ambientColor = Color.White;
   int lightColor = Color.White;
 
-  Point lightPosition = new Point<num>(0.0, 0.0);
+  num lightX = 0.0;
+  num lightY = 0.0;
+  num lightZ = 50.0;
   num lightRadius = 100;
 
   NormalMapFilter(this.bitmapData);
@@ -125,11 +122,12 @@ class NormalMapFilterProgram extends BitmapFilterProgram {
   void configure(NormalMapFilter normalMapFilter, RenderTextureQuad renderTextureQuad) {
 
     var texMatrix = renderTextureQuad.samplerMatrix;
+
+    var lightPosition = new Point<num>(normalMapFilter.lightX, normalMapFilter.lightY);
+    texMatrix.transformPoint(lightPosition, lightPosition);
+
     var mapMatrix = texMatrix.cloneInvert();
     mapMatrix.concat(normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
-
-    var lightPos = texMatrix.transformPoint(normalMapFilter.lightPosition);
-    var lightRadius = math.sqrt(texMatrix.det) * normalMapFilter.lightRadius;
 
     var uMapMatrix = new Float32List.fromList([
         mapMatrix.a, mapMatrix.c, mapMatrix.tx,
@@ -146,6 +144,11 @@ class NormalMapFilterProgram extends BitmapFilterProgram {
     num lightB = colorGetG(normalMapFilter.lightColor) / 255.0;
     num lightA = colorGetB(normalMapFilter.lightColor) / 255.0;
 
+    num lightX = lightPosition.x;
+    num lightY = lightPosition.y;
+    num lightZ =  math.sqrt(texMatrix.det) * normalMapFilter.lightZ;
+    var lightRadius = math.sqrt(texMatrix.det) * normalMapFilter.lightRadius;
+
     var uTexSamplerLocation = uniformLocations["uTexSampler"];
     var uMapSamplerLocation = uniformLocations["uMapSampler"];
     var uMapMatrixLocation = uniformLocations["uMapMatrix"];
@@ -158,6 +161,6 @@ class NormalMapFilterProgram extends BitmapFilterProgram {
     renderingContext.uniformMatrix3fv(uMapMatrixLocation, false, uMapMatrix);
     renderingContext.uniform4f(uAmbientColorLocation, ambientR, ambientG, ambientB, ambientA);
     renderingContext.uniform4f(uLightColorLocation, lightR, lightG, lightB, lightA);
-    renderingContext.uniform4f(uLightPositionLocation, lightPos.x, lightPos.y, 0.1, lightRadius);
+    renderingContext.uniform4f(uLightPositionLocation, lightX, lightY, lightZ, lightRadius);
   }
 }
