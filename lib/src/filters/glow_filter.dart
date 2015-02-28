@@ -1,4 +1,12 @@
-part of stagexl.filters;
+library stagexl.filters.glow;
+
+import 'dart:html' show ImageData;
+
+import '../display.dart';
+import '../engine.dart';
+import '../geom.dart';
+import '../internal/filter_helpers.dart';
+import '../internal/tools.dart';
 
 class GlowFilter extends BitmapFilter {
 
@@ -28,8 +36,8 @@ class GlowFilter extends BitmapFilter {
   List<int> get renderPassSources => const [0, 1, 0];
   List<int> get renderPassTargets => const [1, 2, 2];
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
@@ -70,22 +78,25 @@ class GlowFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    _GlowProgram glowProgram = _GlowProgram.instance;
 
-    renderContext.activateRenderProgram(glowProgram);
+    GlowFilterProgram renderProgram = renderContext.getRenderProgram(
+        r"$GlowFilterProgram", () => new GlowFilterProgram());
+
+    renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
-      glowProgram.configure(color, 0.250 * blurX / renderTexture.width, 0.0);
-      glowProgram.renderQuad(renderState, renderTextureQuad);
+      renderProgram.configure(color, 0.250 * blurX / renderTexture.width, 0.0);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
     } else if (pass == 1) {
-      glowProgram.configure(color, 0.0, 0.250 * blurY / renderTexture.height);
-      glowProgram.renderQuad(renderState, renderTextureQuad);
+      renderProgram.configure(color, 0.0, 0.250 * blurY / renderTexture.height);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
     } else if (pass == 2) {
       // TODO: render the knockout effect!
       if (this.knockout || this.hideObject) return;
@@ -97,9 +108,7 @@ class GlowFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _GlowProgram extends BitmapFilterProgram {
-
-  static final _GlowProgram instance = new _GlowProgram();
+class GlowFilterProgram extends BitmapFilterProgram {
 
   String get fragmentShaderSource => """
       precision mediump float;

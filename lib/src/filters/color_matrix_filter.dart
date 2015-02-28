@@ -1,4 +1,14 @@
-part of stagexl.filters;
+library stagexl.filters.color_matrix;
+
+import 'dart:math' hide Point, Rectangle;
+import 'dart:html' show ImageData;
+import 'dart:typed_data';
+
+import '../display.dart';
+import '../engine.dart';
+import '../geom.dart';
+import '../internal/environment.dart' as env;
+import '../internal/tools.dart';
 
 class ColorMatrixFilter extends BitmapFilter {
 
@@ -35,7 +45,9 @@ class ColorMatrixFilter extends BitmapFilter {
       [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
       [0, 0, 0, 0]);
 
-  factory ColorMatrixFilter.adjust({num hue: 0, num saturation: 0, num brightness: 0, num contrast: 0}) {
+  factory ColorMatrixFilter.adjust({
+    num hue: 0, num saturation: 0, num brightness: 0, num contrast: 0}) {
+
     var colorMatrixFilter = new ColorMatrixFilter.identity();
     colorMatrixFilter.adjustHue(hue);
     colorMatrixFilter.adjustSaturation(saturation);
@@ -44,12 +56,12 @@ class ColorMatrixFilter extends BitmapFilter {
     return colorMatrixFilter;
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   BitmapFilter clone() => new ColorMatrixFilter(_colorMatrixList, _colorOffsetList);
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void adjustInversion(num value) {
 
@@ -115,7 +127,7 @@ class ColorMatrixFilter extends BitmapFilter {
         0.0, 0.0, 0.0, 1.0], [0, 0, 0, 0]);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void _concat(List<num> colorMatrix, List<num> colorOffset) {
 
@@ -146,7 +158,7 @@ class ColorMatrixFilter extends BitmapFilter {
     _colorOffsetList = newColorOffset;
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
@@ -200,26 +212,27 @@ class ColorMatrixFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    _ColorMatrixProgram colorMatrixProgram = _ColorMatrixProgram.instance;
 
-    renderContext.activateRenderProgram(colorMatrixProgram);
+    ColorMatrixFilterProgram renderProgram = renderContext.getRenderProgram(
+        r"$ColorMatrixFilterProgram", () => new ColorMatrixFilterProgram());
+
+    renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
-    colorMatrixProgram.configure(this);
-    colorMatrixProgram.renderQuad(renderState, renderTextureQuad);
+    renderProgram.configure(this);
+    renderProgram.renderQuad(renderState, renderTextureQuad);
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _ColorMatrixProgram extends BitmapFilterProgram {
-
-  static final _ColorMatrixProgram instance = new _ColorMatrixProgram();
+class ColorMatrixFilterProgram extends BitmapFilterProgram {
 
   String get fragmentShaderSource => """
       precision mediump float;

@@ -1,4 +1,13 @@
-part of stagexl.filters;
+library stagexl.filters.drop_shadow;
+
+import 'dart:math' hide Point, Rectangle;
+import 'dart:html' show ImageData;
+
+import '../display.dart';
+import '../engine.dart';
+import '../geom.dart';
+import '../internal/filter_helpers.dart';
+import '../internal/tools.dart';
 
 class DropShadowFilter extends BitmapFilter {
 
@@ -20,8 +29,8 @@ class DropShadowFilter extends BitmapFilter {
       throw new ArgumentError("The maximum blur size is 64.");
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   BitmapFilter clone() => new DropShadowFilter(
       distance, angle, color, blurX, blurY,
@@ -38,7 +47,7 @@ class DropShadowFilter extends BitmapFilter {
   List<int> get renderPassSources => const [0, 1, 0];
   List<int> get renderPassTargets => const [1, 2, 2];
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
@@ -83,26 +92,29 @@ class DropShadowFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    _DropShadowProgram dropShadowProgram = _DropShadowProgram.instance;
 
-    renderContext.activateRenderProgram(dropShadowProgram);
+    DropShadowFilterProgram renderProgram = renderContext.getRenderProgram(
+        r"$DropShadowFilterProgram", () => new DropShadowFilterProgram());
+
+    renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
       var shift = (this.distance * cos(this.angle)).round() / renderTexture.width;
       var pixel = 0.250 * blurX / renderTexture.width;
-      dropShadowProgram.configure(color, shift, 0.0, pixel, 0.0);
-      dropShadowProgram.renderQuad(renderState, renderTextureQuad);
+      renderProgram.configure(color, shift, 0.0, pixel, 0.0);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
     } else if (pass == 1) {
       var shift = (this.distance * sin(this.angle)).round() / renderTexture.height;
       var pixel = 0.250 * blurY / renderTexture.height;
-      dropShadowProgram.configure(color, 0.0, shift, 0.0, pixel);
-      dropShadowProgram.renderQuad(renderState, renderTextureQuad);
+      renderProgram.configure(color, 0.0, shift, 0.0, pixel);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
     } else if (pass == 2) {
       // TODO: render the knockout effect!
       if (this.knockout || this.hideObject) return;
@@ -114,9 +126,7 @@ class DropShadowFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _DropShadowProgram extends BitmapFilterProgram {
-
-  static final _DropShadowProgram instance = new _DropShadowProgram();
+class DropShadowFilterProgram extends BitmapFilterProgram {
 
   String get fragmentShaderSource => """
       precision mediump float;

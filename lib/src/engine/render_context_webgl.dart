@@ -12,6 +12,7 @@ class RenderContextWebGL extends RenderContext {
 
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
   final Map<int, RenderTexture> _activeRenderTextures = new  Map<int, RenderTexture>();
+  final Map<String, RenderProgram> _renderPrograms = new Map<String, RenderProgram>();
 
   gl.RenderingContext _renderingContext = null;
   Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
@@ -105,8 +106,11 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void flush() {
-
     _activeRenderProgram.flush();
+  }
+
+  RenderProgram getRenderProgram(String name, RenderProgram ifAbsent()) {
+    return _renderPrograms.putIfAbsent(name, ifAbsent);
   }
 
   //-----------------------------------------------------------------------------------------------
