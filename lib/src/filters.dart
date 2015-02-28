@@ -19,4 +19,5 @@ export 'filters/displacement_map_filter.dart' show DisplacementMapFilter;
 export 'filters/drop_shadow_filter.dart' show DropShadowFilter;
 export 'filters/flatten_filter.dart' show FlattenFilter;
 export 'filters/glow_filter.dart' show GlowFilter;
+export 'filters/normal_map_filter.dart' show NormalMapFilter;
 export 'filters/tint_filter.dart' show TintFilter;
