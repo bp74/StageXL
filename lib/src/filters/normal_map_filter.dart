@@ -289,7 +289,7 @@ class NormalMapFilterProgram extends RenderProgram {
       num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
 
       vxList[index + 00] = matrix.tx + x * matrix.a + y * matrix.c;
-      vxList[index + 01] = matrix.ty + y * matrix.b + y * matrix.d;
+      vxList[index + 01] = matrix.ty + x * matrix.b + y * matrix.d;
       vxList[index + 02] = uvList[vertex + vertex + 0];
       vxList[index + 03] = uvList[vertex + vertex + 1];
       vxList[index + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
