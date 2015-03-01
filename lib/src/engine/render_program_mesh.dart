@@ -35,6 +35,9 @@ class RenderProgramMesh extends RenderProgram {
   // aVertextColor:     Float32(r), Float32(g), Float32(b), Float32(a)
   //---------------------------------------------------------------------------
 
+  Int16List _indexList;
+  Float32List _vertexList;
+
   gl.Buffer _vertexBuffer = null;
   gl.Buffer _indexBuffer = null;
   gl.UniformLocation _uProjectionMatrixLocation;
@@ -45,9 +48,6 @@ class RenderProgramMesh extends RenderProgram {
   int _aVertexColorLocation = 0;
   int _vertexCount = 0;
   int _indexCount = 0;
-
-  final Int16List _indexList = new Int16List(2048);
-  final Float32List _vertexList = new Float32List(8192);
 
   //-----------------------------------------------------------------------------------------------
 
@@ -63,6 +63,8 @@ class RenderProgramMesh extends RenderProgram {
 
       super.activate(renderContext);
 
+      _indexList = renderContext.dynamicIndexList;
+      _vertexList = renderContext.dynamicVertexList;
       _indexBuffer = renderingContext.createBuffer();
       _vertexBuffer = renderingContext.createBuffer();
       _aVertexPositionLocation = attributeLocations["aVertexPosition"];
@@ -91,17 +93,15 @@ class RenderProgramMesh extends RenderProgram {
 
   @override
   void flush() {
-
-    if (_vertexCount == 0 || _indexCount == 0) return;
-    var indexUpdate = new Int16List.view(_indexList.buffer, 0, _indexCount);
-    var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _vertexCount * 8);
-
-    renderingContext.bufferSubDataTyped(gl.ELEMENT_ARRAY_BUFFER, 0, indexUpdate);
-    renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
-    renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
-
-    _indexCount = 0;
-    _vertexCount = 0;
+    if (_vertexCount> 0 || _indexCount > 0) {
+      var indexUpdate = new Int16List.view(_indexList.buffer, 0, _indexCount);
+      var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _vertexCount * 8);
+      renderingContext.bufferSubDataTyped(gl.ELEMENT_ARRAY_BUFFER, 0, indexUpdate);
+      renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+      renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
+      _indexCount = 0;
+      _vertexCount = 0;
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -123,33 +123,38 @@ class RenderProgramMesh extends RenderProgram {
     num my = matrix.ty;
 
     if (indexCount > indexList.length) throw new ArgumentError("indexList");
-    if (vertexCount << 1 > xyList.length) throw new ArgumentError("xyList");
-    if (vertexCount << 1 > uvList.length) throw new ArgumentError("uvList");
+    if (vertexCount > xyList.length * 2) throw new ArgumentError("xyList");
+    if (vertexCount > uvList.length * 2) throw new ArgumentError("uvList");
 
-    bool indexFlush  = (_indexCount + indexCount) >= _indexList.length;
-    bool vertexFlush = (_vertexCount + vertexCount) * 8 >= _vertexList.length;
-
-    if (indexFlush || vertexFlush) this.flush();
-
-    // This code contains several dart2js_hints to keep
+    // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
-    int indexOffset = _indexCount;
-    int vertexOffset = _vertexCount * 8;
-    int indexListLength = _indexList.length;
-    int vertextListLength = _vertexList.length;
-    int xyListLength = xyList.length;
-    int uvListLength = uvList.length;
+    var ixList = _indexList;
+    if (ixList == null) return;
+    if (ixList.length <= _indexCount + indexCount) flush();
 
-    for(int i = 0; i < indexCount; i++) {
-      if (indexOffset > indexListLength - 1) break;
-      _indexList[indexOffset] = _vertexCount + indexList[i];
-      indexOffset += 1;
+    var vxList = _vertexList;
+    if (vxList == null) return;
+    if (vxList.length <= _vertexCount * 8 + vertexCount * 8) flush();
+
+    var ixOffset = _indexCount;
+    var vxOffset = _vertexCount * 8;
+    var xyListLength = xyList.length;
+    var uvListLength = uvList.length;
+
+    // copy index list
+
+    for(var i = 0; i < indexCount; i++) {
+      if (ixOffset > ixList.length - 1) break;
+      ixList[ixOffset] = _vertexCount + indexList[i];
+      ixOffset += 1;
     }
 
-    for(int i = 0, o1 = 0, o2 = 0; i < vertexCount; i++, o1 += 2, o2 += 2) {
+    // copy vertex list
 
-      if (vertexOffset > vertextListLength - 8) break;
+    for(var i = 0, o1 = 0, o2 = 0; i < vertexCount; i++, o1 += 2, o2 += 2) {
+
+      if (vxOffset > vxList.length - 8) break;
       if (o1 > xyListLength - 2) break;
       if (o2 > uvListLength - 2) break;
 
@@ -158,15 +163,15 @@ class RenderProgramMesh extends RenderProgram {
       num u = uvList[o2 + 0];
       num v = uvList[o2 + 1];
 
-      _vertexList[vertexOffset + 0] = mx + ma * x + mc * y;
-      _vertexList[vertexOffset + 1] = my + mb * x + md * y;
-      _vertexList[vertexOffset + 2] = u;
-      _vertexList[vertexOffset + 3] = v;
-      _vertexList[vertexOffset + 4] = r;
-      _vertexList[vertexOffset + 5] = g;
-      _vertexList[vertexOffset + 6] = b;
-      _vertexList[vertexOffset + 7] = a * alpha;
-      vertexOffset += 8;
+      vxList[vxOffset + 0] = mx + ma * x + mc * y;
+      vxList[vxOffset + 1] = my + mb * x + md * y;
+      vxList[vxOffset + 2] = u;
+      vxList[vxOffset + 3] = v;
+      vxList[vxOffset + 4] = r;
+      vxList[vxOffset + 5] = g;
+      vxList[vxOffset + 6] = b;
+      vxList[vxOffset + 7] = a * alpha;
+      vxOffset += 8;
     }
 
     _indexCount += indexCount;

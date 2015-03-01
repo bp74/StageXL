@@ -10,6 +10,10 @@ class RenderContextWebGL extends RenderContext {
   final RenderProgramTriangle renderProgramTriangle = new RenderProgramTriangle();
   final RenderProgramMesh renderProgramMesh = new RenderProgramMesh();
 
+  final Int16List staticIndexList = new Int16List(4096);
+  final Int16List dynamicIndexList = new Int16List(4096);
+  final Float32List dynamicVertexList = new Float32List(16384);
+
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
   final Map<int, RenderTexture> _activeRenderTextures = new  Map<int, RenderTexture>();
   final Map<String, RenderProgram> _renderPrograms = new Map<String, RenderProgram>();
@@ -41,6 +45,15 @@ class RenderContextWebGL extends RenderContext {
 
     if (renderingContext is! gl.RenderingContext) {
       throw new StateError("Failed to get WebGL context.");
+    }
+
+    for(int i = 0, j = 0; i <= staticIndexList.length - 6; i += 6, j +=4 ) {
+      staticIndexList[i + 0] = j + 0;
+      staticIndexList[i + 1] = j + 1;
+      staticIndexList[i + 2] = j + 2;
+      staticIndexList[i + 3] = j + 0;
+      staticIndexList[i + 4] = j + 2;
+      staticIndexList[i + 5] = j + 3;
     }
 
     _renderingContext = renderingContext;
@@ -308,7 +321,6 @@ class RenderContextWebGL extends RenderContext {
     var stencilDepth = arfb != null ? arfb.stencilDepth : _stencilDepth;
 
     _activeRenderProgram.flush();
-
     _renderingContext.enable(gl.STENCIL_TEST);
     _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, depthDelta == 1 ? gl.INCR : gl.DECR);
@@ -316,8 +328,8 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(false, false, false, false);
 
     mask.renderMask(renderState);
-    renderState.flush();
 
+    _activeRenderProgram.flush();
     _renderingContext.stencilFunc(gl.EQUAL, stencilDepth + depthDelta, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
     _renderingContext.stencilMask(0x00);

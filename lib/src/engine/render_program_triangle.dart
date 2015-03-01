@@ -28,16 +28,14 @@ class RenderProgramTriangle extends RenderProgram {
   // aVertexAlpha:      Float32(r), Float32(g), Float32(b), Float32(a)
   //---------------------------------------------------------------------------
 
-  static const int _maxTriangleCount = 256;
+  Float32List _vertexList;
 
-  gl.Buffer _vertexBuffer = null;
+  gl.Buffer _vertexBuffer;
   gl.UniformLocation _uProjectionMatrixLocation;
 
   int _aVertexPositionLocation = 0;
   int _aVertexColorLocation = 0;
   int _triangleCount = 0;
-
-  final Float32List _vertexList = new Float32List(_maxTriangleCount * 3 * 6);
 
   //-----------------------------------------------------------------------------------------------
 
@@ -53,6 +51,7 @@ class RenderProgramTriangle extends RenderProgram {
 
       super.activate(renderContext);
 
+      _vertexList = renderContext.dynamicVertexList;
       _vertexBuffer = renderingContext.createBuffer();
       _aVertexPositionLocation = attributeLocations["aVertexPosition"];
       _aVertexColorLocation = attributeLocations["aVertexColor"];
@@ -72,18 +71,18 @@ class RenderProgramTriangle extends RenderProgram {
 
   @override
   void flush() {
-
-    if (_triangleCount == 0) return;
-    var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _triangleCount * 3 * 6);
-
-    renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
-    renderingContext.drawArrays(gl.TRIANGLES, 0, _triangleCount * 3);
-    _triangleCount = 0;
+    if (_triangleCount > 0) {
+      var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _triangleCount * 18);
+      renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+      renderingContext.drawArrays(gl.TRIANGLES, 0, _triangleCount * 3);
+      _triangleCount = 0;
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2, num x3, num y3, int color) {
+  void renderTriangle(RenderState renderState,
+                      num x1, num y1, num x2, num y2, num x3, num y3, int color) {
 
     Matrix matrix = renderState.globalMatrix;
     num alpha = renderState.globalAlpha;
@@ -100,36 +99,41 @@ class RenderProgramTriangle extends RenderProgram {
     num tx = matrix.tx;
     num ty = matrix.ty;
 
-    int index = _triangleCount * 18;
-    if (index > _vertexList.length - 18) return; // dart2js_hint
+    // The following code contains dart2js_hints to keep
+    // the generated JavaScript code clean and fast!
+
+    var vxList = _vertexList;
+    if (vxList == null) return;
+    if (vxList.length <= _triangleCount * 18 + 18) flush();
+
+    var index = _triangleCount * 18;
+    if (index > vxList.length - 18) return;
 
     // vertex 1
-    _vertexList[index + 00] = x1 * a + y1 * c + tx;
-    _vertexList[index + 01] = x1 * b + y1 * d + ty;
-    _vertexList[index + 02] = colorR;
-    _vertexList[index + 03] = colorG;
-    _vertexList[index + 04] = colorB;
-    _vertexList[index + 05] = colorA;
+    vxList[index + 00] = x1 * a + y1 * c + tx;
+    vxList[index + 01] = x1 * b + y1 * d + ty;
+    vxList[index + 02] = colorR;
+    vxList[index + 03] = colorG;
+    vxList[index + 04] = colorB;
+    vxList[index + 05] = colorA;
 
     // vertex 2
-    _vertexList[index + 06] = x2 * a + y2 * c + tx;
-    _vertexList[index + 07] = x2 * b + y2 * d + ty;
-    _vertexList[index + 08] = colorR;
-    _vertexList[index + 09] = colorG;
-    _vertexList[index + 10] = colorB;
-    _vertexList[index + 11] = colorA;
+    vxList[index + 06] = x2 * a + y2 * c + tx;
+    vxList[index + 07] = x2 * b + y2 * d + ty;
+    vxList[index + 08] = colorR;
+    vxList[index + 09] = colorG;
+    vxList[index + 10] = colorB;
+    vxList[index + 11] = colorA;
 
     // vertex 3
-    _vertexList[index + 12] = x3 * a + y3 * c + tx;
-    _vertexList[index + 13] = x3 * b + y3 * d + ty;
-    _vertexList[index + 14] = colorR;
-    _vertexList[index + 15] = colorG;
-    _vertexList[index + 16] = colorB;
-    _vertexList[index + 17] = colorA;
+    vxList[index + 12] = x3 * a + y3 * c + tx;
+    vxList[index + 13] = x3 * b + y3 * d + ty;
+    vxList[index + 14] = colorR;
+    vxList[index + 15] = colorG;
+    vxList[index + 16] = colorB;
+    vxList[index + 17] = colorA;
 
-    _triangleCount += 3;
-
-    if (_triangleCount == _maxTriangleCount) flush();
+    _triangleCount += 1;
   }
 
 }
