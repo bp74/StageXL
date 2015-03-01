@@ -104,7 +104,7 @@ class RenderProgramTriangle extends RenderProgram {
 
     var vxList = _vertexList;
     if (vxList == null) return;
-    if (vxList.length <= _triangleCount * 18 + 18) flush();
+    if (vxList.length < _triangleCount * 18 + 18) flush();
 
     var index = _triangleCount * 18;
     if (index > vxList.length - 18) return;

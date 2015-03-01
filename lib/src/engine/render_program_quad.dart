@@ -128,11 +128,11 @@ class RenderProgramQuad extends RenderProgram {
 
     var ixList = _indexList;
     if (ixList == null) return;
-    if (ixList.length <= _quadCount * 6 + 6) flush();
+    if (ixList.length < _quadCount * 6 + 6) flush();
 
     var vxList = _vertexList;
     if (vxList == null) return;
-    if (vxList.length <= _quadCount * 20 + 20) flush();
+    if (vxList.length < _quadCount * 20 + 20) flush();
 
     var index = _quadCount * 20;
     if (index > vxList.length - 20) return;

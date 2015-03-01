@@ -131,11 +131,11 @@ class RenderProgramMesh extends RenderProgram {
 
     var ixList = _indexList;
     if (ixList == null) return;
-    if (ixList.length <= _indexCount + indexCount) flush();
+    if (ixList.length < _indexCount + indexCount) flush();
 
     var vxList = _vertexList;
     if (vxList == null) return;
-    if (vxList.length <= _vertexCount * 8 + vertexCount * 8) flush();
+    if (vxList.length < _vertexCount * 8 + vertexCount * 8) flush();
 
     var ixOffset = _indexCount;
     var vxOffset = _vertexCount * 8;

@@ -212,11 +212,11 @@ class TintFilterProgram extends RenderProgram {
 
     var ixList = _indexList;
     if (ixList == null) return;
-    if (ixList.length <= _quadCount * 6 + 6) flush();
+    if (ixList.length < _quadCount * 6 + 6) flush();
 
     var vxList = _vertexList;
     if (vxList == null) return;
-    if (vxList.length <= _quadCount * 32 + 32) flush();
+    if (vxList.length < _quadCount * 32 + 32) flush();
 
     var index = _quadCount * 32;
     if (index > vxList.length - 32) return;
