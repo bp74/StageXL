@@ -247,7 +247,7 @@ class NormalMapFilterProgram extends RenderProgram {
     Matrix texMatrix = renderTextureQuad.samplerMatrix;
     Matrix mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
 
-    // Ambient color,  light color, light position
+    // Ambient color, light color, light position
 
     num ambientColor = normalMapFilter.ambientColor;
     num ambientR = colorGetA(ambientColor) / 255.0;
@@ -268,8 +268,8 @@ class NormalMapFilterProgram extends RenderProgram {
     num lightZ =  math.sqrt(texMatrix.det) * normalMapFilter.lightZ;
     num lightRadius = math.sqrt(texMatrix.det) * normalMapFilter.lightRadius;
 
-    // The following code contains dart2js_hints to keep
-    // the generated JavaScript code clean and fast!
+    // Check if the index and vertex buffer are valid and if
+    // we need to flush the render program to free the buffers.
 
     var ixList = _indexList;
     if (ixList == null) return;
@@ -279,12 +279,14 @@ class NormalMapFilterProgram extends RenderProgram {
     if (vxList == null) return;
     if (vxList.length < _quadCount * 76 + 76) flush();
 
+    // Calculate the 4 vertices of the RenderTextureQuad
+
     for(int vertex = 0, index = _quadCount * 76; vertex < 4; vertex++, index += 19) {
 
       if (index > vxList.length - 19) return;
 
-      num x = offsetX + ((vertex == 1 || vertex == 2) ? width : 0);
-      num y = offsetY + ((vertex == 2 || vertex == 3) ? height : 0);
+      num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
+      num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
 
       vxList[index + 00] = matrix.tx + x * matrix.a + y * matrix.c;
       vxList[index + 01] = matrix.ty + y * matrix.b + y * matrix.d;
