@@ -112,10 +112,11 @@ class TintFilterProgram extends RenderProgram {
   // aVertexColor:      Float32(r), Float32(g), Float32(b), Float32(a)
   //---------------------------------------------------------------------------
 
-  static const int _maxQuadCount = 256;
+  Int16List _indexList;
+  Float32List _vertexList;
 
-  gl.Buffer _vertexBuffer = null;
-  gl.Buffer _indexBuffer = null;
+  gl.Buffer _vertexBuffer;
+  gl.Buffer _indexBuffer;
   gl.UniformLocation _uProjectionMatrixLocation;
   gl.UniformLocation _uSamplerLocation;
 
@@ -123,22 +124,6 @@ class TintFilterProgram extends RenderProgram {
   int _aVertexTextCoordLocation = 0;
   int _aVertexColorLocation = 0;
   int _quadCount = 0;
-
-  final Int16List _indexList = new Int16List(_maxQuadCount * 6);
-  final Float32List _vertexList = new Float32List(_maxQuadCount * 4 * 8);
-
-  //-----------------------------------------------------------------------------------------------
-
-  TintFilterProgram() {
-    for(int i = 0, j = 0; i <= _indexList.length - 6; i += 6, j +=4 ) {
-      _indexList[i + 0] = j + 0;
-      _indexList[i + 1] = j + 1;
-      _indexList[i + 2] = j + 2;
-      _indexList[i + 3] = j + 0;
-      _indexList[i + 4] = j + 2;
-      _indexList[i + 5] = j + 3;
-    }
-  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -154,6 +139,8 @@ class TintFilterProgram extends RenderProgram {
 
       super.activate(renderContext);
 
+      _indexList = renderContext.staticIndexList;
+      _vertexList = renderContext.dynamicVertexList;
       _indexBuffer = renderingContext.createBuffer();
       _vertexBuffer = renderingContext.createBuffer();
       _aVertexPositionLocation = attributeLocations["aVertexPosition"];
@@ -209,67 +196,71 @@ class TintFilterProgram extends RenderProgram {
     num colorB = tintFilter.factorB.toDouble();
     num colorA = tintFilter.factorA.toDouble() * alpha;
 
-    // x' = tx + a * x + c * y
-    // y' = ty + b * x + d * y
+    num ma = matrix.a;
+    num mb = matrix.b;
+    num mc = matrix.c;
+    num md = matrix.d;
+    num ox = matrix.tx + offsetX * ma + offsetY * mc;
+    num oy = matrix.ty + offsetX * mb + offsetY * md;
+    num ax = ma * width;
+    num bx = mb * width;
+    num cy = mc * height;
+    num dy = md * height;
 
-    num a = matrix.a;
-    num b = matrix.b;
-    num c = matrix.c;
-    num d = matrix.d;
+    // The following code contains dart2js_hints to keep
+    // the generated JavaScript code clean and fast!
 
-    num ox = matrix.tx + offsetX * a + offsetY * c;
-    num oy = matrix.ty + offsetX * b + offsetY * d;
-    num ax = a * width;
-    num bx = b * width;
-    num cy = c * height;
-    num dy = d * height;
+    var ixList = _indexList;
+    if (ixList == null) return;
+    if (ixList.length <= _quadCount * 6 + 6) flush();
 
-    int index = _quadCount * 32;
-    if (index > _vertexList.length - 32) return; // dart2js_hint
+    var vxList = _vertexList;
+    if (vxList == null) return;
+    if (vxList.length <= _quadCount * 32 + 32) flush();
+
+    var index = _quadCount * 32;
+    if (index > vxList.length - 32) return;
 
     // vertex 1
-    _vertexList[index + 00] = ox;
-    _vertexList[index + 01] = oy;
-    _vertexList[index + 02] = uvList[0];
-    _vertexList[index + 03] = uvList[1];
-    _vertexList[index + 04] = colorR;
-    _vertexList[index + 05] = colorG;
-    _vertexList[index + 06] = colorB;
-    _vertexList[index + 07] = colorA;
+    vxList[index + 00] = ox;
+    vxList[index + 01] = oy;
+    vxList[index + 02] = uvList[0];
+    vxList[index + 03] = uvList[1];
+    vxList[index + 04] = colorR;
+    vxList[index + 05] = colorG;
+    vxList[index + 06] = colorB;
+    vxList[index + 07] = colorA;
 
     // vertex 2
-    _vertexList[index + 08] = ox + ax;
-    _vertexList[index + 09] = oy + bx;
-    _vertexList[index + 10] = uvList[2];
-    _vertexList[index + 11] = uvList[3];
-    _vertexList[index + 12] = colorR;
-    _vertexList[index + 13] = colorG;
-    _vertexList[index + 14] = colorB;
-    _vertexList[index + 15] = colorA;
+    vxList[index + 08] = ox + ax;
+    vxList[index + 09] = oy + bx;
+    vxList[index + 10] = uvList[2];
+    vxList[index + 11] = uvList[3];
+    vxList[index + 12] = colorR;
+    vxList[index + 13] = colorG;
+    vxList[index + 14] = colorB;
+    vxList[index + 15] = colorA;
 
     // vertex 3
-    _vertexList[index + 16] = ox + ax + cy;
-    _vertexList[index + 17] = oy + bx + dy;
-    _vertexList[index + 18] = uvList[4];
-    _vertexList[index + 19] = uvList[5];
-    _vertexList[index + 20] = colorR;
-    _vertexList[index + 21] = colorG;
-    _vertexList[index + 22] = colorB;
-    _vertexList[index + 23] = colorA;
+    vxList[index + 16] = ox + ax + cy;
+    vxList[index + 17] = oy + bx + dy;
+    vxList[index + 18] = uvList[4];
+    vxList[index + 19] = uvList[5];
+    vxList[index + 20] = colorR;
+    vxList[index + 21] = colorG;
+    vxList[index + 22] = colorB;
+    vxList[index + 23] = colorA;
 
     // vertex 4
-    _vertexList[index + 24] = ox + cy;
-    _vertexList[index + 25] = oy + dy;
-    _vertexList[index + 26] = uvList[6];
-    _vertexList[index + 27] = uvList[7];
-    _vertexList[index + 28] = colorR;
-    _vertexList[index + 29] = colorG;
-    _vertexList[index + 30] = colorB;
-    _vertexList[index + 31] = colorA;
+    vxList[index + 24] = ox + cy;
+    vxList[index + 25] = oy + dy;
+    vxList[index + 26] = uvList[6];
+    vxList[index + 27] = uvList[7];
+    vxList[index + 28] = colorR;
+    vxList[index + 29] = colorG;
+    vxList[index + 30] = colorB;
+    vxList[index + 31] = colorA;
 
     _quadCount += 1;
-
-    if (_quadCount == _maxQuadCount) flush();
   }
-
 }
