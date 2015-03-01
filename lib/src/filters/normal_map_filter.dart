@@ -55,7 +55,7 @@ class NormalMapFilter extends BitmapFilter {
 class NormalMapFilterProgram extends RenderProgram {
 
   // attenuation calculation
-  // http://gamedev.stackexchange.com/questions/56897/glsl-light-attenuation-color-and-intensity-formula
+  // http://gamedev.stackexchange.com/questions/56897
   // https://www.desmos.com/calculator/nmnaud1hrw
   // https://www.desmos.com/calculator/kp89d5khyb
 
@@ -246,23 +246,6 @@ class NormalMapFilterProgram extends RenderProgram {
 
     Matrix texMatrix = renderTextureQuad.samplerMatrix;
     Matrix mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
-    Matrix tmpMatrix = new Matrix.fromIdentity();
-
-    tmpMatrix.copyFromAndInvert(texMatrix);
-    tmpMatrix.concat(mapMatrix);
-
-    // vertex positions
-
-    num ma = matrix.a;
-    num mb = matrix.b;
-    num mc = matrix.c;
-    num md = matrix.d;
-    num ox = matrix.tx + offsetX * ma + offsetY * mc;
-    num oy = matrix.ty + offsetX * mb + offsetY * md;
-    num ax = ma * width;
-    num bx = mb * width;
-    num cy = mc * height;
-    num dy = md * height;
 
     // Ambient color,  light color, light position
 
@@ -296,31 +279,19 @@ class NormalMapFilterProgram extends RenderProgram {
     if (vxList == null) return;
     if (vxList.length < _quadCount * 76 + 76) flush();
 
-    var index = _quadCount * 76;
-    if (index > vxList.length - 76) return;
-
-    vxList[index + 00] = ox;
-    vxList[index + 01] = oy;
-    vxList[index + 19] = ox + ax;
-    vxList[index + 20] = oy + bx;
-    vxList[index + 38] = ox + ax + cy;
-    vxList[index + 39] = oy + bx + dy;
-    vxList[index + 57] = ox + cy;
-    vxList[index + 58] = oy + dy;
-
-    for(int i = 0; i < 4; i++, index += 19) {
+    for(int vertex = 0, index = _quadCount * 76; vertex < 4; vertex++, index += 19) {
 
       if (index > vxList.length - 19) return;
 
-      num texU = uvList[i + i + 0];
-      num texV = uvList[i + i + 1];
-      num mapU = tmpMatrix.tx + texU * tmpMatrix.a + texV * tmpMatrix.c;
-      num mapV = tmpMatrix.ty + texU * tmpMatrix.b + texV * tmpMatrix.d;
+      num x = offsetX + ((vertex == 1 || vertex == 2) ? width : 0);
+      num y = offsetY + ((vertex == 2 || vertex == 3) ? height : 0);
 
-      vxList[index + 02] = texU;
-      vxList[index + 03] = texV;
-      vxList[index + 04] = mapU;
-      vxList[index + 05] = mapV;
+      vxList[index + 00] = matrix.tx + x * matrix.a + y * matrix.c;
+      vxList[index + 01] = matrix.ty + y * matrix.b + y * matrix.d;
+      vxList[index + 02] = uvList[vertex + vertex + 0];
+      vxList[index + 03] = uvList[vertex + vertex + 1];
+      vxList[index + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
+      vxList[index + 05] = mapMatrix.ty + x * mapMatrix.b + y * mapMatrix.d;
       vxList[index + 06] = ambientR;
       vxList[index + 07] = ambientG;
       vxList[index + 08] = ambientB;
