@@ -308,24 +308,17 @@ class NormalMapFilterProgram extends RenderProgram {
     vxList[index + 57] = ox + cy;
     vxList[index + 58] = oy + dy;
 
-    vxList[index + 02] = uvList[0];
-    vxList[index + 03] = uvList[1];
-    vxList[index + 21] = uvList[2];
-    vxList[index + 22] = uvList[3];
-    vxList[index + 40] = uvList[4];
-    vxList[index + 41] = uvList[5];
-    vxList[index + 59] = uvList[6];
-    vxList[index + 60] = uvList[7];
-
     for(int i = 0; i < 4; i++, index += 19) {
 
       if (index > vxList.length - 19) return;
 
-      num texU = vxList[index + 02];
-      num texV = vxList[index + 03];
+      num texU = uvList[i + i + 0];
+      num texV = uvList[i + i + 1];
       num mapU = tmpMatrix.tx + texU * tmpMatrix.a + texV * tmpMatrix.c;
       num mapV = tmpMatrix.ty + texU * tmpMatrix.b + texV * tmpMatrix.d;
 
+      vxList[index + 02] = texU;
+      vxList[index + 03] = texV;
       vxList[index + 04] = mapU;
       vxList[index + 05] = mapV;
       vxList[index + 06] = ambientR;
