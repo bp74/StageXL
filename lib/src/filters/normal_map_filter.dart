@@ -179,16 +179,15 @@ class NormalMapFilterProgram extends RenderProgram {
       _vertexBuffer = renderingContext.createBuffer();
 
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
-      _uTexSamplerLocation = uniformLocations["uTexSampler"];
-      _uMapSamplerLocation = uniformLocations["uMapSampler"];
-
-      _aVertexPositionLocation = attributeLocations["aVertexPosition"];
-      _aVertexTexCoordLocation = attributeLocations["aVertexTexCoord"];
-      _aVertexMapCoordLocation = attributeLocations["aVertexMapCoord"];
-      _aVertexAmbientColor     = attributeLocations["aVertexAmbientColor"];
-      _aVertexLightColor       = attributeLocations["aVertexLightColor"];
-      _aVertexLightCoord       = attributeLocations["aVertexLightCoord"];
-      _aVertexAlphaLocation    = attributeLocations["aVertexAlpha"];
+      _uTexSamplerLocation       = uniformLocations["uTexSampler"];
+      _uMapSamplerLocation       = uniformLocations["uMapSampler"];
+      _aVertexPositionLocation   = attributeLocations["aVertexPosition"];
+      _aVertexTexCoordLocation   = attributeLocations["aVertexTexCoord"];
+      _aVertexMapCoordLocation   = attributeLocations["aVertexMapCoord"];
+      _aVertexAmbientColor       = attributeLocations["aVertexAmbientColor"];
+      _aVertexLightColor         = attributeLocations["aVertexLightColor"];
+      _aVertexLightCoord         = attributeLocations["aVertexLightCoord"];
+      _aVertexAlphaLocation      = attributeLocations["aVertexAlpha"];
 
       renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
@@ -227,17 +226,15 @@ class NormalMapFilterProgram extends RenderProgram {
                            RenderTextureQuad renderTextureQuad,
                            NormalMapFilter normalMapFilter) {
 
-    Matrix matrix = renderState.globalMatrix;
-    num alpha = renderState.globalAlpha;
+    Matrix mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
+    Matrix texMatrix = renderTextureQuad.samplerMatrix;
+    Matrix posMatrix = renderState.globalMatrix;
 
     int width = renderTextureQuad.textureWidth;
     int height = renderTextureQuad.textureHeight;
     int offsetX = renderTextureQuad.offsetX;
     int offsetY = renderTextureQuad.offsetY;
-    Float32List uvList = renderTextureQuad.uvList;
-
-    Matrix texMatrix = renderTextureQuad.samplerMatrix;
-    Matrix mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
+    num alpha = renderState.globalAlpha;
 
     // Ambient color, light color, light position
 
@@ -275,15 +272,15 @@ class NormalMapFilterProgram extends RenderProgram {
 
     for(int vertex = 0, index = _quadCount * 76; vertex < 4; vertex++, index += 19) {
 
-      if (index > vxList.length - 19) return;
-
       num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
       num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
 
-      vxList[index + 00] = matrix.tx + x * matrix.a + y * matrix.c;
-      vxList[index + 01] = matrix.ty + x * matrix.b + y * matrix.d;
-      vxList[index + 02] = uvList[vertex + vertex + 0];
-      vxList[index + 03] = uvList[vertex + vertex + 1];
+      if (index > vxList.length - 19) return; // dart2js_hint
+
+      vxList[index + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
+      vxList[index + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
+      vxList[index + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
+      vxList[index + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
       vxList[index + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
       vxList[index + 05] = mapMatrix.ty + x * mapMatrix.b + y * mapMatrix.d;
       vxList[index + 06] = ambientR;
@@ -304,4 +301,3 @@ class NormalMapFilterProgram extends RenderProgram {
     _quadCount += 1;
   }
 }
-
