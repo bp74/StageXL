@@ -91,45 +91,45 @@ class NormalMapFilterProgram extends RenderProgram {
 
   String get fragmentShaderSource => """
 
-      precision mediump float;
-      uniform sampler2D uTexSampler;
-      uniform sampler2D uMapSampler;
+    precision mediump float;
+    uniform sampler2D uTexSampler;
+    uniform sampler2D uMapSampler;
 
-      varying vec2 vTexCoord;
-      varying vec2 vMapCoord;
-      varying vec4 vAmbientColor;
-      varying vec4 vLightColor;
-      varying vec4 vLightCoord;
-      varying float vAlpha;
+    varying vec2 vTexCoord;
+    varying vec2 vMapCoord;
+    varying vec4 vAmbientColor;
+    varying vec4 vLightColor;
+    varying vec4 vLightCoord;
+    varying float vAlpha;
 
-      void main() {
+    void main() {
 
-        // Texture color and map color/vector/normal 
-        vec4 texColor = texture2D(uTexSampler, vTexCoord.xy);
-        vec4 mapColor = texture2D(uMapSampler, vMapCoord.xy);
-        vec3 mapVector = vec3(mapColor.r, 1.0 - mapColor.g, mapColor.b);
-        vec3 mapNormal = normalize(mapVector * 2.0 - 1.0);
+      // Texture color and map color/vector/normal 
+      vec4 texColor = texture2D(uTexSampler, vTexCoord.xy);
+      vec4 mapColor = texture2D(uMapSampler, vMapCoord.xy);
+      vec3 mapVector = vec3(mapColor.r, 1.0 - mapColor.g, mapColor.b);
+      vec3 mapNormal = normalize(mapVector * 2.0 - 1.0);
 
-        // Position of light relative to texture coordinates
-        vec3 lightDelta = vec3(vLightCoord.xy - vTexCoord.xy, vLightCoord.z);
-        vec3 lightNormal = normalize(lightDelta);
-        
-        // Calculate diffuse and ambient color
-        float diffuse = max(dot(mapNormal, lightNormal), 0.0);
-        vec3 diffuseColor = vLightColor.rgb * vLightColor.a * diffuse;
-        vec3 ambientColor = vAmbientColor.rgb * vAmbientColor.a;
+      // Position of light relative to texture coordinates
+      vec3 lightDelta = vec3(vLightCoord.xy - vTexCoord.xy, vLightCoord.z);
+      vec3 lightNormal = normalize(lightDelta);
       
-        // Calculate attenuation
-        float distance = length(lightDelta.xy);
-        float radius = vLightCoord.w;
-        float temp = clamp(1.0 - (distance * distance) / (radius * radius), 0.0, 1.0); 
-        float attenuation = temp * temp;
+      // Calculate diffuse and ambient color
+      float diffuse = max(dot(mapNormal, lightNormal), 0.0);
+      vec3 diffuseColor = vLightColor.rgb * vLightColor.a * diffuse;
+      vec3 ambientColor = vAmbientColor.rgb * vAmbientColor.a;
+    
+      // Calculate attenuation
+      float distance = length(lightDelta.xy);
+      float radius = vLightCoord.w;
+      float temp = clamp(1.0 - (distance * distance) / (radius * radius), 0.0, 1.0); 
+      float attenuation = temp * temp;
 
-        // Get the final color
-        vec3 color = texColor.rgb * (ambientColor + diffuseColor * attenuation);
-        gl_FragColor = vec4(color.rgb, texColor.a) * vAlpha;
-      }
-      """;
+      // Get the final color
+      vec3 color = texColor.rgb * (ambientColor + diffuseColor * attenuation);
+      gl_FragColor = vec4(color.rgb, texColor.a) * vAlpha;
+    }
+    """;
 
   //---------------------------------------------------------------------------
   // aVertexPosition:      Float32(x), Float32(y)
