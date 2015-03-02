@@ -54,6 +54,7 @@ abstract class RenderProgram {
       for(int index = 0; index < activeAttributes; index++) {
         var activeInfo = renderingContext.getActiveAttrib(program, index);
         var location = renderingContext.getAttribLocation(program, activeInfo.name);
+        renderingContext.enableVertexAttribArray(location);
         _attributeLocations[activeInfo.name] = location;
       }
 

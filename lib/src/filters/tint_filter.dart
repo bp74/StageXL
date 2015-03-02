@@ -149,9 +149,6 @@ class TintFilterProgram extends RenderProgram {
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
       _uSamplerLocation = uniformLocations["uSampler"];
 
-      renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-      renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
-      renderingContext.enableVertexAttribArray(_aVertexColorLocation);
       renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);

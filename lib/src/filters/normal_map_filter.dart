@@ -190,14 +190,6 @@ class NormalMapFilterProgram extends RenderProgram {
       _aVertexLightCoord       = attributeLocations["aVertexLightCoord"];
       _aVertexAlphaLocation    = attributeLocations["aVertexAlpha"];
 
-      renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-      renderingContext.enableVertexAttribArray(_aVertexTexCoordLocation);
-      renderingContext.enableVertexAttribArray(_aVertexMapCoordLocation);
-      renderingContext.enableVertexAttribArray(_aVertexAmbientColor);
-      renderingContext.enableVertexAttribArray(_aVertexLightColor);
-      renderingContext.enableVertexAttribArray(_aVertexLightCoord);
-      renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
-
       renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);

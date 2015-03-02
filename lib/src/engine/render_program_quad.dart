@@ -65,15 +65,13 @@ class RenderProgramQuad extends RenderProgram {
       _vertexList = renderContext.dynamicVertexList;
       _indexBuffer = renderingContext.createBuffer();
       _vertexBuffer = renderingContext.createBuffer();
+      
       _aVertexPositionLocation = attributeLocations["aVertexPosition"];
       _aVertexTextCoordLocation = attributeLocations["aVertexTextCoord"];
       _aVertexAlphaLocation = attributeLocations["aVertexAlpha"];
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
       _uSamplerLocation = uniformLocations["uSampler"];
 
-      renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-      renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
-      renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
       renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);

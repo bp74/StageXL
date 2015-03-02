@@ -64,10 +64,6 @@ abstract class BitmapFilterProgram extends RenderProgram {
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
       _uSamplerLocation = uniformLocations["uSampler"];
 
-      renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-      renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
-      renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
-
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }

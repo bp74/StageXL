@@ -57,8 +57,6 @@ class RenderProgramTriangle extends RenderProgram {
       _aVertexColorLocation = attributeLocations["aVertexColor"];
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
 
-      renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-      renderingContext.enableVertexAttribArray(_aVertexColorLocation);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
     }

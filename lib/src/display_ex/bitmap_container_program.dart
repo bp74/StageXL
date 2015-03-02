@@ -109,12 +109,6 @@ class _BitmapContainerProgram extends RenderProgram {
       _uGlobalMatrix = uniformLocations["uGlobalMatrix"];
       _uGlobalAlpha = uniformLocations["uGlobalAlpha"];
 
-      renderingContext.enableVertexAttribArray(_aPositionLocation);
-      renderingContext.enableVertexAttribArray(_aOffsetLocation);
-      renderingContext.enableVertexAttribArray(_aScaleLocation);
-      renderingContext.enableVertexAttribArray(_aSkewLocation);
-      renderingContext.enableVertexAttribArray(_aTextCoordLocation);
-      renderingContext.enableVertexAttribArray(_aAlphaLocation);
       renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
       renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
