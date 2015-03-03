@@ -34,10 +34,11 @@ class RenderProgramQuad extends RenderProgram {
   // aVertexAlpha:      Float32(alpha)
   //---------------------------------------------------------------------------
 
-  static const int _maxQuadCount = 256;
+  Int16List _indexList;
+  Float32List _vertexList;
 
-  gl.Buffer _vertexBuffer = null;
-  gl.Buffer _indexBuffer = null;
+  gl.Buffer _vertexBuffer;
+  gl.Buffer _indexBuffer;
   gl.UniformLocation _uProjectionMatrixLocation;
   gl.UniformLocation _uSamplerLocation;
 
@@ -45,22 +46,6 @@ class RenderProgramQuad extends RenderProgram {
   int _aVertexTextCoordLocation = 0;
   int _aVertexAlphaLocation = 0;
   int _quadCount = 0;
-
-  final Int16List _indexList = new Int16List(_maxQuadCount * 6);
-  final Float32List _vertexList = new Float32List(_maxQuadCount * 4 * 5);
-
-  //-----------------------------------------------------------------------------------------------
-
-  RenderProgramQuad() {
-    for(int i = 0, j = 0; i <= _indexList.length - 6; i += 6, j +=4 ) {
-      _indexList[i + 0] = j + 0;
-      _indexList[i + 1] = j + 1;
-      _indexList[i + 2] = j + 2;
-      _indexList[i + 3] = j + 0;
-      _indexList[i + 4] = j + 2;
-      _indexList[i + 5] = j + 3;
-    }
-  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -72,21 +57,21 @@ class RenderProgramQuad extends RenderProgram {
   @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (_contextIdentifier != renderContext.contextIdentifier) {
+    if (this.contextIdentifier != renderContext.contextIdentifier) {
 
       super.activate(renderContext);
 
+      _indexList = renderContext.staticIndexList;
+      _vertexList = renderContext.dynamicVertexList;
       _indexBuffer = renderingContext.createBuffer();
       _vertexBuffer = renderingContext.createBuffer();
+      
       _aVertexPositionLocation = attributeLocations["aVertexPosition"];
       _aVertexTextCoordLocation = attributeLocations["aVertexTextCoord"];
       _aVertexAlphaLocation = attributeLocations["aVertexAlpha"];
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
       _uSamplerLocation = uniformLocations["uSampler"];
 
-      renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-      renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
-      renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
       renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
@@ -104,14 +89,12 @@ class RenderProgramQuad extends RenderProgram {
 
   @override
   void flush() {
-
-    if (_quadCount == 0) return;
-    var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 5);
-
-    renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
-    renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
-
-    _quadCount = 0;
+    if (_quadCount > 0) {
+      var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 20);
+      renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+      renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
+      _quadCount = 0;
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -127,55 +110,60 @@ class RenderProgramQuad extends RenderProgram {
     int offsetY = renderTextureQuad.offsetY;
     Float32List uvList = renderTextureQuad.uvList;
 
-    // x' = tx + a * x + c * y
-    // y' = ty + b * x + d * y
+    num ma = matrix.a;
+    num mb = matrix.b;
+    num mc = matrix.c;
+    num md = matrix.d;
+    num ox = matrix.tx + offsetX * ma + offsetY * mc;
+    num oy = matrix.ty + offsetX * mb + offsetY * md;
+    num ax = ma * width;
+    num bx = mb * width;
+    num cy = mc * height;
+    num dy = md * height;
 
-    num a = matrix.a;
-    num b = matrix.b;
-    num c = matrix.c;
-    num d = matrix.d;
+    // The following code contains dart2js_hints to keep
+    // the generated JavaScript code clean and fast!
 
-    num ox = matrix.tx + offsetX * a + offsetY * c;
-    num oy = matrix.ty + offsetX * b + offsetY * d;
-    num ax = a * width;
-    num bx = b * width;
-    num cy = c * height;
-    num dy = d * height;
+    var ixList = _indexList;
+    if (ixList == null) return;
+    if (ixList.length < _quadCount * 6 + 6) flush();
 
-    int index = _quadCount * 20;
-    if (index > _vertexList.length - 20) return; // dart2js_hint
+    var vxList = _vertexList;
+    if (vxList == null) return;
+    if (vxList.length < _quadCount * 20 + 20) flush();
+
+    var index = _quadCount * 20;
+    if (index > vxList.length - 20) return;
 
     // vertex 1
-    _vertexList[index + 00] = ox;
-    _vertexList[index + 01] = oy;
-    _vertexList[index + 02] = uvList[0];
-    _vertexList[index + 03] = uvList[1];
-    _vertexList[index + 04] = alpha;
+    vxList[index + 00] = ox;
+    vxList[index + 01] = oy;
+    vxList[index + 02] = uvList[0];
+    vxList[index + 03] = uvList[1];
+    vxList[index + 04] = alpha;
 
     // vertex 2
-    _vertexList[index + 05] = ox + ax;
-    _vertexList[index + 06] = oy + bx;
-    _vertexList[index + 07] = uvList[2];
-    _vertexList[index + 08] = uvList[3];
-    _vertexList[index + 09] = alpha;
+    vxList[index + 05] = ox + ax;
+    vxList[index + 06] = oy + bx;
+    vxList[index + 07] = uvList[2];
+    vxList[index + 08] = uvList[3];
+    vxList[index + 09] = alpha;
 
     // vertex 3
-    _vertexList[index + 10] = ox + ax + cy;
-    _vertexList[index + 11] = oy + bx + dy;
-    _vertexList[index + 12] = uvList[4];
-    _vertexList[index + 13] = uvList[5];
-    _vertexList[index + 14] = alpha;
+    vxList[index + 10] = ox + ax + cy;
+    vxList[index + 11] = oy + bx + dy;
+    vxList[index + 12] = uvList[4];
+    vxList[index + 13] = uvList[5];
+    vxList[index + 14] = alpha;
 
     // vertex 4
-    _vertexList[index + 15] = ox + cy;
-    _vertexList[index + 16] = oy + dy;
-    _vertexList[index + 17] = uvList[6];
-    _vertexList[index + 18] = uvList[7];
-    _vertexList[index + 19] = alpha;
+    vxList[index + 15] = ox + cy;
+    vxList[index + 16] = oy + dy;
+    vxList[index + 17] = uvList[6];
+    vxList[index + 18] = uvList[7];
+    vxList[index + 19] = alpha;
 
     _quadCount += 1;
-
-    if (_quadCount == _maxQuadCount) flush();
   }
 
 }

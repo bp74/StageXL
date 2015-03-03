@@ -1,16 +1,24 @@
-part of stagexl.filters;
+library stagexl.filters.blur;
+
+import 'dart:html' show ImageData;
+
+import '../display.dart';
+import '../engine.dart';
+import '../geom.dart';
+import '../internal/filter_helpers.dart';
+import '../internal/tools.dart';
 
 class BlurFilter extends BitmapFilter {
 
   int blurX;
   int blurY;
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // Credits to Alois Zingl, Vienna, Austria.
   // Extended Binomial Filter for Fast Gaussian Blur
   // http://members.chello.at/easyfilter/gauss.html
   // http://members.chello.at/easyfilter/gauss.pdf
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   BlurFilter([this.blurX = 4, this.blurY = 4]) {
 
@@ -27,7 +35,7 @@ class BlurFilter extends BitmapFilter {
   List<int> get renderPassSources => const [0, 1];
   List<int> get renderPassTargets => const [1, 2];
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
@@ -66,22 +74,25 @@ class BlurFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    _BlurProgram blurProgram = _BlurProgram.instance;
 
-    renderContext.activateRenderProgram(blurProgram);
+    BlurFilterProgram renderProgram = renderContext.getRenderProgram(
+        r"$BlurFilterProgram", () => new BlurFilterProgram());
+
+    renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
-      blurProgram.configure(0.250 * blurX / renderTexture.width, 0.0);
-      blurProgram.renderQuad(renderState, renderTextureQuad);
+      renderProgram.configure(0.250 * blurX / renderTexture.width, 0.0);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
     } else {
-      blurProgram.configure(0.0, 0.250 * blurY / renderTexture.height);
-      blurProgram.renderQuad(renderState, renderTextureQuad);
+      renderProgram.configure(0.0, 0.250 * blurY / renderTexture.height);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
     }
   }
 }
@@ -89,9 +100,7 @@ class BlurFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _BlurProgram extends BitmapFilterProgram {
-
-  static final _BlurProgram instance = new _BlurProgram();
+class BlurFilterProgram extends BitmapFilterProgram {
 
   String get fragmentShaderSource => """
       precision mediump float;

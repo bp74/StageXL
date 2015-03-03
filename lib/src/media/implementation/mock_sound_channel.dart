@@ -1,13 +1,15 @@
 part of stagexl.media;
 
 class MockSoundChannel extends SoundChannel {
+
   final bool _loop;
   SoundTransform _soundTransform;
 
   MockSoundChannel(MockSound mockSound,
       num startTime, num duration, bool loop, SoundTransform soundTransform) :
+
       _loop = loop,
-      _soundTransform = soundTransform;
+      _soundTransform = soundTransform != null ? soundTransform : new SoundTransform();
 
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------

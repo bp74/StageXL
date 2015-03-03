@@ -237,6 +237,26 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
+  void renderObjectFiltered(RenderState renderState, RenderObject renderObject) {
+
+    // It would be to slow to render filters in real time using the
+    // Canvas2D context. This is only feasible with the WebGL context.
+
+    renderObject.render(renderState);
+  }
+
+  void renderQuadFiltered(
+    RenderState renderState, RenderTextureQuad renderTextureQuad,
+    List<RenderFilter> renderFilter) {
+
+    // It would be to slow to render filters in real time using the
+    // Canvas2D context. This is only feasible with the WebGL context.
+
+    this.renderQuad(renderState, renderTextureQuad);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
   void beginRenderMask(RenderState renderState, RenderMask mask) {
     var matrix = renderState.globalMatrix;
     _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);

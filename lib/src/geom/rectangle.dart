@@ -14,33 +14,46 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   Rectangle(this.left, this.top, this.width, this.height);
 
-  Rectangle.from(math.Rectangle<T> r) : this(r.left, r.top, r.width, r.height);
+  Rectangle.from(math.Rectangle<T> r) :
+      this(r.left, r.top, r.width, r.height);
 
-  Rectangle<T> clone() => new Rectangle<T>(left, top, width, height);
+  Rectangle<T> clone() =>
+      new Rectangle<T>(left, top, width, height);
 
-  String toString() => "Rectangle<$T> [left=${left}, top=${top}, width=${width}, height=${height}]";
+  String toString() =>
+      "Rectangle<$T> [left=$left, top=$top, width=$width, height=$height]";
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  bool operator ==(other) {
+    if (other is !math.Rectangle) return false;
+    return
+        left == other.left &&
+        top == other.top &&
+        width == other.width &&
+        height == other.height;
+  }
+
+  //---------------------------------------------------------------------------
+
+  Point<num> get center => new Point<num>(left + width / 2, top + height / 2);
+
+  bool get isEmpty => width <= 0 || height <= 0;
 
   T get right => left + width;
-  T get bottom => top + height;
-
-  Point<T> get topLeft => new Point<T>(left, top);
-  Point<T> get topRight => new Point<T>(right, top);
-  Point<T> get bottomLeft => new Point<T>(left, bottom);
-  Point<T> get bottomRight => new Point<T>(right, bottom);
-
-  Point<T> get size => new Point<T>(width, height);
-  Point<num> get center => new Point<num>(left + width / 2, top + height / 2);
 
   void set right(T value) {
     width = value - left;
   }
 
+  T get bottom => top + height;
+
   void set bottom(T value) {
     height = value - top;
   }
+
+  Point<T> get topLeft => new Point<T>(left, top);
 
   void set topLeft(Point<T> point) {
     width = width + left - point.x;
@@ -49,17 +62,37 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     top = point.y;
   }
 
+  Point<T> get topRight => new Point<T>(right, top);
+
+  void set topRight(Point<T> point) {
+    width = point.x - left;
+    height = height + top - point.y;
+    top = point.y;
+  }
+
+  Point<T> get bottomLeft => new Point<T>(left, bottom);
+
+  void set bottomLeft(Point<T> point) {
+    width = width + left - point.x;
+    height = point.y - top;
+    left = point.x;
+  }
+
+  Point<T> get bottomRight => new Point<T>(right, bottom);
+
   void set bottomRight(Point<T> point) {
     width = point.x - left;
     height = point.y - top;
   }
+
+  Point<T> get size => new Point<T>(width, height);
 
   void set size(Point<T> point) {
     width = point.x;
     height = point.y;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   bool contains(num px, num py) {
     return left <= px && top <= py && right > px && bottom > py;
@@ -69,21 +102,12 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     return contains(p.x, p.y);
   }
 
-  bool equals(math.Rectangle<num> r) {
-    return left == r.left && top == r.top && width == r.width && height == r.height;
-  }
-
   bool intersects(math.Rectangle<num> r) {
     return left < r.right && right > r.left && top < r.bottom && bottom > r.top;
   }
 
-  bool get isEmpty {
-    return width <= 0 || height <= 0;
-  }
+  /// Returns a new rectangle which completely contains `this` and [other].
 
-  /**
-   * Returns a new rectangle which completely contains `this` and [other].
-   */
   Rectangle<T> boundingBox(math.Rectangle<T> other) {
     T rLeft = min(left, other.left);
     T rTop = min(top, other.top);
@@ -92,14 +116,13 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     return new Rectangle<T>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 
-  /**
-   * Tests whether `this` entirely contains [another].
-   */
+  /// Tests whether `this` entirely contains [another].
+
   bool containsRectangle(math.Rectangle<num> r) {
     return left <= r.left && top <= r.top && right >= r.right && bottom >= r.bottom;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void copyFrom(math.Rectangle<T> r) {
     setTo(r.left, r.top, r.width, r.height);
@@ -146,34 +169,33 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     return new Rectangle<int>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Use [left] instead.
   @deprecated
   T get x => left;
 
-  /// Use [left] instead.
   @deprecated
-  void set x(T value) {
-    left = value;
-  }
+  void set x(T value) { left = value; }
 
   /// Use [top] instead.
   @deprecated
   T get y => top;
 
-  /// Use [top] instead.
   @deprecated
-  void set y(T value) {
-    top = value;
-  }
+  void set y(T value) { top = value; }
 
   /// Use [containsRectangle] instead.
   @deprecated
-  bool containsRect(math.Rectangle<num> r) => containsRectangle(r);
+  bool containsRect(math.Rectangle<num> r) => this.containsRectangle(r);
 
   /// Use [boundingBox] instead.
   @deprecated
-  Rectangle<T> union(math.Rectangle<T> rect) => boundingBox(rect);
+  Rectangle<T> union(math.Rectangle<T> rect) => this.boundingBox(rect);
+
+  /// Use the == operator instead.
+  @deprecated
+  bool equals(math.Rectangle<num> other) => this == other;
 
 }

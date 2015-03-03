@@ -182,8 +182,8 @@ void main() {
   test('#equals', () {
     Rectangle rect = rect1234();
 
-    expect(rect.equals(rect1234()), isTrue);
-    expect(rect.equals(rect0000()), isFalse);
+    expect(rect == rect1234(), isTrue);
+    expect(rect == rect0000(), isFalse);
   });
 
   group('#intersects', () {

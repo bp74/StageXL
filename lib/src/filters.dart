@@ -8,26 +8,16 @@
 /// consuming operation performed on the CPU.
 ///
 /// Sample: <http://www.stagexl.org/samples/filter/>
-///
+
 library stagexl.filters;
 
-import 'dart:math' hide Point, Rectangle;
-import 'dart:html' show CanvasElement, CanvasRenderingContext2D, ImageData;
-import 'dart:web_gl' as gl;
-import 'dart:typed_data';
-
-import 'display.dart';
-import 'engine.dart';
-import 'geom.dart';
-import 'internal/environment.dart' as env;
-import 'internal/filter_helpers.dart';
-import 'internal/tools.dart';
-
-part 'filters/alpha_mask_filter.dart';
-part 'filters/blur_filter.dart';
-part 'filters/chroma_key_filter.dart';
-part 'filters/color_matrix_filter.dart';
-part 'filters/displacement_map_filter.dart';
-part 'filters/drop_shadow_filter.dart';
-part 'filters/flatten_filter.dart';
-part 'filters/glow_filter.dart';
+export 'filters/alpha_mask_filter.dart' show AlphaMaskFilter;
+export 'filters/blur_filter.dart' show BlurFilter;
+export 'filters/chroma_key_filter.dart' show ChromaKeyFilter;
+export 'filters/color_matrix_filter.dart' show ColorMatrixFilter;
+export 'filters/displacement_map_filter.dart' show DisplacementMapFilter;
+export 'filters/drop_shadow_filter.dart' show DropShadowFilter;
+export 'filters/flatten_filter.dart' show FlattenFilter;
+export 'filters/glow_filter.dart' show GlowFilter;
+export 'filters/normal_map_filter.dart' show NormalMapFilter;
+export 'filters/tint_filter.dart' show TintFilter;

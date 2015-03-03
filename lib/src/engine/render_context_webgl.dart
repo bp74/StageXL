@@ -10,7 +10,13 @@ class RenderContextWebGL extends RenderContext {
   final RenderProgramTriangle renderProgramTriangle = new RenderProgramTriangle();
   final RenderProgramMesh renderProgramMesh = new RenderProgramMesh();
 
+  final Int16List staticIndexList = new Int16List(4096);
+  final Int16List dynamicIndexList = new Int16List(4096);
+  final Float32List dynamicVertexList = new Float32List(16384);
+
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
+  final Map<int, RenderTexture> _activeRenderTextures = new  Map<int, RenderTexture>();
+  final Map<String, RenderProgram> _renderPrograms = new Map<String, RenderProgram>();
 
   gl.RenderingContext _renderingContext = null;
   Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
@@ -39,6 +45,15 @@ class RenderContextWebGL extends RenderContext {
 
     if (renderingContext is! gl.RenderingContext) {
       throw new StateError("Failed to get WebGL context.");
+    }
+
+    for(int i = 0, j = 0; i <= staticIndexList.length - 6; i += 6, j +=4 ) {
+      staticIndexList[i + 0] = j + 0;
+      staticIndexList[i + 1] = j + 1;
+      staticIndexList[i + 2] = j + 2;
+      staticIndexList[i + 3] = j + 0;
+      staticIndexList[i + 4] = j + 2;
+      staticIndexList[i + 5] = j + 3;
     }
 
     _renderingContext = renderingContext;
@@ -104,8 +119,11 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void flush() {
-
     _activeRenderProgram.flush();
+  }
+
+  RenderProgram getRenderProgram(String name, RenderProgram ifAbsent()) {
+    return _renderPrograms.putIfAbsent(name, ifAbsent);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -150,6 +168,143 @@ class RenderContextWebGL extends RenderContext {
   }
 
   //-----------------------------------------------------------------------------------------------
+
+  void renderObjectFiltered(RenderState renderState, RenderObject renderObject) {
+
+    var bounds = renderObject.bounds;
+    var filters = renderObject.filters;
+
+    var boundsLeft = bounds.left.floor();
+    var boundsTop = bounds.top.floor();
+    var boundsRight = bounds.right.ceil();
+    var boundsBottom = bounds.bottom.ceil();
+
+    for (int i = 0; i < filters.length; i++) {
+      var overlap = filters[i].overlap;
+      boundsLeft += overlap.left;
+      boundsTop += overlap.top;
+      boundsRight += overlap.right;
+      boundsBottom += overlap.bottom;
+    }
+
+    var boundsWidth = boundsRight - boundsLeft;
+    var boundsHeight = boundsBottom - boundsTop;
+
+    var initialRenderFrameBuffer = this.activeRenderFrameBuffer;
+    var initialProjectionMatrix = this.activeProjectionMatrix.clone();
+
+    // TODO: Simplify if renderObject is a _RenderTextureQuadObject.
+
+    var flattenRenderFrameBuffer = this.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+    var flattenRenderTexture = flattenRenderFrameBuffer.renderTexture;
+    var flattenRenderTextureQuad = new RenderTextureQuad(
+        flattenRenderTexture, 0, boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
+    var flattenRenderState = new RenderState(this, flattenRenderTextureQuad.bufferMatrix);
+    var flattenProjectionMatrix = new Matrix3D.fromIdentity();
+
+    // TODO: We should remove the flattenRenderTextureQuad and use the flattenProjectionMatrix
+    // for the transformation. This is also useful for the filterRenderState resets later in
+    // the code. Less code and less memore allocations. But this also affects filters like
+    // AlphaMaskFilter or DisplacementFilter.
+
+    this.activateRenderFrameBuffer(flattenRenderFrameBuffer);
+    this.activateProjectionMatrix(flattenProjectionMatrix);
+    this.clear(0);
+
+    renderObject.render(flattenRenderState);
+
+    //----------------------------------------------
+
+    var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
+    renderFrameBufferMap[0] = flattenRenderFrameBuffer;
+
+    RenderTextureQuad sourceRenderTextureQuad = null;
+    RenderFrameBuffer sourceRenderFrameBuffer = null;
+    RenderFrameBuffer targetRenderFrameBuffer = null;
+    RenderState filterRenderState = flattenRenderState;
+
+    for (int i = 0; i < filters.length; i++) {
+
+      RenderFilter filter = filters[i];
+      List<int> renderPassSources = filter.renderPassSources;
+      List<int> renderPassTargets = filter.renderPassTargets;
+
+      for (int pass = 0; pass < renderPassSources.length; pass++) {
+
+        int renderPassSource = renderPassSources[pass];
+        int renderPassTarget = renderPassTargets[pass];
+
+        // get sourceRenderTextureQuad
+
+        if (renderFrameBufferMap.containsKey(renderPassSource)) {
+          sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
+          sourceRenderTextureQuad = new RenderTextureQuad(
+              sourceRenderFrameBuffer.renderTexture, 0,
+              boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
+        } else {
+          throw new StateError("Invalid renderPassSource!");
+        }
+
+        // get targetRenderFrameBuffer
+
+        if (i == filters.length - 1 && renderPassTarget == renderPassTargets.last) {
+          targetRenderFrameBuffer = initialRenderFrameBuffer;
+          filterRenderState.copyFrom(renderState);
+          this.activateRenderFrameBuffer(targetRenderFrameBuffer);
+          this.activateBlendMode(filterRenderState.globalBlendMode);
+          this.activateProjectionMatrix(initialProjectionMatrix);
+        } else if (renderFrameBufferMap.containsKey(renderPassTarget)) {
+          targetRenderFrameBuffer = renderFrameBufferMap[renderPassTarget];
+          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
+          filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
+          this.activateRenderFrameBuffer(targetRenderFrameBuffer);
+          this.activateBlendMode(BlendMode.NORMAL);
+        } else {
+          targetRenderFrameBuffer = this.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+          filterRenderState.reset(targetRenderFrameBuffer.renderTexture.quad.bufferMatrix);
+          filterRenderState.globalMatrix.prependTranslation(-boundsLeft, -boundsTop);
+          renderFrameBufferMap[renderPassTarget] = targetRenderFrameBuffer;
+          this.activateRenderFrameBuffer(targetRenderFrameBuffer);
+          this.activateBlendMode(BlendMode.NORMAL);
+          this.clear(0);
+        }
+
+        // render filter
+
+        filter.renderFilter(filterRenderState, sourceRenderTextureQuad, pass);
+
+        // release obsolete source RenderFrameBuffer
+
+        if (renderPassSources.skip(pass + 1).every((rps) => rps != renderPassSource)) {
+          renderFrameBufferMap.remove(renderPassSource);
+          this.releaseRenderFrameBuffer(sourceRenderFrameBuffer);
+        }
+      }
+
+      renderFrameBufferMap.clear();
+      renderFrameBufferMap[0] = targetRenderFrameBuffer;
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void renderQuadFiltered(
+    RenderState renderState, RenderTextureQuad renderTextureQuad,
+    List<RenderFilter> renderFilters) {
+
+    var firstFilter = renderFilters.length == 1 ? renderFilters[0] : null;
+
+    if (renderFilters.length == 0) {
+      this.renderQuad(renderState, renderTextureQuad);
+    } else if (firstFilter is RenderFilter && firstFilter.isSimple) {
+      firstFilter.renderFilter(renderState, renderTextureQuad, 0);
+    } else {
+      var renderObject = new _RenderTextureQuadObject(renderTextureQuad, renderFilters);
+      this.renderObjectFiltered(renderState, renderObject);
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
   void beginRenderMask(RenderState renderState, RenderMask mask) {
@@ -162,10 +317,10 @@ class RenderContextWebGL extends RenderContext {
 
   void _renderMask(RenderState renderState, RenderMask mask, int depthDelta) {
 
-    int stencilDepth = _getStencilDepth();
+    var arfb = _activeRenderFrameBuffer;
+    var stencilDepth = arfb != null ? arfb.stencilDepth : _stencilDepth;
 
     _activeRenderProgram.flush();
-
     _renderingContext.enable(gl.STENCIL_TEST);
     _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, depthDelta == 1 ? gl.INCR : gl.DECR);
@@ -173,8 +328,8 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(false, false, false, false);
 
     mask.renderMask(renderState);
-    renderState.flush();
 
+    _activeRenderProgram.flush();
     _renderingContext.stencilFunc(gl.EQUAL, stencilDepth + depthDelta, 0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
     _renderingContext.stencilMask(0x00);
@@ -203,7 +358,7 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   void activateRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    if (identical(renderFrameBuffer, _activeRenderFrameBuffer) == false) {
+    if (!identical(renderFrameBuffer, _activeRenderFrameBuffer)) {
       _activeRenderProgram.flush();
       _activeRenderFrameBuffer = renderFrameBuffer;
 
@@ -224,12 +379,12 @@ class RenderContextWebGL extends RenderContext {
 
       _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
       _renderingContext.viewport(0, 0, width, height);
-      _updateStencilState(stencilDepth);
+      _updateStencilTest(stencilDepth);
     }
   }
 
   void activateRenderProgram(RenderProgram renderProgram) {
-    if (identical(renderProgram, _activeRenderProgram) == false) {
+    if (!identical(renderProgram, _activeRenderProgram)) {
       _activeRenderProgram.flush();
       _activeRenderProgram = renderProgram;
       _activeRenderProgram.activate(this);
@@ -238,7 +393,7 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateBlendMode(BlendMode blendMode) {
-    if (identical(blendMode, _activeBlendMode) == false) {
+    if (!identical(blendMode, _activeBlendMode)) {
       _activeRenderProgram.flush();
       _activeBlendMode = blendMode;
       _renderingContext.blendFunc(blendMode.srcFactor, blendMode.dstFactor);
@@ -246,10 +401,22 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateRenderTexture(RenderTexture renderTexture) {
-    if (identical(renderTexture, _activeRenderTexture) == false) {
+    if (!identical(renderTexture, _activeRenderTexture)) {
       _activeRenderProgram.flush();
       _activeRenderTexture = renderTexture;
       _activeRenderTexture.activate(this, gl.TEXTURE0);
+    }
+  }
+
+  void activateRenderTextureAt(RenderTexture renderTexture, int index) {
+    if (index < 0 || index > 31) {
+      throw new RangeError.range(index, 0, 31, "index");
+    } else if (index == 0) {
+      activateRenderTexture(renderTexture);
+    } else if (!identical(renderTexture, _activeRenderTextures[index])) {
+      _activeRenderProgram.flush();
+      _activeRenderTextures[index] = renderTexture;
+      renderTexture.activate(this, gl.TEXTURE0 + index);
     }
   }
 
@@ -275,27 +442,17 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  int _getStencilDepth() {
-    return _activeRenderFrameBuffer != null
-        ? _activeRenderFrameBuffer._stencilDepth
-        : _stencilDepth;
-  }
-
   _updateStencilDepth(int stencilDepth) {
     if (_activeRenderFrameBuffer != null) {
-      if (_activeRenderFrameBuffer._stencilDepth != stencilDepth) {
-        _activeRenderFrameBuffer._stencilDepth = stencilDepth;
-        _updateStencilState(stencilDepth);
-      }
+      _activeRenderFrameBuffer._stencilDepth = stencilDepth;
+      _updateStencilTest(stencilDepth);
     } else {
-      if (_stencilDepth != stencilDepth) {
-        _stencilDepth = stencilDepth;
-        _updateStencilState(stencilDepth);
-      }
+      _stencilDepth = stencilDepth;
+      _updateStencilTest(stencilDepth);
     }
   }
 
-  _updateStencilState(int stencilDepth) {
+  _updateStencilTest(int stencilDepth) {
     if (stencilDepth == 0) {
       _renderingContext.disable(gl.STENCIL_TEST);
     } else {

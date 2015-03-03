@@ -464,7 +464,7 @@ class Stage extends DisplayObjectContainer {
     Point localPoint = new Point<num>(0.0, 0.0);
 
     if (button < 0 || button > 2) return;
-    if (event.type == "mousemove" && _mousePosition.equals(stagePoint)) return;
+    if (event.type == "mousemove" && _mousePosition == stagePoint) return;
 
     _MouseButton mouseButton = _mouseButtons[button];
     _mousePosition = stagePoint;

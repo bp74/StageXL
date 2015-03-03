@@ -33,7 +33,6 @@ abstract class BitmapFilterProgram extends RenderProgram {
     }
     """;
 
-  int _contextIdentifier = -1;
   gl.Buffer _vertexBuffer;
   gl.UniformLocation _uProjectionMatrixLocation;
   gl.UniformLocation _uSamplerLocation;
@@ -54,21 +53,16 @@ abstract class BitmapFilterProgram extends RenderProgram {
   @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (_contextIdentifier != renderContext.contextIdentifier) {
+    if (this.contextIdentifier != renderContext.contextIdentifier) {
 
       super.activate(renderContext);
 
-      _contextIdentifier = renderContext.contextIdentifier;
       _vertexBuffer = renderingContext.createBuffer();
       _aVertexPositionLocation = attributeLocations["aVertexPosition"];
       _aVertexTextCoordLocation = attributeLocations["aVertexTextCoord"];
       _aVertexAlphaLocation = attributeLocations["aVertexAlpha"];
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
       _uSamplerLocation = uniformLocations["uSampler"];
-
-      renderingContext.enableVertexAttribArray(_aVertexPositionLocation);
-      renderingContext.enableVertexAttribArray(_aVertexTextCoordLocation);
-      renderingContext.enableVertexAttribArray(_aVertexAlphaLocation);
 
       renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
       renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);

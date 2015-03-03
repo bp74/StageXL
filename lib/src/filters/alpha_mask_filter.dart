@@ -1,4 +1,11 @@
-part of stagexl.filters;
+library stagexl.filters.alpha_mask;
+
+import 'dart:html' show CanvasElement, CanvasRenderingContext2D;
+import 'dart:typed_data';
+
+import '../display.dart';
+import '../engine.dart';
+import '../geom.dart';
 
 class AlphaMaskFilter extends BitmapFilter {
 
@@ -43,27 +50,28 @@ class AlphaMaskFilter extends BitmapFilter {
     context.restore();
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    _AlphaMaskProgram alphaMaskProgram = _AlphaMaskProgram.instance;
 
-    renderContext.activateRenderProgram(alphaMaskProgram);
-    renderContext.activateRenderTexture(renderTexture);
-    bitmapData.renderTexture.activate(renderContext, gl.TEXTURE1);
-    alphaMaskProgram.configure(this, renderTextureQuad);
-    alphaMaskProgram.renderQuad(renderState, renderTextureQuad);
+    AlphaMaskFilterProgram renderProgram = renderContext.getRenderProgram(
+        r"$AlphaMaskFilterProgram", () => new AlphaMaskFilterProgram());
+
+    renderContext.activateRenderProgram(renderProgram);
+    renderContext.activateRenderTextureAt(renderTexture, 0);
+    renderContext.activateRenderTextureAt(bitmapData.renderTexture, 1);
+    renderProgram.configure(this, renderTextureQuad);
+    renderProgram.renderQuad(renderState, renderTextureQuad);
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class _AlphaMaskProgram extends BitmapFilterProgram {
-
-  static final _AlphaMaskProgram instance = new _AlphaMaskProgram();
+class AlphaMaskFilterProgram extends BitmapFilterProgram {
 
   String get fragmentShaderSource => """
       precision mediump float;
