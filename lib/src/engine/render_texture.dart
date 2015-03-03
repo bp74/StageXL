@@ -176,11 +176,9 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   void resize(int width, int height) {
-    if (_source is VideoElement) {
-      throw new StateError("Can't resize a video RenderTexture.");
-    } else if (_source == null) {
-      throw new StateError("Can't resize a frame buffer RenderTexture.");
-    } if (width != _width || height != _height) {
+    if (_source == null || _source is VideoElement) {
+      throw new StateError("RenderTexture is not resizeable.");
+    } else if (width != _width || height != _height) {
       _width = ensureInt(width);
       _height = ensureInt(height);
       _storeWidth = (_width * _storePixelRatio).round();
