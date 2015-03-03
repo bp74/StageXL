@@ -55,9 +55,9 @@ class RenderTexture {
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
   }
 
-  RenderTexture.fromCanvasElement(CanvasElement canvasElement, num imagePixelRatio) {
+  RenderTexture.fromCanvasElement(CanvasElement canvasElement, num canvasPixelRatio) {
 
-    _storePixelRatio = ensureNum(imagePixelRatio);
+    _storePixelRatio = ensureNum(canvasPixelRatio);
     _width = (ensureNum(canvasElement.width) / _storePixelRatio).floor();
     _height = (ensureNum(canvasElement.height) / _storePixelRatio).floor();
     _storeWidth = (_width * _storePixelRatio).round();
