@@ -233,13 +233,11 @@ class TextField extends InteractiveObject {
 
     _refreshTextLineMetrics();
 
-    var renderContext = renderState.renderContext;
-
-    if (_cacheAsBitmap || renderContext is! RenderContextCanvas) {
+    if (renderState.renderContext is RenderContextWebGL || _cacheAsBitmap ) {
       _refreshCache();
       renderState.renderQuad(_renderTexture.quad);
-    } else {
-      var renderContextCanvas = renderState.renderContext as RenderContextCanvas;
+    } else if (renderState.renderContext is RenderContextCanvas) {
+      RenderContextCanvas renderContextCanvas = renderState.renderContext;
       renderContextCanvas.setTransform(renderState.globalMatrix);
       renderContextCanvas.setAlpha(renderState.globalAlpha);
       _renderText(renderContextCanvas.rawContext);
@@ -260,6 +258,20 @@ class TextField extends InteractiveObject {
         renderState.renderTriangle(x1, y1, x3, y1, x3, y3, color);
         renderState.renderTriangle(x1, y1, x3, y3, x1, y3, color);
       }
+    }
+  }
+
+  @override
+  void renderFiltered(RenderState renderState) {
+
+    if (_type == TextFieldType.INPUT) {
+      super.renderFiltered(renderState);
+    } if (renderState.renderContext is RenderContextWebGL || _cacheAsBitmap) {
+      _refreshTextLineMetrics();
+      _refreshCache();
+      renderState.renderQuadFiltered(_renderTexture.quad, this.filters);
+    } else {
+      super.renderFiltered(renderState);
     }
   }
 
