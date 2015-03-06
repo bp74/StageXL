@@ -196,10 +196,13 @@ class RenderContextWebGL extends RenderContext {
     var filterRenderState = new RenderState(this);
     var filterProjectionMatrix = new Matrix3D.fromIdentity();
     var filterRenderFrameBuffer = this.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+    var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
 
     filterProjectionMatrix.translate(-boundsLeft, -boundsTop, 0.0);
     filterProjectionMatrix.scale(2.0 / boundsWidth, 2.0 / boundsHeight, 1.0);
     filterProjectionMatrix.translate(-1.0, -1.0, 0.0);
+
+    renderFrameBufferMap[0] = filterRenderFrameBuffer;
 
     //----------------------------------------------
 
@@ -220,15 +223,12 @@ class RenderContextWebGL extends RenderContext {
 
     //----------------------------------------------
 
-    var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
-    renderFrameBufferMap[0] = filterRenderFrameBuffer;
-
-    RenderTextureQuad sourceRenderTextureQuad = null;
-    RenderFrameBuffer sourceRenderFrameBuffer = null;
-
     for (int i = 0; i < filters.length; i++) {
 
+      RenderTextureQuad sourceRenderTextureQuad = null;
+      RenderFrameBuffer sourceRenderFrameBuffer = null;
       RenderFilter filter = filters[i];
+
       List<int> renderPassSources = filter.renderPassSources;
       List<int> renderPassTargets = filter.renderPassTargets;
 
