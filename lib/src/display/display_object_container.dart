@@ -10,7 +10,9 @@ part of stagexl.display;
 /// order that determines which object is drawn in front, which is behind, and
 /// so on.
 
-abstract class DisplayObjectContainer extends InteractiveObject {
+abstract class DisplayObjectContainer
+    extends InteractiveObject
+    implements DisplayObjectParent {
 
   final List<DisplayObject> _children = new List<DisplayObject>();
   bool _mouseChildren = true;

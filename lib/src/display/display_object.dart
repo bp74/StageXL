@@ -56,7 +56,7 @@ abstract class DisplayObject
   bool _cacheDebugBorder = false;
 
   String _name = "";
-  DisplayObjectContainer _parent = null;
+  DisplayObjectParent _parent = null;
 
   final Matrix _transformationMatrix = new Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
@@ -385,7 +385,7 @@ abstract class DisplayObject
   /// Use the parent property to specify a relative path to display objects that
   /// are above the current display object in the display list hierarchy.
 
-  DisplayObjectContainer get parent => _parent;
+  DisplayObjectParent get parent => _parent;
 
   //----------------------------------------------------------------------------
 
@@ -685,17 +685,17 @@ abstract class DisplayObject
 
   //----------------------------------------------------------------------------
 
-  /// Convenience method to add this display object to the specified [parent].
+  /// Add this display object to the specified [parent].
 
-  void addTo(DisplayObjectContainer parent) {
+  void addTo(DisplayObjectParent parent) {
     parent.addChild(this);
   }
 
   /// Removes this display object from its parent.
 
   void removeFromParent() {
-    if (_parent != null) {
-      _parent.removeChild(this);
+    if (this.parent != null) {
+      this.parent.removeChild(this);
     }
   }
 
