@@ -9,14 +9,14 @@ class _BitmapContainerProgram extends RenderProgram {
   // code dealing with the skew property completely. In the end we will get
   // very fast and also small code.
 
-  final BitmapContainerProperty bitmapBitmapData;
-  final BitmapContainerProperty bitmapPosition;
-  final BitmapContainerProperty bitmapPivot;
-  final BitmapContainerProperty bitmapScale;
-  final BitmapContainerProperty bitmapSkew;
-  final BitmapContainerProperty bitmapRotation;
-  final BitmapContainerProperty bitmapAlpha;
-  final BitmapContainerProperty bitmapVisible;
+  final BitmapProperty bitmapBitmapData;
+  final BitmapProperty bitmapPosition;
+  final BitmapProperty bitmapPivot;
+  final BitmapProperty bitmapScale;
+  final BitmapProperty bitmapSkew;
+  final BitmapProperty bitmapRotation;
+  final BitmapProperty bitmapAlpha;
+  final BitmapProperty bitmapVisible;
 
   int _strideDynamic = 0;
   int _strideStatic = 0;
@@ -214,31 +214,31 @@ class _BitmapContainerProgram extends RenderProgram {
 
   void _initVertexDynamic() {
 
-    if (bitmapBitmapData == BitmapContainerProperty.Dynamic) {
+    if (bitmapBitmapData == BitmapProperty.Dynamic) {
       _offsetBitmapData = _strideDynamic;
       _strideDynamic += 4;
     }
-    if (bitmapPosition == BitmapContainerProperty.Dynamic) {
+    if (bitmapPosition == BitmapProperty.Dynamic) {
       _offsetPosition = _strideDynamic;
       _strideDynamic += 2;
     }
-    if (bitmapPivot == BitmapContainerProperty.Dynamic) {
+    if (bitmapPivot == BitmapProperty.Dynamic) {
       _offsetPivot = _strideDynamic;
       _strideDynamic += 2;
     }
-    if (bitmapScale == BitmapContainerProperty.Dynamic) {
+    if (bitmapScale == BitmapProperty.Dynamic) {
       _offsetScale = _strideDynamic;
       _strideDynamic += 2;
     }
-    if (bitmapSkew == BitmapContainerProperty.Dynamic) {
+    if (bitmapSkew == BitmapProperty.Dynamic) {
       _offsetSkew = _strideDynamic;
       _strideDynamic += 2;
     }
-    if (bitmapRotation == BitmapContainerProperty.Dynamic) {
+    if (bitmapRotation == BitmapProperty.Dynamic) {
       _offsetRotation = _strideDynamic;
       _strideDynamic += 1;
     }
-    if (bitmapAlpha == BitmapContainerProperty.Dynamic) {
+    if (bitmapAlpha == BitmapProperty.Dynamic) {
       _offsetAlpha = _strideDynamic;
       _strideDynamic += 1;
     }
@@ -246,31 +246,31 @@ class _BitmapContainerProgram extends RenderProgram {
 
   void _initVertexStatic() {
 
-    if (bitmapBitmapData == BitmapContainerProperty.Static) {
+    if (bitmapBitmapData == BitmapProperty.Static) {
       _offsetBitmapData = _strideStatic;
       _strideStatic += 4;
     }
-    if (bitmapPosition == BitmapContainerProperty.Static) {
+    if (bitmapPosition == BitmapProperty.Static) {
       _offsetPosition = _strideStatic;
       _strideStatic += 2;
     }
-    if (bitmapPivot == BitmapContainerProperty.Static) {
+    if (bitmapPivot == BitmapProperty.Static) {
       _offsetPivot = _strideStatic;
       _strideStatic += 2;
     }
-    if (bitmapScale == BitmapContainerProperty.Static) {
+    if (bitmapScale == BitmapProperty.Static) {
       _offsetScale = _strideStatic;
       _strideStatic += 2;
     }
-    if (bitmapSkew == BitmapContainerProperty.Static) {
+    if (bitmapSkew == BitmapProperty.Static) {
       _offsetSkew = _strideStatic;
       _strideStatic += 2;
     }
-    if (bitmapRotation == BitmapContainerProperty.Static) {
+    if (bitmapRotation == BitmapProperty.Static) {
       _offsetRotation = _strideStatic;
       _strideStatic += 1;
     }
-    if (bitmapAlpha == BitmapContainerProperty.Static) {
+    if (bitmapAlpha == BitmapProperty.Static) {
       _offsetAlpha = _strideStatic;
       _strideStatic += 1;
     }
@@ -280,31 +280,31 @@ class _BitmapContainerProgram extends RenderProgram {
 
   void _setVertexAttribPointersDynamic() {
 
-    if (bitmapBitmapData == BitmapContainerProperty.Dynamic) {
+    if (bitmapBitmapData == BitmapProperty.Dynamic) {
       renderingContext.vertexAttribPointer(_locationBitmapData,
           4, gl.FLOAT, false, _strideDynamic * 4, _offsetBitmapData * 4);
     }
-    if (bitmapPosition == BitmapContainerProperty.Dynamic) {
+    if (bitmapPosition == BitmapProperty.Dynamic) {
       renderingContext.vertexAttribPointer(_locationPosition,
           2, gl.FLOAT, false, _strideDynamic * 4, _offsetPosition * 4);
     }
-    if (bitmapPivot == BitmapContainerProperty.Dynamic) {
+    if (bitmapPivot == BitmapProperty.Dynamic) {
       renderingContext.vertexAttribPointer(_locationPivot,
           2, gl.FLOAT, false, _strideDynamic * 4, _offsetPivot * 4);
     }
-    if (bitmapScale == BitmapContainerProperty.Dynamic) {
+    if (bitmapScale == BitmapProperty.Dynamic) {
       renderingContext.vertexAttribPointer(_locationScale,
           2, gl.FLOAT, false, _strideDynamic * 4, _offsetScale * 4);
     }
-    if (bitmapSkew == BitmapContainerProperty.Dynamic) {
+    if (bitmapSkew == BitmapProperty.Dynamic) {
       renderingContext.vertexAttribPointer(_locationSkew,
           2, gl.FLOAT, false, _strideDynamic * 4, _offsetSkew * 4);
     }
-    if (bitmapRotation == BitmapContainerProperty.Dynamic) {
+    if (bitmapRotation == BitmapProperty.Dynamic) {
       renderingContext.vertexAttribPointer(_locationRotation,
           1, gl.FLOAT, false, _strideDynamic * 4, _offsetRotation * 4);
     }
-    if (bitmapAlpha == BitmapContainerProperty.Dynamic) {
+    if (bitmapAlpha == BitmapProperty.Dynamic) {
       renderingContext.vertexAttribPointer(_locationAlpha,
           1, gl.FLOAT, false, _strideDynamic * 4, _offsetAlpha * 4);
     }
@@ -312,31 +312,31 @@ class _BitmapContainerProgram extends RenderProgram {
 
   void _setVertexAttribPointersStatic() {
 
-    if (bitmapBitmapData == BitmapContainerProperty.Static) {
+    if (bitmapBitmapData == BitmapProperty.Static) {
       renderingContext.vertexAttribPointer(_locationBitmapData,
           4, gl.FLOAT, false, _strideStatic * 4, _offsetBitmapData * 4);
     }
-    if (bitmapPosition == BitmapContainerProperty.Static) {
+    if (bitmapPosition == BitmapProperty.Static) {
       renderingContext.vertexAttribPointer(_locationPosition,
           2, gl.FLOAT, false, _strideStatic * 4, _offsetPosition * 4);
     }
-    if (bitmapPivot == BitmapContainerProperty.Static) {
+    if (bitmapPivot == BitmapProperty.Static) {
       renderingContext.vertexAttribPointer(_locationPivot,
           2, gl.FLOAT, false, _strideStatic * 4, _offsetPivot * 4);
     }
-    if (bitmapScale == BitmapContainerProperty.Static) {
+    if (bitmapScale == BitmapProperty.Static) {
       renderingContext.vertexAttribPointer(_locationScale,
           2, gl.FLOAT, false, _strideStatic * 4, _offsetScale * 4);
     }
-    if (bitmapSkew == BitmapContainerProperty.Static) {
+    if (bitmapSkew == BitmapProperty.Static) {
       renderingContext.vertexAttribPointer(_locationSkew,
           2, gl.FLOAT, false, _strideStatic * 4, _offsetSkew * 4);
     }
-    if (bitmapRotation == BitmapContainerProperty.Static) {
+    if (bitmapRotation == BitmapProperty.Static) {
       renderingContext.vertexAttribPointer(_locationRotation,
           1, gl.FLOAT, false, _strideStatic * 4, _offsetRotation * 4);
     }
-    if (bitmapAlpha == BitmapContainerProperty.Static) {
+    if (bitmapAlpha == BitmapProperty.Static) {
       renderingContext.vertexAttribPointer(_locationAlpha,
           1, gl.FLOAT, false, _strideStatic * 4, _offsetAlpha * 4);
     }
@@ -358,7 +358,7 @@ class _BitmapContainerProgram extends RenderProgram {
       var bitmap = bitmaps[start + i];
       var offset = i * vertex4;
 
-      if (bitmapBitmapData == BitmapContainerProperty.Dynamic) {
+      if (bitmapBitmapData == BitmapProperty.Dynamic) {
         var renderTextureQuad = bitmap.bitmapData.renderTextureQuad;
         var quadX = renderTextureQuad.offsetX.toDouble();
         var quadY = renderTextureQuad.offsetY.toDouble();
@@ -384,7 +384,7 @@ class _BitmapContainerProgram extends RenderProgram {
         offset += 4;
       }
 
-      if (bitmapPosition == BitmapContainerProperty.Dynamic) {
+      if (bitmapPosition == BitmapProperty.Dynamic) {
         var x = bitmap.x.toDouble();
         var y = bitmap.y.toDouble();
         vxList[offset + vertex0 + 0] = x;
@@ -398,7 +398,7 @@ class _BitmapContainerProgram extends RenderProgram {
         offset += 2;
       }
 
-      if (bitmapPivot == BitmapContainerProperty.Dynamic) {
+      if (bitmapPivot == BitmapProperty.Dynamic) {
         var pivotX = bitmap.pivotX.toDouble();
         var pivotY = bitmap.pivotY.toDouble();
         vxList[offset + vertex0 + 0] = pivotX;
@@ -412,7 +412,7 @@ class _BitmapContainerProgram extends RenderProgram {
         offset += 2;
       }
 
-      if (bitmapScale == BitmapContainerProperty.Dynamic) {
+      if (bitmapScale == BitmapProperty.Dynamic) {
         var scaleX = bitmap.scaleX.toDouble();
         var scaleY = bitmap.scaleY.toDouble();
         vxList[offset + vertex0 + 0] = scaleX;
@@ -426,7 +426,7 @@ class _BitmapContainerProgram extends RenderProgram {
         offset += 2;
       }
 
-      if (bitmapSkew == BitmapContainerProperty.Dynamic) {
+      if (bitmapSkew == BitmapProperty.Dynamic) {
         var skewX = bitmap.skewX.toDouble();
         var skewY = bitmap.skewY.toDouble();
         vxList[offset + vertex0 + 0] = skewX;
@@ -440,7 +440,7 @@ class _BitmapContainerProgram extends RenderProgram {
         offset += 2;
       }
 
-      if (bitmapRotation == BitmapContainerProperty.Dynamic) {
+      if (bitmapRotation == BitmapProperty.Dynamic) {
         var rotation = bitmap.rotation.toDouble();
         vxList[offset + vertex0 + 0] = rotation;
         vxList[offset + vertex1 + 0] = rotation;
@@ -449,7 +449,7 @@ class _BitmapContainerProgram extends RenderProgram {
         offset += 1;
       }
 
-      if (bitmapAlpha == BitmapContainerProperty.Dynamic) {
+      if (bitmapAlpha == BitmapProperty.Dynamic) {
         var alpha = bitmap.alpha.toDouble();
         vxList[offset + vertex0 + 0] = alpha;
         vxList[offset + vertex1 + 0] = alpha;

@@ -3,14 +3,18 @@ part of stagexl.display;
 /// This enum defines how the properties (position, rotation, ...) of
 /// the Bitmaps in the [BitmapContainer] will affect the rendering.
 
-enum BitmapContainerProperty {
-  /// The property is dynamic and therefore updated in every new frame.
-  /// This is the behavior you also get with normal DisplayObjects.
+enum BitmapProperty {
+  /// The bitmap property is dynamic and therefore the it is uploaded
+  /// to the GPU on every frame. This is the standard behavior you get
+  /// from standard DisplayObjects other than the BitmapContainer.
   Dynamic,
-  /// The property is static and therefore recorded when the Bitmap is
-  /// added to the container. Later changes do not affect the rendering.
+  /// The bitmap property is static and therefore the it is only
+  /// uploaded to the GPU once. Changes to the value of the property
+  /// will not affect the rendering.
   Static,
-  /// The property is ignored and does not affect the rendering at all.
+  /// The bitmap property is ignored and does not affect the rendering
+  /// at all. Setting properties to this state will save memory as well
+  /// as time when uploading the memory to the GPU.
   Ignore
 }
 
@@ -18,10 +22,10 @@ enum BitmapContainerProperty {
 ///
 /// You can only add Bitmaps and you have to decide which properties of the
 /// Bitmap should be used for the rendering. If a property is not used you
-/// should set it to [BitmapContainerProperty.Ignore]. If a property isn't
-/// changed after the Bitmap was added to the container you should set it to
-/// [BitmapContainerProperty.Static]. Only properties that change regularly
-/// (like the position) should be set to [BitmapContainerProperty.Dynamic].
+/// should set it to [BitmapProperty.Ignore]. If a property isn't changed
+/// after the Bitmap was added to the container you should set it to
+/// [BitmapProperty.Static]. Only properties that change regularly
+/// (like the position) should be set to [BitmapProperty.Dynamic].
 ///
 /// You can define the behavior of properties shown below. For best possible
 /// performance the [Bitmap.filters] property is not supported.
@@ -35,7 +39,7 @@ enum BitmapContainerProperty {
 /// [BitmapContainer.bitmapAlpha]: Default is Ignore
 /// [BitmapContainer.bitmapVisible]: Default is Ignore
 ///
-/// Please note that the performance of the [BitmapContainer] my be inferior
+/// Please note that the performance of the [BitmapContainer] may be inferior
 /// compared to a standard container like [Sprite]. You will only get better
 /// performance if the [BitmapContainer] contains lots of children where
 /// several properties are set to ignore or static. Please profile!
@@ -44,14 +48,14 @@ class BitmapContainer
     extends InteractiveObject with IterableMixin<Bitmap>
     implements DisplayObjectParent {
 
-  final BitmapContainerProperty bitmapBitmapData;
-  final BitmapContainerProperty bitmapPosition;
-  final BitmapContainerProperty bitmapPivot;
-  final BitmapContainerProperty bitmapScale;
-  final BitmapContainerProperty bitmapSkew;
-  final BitmapContainerProperty bitmapRotation;
-  final BitmapContainerProperty bitmapAlpha;
-  final BitmapContainerProperty bitmapVisible;
+  final BitmapProperty bitmapBitmapData;
+  final BitmapProperty bitmapPosition;
+  final BitmapProperty bitmapPivot;
+  final BitmapProperty bitmapScale;
+  final BitmapProperty bitmapSkew;
+  final BitmapProperty bitmapRotation;
+  final BitmapProperty bitmapAlpha;
+  final BitmapProperty bitmapVisible;
 
   final _buffers = new List<_BitmapContainerBuffer>();
   final _children = new List<Bitmap>();
@@ -61,25 +65,35 @@ class BitmapContainer
   //---------------------------------------------------------------------------
 
   BitmapContainer({
-    this.bitmapBitmapData: BitmapContainerProperty.Dynamic,
-    this.bitmapPosition: BitmapContainerProperty.Dynamic,
-    this.bitmapPivot: BitmapContainerProperty.Dynamic,
-    this.bitmapScale: BitmapContainerProperty.Dynamic,
-    this.bitmapSkew: BitmapContainerProperty.Dynamic,
-    this.bitmapRotation: BitmapContainerProperty.Dynamic,
-    this.bitmapAlpha: BitmapContainerProperty.Dynamic,
-    this.bitmapVisible: BitmapContainerProperty.Dynamic }) {
+    this.bitmapBitmapData: BitmapProperty.Dynamic,
+    this.bitmapPosition: BitmapProperty.Dynamic,
+    this.bitmapPivot: BitmapProperty.Dynamic,
+    this.bitmapScale: BitmapProperty.Dynamic,
+    this.bitmapSkew: BitmapProperty.Dynamic,
+    this.bitmapRotation: BitmapProperty.Dynamic,
+    this.bitmapAlpha: BitmapProperty.Dynamic,
+    this.bitmapVisible: BitmapProperty.Dynamic }) {
 
-    if (this.bitmapBitmapData == BitmapContainerProperty.Ignore) {
+    if (this.bitmapBitmapData == BitmapProperty.Ignore) {
       throw new ArgumentError("The bitmapData property can't be ignored.");
     }
 
-    if (this.bitmapPosition == BitmapContainerProperty.Ignore) {
+    if (this.bitmapPosition == BitmapProperty.Ignore) {
       throw new ArgumentError("The position properties can't be ignored.");
     }
 
-    _bitmapContainerProgramName = _getBitmapContainerProgramName();
+    _bitmapContainerProgramName = r"$BitmapContainerProgram(" +
+        this.bitmapBitmapData.toString() + "," +
+        this.bitmapPosition.toString() + "," +
+        this.bitmapPivot.toString() + "," +
+        this.bitmapScale.toString() + "," +
+        this.bitmapSkew.toString() + ")" +
+        this.bitmapRotation.toString() + "," +
+        this.bitmapAlpha.toString() + "," +
+        this.bitmapVisible.toString() + ",";
   }
+
+  //---------------------------------------------------------------------------
 
   void dispose() {
     while(_buffers.length > 0) {
@@ -215,18 +229,5 @@ class BitmapContainer
     }
   }
 
-  //---------------------------------------------------------------------------
-
-  String _getBitmapContainerProgramName() {
-    return r"$BitmapContainerProgram(" +
-      this.bitmapBitmapData.toString() + "," +
-      this.bitmapPosition.toString() + "," +
-      this.bitmapPivot.toString() + "," +
-      this.bitmapScale.toString() + "," +
-      this.bitmapSkew.toString() + ")" +
-      this.bitmapRotation.toString() + "," +
-      this.bitmapAlpha.toString() + "," +
-      this.bitmapVisible.toString() + ",";
-  }
 
 }
