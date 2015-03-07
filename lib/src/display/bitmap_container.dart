@@ -40,7 +40,9 @@ enum BitmapContainerProperty {
 /// performance if the [BitmapContainer] contains lots of children where
 /// several properties are set to ignore or static. Please profile!
 
-class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
+class BitmapContainer
+    extends InteractiveObject with IterableMixin<Bitmap>
+    implements DisplayObjectParent {
 
   final BitmapContainerProperty bitmapBitmapData;
   final BitmapContainerProperty bitmapPosition;
@@ -51,8 +53,8 @@ class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
   final BitmapContainerProperty bitmapAlpha;
   final BitmapContainerProperty bitmapVisible;
 
-  final List<_BitmapContainerBuffer> _buffers = new List<_BitmapContainerBuffer>();
-  final List<Bitmap> _children = new List<Bitmap>();
+  final _buffers = new List<_BitmapContainerBuffer>();
+  final _children = new List<Bitmap>();
 
   String _bitmapContainerProgramName = "";
 
@@ -66,8 +68,7 @@ class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
     this.bitmapSkew: BitmapContainerProperty.Dynamic,
     this.bitmapRotation: BitmapContainerProperty.Dynamic,
     this.bitmapAlpha: BitmapContainerProperty.Dynamic,
-    this.bitmapVisible: BitmapContainerProperty.Dynamic
-  }) {
+    this.bitmapVisible: BitmapContainerProperty.Dynamic }) {
 
     if (this.bitmapBitmapData == BitmapContainerProperty.Ignore) {
       throw new ArgumentError("The bitmapData property can't be ignored.");
@@ -87,6 +88,8 @@ class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
   }
 
   //---------------------------------------------------------------------------
+
+  Iterator<Bitmap> get iterator => _children.iterator;
 
   int get numChildren => _children.length;
 
@@ -110,7 +113,7 @@ class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
   void removeChild(Bitmap child) {
     int childIndex = _children.indexOf(child);
     if (childIndex == -1) {
-      throw new ArgumentError("The supplied DisplayObject must be a child of the caller.");
+      throw new ArgumentError("The Bitmap is not a child of this container.");
     } else {
       removeChildAt(childIndex);
     }
@@ -175,7 +178,7 @@ class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void _renderWebGL(RenderState renderState) {
 
@@ -192,7 +195,7 @@ class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
     renderProgram.renderBitmapContainer(renderState, this);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void _renderCanvas(RenderState renderState) {
 
@@ -212,7 +215,7 @@ class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   String _getBitmapContainerProgramName() {
     return r"$BitmapContainerProgram(" +

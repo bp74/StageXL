@@ -15,6 +15,7 @@ library stagexl.display;
 
 import 'dart:js';
 import 'dart:async';
+import 'dart:collection';
 import 'dart:web_gl' as gl;
 import 'dart:math' as math;
 import 'dart:html' as html;
