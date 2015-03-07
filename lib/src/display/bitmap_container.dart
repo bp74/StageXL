@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of stagexl.display;
 
 /// This enum defines how the properties (position, rotation, ...) of
 /// the Bitmaps in the [BitmapContainer] will affect the rendering.
@@ -34,13 +34,13 @@ enum BitmapContainerProperty {
 /// [BitmapContainer.bitmapRotation]: Default is Ignore
 /// [BitmapContainer.bitmapAlpha]: Default is Ignore
 /// [BitmapContainer.bitmapVisible]: Default is Ignore
-
+///
 /// Please note that the performance of the [BitmapContainer] my be inferior
 /// compared to a standard container like [Sprite]. You will only get better
 /// performance if the [BitmapContainer] contains lots of children where
 /// several properties are set to ignore or static. Please profile!
 
-class BitmapContainer extends DisplayObjectContainer {
+class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
 
   final BitmapContainerProperty bitmapBitmapData;
   final BitmapContainerProperty bitmapPosition;
@@ -52,6 +52,7 @@ class BitmapContainer extends DisplayObjectContainer {
   final BitmapContainerProperty bitmapVisible;
 
   final List<_BitmapContainerBuffer> _buffers = new List<_BitmapContainerBuffer>();
+  final List<Bitmap> _children = new List<Bitmap>();
 
   String _bitmapContainerProgramName = "";
 
@@ -87,17 +88,61 @@ class BitmapContainer extends DisplayObjectContainer {
 
   //---------------------------------------------------------------------------
 
-  @override
-  void addChildAt(DisplayObject child, int index) {
-    if (child is! Bitmap) {
-      throw new ArgumentError("BitmapContainer only supports Bitmap children.");
+  int get numChildren => _children.length;
+
+  void addChild(Bitmap child) {
+    addChildAt(child, _children.length);
+  }
+
+  void addChildAt(Bitmap child, int index) {
+    if (index < 0 || index > _children.length) {
+      throw new RangeError.index(index, _children, "index");
+    } else if (child.parent == this) {
+      _children.remove(child);
+      _children.insert(minInt(index, _children.length), child);
     } else {
-      super.addChildAt(child, index);
+       child.removeFromParent();
+       _children.insert(index, child);
+       child._parent = this;
     }
   }
 
-  // TODO: override other methods that adds or sets children.
-  // Only Bitmaps are allowed.
+  void removeChild(Bitmap child) {
+    int childIndex = _children.indexOf(child);
+    if (childIndex == -1) {
+      throw new ArgumentError("The supplied DisplayObject must be a child of the caller.");
+    } else {
+      removeChildAt(childIndex);
+    }
+  }
+
+  void removeChildAt(int index) {
+    if (index < 0 || index >= _children.length) {
+      throw new RangeError.index(index, _children, "index");
+    } else {
+      _children.removeAt(index)._parent = null;
+    }
+  }
+
+  Bitmap getChildAt(int index) {
+    if (index < 0 || index > _children.length) {
+      throw new RangeError.index(index, _children, "index");
+    } else {
+      return _children[index];
+    }
+  }
+
+  Bitmap getChildByName(String name) {
+    for(int i = 0; i < _children.length; i++) {
+      var child = _children[i];
+      if (child.name == name) return child;
+    }
+    return null;
+  }
+
+  int getChildIndex(Bitmap child) {
+    return _children.indexOf(child);
+  }
 
   //---------------------------------------------------------------------------
 

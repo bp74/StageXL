@@ -17,9 +17,6 @@ import 'media.dart' show Video;
 import 'internal/tools.dart';
 import 'ui/color.dart';
 
-part 'display_ex/bitmap_container.dart';
-part 'display_ex/bitmap_container_buffer.dart';
-part 'display_ex/bitmap_container_program.dart';
 part 'display_ex/canvas_shadow_wrapper.dart';
 part 'display_ex/flip_book.dart';
 part 'display_ex/gauge.dart';

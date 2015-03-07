@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of stagexl.display;
 
 class _BitmapContainerProgram extends RenderProgram {
 
@@ -187,19 +187,12 @@ class _BitmapContainerProgram extends RenderProgram {
     renderingContext.uniformMatrix3fv(_uGlobalMatrix, false, uGlobalMatrix);
     renderingContext.uniform1f(_uGlobalAlpha, globalAlpha);
 
-    // TODO: Use list from container, this is just a quick hack.
-
-    List<Bitmap> bitmaps = new List<Bitmap>();
-
-    for (int i = 0; i < container.numChildren; i++) {
-      bitmaps.add(container.getChildAt(i));
-    }
-
     // TODO: Use the right size for the batch.
     // TODO: Use the static buffers.
     // TODO: Bind the right texture.
 
-    int batchSize = 50;
+    var batchSize = 50;
+    var bitmaps = container._children;
 
     for (int i = 0; i < bitmaps.length; i += batchSize) {
 

@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of stagexl.display;
 
 class _BitmapContainerBuffer {
 
