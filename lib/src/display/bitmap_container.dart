@@ -4,17 +4,17 @@ part of stagexl.display;
 /// the Bitmaps in the [BitmapContainer] will affect the rendering.
 
 enum BitmapProperty {
-  /// The bitmap property is dynamic and therefore the it is uploaded
-  /// to the GPU on every frame. This is the standard behavior you get
-  /// from standard DisplayObjects other than the BitmapContainer.
+  /// The bitmap property is dynamic and therefore it is uploaded to the
+  /// GPU on every frame. This is the standard behavior you get from
+  /// standard DisplayObjects other than the BitmapContainer.
   Dynamic,
-  /// The bitmap property is static and therefore the it is only
-  /// uploaded to the GPU once. Changes to the value of the property
-  /// will not affect the rendering.
+  /// The bitmap property is static and therefore it is only uploaded to
+  /// the GPU once. Changes to the value of the property will not affect
+  /// the rendering.
   Static,
   /// The bitmap property is ignored and does not affect the rendering
-  /// at all. Setting properties to this state will save memory as well
-  /// as time when uploading the memory to the GPU.
+  /// at all. Setting a bitmap property to this state will save memory
+  /// and time when uploading the other properties to the GPU.
   Ignore
 }
 
