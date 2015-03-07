@@ -125,7 +125,7 @@ class BitmapContainer extends InteractiveObject implements DisplayObjectParent {
   }
 
   Bitmap getChildAt(int index) {
-    if (index < 0 || index > _children.length) {
+    if (index < 0 || index >= _children.length) {
       throw new RangeError.index(index, _children, "index");
     } else {
       return _children[index];
