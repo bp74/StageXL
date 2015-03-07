@@ -1,34 +1,124 @@
 part of stagexl.display_ex;
 
-/// WARNING: This class is experimental! The implementation and behaviour may
-/// change in the future. Therefore it's recommended to use the [Sprite]
-/// class instead.
-///
+/// This enum defines how the properties (position, rotation, ...) of
+/// the Bitmaps in the [BitmapContainer] will affect the rendering.
+
+enum BitmapContainerProperty {
+  /// The property is dynamic and therefore updated in every new frame.
+  /// This is the behavior you also get with normal DisplayObjects.
+  Dynamic,
+  /// The property is static and therefore recorded when the Bitmap is
+  /// added to the container. Later changes do not affect the rendering.
+  Static,
+  /// The property is ignored and does not affect the rendering at all.
+  Ignore
+}
+
 /// The BitmapContainer class is an optimized container for Bitmaps.
 ///
-/// Please note that only the Bitmap properties x, y, pivotX, pivotY,
-/// scaleX, scaleY, skewX, skewY, rotate and alpha are supported.
-/// The mask and filters property are ignored.
+/// You can only add Bitmaps and you have to decide which properties of the
+/// Bitmap should be used for the rendering. If a property is not used you
+/// should set it to [BitmapContainerProperty.Ignore]. If a property isn't
+/// changed after the Bitmap was added to the container you should set it to
+/// [BitmapContainerProperty.Static]. Only properties that change regularly
+/// (like the position) should be set to [BitmapContainerProperty.Dynamic].
 ///
-/// A specialized WebGL render program takes over all matrix calculations
-/// to improve the performance and reduce garbage collection. Another
-/// specialized render path improves performance even for the standard
-/// Canvas renderer.
+/// You can define the behavior of properties shown below. For best possible
+/// performance the [Bitmap.filters] property is not supported.
+///
+/// [BitmapContainer.bitmapBitmapData]: Default is Static
+/// [BitmapContainer.bitmapPosition]: Default is Dynamic
+/// [BitmapContainer.bitmapPivot]: Default is Ignore
+/// [BitmapContainer.bitmapScale]: Default is Ignore
+/// [BitmapContainer.bitmapSkew]: Default is Ignore
+/// [BitmapContainer.bitmapRotation]: Default is Ignore
+/// [BitmapContainer.bitmapAlpha]: Default is Ignore
+/// [BitmapContainer.bitmapVisible]: Default is Ignore
+
+/// Please note that the performance of the [BitmapContainer] my be inferior
+/// compared to a standard container like [Sprite]. You will only get better
+/// performance if the [BitmapContainer] contains lots of children where
+/// several properties are set to ignore or static. Please profile!
 
 class BitmapContainer extends DisplayObjectContainer {
 
+  final BitmapContainerProperty bitmapBitmapData;
+  final BitmapContainerProperty bitmapPosition;
+  final BitmapContainerProperty bitmapPivot;
+  final BitmapContainerProperty bitmapScale;
+  final BitmapContainerProperty bitmapSkew;
+  final BitmapContainerProperty bitmapRotation;
+  final BitmapContainerProperty bitmapAlpha;
+  final BitmapContainerProperty bitmapVisible;
+
+  final List<_BitmapContainerBuffer> _buffers = new List<_BitmapContainerBuffer>();
+
+  String _bitmapContainerProgramName = "";
+
+  //---------------------------------------------------------------------------
+
+  BitmapContainer({
+    this.bitmapBitmapData: BitmapContainerProperty.Dynamic,
+    this.bitmapPosition: BitmapContainerProperty.Dynamic,
+    this.bitmapPivot: BitmapContainerProperty.Dynamic,
+    this.bitmapScale: BitmapContainerProperty.Dynamic,
+    this.bitmapSkew: BitmapContainerProperty.Dynamic,
+    this.bitmapRotation: BitmapContainerProperty.Dynamic,
+    this.bitmapAlpha: BitmapContainerProperty.Dynamic,
+    this.bitmapVisible: BitmapContainerProperty.Dynamic
+  }) {
+
+    if (this.bitmapBitmapData == BitmapContainerProperty.Ignore) {
+      throw new ArgumentError("The bitmapData property can't be ignored.");
+    }
+
+    if (this.bitmapPosition == BitmapContainerProperty.Ignore) {
+      throw new ArgumentError("The position properties can't be ignored.");
+    }
+
+    _bitmapContainerProgramName = _getBitmapContainerProgramName();
+  }
+
+  void dispose() {
+    while(_buffers.length > 0) {
+      _buffers.removeAt(0).dispose();
+    }
+  }
+
+  //---------------------------------------------------------------------------
+
+  @override
   void addChildAt(DisplayObject child, int index) {
     if (child is! Bitmap) {
-      throw new ArgumentError("BitmapBatch only supports Bitmap children.");
+      throw new ArgumentError("BitmapContainer only supports Bitmap children.");
     } else {
       super.addChildAt(child, index);
     }
   }
 
+  // TODO: override other methods that adds or sets children.
+  // Only Bitmaps are allowed.
+
+  //---------------------------------------------------------------------------
+
+  /// A rectangle that defines the area of this display object in this display
+  /// object's local coordinates.
+  ///
+  /// The [BitmapContainer] does not calculate the bounds based on its
+  /// children, instead a setter is used to define the bounds manually.
+
+  @override
+  Rectangle<num> bounds = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
+
+  /// The hitTestInput is calculated based on the [bounds] rectangle
+  /// which is set manually and not calculated dynamically.
+
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
-    return null;
+    return bounds.contains(localX, localY) ? this : null;
   }
 
+  @override
   void render(RenderState renderState) {
     var renderContext = renderState.renderContext;
     if (renderContext is RenderContextWebGL) {
@@ -44,24 +134,17 @@ class BitmapContainer extends DisplayObjectContainer {
 
   void _renderWebGL(RenderState renderState) {
 
-    var globalMatrix = renderState.globalMatrix;
-    var globalAlpha = renderState.globalAlpha;
-    var renderContext = renderState.renderContext;
-    var renderContextWebGL = renderContext as RenderContextWebGL;
-    var renderProgram = _BitmapContainerProgram.instance;
+    RenderContextWebGL renderContext = renderState.renderContext;
 
-    renderContextWebGL.activateRenderProgram(renderProgram);
-    renderProgram.flush();
-    renderProgram.reset(globalMatrix, globalAlpha);
+    _BitmapContainerProgram renderProgram = renderContext.getRenderProgram(
+        _bitmapContainerProgramName,() => new _BitmapContainerProgram(
+            this.bitmapBitmapData, this.bitmapPosition, this.bitmapRotation,
+            this.bitmapVisible, this.bitmapPivot, this.bitmapScale,
+            this.bitmapAlpha, this.bitmapSkew));
 
-    for (int i = 0; i < numChildren; i++) {
-      Bitmap bitmap = getChildAt(i);
-      BitmapData bitmapData = bitmap.bitmapData;
-      if (bitmap.visible && bitmap.off == false && bitmapData != null) {
-        renderContextWebGL.activateRenderTexture(bitmapData.renderTexture);
-        renderProgram.renderBitmap(bitmap);
-      }
-    }
+    renderContext.activateRenderProgram(renderProgram);
+    renderContext.activateBlendMode(renderState.globalBlendMode);
+    renderProgram.renderBitmapContainer(renderState, this);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -74,7 +157,7 @@ class BitmapContainer extends DisplayObjectContainer {
     renderContextCanvas.setTransform(renderState.globalMatrix);
     renderContextCanvas.setAlpha(renderState.globalAlpha);
 
-    // TODO: implement optimized BitmapBatch render code for canvas.
+    // TODO: implement optimized BitmapContainer code for canvas.
 
     for (int i = 0; i < numChildren; i++) {
       Bitmap bitmap = getChildAt(i);
@@ -83,4 +166,19 @@ class BitmapContainer extends DisplayObjectContainer {
       }
     }
   }
+
+  //-----------------------------------------------------------------------------------------------
+
+  String _getBitmapContainerProgramName() {
+    return r"$BitmapContainerProgram(" +
+      this.bitmapBitmapData.toString() + "," +
+      this.bitmapPosition.toString() + "," +
+      this.bitmapPivot.toString() + "," +
+      this.bitmapScale.toString() + "," +
+      this.bitmapSkew.toString() + ")" +
+      this.bitmapRotation.toString() + "," +
+      this.bitmapAlpha.toString() + "," +
+      this.bitmapVisible.toString() + ",";
+  }
+
 }

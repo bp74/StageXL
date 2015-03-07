@@ -2,93 +2,129 @@ part of stagexl.display_ex;
 
 class _BitmapContainerProgram extends RenderProgram {
 
+  // Note to the interested reader: The code of this class looks very bloated :)
+  // We don't write the code in a more generic way because we want the compiler
+  // to optimize the code for us. For example if every BitmapContainer in the
+  // application will ignore the skew property the compiler will remove the
+  // code dealing with the skew property completely. In the end we will get
+  // very fast and also small code.
+
+  final BitmapContainerProperty bitmapBitmapData;
+  final BitmapContainerProperty bitmapPosition;
+  final BitmapContainerProperty bitmapPivot;
+  final BitmapContainerProperty bitmapScale;
+  final BitmapContainerProperty bitmapSkew;
+  final BitmapContainerProperty bitmapRotation;
+  final BitmapContainerProperty bitmapAlpha;
+  final BitmapContainerProperty bitmapVisible;
+
+  int _strideDynamic = 0;
+  int _strideStatic = 0;
+
+  int _offsetBitmapData = 0;
+  int _offsetPosition = 0;
+  int _offsetRotation = 0;
+  int _offsetPivot = 0;
+  int _offsetScale = 0;
+  int _offsetAlpha = 0;
+  int _offsetSkew = 0;
+
+  int _locationBitmapData = 0;
+  int _locationPosition = 0;
+  int _locationRotation = 0;
+  int _locationPivot = 0;
+  int _locationScale = 0;
+  int _locationAlpha = 0;
+  int _locationSkew = 0;
+
+  _BitmapContainerProgram(
+      this.bitmapBitmapData, this.bitmapPosition,
+      this.bitmapPivot, this.bitmapScale, this.bitmapSkew,
+      this.bitmapRotation, this.bitmapAlpha, this.bitmapVisible) {
+
+    _initVertexDynamic();
+    _initVertexStatic();
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
   String get vertexShaderSource => """
-    attribute vec2 aPosition;
-    attribute vec2 aOffset;
-    attribute vec2 aScale;
-    attribute vec2 aSkew;
-    attribute vec2 aTextCoord;
-    attribute float aAlpha;
+
     uniform mat4 uProjectionMatrix;
     uniform mat3 uGlobalMatrix;
     uniform float uGlobalAlpha;
-    varying vec2 vTextCoord;
+
+    attribute vec4 aBitmapData;
+    attribute vec2 aPosition;
+    attribute vec2 aPivot;
+    attribute vec2 aScale;
+    attribute vec2 aSkew;
+    attribute float aRotation;
+    attribute float aAlpha;
+
+    varying vec2 vCoord;
     varying float vAlpha;
 
     void main() {
-      float skewX = aSkew[0];
-      float skewY = aSkew[1];
-      vec2 offsetScaled = aOffset * aScale;
-      vec2 offsetSkewed = vec2(
-           offsetScaled.x * cos(skewY) - offsetScaled.y * sin(skewX), 
-           offsetScaled.x * sin(skewY) + offsetScaled.y * cos(skewX));
 
-      vec3 position = vec3(aPosition + offsetSkewed, 1.0);
-      gl_Position = vec4(position.xy, 0.0, 1.0) * mat4(uGlobalMatrix) * uProjectionMatrix;
-      vTextCoord = aTextCoord;
+      mat4 transform = mat4(uGlobalMatrix) * uProjectionMatrix;
+      vec2 skew = aSkew + aRotation;
+      vec2 offset = aBitmapData.xy - aPivot; 
+      vec2 offsetScaled = offset * aScale;
+      vec2 offsetSkewed = vec2(
+           offsetScaled.x * cos(skew.y) - offsetScaled.y * sin(skew.x), 
+           offsetScaled.x * sin(skew.y) + offsetScaled.y * cos(skew.x));
+
+      gl_Position = vec4(aPosition + offsetSkewed, 0.0, 1.0) * transform;
+      vCoord  = aBitmapData.pq;  
       vAlpha = aAlpha * uGlobalAlpha;
     }
     """;
 
   String get fragmentShaderSource => """
+
     precision mediump float;
     uniform sampler2D uSampler;
-    varying vec2 vTextCoord;
+
+    varying vec2 vCoord;
     varying float vAlpha;
 
     void main() {
-       gl_FragColor = texture2D(uSampler, vTextCoord) * vAlpha;
+      gl_FragColor = texture2D(uSampler, vCoord) * vAlpha;
     }
     """;
 
   //---------------------------------------------------------------------------
-  // aPosition  : Float32(x), Float32(y)
-  // aOffset    : Float32(x), Float32(y)
-  // aScale     : Float32(x), Float32(y)
-  // aSkew      : Float32(x), Float32(y)
-  // aTextCoord : Float32(u), Float32(v)
-  // aAlpha     : Float32(alpha)
+  // aBitmapData : Float32(x), Float32(y), Float32(u), Float32(v),
+  // aPosition   : Float32(x), Float32(y)
+  // aPivot      : Float32(x), Float32(y)
+  // aScale      : Float32(x), Float32(y)
+  // aSkew       : Float32(x), Float32(y)
+  // aRotation   : Float32(alpha)
+  // aAlpha      : Float32(alpha)
+
   //---------------------------------------------------------------------------
 
-  static const int _maxQuadCount = 256;
-  static final _BitmapContainerProgram instance = new _BitmapContainerProgram();
+  Int16List _indexList = null;
+  Float32List _vertexList = null;
 
-  gl.Buffer _vertexBuffer = null;
   gl.Buffer _indexBuffer = null;
+  gl.Buffer _vertexBuffer = null;
+
   gl.UniformLocation _uProjectionMatrixLocation = null;
   gl.UniformLocation _uGlobalMatrix = null;
   gl.UniformLocation _uGlobalAlpha = null;
-
-  int _aPositionLocation = 0;
-  int _aOffsetLocation = 0;
-  int _aScaleLocation = 0;
-  int _aSkewLocation = 0;
-  int _aTextCoordLocation = 0;
-  int _aAlphaLocation = 0;
-  int _quadCount = 0;
-
-  final Int16List _indexList = new Int16List(_maxQuadCount * 6);
-  final Float32List _vertexList = new Float32List(_maxQuadCount * 4 * 11);
-
-  //-----------------------------------------------------------------------------------------------
-
-  _BitmapContainerProgram() {
-    for(int i = 0, j = 0; i <= _indexList.length - 6; i += 6, j +=4 ) {
-      _indexList[i + 0] = j + 0;
-      _indexList[i + 1] = j + 1;
-      _indexList[i + 2] = j + 2;
-      _indexList[i + 3] = j + 0;
-      _indexList[i + 4] = j + 2;
-      _indexList[i + 5] = j + 3;
-    }
-  }
+  gl.UniformLocation _uSampler = null;
 
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void set projectionMatrix(Matrix3D matrix) {
-    renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
+  void set projectionMatrix(Matrix3D projectionMatrix) {
+    var uPprojectionMatrix = projectionMatrix.data;
+    renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, uPprojectionMatrix);
   }
+
+  //-----------------------------------------------------------------------------------------------
 
   @override
   void activate(RenderContextWebGL renderContext) {
@@ -97,17 +133,23 @@ class _BitmapContainerProgram extends RenderProgram {
 
       super.activate(renderContext);
 
+      _indexList = renderContext.staticIndexList;
+      _vertexList = renderContext.dynamicVertexList;
       _indexBuffer = renderingContext.createBuffer();
       _vertexBuffer = renderingContext.createBuffer();
-      _aPositionLocation = attributeLocations["aPosition"];
-      _aOffsetLocation = attributeLocations["aOffset"];
-      _aScaleLocation = attributeLocations["aScale"];
-      _aSkewLocation = attributeLocations["aSkew"];
-      _aTextCoordLocation = attributeLocations["aTextCoord"];
-      _aAlphaLocation = attributeLocations["aAlpha"];
+
       _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
       _uGlobalMatrix = uniformLocations["uGlobalMatrix"];
       _uGlobalAlpha = uniformLocations["uGlobalAlpha"];
+      _uSampler = uniformLocations["uSampler"];
+
+      _locationBitmapData = attributeLocations["aBitmapData"];
+      _locationPosition = attributeLocations["aPosition"];
+      _locationPivot = attributeLocations["aPivot"];
+      _locationScale = attributeLocations["aScale"];
+      _locationSkew = attributeLocations["aSkew"];
+      _locationRotation = attributeLocations["aRotation"];
+      _locationAlpha = attributeLocations["aAlpha"];
 
       renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
       renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
@@ -116,129 +158,314 @@ class _BitmapContainerProgram extends RenderProgram {
     }
 
     renderingContext.useProgram(program);
+    renderingContext.uniform1i(_uSampler, 0);
     renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
     renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    renderingContext.vertexAttribPointer(_aPositionLocation, 2, gl.FLOAT, false, 44, 0);
-    renderingContext.vertexAttribPointer(_aOffsetLocation, 2, gl.FLOAT, false, 44, 8);
-    renderingContext.vertexAttribPointer(_aScaleLocation, 2, gl.FLOAT, false, 44, 16);
-    renderingContext.vertexAttribPointer(_aSkewLocation, 2, gl.FLOAT, false, 44, 24);
-    renderingContext.vertexAttribPointer(_aTextCoordLocation, 2, gl.FLOAT, false, 44, 32);
-    renderingContext.vertexAttribPointer(_aAlphaLocation, 1, gl.FLOAT, false, 44, 40);
+    _setVertexAttribPointersDynamic();
   }
 
   @override
   void flush() {
-
-    if (_quadCount == 0) return;
-    var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 11);
-
-    renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, vertexUpdate);
-    renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
-
-    _quadCount = 0;
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  void reset(Matrix globalMatrix, num globalAlpha) {
+  void renderBitmapContainer(RenderState renderState, BitmapContainer container) {
 
-    var uGlobalMatrix = new Float32List.fromList([
-        globalMatrix.a, globalMatrix.c, globalMatrix.tx,
-        globalMatrix.b, globalMatrix.d, globalMatrix.ty,
-        0.0, 0.0, 0.0]);
+    RenderContextWebGL renderContext = renderState.renderContext;
+    Matrix globalMatrix = renderState.globalMatrix;
+    num globalAlpha = renderState.globalAlpha;
+    Float32List uGlobalMatrix = new Float32List(9);
+
+    uGlobalMatrix[0] = globalMatrix.a;
+    uGlobalMatrix[1] = globalMatrix.c;
+    uGlobalMatrix[2] = globalMatrix.tx;
+    uGlobalMatrix[3] = globalMatrix.b;
+    uGlobalMatrix[4] = globalMatrix.d;
+    uGlobalMatrix[5] = globalMatrix.ty;
 
     renderingContext.uniformMatrix3fv(_uGlobalMatrix, false, uGlobalMatrix);
     renderingContext.uniform1f(_uGlobalAlpha, globalAlpha);
 
-    _quadCount = 0;
+    // TODO: Use list from container, this is just a quick hack.
+
+    List<Bitmap> bitmaps = new List<Bitmap>();
+
+    for (int i = 0; i < container.numChildren; i++) {
+      bitmaps.add(container.getChildAt(i));
+    }
+
+    // TODO: Use the right size for the batch.
+    // TODO: Use the static buffers.
+    // TODO: Bind the right texture.
+
+    int batchSize = 50;
+
+    for (int i = 0; i < bitmaps.length; i += batchSize) {
+
+      batchSize = minInt(bitmaps.length - i, batchSize);
+      _updateVertexBufferDynamic(bitmaps, i, batchSize);
+
+      BitmapData bitmapData = bitmaps[i].bitmapData;
+      RenderTexture renderTexture = bitmapData.renderTexture;
+      renderContext.activateRenderTexture(renderTexture);
+
+      var vertexUpdateLength = _strideDynamic * batchSize * 4;
+      var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, vertexUpdateLength);
+      renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+      renderingContext.drawElements(gl.TRIANGLES, batchSize * 6, gl.UNSIGNED_SHORT, 0);
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderBitmap(Bitmap bitmap) {
+  void _initVertexDynamic() {
 
-    BitmapData bitmapData = bitmap.bitmapData;
-    RenderTextureQuad renderTextureQuad = bitmapData.renderTextureQuad;
-
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
-    Float32List uvList = renderTextureQuad.uvList;
-
-    double x = bitmap.x.toDouble();
-    double y = bitmap.y.toDouble();
-    double pivotX = bitmap.pivotX.toDouble() - offsetX;
-    double pivotY = bitmap.pivotY.toDouble() - offsetY;
-    double scaleX = bitmap.scaleX.toDouble();
-    double scaleY = bitmap.scaleY.toDouble();
-    double rotation = bitmap.rotation.toDouble();
-    double skewX = bitmap.skewX.toDouble() + rotation;
-    double skewY = bitmap.skewY.toDouble() + rotation;
-    double alpha = bitmap.alpha.toDouble();
-
-    double offsetLeft = 0.0 - pivotX;
-    double offsetTop = 0.0 - pivotY;
-    double offsetRight = width - pivotX;
-    double offsetBottom = height - pivotY;
-
-    int index = _quadCount * 44;
-    if (index > _vertexList.length - 44) return; // dart2js_hint
-
-    // vertex 1
-    _vertexList[index + 00] = x;
-    _vertexList[index + 01] = y;
-    _vertexList[index + 02] = offsetLeft;
-    _vertexList[index + 03] = offsetTop;
-    _vertexList[index + 04] = scaleX;
-    _vertexList[index + 05] = scaleY;
-    _vertexList[index + 06] = skewX;
-    _vertexList[index + 07] = skewY;
-    _vertexList[index + 08] = uvList[0];
-    _vertexList[index + 09] = uvList[1];
-    _vertexList[index + 10] = alpha;
-
-    // vertex 2
-    _vertexList[index + 11] = x;
-    _vertexList[index + 12] = y;
-    _vertexList[index + 13] = offsetRight;
-    _vertexList[index + 14] = offsetTop;
-    _vertexList[index + 15] = scaleX;
-    _vertexList[index + 16] = scaleY;
-    _vertexList[index + 17] = skewX;
-    _vertexList[index + 18] = skewY;
-    _vertexList[index + 19] = uvList[2];
-    _vertexList[index + 20] = uvList[3];
-    _vertexList[index + 21] = alpha;
-
-    // vertex 3
-    _vertexList[index + 22] = x;
-    _vertexList[index + 23] = y;
-    _vertexList[index + 24] = offsetRight;
-    _vertexList[index + 25] = offsetBottom;
-    _vertexList[index + 26] = scaleX;
-    _vertexList[index + 27] = scaleY;
-    _vertexList[index + 28] = skewX;
-    _vertexList[index + 29] = skewY;
-    _vertexList[index + 30] = uvList[4];
-    _vertexList[index + 31] = uvList[5];
-    _vertexList[index + 32] = alpha;
-
-    // vertex 4
-    _vertexList[index + 33] = x;
-    _vertexList[index + 34] = y;
-    _vertexList[index + 35] = offsetLeft;
-    _vertexList[index + 36] = offsetBottom;
-    _vertexList[index + 37] = scaleX;
-    _vertexList[index + 38] = scaleY;
-    _vertexList[index + 39] = skewX;
-    _vertexList[index + 40] = skewY;
-    _vertexList[index + 41] = uvList[6];
-    _vertexList[index + 42] = uvList[7];
-    _vertexList[index + 43] = alpha;
-
-    _quadCount += 1;
-
-    if (_quadCount == _maxQuadCount) flush();
+    if (bitmapBitmapData == BitmapContainerProperty.Dynamic) {
+      _offsetBitmapData = _strideDynamic;
+      _strideDynamic += 4;
+    }
+    if (bitmapPosition == BitmapContainerProperty.Dynamic) {
+      _offsetPosition = _strideDynamic;
+      _strideDynamic += 2;
+    }
+    if (bitmapPivot == BitmapContainerProperty.Dynamic) {
+      _offsetPivot = _strideDynamic;
+      _strideDynamic += 2;
+    }
+    if (bitmapScale == BitmapContainerProperty.Dynamic) {
+      _offsetScale = _strideDynamic;
+      _strideDynamic += 2;
+    }
+    if (bitmapSkew == BitmapContainerProperty.Dynamic) {
+      _offsetSkew = _strideDynamic;
+      _strideDynamic += 2;
+    }
+    if (bitmapRotation == BitmapContainerProperty.Dynamic) {
+      _offsetRotation = _strideDynamic;
+      _strideDynamic += 1;
+    }
+    if (bitmapAlpha == BitmapContainerProperty.Dynamic) {
+      _offsetAlpha = _strideDynamic;
+      _strideDynamic += 1;
+    }
   }
+
+  void _initVertexStatic() {
+
+    if (bitmapBitmapData == BitmapContainerProperty.Static) {
+      _offsetBitmapData = _strideStatic;
+      _strideStatic += 4;
+    }
+    if (bitmapPosition == BitmapContainerProperty.Static) {
+      _offsetPosition = _strideStatic;
+      _strideStatic += 2;
+    }
+    if (bitmapPivot == BitmapContainerProperty.Static) {
+      _offsetPivot = _strideStatic;
+      _strideStatic += 2;
+    }
+    if (bitmapScale == BitmapContainerProperty.Static) {
+      _offsetScale = _strideStatic;
+      _strideStatic += 2;
+    }
+    if (bitmapSkew == BitmapContainerProperty.Static) {
+      _offsetSkew = _strideStatic;
+      _strideStatic += 2;
+    }
+    if (bitmapRotation == BitmapContainerProperty.Static) {
+      _offsetRotation = _strideStatic;
+      _strideStatic += 1;
+    }
+    if (bitmapAlpha == BitmapContainerProperty.Static) {
+      _offsetAlpha = _strideStatic;
+      _strideStatic += 1;
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void _setVertexAttribPointersDynamic() {
+
+    if (bitmapBitmapData == BitmapContainerProperty.Dynamic) {
+      renderingContext.vertexAttribPointer(_locationBitmapData,
+          4, gl.FLOAT, false, _strideDynamic * 4, _offsetBitmapData * 4);
+    }
+    if (bitmapPosition == BitmapContainerProperty.Dynamic) {
+      renderingContext.vertexAttribPointer(_locationPosition,
+          2, gl.FLOAT, false, _strideDynamic * 4, _offsetPosition * 4);
+    }
+    if (bitmapPivot == BitmapContainerProperty.Dynamic) {
+      renderingContext.vertexAttribPointer(_locationPivot,
+          2, gl.FLOAT, false, _strideDynamic * 4, _offsetPivot * 4);
+    }
+    if (bitmapScale == BitmapContainerProperty.Dynamic) {
+      renderingContext.vertexAttribPointer(_locationScale,
+          2, gl.FLOAT, false, _strideDynamic * 4, _offsetScale * 4);
+    }
+    if (bitmapSkew == BitmapContainerProperty.Dynamic) {
+      renderingContext.vertexAttribPointer(_locationSkew,
+          2, gl.FLOAT, false, _strideDynamic * 4, _offsetSkew * 4);
+    }
+    if (bitmapRotation == BitmapContainerProperty.Dynamic) {
+      renderingContext.vertexAttribPointer(_locationRotation,
+          1, gl.FLOAT, false, _strideDynamic * 4, _offsetRotation * 4);
+    }
+    if (bitmapAlpha == BitmapContainerProperty.Dynamic) {
+      renderingContext.vertexAttribPointer(_locationAlpha,
+          1, gl.FLOAT, false, _strideDynamic * 4, _offsetAlpha * 4);
+    }
+  }
+
+  void _setVertexAttribPointersStatic() {
+
+    if (bitmapBitmapData == BitmapContainerProperty.Static) {
+      renderingContext.vertexAttribPointer(_locationBitmapData,
+          4, gl.FLOAT, false, _strideStatic * 4, _offsetBitmapData * 4);
+    }
+    if (bitmapPosition == BitmapContainerProperty.Static) {
+      renderingContext.vertexAttribPointer(_locationPosition,
+          2, gl.FLOAT, false, _strideStatic * 4, _offsetPosition * 4);
+    }
+    if (bitmapPivot == BitmapContainerProperty.Static) {
+      renderingContext.vertexAttribPointer(_locationPivot,
+          2, gl.FLOAT, false, _strideStatic * 4, _offsetPivot * 4);
+    }
+    if (bitmapScale == BitmapContainerProperty.Static) {
+      renderingContext.vertexAttribPointer(_locationScale,
+          2, gl.FLOAT, false, _strideStatic * 4, _offsetScale * 4);
+    }
+    if (bitmapSkew == BitmapContainerProperty.Static) {
+      renderingContext.vertexAttribPointer(_locationSkew,
+          2, gl.FLOAT, false, _strideStatic * 4, _offsetSkew * 4);
+    }
+    if (bitmapRotation == BitmapContainerProperty.Static) {
+      renderingContext.vertexAttribPointer(_locationRotation,
+          1, gl.FLOAT, false, _strideStatic * 4, _offsetRotation * 4);
+    }
+    if (bitmapAlpha == BitmapContainerProperty.Static) {
+      renderingContext.vertexAttribPointer(_locationAlpha,
+          1, gl.FLOAT, false, _strideStatic * 4, _offsetAlpha * 4);
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void _updateVertexBufferDynamic(List<Bitmap> bitmaps, int start, int length) {
+
+    var vxList  = _vertexList;
+    var vertex0 = _strideDynamic * 0;
+    var vertex1 = _strideDynamic * 1;
+    var vertex2 = _strideDynamic * 2;
+    var vertex3 = _strideDynamic * 3;
+    var vertex4 = _strideDynamic * 4;
+
+    for(int i = 0; i < length; i++) {
+
+      var bitmap = bitmaps[start + i];
+      var offset = i * vertex4;
+
+      if (bitmapBitmapData == BitmapContainerProperty.Dynamic) {
+        var renderTextureQuad = bitmap.bitmapData.renderTextureQuad;
+        var quadX = renderTextureQuad.offsetX.toDouble();
+        var quadY = renderTextureQuad.offsetY.toDouble();
+        var quadWidth = renderTextureQuad.textureWidth.toDouble();
+        var quadHeight = renderTextureQuad.textureHeight.toDouble();
+        var quadUVs = renderTextureQuad.uvList;
+        vxList[offset + vertex0 + 0] = quadX;
+        vxList[offset + vertex0 + 1] = quadY;
+        vxList[offset + vertex0 + 2] = quadUVs[0];
+        vxList[offset + vertex0 + 3] = quadUVs[1];
+        vxList[offset + vertex1 + 0] = quadX + quadWidth;
+        vxList[offset + vertex1 + 1] = quadY;
+        vxList[offset + vertex1 + 2] = quadUVs[2];
+        vxList[offset + vertex1 + 3] = quadUVs[3];
+        vxList[offset + vertex2 + 0] = quadX + quadWidth;
+        vxList[offset + vertex2 + 1] = quadY + quadHeight;
+        vxList[offset + vertex2 + 2] = quadUVs[4];
+        vxList[offset + vertex2 + 3] = quadUVs[5];
+        vxList[offset + vertex3 + 0] = quadX;
+        vxList[offset + vertex3 + 1] = quadY + quadHeight;
+        vxList[offset + vertex3 + 2] = quadUVs[6];
+        vxList[offset + vertex3 + 3] = quadUVs[7];
+        offset += 4;
+      }
+
+      if (bitmapPosition == BitmapContainerProperty.Dynamic) {
+        var x = bitmap.x.toDouble();
+        var y = bitmap.y.toDouble();
+        vxList[offset + vertex0 + 0] = x;
+        vxList[offset + vertex0 + 1] = y;
+        vxList[offset + vertex1 + 0] = x;
+        vxList[offset + vertex1 + 1] = y;
+        vxList[offset + vertex2 + 0] = x;
+        vxList[offset + vertex2 + 1] = y;
+        vxList[offset + vertex3 + 0] = x;
+        vxList[offset + vertex3 + 1] = y;
+        offset += 2;
+      }
+
+      if (bitmapPivot == BitmapContainerProperty.Dynamic) {
+        var pivotX = bitmap.pivotX.toDouble();
+        var pivotY = bitmap.pivotY.toDouble();
+        vxList[offset + vertex0 + 0] = pivotX;
+        vxList[offset + vertex0 + 1] = pivotY;
+        vxList[offset + vertex1 + 0] = pivotX;
+        vxList[offset + vertex1 + 1] = pivotY;
+        vxList[offset + vertex2 + 0] = pivotX;
+        vxList[offset + vertex2 + 1] = pivotY;
+        vxList[offset + vertex3 + 0] = pivotX;
+        vxList[offset + vertex3 + 1] = pivotY;
+        offset += 2;
+      }
+
+      if (bitmapScale == BitmapContainerProperty.Dynamic) {
+        var scaleX = bitmap.scaleX.toDouble();
+        var scaleY = bitmap.scaleY.toDouble();
+        vxList[offset + vertex0 + 0] = scaleX;
+        vxList[offset + vertex0 + 1] = scaleY;
+        vxList[offset + vertex1 + 0] = scaleX;
+        vxList[offset + vertex1 + 1] = scaleY;
+        vxList[offset + vertex2 + 0] = scaleX;
+        vxList[offset + vertex2 + 1] = scaleY;
+        vxList[offset + vertex3 + 0] = scaleX;
+        vxList[offset + vertex3 + 1] = scaleY;
+        offset += 2;
+      }
+
+      if (bitmapSkew == BitmapContainerProperty.Dynamic) {
+        var skewX = bitmap.skewX.toDouble();
+        var skewY = bitmap.skewY.toDouble();
+        vxList[offset + vertex0 + 0] = skewX;
+        vxList[offset + vertex0 + 1] = skewY;
+        vxList[offset + vertex1 + 0] = skewX;
+        vxList[offset + vertex1 + 1] = skewY;
+        vxList[offset + vertex2 + 0] = skewX;
+        vxList[offset + vertex2 + 1] = skewY;
+        vxList[offset + vertex3 + 0] = skewX;
+        vxList[offset + vertex3 + 1] = skewY;
+        offset += 2;
+      }
+
+      if (bitmapRotation == BitmapContainerProperty.Dynamic) {
+        var rotation = bitmap.rotation.toDouble();
+        vxList[offset + vertex0 + 0] = rotation;
+        vxList[offset + vertex1 + 0] = rotation;
+        vxList[offset + vertex2 + 0] = rotation;
+        vxList[offset + vertex3 + 0] = rotation;
+        offset += 1;
+      }
+
+      if (bitmapAlpha == BitmapContainerProperty.Dynamic) {
+        var alpha = bitmap.alpha.toDouble();
+        vxList[offset + vertex0 + 0] = alpha;
+        vxList[offset + vertex1 + 0] = alpha;
+        vxList[offset + vertex2 + 0] = alpha;
+        vxList[offset + vertex3 + 0] = alpha;
+        offset += 1;
+      }
+
+    }
+  }
+
 }
