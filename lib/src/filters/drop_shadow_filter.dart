@@ -107,13 +107,13 @@ class DropShadowFilter extends BitmapFilter {
 
     if (pass == 0) {
       var shift = (this.distance * cos(this.angle)).round() / renderTexture.width;
-      var pixel = 0.250 * blurX / renderTexture.width;
-      renderProgram.configure(color, shift, 0.0, pixel, 0.0);
+      var radius = blurX / renderTexture.width;
+      renderProgram.configure(color, shift, 0.0, radius, 0.0);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     } else if (pass == 1) {
       var shift = (this.distance * sin(this.angle)).round() / renderTexture.height;
-      var pixel = 0.250 * blurY / renderTexture.height;
-      renderProgram.configure(color, 0.0, shift, 0.0, pixel);
+      var radius = blurY / renderTexture.height;
+      renderProgram.configure(color, 0.0, shift, 0.0, radius);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     } else if (pass == 2) {
       // TODO: render the knockout effect!
@@ -128,44 +128,85 @@ class DropShadowFilter extends BitmapFilter {
 
 class DropShadowFilterProgram extends BitmapFilterProgram {
 
+  String get vertexShaderSource => """
+
+    uniform mat4 uProjectionMatrix;
+    uniform vec2 uRadius;
+    uniform vec2 uShift;
+
+    attribute vec2 aVertexPosition;
+    attribute vec2 aVertexTextCoord;
+    attribute float aVertexAlpha;
+
+    varying vec2 vBlurCoords[15];
+    varying float vAlpha;
+
+    void main() {
+      vec2 textCoord = aVertexTextCoord - uShift;
+      vBlurCoords[ 0] = textCoord - uRadius * 1.4;
+      vBlurCoords[ 1] = textCoord - uRadius * 1.2;
+      vBlurCoords[ 2] = textCoord - uRadius * 1.0;
+      vBlurCoords[ 3] = textCoord - uRadius * 0.8;
+      vBlurCoords[ 4] = textCoord - uRadius * 0.6;
+      vBlurCoords[ 5] = textCoord - uRadius * 0.4;
+      vBlurCoords[ 6] = textCoord - uRadius * 0.2;
+      vBlurCoords[ 7] = textCoord;
+      vBlurCoords[ 8] = textCoord + uRadius * 0.2;
+      vBlurCoords[ 9] = textCoord + uRadius * 0.4;
+      vBlurCoords[10] = textCoord + uRadius * 0.6;
+      vBlurCoords[11] = textCoord + uRadius * 0.8;
+      vBlurCoords[12] = textCoord + uRadius * 1.0;
+      vBlurCoords[13] = textCoord + uRadius * 1.2;
+      vBlurCoords[14] = textCoord + uRadius * 1.4;
+      vAlpha = aVertexAlpha;
+      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
+    }
+    """;
+
   String get fragmentShaderSource => """
-      precision mediump float;
-      uniform sampler2D uSampler;
-      uniform vec2 uShift;
-      uniform vec2 uPixel;
-      uniform vec4 uColor;
-      varying vec2 vTextCoord;
-      varying float vAlpha;
-      void main() {
-        float alpha = 0.0;
-        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel * 4.0).a * 0.045;
-        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel * 3.0).a * 0.090;
-        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel * 2.0).a * 0.125;
-        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel      ).a * 0.155;
-        alpha += texture2D(uSampler, vTextCoord - uShift               ).a * 0.170;
-        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel      ).a * 0.155;
-        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 2.0).a * 0.125;
-        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 3.0).a * 0.090;
-        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 4.0).a * 0.045;
-        alpha *= vAlpha;
-        alpha *= uColor.a;
-        gl_FragColor = vec4(uColor.rgb * alpha, alpha);
-      }
-      """;
+    precision mediump float;
+    uniform sampler2D uSampler;
+    uniform vec4 uColor;
+      
+    varying vec2 vBlurCoords[15];
+    varying float vAlpha;
 
-   void configure(int color, num shiftX, num shiftY, num pixelX, num pixelY) {
+    void main() {
+      float alpha = 0.0;
+      alpha += texture2D(uSampler, vBlurCoords[ 0]).a * 0.00443;
+      alpha += texture2D(uSampler, vBlurCoords[ 1]).a * 0.00896;
+      alpha += texture2D(uSampler, vBlurCoords[ 2]).a * 0.02160;
+      alpha += texture2D(uSampler, vBlurCoords[ 3]).a * 0.04437;
+      alpha += texture2D(uSampler, vBlurCoords[ 4]).a * 0.07768;
+      alpha += texture2D(uSampler, vBlurCoords[ 5]).a * 0.11588;
+      alpha += texture2D(uSampler, vBlurCoords[ 6]).a * 0.14731;
+      alpha += texture2D(uSampler, vBlurCoords[ 7]).a * 0.15958;
+      alpha += texture2D(uSampler, vBlurCoords[ 8]).a * 0.14731;
+      alpha += texture2D(uSampler, vBlurCoords[ 9]).a * 0.11588;
+      alpha += texture2D(uSampler, vBlurCoords[10]).a * 0.07768;
+      alpha += texture2D(uSampler, vBlurCoords[11]).a * 0.04437;
+      alpha += texture2D(uSampler, vBlurCoords[12]).a * 0.02160;
+      alpha += texture2D(uSampler, vBlurCoords[13]).a * 0.00896;
+      alpha += texture2D(uSampler, vBlurCoords[14]).a * 0.00443;
+      alpha *= vAlpha;
+      alpha *= uColor.a;
+      gl_FragColor = vec4(uColor.rgb * alpha, alpha);
+    }
+    """;
 
-     num r = colorGetR(color) / 255.0;
-     num g = colorGetG(color) / 255.0;
-     num b = colorGetB(color) / 255.0;
-     num a = colorGetA(color) / 255.0;
+  void configure(int color, num shiftX, num shiftY, num radiusX, num radiusY) {
 
-     var uShiftLocation = uniformLocations["uShift"];
-     var uPixelLocation = uniformLocations["uPixel"];
-     var uColorLocation = uniformLocations["uColor"];
+    num r = colorGetR(color) / 255.0;
+    num g = colorGetG(color) / 255.0;
+    num b = colorGetB(color) / 255.0;
+    num a = colorGetA(color) / 255.0;
 
-     renderingContext.uniform2f(uShiftLocation, shiftX, shiftY);
-     renderingContext.uniform2f(uPixelLocation, pixelX, pixelY);
-     renderingContext.uniform4f(uColorLocation, r, g, b, a);
-   }
+    var uColorLocation = uniformLocations["uColor"];
+    var uShiftLocation = uniformLocations["uShift"];
+    var uRadiusLocation = uniformLocations["uRadius"];
+
+    renderingContext.uniform4f(uColorLocation, r, g, b, a);
+    renderingContext.uniform2f(uShiftLocation, shiftX, shiftY);
+    renderingContext.uniform2f(uRadiusLocation, radiusX, radiusY);
+  }
 }
