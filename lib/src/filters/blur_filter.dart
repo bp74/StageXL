@@ -137,32 +137,32 @@ class BlurFilterProgram extends BitmapFilterProgram {
 
   String get fragmentShaderSource => """
 
-      precision mediump float;
-      uniform sampler2D uSampler;
+    precision mediump float;
+    uniform sampler2D uSampler;
 
-      varying vec2 vBlurCoords[15];
-      varying float vAlpha;
+    varying vec2 vBlurCoords[15];
+    varying float vAlpha;
 
-      void main() {
-        vec4 sum = vec4(0.0);
-        sum += texture2D(uSampler, vBlurCoords[ 0]) * 0.00443;
-        sum += texture2D(uSampler, vBlurCoords[ 1]) * 0.00896;
-        sum += texture2D(uSampler, vBlurCoords[ 2]) * 0.02160;
-        sum += texture2D(uSampler, vBlurCoords[ 3]) * 0.04437;
-        sum += texture2D(uSampler, vBlurCoords[ 4]) * 0.07768;
-        sum += texture2D(uSampler, vBlurCoords[ 5]) * 0.11588;
-        sum += texture2D(uSampler, vBlurCoords[ 6]) * 0.14731;
-        sum += texture2D(uSampler, vBlurCoords[ 7]) * 0.15958;
-        sum += texture2D(uSampler, vBlurCoords[ 8]) * 0.14731;
-        sum += texture2D(uSampler, vBlurCoords[ 9]) * 0.11588;
-        sum += texture2D(uSampler, vBlurCoords[10]) * 0.07768;
-        sum += texture2D(uSampler, vBlurCoords[11]) * 0.04437;
-        sum += texture2D(uSampler, vBlurCoords[12]) * 0.02160;
-        sum += texture2D(uSampler, vBlurCoords[13]) * 0.00896;
-        sum += texture2D(uSampler, vBlurCoords[14]) * 0.00443;
-        gl_FragColor = sum * vAlpha;
-      }
-      """;
+    void main() {
+      vec4 sum = vec4(0.0);
+      sum += texture2D(uSampler, vBlurCoords[ 0]) * 0.00443;
+      sum += texture2D(uSampler, vBlurCoords[ 1]) * 0.00896;
+      sum += texture2D(uSampler, vBlurCoords[ 2]) * 0.02160;
+      sum += texture2D(uSampler, vBlurCoords[ 3]) * 0.04437;
+      sum += texture2D(uSampler, vBlurCoords[ 4]) * 0.07768;
+      sum += texture2D(uSampler, vBlurCoords[ 5]) * 0.11588;
+      sum += texture2D(uSampler, vBlurCoords[ 6]) * 0.14731;
+      sum += texture2D(uSampler, vBlurCoords[ 7]) * 0.15958;
+      sum += texture2D(uSampler, vBlurCoords[ 8]) * 0.14731;
+      sum += texture2D(uSampler, vBlurCoords[ 9]) * 0.11588;
+      sum += texture2D(uSampler, vBlurCoords[10]) * 0.07768;
+      sum += texture2D(uSampler, vBlurCoords[11]) * 0.04437;
+      sum += texture2D(uSampler, vBlurCoords[12]) * 0.02160;
+      sum += texture2D(uSampler, vBlurCoords[13]) * 0.00896;
+      sum += texture2D(uSampler, vBlurCoords[14]) * 0.00443;
+      gl_FragColor = sum * vAlpha;
+    }
+    """;
 
    void configure(num radiusX, num radiusY) {
      var uPixelLocation = uniformLocations["uRadius"];
