@@ -11,30 +11,39 @@ import '../internal/tools.dart';
 
 class DropShadowFilter extends BitmapFilter {
 
-  num distance;
-  num angle;
-  int color;
-  int blurX;
-  int blurY;
+  num _distance;
+  num _angle;
+  int _blurX;
+  int _blurY;
+  int _quality;
+  int _color;
+
   bool knockout;
   bool hideObject;
 
-  DropShadowFilter(this.distance, this.angle, this.color, this.blurX, this.blurY, {
-                   this.knockout: false, this.hideObject: false }) {
+  final List<int> _renderPassSources = new List<int>();
+  final List<int> _renderPassTargets = new List<int>();
 
-    if (blurX < 0 || blurY < 0)
-      throw new ArgumentError("The minimum blur size is 0.");
+  DropShadowFilter(num distance, num angle, int color, int blurX, int blurY,
+      [int quality = 1, bool knockout = false, bool hideObject = false]) {
 
-    if (blurX > 64 || blurY > 64)
-      throw new ArgumentError("The maximum blur size is 64.");
+    this.distance = distance;
+    this.angle = angle;
+    this.color = color;
+    this.blurX = blurX;
+    this.blurY = blurY;
+    this.quality = quality;
+    this.knockout = knockout;
+    this.hideObject = hideObject;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  BitmapFilter clone() => new DropShadowFilter(
-      distance, angle, color, blurX, blurY,
-      knockout: knockout, hideObject: hideObject);
+  BitmapFilter clone() {
+    return new DropShadowFilter(
+      distance, angle, color, blurX, blurY, quality, knockout, hideObject);
+  }
 
   Rectangle<int> get overlap {
     int shiftX = (this.distance * cos(this.angle)).round();
@@ -44,10 +53,79 @@ class DropShadowFilter extends BitmapFilter {
     return sRect.boundingBox(dRect);
   }
 
-  List<int> get renderPassSources => const [0, 1, 0];
-  List<int> get renderPassTargets => const [1, 2, 2];
+  List<int> get renderPassSources => _renderPassSources;
+  List<int> get renderPassTargets => _renderPassTargets;
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  /// The distance from the object to the shadow.
+
+  num get distance => _distance;
+
+  set distance(num value) {
+    _distance = value;
+  }
+
+  /// The angle where the shadow is casted to.
+
+  num get angle => _angle;
+
+  set angle(num value) {
+    _angle = value;
+  }
+
+  /// The color of the shadow.
+
+  int get color => _color;
+
+  set color(int value) {
+    _color = value;
+  }
+
+  /// The horizontal blur radius in the range from 0 to 64.
+
+  int get blurX => _blurX;
+
+  set blurX(int value) {
+    RangeError.checkValueInInterval(value, 0, 64);
+    _blurX = value;
+  }
+
+  /// The vertical blur radius in the range from 0 to 64.
+
+  int get blurY => _blurY;
+
+  set blurY(int value) {
+    RangeError.checkValueInInterval(value, 0, 64);
+    _blurY = value;
+  }
+
+  /// The quality of the shadow in the range from 1 to 10.
+  /// A small value is sufficent for small blur radii, a high blur
+  /// radius may require a heigher quality setting.
+
+  int get quality => _quality;
+
+  set quality(int value) {
+
+    RangeError.checkValueInInterval(value, 1, 10);
+
+    _quality = value;
+    _renderPassSources.clear();
+    _renderPassTargets.clear();
+
+    for(int i = 0; i < value; i++) {
+      _renderPassSources.add(i * 2 + 0);
+      _renderPassSources.add(i * 2 + 1);
+      _renderPassTargets.add(i * 2 + 1);
+      _renderPassTargets.add(i * 2 + 2);
+    }
+
+    _renderPassSources.add(0);
+    _renderPassTargets.add(value * 2);
+  }
+
+  //---------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
@@ -92,7 +170,7 @@ class DropShadowFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
@@ -105,26 +183,26 @@ class DropShadowFilter extends BitmapFilter {
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
 
-    if (pass == 0) {
-      var shift = (this.distance * cos(this.angle)).round() / renderTexture.width;
-      var radius = blurX / renderTexture.width;
-      renderProgram.configure(color, shift, 0.0, radius, 0.0);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
-    } else if (pass == 1) {
-      var shift = (this.distance * sin(this.angle)).round() / renderTexture.height;
-      var radius = blurY / renderTexture.height;
-      renderProgram.configure(color, 0.0, shift, 0.0, radius);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
-    } else if (pass == 2) {
-      // TODO: render the knockout effect!
+    if (pass == _renderPassSources.length - 1) {
       if (this.knockout || this.hideObject) return;
       renderState.renderQuad(renderTextureQuad);
+    } else if (pass % 2 == 0) {
+      var shift = (this.distance * cos(this.angle)).round() / renderTexture.width;
+      var radius = blurX / quality / renderTexture.width;
+      renderProgram.configure(color, pass >= 2 ? 0 : shift, 0.0, radius, 0.0);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
+    } else {
+      var shift = (this.distance * sin(this.angle)).round() / renderTexture.height;
+      if (pass >= 2) shift  = 0;
+      var radius = blurY / quality / renderTexture.height;
+      renderProgram.configure(color, 0.0, pass >= 2 ? 0 : shift, 0.0, radius);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
     }
   }
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 class DropShadowFilterProgram extends BitmapFilterProgram {
 
@@ -138,26 +216,18 @@ class DropShadowFilterProgram extends BitmapFilterProgram {
     attribute vec2 aVertexTextCoord;
     attribute float aVertexAlpha;
 
-    varying vec2 vBlurCoords[15];
+    varying vec2 vBlurCoords[7];
     varying float vAlpha;
 
     void main() {
       vec2 textCoord = aVertexTextCoord - uShift;
-      vBlurCoords[ 0] = textCoord - uRadius * 1.4;
-      vBlurCoords[ 1] = textCoord - uRadius * 1.2;
-      vBlurCoords[ 2] = textCoord - uRadius * 1.0;
-      vBlurCoords[ 3] = textCoord - uRadius * 0.8;
-      vBlurCoords[ 4] = textCoord - uRadius * 0.6;
-      vBlurCoords[ 5] = textCoord - uRadius * 0.4;
-      vBlurCoords[ 6] = textCoord - uRadius * 0.2;
-      vBlurCoords[ 7] = textCoord;
-      vBlurCoords[ 8] = textCoord + uRadius * 0.2;
-      vBlurCoords[ 9] = textCoord + uRadius * 0.4;
-      vBlurCoords[10] = textCoord + uRadius * 0.6;
-      vBlurCoords[11] = textCoord + uRadius * 0.8;
-      vBlurCoords[12] = textCoord + uRadius * 1.0;
-      vBlurCoords[13] = textCoord + uRadius * 1.2;
-      vBlurCoords[14] = textCoord + uRadius * 1.4;
+      vBlurCoords[0] = textCoord - uRadius * 1.2;
+      vBlurCoords[1] = textCoord - uRadius * 0.8;
+      vBlurCoords[2] = textCoord - uRadius * 0.4;
+      vBlurCoords[3] = textCoord;
+      vBlurCoords[4] = textCoord + uRadius * 0.4;
+      vBlurCoords[5] = textCoord + uRadius * 0.8;
+      vBlurCoords[6] = textCoord + uRadius * 1.2;
       vAlpha = aVertexAlpha;
       gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
     }
@@ -168,26 +238,18 @@ class DropShadowFilterProgram extends BitmapFilterProgram {
     uniform sampler2D uSampler;
     uniform vec4 uColor;
       
-    varying vec2 vBlurCoords[15];
+    varying vec2 vBlurCoords[7];
     varying float vAlpha;
 
     void main() {
       float alpha = 0.0;
-      alpha += texture2D(uSampler, vBlurCoords[ 0]).a * 0.00443;
-      alpha += texture2D(uSampler, vBlurCoords[ 1]).a * 0.00896;
-      alpha += texture2D(uSampler, vBlurCoords[ 2]).a * 0.02160;
-      alpha += texture2D(uSampler, vBlurCoords[ 3]).a * 0.04437;
-      alpha += texture2D(uSampler, vBlurCoords[ 4]).a * 0.07768;
-      alpha += texture2D(uSampler, vBlurCoords[ 5]).a * 0.11588;
-      alpha += texture2D(uSampler, vBlurCoords[ 6]).a * 0.14731;
-      alpha += texture2D(uSampler, vBlurCoords[ 7]).a * 0.15958;
-      alpha += texture2D(uSampler, vBlurCoords[ 8]).a * 0.14731;
-      alpha += texture2D(uSampler, vBlurCoords[ 9]).a * 0.11588;
-      alpha += texture2D(uSampler, vBlurCoords[10]).a * 0.07768;
-      alpha += texture2D(uSampler, vBlurCoords[11]).a * 0.04437;
-      alpha += texture2D(uSampler, vBlurCoords[12]).a * 0.02160;
-      alpha += texture2D(uSampler, vBlurCoords[13]).a * 0.00896;
-      alpha += texture2D(uSampler, vBlurCoords[14]).a * 0.00443;
+      alpha += texture2D(uSampler, vBlurCoords[0]).a * 0.00443;
+      alpha += texture2D(uSampler, vBlurCoords[1]).a * 0.05399;
+      alpha += texture2D(uSampler, vBlurCoords[2]).a * 0.24197;
+      alpha += texture2D(uSampler, vBlurCoords[3]).a * 0.39894;
+      alpha += texture2D(uSampler, vBlurCoords[4]).a * 0.24197;
+      alpha += texture2D(uSampler, vBlurCoords[5]).a * 0.05399;
+      alpha += texture2D(uSampler, vBlurCoords[6]).a * 0.00443;
       alpha *= vAlpha;
       alpha *= uColor.a;
       gl_FragColor = vec4(uColor.rgb * alpha, alpha);

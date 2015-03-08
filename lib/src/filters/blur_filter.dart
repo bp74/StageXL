@@ -17,12 +17,12 @@ class BlurFilter extends BitmapFilter {
   final List<int> _renderPassSources = new List<int>();
   final List<int> _renderPassTargets = new List<int>();
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
   // Credits to Alois Zingl, Vienna, Austria.
   // Extended Binomial Filter for Fast Gaussian Blur
   // http://members.chello.at/easyfilter/gauss.html
   // http://members.chello.at/easyfilter/gauss.pdf
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   BlurFilter([int blurX = 4, int blurY = 4, int quality = 1]) {
     this.blurX = blurX;
@@ -41,7 +41,7 @@ class BlurFilter extends BitmapFilter {
   List<int> get renderPassSources => _renderPassSources;
   List<int> get renderPassTargets => _renderPassTargets;
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// The horizontal blur radius in the range from 0 to 64.
 
@@ -61,7 +61,7 @@ class BlurFilter extends BitmapFilter {
     _blurY = value;
   }
 
-  /// The quality of the blur filter in the range from 1 to 10.
+  /// The quality of the blur effect in the range from 1 to 10.
   /// A small value is sufficent for small blur radii, a high blur
   /// radius may require a heigher quality setting.
 
@@ -83,7 +83,7 @@ class BlurFilter extends BitmapFilter {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
@@ -122,9 +122,10 @@ class BlurFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+  void renderFilter(RenderState renderState,
+                    RenderTextureQuad renderTextureQuad, int pass) {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
@@ -146,8 +147,8 @@ class BlurFilter extends BitmapFilter {
   }
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 class BlurFilterProgram extends BitmapFilterProgram {
 
@@ -186,13 +187,13 @@ class BlurFilterProgram extends BitmapFilterProgram {
 
     void main() {
       vec4 sum = vec4(0.0);
-      sum += texture2D(uSampler, vBlurCoords[ 0]) * 0.00443;
-      sum += texture2D(uSampler, vBlurCoords[ 1]) * 0.05399;
-      sum += texture2D(uSampler, vBlurCoords[ 2]) * 0.24197;
-      sum += texture2D(uSampler, vBlurCoords[ 3]) * 0.39894;
-      sum += texture2D(uSampler, vBlurCoords[ 4]) * 0.24197;
-      sum += texture2D(uSampler, vBlurCoords[ 5]) * 0.05399;
-      sum += texture2D(uSampler, vBlurCoords[ 6]) * 0.00443;
+      sum += texture2D(uSampler, vBlurCoords[0]) * 0.00443;
+      sum += texture2D(uSampler, vBlurCoords[1]) * 0.05399;
+      sum += texture2D(uSampler, vBlurCoords[2]) * 0.24197;
+      sum += texture2D(uSampler, vBlurCoords[3]) * 0.39894;
+      sum += texture2D(uSampler, vBlurCoords[4]) * 0.24197;
+      sum += texture2D(uSampler, vBlurCoords[5]) * 0.05399;
+      sum += texture2D(uSampler, vBlurCoords[6]) * 0.00443;
       gl_FragColor = sum * vAlpha;
     }
     """;
