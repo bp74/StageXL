@@ -216,8 +216,12 @@ class _BitmapContainerProgram extends RenderProgram {
   void _setVertexAttribPointers(BitmapProperty bitmapProperty) {
 
     int offset = 0;
-    int stride = _strideDynamic * 4;
+    int stride = 0;
     int type = gl.FLOAT;
+
+    if (bitmapProperty == BitmapProperty.Dynamic) stride = _strideDynamic * 4;
+    if (bitmapProperty == BitmapProperty.Static) stride = _strideStatic * 4;
+    if (bitmapProperty == BitmapProperty.Ignore) return;
 
     if (bitmapBitmapData == bitmapProperty) {
       renderingContext.vertexAttribPointer(_locationBitmapData, 4, type, false, stride, offset);
@@ -245,7 +249,7 @@ class _BitmapContainerProgram extends RenderProgram {
     }
     if (bitmapAlpha == bitmapProperty) {
       renderingContext.vertexAttribPointer(_locationAlpha, 1, type, false, stride, offset);
-      offset += 8;
+      offset += 4;
     }
   }
 
