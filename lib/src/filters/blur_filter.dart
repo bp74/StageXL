@@ -10,8 +10,12 @@ import '../internal/tools.dart';
 
 class BlurFilter extends BitmapFilter {
 
-  int blurX;
-  int blurY;
+  int _blurX = 4;
+  int _blurY = 4;
+  int _quality = 1;
+
+  final List<int> _renderPassSources = new List<int>();
+  final List<int> _renderPassTargets = new List<int>();
 
   //-----------------------------------------------------------------------------------------------
   // Credits to Alois Zingl, Vienna, Austria.
@@ -20,20 +24,64 @@ class BlurFilter extends BitmapFilter {
   // http://members.chello.at/easyfilter/gauss.pdf
   //-----------------------------------------------------------------------------------------------
 
-  BlurFilter([this.blurX = 4, this.blurY = 4]) {
-
-    if (blurX < 0 || blurY < 0) {
-      throw new ArgumentError("The minimum blur size is 0.");
-    }
-    if (blurX > 64 || blurY > 64) {
-      throw new ArgumentError("The maximum blur size is 64.");
-    }
+  BlurFilter([int blurX = 4, int blurY = 4, int quality = 1]) {
+    this.blurX = blurX;
+    this.blurY = blurY;
+    this.quality = quality;
   }
 
-  BitmapFilter clone() => new BlurFilter(blurX, blurY);
-  Rectangle<int> get overlap => new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
-  List<int> get renderPassSources => const [0, 1];
-  List<int> get renderPassTargets => const [1, 2];
+  BitmapFilter clone() {
+    return new BlurFilter(blurX, blurY);
+  }
+
+  Rectangle<int> get overlap {
+    return new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
+  }
+
+  List<int> get renderPassSources => _renderPassSources;
+  List<int> get renderPassTargets => _renderPassTargets;
+
+  //-----------------------------------------------------------------------------------------------
+
+  /// The horizontal blur radius in the range from 0 to 64.
+
+  int get blurX => _blurX;
+
+  set blurX(int value) {
+    RangeError.checkValueInInterval(value, 0, 64);
+    _blurX = value;
+  }
+
+  /// The vertical blur radius in the range from 0 to 64.
+
+  int get blurY => _blurY;
+
+  set blurY(int value) {
+    RangeError.checkValueInInterval(value, 0, 64);
+    _blurY = value;
+  }
+
+  /// The quality of the blur filter in the range from 1 to 10.
+  /// A small value is sufficent for small blur radii, a high blur
+  /// radius may require a heigher quality setting.
+
+  int get quality => _quality;
+
+  set quality(int value) {
+
+    RangeError.checkValueInInterval(value, 1, 10);
+
+    _quality = value;
+    _renderPassSources.clear();
+    _renderPassTargets.clear();
+
+    for(int i = 0; i < value; i++) {
+      _renderPassSources.add(i * 2 + 0);
+      _renderPassSources.add(i * 2 + 1);
+      _renderPassTargets.add(i * 2 + 1);
+      _renderPassTargets.add(i * 2 + 2);
+    }
+  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -80,6 +128,7 @@ class BlurFilter extends BitmapFilter {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    int quality = _quality;
 
     BlurFilterProgram renderProgram = renderContext.getRenderProgram(
         r"$BlurFilterProgram", () => new BlurFilterProgram());
@@ -87,11 +136,11 @@ class BlurFilter extends BitmapFilter {
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
 
-    if (pass == 0) {
-      renderProgram.configure(blurX / renderTexture.width, 0.0);
+    if (pass % 2 == 0) {
+      renderProgram.configure(blurX / quality / renderTexture.width, 0.0);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     } else {
-      renderProgram.configure(0.0, blurY / renderTexture.height);
+      renderProgram.configure(0.0, blurY / quality / renderTexture.height);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     }
   }
@@ -111,25 +160,17 @@ class BlurFilterProgram extends BitmapFilterProgram {
     attribute vec2 aVertexTextCoord;
     attribute float aVertexAlpha;
 
-    varying vec2 vBlurCoords[15];
+    varying vec2 vBlurCoords[7];
     varying float vAlpha;
 
     void main() {
-      vBlurCoords[ 0] = aVertexTextCoord - uRadius * 1.4;
-      vBlurCoords[ 1] = aVertexTextCoord - uRadius * 1.2;
-      vBlurCoords[ 2] = aVertexTextCoord - uRadius * 1.0;
-      vBlurCoords[ 3] = aVertexTextCoord - uRadius * 0.8;
-      vBlurCoords[ 4] = aVertexTextCoord - uRadius * 0.6;
-      vBlurCoords[ 5] = aVertexTextCoord - uRadius * 0.4;
-      vBlurCoords[ 6] = aVertexTextCoord - uRadius * 0.2;
-      vBlurCoords[ 7] = aVertexTextCoord;
-      vBlurCoords[ 8] = aVertexTextCoord + uRadius * 0.2;
-      vBlurCoords[ 9] = aVertexTextCoord + uRadius * 0.4;
-      vBlurCoords[10] = aVertexTextCoord + uRadius * 0.6;
-      vBlurCoords[11] = aVertexTextCoord + uRadius * 0.8;
-      vBlurCoords[12] = aVertexTextCoord + uRadius * 1.0;
-      vBlurCoords[13] = aVertexTextCoord + uRadius * 1.2;
-      vBlurCoords[14] = aVertexTextCoord + uRadius * 1.4;
+      vBlurCoords[0] = aVertexTextCoord - uRadius * 1.2;
+      vBlurCoords[1] = aVertexTextCoord - uRadius * 0.8;
+      vBlurCoords[2] = aVertexTextCoord - uRadius * 0.4;
+      vBlurCoords[3] = aVertexTextCoord;
+      vBlurCoords[4] = aVertexTextCoord + uRadius * 0.4;
+      vBlurCoords[5] = aVertexTextCoord + uRadius * 0.8;
+      vBlurCoords[6] = aVertexTextCoord + uRadius * 1.2;
       vAlpha = aVertexAlpha;
       gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
     }
@@ -140,26 +181,18 @@ class BlurFilterProgram extends BitmapFilterProgram {
     precision mediump float;
     uniform sampler2D uSampler;
 
-    varying vec2 vBlurCoords[15];
+    varying vec2 vBlurCoords[7];
     varying float vAlpha;
 
     void main() {
       vec4 sum = vec4(0.0);
       sum += texture2D(uSampler, vBlurCoords[ 0]) * 0.00443;
-      sum += texture2D(uSampler, vBlurCoords[ 1]) * 0.00896;
-      sum += texture2D(uSampler, vBlurCoords[ 2]) * 0.02160;
-      sum += texture2D(uSampler, vBlurCoords[ 3]) * 0.04437;
-      sum += texture2D(uSampler, vBlurCoords[ 4]) * 0.07768;
-      sum += texture2D(uSampler, vBlurCoords[ 5]) * 0.11588;
-      sum += texture2D(uSampler, vBlurCoords[ 6]) * 0.14731;
-      sum += texture2D(uSampler, vBlurCoords[ 7]) * 0.15958;
-      sum += texture2D(uSampler, vBlurCoords[ 8]) * 0.14731;
-      sum += texture2D(uSampler, vBlurCoords[ 9]) * 0.11588;
-      sum += texture2D(uSampler, vBlurCoords[10]) * 0.07768;
-      sum += texture2D(uSampler, vBlurCoords[11]) * 0.04437;
-      sum += texture2D(uSampler, vBlurCoords[12]) * 0.02160;
-      sum += texture2D(uSampler, vBlurCoords[13]) * 0.00896;
-      sum += texture2D(uSampler, vBlurCoords[14]) * 0.00443;
+      sum += texture2D(uSampler, vBlurCoords[ 1]) * 0.05399;
+      sum += texture2D(uSampler, vBlurCoords[ 2]) * 0.24197;
+      sum += texture2D(uSampler, vBlurCoords[ 3]) * 0.39894;
+      sum += texture2D(uSampler, vBlurCoords[ 4]) * 0.24197;
+      sum += texture2D(uSampler, vBlurCoords[ 5]) * 0.05399;
+      sum += texture2D(uSampler, vBlurCoords[ 6]) * 0.00443;
       gl_FragColor = sum * vAlpha;
     }
     """;
