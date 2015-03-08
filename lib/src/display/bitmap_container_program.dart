@@ -178,6 +178,7 @@ class _BitmapContainerProgram extends RenderProgram {
 
     // TODO: Use the right size for the batch.
     // TODO: Use the static buffers.
+    // TODO: https://code.google.com/p/dart/issues/detail?id=22723
 
     List<Bitmap> bitmaps = container._children;
 
@@ -190,16 +191,19 @@ class _BitmapContainerProgram extends RenderProgram {
       var bitmap = bitmaps[bitmapIndex];
       var bitmapData = bitmap.bitmapData;
       var renderTexture = bitmapData.renderTexture;
+      var textureCheck = identical(activeRenderTexture, renderTexture);
+      var textureFlush = false;
 
-      var validTexture = identical(activeRenderTexture, renderTexture);
-      if (validTexture) {
-        _updateVertex(bitmap, _vertexList, quadIndex, _strideDynamic);
+      if (textureCheck) {
+        _updateVertex(bitmap, BitmapProperty.Dynamic, _vertexList, quadIndex, _strideDynamic);
         bitmapIndex += 1;
         quadIndex += 1;
+        textureFlush = bitmapIndex == bitmaps.length || quadIndex == quadLimit;
+      } else {
+        textureFlush = quadIndex > 0;
       }
 
-      var flush = validTexture ? bitmapIndex == bitmaps.length : quadIndex > 0;
-      if (flush || quadIndex == quadLimit) {
+      if (textureFlush) {
         var vertexUpdateLength = _strideDynamic * quadIndex * 4;
         var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, vertexUpdateLength);
         renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
@@ -207,7 +211,7 @@ class _BitmapContainerProgram extends RenderProgram {
         quadIndex = 0;
       }
 
-      if (validTexture == false) {
+      if (textureCheck == false) {
         activeRenderTexture = renderTexture;
         renderContext.activateRenderTexture(renderTexture);
       }
@@ -272,7 +276,8 @@ class _BitmapContainerProgram extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  void _updateVertex(Bitmap bitmap, Float32List vxList, int quadIndex, int stride) {
+  void _updateVertex(Bitmap bitmap, BitmapProperty bitmapProperty,
+                     Float32List vxList, int quadIndex, int stride) {
 
     var vertex0 = stride * 0;
     var vertex1 = stride * 1;
@@ -280,7 +285,7 @@ class _BitmapContainerProgram extends RenderProgram {
     var vertex3 = stride * 3;
     var offset  = stride * 4 * quadIndex;
 
-    if (bitmapBitmapData == BitmapProperty.Dynamic) {
+    if (bitmapBitmapData == bitmapProperty) {
       var renderTextureQuad = bitmap.bitmapData.renderTextureQuad;
       var quadX = renderTextureQuad.offsetX.toDouble();
       var quadY = renderTextureQuad.offsetY.toDouble();
@@ -306,7 +311,7 @@ class _BitmapContainerProgram extends RenderProgram {
       offset += 4;
     }
 
-    if (bitmapPosition == BitmapProperty.Dynamic) {
+    if (bitmapPosition == bitmapProperty) {
       var x = bitmap.x.toDouble();
       var y = bitmap.y.toDouble();
       vxList[offset + vertex0 + 0] = x;
@@ -320,7 +325,7 @@ class _BitmapContainerProgram extends RenderProgram {
       offset += 2;
     }
 
-    if (bitmapPivot == BitmapProperty.Dynamic) {
+    if (bitmapPivot == bitmapProperty) {
       var pivotX = bitmap.pivotX.toDouble();
       var pivotY = bitmap.pivotY.toDouble();
       vxList[offset + vertex0 + 0] = pivotX;
@@ -334,7 +339,7 @@ class _BitmapContainerProgram extends RenderProgram {
       offset += 2;
     }
 
-    if (bitmapScale == BitmapProperty.Dynamic) {
+    if (bitmapScale == bitmapProperty) {
       var scaleX = bitmap.scaleX.toDouble();
       var scaleY = bitmap.scaleY.toDouble();
       vxList[offset + vertex0 + 0] = scaleX;
@@ -348,7 +353,7 @@ class _BitmapContainerProgram extends RenderProgram {
       offset += 2;
     }
 
-    if (bitmapSkew == BitmapProperty.Dynamic) {
+    if (bitmapSkew == bitmapProperty) {
       var skewX = bitmap.skewX.toDouble();
       var skewY = bitmap.skewY.toDouble();
       vxList[offset + vertex0 + 0] = skewX;
@@ -362,7 +367,7 @@ class _BitmapContainerProgram extends RenderProgram {
       offset += 2;
     }
 
-    if (bitmapRotation == BitmapProperty.Dynamic) {
+    if (bitmapRotation == bitmapProperty) {
       var rotation = bitmap.rotation.toDouble();
       vxList[offset + vertex0 + 0] = rotation;
       vxList[offset + vertex1 + 0] = rotation;
@@ -371,7 +376,7 @@ class _BitmapContainerProgram extends RenderProgram {
       offset += 1;
     }
 
-    if (bitmapAlpha == BitmapProperty.Dynamic) {
+    if (bitmapAlpha == bitmapProperty) {
       var alpha = bitmap.alpha.toDouble();
       vxList[offset + vertex0 + 0] = alpha;
       vxList[offset + vertex1 + 0] = alpha;

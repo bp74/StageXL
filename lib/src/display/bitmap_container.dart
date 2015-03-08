@@ -202,7 +202,7 @@ class BitmapContainer
     RenderContextWebGL renderContext = renderState.renderContext;
 
     _BitmapContainerProgram renderProgram = renderContext.getRenderProgram(
-        _bitmapContainerProgramName,() => new _BitmapContainerProgram(
+        _bitmapContainerProgramName, () => new _BitmapContainerProgram(
             this.bitmapBitmapData, this.bitmapPosition, this.bitmapRotation,
             this.bitmapVisible, this.bitmapPivot, this.bitmapScale,
             this.bitmapAlpha, this.bitmapSkew));
