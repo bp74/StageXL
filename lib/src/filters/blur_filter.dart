@@ -88,10 +88,10 @@ class BlurFilter extends BitmapFilter {
     renderContext.activateRenderTexture(renderTexture);
 
     if (pass == 0) {
-      renderProgram.configure(0.250 * blurX / renderTexture.width, 0.0);
+      renderProgram.configure(blurX / renderTexture.width, 0.0);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     } else {
-      renderProgram.configure(0.0, 0.250 * blurY / renderTexture.height);
+      renderProgram.configure(0.0, blurY / renderTexture.height);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     }
   }
@@ -102,30 +102,70 @@ class BlurFilter extends BitmapFilter {
 
 class BlurFilterProgram extends BitmapFilterProgram {
 
+  String get vertexShaderSource => """
+
+    uniform mat4 uProjectionMatrix;
+    uniform vec2 uRadius;
+
+    attribute vec2 aVertexPosition;
+    attribute vec2 aVertexTextCoord;
+    attribute float aVertexAlpha;
+
+    varying vec2 vBlurCoords[15];
+    varying float vAlpha;
+
+    void main() {
+      vBlurCoords[ 0] = aVertexTextCoord - uRadius * 1.4;
+      vBlurCoords[ 1] = aVertexTextCoord - uRadius * 1.2;
+      vBlurCoords[ 2] = aVertexTextCoord - uRadius * 1.0;
+      vBlurCoords[ 3] = aVertexTextCoord - uRadius * 0.8;
+      vBlurCoords[ 4] = aVertexTextCoord - uRadius * 0.6;
+      vBlurCoords[ 5] = aVertexTextCoord - uRadius * 0.4;
+      vBlurCoords[ 6] = aVertexTextCoord - uRadius * 0.2;
+      vBlurCoords[ 7] = aVertexTextCoord;
+      vBlurCoords[ 8] = aVertexTextCoord + uRadius * 0.2;
+      vBlurCoords[ 9] = aVertexTextCoord + uRadius * 0.4;
+      vBlurCoords[10] = aVertexTextCoord + uRadius * 0.6;
+      vBlurCoords[11] = aVertexTextCoord + uRadius * 0.8;
+      vBlurCoords[12] = aVertexTextCoord + uRadius * 1.0;
+      vBlurCoords[13] = aVertexTextCoord + uRadius * 1.2;
+      vBlurCoords[14] = aVertexTextCoord + uRadius * 1.4;
+      vAlpha = aVertexAlpha;
+      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
+    }
+    """;
+
   String get fragmentShaderSource => """
+
       precision mediump float;
       uniform sampler2D uSampler;
-      uniform vec2 uPixel;
-      varying vec2 vTextCoord;
+
+      varying vec2 vBlurCoords[15];
       varying float vAlpha;
+
       void main() {
-        vec4 color = vec4(0);
-        color += texture2D(uSampler, vTextCoord - uPixel * 4.0) * 0.045;
-        color += texture2D(uSampler, vTextCoord - uPixel * 3.0) * 0.090;
-        color += texture2D(uSampler, vTextCoord - uPixel * 2.0) * 0.125;
-        color += texture2D(uSampler, vTextCoord - uPixel      ) * 0.155;
-        color += texture2D(uSampler, vTextCoord               ) * 0.170;
-        color += texture2D(uSampler, vTextCoord + uPixel      ) * 0.155;
-        color += texture2D(uSampler, vTextCoord + uPixel * 2.0) * 0.125;
-        color += texture2D(uSampler, vTextCoord + uPixel * 3.0) * 0.090;
-        color += texture2D(uSampler, vTextCoord + uPixel * 4.0) * 0.045;
-        gl_FragColor = color * vAlpha;
+        vec4 sum = vec4(0.0);
+        sum += texture2D(uSampler, vBlurCoords[ 0]) * 0.00443;
+        sum += texture2D(uSampler, vBlurCoords[ 1]) * 0.00896;
+        sum += texture2D(uSampler, vBlurCoords[ 2]) * 0.02160;
+        sum += texture2D(uSampler, vBlurCoords[ 3]) * 0.04437;
+        sum += texture2D(uSampler, vBlurCoords[ 4]) * 0.07768;
+        sum += texture2D(uSampler, vBlurCoords[ 5]) * 0.11588;
+        sum += texture2D(uSampler, vBlurCoords[ 6]) * 0.14731;
+        sum += texture2D(uSampler, vBlurCoords[ 7]) * 0.15958;
+        sum += texture2D(uSampler, vBlurCoords[ 8]) * 0.14731;
+        sum += texture2D(uSampler, vBlurCoords[ 9]) * 0.11588;
+        sum += texture2D(uSampler, vBlurCoords[10]) * 0.07768;
+        sum += texture2D(uSampler, vBlurCoords[11]) * 0.04437;
+        sum += texture2D(uSampler, vBlurCoords[12]) * 0.02160;
+        sum += texture2D(uSampler, vBlurCoords[13]) * 0.00896;
+        sum += texture2D(uSampler, vBlurCoords[14]) * 0.00443;
+        gl_FragColor = sum * vAlpha;
       }
       """;
 
-   void configure(num pixelX, num pixelY) {
-
-     var uPixelLocation = uniformLocations["uPixel"];
-     renderingContext.uniform2f(uPixelLocation, pixelX, pixelY);
+   void configure(num radiusX, num radiusY) {
+     var uPixelLocation = uniformLocations["uRadius"];
+     renderingContext.uniform2f(uPixelLocation, radiusX, radiusY);
    }
 }
