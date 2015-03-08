@@ -2,13 +2,6 @@ part of stagexl.display;
 
 class _BitmapContainerProgram extends RenderProgram {
 
-  // Note to the interested reader: The code of this class looks very bloated :)
-  // We don't write the code in a more generic way because we want the compiler
-  // to optimize the code for us. For example if every BitmapContainer in the
-  // application will ignore the skew property the compiler will remove the
-  // code dealing with the skew property completely. In the end we will get
-  // very fast and also small code.
-
   final BitmapProperty bitmapBitmapData;
   final BitmapProperty bitmapPosition;
   final BitmapProperty bitmapPivot;
@@ -20,14 +13,6 @@ class _BitmapContainerProgram extends RenderProgram {
 
   int _strideDynamic = 0;
   int _strideStatic = 0;
-
-  int _offsetBitmapData = 0;
-  int _offsetPosition = 0;
-  int _offsetRotation = 0;
-  int _offsetPivot = 0;
-  int _offsetScale = 0;
-  int _offsetAlpha = 0;
-  int _offsetSkew = 0;
 
   int _locationBitmapData = 0;
   int _locationPosition = 0;
@@ -42,8 +27,8 @@ class _BitmapContainerProgram extends RenderProgram {
       this.bitmapPivot, this.bitmapScale, this.bitmapSkew,
       this.bitmapRotation, this.bitmapAlpha, this.bitmapVisible) {
 
-    _initVertexDynamic();
-    _initVertexStatic();
+    _strideDynamic = _calculateStride(BitmapProperty.Dynamic);
+    _strideStatic = _calculateStride(BitmapProperty.Static);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -161,11 +146,13 @@ class _BitmapContainerProgram extends RenderProgram {
     renderingContext.uniform1i(_uSampler, 0);
     renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
     renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    _setVertexAttribPointersDynamic();
+    _setVertexAttribPointers(BitmapProperty.Dynamic);
   }
 
   @override
   void flush() {
+    // This RenderProgram has a built in draw call batching,
+    // therefore we don't need to flush anything to the GPU.
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -191,13 +178,13 @@ class _BitmapContainerProgram extends RenderProgram {
     // TODO: Use the static buffers.
     // TODO: Bind the right texture.
 
-    var batchSize = 50;
+    var batchSize = 200;
     var bitmaps = container._children;
 
     for (int i = 0; i < bitmaps.length; i += batchSize) {
 
       batchSize = minInt(bitmaps.length - i, batchSize);
-      _updateVertexBufferDynamic(bitmaps, i, batchSize);
+      _updateVertices(_vertexList, _strideDynamic, bitmaps, i, batchSize);
 
       BitmapData bitmapData = bitmaps[i].bitmapData;
       RenderTexture renderTexture = bitmapData.renderTexture;
@@ -212,146 +199,66 @@ class _BitmapContainerProgram extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  void _initVertexDynamic() {
-
-    if (bitmapBitmapData == BitmapProperty.Dynamic) {
-      _offsetBitmapData = _strideDynamic;
-      _strideDynamic += 4;
-    }
-    if (bitmapPosition == BitmapProperty.Dynamic) {
-      _offsetPosition = _strideDynamic;
-      _strideDynamic += 2;
-    }
-    if (bitmapPivot == BitmapProperty.Dynamic) {
-      _offsetPivot = _strideDynamic;
-      _strideDynamic += 2;
-    }
-    if (bitmapScale == BitmapProperty.Dynamic) {
-      _offsetScale = _strideDynamic;
-      _strideDynamic += 2;
-    }
-    if (bitmapSkew == BitmapProperty.Dynamic) {
-      _offsetSkew = _strideDynamic;
-      _strideDynamic += 2;
-    }
-    if (bitmapRotation == BitmapProperty.Dynamic) {
-      _offsetRotation = _strideDynamic;
-      _strideDynamic += 1;
-    }
-    if (bitmapAlpha == BitmapProperty.Dynamic) {
-      _offsetAlpha = _strideDynamic;
-      _strideDynamic += 1;
-    }
+  int _calculateStride(BitmapProperty bitmapProperty) {
+    int stride = 0;
+    if (bitmapBitmapData == bitmapProperty) stride += 4;
+    if (bitmapPosition == bitmapProperty) stride += 2;
+    if (bitmapPivot == bitmapProperty) stride += 2;
+    if (bitmapScale == bitmapProperty) stride += 2;
+    if (bitmapSkew == bitmapProperty) stride += 2;
+    if (bitmapRotation == bitmapProperty) stride += 1;
+    if (bitmapAlpha == bitmapProperty) stride += 1;
+    return stride;
   }
 
-  void _initVertexStatic() {
+  //-----------------------------------------------------------------------------------------------
 
-    if (bitmapBitmapData == BitmapProperty.Static) {
-      _offsetBitmapData = _strideStatic;
-      _strideStatic += 4;
+  void _setVertexAttribPointers(BitmapProperty bitmapProperty) {
+
+    int offset = 0;
+    int stride = _strideDynamic * 4;
+    int type = gl.FLOAT;
+
+    if (bitmapBitmapData == bitmapProperty) {
+      renderingContext.vertexAttribPointer(_locationBitmapData, 4, type, false, stride, offset);
+      offset += 16;
     }
-    if (bitmapPosition == BitmapProperty.Static) {
-      _offsetPosition = _strideStatic;
-      _strideStatic += 2;
+    if (bitmapPosition == bitmapProperty) {
+      renderingContext.vertexAttribPointer(_locationPosition, 2, type, false, stride, offset);
+      offset += 8;
     }
-    if (bitmapPivot == BitmapProperty.Static) {
-      _offsetPivot = _strideStatic;
-      _strideStatic += 2;
+    if (bitmapPivot == bitmapProperty) {
+      renderingContext.vertexAttribPointer(_locationPivot, 2, type, false, stride, offset);
+      offset += 8;
     }
-    if (bitmapScale == BitmapProperty.Static) {
-      _offsetScale = _strideStatic;
-      _strideStatic += 2;
+    if (bitmapScale == bitmapProperty) {
+      renderingContext.vertexAttribPointer(_locationScale, 2, type, false, stride, offset);
+      offset += 8;
     }
-    if (bitmapSkew == BitmapProperty.Static) {
-      _offsetSkew = _strideStatic;
-      _strideStatic += 2;
+    if (bitmapSkew == bitmapProperty) {
+      renderingContext.vertexAttribPointer(_locationSkew, 2, type, false, stride, offset);
+      offset += 8;
     }
-    if (bitmapRotation == BitmapProperty.Static) {
-      _offsetRotation = _strideStatic;
-      _strideStatic += 1;
+    if (bitmapRotation == bitmapProperty) {
+      renderingContext.vertexAttribPointer(_locationRotation, 1, type, false, stride, offset);
+      offset += 4;
     }
-    if (bitmapAlpha == BitmapProperty.Static) {
-      _offsetAlpha = _strideStatic;
-      _strideStatic += 1;
+    if (bitmapAlpha == bitmapProperty) {
+      renderingContext.vertexAttribPointer(_locationAlpha, 1, type, false, stride, offset);
+      offset += 8;
     }
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  void _setVertexAttribPointersDynamic() {
+  void _updateVertices(Float32List vxList, int stride,
+                       List<Bitmap> bitmaps, int start, int length) {
 
-    if (bitmapBitmapData == BitmapProperty.Dynamic) {
-      renderingContext.vertexAttribPointer(_locationBitmapData,
-          4, gl.FLOAT, false, _strideDynamic * 4, _offsetBitmapData * 4);
-    }
-    if (bitmapPosition == BitmapProperty.Dynamic) {
-      renderingContext.vertexAttribPointer(_locationPosition,
-          2, gl.FLOAT, false, _strideDynamic * 4, _offsetPosition * 4);
-    }
-    if (bitmapPivot == BitmapProperty.Dynamic) {
-      renderingContext.vertexAttribPointer(_locationPivot,
-          2, gl.FLOAT, false, _strideDynamic * 4, _offsetPivot * 4);
-    }
-    if (bitmapScale == BitmapProperty.Dynamic) {
-      renderingContext.vertexAttribPointer(_locationScale,
-          2, gl.FLOAT, false, _strideDynamic * 4, _offsetScale * 4);
-    }
-    if (bitmapSkew == BitmapProperty.Dynamic) {
-      renderingContext.vertexAttribPointer(_locationSkew,
-          2, gl.FLOAT, false, _strideDynamic * 4, _offsetSkew * 4);
-    }
-    if (bitmapRotation == BitmapProperty.Dynamic) {
-      renderingContext.vertexAttribPointer(_locationRotation,
-          1, gl.FLOAT, false, _strideDynamic * 4, _offsetRotation * 4);
-    }
-    if (bitmapAlpha == BitmapProperty.Dynamic) {
-      renderingContext.vertexAttribPointer(_locationAlpha,
-          1, gl.FLOAT, false, _strideDynamic * 4, _offsetAlpha * 4);
-    }
-  }
-
-  void _setVertexAttribPointersStatic() {
-
-    if (bitmapBitmapData == BitmapProperty.Static) {
-      renderingContext.vertexAttribPointer(_locationBitmapData,
-          4, gl.FLOAT, false, _strideStatic * 4, _offsetBitmapData * 4);
-    }
-    if (bitmapPosition == BitmapProperty.Static) {
-      renderingContext.vertexAttribPointer(_locationPosition,
-          2, gl.FLOAT, false, _strideStatic * 4, _offsetPosition * 4);
-    }
-    if (bitmapPivot == BitmapProperty.Static) {
-      renderingContext.vertexAttribPointer(_locationPivot,
-          2, gl.FLOAT, false, _strideStatic * 4, _offsetPivot * 4);
-    }
-    if (bitmapScale == BitmapProperty.Static) {
-      renderingContext.vertexAttribPointer(_locationScale,
-          2, gl.FLOAT, false, _strideStatic * 4, _offsetScale * 4);
-    }
-    if (bitmapSkew == BitmapProperty.Static) {
-      renderingContext.vertexAttribPointer(_locationSkew,
-          2, gl.FLOAT, false, _strideStatic * 4, _offsetSkew * 4);
-    }
-    if (bitmapRotation == BitmapProperty.Static) {
-      renderingContext.vertexAttribPointer(_locationRotation,
-          1, gl.FLOAT, false, _strideStatic * 4, _offsetRotation * 4);
-    }
-    if (bitmapAlpha == BitmapProperty.Static) {
-      renderingContext.vertexAttribPointer(_locationAlpha,
-          1, gl.FLOAT, false, _strideStatic * 4, _offsetAlpha * 4);
-    }
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  void _updateVertexBufferDynamic(List<Bitmap> bitmaps, int start, int length) {
-
-    var vxList  = _vertexList;
-    var vertex0 = _strideDynamic * 0;
-    var vertex1 = _strideDynamic * 1;
-    var vertex2 = _strideDynamic * 2;
-    var vertex3 = _strideDynamic * 3;
-    var vertex4 = _strideDynamic * 4;
+    var vertex0 = stride * 0;
+    var vertex1 = stride * 1;
+    var vertex2 = stride * 2;
+    var vertex3 = stride * 3;
+    var vertex4 = stride * 4;
 
     for(int i = 0; i < length; i++) {
 
@@ -457,7 +364,6 @@ class _BitmapContainerProgram extends RenderProgram {
         vxList[offset + vertex3 + 0] = alpha;
         offset += 1;
       }
-
     }
   }
 

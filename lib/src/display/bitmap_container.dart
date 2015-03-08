@@ -27,8 +27,7 @@ enum BitmapProperty {
 /// [BitmapProperty.Static]. Only properties that change regularly
 /// (like the position) should be set to [BitmapProperty.Dynamic].
 ///
-/// You can define the behavior of properties shown below. For best possible
-/// performance the [Bitmap.filters] property is not supported.
+/// You can define the behavior of properties shown below.
 ///
 /// [BitmapContainer.bitmapBitmapData]: Default is Static
 /// [BitmapContainer.bitmapPosition]: Default is Dynamic
@@ -41,6 +40,7 @@ enum BitmapProperty {
 ///
 /// For additional performance the [BitmapContainer] does not dispatch events
 /// when Bitmaps are added or removed like the [DisplayObjectContainer] does.
+/// Also the childrens [Bitmap.filters] property is ignored by default.
 ///
 /// Please note that the performance of the [BitmapContainer] may be inferior
 /// compared to a standard container like [Sprite]. You will only get better
