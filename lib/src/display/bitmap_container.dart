@@ -39,6 +39,9 @@ enum BitmapProperty {
 /// [BitmapContainer.bitmapAlpha]: Default is Ignore
 /// [BitmapContainer.bitmapVisible]: Default is Ignore
 ///
+/// For additional performance the [BitmapContainer] does not dispatch events
+/// when Bitmaps are added or removed like the [DisplayObjectContainer] does.
+///
 /// Please note that the performance of the [BitmapContainer] may be inferior
 /// compared to a standard container like [Sprite]. You will only get better
 /// performance if the [BitmapContainer] contains lots of children where
@@ -97,7 +100,7 @@ class BitmapContainer
 
   void dispose() {
     while(_buffers.length > 0) {
-      _buffers.removeAt(0).dispose();
+      _buffers.removeLast().dispose();
     }
   }
 
