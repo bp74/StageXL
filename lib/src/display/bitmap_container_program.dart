@@ -160,6 +160,8 @@ class _BitmapContainerProgram extends RenderProgram {
   void renderBitmapContainer(RenderState renderState, BitmapContainer container) {
 
     RenderContextWebGL renderContext = renderState.renderContext;
+    RenderTexture activeRenderTexture = renderContext.activeRenderTexture;
+
     Matrix globalMatrix = renderState.globalMatrix;
     num globalAlpha = renderState.globalAlpha;
     Float32List uGlobalMatrix = new Float32List(9);
@@ -176,24 +178,39 @@ class _BitmapContainerProgram extends RenderProgram {
 
     // TODO: Use the right size for the batch.
     // TODO: Use the static buffers.
-    // TODO: Bind the right texture.
 
-    var batchSize = 200;
-    var bitmaps = container._children;
+    List<Bitmap> bitmaps = container._children;
 
-    for (int i = 0; i < bitmaps.length; i += batchSize) {
+    int quadLimit = 200;
+    int quadIndex = 0;
+    int bitmapIndex = 0;
 
-      batchSize = minInt(bitmaps.length - i, batchSize);
-      _updateVertices(_vertexList, _strideDynamic, bitmaps, i, batchSize);
+    while (bitmapIndex < bitmaps.length) {
 
-      BitmapData bitmapData = bitmaps[i].bitmapData;
-      RenderTexture renderTexture = bitmapData.renderTexture;
-      renderContext.activateRenderTexture(renderTexture);
+      var bitmap = bitmaps[bitmapIndex];
+      var bitmapData = bitmap.bitmapData;
+      var renderTexture = bitmapData.renderTexture;
 
-      var vertexUpdateLength = _strideDynamic * batchSize * 4;
-      var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, vertexUpdateLength);
-      renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
-      renderingContext.drawElements(gl.TRIANGLES, batchSize * 6, gl.UNSIGNED_SHORT, 0);
+      var validTexture = identical(activeRenderTexture, renderTexture);
+      if (validTexture) {
+        _updateVertex(bitmap, _vertexList, quadIndex, _strideDynamic);
+        bitmapIndex += 1;
+        quadIndex += 1;
+      }
+
+      var flush = validTexture ? bitmapIndex == bitmaps.length : quadIndex > 0;
+      if (flush || quadIndex == quadLimit) {
+        var vertexUpdateLength = _strideDynamic * quadIndex * 4;
+        var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, vertexUpdateLength);
+        renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+        renderingContext.drawElements(gl.TRIANGLES, quadIndex * 6, gl.UNSIGNED_SHORT, 0);
+        quadIndex = 0;
+      }
+
+      if (validTexture == false) {
+        activeRenderTexture = renderTexture;
+        renderContext.activateRenderTexture(renderTexture);
+      }
     }
   }
 
@@ -255,119 +272,112 @@ class _BitmapContainerProgram extends RenderProgram {
 
   //-----------------------------------------------------------------------------------------------
 
-  void _updateVertices(Float32List vxList, int stride,
-                       List<Bitmap> bitmaps, int start, int length) {
+  void _updateVertex(Bitmap bitmap, Float32List vxList, int quadIndex, int stride) {
 
     var vertex0 = stride * 0;
     var vertex1 = stride * 1;
     var vertex2 = stride * 2;
     var vertex3 = stride * 3;
-    var vertex4 = stride * 4;
+    var offset  = stride * 4 * quadIndex;
 
-    for(int i = 0; i < length; i++) {
+    if (bitmapBitmapData == BitmapProperty.Dynamic) {
+      var renderTextureQuad = bitmap.bitmapData.renderTextureQuad;
+      var quadX = renderTextureQuad.offsetX.toDouble();
+      var quadY = renderTextureQuad.offsetY.toDouble();
+      var quadWidth = renderTextureQuad.textureWidth.toDouble();
+      var quadHeight = renderTextureQuad.textureHeight.toDouble();
+      var quadUVs = renderTextureQuad.uvList;
+      vxList[offset + vertex0 + 0] = quadX;
+      vxList[offset + vertex0 + 1] = quadY;
+      vxList[offset + vertex0 + 2] = quadUVs[0];
+      vxList[offset + vertex0 + 3] = quadUVs[1];
+      vxList[offset + vertex1 + 0] = quadX + quadWidth;
+      vxList[offset + vertex1 + 1] = quadY;
+      vxList[offset + vertex1 + 2] = quadUVs[2];
+      vxList[offset + vertex1 + 3] = quadUVs[3];
+      vxList[offset + vertex2 + 0] = quadX + quadWidth;
+      vxList[offset + vertex2 + 1] = quadY + quadHeight;
+      vxList[offset + vertex2 + 2] = quadUVs[4];
+      vxList[offset + vertex2 + 3] = quadUVs[5];
+      vxList[offset + vertex3 + 0] = quadX;
+      vxList[offset + vertex3 + 1] = quadY + quadHeight;
+      vxList[offset + vertex3 + 2] = quadUVs[6];
+      vxList[offset + vertex3 + 3] = quadUVs[7];
+      offset += 4;
+    }
 
-      var bitmap = bitmaps[start + i];
-      var offset = i * vertex4;
+    if (bitmapPosition == BitmapProperty.Dynamic) {
+      var x = bitmap.x.toDouble();
+      var y = bitmap.y.toDouble();
+      vxList[offset + vertex0 + 0] = x;
+      vxList[offset + vertex0 + 1] = y;
+      vxList[offset + vertex1 + 0] = x;
+      vxList[offset + vertex1 + 1] = y;
+      vxList[offset + vertex2 + 0] = x;
+      vxList[offset + vertex2 + 1] = y;
+      vxList[offset + vertex3 + 0] = x;
+      vxList[offset + vertex3 + 1] = y;
+      offset += 2;
+    }
 
-      if (bitmapBitmapData == BitmapProperty.Dynamic) {
-        var renderTextureQuad = bitmap.bitmapData.renderTextureQuad;
-        var quadX = renderTextureQuad.offsetX.toDouble();
-        var quadY = renderTextureQuad.offsetY.toDouble();
-        var quadWidth = renderTextureQuad.textureWidth.toDouble();
-        var quadHeight = renderTextureQuad.textureHeight.toDouble();
-        var quadUVs = renderTextureQuad.uvList;
-        vxList[offset + vertex0 + 0] = quadX;
-        vxList[offset + vertex0 + 1] = quadY;
-        vxList[offset + vertex0 + 2] = quadUVs[0];
-        vxList[offset + vertex0 + 3] = quadUVs[1];
-        vxList[offset + vertex1 + 0] = quadX + quadWidth;
-        vxList[offset + vertex1 + 1] = quadY;
-        vxList[offset + vertex1 + 2] = quadUVs[2];
-        vxList[offset + vertex1 + 3] = quadUVs[3];
-        vxList[offset + vertex2 + 0] = quadX + quadWidth;
-        vxList[offset + vertex2 + 1] = quadY + quadHeight;
-        vxList[offset + vertex2 + 2] = quadUVs[4];
-        vxList[offset + vertex2 + 3] = quadUVs[5];
-        vxList[offset + vertex3 + 0] = quadX;
-        vxList[offset + vertex3 + 1] = quadY + quadHeight;
-        vxList[offset + vertex3 + 2] = quadUVs[6];
-        vxList[offset + vertex3 + 3] = quadUVs[7];
-        offset += 4;
-      }
+    if (bitmapPivot == BitmapProperty.Dynamic) {
+      var pivotX = bitmap.pivotX.toDouble();
+      var pivotY = bitmap.pivotY.toDouble();
+      vxList[offset + vertex0 + 0] = pivotX;
+      vxList[offset + vertex0 + 1] = pivotY;
+      vxList[offset + vertex1 + 0] = pivotX;
+      vxList[offset + vertex1 + 1] = pivotY;
+      vxList[offset + vertex2 + 0] = pivotX;
+      vxList[offset + vertex2 + 1] = pivotY;
+      vxList[offset + vertex3 + 0] = pivotX;
+      vxList[offset + vertex3 + 1] = pivotY;
+      offset += 2;
+    }
 
-      if (bitmapPosition == BitmapProperty.Dynamic) {
-        var x = bitmap.x.toDouble();
-        var y = bitmap.y.toDouble();
-        vxList[offset + vertex0 + 0] = x;
-        vxList[offset + vertex0 + 1] = y;
-        vxList[offset + vertex1 + 0] = x;
-        vxList[offset + vertex1 + 1] = y;
-        vxList[offset + vertex2 + 0] = x;
-        vxList[offset + vertex2 + 1] = y;
-        vxList[offset + vertex3 + 0] = x;
-        vxList[offset + vertex3 + 1] = y;
-        offset += 2;
-      }
+    if (bitmapScale == BitmapProperty.Dynamic) {
+      var scaleX = bitmap.scaleX.toDouble();
+      var scaleY = bitmap.scaleY.toDouble();
+      vxList[offset + vertex0 + 0] = scaleX;
+      vxList[offset + vertex0 + 1] = scaleY;
+      vxList[offset + vertex1 + 0] = scaleX;
+      vxList[offset + vertex1 + 1] = scaleY;
+      vxList[offset + vertex2 + 0] = scaleX;
+      vxList[offset + vertex2 + 1] = scaleY;
+      vxList[offset + vertex3 + 0] = scaleX;
+      vxList[offset + vertex3 + 1] = scaleY;
+      offset += 2;
+    }
 
-      if (bitmapPivot == BitmapProperty.Dynamic) {
-        var pivotX = bitmap.pivotX.toDouble();
-        var pivotY = bitmap.pivotY.toDouble();
-        vxList[offset + vertex0 + 0] = pivotX;
-        vxList[offset + vertex0 + 1] = pivotY;
-        vxList[offset + vertex1 + 0] = pivotX;
-        vxList[offset + vertex1 + 1] = pivotY;
-        vxList[offset + vertex2 + 0] = pivotX;
-        vxList[offset + vertex2 + 1] = pivotY;
-        vxList[offset + vertex3 + 0] = pivotX;
-        vxList[offset + vertex3 + 1] = pivotY;
-        offset += 2;
-      }
+    if (bitmapSkew == BitmapProperty.Dynamic) {
+      var skewX = bitmap.skewX.toDouble();
+      var skewY = bitmap.skewY.toDouble();
+      vxList[offset + vertex0 + 0] = skewX;
+      vxList[offset + vertex0 + 1] = skewY;
+      vxList[offset + vertex1 + 0] = skewX;
+      vxList[offset + vertex1 + 1] = skewY;
+      vxList[offset + vertex2 + 0] = skewX;
+      vxList[offset + vertex2 + 1] = skewY;
+      vxList[offset + vertex3 + 0] = skewX;
+      vxList[offset + vertex3 + 1] = skewY;
+      offset += 2;
+    }
 
-      if (bitmapScale == BitmapProperty.Dynamic) {
-        var scaleX = bitmap.scaleX.toDouble();
-        var scaleY = bitmap.scaleY.toDouble();
-        vxList[offset + vertex0 + 0] = scaleX;
-        vxList[offset + vertex0 + 1] = scaleY;
-        vxList[offset + vertex1 + 0] = scaleX;
-        vxList[offset + vertex1 + 1] = scaleY;
-        vxList[offset + vertex2 + 0] = scaleX;
-        vxList[offset + vertex2 + 1] = scaleY;
-        vxList[offset + vertex3 + 0] = scaleX;
-        vxList[offset + vertex3 + 1] = scaleY;
-        offset += 2;
-      }
+    if (bitmapRotation == BitmapProperty.Dynamic) {
+      var rotation = bitmap.rotation.toDouble();
+      vxList[offset + vertex0 + 0] = rotation;
+      vxList[offset + vertex1 + 0] = rotation;
+      vxList[offset + vertex2 + 0] = rotation;
+      vxList[offset + vertex3 + 0] = rotation;
+      offset += 1;
+    }
 
-      if (bitmapSkew == BitmapProperty.Dynamic) {
-        var skewX = bitmap.skewX.toDouble();
-        var skewY = bitmap.skewY.toDouble();
-        vxList[offset + vertex0 + 0] = skewX;
-        vxList[offset + vertex0 + 1] = skewY;
-        vxList[offset + vertex1 + 0] = skewX;
-        vxList[offset + vertex1 + 1] = skewY;
-        vxList[offset + vertex2 + 0] = skewX;
-        vxList[offset + vertex2 + 1] = skewY;
-        vxList[offset + vertex3 + 0] = skewX;
-        vxList[offset + vertex3 + 1] = skewY;
-        offset += 2;
-      }
-
-      if (bitmapRotation == BitmapProperty.Dynamic) {
-        var rotation = bitmap.rotation.toDouble();
-        vxList[offset + vertex0 + 0] = rotation;
-        vxList[offset + vertex1 + 0] = rotation;
-        vxList[offset + vertex2 + 0] = rotation;
-        vxList[offset + vertex3 + 0] = rotation;
-        offset += 1;
-      }
-
-      if (bitmapAlpha == BitmapProperty.Dynamic) {
-        var alpha = bitmap.alpha.toDouble();
-        vxList[offset + vertex0 + 0] = alpha;
-        vxList[offset + vertex1 + 0] = alpha;
-        vxList[offset + vertex2 + 0] = alpha;
-        vxList[offset + vertex3 + 0] = alpha;
-        offset += 1;
-      }
+    if (bitmapAlpha == BitmapProperty.Dynamic) {
+      var alpha = bitmap.alpha.toDouble();
+      vxList[offset + vertex0 + 0] = alpha;
+      vxList[offset + vertex1 + 0] = alpha;
+      vxList[offset + vertex2 + 0] = alpha;
+      vxList[offset + vertex3 + 0] = alpha;
+      offset += 1;
     }
   }
 
