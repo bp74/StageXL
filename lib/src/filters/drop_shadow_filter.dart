@@ -236,6 +236,7 @@ class DropShadowFilterProgram extends BitmapFilterProgram {
     """;
 
   String get fragmentShaderSource => """
+
     precision mediump float;
     uniform sampler2D uSampler;
     uniform vec4 uColor;

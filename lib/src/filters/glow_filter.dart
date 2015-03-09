@@ -10,34 +10,97 @@ import '../internal/tools.dart';
 
 class GlowFilter extends BitmapFilter {
 
-  int color;
-  int blurX;
-  int blurY;
+  int _color;
+  int _blurX;
+  int _blurY;
+  int _quality;
+
   bool knockout;
   bool hideObject;
 
-  GlowFilter(this.color, this.blurX, this.blurY, {
-             this.knockout: false, this.hideObject: false}) {
+  final List<int> _renderPassSources = new List<int>();
+  final List<int> _renderPassTargets = new List<int>();
 
-    if (blurX < 0 || blurY < 0) {
-      throw new ArgumentError("The minimum blur size is 0.");
-    }
-    if (blurX > 64 || blurY > 64) {
-      throw new ArgumentError("The maximum blur size is 64.");
-    }
+  GlowFilter([
+    int color = 0xFF000000,
+    int blurX = 4, int blurY, int quality = 1,
+    bool knockout = false, bool hideObject = false]) {
+
+    this.color = color;
+    this.blurX = blurX;
+    this.blurY = blurY;
+    this.quality = quality;
+    this.knockout = knockout;
+    this.hideObject = hideObject;
   }
 
-  BitmapFilter clone() => new GlowFilter(
-      color, blurX, blurY,
-      knockout: knockout, hideObject: hideObject);
+  //---------------------------------------------------------------------------
 
-  Rectangle<int> get overlap => new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
+  BitmapFilter clone() {
+    return new GlowFilter(color, blurX, blurY, quality, knockout,  hideObject);
+  }
 
-  List<int> get renderPassSources => const [0, 1, 0];
-  List<int> get renderPassTargets => const [1, 2, 2];
+  Rectangle<int> get overlap {
+    return new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
+  }
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  List<int> get renderPassSources => _renderPassSources;
+  List<int> get renderPassTargets => _renderPassTargets;
+
+  //---------------------------------------------------------------------------
+
+  /// The color of the glow.
+
+  int get color => _color;
+
+  set color(int value) {
+    _color = value;
+  }
+
+  /// The horizontal blur radius in the range from 0 to 64.
+
+  int get blurX => _blurX;
+
+  set blurX(int value) {
+    RangeError.checkValueInInterval(value, 0, 64);
+    _blurX = value;
+  }
+
+  /// The vertical blur radius in the range from 0 to 64.
+
+  int get blurY => _blurY;
+
+  set blurY(int value) {
+    RangeError.checkValueInInterval(value, 0, 64);
+    _blurY = value;
+  }
+
+  /// The quality of the glow in the range from 1 to 10.
+  /// A small value is sufficent for small blur radii, a high blur
+  /// radius may require a heigher quality setting.
+
+  int get quality => _quality;
+
+  set quality(int value) {
+
+    RangeError.checkValueInInterval(value, 1, 10);
+
+    _quality = value;
+    _renderPassSources.clear();
+    _renderPassTargets.clear();
+
+    for(int i = 0; i < value; i++) {
+      _renderPassSources.add(i * 2 + 0);
+      _renderPassSources.add(i * 2 + 1);
+      _renderPassTargets.add(i * 2 + 1);
+      _renderPassTargets.add(i * 2 + 2);
+    }
+
+    _renderPassSources.add(0);
+    _renderPassTargets.add(value * 2);
+  }
+
+  //---------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
@@ -78,9 +141,10 @@ class GlowFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+  void renderFilter(RenderState renderState,
+                    RenderTextureQuad renderTextureQuad, int pass) {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
@@ -91,60 +155,85 @@ class GlowFilter extends BitmapFilter {
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
 
-    if (pass == 0) {
-      renderProgram.configure(color, 0.250 * blurX / renderTexture.width, 0.0);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
-    } else if (pass == 1) {
-      renderProgram.configure(color, 0.0, 0.250 * blurY / renderTexture.height);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
-    } else if (pass == 2) {
-      // TODO: render the knockout effect!
+    if (pass == _renderPassSources.length - 1) {
       if (this.knockout || this.hideObject) return;
       renderState.renderQuad(renderTextureQuad);
+    } else if (pass % 2 == 0) {
+      renderProgram.configure(color, blurX / quality / renderTexture.width, 0.0);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
+    } else {
+      renderProgram.configure(color, 0.0, blurY / quality / renderTexture.height);
+      renderProgram.renderQuad(renderState, renderTextureQuad);
     }
   }
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 class GlowFilterProgram extends BitmapFilterProgram {
 
-  String get fragmentShaderSource => """
-      precision mediump float;
-      uniform sampler2D uSampler;
-      uniform vec2 uPixel;
-      uniform vec4 uColor;
-      varying vec2 vTextCoord;
-      varying float vAlpha;
-      void main() {
-        float alpha = 0.0;
-        alpha += texture2D(uSampler, vTextCoord - uPixel * 4.0).a * 0.045;
-        alpha += texture2D(uSampler, vTextCoord - uPixel * 3.0).a * 0.090;
-        alpha += texture2D(uSampler, vTextCoord - uPixel * 2.0).a * 0.125;
-        alpha += texture2D(uSampler, vTextCoord - uPixel      ).a * 0.155;
-        alpha += texture2D(uSampler, vTextCoord               ).a * 0.170;
-        alpha += texture2D(uSampler, vTextCoord + uPixel      ).a * 0.155;
-        alpha += texture2D(uSampler, vTextCoord + uPixel * 2.0).a * 0.125;
-        alpha += texture2D(uSampler, vTextCoord + uPixel * 3.0).a * 0.090;
-        alpha += texture2D(uSampler, vTextCoord + uPixel * 4.0).a * 0.045;
-        alpha *= vAlpha;
-        gl_FragColor = vec4(uColor.rgb * alpha, alpha);
-      }
-      """;
+  String get vertexShaderSource => """
 
-   void configure(int color, num pixelX, num pixelY) {
+    uniform mat4 uProjectionMatrix;
+    uniform vec2 uRadius;
+
+    attribute vec2 aVertexPosition;
+    attribute vec2 aVertexTextCoord;
+    attribute float aVertexAlpha;
+
+    varying vec2 vBlurCoords[7];
+    varying float vAlpha;
+
+    void main() {
+      vBlurCoords[0] = aVertexTextCoord - uRadius * 1.2;
+      vBlurCoords[1] = aVertexTextCoord - uRadius * 0.8;
+      vBlurCoords[2] = aVertexTextCoord - uRadius * 0.4;
+      vBlurCoords[3] = aVertexTextCoord;
+      vBlurCoords[4] = aVertexTextCoord + uRadius * 0.4;
+      vBlurCoords[5] = aVertexTextCoord + uRadius * 0.8;
+      vBlurCoords[6] = aVertexTextCoord + uRadius * 1.2;
+      vAlpha = aVertexAlpha;
+      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
+    }
+    """;
+
+  String get fragmentShaderSource => """
+    
+    precision mediump float;
+    uniform sampler2D uSampler;
+    uniform vec4 uColor;
+
+    varying vec2 vBlurCoords[7];
+    varying float vAlpha;
+
+    void main() {
+      float alpha = 0.0;
+      alpha += texture2D(uSampler, vBlurCoords[0]).a * 0.00443;
+      alpha += texture2D(uSampler, vBlurCoords[1]).a * 0.05399;
+      alpha += texture2D(uSampler, vBlurCoords[2]).a * 0.24197;
+      alpha += texture2D(uSampler, vBlurCoords[3]).a * 0.39894;
+      alpha += texture2D(uSampler, vBlurCoords[4]).a * 0.24197;
+      alpha += texture2D(uSampler, vBlurCoords[5]).a * 0.05399;
+      alpha += texture2D(uSampler, vBlurCoords[6]).a * 0.00443;
+      alpha *= vAlpha;
+      alpha *= uColor.a;
+      gl_FragColor = vec4(uColor.rgb * alpha, alpha);
+    }
+    """;
+
+   void configure(int color, num radiusX, num radiusY) {
 
      num r = colorGetR(color) / 255.0;
      num g = colorGetG(color) / 255.0;
      num b = colorGetB(color) / 255.0;
      num a = colorGetA(color) / 255.0;
 
-     var uPixelLocation = uniformLocations["uPixel"];
      var uColorLocation = uniformLocations["uColor"];
+     var uRadiusLocation = uniformLocations["uRadius"];
 
-     renderingContext.uniform2f(uPixelLocation, pixelX, pixelY);
      renderingContext.uniform4f(uColorLocation, r, g, b, a);
+     renderingContext.uniform2f(uRadiusLocation, radiusX, radiusY);
    }
 }
 
