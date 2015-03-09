@@ -24,8 +24,10 @@ class DropShadowFilter extends BitmapFilter {
   final List<int> _renderPassSources = new List<int>();
   final List<int> _renderPassTargets = new List<int>();
 
-  DropShadowFilter(num distance, num angle, int color, int blurX, int blurY,
-      [int quality = 1, bool knockout = false, bool hideObject = false]) {
+  DropShadowFilter([
+    num distance = 8, num angle = PI / 4, int color = 0xFF000000,
+    int blurX = 4, int blurY = 4, int quality = 1,
+    bool knockout = false, bool hideObject = false]) {
 
     this.distance = distance;
     this.angle = angle;

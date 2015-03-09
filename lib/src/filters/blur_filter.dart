@@ -10,9 +10,9 @@ import '../internal/tools.dart';
 
 class BlurFilter extends BitmapFilter {
 
-  int _blurX = 4;
-  int _blurY = 4;
-  int _quality = 1;
+  int _blurX;
+  int _blurY;
+  int _quality;
 
   final List<int> _renderPassSources = new List<int>();
   final List<int> _renderPassTargets = new List<int>();
