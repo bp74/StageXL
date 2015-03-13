@@ -1,5 +1,6 @@
 library stagexl.filters.blur;
 
+import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show ImageData;
 
 import '../display.dart';
@@ -129,7 +130,7 @@ class BlurFilter extends BitmapFilter {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    num scale = 1.0 / (1.0 + (pass >> 1));
+    num scale = pow(0.5, pass >> 1);
 
     BlurFilterProgram renderProgram = renderContext.getRenderProgram(
         r"$BlurFilterProgram", () => new BlurFilterProgram());

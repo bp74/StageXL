@@ -1,5 +1,6 @@
 library stagexl.filters.glow;
 
+import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show ImageData;
 
 import '../display.dart';
@@ -148,7 +149,7 @@ class GlowFilter extends BitmapFilter {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    num scale = 1.0 / (1.0 + (pass >> 1));
+    num scale = pow(0.5, pass >> 1);
 
     GlowFilterProgram renderProgram = renderContext.getRenderProgram(
         r"$GlowFilterProgram", () => new GlowFilterProgram());
