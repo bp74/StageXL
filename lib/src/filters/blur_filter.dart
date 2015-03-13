@@ -62,7 +62,7 @@ class BlurFilter extends BitmapFilter {
     _blurY = value;
   }
 
-  /// The quality of the blur effect in the range from 1 to 10.
+  /// The quality of the blur effect in the range from 1 to 5.
   /// A small value is sufficent for small blur radii, a high blur
   /// radius may require a heigher quality setting.
 
@@ -70,7 +70,7 @@ class BlurFilter extends BitmapFilter {
 
   set quality(int value) {
 
-    RangeError.checkValueInInterval(value, 1, 10);
+    RangeError.checkValueInInterval(value, 1, 5);
 
     _quality = value;
     _renderPassSources.clear();
