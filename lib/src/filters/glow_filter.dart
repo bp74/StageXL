@@ -23,7 +23,7 @@ class GlowFilter extends BitmapFilter {
 
   GlowFilter([
     int color = 0xFF000000,
-    int blurX = 4, int blurY, int quality = 1,
+    int blurX = 4, int blurY = 4, int quality = 1,
     bool knockout = false, bool hideObject = false]) {
 
     this.color = color;
@@ -148,6 +148,7 @@ class GlowFilter extends BitmapFilter {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    num scale = 1.0 / (1.0 + (pass >> 1));
 
     GlowFilterProgram renderProgram = renderContext.getRenderProgram(
         r"$GlowFilterProgram", () => new GlowFilterProgram());
@@ -159,10 +160,10 @@ class GlowFilter extends BitmapFilter {
       if (this.knockout || this.hideObject) return;
       renderState.renderQuad(renderTextureQuad);
     } else if (pass % 2 == 0) {
-      renderProgram.configure(color, blurX / quality / renderTexture.width, 0.0);
+      renderProgram.configure(color, scale * blurX / renderTexture.width, 0.0);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     } else {
-      renderProgram.configure(color, 0.0, blurY / quality / renderTexture.height);
+      renderProgram.configure(color, 0.0, scale * blurY / renderTexture.height);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     }
   }

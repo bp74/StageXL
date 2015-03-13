@@ -178,6 +178,7 @@ class DropShadowFilter extends BitmapFilter {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    num scale = 1.0 / (1.0 + (pass >> 1));
 
     DropShadowFilterProgram renderProgram = renderContext.getRenderProgram(
         r"$DropShadowFilterProgram", () => new DropShadowFilterProgram());
@@ -190,13 +191,13 @@ class DropShadowFilter extends BitmapFilter {
       renderState.renderQuad(renderTextureQuad);
     } else if (pass % 2 == 0) {
       var shift = (this.distance * cos(this.angle)).round() / renderTexture.width;
-      var radius = blurX / quality / renderTexture.width;
+      var radius = scale * blurX / renderTexture.width;
       renderProgram.configure(color, pass >= 2 ? 0 : shift, 0.0, radius, 0.0);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     } else {
       var shift = (this.distance * sin(this.angle)).round() / renderTexture.height;
       if (pass >= 2) shift  = 0;
-      var radius = blurY / quality / renderTexture.height;
+      var radius = scale * blurY / renderTexture.height;
       renderProgram.configure(color, 0.0, pass >= 2 ? 0 : shift, 0.0, radius);
       renderProgram.renderQuad(renderState, renderTextureQuad);
     }
