@@ -1,6 +1,6 @@
 part of stagexl.display;
 
-class BitmapContainerProgram extends RenderProgram {
+class _BitmapContainerProgram extends RenderProgram {
 
   final BitmapProperty bitmapBitmapData;
   final BitmapProperty bitmapPosition;
@@ -12,25 +12,25 @@ class BitmapContainerProgram extends RenderProgram {
   final BitmapProperty bitmapVisible;
 
   RenderBufferIndex _renderBufferIndex = null;
-  BitmapContainerBuffer _dynamicBuffer = null;
-  BitmapContainerBuffer _staticBuffer = null;
+  _BitmapContainerBuffer _dynamicBuffer = null;
+  _BitmapContainerBuffer _staticBuffer = null;
 
   int _dynamicStride = 0;
   int _staticStride = 0;
 
   //---------------------------------------------------------------------------
 
-  BitmapContainerProgram(
+  _BitmapContainerProgram(
       this.bitmapBitmapData, this.bitmapPosition,
       this.bitmapPivot, this.bitmapScale, this.bitmapSkew,
       this.bitmapRotation, this.bitmapAlpha, this.bitmapVisible) {
 
     _dynamicStride = _calculateStride(BitmapProperty.Dynamic);
-    _dynamicBuffer = new BitmapContainerBuffer(this,
+    _dynamicBuffer = new _BitmapContainerBuffer(this,
         BitmapProperty.Dynamic, 1024, _dynamicStride);
 
     _staticStride = _calculateStride(BitmapProperty.Static);
-    _staticBuffer = new BitmapContainerBuffer(this,
+    _staticBuffer = new _BitmapContainerBuffer(this,
         BitmapProperty.Static, 1024, _staticStride);
   }
 

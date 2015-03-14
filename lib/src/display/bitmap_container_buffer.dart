@@ -1,8 +1,8 @@
 part of stagexl.display;
 
-class BitmapContainerBuffer extends RenderBufferVertex {
+class _BitmapContainerBuffer extends RenderBufferVertex {
 
-  final BitmapContainerProgram program;
+  final _BitmapContainerProgram program;
   final BitmapProperty bitmapProperty;
   final int quads;
   final int stride;
@@ -16,9 +16,9 @@ class BitmapContainerBuffer extends RenderBufferVertex {
   final bool _useBitmapAlpha;
   final bool _useBitmapVisible;
 
-  BitmapContainerBuffer(BitmapContainerProgram program,
-                        BitmapProperty bitmapProperty,
-                        int quads, int stride) : super(quads * 4 * stride),
+  _BitmapContainerBuffer(_BitmapContainerProgram program,
+                         BitmapProperty bitmapProperty,
+                         int quads, int stride) : super(quads * 4 * stride),
 
     this.program = program,
     this.bitmapProperty = bitmapProperty,

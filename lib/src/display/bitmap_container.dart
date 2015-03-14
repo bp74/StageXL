@@ -60,7 +60,7 @@ class BitmapContainer
   final BitmapProperty bitmapAlpha;
   final BitmapProperty bitmapVisible;
 
-  final _buffers = new List<BitmapContainerBuffer>();
+  final _buffers = new List<_BitmapContainerBuffer>();
   final _children = new List<Bitmap>();
 
   String _bitmapContainerProgramName = "";
@@ -201,8 +201,8 @@ class BitmapContainer
 
     RenderContextWebGL renderContext = renderState.renderContext;
 
-    BitmapContainerProgram renderProgram = renderContext.getRenderProgram(
-        _bitmapContainerProgramName, () => new BitmapContainerProgram(
+    _BitmapContainerProgram renderProgram = renderContext.getRenderProgram(
+        _bitmapContainerProgramName, () => new _BitmapContainerProgram(
             this.bitmapBitmapData, this.bitmapPosition, this.bitmapRotation,
             this.bitmapVisible, this.bitmapPivot, this.bitmapScale,
             this.bitmapAlpha, this.bitmapSkew));
