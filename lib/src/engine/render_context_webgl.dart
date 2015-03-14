@@ -10,8 +10,8 @@ class RenderContextWebGL extends RenderContext {
   final RenderProgramTriangle renderProgramTriangle = new RenderProgramTriangle();
   final RenderProgramMesh renderProgramMesh = new RenderProgramMesh();
 
-  final RenderBufferIndex renderBufferIndexQuads = new RenderBufferIndex.forQuads(1024);
-  final RenderBufferIndex renderBufferIndexTriangles = new RenderBufferIndex.forTriangles(1024);
+  final RenderBufferIndex renderBufferIndexQuads = new RenderBufferIndex.forQuads(4096);
+  final RenderBufferIndex renderBufferIndexTriangles = new RenderBufferIndex.forTriangles(4096);
   final RenderBufferVertex renderBufferVertex = new RenderBufferVertex(32768);
 
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();

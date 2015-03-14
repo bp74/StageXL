@@ -72,12 +72,12 @@ class BitmapContainer
   BitmapContainer({
     this.bitmapBitmapData: BitmapProperty.Static,
     this.bitmapPosition: BitmapProperty.Dynamic,
-    this.bitmapPivot: BitmapProperty.Static,
-    this.bitmapScale: BitmapProperty.Static,
-    this.bitmapSkew: BitmapProperty.Static,
-    this.bitmapRotation: BitmapProperty.Static,
-    this.bitmapAlpha: BitmapProperty.Static,
-    this.bitmapVisible: BitmapProperty.Static }) {
+    this.bitmapPivot: BitmapProperty.Ignore,
+    this.bitmapScale: BitmapProperty.Ignore,
+    this.bitmapSkew: BitmapProperty.Ignore,
+    this.bitmapRotation: BitmapProperty.Ignore,
+    this.bitmapAlpha: BitmapProperty.Ignore,
+    this.bitmapVisible: BitmapProperty.Ignore }) {
 
     if (this.bitmapBitmapData == BitmapProperty.Ignore) {
       throw new ArgumentError("The bitmapData property can't be ignored.");
@@ -205,9 +205,9 @@ class BitmapContainer
 
     _BitmapContainerProgram renderProgram = renderContext.getRenderProgram(
         _bitmapContainerProgramName, () => new _BitmapContainerProgram(
-            this.bitmapBitmapData, this.bitmapPosition, this.bitmapRotation,
-            this.bitmapVisible, this.bitmapPivot, this.bitmapScale,
-            this.bitmapAlpha, this.bitmapSkew));
+            this.bitmapBitmapData, this.bitmapPosition,
+            this.bitmapPivot, this.bitmapScale, this.bitmapSkew,
+            this.bitmapRotation, this.bitmapAlpha, this.bitmapVisible));
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateBlendMode(renderState.globalBlendMode);

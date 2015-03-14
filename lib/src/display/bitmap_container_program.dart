@@ -16,6 +16,7 @@ class _BitmapContainerProgram extends RenderProgram {
 
   int _staticStride = 0;
   int _dynamicStride = 0;
+  int _bufferSize = 1024;
 
   //---------------------------------------------------------------------------
 
@@ -26,9 +27,10 @@ class _BitmapContainerProgram extends RenderProgram {
 
     _staticStride = _calculateStride(BitmapProperty.Static);
     _dynamicStride = _calculateStride(BitmapProperty.Dynamic);
+    _bufferSize = minInt(4096, 16384 ~/ maxInt(_staticStride, _dynamicStride));
 
     _dynamicBuffer = new _BitmapContainerBuffer(this,
-        BitmapProperty.Dynamic, 1024, _dynamicStride);
+        BitmapProperty.Dynamic, _bufferSize, _dynamicStride);
   }
 
   //---------------------------------------------------------------------------
@@ -41,7 +43,7 @@ class _BitmapContainerProgram extends RenderProgram {
   // aAlpha      : Float32(a)
   //---------------------------------------------------------------------------
 
-  String get vertexShaderSource => """
+  String get vertexShaderSource => _modifyVertexShader("""
 
     uniform mat4 uProjectionMatrix;
     uniform mat3 uGlobalMatrix;
@@ -72,7 +74,7 @@ class _BitmapContainerProgram extends RenderProgram {
       vCoord  = aBitmapData.pq;  
       vAlpha = aAlpha * uGlobalAlpha;
     }
-    """;
+    """);
 
   String get fragmentShaderSource => """
 
@@ -133,11 +135,11 @@ class _BitmapContainerProgram extends RenderProgram {
 
     List<Bitmap> bitmaps = container._children;
     List<_BitmapContainerBuffer> staticBuffers = container._staticBuffers;
-    int staticBufferMinimum = (bitmaps.length + 1023) ~/ 1024;
+    int staticBufferMinimum = (bitmaps.length + _bufferSize - 1) ~/ _bufferSize;
 
     while(staticBuffers.length < staticBufferMinimum) {
       var st = BitmapProperty.Static;
-      var buffer = new _BitmapContainerBuffer(this, st, 1024, _staticStride);
+      var buffer = new _BitmapContainerBuffer(this, st, _bufferSize, _staticStride);
       staticBuffers.add(buffer);
     }
 
@@ -154,10 +156,8 @@ class _BitmapContainerProgram extends RenderProgram {
 
     _BitmapContainerBuffer dynamicBuffer = _dynamicBuffer;
     _BitmapContainerBuffer staticBuffer = staticBuffers.first;
-    staticBuffer.activate(renderContext);
-    staticBuffer.bindAttributes();
 
-    int quadLimit = 1024;
+    int quadLimit = _bufferSize;
     int quadStart = 0;
     int quadIndex = 0;
     int bitmapIndex = 0;
@@ -190,13 +190,12 @@ class _BitmapContainerProgram extends RenderProgram {
         dynamicBuffer.updateVertexData(offset, length);
         staticBuffer.activate(renderContext);
         staticBuffer.updateVertexData(offset, length);
+        staticBuffer.bindAttributes();
         context.drawElements(triangles, length * 6, uShort, offset * 6);
         quadStart = quadIndex;
         if (quadStart == quadLimit && bitmapIndex < bitmaps.length) {
           quadStart = quadIndex = 0;
-          staticBuffer = staticBuffers[bitmapIndex ~/ 1024];
-          staticBuffer.activate(renderContext);
-          staticBuffer.bindAttributes();
+          staticBuffer = staticBuffers[bitmapIndex ~/ _bufferSize];
         }
       }
 
@@ -219,6 +218,29 @@ class _BitmapContainerProgram extends RenderProgram {
     if (bitmapRotation == bitmapProperty) stride += 1;
     if (bitmapAlpha == bitmapProperty) stride += 1;
     return stride;
+  }
+
+  String _modifyVertexShader(String vertexShader) {
+
+    var regex = new RegExp(r"attribute\s+([a-z0-9]+)\s+([a-zA-Z0-9]+)\s*;");
+    var ignore = BitmapProperty.Ignore;
+
+    return vertexShader.replaceAllMapped(regex, (match) {
+      var name = match.group(2);
+      if (name == "aPivot" && bitmapPivot == ignore) {
+        return "const vec2 aPivot = vec2(0.0, 0.0);";
+      } else if (name == "aScale" && bitmapScale == ignore) {
+        return "const vec2 aScale = vec2(1.0, 1.0);";
+      } else if (name == "aSkew" && bitmapScale == ignore) {
+        return "const vec2 aSkew = vec2(0.0, 0.0);";
+      } else if (name == "aRotation" && bitmapRotation == ignore) {
+        return "const float aRotation = 0.0;";
+      } if (name == "aAlpha" && bitmapAlpha == ignore) {
+        return "const float aAlpha = 1.0;";
+      } else {
+        return match.group(0);
+      }
+    });
   }
 
 }
