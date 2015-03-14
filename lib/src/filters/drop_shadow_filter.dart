@@ -267,9 +267,9 @@ class DropShadowFilterProgram extends BitmapFilterProgram {
     num b = colorGetB(color) / 255.0;
     num a = colorGetA(color) / 255.0;
 
-    var uColorLocation = uniformLocations["uColor"];
-    var uShiftLocation = uniformLocations["uShift"];
-    var uRadiusLocation = uniformLocations["uRadius"];
+    var uColorLocation = uniforms["uColor"];
+    var uShiftLocation = uniforms["uShift"];
+    var uRadiusLocation = uniforms["uRadius"];
 
     renderingContext.uniform4f(uColorLocation, r, g, b, a);
     renderingContext.uniform2f(uShiftLocation, shiftX, shiftY);

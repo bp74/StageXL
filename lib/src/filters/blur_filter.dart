@@ -200,7 +200,7 @@ class BlurFilterProgram extends BitmapFilterProgram {
     """;
 
    void configure(num radiusX, num radiusY) {
-     var uPixelLocation = uniformLocations["uRadius"];
+     var uPixelLocation = uniforms["uRadius"];
      renderingContext.uniform2f(uPixelLocation, radiusX, radiusY);
    }
 }

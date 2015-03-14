@@ -10,9 +10,9 @@ class RenderContextWebGL extends RenderContext {
   final RenderProgramTriangle renderProgramTriangle = new RenderProgramTriangle();
   final RenderProgramMesh renderProgramMesh = new RenderProgramMesh();
 
-  final Int16List staticIndexList = new Int16List(4096);
-  final Int16List dynamicIndexList = new Int16List(4096);
-  final Float32List dynamicVertexList = new Float32List(16384);
+  final RenderBufferIndex renderBufferIndexQuads = new RenderBufferIndex.forQuads(1024);
+  final RenderBufferIndex renderBufferIndexTriangles = new RenderBufferIndex.forTriangles(1024);
+  final RenderBufferVertex renderBufferVertex = new RenderBufferVertex(32768);
 
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
   final Map<int, RenderTexture> _activeRenderTextures = new  Map<int, RenderTexture>();
@@ -45,15 +45,6 @@ class RenderContextWebGL extends RenderContext {
 
     if (renderingContext is! gl.RenderingContext) {
       throw new StateError("Failed to get WebGL context.");
-    }
-
-    for(int i = 0, j = 0; i <= staticIndexList.length - 6; i += 6, j +=4 ) {
-      staticIndexList[i + 0] = j + 0;
-      staticIndexList[i + 1] = j + 1;
-      staticIndexList[i + 2] = j + 2;
-      staticIndexList[i + 3] = j + 0;
-      staticIndexList[i + 4] = j + 2;
-      staticIndexList[i + 5] = j + 3;
     }
 
     _renderingContext = renderingContext;

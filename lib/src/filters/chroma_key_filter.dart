@@ -178,13 +178,13 @@ class ChromaKeyFilterProgram extends BitmapFilterProgram {
     num g = colorGetG(backgroundColor) / 255.0;
     num b = colorGetB(backgroundColor) / 255.0;
 
-    renderingContext.uniform4f(uniformLocations["backgroundColor"], r, g, b, 1.0);
+    renderingContext.uniform4f(uniforms["backgroundColor"], r, g, b, 1.0);
 
-    renderingContext.uniform1f(uniformLocations["solidThreshold"], solidThreshold / 255.0);
-    renderingContext.uniform1f(uniformLocations["invisibleThreshold"], invisibleThreshold / 255.0);
+    renderingContext.uniform1f(uniforms["solidThreshold"], solidThreshold / 255.0);
+    renderingContext.uniform1f(uniforms["invisibleThreshold"], invisibleThreshold / 255.0);
 
     // this affect the color corection on semi transparent pixel, for now not public
     // it is quite experimental
-    renderingContext.uniform1f(uniformLocations["weight"], 0.8);
+    renderingContext.uniform1f(uniforms["weight"], 0.8);
   }
 }

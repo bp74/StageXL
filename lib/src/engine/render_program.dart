@@ -2,27 +2,28 @@ part of stagexl.engine;
 
 abstract class RenderProgram {
 
-  String get vertexShaderSource;
-  String get fragmentShaderSource;
-
   int _contextIdentifier = -1;
   gl.RenderingContext _renderingContext = null;
   gl.Program _program = null;
 
-  final Map<String, int> _attributeLocations = new Map<String, int>();
-  final Map<String, gl.UniformLocation> _uniformLocations = new Map<String, gl.UniformLocation>();
+  final Map<String, int> _attributes = new Map<String, int>();
+  final Map<String, gl.UniformLocation> _uniforms = new Map<String, gl.UniformLocation>();
+
+  //-----------------------------------------------------------------------------------------------
+
+  String get vertexShaderSource;
+  String get fragmentShaderSource;
 
   int get contextIdentifier => _contextIdentifier;
   gl.RenderingContext get renderingContext => _renderingContext;
   gl.Program get program => _program;
-  Map<String, int> get attributeLocations => _attributeLocations;
-  Map<String, gl.UniformLocation> get uniformLocations => _uniformLocations;
+  Map<String, int> get attributes => _attributes;
+  Map<String, gl.UniformLocation> get uniforms => _uniforms;
 
   //-----------------------------------------------------------------------------------------------
 
   void set projectionMatrix(Matrix3D matrix) {
-    var uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
-    renderingContext.uniformMatrix4fv(uProjectionMatrixLocation, false, matrix.data);
+    renderingContext.uniformMatrix4fv(uniforms["uProjectionMatrix"], false, matrix.data);
   }
 
   void activate(RenderContextWebGL renderContext) {
@@ -32,8 +33,8 @@ abstract class RenderProgram {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
       _program = renderingContext.createProgram();
-      _attributeLocations.clear();
-      _uniformLocations.clear();
+      _attributes.clear();
+      _uniforms.clear();
 
       var vertexShader = _createShader(renderingContext, vertexShaderSource, gl.VERTEX_SHADER);
       var fragmentShader = _createShader(renderingContext, fragmentShaderSource, gl.FRAGMENT_SHADER);
@@ -55,15 +56,17 @@ abstract class RenderProgram {
         var activeInfo = renderingContext.getActiveAttrib(program, index);
         var location = renderingContext.getAttribLocation(program, activeInfo.name);
         renderingContext.enableVertexAttribArray(location);
-        _attributeLocations[activeInfo.name] = location;
+        _attributes[activeInfo.name] = location;
       }
 
       for(int index = 0; index < activeUniforms; index++) {
         var activeInfo = renderingContext.getActiveUniform(program, index);
         var location = renderingContext.getUniformLocation(program, activeInfo.name);
-        _uniformLocations[activeInfo.name] = location;
+        _uniforms[activeInfo.name] = location;
       }
     }
+
+    renderingContext.useProgram(program);
   }
 
   void flush() {

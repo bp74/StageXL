@@ -54,10 +54,19 @@ class NormalMapFilter extends BitmapFilter {
 
 class NormalMapFilterProgram extends RenderProgram {
 
-  // attenuation calculation
-  // http://gamedev.stackexchange.com/questions/56897
-  // https://www.desmos.com/calculator/nmnaud1hrw
-  // https://www.desmos.com/calculator/kp89d5khyb
+  RenderBufferIndex _renderBufferIndex;
+  RenderBufferVertex _renderBufferVertex;
+  int _quadCount = 0;
+
+  //---------------------------------------------------------------------------
+  // aVertexPosition:      Float32(x), Float32(y)
+  // aVertexTexCoord:      Float32(u), Float32(v)
+  // aVertexMapCoord:      Float32(v), Float32(v)
+  // aVertexAmbientColor:  Float32(r), Float32(g), Float32(b), Float32(a)
+  // aVertexLightColor:    Float32(r), Float32(g), Float32(b), Float32(a)
+  // aVertexLightCoord:    Float32(x), Float32(y), Float32(z), Float32(r)
+  // aVertexAlpha:         Float32(a)
+  //---------------------------------------------------------------------------
 
   String get vertexShaderSource => """
 
@@ -131,90 +140,34 @@ class NormalMapFilterProgram extends RenderProgram {
     }
     """;
 
-  //---------------------------------------------------------------------------
-  // aVertexPosition:      Float32(x), Float32(y)
-  // aVertexTexCoord:      Float32(u), Float32(v)
-  // aVertexMapCoord:      Float32(v), Float32(v)
-  // aVertexAmbientColor:  Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexLightColor:    Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexLightCoord:    Float32(x), Float32(y), Float32(z), Float32(r)
-  // aVertexAlpha:         Float32(a)
-  //---------------------------------------------------------------------------
-
-  Int16List _indexList;
-  Float32List _vertexList;
-
-  gl.Buffer _vertexBuffer;
-  gl.Buffer _indexBuffer;
-  gl.UniformLocation _uProjectionMatrixLocation;
-  gl.UniformLocation _uTexSamplerLocation;
-  gl.UniformLocation _uMapSamplerLocation;
-
-  int _aVertexPositionLocation = 0;
-  int _aVertexTexCoordLocation = 0;
-  int _aVertexMapCoordLocation = 0;
-  int _aVertexAmbientColor = 0;
-  int _aVertexLightColor = 0;
-  int _aVertexLightCoord = 0;
-  int _aVertexAlphaLocation = 0;
-  int _quadCount = 0;
 
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void set projectionMatrix(Matrix3D matrix) {
-    renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
-  }
-
-  @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (this.contextIdentifier != renderContext.contextIdentifier) {
+    super.activate(renderContext);
+    super.renderingContext.uniform1i(uniforms["uTexSampler"], 0);
+    super.renderingContext.uniform1i(uniforms["uMapSampler"], 1);
 
-      super.activate(renderContext);
+    _renderBufferIndex = renderContext.renderBufferIndexQuads;
+    _renderBufferIndex.activate(renderContext);
 
-      _indexList = renderContext.staticIndexList;
-      _vertexList = renderContext.dynamicVertexList;
-      _indexBuffer = renderingContext.createBuffer();
-      _vertexBuffer = renderingContext.createBuffer();
-
-      _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
-      _uTexSamplerLocation       = uniformLocations["uTexSampler"];
-      _uMapSamplerLocation       = uniformLocations["uMapSampler"];
-      _aVertexPositionLocation   = attributeLocations["aVertexPosition"];
-      _aVertexTexCoordLocation   = attributeLocations["aVertexTexCoord"];
-      _aVertexMapCoordLocation   = attributeLocations["aVertexMapCoord"];
-      _aVertexAmbientColor       = attributeLocations["aVertexAmbientColor"];
-      _aVertexLightColor         = attributeLocations["aVertexLightColor"];
-      _aVertexLightCoord         = attributeLocations["aVertexLightCoord"];
-      _aVertexAlphaLocation      = attributeLocations["aVertexAlpha"];
-
-      renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-      renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
-      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
-    }
-
-    renderingContext.useProgram(program);
-    renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    renderingContext.uniform1i(_uTexSamplerLocation, 0);
-    renderingContext.uniform1i(_uMapSamplerLocation, 1);
-
-    renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 76,  0);
-    renderingContext.vertexAttribPointer(_aVertexTexCoordLocation, 2, gl.FLOAT, false, 76,  8);
-    renderingContext.vertexAttribPointer(_aVertexMapCoordLocation, 2, gl.FLOAT, false, 76, 16);
-    renderingContext.vertexAttribPointer(_aVertexAmbientColor,     4, gl.FLOAT, false, 76, 24);
-    renderingContext.vertexAttribPointer(_aVertexLightColor,       4, gl.FLOAT, false, 76, 40);
-    renderingContext.vertexAttribPointer(_aVertexLightCoord,       4, gl.FLOAT, false, 76, 56);
-    renderingContext.vertexAttribPointer(_aVertexAlphaLocation,    1, gl.FLOAT, false, 76, 72);
+    _renderBufferVertex = renderContext.renderBufferVertex;
+    _renderBufferVertex.activate(renderContext);
+    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"],     2, 76,  0);
+    _renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"],     2, 76,  8);
+    _renderBufferVertex.bindAttribute(attributes["aVertexMapCoord"],     2, 76, 16);
+    _renderBufferVertex.bindAttribute(attributes["aVertexAmbientColor"], 4, 76, 24);
+    _renderBufferVertex.bindAttribute(attributes["aVertexLightColor"],   4, 76, 40);
+    _renderBufferVertex.bindAttribute(attributes["aVertexLightCoord"],   4, 76, 56);
+    _renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],        1, 76, 72);
   }
 
   @override
   void flush() {
     if (_quadCount > 0) {
-      var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 19);
-      renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+      _renderBufferVertex.update(0, _quadCount * 4 * 19);
       renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
       _quadCount = 0;
     }
@@ -260,13 +213,13 @@ class NormalMapFilterProgram extends RenderProgram {
     // Check if the index and vertex buffer are valid and if
     // we need to flush the render program to free the buffers.
 
-    var ixList = _indexList;
-    if (ixList == null) return;
-    if (ixList.length < _quadCount * 6 + 6) flush();
+    var ixData = _renderBufferIndex.data;
+    if (ixData == null) return;
+    if (ixData.length < _quadCount * 6 + 6) flush();
 
-    var vxList = _vertexList;
-    if (vxList == null) return;
-    if (vxList.length < _quadCount * 76 + 76) flush();
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < _quadCount * 76 + 76) flush();
 
     // Calculate the 4 vertices of the RenderTextureQuad
 
@@ -275,27 +228,27 @@ class NormalMapFilterProgram extends RenderProgram {
       num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
       num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
 
-      if (index > vxList.length - 19) return; // dart2js_hint
+      if (index > vxData.length - 19) return; // dart2js_hint
 
-      vxList[index + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
-      vxList[index + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
-      vxList[index + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
-      vxList[index + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
-      vxList[index + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
-      vxList[index + 05] = mapMatrix.ty + x * mapMatrix.b + y * mapMatrix.d;
-      vxList[index + 06] = ambientR;
-      vxList[index + 07] = ambientG;
-      vxList[index + 08] = ambientB;
-      vxList[index + 09] = ambientA;
-      vxList[index + 10] = lightR;
-      vxList[index + 11] = lightG;
-      vxList[index + 12] = lightB;
-      vxList[index + 13] = lightA;
-      vxList[index + 14] = lightX;
-      vxList[index + 15] = lightY;
-      vxList[index + 16] = lightZ;
-      vxList[index + 17] = lightRadius;
-      vxList[index + 18] = alpha;
+      vxData[index + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
+      vxData[index + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
+      vxData[index + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
+      vxData[index + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
+      vxData[index + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
+      vxData[index + 05] = mapMatrix.ty + x * mapMatrix.b + y * mapMatrix.d;
+      vxData[index + 06] = ambientR;
+      vxData[index + 07] = ambientG;
+      vxData[index + 08] = ambientB;
+      vxData[index + 09] = ambientA;
+      vxData[index + 10] = lightR;
+      vxData[index + 11] = lightG;
+      vxData[index + 12] = lightB;
+      vxData[index + 13] = lightA;
+      vxData[index + 14] = lightX;
+      vxData[index + 15] = lightY;
+      vxData[index + 16] = lightZ;
+      vxData[index + 17] = lightRadius;
+      vxData[index + 18] = alpha;
     }
 
     _quadCount += 1;

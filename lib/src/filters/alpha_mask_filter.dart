@@ -18,7 +18,7 @@ class AlphaMaskFilter extends BitmapFilter {
 
   BitmapFilter clone() => new AlphaMaskFilter(bitmapData, matrix.clone());
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
@@ -46,7 +46,7 @@ class AlphaMaskFilter extends BitmapFilter {
     context.restore();
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
@@ -63,10 +63,23 @@ class AlphaMaskFilter extends BitmapFilter {
   }
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 class AlphaMaskFilterProgram extends RenderProgram {
+
+  RenderBufferIndex _renderBufferIndex;
+  RenderBufferVertex _renderBufferVertex;
+  int _quadCount = 0;
+
+  //---------------------------------------------------------------------------
+  // aVertexPosition:  Float32(x), Float32(y)
+  // aVertexTxtCoord:  Float32(u), Float32(v)
+  // aVertexMskCoord:  Float32(u), Float32(v)
+  // aVertexMskLimit:  Float32(u1), Float32(v1), Float32(u2), Float32(v2)
+  // aVertexAlpha:     Float32(a)
+  //---------------------------------------------------------------------------
 
   String get vertexShaderSource => """
 
@@ -113,87 +126,36 @@ class AlphaMaskFilterProgram extends RenderProgram {
     """;
 
   //---------------------------------------------------------------------------
-  // aVertexPosition:  Float32(x), Float32(y)
-  // aVertexTxtCoord:  Float32(u), Float32(v)
-  // aVertexMskCoord:  Float32(u), Float32(v)
-  // aVertexMskLimit:  Float32(u1), Float32(v1), Float32(u2), Float32(v2)
-  // aVertexAlpha:     Float32(a)
-  //---------------------------------------------------------------------------
-
-  Int16List _indexList;
-  Float32List _vertexList;
-
-  gl.Buffer _vertexBuffer;
-  gl.Buffer _indexBuffer;
-  gl.UniformLocation _uProjectionMatrix;
-  gl.UniformLocation _uTexSampler;
-  gl.UniformLocation _uMskSampler;
-
-  int _aVertexPosition = 0;
-  int _aVertexTexCoord = 0;
-  int _aVertexMskCoord = 0;
-  int _aVertexMskLimit = 0;
-  int _aVertexAlpha = 0;
-  int _quadCount = 0;
-
-  //-----------------------------------------------------------------------------------------------
-
-  @override
-  void set projectionMatrix(Matrix3D matrix) {
-    renderingContext.uniformMatrix4fv(_uProjectionMatrix, false, matrix.data);
-  }
 
   @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (this.contextIdentifier != renderContext.contextIdentifier) {
+    super.activate(renderContext);
+    super.renderingContext.uniform1i(uniforms["uTexSampler"], 0);
+    super.renderingContext.uniform1i(uniforms["uMskSampler"], 1);
 
-      super.activate(renderContext);
+    _renderBufferIndex = renderContext.renderBufferIndexQuads;
+    _renderBufferIndex.activate(renderContext);
 
-      _indexList = renderContext.staticIndexList;
-      _vertexList = renderContext.dynamicVertexList;
-      _indexBuffer = renderingContext.createBuffer();
-      _vertexBuffer = renderingContext.createBuffer();
-
-      _uProjectionMatrix = uniformLocations["uProjectionMatrix"];
-      _uTexSampler       = uniformLocations["uTexSampler"];
-      _uMskSampler       = uniformLocations["uMskSampler"];
-      _aVertexPosition   = attributeLocations["aVertexPosition"];
-      _aVertexTexCoord   = attributeLocations["aVertexTexCoord"];
-      _aVertexMskCoord   = attributeLocations["aVertexMskCoord"];
-      _aVertexMskLimit   = attributeLocations["aVertexMskLimit"];
-      _aVertexAlpha      = attributeLocations["aVertexAlpha"];
-
-      renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-      renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
-      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
-    }
-
-    renderingContext.useProgram(program);
-    renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    renderingContext.uniform1i(_uTexSampler, 0);
-    renderingContext.uniform1i(_uMskSampler, 1);
-
-    renderingContext.vertexAttribPointer(_aVertexPosition, 2, gl.FLOAT, false, 44,  0);
-    renderingContext.vertexAttribPointer(_aVertexTexCoord, 2, gl.FLOAT, false, 44,  8);
-    renderingContext.vertexAttribPointer(_aVertexMskCoord, 2, gl.FLOAT, false, 44, 16);
-    renderingContext.vertexAttribPointer(_aVertexMskLimit, 4, gl.FLOAT, false, 44, 24);
-    renderingContext.vertexAttribPointer(_aVertexAlpha,    1, gl.FLOAT, false, 44, 40);
+    _renderBufferVertex = renderContext.renderBufferVertex;
+    _renderBufferVertex.activate(renderContext);
+    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 44,  0);
+    _renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"], 2, 44,  8);
+    _renderBufferVertex.bindAttribute(attributes["aVertexMskCoord"], 2, 44, 16);
+    _renderBufferVertex.bindAttribute(attributes["aVertexMskLimit"], 4, 44, 24);
+    _renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],    1, 44, 40);
   }
 
   @override
   void flush() {
     if (_quadCount > 0) {
-      var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 11);
-      renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+      _renderBufferVertex.update(0, _quadCount * 4 * 11);
       renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
       _quadCount = 0;
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void renderAlphaMaskFilterQuad(RenderState renderState,
                                  RenderTextureQuad renderTextureQuad,
@@ -224,13 +186,13 @@ class AlphaMaskFilterProgram extends RenderProgram {
     // Check if the index and vertex buffer are valid and if
     // we need to flush the render program to free the buffers.
 
-    var ixList = _indexList;
-    if (ixList == null) return;
-    if (ixList.length < _quadCount * 6 + 6) flush();
+    var ixData = _renderBufferIndex.data;
+    if (ixData == null) return;
+    if (ixData.length < _quadCount * 6 + 6) flush();
 
-    var vxList = _vertexList;
-    if (vxList == null) return;
-    if (vxList.length < _quadCount * 44 + 44) flush();
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < _quadCount * 44 + 44) flush();
 
     // Calculate the 4 vertices of the RenderTextureQuad
 
@@ -239,19 +201,19 @@ class AlphaMaskFilterProgram extends RenderProgram {
       num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
       num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
 
-      if (index > vxList.length - 11) return; // dart2js_hint
+      if (index > vxData.length - 11) return; // dart2js_hint
 
-      vxList[index + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
-      vxList[index + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
-      vxList[index + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
-      vxList[index + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
-      vxList[index + 04] = mskMatrix.tx + x * mskMatrix.a + y * mskMatrix.c;
-      vxList[index + 05] = mskMatrix.ty + x * mskMatrix.b + y * mskMatrix.d;
-      vxList[index + 06] = mskBoundsX1;
-      vxList[index + 07] = mskBoundsY1;
-      vxList[index + 08] = mskBoundsX2;
-      vxList[index + 09] = mskBoundsY2;
-      vxList[index + 10] = alpha;
+      vxData[index + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
+      vxData[index + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
+      vxData[index + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
+      vxData[index + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
+      vxData[index + 04] = mskMatrix.tx + x * mskMatrix.a + y * mskMatrix.c;
+      vxData[index + 05] = mskMatrix.ty + x * mskMatrix.b + y * mskMatrix.d;
+      vxData[index + 06] = mskBoundsX1;
+      vxData[index + 07] = mskBoundsY1;
+      vxData[index + 08] = mskBoundsX2;
+      vxData[index + 09] = mskBoundsY2;
+      vxData[index + 10] = alpha;
     }
 
     _quadCount += 1;

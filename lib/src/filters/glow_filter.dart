@@ -231,8 +231,8 @@ class GlowFilterProgram extends BitmapFilterProgram {
      num b = colorGetB(color) / 255.0;
      num a = colorGetA(color) / 255.0;
 
-     var uColorLocation = uniformLocations["uColor"];
-     var uRadiusLocation = uniformLocations["uRadius"];
+     var uColorLocation = uniforms["uColor"];
+     var uRadiusLocation = uniforms["uRadius"];
 
      renderingContext.uniform4f(uColorLocation, r, g, b, a);
      renderingContext.uniform2f(uRadiusLocation, radiusX, radiusY);
