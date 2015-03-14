@@ -60,22 +60,24 @@ class BitmapContainer
   final BitmapProperty bitmapAlpha;
   final BitmapProperty bitmapVisible;
 
-  final _buffers = new List<_BitmapContainerBuffer>();
-  final _children = new List<Bitmap>();
+  final List<Bitmap> _children = new List<Bitmap>();
+
+  final List<_BitmapContainerBuffer> _staticBuffers =
+      new List<_BitmapContainerBuffer>();
 
   String _bitmapContainerProgramName = "";
 
   //---------------------------------------------------------------------------
 
   BitmapContainer({
-    this.bitmapBitmapData: BitmapProperty.Dynamic,
+    this.bitmapBitmapData: BitmapProperty.Static,
     this.bitmapPosition: BitmapProperty.Dynamic,
-    this.bitmapPivot: BitmapProperty.Dynamic,
-    this.bitmapScale: BitmapProperty.Dynamic,
-    this.bitmapSkew: BitmapProperty.Dynamic,
-    this.bitmapRotation: BitmapProperty.Dynamic,
-    this.bitmapAlpha: BitmapProperty.Dynamic,
-    this.bitmapVisible: BitmapProperty.Dynamic }) {
+    this.bitmapPivot: BitmapProperty.Static,
+    this.bitmapScale: BitmapProperty.Static,
+    this.bitmapSkew: BitmapProperty.Static,
+    this.bitmapRotation: BitmapProperty.Static,
+    this.bitmapAlpha: BitmapProperty.Static,
+    this.bitmapVisible: BitmapProperty.Static }) {
 
     if (this.bitmapBitmapData == BitmapProperty.Ignore) {
       throw new ArgumentError("The bitmapData property can't be ignored.");
@@ -99,8 +101,8 @@ class BitmapContainer
   //---------------------------------------------------------------------------
 
   void dispose() {
-    while(_buffers.length > 0) {
-      _buffers.removeLast().dispose();
+    while(_staticBuffers.length > 0) {
+      _staticBuffers.removeLast().dispose();
     }
   }
 

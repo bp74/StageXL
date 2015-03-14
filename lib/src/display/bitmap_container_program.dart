@@ -13,10 +13,9 @@ class _BitmapContainerProgram extends RenderProgram {
 
   RenderBufferIndex _renderBufferIndex = null;
   _BitmapContainerBuffer _dynamicBuffer = null;
-  _BitmapContainerBuffer _staticBuffer = null;
 
-  int _dynamicStride = 0;
   int _staticStride = 0;
+  int _dynamicStride = 0;
 
   //---------------------------------------------------------------------------
 
@@ -25,13 +24,11 @@ class _BitmapContainerProgram extends RenderProgram {
       this.bitmapPivot, this.bitmapScale, this.bitmapSkew,
       this.bitmapRotation, this.bitmapAlpha, this.bitmapVisible) {
 
+    _staticStride = _calculateStride(BitmapProperty.Static);
     _dynamicStride = _calculateStride(BitmapProperty.Dynamic);
+
     _dynamicBuffer = new _BitmapContainerBuffer(this,
         BitmapProperty.Dynamic, 1024, _dynamicStride);
-
-    _staticStride = _calculateStride(BitmapProperty.Static);
-    _staticBuffer = new _BitmapContainerBuffer(this,
-        BitmapProperty.Static, 1024, _staticStride);
   }
 
   //---------------------------------------------------------------------------
@@ -132,15 +129,41 @@ class _BitmapContainerProgram extends RenderProgram {
     renderingContext.uniformMatrix3fv(uniforms["uGlobalMatrix"], false, uGlobalMatrix);
     renderingContext.uniform1f(uniforms["uGlobalAlpha"], globalAlpha);
 
-    // TODO: Use the right size for the batch.
-    // TODO: Use the static buffers.
-    // TODO: https://code.google.com/p/dart/issues/detail?id=22723
+    // Manage static BitmapContainerBuffers
 
     List<Bitmap> bitmaps = container._children;
+    List<_BitmapContainerBuffer> staticBuffers = container._staticBuffers;
+    int staticBufferMinimum = (bitmaps.length + 1023) ~/ 1024;
+
+    while(staticBuffers.length < staticBufferMinimum) {
+      var st = BitmapProperty.Static;
+      var buffer = new _BitmapContainerBuffer(this, st, 1024, _staticStride);
+      staticBuffers.add(buffer);
+    }
+
+    while(staticBuffers.length > staticBufferMinimum) {
+      var buffer = staticBuffers.removeLast();
+      buffer.dispose();
+    }
+
+    if (staticBufferMinimum == 0) {
+      return;
+    }
+
+    // Render all Bitmaps
+
+    _BitmapContainerBuffer dynamicBuffer = _dynamicBuffer;
+    _BitmapContainerBuffer staticBuffer = staticBuffers.first;
+    staticBuffer.activate(renderContext);
+    staticBuffer.bindAttributes();
 
     int quadLimit = 1024;
+    int quadStart = 0;
     int quadIndex = 0;
     int bitmapIndex = 0;
+    int triangles = gl.TRIANGLES;
+    int uShort = gl.UNSIGNED_SHORT;
+    var context = renderingContext;
 
     while (bitmapIndex < bitmaps.length) {
 
@@ -151,18 +174,30 @@ class _BitmapContainerProgram extends RenderProgram {
       var textureFlush = false;
 
       if (textureCheck) {
-        _dynamicBuffer.setVertexData(bitmap, quadIndex);
+        dynamicBuffer.setVertexData(bitmap, quadIndex);
+        staticBuffer.setVertexData(bitmap, quadIndex);
         bitmapIndex += 1;
         quadIndex += 1;
         textureFlush = bitmapIndex == bitmaps.length || quadIndex == quadLimit;
       } else {
-        textureFlush = quadIndex > 0;
+        textureFlush = quadIndex > quadStart;
       }
 
       if (textureFlush) {
-        _dynamicBuffer.updateVertexData(0, quadIndex);
-        renderingContext.drawElements(gl.TRIANGLES, quadIndex * 6, gl.UNSIGNED_SHORT, 0);
-        quadIndex = 0;
+        var offset = quadStart;
+        var length = quadIndex - quadStart;
+        dynamicBuffer.activate(renderContext);
+        dynamicBuffer.updateVertexData(offset, length);
+        staticBuffer.activate(renderContext);
+        staticBuffer.updateVertexData(offset, length);
+        context.drawElements(triangles, length * 6, uShort, offset * 6);
+        quadStart = quadIndex;
+        if (quadStart == quadLimit && bitmapIndex < bitmaps.length) {
+          quadStart = quadIndex = 0;
+          staticBuffer = staticBuffers[bitmapIndex ~/ 1024];
+          staticBuffer.activate(renderContext);
+          staticBuffer.bindAttributes();
+        }
       }
 
       if (textureCheck == false) {
