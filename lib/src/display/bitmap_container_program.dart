@@ -16,7 +16,7 @@ class _BitmapContainerProgram extends RenderProgram {
 
   int _staticStride = 0;
   int _dynamicStride = 0;
-  int _bufferSize = 1024;
+  int _quadsMax = 0;
 
   //---------------------------------------------------------------------------
 
@@ -27,10 +27,10 @@ class _BitmapContainerProgram extends RenderProgram {
 
     _staticStride = _calculateStride(BitmapProperty.Static);
     _dynamicStride = _calculateStride(BitmapProperty.Dynamic);
-    _bufferSize = minInt(2048, 16384 ~/ maxInt(_staticStride, _dynamicStride));
+    _quadsMax = minInt(2048, 16384 ~/ maxInt(_staticStride, _dynamicStride));
 
     _dynamicBuffer = new _BitmapContainerBuffer(this,
-        BitmapProperty.Dynamic, _bufferSize, _dynamicStride);
+        BitmapProperty.Dynamic, _quadsMax, _dynamicStride);
   }
 
   //---------------------------------------------------------------------------
@@ -138,31 +138,37 @@ class _BitmapContainerProgram extends RenderProgram {
     int dirtyMax = container._buffersDirtyMax;
     List<Bitmap> bitmaps = container._children;
     List<_BitmapContainerBuffer> staticBuffers = container._buffers;
-    int staticBufferMinimum = (bitmaps.length + _bufferSize - 1) ~/ _bufferSize;
+    int staticBufferLength = (bitmaps.length + _quadsMax - 1) ~/ _quadsMax;
 
-    while(staticBuffers.length < staticBufferMinimum) {
+    while(staticBuffers.length < staticBufferLength) {
       var st = BitmapProperty.Static;
-      var buffer = new _BitmapContainerBuffer(this, st, _bufferSize, _staticStride);
+      var buffer = new _BitmapContainerBuffer(this, st, _quadsMax, _staticStride);
       staticBuffers.add(buffer);
     }
 
-    while(staticBuffers.length > staticBufferMinimum) {
+    while(staticBuffers.length > staticBufferLength) {
       var buffer = staticBuffers.removeLast();
       buffer.dispose();
     }
 
-    if (staticBufferMinimum == 0) {
+    if (staticBufferLength == 0) {
       return;
     }
 
     // Render all Bitmaps
 
     _BitmapContainerBuffer dynamicBuffer = _dynamicBuffer;
-    _BitmapContainerBuffer staticBuffer = staticBuffers.first;
+    dynamicBuffer.activate(renderContext);
+    dynamicBuffer.bindAttributes();
 
-    int quadLimit = _bufferSize;
+    _BitmapContainerBuffer staticBuffer = staticBuffers.first;
+    staticBuffer.activate(renderContext);
+    staticBuffer.bindAttributes();
+
+    int quadLimit = _quadsMax;
     int quadStart = 0;
     int quadIndex = 0;
+    int quadOffset = 0;
     int bitmapIndex = 0;
     int triangles = gl.TRIANGLES;
     int uShort = gl.UNSIGNED_SHORT;
@@ -193,13 +199,17 @@ class _BitmapContainerProgram extends RenderProgram {
         var length = quadIndex - quadStart;
         dynamicBuffer.activate(renderContext);
         dynamicBuffer.updateQuad(offset, length);
-        staticBuffer.activate(renderContext);
-        staticBuffer.updateQuad(offset, length);
-        staticBuffer.bindAttributes();
+        if (quadOffset + quadStart <= dirtyMax && quadOffset + quadIndex >= dirtyMin) {
+          staticBuffer.activate(renderContext);
+          staticBuffer.updateQuad(offset, length);
+        }
         context.drawElements(triangles, length * 6, uShort, offset * 12);
         if (quadIndex == quadLimit && bitmapIndex < bitmaps.length) {
           quadStart = quadIndex = 0;
-          staticBuffer = staticBuffers[bitmapIndex ~/ _bufferSize];
+          quadOffset += staticBuffer.quads;
+          staticBuffer = staticBuffers[bitmapIndex ~/ _quadsMax];
+          staticBuffer.activate(renderContext);
+          staticBuffer.bindAttributes();
         } else {
           quadStart = quadIndex;
         }
