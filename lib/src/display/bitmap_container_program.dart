@@ -134,6 +134,8 @@ class _BitmapContainerProgram extends RenderProgram {
 
     // Manage static BitmapContainerBuffers
 
+    int dirtyMin = container._buffersDirtyMin;
+    int dirtyMax = container._buffersDirtyMax;
     List<Bitmap> bitmaps = container._children;
     List<_BitmapContainerBuffer> staticBuffers = container._buffers;
     int staticBufferMinimum = (bitmaps.length + _bufferSize - 1) ~/ _bufferSize;
@@ -176,7 +178,9 @@ class _BitmapContainerProgram extends RenderProgram {
 
       if (textureCheck) {
         dynamicBuffer.setQuad(bitmap, quadIndex);
-        staticBuffer.setQuad(bitmap, quadIndex);
+        if (bitmapIndex >= dirtyMin && bitmapIndex < dirtyMax) {
+          staticBuffer.setQuad(bitmap, quadIndex);
+        }
         bitmapIndex += 1;
         quadIndex += 1;
         textureFlush = bitmapIndex == bitmaps.length || quadIndex == quadLimit;
@@ -206,6 +210,9 @@ class _BitmapContainerProgram extends RenderProgram {
         renderContext.activateRenderTexture(renderTexture);
       }
     }
+
+    container._buffersDirtyMin = 0xffffff;
+    container._buffersDirtyMax = 0;
   }
 
   //---------------------------------------------------------------------------
