@@ -3,7 +3,6 @@
 ///
 library stagexl.display_ex;
 
-import 'dart:web_gl' as gl;
 import 'dart:typed_data';
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show CanvasRenderingContext2D, CssStyleDeclaration, Element;

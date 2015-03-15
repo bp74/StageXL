@@ -1,7 +1,6 @@
 library stagexl.filters.normal_map;
 
 import 'dart:math' as math;
-import 'dart:typed_data';
 import 'dart:web_gl' as gl;
 
 import '../display.dart';
