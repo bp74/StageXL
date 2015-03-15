@@ -175,8 +175,8 @@ class _BitmapContainerProgram extends RenderProgram {
       var textureFlush = false;
 
       if (textureCheck) {
-        dynamicBuffer.setVertexData(bitmap, quadIndex);
-        staticBuffer.setVertexData(bitmap, quadIndex);
+        dynamicBuffer.setQuad(bitmap, quadIndex);
+        staticBuffer.setQuad(bitmap, quadIndex);
         bitmapIndex += 1;
         quadIndex += 1;
         textureFlush = bitmapIndex == bitmaps.length || quadIndex == quadLimit;
@@ -188,9 +188,9 @@ class _BitmapContainerProgram extends RenderProgram {
         var offset = quadStart;
         var length = quadIndex - quadStart;
         dynamicBuffer.activate(renderContext);
-        dynamicBuffer.updateVertexData(offset, length);
+        dynamicBuffer.updateQuad(offset, length);
         staticBuffer.activate(renderContext);
-        staticBuffer.updateVertexData(offset, length);
+        staticBuffer.updateQuad(offset, length);
         staticBuffer.bindAttributes();
         context.drawElements(triangles, length * 6, uShort, offset * 12);
         if (quadIndex == quadLimit && bitmapIndex < bitmaps.length) {

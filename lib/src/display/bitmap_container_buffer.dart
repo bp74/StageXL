@@ -86,7 +86,7 @@ class _BitmapContainerBuffer extends RenderBufferVertex {
 
   //---------------------------------------------------------------------------
 
-  void setVertexData(Bitmap bitmap, int quadIndex) {
+  void setQuad(Bitmap bitmap, int quadIndex) {
 
     var vertex0 = stride * 0;
     var vertex1 = stride * 1;
@@ -197,7 +197,7 @@ class _BitmapContainerBuffer extends RenderBufferVertex {
 
   //---------------------------------------------------------------------------
 
-  void updateVertexData(int offset, int length) {
+  void updateQuad(int offset, int length) {
     this.update(4 * stride * offset, 4 * stride * length);
   }
 
