@@ -61,9 +61,9 @@ class BitmapContainer
   final BitmapProperty bitmapVisible;
 
   final List<Bitmap> _children = new List<Bitmap>();
-
-  final List<_BitmapContainerBuffer> _staticBuffers =
-      new List<_BitmapContainerBuffer>();
+  final List<_BitmapContainerBuffer> _buffers = new List<_BitmapContainerBuffer>();
+  int _buffersDirtyMin = 0; // inclusive
+  int _buffersDirtyMax = 0; // exclusive
 
   String _bitmapContainerProgramName = "";
 
@@ -101,8 +101,8 @@ class BitmapContainer
   //---------------------------------------------------------------------------
 
   void dispose() {
-    while(_staticBuffers.length > 0) {
-      _staticBuffers.removeLast().dispose();
+    while(_buffers.length > 0) {
+      _buffers.removeLast().dispose();
     }
   }
 
@@ -120,12 +120,20 @@ class BitmapContainer
     if (index < 0 || index > _children.length) {
       throw new RangeError.index(index, _children, "index");
     } else if (child.parent == this) {
-      _children.remove(child);
-      _children.insert(minInt(index, _children.length), child);
+      int oldIndex = _children.indexOf(child);
+      int newIndex = minInt(index, _children.length - 1);
+      int minIndex = minInt(oldIndex, newIndex);
+      int maxIndex = maxInt(oldIndex, newIndex);
+      _children.removeAt(oldIndex);
+      _children.insert(newIndex, child);
+      _buffersDirtyMin = minInt(_buffersDirtyMin, minIndex + 0);
+      _buffersDirtyMax = maxInt(_buffersDirtyMax, maxIndex + 1);
     } else {
        child.removeFromParent();
-       _children.insert(index, child);
        child._parent = this;
+       _children.insert(index, child);
+       _buffersDirtyMin = minInt(_buffersDirtyMin, index);
+       _buffersDirtyMax = _children.length;
     }
   }
 
@@ -143,6 +151,8 @@ class BitmapContainer
       throw new RangeError.index(index, _children, "index");
     } else {
       _children.removeAt(index)._parent = null;
+      _buffersDirtyMin = minInt(_buffersDirtyMin, index);
+      _buffersDirtyMax = _children.length;
     }
   }
 

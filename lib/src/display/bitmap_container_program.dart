@@ -27,7 +27,7 @@ class _BitmapContainerProgram extends RenderProgram {
 
     _staticStride = _calculateStride(BitmapProperty.Static);
     _dynamicStride = _calculateStride(BitmapProperty.Dynamic);
-    _bufferSize = minInt(4096, 16384 ~/ maxInt(_staticStride, _dynamicStride));
+    _bufferSize = minInt(2048, 16384 ~/ maxInt(_staticStride, _dynamicStride));
 
     _dynamicBuffer = new _BitmapContainerBuffer(this,
         BitmapProperty.Dynamic, _bufferSize, _dynamicStride);
@@ -112,7 +112,8 @@ class _BitmapContainerProgram extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void renderBitmapContainer(RenderState renderState, BitmapContainer container) {
+  void renderBitmapContainer(RenderState renderState,
+                             BitmapContainer container) {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture activeRenderTexture = renderContext.activeRenderTexture;
@@ -134,7 +135,7 @@ class _BitmapContainerProgram extends RenderProgram {
     // Manage static BitmapContainerBuffers
 
     List<Bitmap> bitmaps = container._children;
-    List<_BitmapContainerBuffer> staticBuffers = container._staticBuffers;
+    List<_BitmapContainerBuffer> staticBuffers = container._buffers;
     int staticBufferMinimum = (bitmaps.length + _bufferSize - 1) ~/ _bufferSize;
 
     while(staticBuffers.length < staticBufferMinimum) {
@@ -192,10 +193,11 @@ class _BitmapContainerProgram extends RenderProgram {
         staticBuffer.updateVertexData(offset, length);
         staticBuffer.bindAttributes();
         context.drawElements(triangles, length * 6, uShort, offset * 6);
-        quadStart = quadIndex;
-        if (quadStart == quadLimit && bitmapIndex < bitmaps.length) {
+        if (quadIndex == quadLimit && bitmapIndex < bitmaps.length) {
           quadStart = quadIndex = 0;
           staticBuffer = staticBuffers[bitmapIndex ~/ _bufferSize];
+        } else {
+          quadStart = quadIndex;
         }
       }
 
@@ -219,6 +221,8 @@ class _BitmapContainerProgram extends RenderProgram {
     if (bitmapAlpha == bitmapProperty) stride += 1;
     return stride;
   }
+
+  //---------------------------------------------------------------------------
 
   String _modifyVertexShader(String vertexShader) {
 
