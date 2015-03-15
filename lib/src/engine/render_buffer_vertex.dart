@@ -42,8 +42,9 @@ class RenderBufferVertex {
   }
 
   void update(int offset, int length) {
-    var vertexUpdate = new Float32List.view(data.buffer, 0, length);
-    _renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+    int offsetInBytes = offset * 4;
+    var vertexUpdate = new Float32List.view(data.buffer, offsetInBytes, length);
+    _renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, offsetInBytes, vertexUpdate);
   }
 
   void bindAttribute(int index, int size, int stride, int offset) {

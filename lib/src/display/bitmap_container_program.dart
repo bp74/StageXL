@@ -192,7 +192,7 @@ class _BitmapContainerProgram extends RenderProgram {
         staticBuffer.activate(renderContext);
         staticBuffer.updateVertexData(offset, length);
         staticBuffer.bindAttributes();
-        context.drawElements(triangles, length * 6, uShort, offset * 6);
+        context.drawElements(triangles, length * 6, uShort, offset * 12);
         if (quadIndex == quadLimit && bitmapIndex < bitmaps.length) {
           quadStart = quadIndex = 0;
           staticBuffer = staticBuffers[bitmapIndex ~/ _bufferSize];
