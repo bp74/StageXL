@@ -153,6 +153,7 @@ abstract class DisplayObjectContainer
   /// [DisplayObjectContainer] are decreased by 1.
 
   void removeChildAt(int index) {
+
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     }
@@ -178,14 +179,13 @@ abstract class DisplayObjectContainer
   /// The parent property of the removed children is set to null, and the
   /// objects are garbage collected if no other references to the children exist.
 
-  void removeChildren([int beginIndex = 0, int endIndex = 0x7fffffff]) {
+  void removeChildren([int beginIndex, int endIndex]) {
 
     var length = _children.length;
     if (length == 0) return;
 
-    if (endIndex == 0x7fffffff) {
-      endIndex = length - 1;
-    }
+    if (beginIndex == null) beginIndex = 0;
+    if (endIndex == null) endIndex = length - 1;
 
     if (beginIndex < 0 || endIndex < 0 || beginIndex >= length || endIndex >= length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -194,6 +194,57 @@ abstract class DisplayObjectContainer
     for (int i = beginIndex; i <= endIndex; i++) {
       if (beginIndex >= _children.length) break;
       removeChildAt(beginIndex);
+    }
+  }
+
+  /// Replaces the child at the specified [index] position with the new
+  /// [child]. The current child at this position is removed.
+  ///
+  /// The parent property of the removed child is set to null, and the object
+  /// is garbage collected if no other references to the child exist.
+
+  void replaceChildAt(int index, DisplayObject child) {
+
+    if (index < 0 || index >= _children.length) {
+      throw new ArgumentError("The supplied index is out of bounds.");
+    }
+
+    var oldChild = _children[index];
+    var newChild = child;
+    var stage = this.stage;
+
+    if (newChild == this) {
+      throw new ArgumentError("An object cannot be added as a child of itself.");
+    }
+
+    if (newChild.parent == this) {
+      if (_children.indexOf(newChild) == index) return;
+      throw new ArgumentError(
+          "The display object is already a child of this container.");
+    }
+
+    newChild.removeFromParent();
+
+    for (var parent = this.parent; parent != null; parent = parent.parent) {
+      if (parent == newChild) throw new ArgumentError(
+          "An object cannot be added as a child to one of it's children "
+          "(or children's children, etc.).");
+    }
+
+    oldChild.dispatchEvent(new Event(Event.REMOVED, true));
+
+    if (stage != null) {
+      _dispatchEventDescendants(oldChild, new Event(Event.REMOVED_FROM_STAGE));
+    }
+
+    oldChild._parent = null;
+    newChild._parent = this;
+    _children[index] = newChild;
+
+    newChild.dispatchEvent(new Event(Event.ADDED, true));
+
+    if (stage != null) {
+      _dispatchEventDescendants(newChild, new Event(Event.ADDED_TO_STAGE));
     }
   }
 

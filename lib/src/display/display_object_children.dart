@@ -7,14 +7,74 @@ part of stagexl.display;
 
 class DisplayObjectChildren implements Iterable<DisplayObject> {
 
-  // TODO: We could also implement List<DisplayObject>. It would be easy to use
-  // the ListMixin, but the performance wouldn't be great. Therefore we make it
-  // an read-only Iterable<DisplayObject> for now.
-
   final DisplayObjectParent parent;
   final List<DisplayObject> _children;
 
   DisplayObjectChildren._(this.parent, this._children);
+
+  //---------------------------------------------------------------------------
+
+  // TODO: Implement the rest of the List<DisplayObject> interface.
+
+  void clear() {
+    this.parent.removeChildren();
+  }
+
+  void add(DisplayObject displayObject) {
+    this.parent.addChild(displayObject);
+  }
+
+  void addAll(Iterable<DisplayObject> displayObjects) {
+    for(var displayObject in displayObjects){
+      this.parent.addChild(displayObject);
+    }
+  }
+
+  int indexOf(DisplayObject displayObject) {
+    return _children.indexOf(displayObject);
+  }
+
+  void insert(int index, DisplayObject displayObject) {
+    this.parent.addChildAt(displayObject, index);
+  }
+
+  void insertAll(int index, Iterable<DisplayObject> displayObjects) {
+    for(var displayObject in displayObjects) {
+      this.parent.addChildAt(displayObject, index++);
+    }
+  }
+
+  bool remove(DisplayObject displayObject) {
+    var index = _children.indexOf(displayObject);
+    if (index >= 0) this.parent.removeChildAt(index);
+    return index >= 0;
+  }
+
+  DisplayObject removeAt(int index) {
+    var displayObject = _children[index];
+    this.parent.removeChildAt(index);
+    return displayObject;
+  }
+
+  DisplayObject removeLast() {
+    return removeAt(_children.length - 1);
+  }
+
+  void removeRange(int start, int end) {
+    return this.parent.removeChildren(start, end);
+  }
+
+  DisplayObject operator[](int index) {
+    return _children[index];
+  }
+
+  void operator[]=(int index, DisplayObject displayObject) {
+    this.parent.replaceChildAt(index, displayObject);
+  }
+
+  Iterable<DisplayObject> get reversed {
+    return _children.reversed;
+  }
 
   //---------------------------------------------------------------------------
 
