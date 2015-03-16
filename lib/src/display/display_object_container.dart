@@ -203,7 +203,7 @@ abstract class DisplayObjectContainer
   /// The parent property of the removed child is set to null, and the object
   /// is garbage collected if no other references to the child exist.
 
-  void replaceChildAt(int index, DisplayObject child) {
+  void replaceChildAt(DisplayObject child, int index) {
 
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");

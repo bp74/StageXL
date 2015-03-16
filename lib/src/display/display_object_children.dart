@@ -69,7 +69,7 @@ class DisplayObjectChildren implements Iterable<DisplayObject> {
   }
 
   void operator[]=(int index, DisplayObject displayObject) {
-    this.parent.replaceChildAt(index, displayObject);
+    this.parent.replaceChildAt(displayObject, index);
   }
 
   Iterable<DisplayObject> get reversed {

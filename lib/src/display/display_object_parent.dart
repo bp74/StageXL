@@ -23,5 +23,5 @@ abstract class DisplayObjectParent extends DisplayObject {
   void removeChildAt(int index);
   void removeChildren([int beginIndex, int endIndex]);
 
-  void replaceChildAt(int index, DisplayObject child);
+  void replaceChildAt(DisplayObject child, int index);
 }
