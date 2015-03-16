@@ -44,6 +44,7 @@ part 'display/bitmap_filter.dart';
 part 'display/bitmap_filter_program.dart';
 part 'display/color_transform.dart';
 part 'display/display_object.dart';
+part 'display/display_object_children.dart';
 part 'display/display_object_container.dart';
 part 'display/display_object_container_3d.dart';
 part 'display/display_object_parent.dart';

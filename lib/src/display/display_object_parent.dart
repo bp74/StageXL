@@ -1,11 +1,14 @@
 part of stagexl.display;
 
+/// An abstract class implemented by containers for display objects.
+///
+/// This class defines the classic [addChild]/[removeChild] methods
+/// from the well known Flash display list. It also contains a more
+/// modern [children] iterable for advanced use cases.
+
 abstract class DisplayObjectParent extends DisplayObject {
 
-  // TODO: Add IterableMixin?
-  // https://code.google.com/p/dart/issues/detail?id=22719
-
-  Iterator<DisplayObject> get iterator;
+  DisplayObjectChildren get children;
 
   int get numChildren;
 

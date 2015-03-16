@@ -11,7 +11,7 @@ part of stagexl.display;
 /// so on.
 
 abstract class DisplayObjectContainer
-    extends InteractiveObject with IterableMixin<DisplayObject>
+    extends InteractiveObject
     implements DisplayObjectParent {
 
   final List<DisplayObject> _children = new List<DisplayObject>();
@@ -20,7 +20,9 @@ abstract class DisplayObjectContainer
 
   //----------------------------------------------------------------------------
 
-  Iterator<DisplayObject> get iterator => _children.iterator;
+  DisplayObjectChildren get children {
+    return new DisplayObjectChildren._(this, _children);
+  }
 
   /// The number of children of this container.
 
