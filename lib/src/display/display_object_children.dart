@@ -24,7 +24,7 @@ class DisplayObjectChildren implements Iterable<DisplayObject> {
   }
 
   @override
-  bool contains(Object element) {
+  bool contains(DisplayObject element) {
     return _children.contains(element);
   }
 
