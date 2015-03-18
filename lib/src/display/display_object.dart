@@ -941,32 +941,23 @@ abstract class DisplayObject
   @override
   void dispatchEvent(Event event) {
 
-    List<EventDispatcher> ancestors = null;
+    List<EventDispatcher> ancestors = new List<EventDispatcher>();
 
-    if (event.captures || event.bubbles) {
-      for(DisplayObject ancestor = parent; ancestor != null; ancestor = ancestor.parent) {
-        if(ancestor.hasEventListenersFor(event)) {
-          if (ancestors == null) ancestors = [];
-          ancestors.add(ancestor);
-        }
-      }
+    for(DisplayObject p = this.parent; p != null; p = p.parent) {
+      ancestors.add(p);
     }
 
-    if (ancestors != null && event.captures) {
-      for(int i = ancestors.length - 1 ; i >= 0; i--) {
-        ancestors[i].dispatchEventRaw(event, this, EventPhase.CAPTURING_PHASE);
-        if (event.stopsPropagation) return;
-      }
+    for(int i = ancestors.length - 1; i >= 0 && event.captures; i--) {
+      ancestors[i].dispatchEventRaw(event, this, EventPhase.CAPTURING_PHASE);
+      if (event.stopsPropagation) return;
     }
 
     dispatchEventRaw(event, this, EventPhase.AT_TARGET);
     if (event.stopsPropagation) return;
 
-    if (ancestors != null && event.bubbles) {
-      for(int i = 0; i < ancestors.length; i++) {
-        ancestors[i].dispatchEventRaw(event, this, EventPhase.BUBBLING_PHASE);
-        if (event.stopsPropagation) return;
-      }
+    for(int i = 0; i < ancestors.length && event.bubbles; i++) {
+      ancestors[i].dispatchEventRaw(event, this, EventPhase.BUBBLING_PHASE);
+      if (event.stopsPropagation) return;
     }
   }
 

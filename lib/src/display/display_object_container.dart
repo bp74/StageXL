@@ -108,19 +108,15 @@ abstract class DisplayObjectContainer
 
       for (var ancestor = this; ancestor != null; ancestor = ancestor.parent) {
         if (ancestor == child) {
-          throw new ArgumentError("An object cannot be added as "
-              "a child to one of it's children (or children's children, etc.).");
+          throw new ArgumentError(
+              "An object cannot be added as a child to one of it's children "
+              "(or children's children, etc.).");
         }
       }
 
       _children.insert(index, child);
-
       child._parent = this;
-      child.dispatchEvent(new Event(Event.ADDED, true));
-
-      if (this.stage != null) {
-        _dispatchEventDescendants(child, new Event(Event.ADDED_TO_STAGE));
-      }
+      _dispatchAddedEvents(child);
     }
   }
 
@@ -159,13 +155,7 @@ abstract class DisplayObjectContainer
     }
 
     DisplayObject child = _children[index];
-
-    child.dispatchEvent(new Event(Event.REMOVED, true));
-
-    if (this.stage != null) {
-      _dispatchEventDescendants(child, new Event(Event.REMOVED_FROM_STAGE));
-    }
-
+    _dispatchRemovedEvents(child);
     child._parent = null;
     _children.removeAt(index);
   }
@@ -211,7 +201,6 @@ abstract class DisplayObjectContainer
 
     var oldChild = _children[index];
     var newChild = child;
-    var stage = this.stage;
 
     if (newChild == this) {
       throw new ArgumentError("An object cannot be added as a child of itself.");
@@ -231,21 +220,12 @@ abstract class DisplayObjectContainer
           "(or children's children, etc.).");
     }
 
-    oldChild.dispatchEvent(new Event(Event.REMOVED, true));
-
-    if (stage != null) {
-      _dispatchEventDescendants(oldChild, new Event(Event.REMOVED_FROM_STAGE));
-    }
-
+    _dispatchRemovedEvents(oldChild);
     oldChild._parent = null;
     newChild._parent = this;
     _children[index] = newChild;
+    _dispatchAddedEvents(newChild);
 
-    newChild.dispatchEvent(new Event(Event.ADDED, true));
-
-    if (stage != null) {
-      _dispatchEventDescendants(newChild, new Event(Event.ADDED_TO_STAGE));
-    }
   }
 
   //----------------------------------------------------------------------------
@@ -284,7 +264,7 @@ abstract class DisplayObjectContainer
     return _children.indexOf(child);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Changes the position of an existing [child] in this
   /// [DisplayObjectContainer] to the new [index].
@@ -481,25 +461,51 @@ abstract class DisplayObjectContainer
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  _collectDescendants(DisplayObject displayObject, List descendants) {
+  void _dispatchAddedEvents(DisplayObject child) {
+    child.dispatchEvent(new Event(Event.ADDED, true));
+    if (this.stage != null) {
+      _dispatchStageEvents(child, Event.ADDED_TO_STAGE);
+    }
+  }
 
-    descendants.add(displayObject);
+  void _dispatchRemovedEvents(DisplayObject child) {
+    child.dispatchEvent(new Event(Event.REMOVED, true));
+    if (this.stage != null) {
+      _dispatchStageEvents(child, Event.REMOVED_FROM_STAGE);
+    }
+  }
 
+  //----------------------------------------------------------------------------
+
+  void _dispatchStageEvents(DisplayObject child, String eventType) {
+
+    // We optimize for the fact that the ADDED_TO_STAGE and REMOVE_FROM_STAGE
+    // events do not bubble, and most of the time there are no capturing event
+    // listeners. Iterate recursively through all children and children's
+    // children and dispatch the ADDED_TO_STAGE or REMOVE_FROM_STAGE event
+    // only if necessary.
+
+    var captured = false;
+    for(var obj = this; obj != null && captured == false; obj = obj.parent) {
+      if (obj.hasEventListener(eventType, useCapture: true)) captured = true;
+    }
+
+    _dispatchStageEventsRecursively(child, new Event(eventType), captured);
+  }
+
+  void _dispatchStageEventsRecursively(DisplayObject displayObject,
+                                       Event event, bool captured) {
+
+    if (displayObject.hasEventListener(event.type) || captured) {
+      displayObject.dispatchEvent(event);
+    }
     if (displayObject is DisplayObjectContainer) {
-      var children = displayObject._children;
-      for (int i = 0; i < children.length; i++) {
-        _collectDescendants(children[i], descendants);
+      captured = captured ||
+        displayObject.hasEventListener(event.type, useCapture: true);
+      for(var child in displayObject.children) {
+        _dispatchStageEventsRecursively(child, event, captured);
       }
     }
   }
 
-  _dispatchEventDescendants(DisplayObject displayObject, Event event) {
-
-    List descendants = [];
-    _collectDescendants(displayObject, descendants);
-
-    for (int i = 0; i < descendants.length; i++) {
-      descendants[i].dispatchEvent(event);
-    }
-  }
 }
