@@ -496,7 +496,7 @@ abstract class DisplayObjectContainer
   void _dispatchStageEventsRecursively(DisplayObject displayObject,
                                        Event event, bool captured) {
 
-    if (displayObject.hasEventListener(event.type) || captured) {
+    if (captured || displayObject.hasEventListener(event.type)) {
       displayObject.dispatchEvent(event);
     }
     if (displayObject is DisplayObjectContainer) {
