@@ -285,7 +285,7 @@ class ColorMatrixFilterProgram extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
 
     super.activate(renderContext);
-    super.renderingContext.uniform1i(uniforms["uSamplerLocation"], 0);
+    super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
     _renderBufferIndex = renderContext.renderBufferIndexQuads;
     _renderBufferIndex.activate(renderContext);
