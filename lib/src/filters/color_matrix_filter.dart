@@ -239,28 +239,36 @@ class ColorMatrixFilterProgram extends RenderProgram {
   int _quadCount = 0;
 
   //---------------------------------------------------------------------------
-  // aVertexPosition:  Float32(x), Float32(y)
-  // aVertexTexCoord:  Float32(u), Float32(v)
-  // aVertexColor0:    Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexColor1:    Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexColor2:    Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexColor3:    Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexColor4:    Float32(r), Float32(g), Float32(b), Float32(a)
+  // aPosition:  Float32(x), Float32(y)
+  // aTexCoord:  Float32(u), Float32(v)
+  // aMatrixR:   Float32(r), Float32(g), Float32(b), Float32(a)
+  // aMatrixG:   Float32(r), Float32(g), Float32(b), Float32(a)
+  // aMatrixB:   Float32(r), Float32(g), Float32(b), Float32(a)
+  // aMatrixA:   Float32(r), Float32(g), Float32(b), Float32(a)
+  // aOffset:    Float32(r), Float32(g), Float32(b), Float32(a)
   //---------------------------------------------------------------------------
 
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
-    attribute vec2 aVertexPosition, aVertexTexCoord;
-    attribute vec4 aVertexColor0, aVertexColor1, aVertexColor2, aVertexColor3, aVertexColor4; 
+
+    attribute vec2 aPosition;
+    attribute vec2 aTexCoord;
+    attribute vec4 aMatrixR, aMatrixG, aMatrixB, aMatrixA; 
+    attribute vec4 aOffset;
+
     varying vec2 vTexCoord;
-    varying vec4 vColor0, vColor1, vColor2, vColor3, vColor4;
+    varying vec4 vMatrixR, vMatrixG, vMatrixB, vMatrixA;
+    varying vec4 vOffset;
 
     void main() {
-      vTexCoord = aVertexTexCoord; 
-      vColor0 = aVertexColor0; vColor1 = aVertexColor1;
-      vColor2 = aVertexColor2; vColor3 = aVertexColor3; vColor4 = aVertexColor4;
-      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
+      vTexCoord = aTexCoord; 
+      vMatrixR = aMatrixR; 
+      vMatrixG = aMatrixG;
+      vMatrixB = aMatrixB; 
+      vMatrixA = aMatrixA; 
+      vOffset = aOffset;
+      gl_Position = vec4(aPosition, 0.0, 1.0) * uProjectionMatrix;
     }
     """;
 
@@ -268,18 +276,21 @@ class ColorMatrixFilterProgram extends RenderProgram {
 
     precision mediump float;
     uniform sampler2D uSampler;
+
     varying vec2 vTexCoord;
-    varying vec4 vColor0, vColor1, vColor2, vColor3, vColor4;
+    varying vec4 vMatrixR, vMatrixG, vMatrixB, vMatrixA;
+    varying vec4 vOffset;
 
     void main() {
       vec4 color = texture2D(uSampler, vTexCoord);
+      mat4 colorMatrix = mat4(vMatrixR, vMatrixG, vMatrixB, vMatrixA);
       color = vec4(color.rgb / (color.a + 0.001), color.a);
-      color = vColor0 + color * mat4(vColor1, vColor2, vColor3, vColor4);
+      color = vOffset + color * colorMatrix;
       gl_FragColor = vec4(color.rgb * color.a, color.a);
     }
     """;
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   @override
   void activate(RenderContextWebGL renderContext) {
@@ -292,13 +303,13 @@ class ColorMatrixFilterProgram extends RenderProgram {
 
     _renderBufferVertex = renderContext.renderBufferVertex;
     _renderBufferVertex.activate(renderContext);
-    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 96, 0);
-    _renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"], 2, 96, 8);
-    _renderBufferVertex.bindAttribute(attributes["aVertexColor0"],   4, 96, 16);
-    _renderBufferVertex.bindAttribute(attributes["aVertexColor1"],   4, 96, 32);
-    _renderBufferVertex.bindAttribute(attributes["aVertexColor2"],   4, 96, 48);
-    _renderBufferVertex.bindAttribute(attributes["aVertexColor3"],   4, 96, 64);
-    _renderBufferVertex.bindAttribute(attributes["aVertexColor4"],   4, 96, 80);
+    _renderBufferVertex.bindAttribute(attributes["aPosition"], 2, 96, 0);
+    _renderBufferVertex.bindAttribute(attributes["aTexCoord"], 2, 96, 8);
+    _renderBufferVertex.bindAttribute(attributes["aMatrixR"],  4, 96, 16);
+    _renderBufferVertex.bindAttribute(attributes["aMatrixG"],  4, 96, 32);
+    _renderBufferVertex.bindAttribute(attributes["aMatrixB"],  4, 96, 48);
+    _renderBufferVertex.bindAttribute(attributes["aMatrixA"],  4, 96, 64);
+    _renderBufferVertex.bindAttribute(attributes["aOffset"],   4, 96, 80);
   }
 
   @override
@@ -310,7 +321,7 @@ class ColorMatrixFilterProgram extends RenderProgram {
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void renderColorMatrixFilterQuad(RenderState renderState,
                                    RenderTextureQuad renderTextureQuad,
@@ -352,26 +363,26 @@ class ColorMatrixFilterProgram extends RenderProgram {
        vxData[index + 01] = matrix.ty + x * matrix.b + y * matrix.d;
        vxData[index + 02] = uvList[vertex + vertex + 0];
        vxData[index + 03] = uvList[vertex + vertex + 1];
-       vxData[index + 04] = colorOffsetList[00] / 255.0;
-       vxData[index + 05] = colorOffsetList[01] / 255.0;
-       vxData[index + 06] = colorOffsetList[02] / 255.0;
-       vxData[index + 07] = colorOffsetList[03] / 255.0 * alpha;
-       vxData[index + 08] = colorMatrixList[00];
-       vxData[index + 09] = colorMatrixList[01];
-       vxData[index + 10] = colorMatrixList[02];
-       vxData[index + 11] = colorMatrixList[03];
-       vxData[index + 12] = colorMatrixList[04];
-       vxData[index + 13] = colorMatrixList[05];
-       vxData[index + 14] = colorMatrixList[06];
-       vxData[index + 15] = colorMatrixList[07];
-       vxData[index + 16] = colorMatrixList[08];
-       vxData[index + 17] = colorMatrixList[09];
-       vxData[index + 18] = colorMatrixList[10];
-       vxData[index + 19] = colorMatrixList[11];
-       vxData[index + 20] = colorMatrixList[12] * alpha;
-       vxData[index + 21] = colorMatrixList[13] * alpha;
-       vxData[index + 22] = colorMatrixList[14] * alpha;
-       vxData[index + 23] = colorMatrixList[15] * alpha;
+       vxData[index + 04] = colorMatrixList[00];
+       vxData[index + 05] = colorMatrixList[01];
+       vxData[index + 06] = colorMatrixList[02];
+       vxData[index + 07] = colorMatrixList[03];
+       vxData[index + 08] = colorMatrixList[04];
+       vxData[index + 09] = colorMatrixList[05];
+       vxData[index + 10] = colorMatrixList[06];
+       vxData[index + 11] = colorMatrixList[07];
+       vxData[index + 12] = colorMatrixList[08];
+       vxData[index + 13] = colorMatrixList[09];
+       vxData[index + 14] = colorMatrixList[10];
+       vxData[index + 15] = colorMatrixList[11];
+       vxData[index + 16] = colorMatrixList[12] * alpha;
+       vxData[index + 17] = colorMatrixList[13] * alpha;
+       vxData[index + 18] = colorMatrixList[14] * alpha;
+       vxData[index + 19] = colorMatrixList[15] * alpha;
+       vxData[index + 20] = colorOffsetList[00] / 255.0;
+       vxData[index + 21] = colorOffsetList[01] / 255.0;
+       vxData[index + 22] = colorOffsetList[02] / 255.0;
+       vxData[index + 23] = colorOffsetList[03] / 255.0 * alpha;
      }
 
      _quadCount += 1;
