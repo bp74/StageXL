@@ -860,12 +860,12 @@ abstract class DisplayObject
     p.x = globalPoint.x.toDouble();
     p.y = globalPoint.y.toDouble();
 
-    _globalToLocalRecursive(p);
+    _globalToLocalRecursion(p);
     return p;
   }
 
-  void _globalToLocalRecursive(Point<num> point) {
-    if (parent != null) parent._globalToLocalRecursive(point);
+  void _globalToLocalRecursion(Point<num> point) {
+    if (parent != null) parent._globalToLocalRecursion(point);
     this.parentToLocal(point, point);
   }
 

@@ -490,11 +490,11 @@ abstract class DisplayObjectContainer
       if (obj.hasEventListener(eventType, useCapture: true)) captured = true;
     }
 
-    _dispatchStageEventsRecursively(child, new Event(eventType), captured);
+    _dispatchStageEventsRecursion(child, new Event(eventType), captured);
   }
 
-  void _dispatchStageEventsRecursively(DisplayObject displayObject,
-                                       Event event, bool captured) {
+  void _dispatchStageEventsRecursion(DisplayObject displayObject,
+                                     Event event, bool captured) {
 
     if (captured || displayObject.hasEventListener(event.type)) {
       displayObject.dispatchEvent(event);
@@ -503,7 +503,7 @@ abstract class DisplayObjectContainer
       captured = captured ||
         displayObject.hasEventListener(event.type, useCapture: true);
       for(var child in displayObject.children) {
-        _dispatchStageEventsRecursively(child, event, captured);
+        _dispatchStageEventsRecursion(child, event, captured);
       }
     }
   }
