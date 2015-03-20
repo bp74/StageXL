@@ -502,8 +502,9 @@ abstract class DisplayObjectContainer
     if (displayObject is DisplayObjectContainer) {
       captured = captured ||
         displayObject.hasEventListener(event.type, useCapture: true);
-      for(var child in displayObject.children) {
-        _dispatchStageEventsRecursion(child, event, captured);
+      var children = displayObject._children;
+      for(int i = 0; i < children.length; i++) {
+        _dispatchStageEventsRecursion(children[i], event, captured);
       }
     }
   }
