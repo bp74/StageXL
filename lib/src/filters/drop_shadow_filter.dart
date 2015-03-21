@@ -227,7 +227,6 @@ class DropShadowFilterProgram extends RenderProgram {
   //---------------------------------------------------------------------------
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexTextCoord:  Float32(u), Float32(v)
-  // aVertexColor:      Float32(r), Float32(g), Float32(b), Float32(a)
   //---------------------------------------------------------------------------
 
   String get vertexShaderSource => """

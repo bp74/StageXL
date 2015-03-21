@@ -2,6 +2,8 @@ library stagexl.filters.glow;
 
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show ImageData;
+import 'dart:typed_data';
+import 'dart:web_gl' as gl;
 
 import '../display.dart';
 import '../engine.dart';
@@ -149,23 +151,34 @@ class GlowFilter extends BitmapFilter {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    num scale = pow(0.5, pass >> 1);
+    int passCount = _renderPassSources.length;
 
-    GlowFilterProgram renderProgram = renderContext.getRenderProgram(
-        r"$GlowFilterProgram", () => new GlowFilterProgram());
+    if (pass == passCount - 1) {
 
-    renderContext.activateRenderProgram(renderProgram);
-    renderContext.activateRenderTexture(renderTexture);
+      if (!this.knockout && !this.hideObject) {
+        renderState.renderQuad(renderTextureQuad);
+      }
 
-    if (pass == _renderPassSources.length - 1) {
-      if (this.knockout || this.hideObject) return;
-      renderState.renderQuad(renderTextureQuad);
-    } else if (pass % 2 == 0) {
-      renderProgram.configure(color, scale * blurX / renderTexture.width, 0.0);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
     } else {
-      renderProgram.configure(color, 0.0, scale * blurY / renderTexture.height);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
+
+      GlowFilterProgram renderProgram = renderContext.getRenderProgram(
+          r"$GlowFilterProgram", () => new GlowFilterProgram());
+
+      num scale = pow(0.5, pass >> 1);
+      num alpha = pass == passCount - 2 ? renderState.globalAlpha : 1.0;
+      int color = pass == passCount - 2 ? this.color : this.color | 0xFF000000;
+
+      num radiusX = scale * blurX / renderTexture.width;
+      num radiusY = scale * blurY / renderTexture.height;
+
+      radiusX = pass.isEven ? radiusX : 0.0;
+      radiusY = pass.isEven ? 0.0 : radiusY;
+
+      renderContext.activateRenderProgram(renderProgram);
+      renderContext.activateRenderTexture(renderTexture);
+      renderProgram.renderGlowFilterQuad(
+          renderState, renderTextureQuad,
+          color, alpha, radiusX, radiusY);
     }
   }
 }
@@ -173,30 +186,34 @@ class GlowFilter extends BitmapFilter {
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class GlowFilterProgram extends BitmapFilterProgram {
+class GlowFilterProgram extends RenderProgram {
+
+  RenderBufferVertex _renderBufferVertex;
+
+  //---------------------------------------------------------------------------
+  // aVertexPosition:   Float32(x), Float32(y)
+  // aVertexTextCoord:  Float32(u), Float32(v)
+  //---------------------------------------------------------------------------
 
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
     uniform vec2 uRadius;
 
-    attribute vec2 aVertexPosition;
-    attribute vec2 aVertexTextCoord;
-    attribute float aVertexAlpha;
+    attribute vec2 aPosition;
+    attribute vec2 aTexCoord;
 
     varying vec2 vBlurCoords[7];
-    varying float vAlpha;
 
     void main() {
-      vBlurCoords[0] = aVertexTextCoord - uRadius * 1.2;
-      vBlurCoords[1] = aVertexTextCoord - uRadius * 0.8;
-      vBlurCoords[2] = aVertexTextCoord - uRadius * 0.4;
-      vBlurCoords[3] = aVertexTextCoord;
-      vBlurCoords[4] = aVertexTextCoord + uRadius * 0.4;
-      vBlurCoords[5] = aVertexTextCoord + uRadius * 0.8;
-      vBlurCoords[6] = aVertexTextCoord + uRadius * 1.2;
-      vAlpha = aVertexAlpha;
-      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
+      vBlurCoords[0] = aTexCoord - uRadius * 1.2;
+      vBlurCoords[1] = aTexCoord - uRadius * 0.8;
+      vBlurCoords[2] = aTexCoord - uRadius * 0.4;
+      vBlurCoords[3] = aTexCoord;
+      vBlurCoords[4] = aTexCoord + uRadius * 0.4;
+      vBlurCoords[5] = aTexCoord + uRadius * 0.8;
+      vBlurCoords[6] = aTexCoord + uRadius * 1.2;
+      gl_Position = vec4(aPosition, 0.0, 1.0) * uProjectionMatrix;
     }
     """;
 
@@ -207,7 +224,6 @@ class GlowFilterProgram extends BitmapFilterProgram {
     uniform vec4 uColor;
 
     varying vec2 vBlurCoords[7];
-    varying float vAlpha;
 
     void main() {
       float alpha = 0.0;
@@ -218,24 +234,69 @@ class GlowFilterProgram extends BitmapFilterProgram {
       alpha += texture2D(uSampler, vBlurCoords[4]).a * 0.24197;
       alpha += texture2D(uSampler, vBlurCoords[5]).a * 0.05399;
       alpha += texture2D(uSampler, vBlurCoords[6]).a * 0.00443;
-      alpha *= vAlpha;
       alpha *= uColor.a;
       gl_FragColor = vec4(uColor.rgb * alpha, alpha);
     }
     """;
 
-   void configure(int color, num radiusX, num radiusY) {
+  //---------------------------------------------------------------------------
 
-     num r = colorGetR(color) / 255.0;
-     num g = colorGetG(color) / 255.0;
-     num b = colorGetB(color) / 255.0;
-     num a = colorGetA(color) / 255.0;
+  @override
+  void activate(RenderContextWebGL renderContext) {
 
-     var uColorLocation = uniforms["uColor"];
-     var uRadiusLocation = uniforms["uRadius"];
+    super.activate(renderContext);
 
-     renderingContext.uniform4f(uColorLocation, r, g, b, a);
-     renderingContext.uniform2f(uRadiusLocation, radiusX, radiusY);
+    _renderBufferVertex = renderContext.renderBufferVertex;
+    _renderBufferVertex.activate(renderContext);
+    _renderBufferVertex.bindAttribute(attributes["aPosition"], 2, 16, 0);
+    _renderBufferVertex.bindAttribute(attributes["aTexCoord"], 2, 16, 8);
+  }
+
+  //---------------------------------------------------------------------------
+
+  void renderGlowFilterQuad(
+      RenderState renderState, RenderTextureQuad renderTextureQuad,
+      int color, num alpha, num radiusX, num radiusY) {
+
+    int width = renderTextureQuad.textureWidth;
+    int height = renderTextureQuad.textureHeight;
+    int offsetX = renderTextureQuad.offsetX;
+    int offsetY = renderTextureQuad.offsetY;
+    Float32List uvList = renderTextureQuad.uvList;
+    Matrix matrix = renderState.globalMatrix;
+
+    num r = colorGetR(color) / 255.0;
+    num g = colorGetG(color) / 255.0;
+    num b = colorGetB(color) / 255.0;
+    num a = colorGetA(color) / 255.0 * alpha;
+
+    renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
+    renderingContext.uniform4f(uniforms["uColor"], r, g, b, a);
+    renderingContext.uniform1i(uniforms["uSampler"], 0);
+
+    // Calculate the 4 vertices of the RenderTextureQuad
+
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < 16) return;
+
+    for(int vertex = 0, index = 0; vertex < 4; vertex++, index += 4) {
+
+      int x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
+      int y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+
+      if (index > vxData.length - 4) return; // dart2js_hint
+
+      vxData[index + 0] = matrix.tx + x * matrix.a + y * matrix.c;
+      vxData[index + 1] = matrix.ty + x * matrix.b + y * matrix.d;
+      vxData[index + 2] = uvList[vertex + vertex + 0];
+      vxData[index + 3] = uvList[vertex + vertex + 1];
+    }
+
+    // Update vertex buffer and render quad
+
+    _renderBufferVertex.update(0, 16);
+    renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
    }
 }
 
