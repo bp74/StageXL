@@ -4,8 +4,8 @@ class TextureAtlas {
 
   final List<TextureAtlasFrame> frames = new List<TextureAtlasFrame>();
 
-  static Future<TextureAtlas> load(
-      String url, TextureAtlasFormat textureAtlasFormat, [
+  static Future<TextureAtlas> load(String url, [
+      TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
       BitmapDataLoadOptions bitmapDataLoadOptions]) {
 
     return textureAtlasFormat.load(url, bitmapDataLoadOptions);

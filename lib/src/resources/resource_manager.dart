@@ -112,8 +112,12 @@ class ResourceManager {
     _addResource("SoundSprite", name, url, SoundSprite.load(url));
   }
 
-  void addTextureAtlas(String name, String url, TextureAtlasFormat textureAtlasFormat, [BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
-    _addResource("TextureAtlas", name, url, TextureAtlas.load(url, textureAtlasFormat, bitmapDataLoadOptions));
+  void addTextureAtlas(String name, String url, [
+      TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
+      BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
+
+    _addResource("TextureAtlas", name, url,
+        TextureAtlas.load(url, textureAtlasFormat, bitmapDataLoadOptions));
   }
 
   void addTextFile(String name, String url) {
