@@ -297,6 +297,6 @@ class GlowFilterProgram extends RenderProgram {
 
     _renderBufferVertex.update(0, 16);
     renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-   }
+  }
 }
 
