@@ -2,6 +2,8 @@ library stagexl.filters.blur;
 
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show ImageData;
+import 'dart:typed_data';
+import 'dart:web_gl' as gl;
 
 import '../display.dart';
 import '../engine.dart';
@@ -130,51 +132,59 @@ class BlurFilter extends BitmapFilter {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    num scale = pow(0.5, pass >> 1);
+    int passCount = _renderPassSources.length;
 
     BlurFilterProgram renderProgram = renderContext.getRenderProgram(
         r"$BlurFilterProgram", () => new BlurFilterProgram());
 
+    num scale = pow(0.5, pass >> 1);
+    num alpha = pass == passCount - 1 ? renderState.globalAlpha : 1.0;
+
+    num radiusX = scale * blurX / renderTexture.width;
+    num radiusY = scale * blurY / renderTexture.height;
+
+    radiusX = pass.isEven ? radiusX : 0.0;
+    radiusY = pass.isEven ? 0.0 : radiusY;
+
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
-
-    if (pass % 2 == 0) {
-      renderProgram.configure(scale * blurX / renderTexture.width, 0.0);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
-    } else {
-      renderProgram.configure(0.0, scale * blurY / renderTexture.height);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
-    }
+    renderProgram.renderBlurFilterQuad(
+        renderState, renderTextureQuad,
+        alpha, radiusX, radiusY);
   }
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class BlurFilterProgram extends BitmapFilterProgram {
+class BlurFilterProgram extends RenderProgram {
+
+  RenderBufferVertex _renderBufferVertex;
+
+  //---------------------------------------------------------------------------
+  // aPosition:  Float32(x), Float32(y)
+  // aTexCoord:  Float32(u), Float32(v)
+  //---------------------------------------------------------------------------
 
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
     uniform vec2 uRadius;
 
-    attribute vec2 aVertexPosition;
-    attribute vec2 aVertexTextCoord;
-    attribute float aVertexAlpha;
+    attribute vec2 aPosition;
+    attribute vec2 aTexCoord;
 
     varying vec2 vBlurCoords[7];
-    varying float vAlpha;
 
     void main() {
-      vBlurCoords[0] = aVertexTextCoord - uRadius * 1.2;
-      vBlurCoords[1] = aVertexTextCoord - uRadius * 0.8;
-      vBlurCoords[2] = aVertexTextCoord - uRadius * 0.4;
-      vBlurCoords[3] = aVertexTextCoord;
-      vBlurCoords[4] = aVertexTextCoord + uRadius * 0.4;
-      vBlurCoords[5] = aVertexTextCoord + uRadius * 0.8;
-      vBlurCoords[6] = aVertexTextCoord + uRadius * 1.2;
-      vAlpha = aVertexAlpha;
-      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
+      vBlurCoords[0] = aTexCoord - uRadius * 1.2;
+      vBlurCoords[1] = aTexCoord - uRadius * 0.8;
+      vBlurCoords[2] = aTexCoord - uRadius * 0.4;
+      vBlurCoords[3] = aTexCoord;
+      vBlurCoords[4] = aTexCoord + uRadius * 0.4;
+      vBlurCoords[5] = aTexCoord + uRadius * 0.8;
+      vBlurCoords[6] = aTexCoord + uRadius * 1.2;
+      gl_Position = vec4(aPosition, 0.0, 1.0) * uProjectionMatrix;
     }
     """;
 
@@ -182,9 +192,9 @@ class BlurFilterProgram extends BitmapFilterProgram {
 
     precision mediump float;
     uniform sampler2D uSampler;
+    uniform float uAlpha;
 
     varying vec2 vBlurCoords[7];
-    varying float vAlpha;
 
     void main() {
       vec4 sum = vec4(0.0);
@@ -195,12 +205,62 @@ class BlurFilterProgram extends BitmapFilterProgram {
       sum += texture2D(uSampler, vBlurCoords[4]) * 0.24197;
       sum += texture2D(uSampler, vBlurCoords[5]) * 0.05399;
       sum += texture2D(uSampler, vBlurCoords[6]) * 0.00443;
-      gl_FragColor = sum * vAlpha;
+      gl_FragColor = sum * uAlpha;
     }
     """;
 
-   void configure(num radiusX, num radiusY) {
-     var uPixelLocation = uniforms["uRadius"];
-     renderingContext.uniform2f(uPixelLocation, radiusX, radiusY);
-   }
+  //---------------------------------------------------------------------------
+
+  @override
+  void activate(RenderContextWebGL renderContext) {
+
+    super.activate(renderContext);
+
+    _renderBufferVertex = renderContext.renderBufferVertex;
+    _renderBufferVertex.activate(renderContext);
+    _renderBufferVertex.bindAttribute(attributes["aPosition"], 2, 16, 0);
+    _renderBufferVertex.bindAttribute(attributes["aTexCoord"], 2, 16, 8);
+  }
+
+  //---------------------------------------------------------------------------
+
+  void renderBlurFilterQuad(
+      RenderState renderState, RenderTextureQuad renderTextureQuad,
+      num alpha, num radiusX, num radiusY) {
+
+    int width = renderTextureQuad.textureWidth;
+    int height = renderTextureQuad.textureHeight;
+    int offsetX = renderTextureQuad.offsetX;
+    int offsetY = renderTextureQuad.offsetY;
+    Float32List uvList = renderTextureQuad.uvList;
+    Matrix matrix = renderState.globalMatrix;
+
+    renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
+    renderingContext.uniform1f(uniforms["uAlpha"], alpha);
+    renderingContext.uniform1i(uniforms["uSampler"], 0);
+
+    // Calculate the 4 vertices of the RenderTextureQuad
+
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < 16) return;
+
+    for(int vertex = 0, index = 0; vertex < 4; vertex++, index += 4) {
+
+      int x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
+      int y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+
+      if (index > vxData.length - 4) return; // dart2js_hint
+
+      vxData[index + 0] = matrix.tx + x * matrix.a + y * matrix.c;
+      vxData[index + 1] = matrix.ty + x * matrix.b + y * matrix.d;
+      vxData[index + 2] = uvList[vertex + vertex + 0];
+      vxData[index + 3] = uvList[vertex + vertex + 1];
+    }
+
+    // Update vertex buffer and render quad
+
+    _renderBufferVertex.update(0, 16);
+    renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+  }
 }
