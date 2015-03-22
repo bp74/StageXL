@@ -182,6 +182,7 @@ class DropShadowFilter extends BitmapFilter {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     int passCount = _renderPassSources.length;
+    num passScale = pow(0.5, pass >> 1);
 
     if (pass == passCount - 1) {
 
@@ -194,25 +195,17 @@ class DropShadowFilter extends BitmapFilter {
       DropShadowFilterProgram renderProgram = renderContext.getRenderProgram(
           r"$DropShadowFilterProgram", () => new DropShadowFilterProgram());
 
-      num scale = pow(0.5, pass >> 1);
-      num alpha = pass == passCount - 2 ? renderState.globalAlpha : 1.0;
-      int color = pass == passCount - 2 ? this.color : this.color | 0xFF000000;
-
-      num shiftX = distance * cos(angle) / renderTexture.width;
-      num shiftY = distance * sin(angle) / renderTexture.height;
-      num radiusX = scale * blurX / renderTexture.width;
-      num radiusY = scale * blurY / renderTexture.height;
-
-      shiftX = pass == 0 ? shiftX : 0.0;
-      shiftY = pass == 0 ? shiftY : 0.0;
-      radiusX = pass.isEven ? radiusX : 0.0;
-      radiusY = pass.isEven ? 0.0 : radiusY;
-
       renderContext.activateRenderProgram(renderProgram);
       renderContext.activateRenderTexture(renderTexture);
+
       renderProgram.renderDropShadowFilterQuad(
           renderState, renderTextureQuad,
-          color, alpha, shiftX, shiftY, radiusX, radiusY);
+          pass == passCount - 2 ? this.color : this.color | 0xFF000000,
+          pass == passCount - 2 ? renderState.globalAlpha : 1.0,
+          pass == 0 ? distance * cos(angle) / renderTexture.width : 0.0,
+          pass == 0 ? distance * sin(angle) / renderTexture.height : 0.0,
+          pass.isEven ? passScale * blurX / renderTexture.width : 0.0,
+          pass.isEven ? 0.0 : passScale * blurY / renderTexture.height);
     }
   }
 }
@@ -306,11 +299,6 @@ class DropShadowFilterProgram extends RenderProgram {
     num b = colorGetB(color) / 255.0;
     num a = colorGetA(color) / 255.0 * alpha;
 
-    renderingContext.uniform2f(uniforms["uShift"], shiftX, shiftY);
-    renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
-    renderingContext.uniform4f(uniforms["uColor"], r, g, b, a);
-    renderingContext.uniform1i(uniforms["uSampler"], 0);
-
     // Calculate the 4 vertices of the RenderTextureQuad
 
     var vxData = _renderBufferVertex.data;
@@ -333,6 +321,11 @@ class DropShadowFilterProgram extends RenderProgram {
     // Update vertex buffer and render quad
 
     _renderBufferVertex.update(0, 16);
+
+    renderingContext.uniform2f(uniforms["uShift"], shiftX, shiftY);
+    renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
+    renderingContext.uniform4f(uniforms["uColor"], r, g, b, a);
+    renderingContext.uniform1i(uniforms["uSampler"], 0);
     renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
   }
 

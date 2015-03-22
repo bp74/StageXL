@@ -133,24 +133,19 @@ class BlurFilter extends BitmapFilter {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     int passCount = _renderPassSources.length;
+    num passScale = pow(0.5, pass >> 1);
 
     BlurFilterProgram renderProgram = renderContext.getRenderProgram(
         r"$BlurFilterProgram", () => new BlurFilterProgram());
 
-    num scale = pow(0.5, pass >> 1);
-    num alpha = pass == passCount - 1 ? renderState.globalAlpha : 1.0;
-
-    num radiusX = scale * blurX / renderTexture.width;
-    num radiusY = scale * blurY / renderTexture.height;
-
-    radiusX = pass.isEven ? radiusX : 0.0;
-    radiusY = pass.isEven ? 0.0 : radiusY;
-
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
+
     renderProgram.renderBlurFilterQuad(
         renderState, renderTextureQuad,
-        alpha, radiusX, radiusY);
+        pass == passCount - 1 ? renderState.globalAlpha : 1.0,
+        pass.isEven ? passScale * blurX / renderTexture.width : 0.0,
+        pass.isEven ? 0.0 : passScale * blurY / renderTexture.height);
   }
 }
 
@@ -235,10 +230,6 @@ class BlurFilterProgram extends RenderProgram {
     Float32List uvList = renderTextureQuad.uvList;
     Matrix matrix = renderState.globalMatrix;
 
-    renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
-    renderingContext.uniform1f(uniforms["uAlpha"], alpha);
-    renderingContext.uniform1i(uniforms["uSampler"], 0);
-
     // Calculate the 4 vertices of the RenderTextureQuad
 
     var vxData = _renderBufferVertex.data;
@@ -261,6 +252,10 @@ class BlurFilterProgram extends RenderProgram {
     // Update vertex buffer and render quad
 
     _renderBufferVertex.update(0, 16);
+
+    renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
+    renderingContext.uniform1f(uniforms["uAlpha"], alpha);
+    renderingContext.uniform1i(uniforms["uSampler"], 0);
     renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
   }
 }
