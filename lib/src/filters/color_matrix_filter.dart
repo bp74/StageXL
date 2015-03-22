@@ -340,51 +340,51 @@ class ColorMatrixFilterProgram extends RenderProgram {
     Float32List colorOffsetList = colorMatrixFilter._colorOffsetList;
 
     // Check if the index and vertex buffer are valid and if
-     // we need to flush the render program to free the buffers.
+    // we need to flush the render program to free the buffers.
 
-     var ixData = _renderBufferIndex.data;
-     if (ixData == null) return;
-     if (ixData.length < _quadCount * 6 + 6) flush();
+    var ixData = _renderBufferIndex.data;
+    if (ixData == null) return;
+    if (ixData.length < _quadCount * 6 + 6) flush();
 
-     var vxData = _renderBufferVertex.data;
-     if (vxData == null) return;
-     if (vxData.length < _quadCount * 96 + 96) flush();
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < _quadCount * 96 + 96) flush();
 
-     // Calculate the 4 vertices of the RenderTextureQuad
+    // Calculate the 4 vertices of the RenderTextureQuad
 
-     for(int vertex = 0, index = _quadCount * 96; vertex < 4; vertex++, index += 24) {
+    for(int vertex = 0, index = _quadCount * 96; vertex < 4; vertex++, index += 24) {
 
-       num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
-       num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+      num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
+      num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
 
-       if (index > vxData.length - 24) return; // dart2js_hint
+      if (index > vxData.length - 24) return; // dart2js_hint
 
-       vxData[index + 00] = matrix.tx + x * matrix.a + y * matrix.c;
-       vxData[index + 01] = matrix.ty + x * matrix.b + y * matrix.d;
-       vxData[index + 02] = uvList[vertex + vertex + 0];
-       vxData[index + 03] = uvList[vertex + vertex + 1];
-       vxData[index + 04] = colorMatrixList[00];
-       vxData[index + 05] = colorMatrixList[01];
-       vxData[index + 06] = colorMatrixList[02];
-       vxData[index + 07] = colorMatrixList[03];
-       vxData[index + 08] = colorMatrixList[04];
-       vxData[index + 09] = colorMatrixList[05];
-       vxData[index + 10] = colorMatrixList[06];
-       vxData[index + 11] = colorMatrixList[07];
-       vxData[index + 12] = colorMatrixList[08];
-       vxData[index + 13] = colorMatrixList[09];
-       vxData[index + 14] = colorMatrixList[10];
-       vxData[index + 15] = colorMatrixList[11];
-       vxData[index + 16] = colorMatrixList[12] * alpha;
-       vxData[index + 17] = colorMatrixList[13] * alpha;
-       vxData[index + 18] = colorMatrixList[14] * alpha;
-       vxData[index + 19] = colorMatrixList[15] * alpha;
-       vxData[index + 20] = colorOffsetList[00] / 255.0;
-       vxData[index + 21] = colorOffsetList[01] / 255.0;
-       vxData[index + 22] = colorOffsetList[02] / 255.0;
-       vxData[index + 23] = colorOffsetList[03] / 255.0 * alpha;
-     }
+      vxData[index + 00] = matrix.tx + x * matrix.a + y * matrix.c;
+      vxData[index + 01] = matrix.ty + x * matrix.b + y * matrix.d;
+      vxData[index + 02] = uvList[vertex + vertex + 0];
+      vxData[index + 03] = uvList[vertex + vertex + 1];
+      vxData[index + 04] = colorMatrixList[00];
+      vxData[index + 05] = colorMatrixList[01];
+      vxData[index + 06] = colorMatrixList[02];
+      vxData[index + 07] = colorMatrixList[03];
+      vxData[index + 08] = colorMatrixList[04];
+      vxData[index + 09] = colorMatrixList[05];
+      vxData[index + 10] = colorMatrixList[06];
+      vxData[index + 11] = colorMatrixList[07];
+      vxData[index + 12] = colorMatrixList[08];
+      vxData[index + 13] = colorMatrixList[09];
+      vxData[index + 14] = colorMatrixList[10];
+      vxData[index + 15] = colorMatrixList[11];
+      vxData[index + 16] = colorMatrixList[12] * alpha;
+      vxData[index + 17] = colorMatrixList[13] * alpha;
+      vxData[index + 18] = colorMatrixList[14] * alpha;
+      vxData[index + 19] = colorMatrixList[15] * alpha;
+      vxData[index + 20] = colorOffsetList[00] / 255.0;
+      vxData[index + 21] = colorOffsetList[01] / 255.0;
+      vxData[index + 22] = colorOffsetList[02] / 255.0;
+      vxData[index + 23] = colorOffsetList[03] / 255.0 * alpha;
+    }
 
-     _quadCount += 1;
+    _quadCount += 1;
   }
 }
