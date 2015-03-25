@@ -4,7 +4,7 @@ author: Bernhard Pichler <support@stagexl.org>
 description: A library for graphically rich content like games, based on the Flash API.
 homepage: http://www.stagexl.org
 environment:
-  sdk: '>=1.9.0-dev <2.0.0'
+  sdk: '>=1.9.0 <2.0.0'
 documentation: http://www.stagexl.org/docs/api/index.html
 dependencies:
   browser: any
