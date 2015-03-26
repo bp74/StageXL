@@ -1,6 +1,7 @@
 library stagexl.geom.circle;
 
 import 'point.dart';
+import '../internal/jenkins_hash.dart';
 
 class Circle<T extends num> {
 
@@ -14,8 +15,23 @@ class Circle<T extends num> {
 
   String toString() => "Circle<$T> [x=$x, y=$y, radius=$radius]";
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  bool operator ==(other) {
+    return other is Circle &&
+        this.x == other.x &&
+        this.y == other.y &&
+        this.radius == other.radius;
+  }
+
+  int get hashCode {
+    int a = this.x.hashCode;
+    int b = this.y.hashCode;
+    int c = this.radius.hashCode;
+    return JenkinsHash.hash3(a, b, c);
+  }
+
+  //---------------------------------------------------------------------------
 
   bool contains(num x, num y) {
     var dx = this.x - x;

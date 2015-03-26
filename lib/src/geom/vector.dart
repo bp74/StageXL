@@ -1,6 +1,7 @@
 library stagexl.geom.vector;
 
 import 'dart:math' hide Point, Rectangle;
+import '../internal/jenkins_hash.dart';
 
 class Vector {
 
@@ -30,10 +31,16 @@ class Vector {
   Vector operator /(Vector other) => new Vector(_x / other._x, _y / other._y);
 
   Vector operator -() => new Vector(-_x, -_y);
-  bool operator ==(Vector other) => _x == other._x && _y == other._y;
 
-  // ToDo: http://dartbug.com/11617
-  int get hashCode => _x.hashCode + _y.hashCode * 7;
+  bool operator ==(Vector other)  {
+    return other is Vector && this.x == other.x && this.y == other.y;
+  }
+
+  int get hashCode {
+    int a = this.x.hashCode;
+    int b = this.y.hashCode;
+    return JenkinsHash.hash2(a, b);
+  }
 
   bool equalsXY(num x, num y) => _x == x && _y == y;
 
