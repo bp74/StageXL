@@ -3,6 +3,9 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.11.0+1
+  * Added hashCode getter in Point, Rectangle, Circle, Vector.
+  
 #### Pub version 0.11.0
   * Added DisplayObjectContainer.children for better child access.
   * Added DisplayObjectContainer.replaceChildAt. 
