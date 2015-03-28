@@ -3,7 +3,7 @@ part of stagexl.media;
 abstract class Sound {
 
   Sound() {
-    var initEngine = SoundMixer.engine;
+    SoundMixer._initEngine();
   }
 
   /// Get a list of the audio types supported by the browser.
