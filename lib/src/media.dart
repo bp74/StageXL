@@ -22,11 +22,13 @@
 library stagexl.media;
 
 import 'dart:async';
-import 'dart:html';
 import 'dart:math';
+import 'dart:html' as html;
+import 'dart:html' show HttpRequest, AudioElement, VideoElement;
 import 'dart:typed_data';
 import 'dart:web_audio';
 
+import 'events.dart';
 import 'internal/audio_loader.dart';
 import 'internal/video_loader.dart';
 

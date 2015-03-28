@@ -168,7 +168,7 @@ class Video {
 
   //---------------------------------------------------------------------------
 
-  void _onEnded(Event event) {
+  void _onEnded(html.Event event) {
 
     _endedEvent.add(this);
 
@@ -188,15 +188,15 @@ class Video {
     }
   }
 
-  void _onPause(Event event) {
+  void _onPause(html.Event event) {
     _pauseEvent.add(this);
   }
 
-  void _onError(Event event) {
+  void _onError(html.Event event) {
     _errorEvent.add(this);
   }
 
-  void _onPlay(Event event) {
+  void _onPlay(html.Event event) {
     _playEvent.add(this);
   }
 

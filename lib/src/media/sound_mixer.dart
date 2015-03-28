@@ -49,7 +49,7 @@ class SoundMixer {
       _webAudioApiMixer = new WebAudioApiMixer();
     }
 
-    var ua = window.navigator.userAgent;
+    var ua = html.window.navigator.userAgent;
 
     if (ua.contains("IEMobile")) {
       if (ua.contains("9.0")) {

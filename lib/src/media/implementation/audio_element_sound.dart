@@ -58,16 +58,16 @@ class AudioElementSound extends Sound {
 
   num get length => _audioElement.duration;
 
-  SoundChannel play([
-    bool loop = false, SoundTransform soundTransform]) {
-
+  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
+    var startTime = 0.0;
+    var duration = _audioElement.duration;
+    if (duration.isInfinite) duration = 3600;
     return new AudioElementSoundChannel(
-        this, 0, 3600, loop, soundTransform);
+        this, startTime, duration, loop, soundTransform);
   }
 
   SoundChannel playSegment(num startTime, num duration, [
     bool loop = false, SoundTransform soundTransform]) {
-
     return new AudioElementSoundChannel(
         this, startTime, duration, loop, soundTransform);
   }
@@ -97,10 +97,10 @@ class AudioElementSound extends Sound {
     _soundChannels[audioElement] = null;
   }
 
-  void _onAudioEnded(Event event) {
+  void _onAudioEnded(event) {
     var audioElement = event.target;
     var soundChannel = _soundChannels[audioElement];
-    if (soundChannel != null) soundChannel.stop();
+    if (soundChannel != null) soundChannel._onAudioEnded();
   }
 
 }
