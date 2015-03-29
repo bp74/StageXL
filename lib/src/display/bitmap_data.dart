@@ -65,12 +65,14 @@ class BitmapData implements BitmapDrawable {
       bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
     }
 
-    var autoHiDpi = bitmapDataLoadOptions.autoHiDpi;
+    var maxPixelRatio = bitmapDataLoadOptions.maxPixelRatio;
     var webpAvailable = bitmapDataLoadOptions.webp;
     var corsEnabled = bitmapDataLoadOptions.corsEnabled;
-    var loader = RenderTexture.load(url, autoHiDpi, webpAvailable, corsEnabled);
+    var loader = RenderTexture.load(url, maxPixelRatio, webpAvailable, corsEnabled);
 
-    return loader.then((renderTexture) => new BitmapData.fromRenderTextureQuad(renderTexture.quad));
+    return loader.then((renderTexture) {
+      return new BitmapData.fromRenderTextureQuad(renderTexture.quad);
+    });
   }
 
   //----------------------------------------------------------------------------
