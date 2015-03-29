@@ -45,7 +45,7 @@ class AudioElementSoundChannel extends SoundChannel {
 
   @override
   num get position {
-    if (_audioElement == null || _stopped) {
+    if (_paused || _stopped || _audioElement == null) {
       return _position;
     } else {
       var currentTime = _audioElement.currentTime;
@@ -113,6 +113,7 @@ class AudioElementSoundChannel extends SoundChannel {
     }
     if (_stopped == false) {
       _stopped = true;
+      _paused = true;
       _stopCompleteTimer();
       this.dispatchEvent(new Event(Event.COMPLETE));
     }

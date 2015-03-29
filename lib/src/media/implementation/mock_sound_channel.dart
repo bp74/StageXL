@@ -67,6 +67,7 @@ class MockSoundChannel extends SoundChannel {
   void stop() {
     if (_stopped == false) {
       _stopped = true;
+      _paused = true;
       this.dispatchEvent(new Event(Event.COMPLETE));
     }
   }
