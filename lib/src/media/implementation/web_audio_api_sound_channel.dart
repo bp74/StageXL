@@ -70,7 +70,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
       // nothing has changed
     } else if (_stopped) {
       // we can't pause/resume the audio playback.
-      _paused = value;
+      _paused = _stopped || value;
     } else if (value){
       _position = this.position;
       _paused = true;

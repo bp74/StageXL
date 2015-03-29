@@ -48,7 +48,7 @@ class MockSoundChannel extends SoundChannel {
 
   @override
   void set paused(bool value) {
-    _paused = value;
+    _paused = _stopped || value;
   }
 
   @override
