@@ -47,7 +47,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
 
   @override
   num get position {
-    if (_stopped || _paused) {
+    if (_paused || _stopped) {
       return _position;
     } else {
       var currentTime = WebAudioApiMixer.audioContext.currentTime;
@@ -114,11 +114,9 @@ class WebAudioApiSoundChannel extends SoundChannel {
   @override
   void stop() {
     if (_stopped == false) {
-      _position = this.position;
-      _stopped = true;
       _sourceNode.stop(0);
       _stopCompleteTimer();
-      this.dispatchEvent(new Event(Event.COMPLETE));
+      _onCompleteTimer();
     }
   }
 
@@ -151,10 +149,13 @@ class WebAudioApiSoundChannel extends SoundChannel {
   }
 
   void _onCompleteTimer() {
-    if (this.paused) {
-      // called by accident
+    if (_paused || _stopped || _loop) {
+      // Called by accident
     } else {
-      this.stop();
+      _position = this.position;
+      _stopped = true;
+      _paused = true;
+      this.dispatchEvent(new Event(Event.COMPLETE));
     }
   }
 
