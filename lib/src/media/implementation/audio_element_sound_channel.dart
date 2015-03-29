@@ -119,16 +119,6 @@ class AudioElementSoundChannel extends SoundChannel {
     }
   }
 
-  @override
-  void pause() {
-    this.paused = true;
-  }
-
-  @override
-  void resume() {
-    this.paused = false;
-  }
-
   //---------------------------------------------------------------------------
 
   _onAudioElement(AudioElement audioElement) {

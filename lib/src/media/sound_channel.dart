@@ -21,6 +21,13 @@ abstract class SoundChannel extends EventDispatcher {
   //---------------------------------------------------------------------------
 
   void stop();
-  void pause();
-  void resume();
+
+  void pause() {
+    this.paused = true;
+  }
+
+  void resume() {
+    this.paused = false;
+  }
+
 }

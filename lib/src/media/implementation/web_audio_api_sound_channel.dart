@@ -120,16 +120,6 @@ class WebAudioApiSoundChannel extends SoundChannel {
     }
   }
 
-  @override
-  void pause() {
-    this.paused = true;
-  }
-
-  @override
-  void resume() {
-    this.paused = false;
-  }
-
   //---------------------------------------------------------------------------
 
   void _startCompleteTimer(num time) {
