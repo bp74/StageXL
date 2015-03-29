@@ -41,11 +41,11 @@ class BitmapDataLoadOptions {
 
   bool corsEnabled = false;
 
-  /// The BitmapDataLoadOption class contains different options to configure
+  /// The BitmapDataLoadOptions class contains different options to configure
   /// how BitmapDatas are loaded from the server.
   ///
   /// The [BitmapData.defaultLoadOptions] object is the default for all
-  /// loading operations of no BitmapDataLoadOption is passed to the
+  /// loading operations if no BitmapDataLoadOptions are provided to the
   /// BitmapData.load function.
 
   BitmapDataLoadOptions({
