@@ -8,13 +8,23 @@ part of stagexl.display;
 
 abstract class BitmapFilterProgram extends RenderProgram {
 
+  RenderBufferVertex _renderBufferVertex;
+
+  //---------------------------------------------------------------------------
+  // aVertexPosition:   Float32(x), Float32(y)
+  // aVertexTextCoord:  Float32(u), Float32(v)
+  // aVertexAlpha:      Float32(alpha)
+  //---------------------------------------------------------------------------
+
   String get vertexShaderSource => """
+    
+    uniform mat4 uProjectionMatrix;
     attribute vec2 aVertexPosition;
     attribute vec2 aVertexTextCoord;
     attribute float aVertexAlpha;
-    uniform mat4 uProjectionMatrix;
     varying vec2 vTextCoord;
     varying float vAlpha;
+
     void main() {
       vTextCoord = aVertexTextCoord;
       vAlpha = aVertexAlpha;
@@ -23,60 +33,34 @@ abstract class BitmapFilterProgram extends RenderProgram {
     """;
 
   String get fragmentShaderSource => """
+
     precision mediump float;
     uniform sampler2D uSampler;
     varying vec2 vTextCoord;
     varying float vAlpha;
+
     void main() {
       vec4 color = texture2D(uSampler, vTextCoord);
       gl_FragColor = color * vAlpha;
     }
     """;
 
-  gl.Buffer _vertexBuffer;
-  gl.UniformLocation _uProjectionMatrixLocation;
-  gl.UniformLocation _uSamplerLocation;
-
-  int _aVertexPositionLocation = 0;
-  int _aVertexTextCoordLocation = 0;
-  int _aVertexAlphaLocation = 0;
-
-  final Float32List _vertexList = new Float32List(4 * 5);
-
-  //-----------------------------------------------------------------------------------------------
-
-  @override
-  void set projectionMatrix(Matrix3D matrix) {
-    renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
-  }
+  //---------------------------------------------------------------------------
 
   @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (this.contextIdentifier != renderContext.contextIdentifier) {
+    super.activate(renderContext);
+    super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-      super.activate(renderContext);
-
-      _vertexBuffer = renderingContext.createBuffer();
-      _aVertexPositionLocation = attributeLocations["aVertexPosition"];
-      _aVertexTextCoordLocation = attributeLocations["aVertexTextCoord"];
-      _aVertexAlphaLocation = attributeLocations["aVertexAlpha"];
-      _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
-      _uSamplerLocation = uniformLocations["uSampler"];
-
-      renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
-    }
-
-    renderingContext.useProgram(program);
-    renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 20, 0);
-    renderingContext.vertexAttribPointer(_aVertexTextCoordLocation, 2, gl.FLOAT, false, 20, 8);
-    renderingContext.vertexAttribPointer(_aVertexAlphaLocation, 1, gl.FLOAT, false, 20, 16);
-    renderingContext.uniform1i(_uSamplerLocation, 0);
+    _renderBufferVertex = renderContext.renderBufferVertex;
+    _renderBufferVertex.activate(renderContext);
+    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 20, 0);
+    _renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 20, 8);
+    _renderBufferVertex.bindAttribute(attributes["aVertexAlpha"], 1, 20, 16);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
 
@@ -104,28 +88,40 @@ abstract class BitmapFilterProgram extends RenderProgram {
     num cy = c * height;
     num dy = d * height;
 
-    _vertexList[00] = ox;
-    _vertexList[01] = oy;
-    _vertexList[02] = uvList[0];
-    _vertexList[03] = uvList[1];
-    _vertexList[04] = alpha;
-    _vertexList[05] = ox + ax;
-    _vertexList[06] = oy + bx;
-    _vertexList[07] = uvList[2];
-    _vertexList[08] = uvList[3];
-    _vertexList[09] = alpha;
-    _vertexList[10] = ox + ax + cy;
-    _vertexList[11] = oy + bx + dy;
-    _vertexList[12] = uvList[4];
-    _vertexList[13] = uvList[5];
-    _vertexList[14] = alpha;
-    _vertexList[15] = ox + cy;
-    _vertexList[16] = oy + dy;
-    _vertexList[17] = uvList[6];
-    _vertexList[18] = uvList[7];
-    _vertexList[19] = alpha;
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < 20) return;
 
-    renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, _vertexList);
-    renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    // vertex 1
+    vxData[00] = ox;
+    vxData[01] = oy;
+    vxData[02] = uvList[0];
+    vxData[03] = uvList[1];
+    vxData[04] = alpha;
+
+    // vertex 2
+    vxData[05] = ox + ax;
+    vxData[06] = oy + bx;
+    vxData[07] = uvList[2];
+    vxData[08] = uvList[3];
+    vxData[09] = alpha;
+
+    // vertex 3
+    vxData[10] = ox + ax + cy;
+    vxData[11] = oy + bx + dy;
+    vxData[12] = uvList[4];
+    vxData[13] = uvList[5];
+    vxData[14] = alpha;
+
+    // vertex 4
+    vxData[15] = ox + cy;
+    vxData[16] = oy + dy;
+    vxData[17] = uvList[6];
+    vxData[18] = uvList[7];
+    vxData[19] = alpha;
+
+    _renderBufferVertex.update(0, 20);
+
+    this.renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
   }
 }

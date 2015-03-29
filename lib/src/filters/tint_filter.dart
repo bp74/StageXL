@@ -80,11 +80,22 @@ class TintFilter extends BitmapFilter {
 
 class TintFilterProgram extends RenderProgram {
 
+  RenderBufferIndex _renderBufferIndex;
+  RenderBufferVertex _renderBufferVertex;
+  int _quadCount = 0;
+
+  //---------------------------------------------------------------------------
+  // aVertexPosition:   Float32(x), Float32(y)
+  // aVertexTextCoord:  Float32(u), Float32(v)
+  // aVertexColor:      Float32(r), Float32(g), Float32(b), Float32(a)
+  //---------------------------------------------------------------------------
+
   String get vertexShaderSource => """
+    
+    uniform mat4 uProjectionMatrix;
     attribute vec2 aVertexPosition;
     attribute vec2 aVertexTextCoord;
     attribute vec4 aVertexColor;
-    uniform mat4 uProjectionMatrix;
     varying vec2 vTextCoord;
     varying vec4 vColor;
 
@@ -96,6 +107,7 @@ class TintFilterProgram extends RenderProgram {
     """;
 
   String get fragmentShaderSource => """
+
     precision mediump float;
     uniform sampler2D uSampler;
     varying vec2 vTextCoord;
@@ -106,69 +118,28 @@ class TintFilterProgram extends RenderProgram {
     }
     """;
 
-  //---------------------------------------------------------------------------
-  // aVertexPosition:   Float32(x), Float32(y)
-  // aVertexTextCoord:  Float32(u), Float32(v)
-  // aVertexColor:      Float32(r), Float32(g), Float32(b), Float32(a)
-  //---------------------------------------------------------------------------
-
-  Int16List _indexList;
-  Float32List _vertexList;
-
-  gl.Buffer _vertexBuffer;
-  gl.Buffer _indexBuffer;
-  gl.UniformLocation _uProjectionMatrixLocation;
-  gl.UniformLocation _uSamplerLocation;
-
-  int _aVertexPositionLocation = 0;
-  int _aVertexTextCoordLocation = 0;
-  int _aVertexColorLocation = 0;
-  int _quadCount = 0;
-
   //-----------------------------------------------------------------------------------------------
-
-  @override
-  void set projectionMatrix(Matrix3D matrix) {
-    renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
-  }
 
   @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (this.contextIdentifier != renderContext.contextIdentifier) {
+    super.activate(renderContext);
+    super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-      super.activate(renderContext);
+    _renderBufferIndex = renderContext.renderBufferIndexQuads;
+    _renderBufferIndex.activate(renderContext);
 
-      _indexList = renderContext.staticIndexList;
-      _vertexList = renderContext.dynamicVertexList;
-      _indexBuffer = renderingContext.createBuffer();
-      _vertexBuffer = renderingContext.createBuffer();
-      _aVertexPositionLocation = attributeLocations["aVertexPosition"];
-      _aVertexTextCoordLocation = attributeLocations["aVertexTextCoord"];
-      _aVertexColorLocation = attributeLocations["aVertexColor"];
-      _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
-      _uSamplerLocation = uniformLocations["uSampler"];
-
-      renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-      renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
-      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
-    }
-
-    renderingContext.useProgram(program);
-    renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 32, 0);
-    renderingContext.vertexAttribPointer(_aVertexTextCoordLocation, 2, gl.FLOAT, false, 32, 8);
-    renderingContext.vertexAttribPointer(_aVertexColorLocation, 4, gl.FLOAT, false, 32, 16);
-    renderingContext.uniform1i(_uSamplerLocation, 0);
+    _renderBufferVertex = renderContext.renderBufferVertex;
+    _renderBufferVertex.activate(renderContext);
+    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"],  2, 32,  0);
+    _renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 32,  8);
+    _renderBufferVertex.bindAttribute(attributes["aVertexColor"],     2, 32, 16);
   }
 
   @override
   void flush() {
     if (_quadCount > 0) {
-      var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 8);
-      renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+      _renderBufferVertex.update(0, _quadCount * 4 * 8);
       renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
       _quadCount = 0;
     }
@@ -207,56 +178,56 @@ class TintFilterProgram extends RenderProgram {
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
-    var ixList = _indexList;
-    if (ixList == null) return;
-    if (ixList.length < _quadCount * 6 + 6) flush();
+    var ixData = _renderBufferIndex.data;
+    if (ixData == null) return;
+    if (ixData.length < _quadCount * 6 + 6) flush();
 
-    var vxList = _vertexList;
-    if (vxList == null) return;
-    if (vxList.length < _quadCount * 32 + 32) flush();
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < _quadCount * 32 + 32) flush();
 
     var index = _quadCount * 32;
-    if (index > vxList.length - 32) return;
+    if (index > vxData.length - 32) return;
 
     // vertex 1
-    vxList[index + 00] = ox;
-    vxList[index + 01] = oy;
-    vxList[index + 02] = uvList[0];
-    vxList[index + 03] = uvList[1];
-    vxList[index + 04] = colorR;
-    vxList[index + 05] = colorG;
-    vxList[index + 06] = colorB;
-    vxList[index + 07] = colorA;
+    vxData[index + 00] = ox;
+    vxData[index + 01] = oy;
+    vxData[index + 02] = uvList[0];
+    vxData[index + 03] = uvList[1];
+    vxData[index + 04] = colorR;
+    vxData[index + 05] = colorG;
+    vxData[index + 06] = colorB;
+    vxData[index + 07] = colorA;
 
     // vertex 2
-    vxList[index + 08] = ox + ax;
-    vxList[index + 09] = oy + bx;
-    vxList[index + 10] = uvList[2];
-    vxList[index + 11] = uvList[3];
-    vxList[index + 12] = colorR;
-    vxList[index + 13] = colorG;
-    vxList[index + 14] = colorB;
-    vxList[index + 15] = colorA;
+    vxData[index + 08] = ox + ax;
+    vxData[index + 09] = oy + bx;
+    vxData[index + 10] = uvList[2];
+    vxData[index + 11] = uvList[3];
+    vxData[index + 12] = colorR;
+    vxData[index + 13] = colorG;
+    vxData[index + 14] = colorB;
+    vxData[index + 15] = colorA;
 
     // vertex 3
-    vxList[index + 16] = ox + ax + cy;
-    vxList[index + 17] = oy + bx + dy;
-    vxList[index + 18] = uvList[4];
-    vxList[index + 19] = uvList[5];
-    vxList[index + 20] = colorR;
-    vxList[index + 21] = colorG;
-    vxList[index + 22] = colorB;
-    vxList[index + 23] = colorA;
+    vxData[index + 16] = ox + ax + cy;
+    vxData[index + 17] = oy + bx + dy;
+    vxData[index + 18] = uvList[4];
+    vxData[index + 19] = uvList[5];
+    vxData[index + 20] = colorR;
+    vxData[index + 21] = colorG;
+    vxData[index + 22] = colorB;
+    vxData[index + 23] = colorA;
 
     // vertex 4
-    vxList[index + 24] = ox + cy;
-    vxList[index + 25] = oy + dy;
-    vxList[index + 26] = uvList[6];
-    vxList[index + 27] = uvList[7];
-    vxList[index + 28] = colorR;
-    vxList[index + 29] = colorG;
-    vxList[index + 30] = colorB;
-    vxList[index + 31] = colorA;
+    vxData[index + 24] = ox + cy;
+    vxData[index + 25] = oy + dy;
+    vxData[index + 26] = uvList[6];
+    vxData[index + 27] = uvList[7];
+    vxData[index + 28] = colorR;
+    vxData[index + 29] = colorG;
+    vxData[index + 30] = colorB;
+    vxData[index + 31] = colorA;
 
     _quadCount += 1;
   }

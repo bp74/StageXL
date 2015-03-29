@@ -56,7 +56,7 @@ abstract class DisplayObject
   bool _cacheDebugBorder = false;
 
   String _name = "";
-  DisplayObjectContainer _parent = null;
+  DisplayObjectParent _parent = null;
 
   final Matrix _transformationMatrix = new Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
@@ -385,7 +385,7 @@ abstract class DisplayObject
   /// Use the parent property to specify a relative path to display objects that
   /// are above the current display object in the display list hierarchy.
 
-  DisplayObjectContainer get parent => _parent;
+  DisplayObjectParent get parent => _parent;
 
   //----------------------------------------------------------------------------
 
@@ -685,17 +685,17 @@ abstract class DisplayObject
 
   //----------------------------------------------------------------------------
 
-  /// Convenience method to add this display object to the specified [parent].
+  /// Add this display object to the specified [parent].
 
-  void addTo(DisplayObjectContainer parent) {
+  void addTo(DisplayObjectParent parent) {
     parent.addChild(this);
   }
 
   /// Removes this display object from its parent.
 
   void removeFromParent() {
-    if (_parent != null) {
-      _parent.removeChild(this);
+    if (this.parent != null) {
+      this.parent.removeChild(this);
     }
   }
 
@@ -860,12 +860,12 @@ abstract class DisplayObject
     p.x = globalPoint.x.toDouble();
     p.y = globalPoint.y.toDouble();
 
-    _globalToLocalRecursive(p);
+    _globalToLocalRecursion(p);
     return p;
   }
 
-  void _globalToLocalRecursive(Point<num> point) {
-    if (parent != null) parent._globalToLocalRecursive(point);
+  void _globalToLocalRecursion(Point<num> point) {
+    if (parent != null) parent._globalToLocalRecursion(point);
     this.parentToLocal(point, point);
   }
 
@@ -941,32 +941,23 @@ abstract class DisplayObject
   @override
   void dispatchEvent(Event event) {
 
-    List<EventDispatcher> ancestors = null;
+    List<EventDispatcher> ancestors = new List<EventDispatcher>();
 
-    if (event.captures || event.bubbles) {
-      for(DisplayObject ancestor = parent; ancestor != null; ancestor = ancestor.parent) {
-        if(ancestor.hasEventListenersFor(event)) {
-          if (ancestors == null) ancestors = [];
-          ancestors.add(ancestor);
-        }
-      }
+    for(DisplayObject p = this.parent; p != null; p = p.parent) {
+      ancestors.add(p);
     }
 
-    if (ancestors != null && event.captures) {
-      for(int i = ancestors.length - 1 ; i >= 0; i--) {
-        ancestors[i].dispatchEventRaw(event, this, EventPhase.CAPTURING_PHASE);
-        if (event.stopsPropagation) return;
-      }
+    for(int i = ancestors.length - 1; i >= 0 && event.captures; i--) {
+      ancestors[i].dispatchEventRaw(event, this, EventPhase.CAPTURING_PHASE);
+      if (event.stopsPropagation) return;
     }
 
     dispatchEventRaw(event, this, EventPhase.AT_TARGET);
     if (event.stopsPropagation) return;
 
-    if (ancestors != null && event.bubbles) {
-      for(int i = 0; i < ancestors.length; i++) {
-        ancestors[i].dispatchEventRaw(event, this, EventPhase.BUBBLING_PHASE);
-        if (event.stopsPropagation) return;
-      }
+    for(int i = 0; i < ancestors.length && event.bubbles; i++) {
+      ancestors[i].dispatchEventRaw(event, this, EventPhase.BUBBLING_PHASE);
+      if (event.stopsPropagation) return;
     }
   }
 

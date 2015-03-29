@@ -1,12 +1,15 @@
 part of stagexl.events;
 
 /// Provides constant values for the eventPhase property of the [Event] class.
-class EventPhase {
 
-  final int index;
-  const EventPhase._(this.index);
+enum EventPhase {
 
-  static const EventPhase CAPTURING_PHASE = const EventPhase._(0);
-  static const EventPhase AT_TARGET = const EventPhase._(1);
-  static const EventPhase BUBBLING_PHASE = const EventPhase._(2);
+  /// The capturing phase, which is the first phase of the event flow.
+  CAPTURING_PHASE,
+
+  /// The target phase, which is the second phase of the event flow.
+  AT_TARGET,
+
+  /// The bubbling phase, which is the third phase of the event flow.
+  BUBBLING_PHASE
 }

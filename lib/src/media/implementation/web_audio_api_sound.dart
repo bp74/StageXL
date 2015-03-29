@@ -40,7 +40,7 @@ class WebAudioApiSound extends Sound {
   static Future<Sound> loadDataUrl(String dataUrl) async {
 
     var audioContext = WebAudioApiMixer.audioContext;
-    var byteString = window.atob(dataUrl.split(',')[1]);
+    var byteString = html.window.atob(dataUrl.split(',')[1]);
     var bytes = new Uint8List(byteString.length);
 
     for (int i = 0; i < byteString.length; i++) {

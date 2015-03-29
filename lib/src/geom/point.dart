@@ -3,6 +3,8 @@ library stagexl.geom.point;
 import 'dart:math' hide Point, Rectangle;
 import 'dart:math' as math;
 
+import '../internal/jenkins_hash.dart';
+
 class Point<T extends num> implements math.Point<T> {
 
   T x;
@@ -35,8 +37,13 @@ class Point<T extends num> implements math.Point<T> {
   /// with [x] equal to `other.x` and [y] equal to `other.y`.
 
   bool operator ==(other) {
-    if (other is !math.Point) return false;
-    return x == other.x && y == other.y;
+    return other is math.Point && this.x == other.x && this.y == other.y;
+  }
+
+  int get hashCode {
+    int a = this.x.hashCode;
+    int b = this.y.hashCode;
+    return JenkinsHash.hash2(a, b);
   }
 
   /// Add [other] to `this`, as if both points were vectors.

@@ -9,12 +9,14 @@ class SoundMixer {
 
   static SoundTransform _soundTransform = new SoundTransform();
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   static String get engine {
-    if (_engine == null) _initEngine();
+    _initEngine();
     return _engine;
   }
+
+  //---------------------------------------------------------------------------
 
   static SoundTransform get soundTransform {
     return _soundTransform;
@@ -22,24 +24,52 @@ class SoundMixer {
 
   static set soundTransform(SoundTransform value) {
 
-    var initEngine = SoundMixer.engine;
-    var soundTransform = (value != null) ? value : new SoundTransform();
-
-    _soundTransform = soundTransform;
+    _initEngine();
+    _soundTransform =  value != null ? value : new SoundTransform();
 
     if (_webAudioApiMixer != null) {
-      _webAudioApiMixer.applySoundTransform(soundTransform);
+      _webAudioApiMixer.applySoundTransform(_soundTransform);
     }
 
     if (_audioElementMixer != null) {
-      _audioElementMixer.applySoundTransform(soundTransform);
+      _audioElementMixer.applySoundTransform(_soundTransform);
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  /// A helper method to unlock audio on mobile devices.
+  ///
+  /// Some mobile devices (like iOS) do not allow audio playback by default.
+  /// Call this method in the first onTouchBegin event to unlock the website
+  /// for audio playback.
+  ///
+  ///     stage.onTouchBegin.first.then((e) {
+  ///       SoundMixer.unlockMobileAudio();
+  ///     });
+
+  static void unlockMobileAudio() {
+    if (engine == "WebAudioApi") {
+      try {
+        var context = WebAudioApiMixer.audioContext;
+        var source = context.createBufferSource();
+        source.buffer = context.createBuffer(1, 1, 22050);
+        source.connectNode(context.destination);
+        source.start(0);
+      } catch(e) {
+        // There is nothing we can do :(
+      }
+    }
+  }
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   static void _initEngine() {
+
+    if (_engine != null) {
+      return;
+    }
 
     _engine = "AudioElement";
     _audioElementMixer = new AudioElementMixer();
@@ -49,7 +79,7 @@ class SoundMixer {
       _webAudioApiMixer = new WebAudioApiMixer();
     }
 
-    var ua = window.navigator.userAgent;
+    var ua = html.window.navigator.userAgent;
 
     if (ua.contains("IEMobile")) {
       if (ua.contains("9.0")) {

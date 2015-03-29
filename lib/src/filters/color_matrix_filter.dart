@@ -234,119 +234,94 @@ class ColorMatrixFilter extends BitmapFilter {
 
 class ColorMatrixFilterProgram extends RenderProgram {
 
+  RenderBufferIndex _renderBufferIndex;
+  RenderBufferVertex _renderBufferVertex;
+  int _quadCount = 0;
+
+  //---------------------------------------------------------------------------
+  // aPosition:  Float32(x), Float32(y)
+  // aTexCoord:  Float32(u), Float32(v)
+  // aMatrixR:   Float32(r), Float32(g), Float32(b), Float32(a)
+  // aMatrixG:   Float32(r), Float32(g), Float32(b), Float32(a)
+  // aMatrixB:   Float32(r), Float32(g), Float32(b), Float32(a)
+  // aMatrixA:   Float32(r), Float32(g), Float32(b), Float32(a)
+  // aOffset:    Float32(r), Float32(g), Float32(b), Float32(a)
+  //---------------------------------------------------------------------------
+
   String get vertexShaderSource => """
+
     uniform mat4 uProjectionMatrix;
-    attribute vec2 aVertexPosition, aVertexTexCoord;
-    attribute vec4 aVertexColor0, aVertexColor1, aVertexColor2, aVertexColor3, aVertexColor4; 
+
+    attribute vec2 aPosition;
+    attribute vec2 aTexCoord;
+    attribute vec4 aMatrixR, aMatrixG, aMatrixB, aMatrixA; 
+    attribute vec4 aOffset;
+
     varying vec2 vTexCoord;
-    varying vec4 vColor0, vColor1, vColor2, vColor3, vColor4;
+    varying vec4 vMatrixR, vMatrixG, vMatrixB, vMatrixA;
+    varying vec4 vOffset;
+
     void main() {
-      vTexCoord = aVertexTexCoord; 
-      vColor0 = aVertexColor0; vColor1 = aVertexColor1;
-      vColor2 = aVertexColor2; vColor3 = aVertexColor3; vColor4 = aVertexColor4;
-      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
+      vTexCoord = aTexCoord; 
+      vMatrixR = aMatrixR; 
+      vMatrixG = aMatrixG;
+      vMatrixB = aMatrixB; 
+      vMatrixA = aMatrixA; 
+      vOffset = aOffset;
+      gl_Position = vec4(aPosition, 0.0, 1.0) * uProjectionMatrix;
     }
     """;
 
   String get fragmentShaderSource => """
+
     precision mediump float;
     uniform sampler2D uSampler;
+
     varying vec2 vTexCoord;
-    varying vec4 vColor0, vColor1, vColor2, vColor3, vColor4;
+    varying vec4 vMatrixR, vMatrixG, vMatrixB, vMatrixA;
+    varying vec4 vOffset;
+
     void main() {
       vec4 color = texture2D(uSampler, vTexCoord);
+      mat4 colorMatrix = mat4(vMatrixR, vMatrixG, vMatrixB, vMatrixA);
       color = vec4(color.rgb / (color.a + 0.001), color.a);
-      color = vColor0 + color * mat4(vColor1, vColor2, vColor3, vColor4);
+      color = vOffset + color * colorMatrix;
       gl_FragColor = vec4(color.rgb * color.a, color.a);
     }
     """;
 
   //---------------------------------------------------------------------------
-  // aVertexPosition:  Float32(x), Float32(y)
-  // aVertexTexCoord:  Float32(u), Float32(v)
-  // aVertexColor0:    Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexColor1:    Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexColor2:    Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexColor3:    Float32(r), Float32(g), Float32(b), Float32(a)
-  // aVertexColor4:    Float32(r), Float32(g), Float32(b), Float32(a)
-  //---------------------------------------------------------------------------
-
-  Int16List _indexList;
-  Float32List _vertexList;
-
-  gl.Buffer _vertexBuffer;
-  gl.Buffer _indexBuffer;
-  gl.UniformLocation _uProjectionMatrixLocation;
-  gl.UniformLocation _uSamplerLocation;
-
-  int _aVertexPositionLocation = 0;
-  int _aVertexTexCoordLocation = 0;
-  int _aVertexColor0Location = 0;
-  int _aVertexColor1Location = 0;
-  int _aVertexColor2Location = 0;
-  int _aVertexColor3Location = 0;
-  int _aVertexColor4Location = 0;
-  int _quadCount = 0;
-
-  //-----------------------------------------------------------------------------------------------
-
-  @override
-  void set projectionMatrix(Matrix3D matrix) {
-    renderingContext.uniformMatrix4fv(_uProjectionMatrixLocation, false, matrix.data);
-  }
 
   @override
   void activate(RenderContextWebGL renderContext) {
 
-    if (this.contextIdentifier != renderContext.contextIdentifier) {
+    super.activate(renderContext);
+    super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-      super.activate(renderContext);
+    _renderBufferIndex = renderContext.renderBufferIndexQuads;
+    _renderBufferIndex.activate(renderContext);
 
-      _indexList = renderContext.staticIndexList;
-      _vertexList = renderContext.dynamicVertexList;
-      _indexBuffer = renderingContext.createBuffer();
-      _vertexBuffer = renderingContext.createBuffer();
-
-      _uProjectionMatrixLocation = uniformLocations["uProjectionMatrix"];
-      _uSamplerLocation          = uniformLocations["uSampler"];
-      _aVertexPositionLocation   = attributeLocations["aVertexPosition"];
-      _aVertexTexCoordLocation   = attributeLocations["aVertexTexCoord"];
-      _aVertexColor0Location     = attributeLocations["aVertexColor0"];
-      _aVertexColor1Location     = attributeLocations["aVertexColor1"];
-      _aVertexColor2Location     = attributeLocations["aVertexColor2"];
-      _aVertexColor3Location     = attributeLocations["aVertexColor3"];
-      _aVertexColor4Location     = attributeLocations["aVertexColor4"];
-
-      renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-      renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-      renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, _indexList, gl.STATIC_DRAW);
-      renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, _vertexList, gl.DYNAMIC_DRAW);
-    }
-
-    renderingContext.useProgram(program);
-    renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    renderingContext.bindBuffer(gl.ARRAY_BUFFER, _vertexBuffer);
-    renderingContext.vertexAttribPointer(_aVertexPositionLocation, 2, gl.FLOAT, false, 96, 0);
-    renderingContext.vertexAttribPointer(_aVertexTexCoordLocation, 2, gl.FLOAT, false, 96, 8);
-    renderingContext.vertexAttribPointer(_aVertexColor0Location,   4, gl.FLOAT, false, 96, 16);
-    renderingContext.vertexAttribPointer(_aVertexColor1Location,   4, gl.FLOAT, false, 96, 32);
-    renderingContext.vertexAttribPointer(_aVertexColor2Location,   4, gl.FLOAT, false, 96, 48);
-    renderingContext.vertexAttribPointer(_aVertexColor3Location,   4, gl.FLOAT, false, 96, 64);
-    renderingContext.vertexAttribPointer(_aVertexColor4Location,   4, gl.FLOAT, false, 96, 80);
-    renderingContext.uniform1i(_uSamplerLocation, 0);
+    _renderBufferVertex = renderContext.renderBufferVertex;
+    _renderBufferVertex.activate(renderContext);
+    _renderBufferVertex.bindAttribute(attributes["aPosition"], 2, 96, 0);
+    _renderBufferVertex.bindAttribute(attributes["aTexCoord"], 2, 96, 8);
+    _renderBufferVertex.bindAttribute(attributes["aMatrixR"],  4, 96, 16);
+    _renderBufferVertex.bindAttribute(attributes["aMatrixG"],  4, 96, 32);
+    _renderBufferVertex.bindAttribute(attributes["aMatrixB"],  4, 96, 48);
+    _renderBufferVertex.bindAttribute(attributes["aMatrixA"],  4, 96, 64);
+    _renderBufferVertex.bindAttribute(attributes["aOffset"],   4, 96, 80);
   }
 
   @override
   void flush() {
     if (_quadCount > 0) {
-      var vertexUpdate = new Float32List.view(_vertexList.buffer, 0, _quadCount * 4 * 24);
-      renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, vertexUpdate);
+      _renderBufferVertex.update(0, _quadCount * 4 * 24);
       renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
       _quadCount = 0;
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void renderColorMatrixFilterQuad(RenderState renderState,
                                    RenderTextureQuad renderTextureQuad,
@@ -365,51 +340,51 @@ class ColorMatrixFilterProgram extends RenderProgram {
     Float32List colorOffsetList = colorMatrixFilter._colorOffsetList;
 
     // Check if the index and vertex buffer are valid and if
-     // we need to flush the render program to free the buffers.
+    // we need to flush the render program to free the buffers.
 
-     var ixList = _indexList;
-     if (ixList == null) return;
-     if (ixList.length < _quadCount * 6 + 6) flush();
+    var ixData = _renderBufferIndex.data;
+    if (ixData == null) return;
+    if (ixData.length < _quadCount * 6 + 6) flush();
 
-     var vxList = _vertexList;
-     if (vxList == null) return;
-     if (vxList.length < _quadCount * 96 + 96) flush();
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < _quadCount * 96 + 96) flush();
 
-     // Calculate the 4 vertices of the RenderTextureQuad
+    // Calculate the 4 vertices of the RenderTextureQuad
 
-     for(int vertex = 0, index = _quadCount * 96; vertex < 4; vertex++, index += 24) {
+    for(int vertex = 0, index = _quadCount * 96; vertex < 4; vertex++, index += 24) {
 
-       num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
-       num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+      num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
+      num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
 
-       if (index > vxList.length - 24) return; // dart2js_hint
+      if (index > vxData.length - 24) return; // dart2js_hint
 
-       vxList[index + 00] = matrix.tx + x * matrix.a + y * matrix.c;
-       vxList[index + 01] = matrix.ty + x * matrix.b + y * matrix.d;
-       vxList[index + 02] = uvList[vertex + vertex + 0];
-       vxList[index + 03] = uvList[vertex + vertex + 1];
-       vxList[index + 04] = colorOffsetList[00] / 255.0;
-       vxList[index + 05] = colorOffsetList[01] / 255.0;
-       vxList[index + 06] = colorOffsetList[02] / 255.0;
-       vxList[index + 07] = colorOffsetList[03] / 255.0 * alpha;
-       vxList[index + 08] = colorMatrixList[00];
-       vxList[index + 09] = colorMatrixList[01];
-       vxList[index + 10] = colorMatrixList[02];
-       vxList[index + 11] = colorMatrixList[03];
-       vxList[index + 12] = colorMatrixList[04];
-       vxList[index + 13] = colorMatrixList[05];
-       vxList[index + 14] = colorMatrixList[06];
-       vxList[index + 15] = colorMatrixList[07];
-       vxList[index + 16] = colorMatrixList[08];
-       vxList[index + 17] = colorMatrixList[09];
-       vxList[index + 18] = colorMatrixList[10];
-       vxList[index + 19] = colorMatrixList[11];
-       vxList[index + 20] = colorMatrixList[12] * alpha;
-       vxList[index + 21] = colorMatrixList[13] * alpha;
-       vxList[index + 22] = colorMatrixList[14] * alpha;
-       vxList[index + 23] = colorMatrixList[15] * alpha;
-     }
+      vxData[index + 00] = matrix.tx + x * matrix.a + y * matrix.c;
+      vxData[index + 01] = matrix.ty + x * matrix.b + y * matrix.d;
+      vxData[index + 02] = uvList[vertex + vertex + 0];
+      vxData[index + 03] = uvList[vertex + vertex + 1];
+      vxData[index + 04] = colorMatrixList[00];
+      vxData[index + 05] = colorMatrixList[01];
+      vxData[index + 06] = colorMatrixList[02];
+      vxData[index + 07] = colorMatrixList[03];
+      vxData[index + 08] = colorMatrixList[04];
+      vxData[index + 09] = colorMatrixList[05];
+      vxData[index + 10] = colorMatrixList[06];
+      vxData[index + 11] = colorMatrixList[07];
+      vxData[index + 12] = colorMatrixList[08];
+      vxData[index + 13] = colorMatrixList[09];
+      vxData[index + 14] = colorMatrixList[10];
+      vxData[index + 15] = colorMatrixList[11];
+      vxData[index + 16] = colorMatrixList[12] * alpha;
+      vxData[index + 17] = colorMatrixList[13] * alpha;
+      vxData[index + 18] = colorMatrixList[14] * alpha;
+      vxData[index + 19] = colorMatrixList[15] * alpha;
+      vxData[index + 20] = colorOffsetList[00] / 255.0;
+      vxData[index + 21] = colorOffsetList[01] / 255.0;
+      vxData[index + 22] = colorOffsetList[02] / 255.0;
+      vxData[index + 23] = colorOffsetList[03] / 255.0 * alpha;
+    }
 
-     _quadCount += 1;
+    _quadCount += 1;
   }
 }

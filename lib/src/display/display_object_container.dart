@@ -10,13 +10,19 @@ part of stagexl.display;
 /// order that determines which object is drawn in front, which is behind, and
 /// so on.
 
-abstract class DisplayObjectContainer extends InteractiveObject {
+abstract class DisplayObjectContainer
+    extends InteractiveObject
+    implements DisplayObjectParent {
 
   final List<DisplayObject> _children = new List<DisplayObject>();
   bool _mouseChildren = true;
   bool _tabChildren = true;
 
   //----------------------------------------------------------------------------
+
+  DisplayObjectChildren get children {
+    return new DisplayObjectChildren._(this, _children);
+  }
 
   /// The number of children of this container.
 
@@ -102,19 +108,15 @@ abstract class DisplayObjectContainer extends InteractiveObject {
 
       for (var ancestor = this; ancestor != null; ancestor = ancestor.parent) {
         if (ancestor == child) {
-          throw new ArgumentError("An object cannot be added as "
-              "a child to one of it's children (or children's children, etc.).");
+          throw new ArgumentError(
+              "An object cannot be added as a child to one of it's children "
+              "(or children's children, etc.).");
         }
       }
 
       _children.insert(index, child);
-
       child._parent = this;
-      child.dispatchEvent(new Event(Event.ADDED, true));
-
-      if (this.stage != null) {
-        _dispatchEventDescendants(child, new Event(Event.ADDED_TO_STAGE));
-      }
+      _dispatchAddedEvents(child);
     }
   }
 
@@ -147,18 +149,13 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// [DisplayObjectContainer] are decreased by 1.
 
   void removeChildAt(int index) {
+
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     }
 
     DisplayObject child = _children[index];
-
-    child.dispatchEvent(new Event(Event.REMOVED, true));
-
-    if (this.stage != null) {
-      _dispatchEventDescendants(child, new Event(Event.REMOVED_FROM_STAGE));
-    }
-
+    _dispatchRemovedEvents(child);
     child._parent = null;
     _children.removeAt(index);
   }
@@ -172,14 +169,13 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   /// The parent property of the removed children is set to null, and the
   /// objects are garbage collected if no other references to the children exist.
 
-  void removeChildren([int beginIndex = 0, int endIndex = 0x7fffffff]) {
+  void removeChildren([int beginIndex, int endIndex]) {
 
     var length = _children.length;
     if (length == 0) return;
 
-    if (endIndex == 0x7fffffff) {
-      endIndex = length - 1;
-    }
+    if (beginIndex == null) beginIndex = 0;
+    if (endIndex == null) endIndex = length - 1;
 
     if (beginIndex < 0 || endIndex < 0 || beginIndex >= length || endIndex >= length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -189,6 +185,47 @@ abstract class DisplayObjectContainer extends InteractiveObject {
       if (beginIndex >= _children.length) break;
       removeChildAt(beginIndex);
     }
+  }
+
+  /// Replaces the child at the specified [index] position with the new
+  /// [child]. The current child at this position is removed.
+  ///
+  /// The parent property of the removed child is set to null, and the object
+  /// is garbage collected if no other references to the child exist.
+
+  void replaceChildAt(DisplayObject child, int index) {
+
+    if (index < 0 || index >= _children.length) {
+      throw new ArgumentError("The supplied index is out of bounds.");
+    }
+
+    var oldChild = _children[index];
+    var newChild = child;
+
+    if (newChild == this) {
+      throw new ArgumentError("An object cannot be added as a child of itself.");
+    }
+
+    if (newChild.parent == this) {
+      if (_children.indexOf(newChild) == index) return;
+      throw new ArgumentError(
+          "The display object is already a child of this container.");
+    }
+
+    newChild.removeFromParent();
+
+    for (var parent = this.parent; parent != null; parent = parent.parent) {
+      if (parent == newChild) throw new ArgumentError(
+          "An object cannot be added as a child to one of it's children "
+          "(or children's children, etc.).");
+    }
+
+    _dispatchRemovedEvents(oldChild);
+    oldChild._parent = null;
+    newChild._parent = this;
+    _children[index] = newChild;
+    _dispatchAddedEvents(newChild);
+
   }
 
   //----------------------------------------------------------------------------
@@ -227,7 +264,7 @@ abstract class DisplayObjectContainer extends InteractiveObject {
     return _children.indexOf(child);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Changes the position of an existing [child] in this
   /// [DisplayObjectContainer] to the new [index].
@@ -424,25 +461,52 @@ abstract class DisplayObjectContainer extends InteractiveObject {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  _collectDescendants(DisplayObject displayObject, List descendants) {
+  void _dispatchAddedEvents(DisplayObject child) {
+    child.dispatchEvent(new Event(Event.ADDED, true));
+    if (this.stage != null) {
+      _dispatchStageEvents(child, Event.ADDED_TO_STAGE);
+    }
+  }
 
-    descendants.add(displayObject);
+  void _dispatchRemovedEvents(DisplayObject child) {
+    child.dispatchEvent(new Event(Event.REMOVED, true));
+    if (this.stage != null) {
+      _dispatchStageEvents(child, Event.REMOVED_FROM_STAGE);
+    }
+  }
 
+  //----------------------------------------------------------------------------
+
+  void _dispatchStageEvents(DisplayObject child, String eventType) {
+
+    // We optimize for the fact that the ADDED_TO_STAGE and REMOVE_FROM_STAGE
+    // events do not bubble, and most of the time there are no capturing event
+    // listeners. Iterate recursively through all children and children's
+    // children and dispatch the ADDED_TO_STAGE or REMOVE_FROM_STAGE event
+    // only if necessary.
+
+    var captured = false;
+    for(var obj = this; obj != null && captured == false; obj = obj.parent) {
+      if (obj.hasEventListener(eventType, useCapture: true)) captured = true;
+    }
+
+    _dispatchStageEventsRecursion(child, new Event(eventType), captured);
+  }
+
+  void _dispatchStageEventsRecursion(DisplayObject displayObject,
+                                     Event event, bool captured) {
+
+    if (captured || displayObject.hasEventListener(event.type)) {
+      displayObject.dispatchEvent(event);
+    }
     if (displayObject is DisplayObjectContainer) {
+      captured = captured ||
+        displayObject.hasEventListener(event.type, useCapture: true);
       var children = displayObject._children;
-      for (int i = 0; i < children.length; i++) {
-        _collectDescendants(children[i], descendants);
+      for(int i = 0; i < children.length; i++) {
+        _dispatchStageEventsRecursion(children[i], event, captured);
       }
     }
   }
 
-  _dispatchEventDescendants(DisplayObject displayObject, Event event) {
-
-    List descendants = [];
-    _collectDescendants(displayObject, descendants);
-
-    for (int i = 0; i < descendants.length; i++) {
-      descendants[i].dispatchEvent(event);
-    }
-  }
 }

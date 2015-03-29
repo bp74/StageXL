@@ -3,7 +3,6 @@
 ///
 library stagexl.display_ex;
 
-import 'dart:web_gl' as gl;
 import 'dart:typed_data';
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show CanvasRenderingContext2D, CssStyleDeclaration, Element;
@@ -17,8 +16,6 @@ import 'media.dart' show Video;
 import 'internal/tools.dart';
 import 'ui/color.dart';
 
-part 'display_ex/bitmap_container.dart';
-part 'display_ex/bitmap_container_program.dart';
 part 'display_ex/canvas_shadow_wrapper.dart';
 part 'display_ex/flip_book.dart';
 part 'display_ex/gauge.dart';

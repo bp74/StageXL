@@ -4,6 +4,7 @@ import 'dart:math' hide Point, Rectangle;
 import 'dart:math' as math;
 
 import 'point.dart';
+import '../internal/jenkins_hash.dart';
 
 class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
@@ -27,12 +28,19 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   //---------------------------------------------------------------------------
 
   bool operator ==(other) {
-    if (other is !math.Rectangle) return false;
-    return
-        left == other.left &&
-        top == other.top &&
-        width == other.width &&
-        height == other.height;
+    return other is math.Rectangle &&
+        this.left == other.left &&
+        this.top == other.top &&
+        this.width == other.width &&
+        this.height == other.height;
+  }
+
+  int get hashCode {
+    int a = this.left.hashCode;
+    int b = this.top.hashCode;
+    int c = this.width.hashCode;
+    int d = this.height.hashCode;
+    return JenkinsHash.hash4(a, b, c, d);
   }
 
   //---------------------------------------------------------------------------

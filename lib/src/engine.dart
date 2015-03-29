@@ -25,10 +25,13 @@ import 'dart:html' show window,
 import 'geom/matrix.dart';
 import 'geom/matrix_3d.dart';
 import 'geom/rectangle.dart';
+import 'internal/environment.dart' as env;
 import 'internal/image_loader.dart';
 import 'internal/tools.dart';
 
 part 'engine/blend_mode.dart';
+part 'engine/render_buffer_index.dart';
+part 'engine/render_buffer_vertex.dart';
 part 'engine/render_context.dart';
 part 'engine/render_context_canvas.dart';
 part 'engine/render_context_webgl.dart';

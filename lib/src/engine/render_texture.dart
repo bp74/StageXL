@@ -103,14 +103,21 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   static Future<RenderTexture> load(
-      String url, bool autoHiDpi, bool webpAvailable, bool corsEnabled) {
+      String url, int maxPixelRatio, bool webpAvailable, bool corsEnabled) {
 
-    var hiDpi = autoHiDpi && url.contains("@1x.");
-    var hiDpiUrl = hiDpi ? url.replaceAll("@1x.", "@2x.") : url;
-    var imageLoader = new ImageLoader(hiDpiUrl, webpAvailable, corsEnabled);
+    if (maxPixelRatio > 1 && url.contains("@1x")) {
+      var devicePixelRatio = env.devicePixelRatio.floor();
+      if (devicePixelRatio < maxPixelRatio) maxPixelRatio = devicePixelRatio;
+      url = url.replaceAll("@1x", "@${maxPixelRatio}x");
+    } else {
+      maxPixelRatio = 1;
+    }
 
-    return imageLoader.done.then((image) =>
-        new RenderTexture.fromImageElement(image, hiDpi ? 2.0 : 1.0));
+    var imageLoader = new ImageLoader(url, webpAvailable, corsEnabled);
+
+    return imageLoader.done.then((image) {
+      return new RenderTexture.fromImageElement(image, maxPixelRatio);
+    });
   }
 
   //-----------------------------------------------------------------------------------------------

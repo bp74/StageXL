@@ -3,6 +3,31 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.11.0+1
+  * Added hashCode getter in Point, Rectangle, Circle, Vector.
+  
+#### Pub version 0.11.0
+  * Added DisplayObjectContainer.children for better child access.
+  * Added DisplayObjectContainer.replaceChildAt. 
+  * Added Sound.loadDataUrl and Sound.supportedTypes.
+  * Added Point and Rectangle operators.
+  * Added TintFilter for color effects.
+  * Added NormalMapFilter for light effects.
+  * Added quality setting for blur, glow and drop shadow filter.
+  * Optimized filters for Bitmap, TextField, FlipBook and VideoObject.
+  * Optimizes overall performance for filters and display objects.  
+  * Optimized onAddedToStage and onRemovedFromStage event dispatching.
+  * Optimized memory consumption for BitmapData loading.
+  * Fixed SimpleButton setters for the state display objects. 
+  * Make TextureAtlasFormat.JSONARRAY the default.
+  * Internal simplifications and optimizations.  
+  * Requires Dart SDK 1.9 or higher.    
+
+This version contains a few minor breaking changes. If you experience 
+a problem please report the issue either in the 
+[StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
+or in the [StageXL Forum](http://www.stagexl.org/forum.html).
+
 #### Pub version 0.10.3
   * Added InputEvent as base class for MouseEvent and TouchEvent.
   * Added InputEvent.current for current propagating InputEvent.

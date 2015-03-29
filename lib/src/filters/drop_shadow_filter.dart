@@ -2,6 +2,8 @@ library stagexl.filters.drop_shadow;
 
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show ImageData;
+import 'dart:typed_data';
+import 'dart:web_gl' as gl;
 
 import '../display.dart';
 import '../engine.dart';
@@ -11,30 +13,41 @@ import '../internal/tools.dart';
 
 class DropShadowFilter extends BitmapFilter {
 
-  num distance;
-  num angle;
-  int color;
-  int blurX;
-  int blurY;
+  num _distance;
+  num _angle;
+  int _blurX;
+  int _blurY;
+  int _quality;
+  int _color;
+
   bool knockout;
   bool hideObject;
 
-  DropShadowFilter(this.distance, this.angle, this.color, this.blurX, this.blurY, {
-                   this.knockout: false, this.hideObject: false }) {
+  final List<int> _renderPassSources = new List<int>();
+  final List<int> _renderPassTargets = new List<int>();
 
-    if (blurX < 0 || blurY < 0)
-      throw new ArgumentError("The minimum blur size is 0.");
+  DropShadowFilter([
+    num distance = 8, num angle = PI / 4, int color = 0xFF000000,
+    int blurX = 4, int blurY = 4, int quality = 1,
+    bool knockout = false, bool hideObject = false]) {
 
-    if (blurX > 64 || blurY > 64)
-      throw new ArgumentError("The maximum blur size is 64.");
+    this.distance = distance;
+    this.angle = angle;
+    this.color = color;
+    this.blurX = blurX;
+    this.blurY = blurY;
+    this.quality = quality;
+    this.knockout = knockout;
+    this.hideObject = hideObject;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  BitmapFilter clone() => new DropShadowFilter(
-      distance, angle, color, blurX, blurY,
-      knockout: knockout, hideObject: hideObject);
+  BitmapFilter clone() {
+    return new DropShadowFilter(
+      distance, angle, color, blurX, blurY, quality, knockout, hideObject);
+  }
 
   Rectangle<int> get overlap {
     int shiftX = (this.distance * cos(this.angle)).round();
@@ -44,10 +57,79 @@ class DropShadowFilter extends BitmapFilter {
     return sRect.boundingBox(dRect);
   }
 
-  List<int> get renderPassSources => const [0, 1, 0];
-  List<int> get renderPassTargets => const [1, 2, 2];
+  List<int> get renderPassSources => _renderPassSources;
+  List<int> get renderPassTargets => _renderPassTargets;
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  /// The distance from the object to the shadow.
+
+  num get distance => _distance;
+
+  set distance(num value) {
+    _distance = value;
+  }
+
+  /// The angle where the shadow is casted to.
+
+  num get angle => _angle;
+
+  set angle(num value) {
+    _angle = value;
+  }
+
+  /// The color of the shadow.
+
+  int get color => _color;
+
+  set color(int value) {
+    _color = value;
+  }
+
+  /// The horizontal blur radius in the range from 0 to 64.
+
+  int get blurX => _blurX;
+
+  set blurX(int value) {
+    RangeError.checkValueInInterval(value, 0, 64);
+    _blurX = value;
+  }
+
+  /// The vertical blur radius in the range from 0 to 64.
+
+  int get blurY => _blurY;
+
+  set blurY(int value) {
+    RangeError.checkValueInInterval(value, 0, 64);
+    _blurY = value;
+  }
+
+  /// The quality of the shadow in the range from 1 to 5.
+  /// A small value is sufficent for small blur radii, a high blur
+  /// radius may require a heigher quality setting.
+
+  int get quality => _quality;
+
+  set quality(int value) {
+
+    RangeError.checkValueInInterval(value, 1, 5);
+
+    _quality = value;
+    _renderPassSources.clear();
+    _renderPassTargets.clear();
+
+    for(int i = 0; i < value; i++) {
+      _renderPassSources.add(i * 2 + 0);
+      _renderPassSources.add(i * 2 + 1);
+      _renderPassTargets.add(i * 2 + 1);
+      _renderPassTargets.add(i * 2 + 2);
+    }
+
+    _renderPassSources.add(0);
+    _renderPassTargets.add(value * 2);
+  }
+
+  //---------------------------------------------------------------------------
 
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
 
@@ -92,80 +174,159 @@ class DropShadowFilter extends BitmapFilter {
     renderTextureQuad.putImageData(imageData);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+  void renderFilter(RenderState renderState,
+                    RenderTextureQuad renderTextureQuad, int pass) {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    int passCount = _renderPassSources.length;
+    num passScale = pow(0.5, pass >> 1);
 
-    DropShadowFilterProgram renderProgram = renderContext.getRenderProgram(
-        r"$DropShadowFilterProgram", () => new DropShadowFilterProgram());
+    if (pass == passCount - 1) {
 
-    renderContext.activateRenderProgram(renderProgram);
-    renderContext.activateRenderTexture(renderTexture);
+      if (!this.knockout && !this.hideObject) {
+        renderContext.renderQuad(renderState, renderTextureQuad);
+      }
 
-    if (pass == 0) {
-      var shift = (this.distance * cos(this.angle)).round() / renderTexture.width;
-      var pixel = 0.250 * blurX / renderTexture.width;
-      renderProgram.configure(color, shift, 0.0, pixel, 0.0);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
-    } else if (pass == 1) {
-      var shift = (this.distance * sin(this.angle)).round() / renderTexture.height;
-      var pixel = 0.250 * blurY / renderTexture.height;
-      renderProgram.configure(color, 0.0, shift, 0.0, pixel);
-      renderProgram.renderQuad(renderState, renderTextureQuad);
-    } else if (pass == 2) {
-      // TODO: render the knockout effect!
-      if (this.knockout || this.hideObject) return;
-      renderState.renderQuad(renderTextureQuad);
+    } else {
+
+      DropShadowFilterProgram renderProgram = renderContext.getRenderProgram(
+          r"$DropShadowFilterProgram", () => new DropShadowFilterProgram());
+
+      renderContext.activateRenderProgram(renderProgram);
+      renderContext.activateRenderTexture(renderTexture);
+
+      renderProgram.renderDropShadowFilterQuad(
+          renderState, renderTextureQuad,
+          pass == passCount - 2 ? this.color : this.color | 0xFF000000,
+          pass == passCount - 2 ? renderState.globalAlpha : 1.0,
+          pass == 0 ? distance * cos(angle) / renderTexture.width : 0.0,
+          pass == 0 ? distance * sin(angle) / renderTexture.height : 0.0,
+          pass.isEven ? passScale * blurX / renderTexture.width : 0.0,
+          pass.isEven ? 0.0 : passScale * blurY / renderTexture.height);
     }
   }
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-class DropShadowFilterProgram extends BitmapFilterProgram {
+class DropShadowFilterProgram extends RenderProgram {
+
+  RenderBufferVertex _renderBufferVertex;
+
+  //---------------------------------------------------------------------------
+  // aVertexPosition:   Float32(x), Float32(y)
+  // aVertexTextCoord:  Float32(u), Float32(v)
+  //---------------------------------------------------------------------------
+
+  String get vertexShaderSource => """
+
+    uniform mat4 uProjectionMatrix;
+    uniform vec2 uRadius;
+    uniform vec2 uShift;
+
+    attribute vec2 aPosition;
+    attribute vec2 aTexCoord;
+
+    varying vec2 vBlurCoords[7];
+
+    void main() {
+      vec2 texCoord = aTexCoord - uShift;
+      vBlurCoords[0] = texCoord - uRadius * 1.2;
+      vBlurCoords[1] = texCoord - uRadius * 0.8;
+      vBlurCoords[2] = texCoord - uRadius * 0.4;
+      vBlurCoords[3] = texCoord;
+      vBlurCoords[4] = texCoord + uRadius * 0.4;
+      vBlurCoords[5] = texCoord + uRadius * 0.8;
+      vBlurCoords[6] = texCoord + uRadius * 1.2;
+      gl_Position = vec4(aPosition, 0.0, 1.0) * uProjectionMatrix;
+    }
+    """;
 
   String get fragmentShaderSource => """
-      precision mediump float;
-      uniform sampler2D uSampler;
-      uniform vec2 uShift;
-      uniform vec2 uPixel;
-      uniform vec4 uColor;
-      varying vec2 vTextCoord;
-      varying float vAlpha;
-      void main() {
-        float alpha = 0.0;
-        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel * 4.0).a * 0.045;
-        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel * 3.0).a * 0.090;
-        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel * 2.0).a * 0.125;
-        alpha += texture2D(uSampler, vTextCoord - uShift - uPixel      ).a * 0.155;
-        alpha += texture2D(uSampler, vTextCoord - uShift               ).a * 0.170;
-        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel      ).a * 0.155;
-        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 2.0).a * 0.125;
-        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 3.0).a * 0.090;
-        alpha += texture2D(uSampler, vTextCoord - uShift + uPixel * 4.0).a * 0.045;
-        alpha *= vAlpha;
-        alpha *= uColor.a;
-        gl_FragColor = vec4(uColor.rgb * alpha, alpha);
-      }
-      """;
 
-   void configure(int color, num shiftX, num shiftY, num pixelX, num pixelY) {
+    precision mediump float;
+    uniform sampler2D uSampler;
+    uniform vec4 uColor;
+      
+    varying vec2 vBlurCoords[7];
 
-     num r = colorGetR(color) / 255.0;
-     num g = colorGetG(color) / 255.0;
-     num b = colorGetB(color) / 255.0;
-     num a = colorGetA(color) / 255.0;
+    void main() {
+      float alpha = 0.0;
+      alpha += texture2D(uSampler, vBlurCoords[0]).a * 0.00443;
+      alpha += texture2D(uSampler, vBlurCoords[1]).a * 0.05399;
+      alpha += texture2D(uSampler, vBlurCoords[2]).a * 0.24197;
+      alpha += texture2D(uSampler, vBlurCoords[3]).a * 0.39894;
+      alpha += texture2D(uSampler, vBlurCoords[4]).a * 0.24197;
+      alpha += texture2D(uSampler, vBlurCoords[5]).a * 0.05399;
+      alpha += texture2D(uSampler, vBlurCoords[6]).a * 0.00443;
+      alpha *= uColor.a;
+      gl_FragColor = vec4(uColor.rgb * alpha, alpha);
+    }
+    """;
 
-     var uShiftLocation = uniformLocations["uShift"];
-     var uPixelLocation = uniformLocations["uPixel"];
-     var uColorLocation = uniformLocations["uColor"];
+  //---------------------------------------------------------------------------
 
-     renderingContext.uniform2f(uShiftLocation, shiftX, shiftY);
-     renderingContext.uniform2f(uPixelLocation, pixelX, pixelY);
-     renderingContext.uniform4f(uColorLocation, r, g, b, a);
-   }
+  @override
+  void activate(RenderContextWebGL renderContext) {
+
+    super.activate(renderContext);
+
+    _renderBufferVertex = renderContext.renderBufferVertex;
+    _renderBufferVertex.activate(renderContext);
+    _renderBufferVertex.bindAttribute(attributes["aPosition"], 2, 16, 0);
+    _renderBufferVertex.bindAttribute(attributes["aTexCoord"], 2, 16, 8);
+  }
+
+  //---------------------------------------------------------------------------
+
+  void renderDropShadowFilterQuad(
+      RenderState renderState, RenderTextureQuad renderTextureQuad,
+      int color, num alpha, num shiftX, num shiftY, num radiusX, num radiusY) {
+
+    int width = renderTextureQuad.textureWidth;
+    int height = renderTextureQuad.textureHeight;
+    int offsetX = renderTextureQuad.offsetX;
+    int offsetY = renderTextureQuad.offsetY;
+    Float32List uvList = renderTextureQuad.uvList;
+    Matrix matrix = renderState.globalMatrix;
+
+    num r = colorGetR(color) / 255.0;
+    num g = colorGetG(color) / 255.0;
+    num b = colorGetB(color) / 255.0;
+    num a = colorGetA(color) / 255.0 * alpha;
+
+    // Calculate the 4 vertices of the RenderTextureQuad
+
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < 16) return;
+
+    for(int vertex = 0, index = 0; vertex < 4; vertex++, index += 4) {
+
+      int x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
+      int y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+
+      if (index > vxData.length - 4) return; // dart2js_hint
+
+      vxData[index + 0] = matrix.tx + x * matrix.a + y * matrix.c;
+      vxData[index + 1] = matrix.ty + x * matrix.b + y * matrix.d;
+      vxData[index + 2] = uvList[vertex + vertex + 0];
+      vxData[index + 3] = uvList[vertex + vertex + 1];
+    }
+
+    // Update vertex buffer and render quad
+
+    _renderBufferVertex.update(0, 16);
+
+    renderingContext.uniform2f(uniforms["uShift"], shiftX, shiftY);
+    renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
+    renderingContext.uniform4f(uniforms["uColor"], r, g, b, a);
+    renderingContext.uniform1i(uniforms["uSampler"], 0);
+    renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+  }
+
 }

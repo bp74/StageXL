@@ -60,32 +60,20 @@ class EventDispatcher {
 
   //----------------------------------------------------------------------------
 
-  /// Checks whether the [EventDispatcher] object has any listeners registered
-  /// for a specific [eventType].
+  /// Returns true if the [EventDispatcher] has event listeners. The
+  /// [useCapture] paramenter defines if the event listeners should be
+  /// registered for the capturing event phase or not.
 
-  bool hasEventListener(String eventType) {
+  bool hasEventListener(String eventType, { bool useCapture: false }) {
 
     var eventStreams = _eventStreams;
     if (eventStreams == null) return false;
     var eventStream = eventStreams[eventType];
     if (eventStream == null) return false;
 
-    return eventStream.hasSubscriptions;
-  }
-
-  /// Checks whether the [EventDispatcher] object has any listeners registered
-  /// for a specific [event].
-
-  bool hasEventListenersFor(Event event) {
-
-    var eventStreams = _eventStreams;
-    if (eventStreams == null) return false;
-    var eventStream = eventStreams[event.type];
-    if (eventStream == null) return false;
-
-    if (event.captures && eventStream.hasCapturingSubscriptions) return true;
-    if (event.bubbles && eventStream.hasBubblingSubscriptions) return true;
-    return eventStream.hasSubscriptions;
+    return useCapture
+        ? eventStream.hasCapturingSubscriptions
+        : eventStream.hasBubblingSubscriptions;
   }
 
   //----------------------------------------------------------------------------

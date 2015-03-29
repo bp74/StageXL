@@ -28,7 +28,6 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
       var data = JSON.decode(textureAtlasJson);
       var frames = data["frames"];
       var meta = data["meta"];
-      var imageUrl = replaceFilename(url, meta["image"]);
 
       if (frames is List) {
         for (var frame in frames) {
@@ -53,10 +52,11 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
         bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
       }
 
-      var autoHiDpi = bitmapDataLoadOptions.autoHiDpi;
-      var webpAvailable = bitmapDataLoadOptions.webp;
-      var corsEnabled = bitmapDataLoadOptions.corsEnabled;
-      var loader = RenderTexture.load(imageUrl, autoHiDpi, webpAvailable, corsEnabled);
+      var loader = RenderTexture.load(
+          replaceFilename(url, meta["image"]),
+          bitmapDataLoadOptions.maxPixelRatio,
+          bitmapDataLoadOptions.webp,
+          bitmapDataLoadOptions.corsEnabled);
 
       loader.then((RenderTexture renderTexture) {
         textureAtlas.frames.forEach((f) => f.renderTexture = renderTexture);
@@ -127,11 +127,11 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
             // repeat: none
           }
 
-          var autoHiDpi = bitmapDataLoadOptions.autoHiDpi;
-          var webpAvailable = bitmapDataLoadOptions.webp;
-          var corsEnabled = bitmapDataLoadOptions.corsEnabled;
-          var imageUrl = replaceFilename(url, imageName);
-          var loader = RenderTexture.load(imageUrl, autoHiDpi, webpAvailable, corsEnabled);
+          var loader = RenderTexture.load(
+              replaceFilename(url, imageName),
+              bitmapDataLoadOptions.maxPixelRatio,
+              bitmapDataLoadOptions.webp,
+              bitmapDataLoadOptions.corsEnabled);
 
           renderTextures[imageName] = loader;
           textureAtlasFrames[imageName] = new List();
