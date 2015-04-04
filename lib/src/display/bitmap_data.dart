@@ -65,13 +65,25 @@ class BitmapData implements BitmapDrawable {
       bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
     }
 
+    var pixelRatio = 1.0;
+    var pixelRatioRegexp = new RegExp(r"@(\d)x");
+    var pixelRatioMatch = pixelRatioRegexp.firstMatch(url);
     var maxPixelRatio = bitmapDataLoadOptions.maxPixelRatio;
     var webpAvailable = bitmapDataLoadOptions.webp;
     var corsEnabled = bitmapDataLoadOptions.corsEnabled;
-    var loader = RenderTexture.load(url, maxPixelRatio, webpAvailable, corsEnabled);
 
-    return loader.then((renderTexture) {
-      return new BitmapData.fromRenderTextureQuad(renderTexture.quad);
+    if (pixelRatioMatch != null) {
+      var match = pixelRatioMatch;
+      var originPixelRatio = int.parse(match.group(1));
+      var devicePixelRatio = env.devicePixelRatio.round();
+      var loaderPixelRatio = minInt(devicePixelRatio, maxPixelRatio);
+      pixelRatio = loaderPixelRatio / originPixelRatio;
+      url = url.replaceRange(match.start, match.end, "@${loaderPixelRatio}x");
+    }
+
+    var imageLoader = new ImageLoader(url, webpAvailable, corsEnabled);
+    return imageLoader.done.then((image) {
+      return new BitmapData.fromImageElement(image, pixelRatio);
     });
   }
 
