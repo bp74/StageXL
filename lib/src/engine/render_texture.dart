@@ -102,21 +102,25 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  static Future<RenderTexture> load(
-      String url, int maxPixelRatio, bool webpAvailable, bool corsEnabled) {
+  static Future<RenderTexture> load(String url,
+      int maxPixelRatio, bool webpAvailable, bool corsEnabled) {
 
-    if (maxPixelRatio > 1 && url.contains("@1x")) {
-      var devicePixelRatio = env.devicePixelRatio.floor();
-      if (devicePixelRatio < maxPixelRatio) maxPixelRatio = devicePixelRatio;
-      url = url.replaceAll("@1x", "@${maxPixelRatio}x");
-    } else {
-      maxPixelRatio = 1;
+    var pixelRatio = 1.0;
+    var pixelRatioRegexp = new RegExp(r"@(\d)x");
+    var pixelRatioMatch = pixelRatioRegexp.firstMatch(url);
+
+    if (pixelRatioMatch != null) {
+      var match = pixelRatioMatch;
+      var originPixelRatio = int.parse(match.group(1));
+      var devicePixelRatio = env.devicePixelRatio.round();
+      var loaderPixelRatio = minInt(devicePixelRatio, maxPixelRatio);
+      pixelRatio = loaderPixelRatio / originPixelRatio;
+      url = url.replaceRange(match.start, match.end, "@${loaderPixelRatio}x");
     }
 
     var imageLoader = new ImageLoader(url, webpAvailable, corsEnabled);
-
     return imageLoader.done.then((image) {
-      return new RenderTexture.fromImageElement(image, maxPixelRatio);
+      return new RenderTexture.fromImageElement(image, pixelRatio);
     });
   }
 
