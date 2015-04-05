@@ -883,7 +883,7 @@ abstract class DisplayObject
     var pixelRatio = Stage.autoHiDpi ? env.devicePixelRatio : 1.0;
 
     var renderTexture = _cacheTextureQuad == null
-        ? new RenderTexture(width, height, true, Color.Transparent, pixelRatio)
+        ? new RenderTexture(width, height, Color.Transparent, pixelRatio)
         : _cacheTextureQuad.renderTexture..resize(width, height);
 
     _cacheTextureQuad = new RenderTextureQuad(renderTexture, 0, x, y, 0, 0, width, height);

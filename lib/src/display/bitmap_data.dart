@@ -17,12 +17,10 @@ class BitmapData implements BitmapDrawable {
 
   //----------------------------------------------------------------------------
 
-  BitmapData(int width, int height, [
-      bool transparent = true, int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
-
+  BitmapData(int width, int height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
     _width = ensureInt(width);
     _height = ensureInt(height);
-    _renderTexture = new RenderTexture(_width, _height, transparent, fillColor, pixelRatio);
+    _renderTexture = new RenderTexture(_width, _height, fillColor, pixelRatio);
     _renderTextureQuad = _renderTexture.quad;
   }
 
@@ -92,7 +90,7 @@ class BitmapData implements BitmapDrawable {
   /// Returns a new BitmapData with a copy of this BitmapData's texture.
   BitmapData clone([num pixelRatio]) {
     if (pixelRatio == null) pixelRatio = _renderTexture.storePixelRatio;
-    var bitmapData = new BitmapData(_width, _height, true, 0, pixelRatio);
+    var bitmapData = new BitmapData(_width, _height, Color.Transparent, pixelRatio);
     bitmapData.drawPixels(this, this.rectangle, new Point<int>(0, 0));
     return bitmapData;
   }

@@ -81,12 +81,10 @@ class RenderTextureQuad {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * The matrix transformation for this RenderTextureQuad to
-   * transform texture coordinates to canvas coordinates.
-   *
-   * Canvas coordinates are in the range from (0, 0) to (width, height).
-   */
+  /// The matrix transformation for this RenderTextureQuad to
+  /// transform texture coordinates to canvas coordinates.
+  ///
+  /// Canvas coordinates are in the range from (0, 0) to (width, height).
 
   Matrix get drawMatrix {
 
@@ -107,12 +105,10 @@ class RenderTextureQuad {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * The matrix transformation for this RenderTextureQuad to
-   * transform texture coordinates to framebuffer coordinates.
-   *
-   * Framebuffer coordinates are in the range from (-1, -1) to (+1, +1).
-   */
+  /// The matrix transformation for this RenderTextureQuad to
+  /// transform texture coordinates to framebuffer coordinates.
+  ///
+  /// Framebuffer coordinates are in the range from (-1, -1) to (+1, +1).
 
   Matrix get bufferMatrix {
 
@@ -134,12 +130,10 @@ class RenderTextureQuad {
 
   //-----------------------------------------------------------------------------------------------
 
-  /**
-   * The matrix transformation for this RenderTextureQuad to
-   * transform texture coordinates to sampler coordinates.
-   *
-   * Sampler coordinate are in the range from (0, 0) to (1, 1).
-   */
+  /// The matrix transformation for this RenderTextureQuad to
+  /// transform texture coordinates to sampler coordinates.
+  ///
+  /// Sampler coordinate are in the range from (0, 0) to (1, 1).
 
   Matrix get samplerMatrix {
 

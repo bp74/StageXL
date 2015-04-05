@@ -5,7 +5,7 @@ import 'package:stagexl/stagexl.dart';
 
 void main() {
 
-  var rt = new RenderTexture(50, 100, true, 0xFFFF00FF, 1.0);
+  var rt = new RenderTexture(50, 100, 0xFFFF00FF, 1.0);
 
   test('CreateRenderTextureQuad', () {
     var rtq = new RenderTextureQuad(rt, 0, 0, 0, 0, 0, 50, 100);
