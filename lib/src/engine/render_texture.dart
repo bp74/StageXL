@@ -4,7 +4,6 @@ class RenderTexture {
 
   int _width = 0;
   int _height = 0;
-  bool _transparent = true;
 
   num _storePixelRatio = 1.0;
   int _storeWidth = 0;
@@ -22,13 +21,12 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderTexture(int width, int height, bool transparent, int fillColor, num storePixelRatio) {
+  RenderTexture(int width, int height, int fillColor, num storePixelRatio) {
 
     if (width == 0 && height == 0) throw new ArgumentError();
 
     _width = ensureInt(width);
     _height = ensureInt(height);
-    _transparent = ensureBool(transparent);
     _storePixelRatio = ensureNum(storePixelRatio);
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
@@ -36,9 +34,9 @@ class RenderTexture {
     _source = _canvas = new CanvasElement(width: _storeWidth, height: _storeHeight);
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
 
-    if (fillColor != 0 || transparent == false) {
+    if (fillColor != 0) {
       var context = _canvas.context2D;
-      context.fillStyle = transparent ? color2rgba(fillColor) : color2rgb(fillColor);
+      context.fillStyle = color2rgba(fillColor);
       context.fillRect(0, 0, _storeWidth, _storeHeight);
     }
   }
@@ -50,7 +48,6 @@ class RenderTexture {
     _height = (ensureNum(imageElement.height) / _storePixelRatio).floor();
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
-    _transparent = true;
     _source = imageElement;
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
   }
@@ -62,7 +59,6 @@ class RenderTexture {
     _height = (ensureNum(canvasElement.height) / _storePixelRatio).floor();
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
-    _transparent = true;
     _source = _canvas = canvasElement;
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
   }
@@ -78,7 +74,6 @@ class RenderTexture {
     _height = (ensureNum(videoElement.videoHeight) / _storePixelRatio).floor();
     _storeWidth = (_width * _storePixelRatio).round();
     _storeHeight = (_height * _storePixelRatio).round();
-    _transparent = true;
     _source = videoElement;
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
 
@@ -92,32 +87,11 @@ class RenderTexture {
     _storeHeight = ensureInt(renderFrameBuffer.height);
     _width = (_storeWidth / _storePixelRatio).round();
     _height = (_storeHeight / _storePixelRatio).round();
-    _transparent = true;
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
 
     _contextIdentifier = renderFrameBuffer.renderContext.contextIdentifier;
     _renderingContext = renderFrameBuffer.renderingContext;
     _texture = renderFrameBuffer.texture;
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  static Future<RenderTexture> load(
-      String url, int maxPixelRatio, bool webpAvailable, bool corsEnabled) {
-
-    if (maxPixelRatio > 1 && url.contains("@1x")) {
-      var devicePixelRatio = env.devicePixelRatio.floor();
-      if (devicePixelRatio < maxPixelRatio) maxPixelRatio = devicePixelRatio;
-      url = url.replaceAll("@1x", "@${maxPixelRatio}x");
-    } else {
-      maxPixelRatio = 1;
-    }
-
-    var imageLoader = new ImageLoader(url, webpAvailable, corsEnabled);
-
-    return imageLoader.done.then((image) {
-      return new RenderTexture.fromImageElement(image, maxPixelRatio);
-    });
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -144,7 +118,6 @@ class RenderTexture {
 
   int get width => _width;
   int get height => _height;
-  bool get transparent => _transparent;
 
   int get storeWidth => _storeWidth;
   int get storeHeight => _storeHeight;

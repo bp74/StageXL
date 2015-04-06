@@ -519,7 +519,7 @@ class TextField extends InteractiveObject {
     var height =  max(1, _height).ceil();
 
     if (_renderTexture == null) {
-      _renderTexture = new RenderTexture(width, height, true, Color.Transparent, pixelRatio);
+      _renderTexture = new RenderTexture(width, height, Color.Transparent, pixelRatio);
     } else {
       _renderTexture.resize(width, height);
     }

@@ -17,12 +17,10 @@ class BitmapData implements BitmapDrawable {
 
   //----------------------------------------------------------------------------
 
-  BitmapData(int width, int height, [
-      bool transparent = true, int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
-
+  BitmapData(int width, int height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
     _width = ensureInt(width);
     _height = ensureInt(height);
-    _renderTexture = new RenderTexture(_width, _height, transparent, fillColor, pixelRatio);
+    _renderTexture = new RenderTexture(_width, _height, fillColor, pixelRatio);
     _renderTextureQuad = _renderTexture.quad;
   }
 
@@ -65,13 +63,25 @@ class BitmapData implements BitmapDrawable {
       bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
     }
 
+    var pixelRatio = 1.0;
+    var pixelRatioRegexp = new RegExp(r"@(\d)x");
+    var pixelRatioMatch = pixelRatioRegexp.firstMatch(url);
     var maxPixelRatio = bitmapDataLoadOptions.maxPixelRatio;
     var webpAvailable = bitmapDataLoadOptions.webp;
     var corsEnabled = bitmapDataLoadOptions.corsEnabled;
-    var loader = RenderTexture.load(url, maxPixelRatio, webpAvailable, corsEnabled);
 
-    return loader.then((renderTexture) {
-      return new BitmapData.fromRenderTextureQuad(renderTexture.quad);
+    if (pixelRatioMatch != null) {
+      var match = pixelRatioMatch;
+      var originPixelRatio = int.parse(match.group(1));
+      var devicePixelRatio = env.devicePixelRatio.round();
+      var loaderPixelRatio = minInt(devicePixelRatio, maxPixelRatio);
+      pixelRatio = loaderPixelRatio / originPixelRatio;
+      url = url.replaceRange(match.start, match.end, "@${loaderPixelRatio}x");
+    }
+
+    var imageLoader = new ImageLoader(url, webpAvailable, corsEnabled);
+    return imageLoader.done.then((image) {
+      return new BitmapData.fromImageElement(image, pixelRatio);
     });
   }
 
@@ -80,7 +90,7 @@ class BitmapData implements BitmapDrawable {
   /// Returns a new BitmapData with a copy of this BitmapData's texture.
   BitmapData clone([num pixelRatio]) {
     if (pixelRatio == null) pixelRatio = _renderTexture.storePixelRatio;
-    var bitmapData = new BitmapData(_width, _height, true, 0, pixelRatio);
+    var bitmapData = new BitmapData(_width, _height, Color.Transparent, pixelRatio);
     bitmapData.drawPixels(this, this.rectangle, new Point<int>(0, 0));
     return bitmapData;
   }

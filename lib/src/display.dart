@@ -30,8 +30,9 @@ import 'geom.dart';
 import 'engine.dart';
 import 'events.dart';
 import 'ui.dart';
-import 'internal/environment.dart' as env;
 import 'internal/tools.dart';
+import 'internal/image_loader.dart';
+import 'internal/environment.dart' as env;
 
 part 'display/bitmap.dart';
 part 'display/bitmap_data.dart';
