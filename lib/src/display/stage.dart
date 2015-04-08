@@ -13,7 +13,7 @@ class Stage extends DisplayObjectContainer {
 
   static bool autoHiDpi = env.autoHiDPI;
   static bool get isMobile => env.isMobileDevice;
-  static num get devicePixelRatio => env.devicePixelRatio;
+  static num devicePixelRatio = env.devicePixelRatio;
 
   CanvasElement _canvas;
   RenderContext _renderContext;

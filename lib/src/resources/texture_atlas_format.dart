@@ -34,7 +34,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     if (pixelRatioMatch != null) {
       var match = pixelRatioMatch;
       var originPixelRatio = int.parse(match.group(1));
-      var devicePixelRatio = env.devicePixelRatio.round();
+      var devicePixelRatio = Stage.devicePixelRatio.round();
       var loaderPixelRatio = minInt(devicePixelRatio, maxPixelRatio);
       pixelRatio = loaderPixelRatio / originPixelRatio;
       url = url.replaceRange(match.start, match.end, "@${loaderPixelRatio}x");
@@ -99,7 +99,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
     if (pixelRatioMatch != null) {
       var match = pixelRatioMatch;
       var originPixelRatio = int.parse(match.group(1));
-      var devicePixelRatio = env.devicePixelRatio.round();
+      var devicePixelRatio = Stage.devicePixelRatio.round();
       var loaderPixelRatio = minInt(devicePixelRatio, maxPixelRatio);
       pixelRatio = loaderPixelRatio / originPixelRatio;
       url = url.replaceRange(match.start, match.end, "@${loaderPixelRatio}x");
