@@ -514,7 +514,7 @@ class TextField extends InteractiveObject {
       _refreshPending &= 255 - 2;
     }
 
-    var pixelRatio = Stage.autoHiDpi ? env.devicePixelRatio : 1.0;
+    var pixelRatio = Stage.autoHiDpi ? Stage.devicePixelRatio : 1.0;
     var width = max(1, _width).ceil();
     var height =  max(1, _height).ceil();
 
