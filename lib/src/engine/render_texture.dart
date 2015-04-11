@@ -112,7 +112,6 @@ class RenderTexture {
 
   CanvasImageSource get source => _source;
   RenderTextureQuad get quad => _quad;
-  RenderTextureFiltering get filtering => _filtering;
 
   gl.Texture get texture => _texture;
   int get contextIdentifier => _contextIdentifier;
@@ -126,16 +125,26 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  set filtering(RenderTextureFiltering filtering) {
-    if (_filtering != filtering) {
-      _filtering = filtering;
-      if (_texture != null) {
-        _renderingContext.activeTexture(gl.TEXTURE10);
-        _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
-        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
-        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
-      }
-    }
+  /// Get or set the filtering used for this RenderTexture.
+  ///
+  /// The default is [RenderTextureFiltering.LINEAR] which is fine
+  /// for most use cases. In games with 2D pixel art it is sometimes better
+  /// to use the [RenderTextureFiltering.NEAREST] filtering.
+
+  RenderTextureFiltering get filtering => _filtering;
+
+  void set filtering(RenderTextureFiltering filtering) {
+
+    if (_filtering == filtering) return;
+
+    _filtering = filtering;
+
+    if (_renderContext == null || _texture == null) return;
+    if (_renderContext.contextIdentifier != contextIdentifier) return;
+
+    _renderContext.activateRenderTexture(this);
+    _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
+    _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -143,9 +152,11 @@ class RenderTexture {
   /// Call the dispose method to release memory allocated by WebGL.
 
   void dispose() {
+
     if (_renderingContext != null && _texture != null) {
       _renderingContext.deleteTexture(_texture);
     }
+
     _texture = null;
     _source = null;
     _canvas = null;
@@ -157,9 +168,12 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   void resize(int width, int height) {
+
     if (_source == null || _source is VideoElement) {
       throw new StateError("RenderTexture is not resizeable.");
-    } else if (width != _width || height != _height) {
+    }
+
+    if (width != _width || height != _height) {
       _width = ensureInt(width);
       _height = ensureInt(height);
       _storeWidth = (_width * _storePixelRatio).round();
