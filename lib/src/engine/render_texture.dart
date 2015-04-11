@@ -81,18 +81,14 @@ class RenderTexture {
     _globalFrameListeners.insert(0, _onGlobalFrame);
   }
 
-  RenderTexture.fromRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer, num storePixelRatio) {
+  RenderTexture.rawWebGL(int width, int height, num storePixelRatio) {
 
     _storePixelRatio = ensureNum(storePixelRatio);
-    _storeWidth = ensureInt(renderFrameBuffer.width);
-    _storeHeight = ensureInt(renderFrameBuffer.height);
+    _storeWidth = ensureInt(width);
+    _storeHeight = ensureInt(height);
     _width = (_storeWidth / _storePixelRatio).round();
     _height = (_storeHeight / _storePixelRatio).round();
     _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
-
-    _contextIdentifier = renderFrameBuffer.renderContext.contextIdentifier;
-    _renderingContext = renderFrameBuffer.renderingContext;
-    _texture = renderFrameBuffer.texture;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -169,13 +165,35 @@ class RenderTexture {
 
   void resize(int width, int height) {
 
-    if (_source == null || _source is VideoElement) {
-      throw new StateError("RenderTexture is not resizeable.");
-    }
+    if (_source is VideoElement) {
 
-    if (width != _width || height != _height) {
-      _width = ensureInt(width);
-      _height = ensureInt(height);
+      throw new StateError("RenderTexture is not resizeable.");
+
+    } else if (_width == width && _height == height) {
+
+      // there is no need to resize the texture
+
+    } else if (_source == null) {
+
+      _width = width;
+      _height = height;
+      _storeWidth = (_width * _storePixelRatio).round();
+      _storeHeight = (_height * _storePixelRatio).round();
+
+      if (_renderContext == null || _texture == null) return;
+      if (_renderContext.contextIdentifier != contextIdentifier) return;
+
+      var target = gl.TEXTURE_2D;
+      var rgba = gl.RGBA;
+      var type = gl.UNSIGNED_BYTE;
+
+      _renderContext.activateRenderTexture(this);
+      _renderingContext.texImage2DTyped(target, 0, rgba, _storeWidth, _storeHeight, 0, rgba, type, null);
+
+    } else {
+
+      _width = width;
+      _height = height;
       _storeWidth = (_width * _storePixelRatio).round();
       _storeHeight = (_height * _storePixelRatio).round();
       _canvas = _source = new CanvasElement(width: _storeWidth, height: _storeHeight);
@@ -230,16 +248,19 @@ class RenderTexture {
 
       _renderingContext.activeTexture(textureSlot);
       _renderingContext.bindTexture(target, _texture);
-      _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _source);
 
-      if (_renderingContext.getError() == gl.INVALID_VALUE) {
+      if (_source != null) {
+        _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _source);
+        _textureSourceWorkaround = _renderingContext.getError() == gl.INVALID_VALUE;
+      } else {
+        _renderingContext.texImage2DTyped(target, 0, rgba, width, height, 0, rgba, type, null);
+      }
+
+      if (_textureSourceWorkaround) {
         // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
-        _textureSourceWorkaround = true;
         _canvas = new CanvasElement(width: this.storeWidth, height: this.storeHeight);
         _canvas.context2D.drawImage(_source, 0, 0);
         _renderingContext.texImage2DCanvas(target, 0, rgba, rgba, type, _canvas);
-      } else {
-        _textureSourceWorkaround = false;
       }
 
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);

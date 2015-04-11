@@ -24,6 +24,7 @@ class RenderContextWebGL extends RenderContext {
   RenderTexture _activeRenderTexture = null;
   RenderProgram _activeRenderProgram = null;
   RenderFrameBuffer _activeRenderFrameBuffer = null;
+  RenderStencilBuffer _activeRenderStencilBuffer = null;
   BlendMode _activeBlendMode = null;
 
   bool _contextValid = true;
@@ -186,13 +187,14 @@ class RenderContextWebGL extends RenderContext {
 
     var filterRenderState = new RenderState(this);
     var filterProjectionMatrix = new Matrix3D.fromIdentity();
-    var filterRenderFrameBuffer = this.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+    var filterRenderFrameBuffer = this.getRenderFrameBuffer();
     var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
 
     filterProjectionMatrix.translate(-boundsLeft, -boundsTop, 0.0);
     filterProjectionMatrix.scale(2.0 / boundsWidth, 2.0 / boundsHeight, 1.0);
     filterProjectionMatrix.translate(-1.0, -1.0, 0.0);
 
+    filterRenderFrameBuffer.resize(boundsWidth, boundsHeight);
     renderFrameBufferMap[0] = filterRenderFrameBuffer;
 
     //----------------------------------------------
@@ -206,7 +208,7 @@ class RenderContextWebGL extends RenderContext {
       // Don't render anything
     } else if (filters[0].isSimple && renderObject is _RenderTextureQuadObject) {
       var renderTextureQuad = renderObject.renderTextureQuad;
-      this.renderQuadFiltered(filterRenderState, renderTextureQuad, [filters[0]]);
+      renderQuadFiltered(filterRenderState, renderTextureQuad, [filters[0]]);
       filters = filters.sublist(1);
     } else {
       renderObject.render(filterRenderState);
@@ -252,7 +254,8 @@ class RenderContextWebGL extends RenderContext {
           this.activateRenderFrameBuffer(filterRenderFrameBuffer);
           this.activateBlendMode(BlendMode.NORMAL);
         } else {
-          filterRenderFrameBuffer = this.requestRenderFrameBuffer(boundsWidth, boundsHeight);
+          filterRenderFrameBuffer = this.getRenderFrameBuffer();
+          filterRenderFrameBuffer.resize(boundsWidth, boundsHeight);
           renderFrameBufferMap[renderPassTarget] = filterRenderFrameBuffer;
           this.activateRenderFrameBuffer(filterRenderFrameBuffer);
           this.activateBlendMode(BlendMode.NORMAL);
@@ -307,8 +310,8 @@ class RenderContextWebGL extends RenderContext {
 
   void _renderMask(RenderState renderState, RenderMask mask, int depthDelta) {
 
-    var arfb = _activeRenderFrameBuffer;
-    var stencilDepth = arfb != null ? arfb.stencilDepth : _stencilDepth;
+    var rfb = _activeRenderFrameBuffer;
+    var stencilDepth = rfb != null ? rfb.renderStencilBuffer.depth : _stencilDepth;
 
     _activeRenderProgram.flush();
     _renderingContext.enable(gl.STENCIL_TEST);
@@ -330,17 +333,16 @@ class RenderContextWebGL extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderFrameBuffer requestRenderFrameBuffer(int width, int height) {
-    _activeRenderProgram.flush();
+  RenderFrameBuffer getRenderFrameBuffer() {
     if (_renderFrameBufferPool.length > 0) {
-      return _renderFrameBufferPool.removeLast()..resize(width, height);
+      return _renderFrameBufferPool.removeLast();
     } else {
-      return new RenderFrameBuffer(this, width, height);
+      return new RenderFrameBuffer.rawWebGL(1, 1);
     }
   }
 
   void releaseRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    if (renderFrameBuffer != null) {
+    if (renderFrameBuffer is RenderFrameBuffer) {
       _renderFrameBufferPool.add(renderFrameBuffer);
     }
   }
@@ -349,27 +351,27 @@ class RenderContextWebGL extends RenderContext {
 
   void activateRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
     if (!identical(renderFrameBuffer, _activeRenderFrameBuffer)) {
-      _activeRenderProgram.flush();
-      _activeRenderFrameBuffer = renderFrameBuffer;
-
-      int width, height, stencilDepth;
-      gl.Framebuffer framebuffer;
-
-      if (renderFrameBuffer != null) {
-        width = renderFrameBuffer.width;
-        height = renderFrameBuffer.height;
-        framebuffer = renderFrameBuffer.framebuffer;
-        stencilDepth = renderFrameBuffer.stencilDepth;
+      if (renderFrameBuffer is RenderFrameBuffer) {
+        _activeRenderProgram.flush();
+        _activeRenderFrameBuffer = renderFrameBuffer;
+        _activeRenderFrameBuffer.activate(this);
+        _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
+        _updateStencilTest(renderFrameBuffer.renderStencilBuffer.depth);
       } else {
-        width = _viewportWidth;
-        height = _viewportHeight;
-        framebuffer = null;
-        stencilDepth = _stencilDepth;
+        _activeRenderProgram.flush();
+        _activeRenderFrameBuffer = null;
+        _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
+        _renderingContext.viewport(0, 0, _viewportWidth, _viewportHeight);
+        _updateStencilTest(_stencilDepth);
       }
+    }
+  }
 
-      _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-      _renderingContext.viewport(0, 0, width, height);
-      _updateStencilTest(stencilDepth);
+  void activateRenderStencilBuffer(RenderStencilBuffer renderStencilBuffer) {
+    if (!identical(renderStencilBuffer, _activeRenderStencilBuffer)) {
+      _activeRenderProgram.flush();
+      _activeRenderStencilBuffer = renderStencilBuffer;
+      _activeRenderStencilBuffer.activate(this);
     }
   }
 
@@ -399,8 +401,8 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateRenderTextureAt(RenderTexture renderTexture, int index) {
-    if (index < 0 || index > 31) {
-      throw new RangeError.range(index, 0, 31, "index");
+    if (index < 0 || index > 7) {
+      throw new RangeError.range(index, 0, 7, "index");
     } else if (index == 0) {
       activateRenderTexture(renderTexture);
     } else if (!identical(renderTexture, _activeRenderTextures[index])) {
@@ -433,8 +435,8 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   _updateStencilDepth(int stencilDepth) {
-    if (_activeRenderFrameBuffer != null) {
-      _activeRenderFrameBuffer._stencilDepth = stencilDepth;
+    if (_activeRenderFrameBuffer is RenderFrameBuffer) {
+      _activeRenderFrameBuffer.renderStencilBuffer.depth = stencilDepth;
       _updateStencilTest(stencilDepth);
     } else {
       _stencilDepth = stencilDepth;
