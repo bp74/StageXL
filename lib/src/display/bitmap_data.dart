@@ -20,20 +20,20 @@ class BitmapData implements BitmapDrawable {
   BitmapData(int width, int height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
     _width = ensureInt(width);
     _height = ensureInt(height);
-    _renderTexture = new RenderTexture(_width, _height, fillColor, pixelRatio);
-    _renderTextureQuad = _renderTexture.quad;
+    _renderTexture = new RenderTexture(_width, _height, fillColor);
+    _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
   }
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
-    _renderTexture = new RenderTexture.fromImageElement(imageElement, pixelRatio);
-    _renderTextureQuad = _renderTexture.quad;
+    _renderTexture = new RenderTexture.fromImageElement(imageElement);
+    _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
     _width = ensureInt(_renderTexture.width);
     _height = ensureInt(_renderTexture.height);
   }
 
   BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
-    _renderTexture = new RenderTexture.fromVideoElement(videoElement, pixelRatio);
-    _renderTextureQuad = _renderTexture.quad;
+    _renderTexture = new RenderTexture.fromVideoElement(videoElement);
+    _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
     _width = ensureInt(_renderTexture.width);
     _height = ensureInt(_renderTexture.height);
   }
@@ -57,6 +57,7 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   /// Loads a BitmapData from the given url.
+
   static Future<BitmapData> load(String url, [BitmapDataLoadOptions bitmapDataLoadOptions]) {
 
     if (bitmapDataLoadOptions == null) {
@@ -88,14 +89,16 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   /// Returns a new BitmapData with a copy of this BitmapData's texture.
+
   BitmapData clone([num pixelRatio]) {
-    if (pixelRatio == null) pixelRatio = _renderTexture.storePixelRatio;
+    if (pixelRatio == null) pixelRatio = _renderTextureQuad.pixelRatio;
     var bitmapData = new BitmapData(_width, _height, Color.Transparent, pixelRatio);
     bitmapData.drawPixels(this, this.rectangle, new Point<int>(0, 0));
     return bitmapData;
   }
 
   /// Return a dataUrl for this BitmapData.
+
   String toDataUrl([String type = 'image/png', num quality]) {
     if (identical(_renderTextureQuad, _renderTexture.quad)) {
       return _renderTexture.canvas.toDataUrl(type, quality);
@@ -117,6 +120,7 @@ class BitmapData implements BitmapDrawable {
   /// of this BitmapData. If your frames are also separated by space or have an
   /// additional margin for each frame, you can specify this with the spacing or
   /// margin parameter (in pixel).
+
   List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, {
     int frameCount: null, int frameSpacing: 0, int frameMargin: 0 }) {
 

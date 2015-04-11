@@ -880,11 +880,16 @@ abstract class DisplayObject
 
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
 
-    var pixelRatio = Stage.autoHiDpi ? env.devicePixelRatio : 1.0;
+    RenderTexture renderTexture = null;
 
-    var renderTexture = _cacheTextureQuad == null
-        ? new RenderTexture(width, height, Color.Transparent, pixelRatio)
-        : _cacheTextureQuad.renderTexture..resize(width, height);
+    if (_cacheTextureQuad == null) {
+      renderTexture = new RenderTexture(width, height, Color.Transparent);
+    } else {
+      renderTexture = _cacheTextureQuad.renderTexture;
+      renderTexture.resize(width, height);
+    }
+
+    // TODO: PixelRatio
 
     _cacheTextureQuad = new RenderTextureQuad(renderTexture, 0, x, y, 0, 0, width, height);
     _cacheDebugBorder = debugBorder;

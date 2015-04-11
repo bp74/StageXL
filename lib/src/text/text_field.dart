@@ -514,15 +514,16 @@ class TextField extends InteractiveObject {
       _refreshPending &= 255 - 2;
     }
 
-    var pixelRatio = Stage.autoHiDpi ? env.devicePixelRatio : 1.0;
     var width = max(1, _width).ceil();
     var height =  max(1, _height).ceil();
 
     if (_renderTexture == null) {
-      _renderTexture = new RenderTexture(width, height, Color.Transparent, pixelRatio);
+      _renderTexture = new RenderTexture(width, height, Color.Transparent);
     } else {
       _renderTexture.resize(width, height);
     }
+
+    // TODO: PixelRatio
 
     var matrix = _renderTexture.quad.drawMatrix;
     var context = _renderTexture.canvas.context2D;

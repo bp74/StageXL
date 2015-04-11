@@ -48,7 +48,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     var imageUrl = replaceFilename(url, meta["image"]);
     var imageLoader = new ImageLoader(imageUrl, webpAvailable, corsEnabled);
     var imageElement = await imageLoader.done;
-    var renderTexture = new RenderTexture.fromImageElement(imageElement, pixelRatio);
+    var renderTexture = new RenderTexture.fromImageElement(imageElement);
     var textureAtlas = new TextureAtlas();
 
     if (frames is List) {
@@ -71,6 +71,8 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
         textureAtlas.frames.add(taf);
       }
     }
+
+    // TODO: PixelRatio
 
     return textureAtlas;
   }
@@ -194,11 +196,13 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
 
     for(var imageName in imageElementFutures.keys) {
       var imageElement = await imageElementFutures[imageName];
-      var renderTexture = new RenderTexture.fromImageElement(imageElement, pixelRatio);
+      var renderTexture = new RenderTexture.fromImageElement(imageElement);
       for(var textureAtlasFrame in textureAtlasFrames[imageName]) {
         textureAtlasFrame.renderTexture = renderTexture;
       }
     }
+
+    // TODO: PixelRatio
 
     return textureAtlas;
   }

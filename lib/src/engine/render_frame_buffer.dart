@@ -16,7 +16,7 @@ class RenderFrameBuffer {
   RenderFrameBuffer.rawWebGL(int width, int height) {
     _width = ensureInt(width);
     _height = ensureInt(height);
-    _renderTexture = new RenderTexture.rawWebGL(width, height, 1.0);
+    _renderTexture = new RenderTexture.rawWebGL(width, height);
     _renderStencilBuffer = new RenderStencilBuffer.rawWebGL(width, height);
   }
 

@@ -30,9 +30,9 @@ class VideoObject extends InteractiveObject {
   EventStream<Event> get onError => VideoObject.errorEvent.forTarget(this);
   EventStream<Event> get onPlay  => VideoObject.playEvent.forTarget(this);
 
-  VideoObject(Video video, [bool autoplay = false, num pixelRatio = 1.0]) :
+  VideoObject(Video video, [bool autoplay = false]) :
     this.video = video,
-    this.renderTexture = new RenderTexture.fromVideoElement(video.videoElement, pixelRatio) {
+    this.renderTexture = new RenderTexture.fromVideoElement(video.videoElement) {
 
     var videoElement = video.videoElement;
     videoElement.onEnded.listen((e) => this.dispatchEvent(new Event("videoEnded")));

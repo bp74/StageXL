@@ -119,7 +119,7 @@ class GlowFilter extends BitmapFilter {
     int width = ensureInt(imageData.width);
     int height = ensureInt(imageData.height);
 
-    num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
+    num pixelRatio = renderTextureQuad.pixelRatio;
     int blurX = (this.blurX * pixelRatio).round();
     int blurY = (this.blurY * pixelRatio).round();
     int alphaChannel = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.ALPHA);

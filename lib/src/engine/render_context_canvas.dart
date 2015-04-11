@@ -175,8 +175,8 @@ class RenderContextCanvas extends RenderContext {
 
     var context = _renderingContext;
     var source = renderTexture.source;
-    var sourceWidth = renderTexture.storeWidth;
-    var sourceHeight = renderTexture.storeHeight;
+    var sourceWidth = renderTexture.width;
+    var sourceHeight = renderTexture.height;
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
     var blendMode = renderState.globalBlendMode;
