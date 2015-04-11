@@ -13,6 +13,7 @@ class RenderTexture {
   CanvasElement _canvas;
   RenderTextureQuad _quad;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
+  RenderContextWebGL _renderContext = null;
 
   int _contextIdentifier = -1;
   bool _textureSourceWorkaround = false;
@@ -170,19 +171,31 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
+  /// Update the underlying WebGL texture with the source of this RenderTexture.
+  ///
+  /// The source of the RenderTexture is an ImageElement, CanvasElement or
+  /// VideoElement. If changes are made to the source you have to call the
+  /// [update] method to apply those changes to the WebGL texture.
+  ///
+  /// The progress in a VideoElement will automatically updated the
+  /// RenderTexture and you don't need to call the [update] method.
+
   void update() {
-    if (_texture != null) {
-      _renderingContext.activeTexture(gl.TEXTURE10);
-      _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
-      if (_textureSourceWorkaround) {
-        _canvas.context2D.drawImage(_source, 0, 0);
-        _renderingContext.texImage2DCanvas(
-            gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
-      } else {
-        _renderingContext.texImage2DUntyped(
-            gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _source);
-      }
-      _renderingContext.bindTexture(gl.TEXTURE_2D, null);
+
+    if (_renderContext == null || _texture == null) return;
+    if (_renderContext.contextIdentifier != contextIdentifier) return;
+
+    var target = gl.TEXTURE_2D;
+    var rgba = gl.RGBA;
+    var type = gl.UNSIGNED_BYTE;
+
+    if (_textureSourceWorkaround) {
+      _canvas.context2D.drawImage(_source, 0, 0);
+      _renderContext.activateRenderTexture(this);
+      _renderingContext.texImage2DCanvas(target, 0, rgba, rgba, type, _canvas);
+    } else {
+      _renderContext.activateRenderTexture(this);
+      _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _source);
     }
   }
 
@@ -192,25 +205,33 @@ class RenderTexture {
 
     if (this.contextIdentifier != renderContext.contextIdentifier) {
 
+      var target = gl.TEXTURE_2D;
+      var rgba = gl.RGBA;
+      var type = gl.UNSIGNED_BYTE;
+
+      _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
       _texture = _renderingContext.createTexture();
 
       _renderingContext.activeTexture(textureSlot);
-      _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
-      _renderingContext.texImage2DUntyped(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _source);
-      _textureSourceWorkaround = _renderingContext.getError() == gl.INVALID_VALUE;
+      _renderingContext.bindTexture(target, _texture);
+      _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _source);
+
+      if (_renderingContext.getError() == gl.INVALID_VALUE) {
+        // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
+        _textureSourceWorkaround = true;
+        _canvas = new CanvasElement(width: this.storeWidth, height: this.storeHeight);
+        _canvas.context2D.drawImage(_source, 0, 0);
+        _renderingContext.texImage2DCanvas(target, 0, rgba, rgba, type, _canvas);
+      } else {
+        _textureSourceWorkaround = false;
+      }
+
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
-
-      if (_textureSourceWorkaround) {
-        // IE sucks! WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
-        _canvas = new CanvasElement(width: this.storeWidth, height: this.storeHeight);
-        _canvas.context2D.drawImage(_source, 0, 0);
-        _renderingContext.texImage2DCanvas(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
-      }
 
     } else {
 
@@ -227,9 +248,10 @@ class RenderTexture {
     if (source is VideoElement) {
       var videoElement = source as VideoElement;
       var currentTime = videoElement.currentTime;
-      if (_videoUpdateTime == currentTime) return;
-      _videoUpdateTime = currentTime;
-      update();
+      if (_videoUpdateTime != currentTime) {
+        _videoUpdateTime = currentTime;
+        update();
+      }
     }
   }
 
