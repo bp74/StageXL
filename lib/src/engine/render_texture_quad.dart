@@ -84,10 +84,10 @@ class RenderTextureQuad {
   //---------------------------------------------------------------------------
 
   /// The matrix transformation for this RenderTextureQuad to
-  /// transform pixel coordinates to texture coordinates.
+  /// transform target coordinates to texture coordinates.
   ///
   /// Texture coordinates are in the range from (0, 0) to (width, height).
-  /// Pixel coordinates are not mulitplied by the [pixelRatio].
+  /// Target coordinates take the [pixelRatio] into account.
 
   Matrix get drawMatrix {
 
@@ -117,10 +117,10 @@ class RenderTextureQuad {
   //---------------------------------------------------------------------------
 
   /// The matrix transformation for this RenderTextureQuad to
-  /// transform pixel coordinates to sampler coordinates.
+  /// transform target coordinates to sampler coordinates.
   ///
   /// Sampler coordinate are in the range from (0, 0) to (1, 1).
-  /// Pixel coordinates are not mulitplied by the [pixelRatio].
+  /// Target coordinates take the [pixelRatio] into account.
 
   Matrix get samplerMatrix {
 
@@ -150,6 +150,14 @@ class RenderTextureQuad {
   }
 
   //---------------------------------------------------------------------------
+
+  /// Clips a new RenderTextureQuad from this RenderTextureQuad. The offset
+  /// of the new RenderTextureQuad will be adjusted to match the origin of
+  /// this RenderTextureQuad.
+  ///
+  /// The [rectangle] is in target coordinates. Those coordinates take the
+  /// [pixelRatio] into account. Please read more about HiDpi textures to
+  /// learn more about this topic.
 
   RenderTextureQuad clip(Rectangle<int> rectangle) {
 
@@ -210,6 +218,14 @@ class RenderTextureQuad {
   }
 
   //---------------------------------------------------------------------------
+
+  /// Cuts a new RenderTextureQuad out of this RenderTextureQuad. The offset
+  /// of the new RenderTextureQuad will be adjusted to match the origin of
+  /// the [rectangle].
+  ///
+  /// The [rectangle] is in target coordinates. Those coordinates take the
+  /// [pixelRatio] into account. Please read more about HiDpi textures to
+  /// learn more about this topic.
 
   RenderTextureQuad cut(Rectangle<int> rectangle) {
 
