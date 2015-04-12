@@ -81,7 +81,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
           xyList[6], xyList[7], xyList[8], xyList[9],
-          0.0 - pqList[5], pqList[0], pqList[9], pqList[8]);
+          0.0 - pqList[7], pqList[6], pqList[9], pqList[8]);
 
     } else if (rotation == 2) {
 
@@ -95,7 +95,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
           xyList[2], xyList[3], xyList[8], xyList[9],
-          pqList[1], 0.0 - pqList[4], pqList[9], pqList[8]);
+          pqList[3], 0.0 - pqList[2], pqList[9], pqList[8]);
     }
   }
 
