@@ -142,8 +142,8 @@ class BitmapDataUpdateBatch {
 
     var rectangle = new Rectangle<int>(x, y, 1, 1);
     var renderTextureQuad = this.bitmapData.renderTextureQuad.clip(rectangle);
-    if (renderTextureQuad.textureWidth == 0) return 0;
-    if (renderTextureQuad.textureHeight == 0) return 0;
+    if (renderTextureQuad.xyList[8] == 0) return 0;
+    if (renderTextureQuad.xyList[9] == 0) return 0;
 
     var isLittleEndianSystem = env.isLittleEndianSystem;
     var imageData = renderTextureQuad.getImageData();

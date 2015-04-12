@@ -3,54 +3,52 @@ part of stagexl.engine;
 class RenderTextureQuad {
 
   final RenderTexture renderTexture;
-
+  final Rectangle<int> textureRectangle;
+  final Rectangle<int> sourceRectangle;
   final int rotation;
-  final int offsetX;
-  final int offsetY;
-  final int textureX;
-  final int textureY;
-  final int textureWidth;
-  final int textureHeight;
-  final num pixelRatio = 1.0;
+  final num pixelRatio;
 
-  final Float32List uvList = new Float32List(8);   // WebGL coordinates
-  final Int32List xyList = new Int32List(8);       // Canvas coordinates
+  final Float32List pqList = new Float32List(10);
+  final Float32List uvList = new Float32List(10);
+  final Int32List xyList = new Int32List(10);
+
+  //---------------------------------------------------------------------------
 
   RenderTextureQuad(this.renderTexture,
-      int rotation, int offsetX, int offsetY,
-      int textureX, int textureY, int textureWidth, int textureHeight) :
+                    this.textureRectangle, this.sourceRectangle,
+                    this.rotation, this.pixelRatio) {
 
-    rotation = ensureInt(rotation),
-    offsetX = ensureInt(offsetX),
-    offsetY = ensureInt(offsetY),
-    textureX = ensureInt(textureX),
-    textureY = ensureInt(textureY),
-    textureWidth = ensureInt(textureWidth),
-    textureHeight = ensureInt(textureHeight) {
+    int a = this.rotation;
+    int w = a == 0 || a == 2 ? textureRectangle.width : textureRectangle.height;
+    int h = a == 0 || a == 2 ? textureRectangle.height : textureRectangle.width;
+    int l = 0 - sourceRectangle.left;
+    int t = 0 - sourceRectangle.top;
+    int r = l + w;
+    int b = t + h;
 
-    if (rotation == 0) {
-      xyList[0] = xyList[6] = textureX;
-      xyList[1] = xyList[3] = textureY;
-      xyList[2] = xyList[4] = textureX + textureWidth;
-      xyList[5] = xyList[7] = textureY + textureHeight;
-    } else if (rotation == 1) {
-      xyList[0] = xyList[2] = textureX;
-      xyList[1] = xyList[7] = textureY;
-      xyList[4] = xyList[6] = textureX - textureHeight;
-      xyList[3] = xyList[5] = textureY + textureWidth;
-    } else if (rotation == 2) {
-      xyList[0] = xyList[6] = textureX;
-      xyList[1] = xyList[3] = textureY;
-      xyList[2] = xyList[4] = textureX - textureWidth;
-      xyList[5] = xyList[7] = textureY - textureHeight;
-    } else if (rotation == 3) {
-      xyList[0] = xyList[2] = textureX;
-      xyList[1] = xyList[7] = textureY;
-      xyList[4] = xyList[6] = textureX + textureHeight;
-      xyList[3] = xyList[5] = textureY - textureWidth;
-    } else {
-      throw new ArgumentError("rotation not supported.");
-    }
+    // Vertex positions + size
+
+    pqList[0] = pqList[6] = l / pixelRatio;
+    pqList[1] = pqList[3] = t / pixelRatio;
+    pqList[2] = pqList[4] = r / pixelRatio;
+    pqList[5] = pqList[7] = b / pixelRatio;
+    pqList[8] = w / pixelRatio;
+    pqList[9] = h / pixelRatio;
+
+    // Texture coordinates + size
+
+    xyList[0] = a == 0 || a == 3 ? textureRectangle.left : textureRectangle.right;
+    xyList[1] = a == 0 || a == 1 ? textureRectangle.top : textureRectangle.bottom;
+    xyList[2] = a == 2 || a == 3 ? textureRectangle.left : textureRectangle.right;
+    xyList[3] = a == 0 || a == 3 ? textureRectangle.top : textureRectangle.bottom;
+    xyList[4] = a == 1 || a == 2 ? textureRectangle.left : textureRectangle.right;
+    xyList[5] = a == 2 || a == 3 ? textureRectangle.top : textureRectangle.bottom;
+    xyList[6] = a == 0 || a == 1 ? textureRectangle.left : textureRectangle.right;
+    xyList[7] = a == 1 || a == 2 ? textureRectangle.top : textureRectangle.bottom;
+    xyList[8] = textureRectangle.width;
+    xyList[9] = textureRectangle.height;
+
+    // WebGL coordinates + size
 
     uvList[0] = xyList[0] / renderTexture.width;
     uvList[1] = xyList[1] / renderTexture.height;
@@ -60,211 +58,233 @@ class RenderTextureQuad {
     uvList[5] = xyList[5] / renderTexture.height;
     uvList[6] = xyList[6] / renderTexture.width;
     uvList[7] = xyList[7] / renderTexture.height;
+    uvList[8] = xyList[8] / renderTexture.width;
+    uvList[9] = xyList[9] / renderTexture.height;
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  num get pixelWidth => sourceRectangle.width / pixelRatio;
+  num get pixelHeight => sourceRectangle.height / pixelRatio;
+
+  Rectangle<num> get pixelRectangle {
+    num l = sourceRectangle.left / pixelRatio;
+    num t = sourceRectangle.top / pixelRatio;
+    num w = sourceRectangle.width / pixelRatio;
+    num h = sourceRectangle.height / pixelRatio;
+    return new Rectangle<num>(l, t, w, h);
+  }
+
+  RenderTextureQuad withPixelRatio(num pixelRatio) {
+    return new RenderTextureQuad(this.renderTexture,
+        this.textureRectangle, this.sourceRectangle,
+        this.rotation, pixelRatio);
+  }
+
+  //---------------------------------------------------------------------------
 
   /// The matrix transformation for this RenderTextureQuad to
-  /// transform texture coordinates to canvas coordinates.
+  /// transform pixel coordinates to texture coordinates.
   ///
-  /// Canvas coordinates are in the range from (0, 0) to (width, height).
+  /// Texture coordinates are in the range from (0, 0) to (width, height).
+  /// Pixel coordinates are not mulitplied by the [pixelRatio].
 
   Matrix get drawMatrix {
 
-    num s = this.pixelRatio;
+    var pr = this.pixelRatio;
 
     if (rotation == 0) {
-      return new Matrix( s, 0.0, 0.0,  s, s * (textureX - offsetX), s * (textureY - offsetY));
+      var tx = textureRectangle.left + sourceRectangle.left;
+      var ty = textureRectangle.top + sourceRectangle.top;
+      return new Matrix(pr, 0.0, 0.0, pr, tx, ty);
     } else if (rotation == 1) {
-      return new Matrix(0.0,  s, -s, 0.0, s * (textureX + offsetY), s * (textureY - offsetX));
+      var tx = textureRectangle.right - sourceRectangle.top;
+      var ty = textureRectangle.top + sourceRectangle.left;
+      return new Matrix(0.0, pr, 0.0 - pr, 0.0, tx, ty);
     } else if (rotation == 2) {
-      return new Matrix(-s, 0.0, 0.0, -s, s * (textureX + offsetX), s * (textureY + offsetY));
+      var tx = textureRectangle.right - sourceRectangle.left;
+      var ty = textureRectangle.bottom - sourceRectangle.top;
+      return new Matrix(0.0 - pr, 0.0, 0.0, 0.0 - pr, tx, ty);
     } else if (rotation == 3) {
-      return new Matrix(0.0, -s,  s, 0.0, s * (textureX - offsetY), s * (textureY + offsetX));
+      var tx = textureRectangle.left + sourceRectangle.top;
+      var ty = textureRectangle.bottom - sourceRectangle.left;
+      return new Matrix(0.0, 0.0 - pr, pr, 0.0, tx, ty);
     } else {
       throw new Error();
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// The matrix transformation for this RenderTextureQuad to
-  /// transform texture coordinates to framebuffer coordinates.
-  ///
-  /// Framebuffer coordinates are in the range from (-1, -1) to (+1, +1).
-
-  Matrix get bufferMatrix {
-
-    num sx = 2.0 / renderTexture.width;
-    num sy = 2.0 / renderTexture.height;
-
-    if (rotation == 0) {
-      return new Matrix( sx, 0.0, 0.0,  sy, sx * (textureX - offsetX) - 1.0, sy * (textureY - offsetY) - 1.0);
-    } else if (rotation == 1) {
-      return new Matrix(0.0,  sy, -sx, 0.0, sx * (textureX + offsetY) - 1.0, sy * (textureY - offsetX) - 1.0);
-    } else if (rotation == 2) {
-      return new Matrix(-sx, 0.0, 0.0, -sy, sx * (textureX + offsetX) - 1.0, sy * (textureY + offsetY) - 1.0);
-    } else if (rotation == 3) {
-      return new Matrix(0.0, -sy,  sx, 0.0, sx * (textureX - offsetY) - 1.0, sy * (textureY + offsetX) - 1.0);
-    } else {
-      throw new Error();
-    }
-  }
-
-  //-----------------------------------------------------------------------------------------------
-
-  /// The matrix transformation for this RenderTextureQuad to
-  /// transform texture coordinates to sampler coordinates.
+  /// transform pixel coordinates to sampler coordinates.
   ///
   /// Sampler coordinate are in the range from (0, 0) to (1, 1).
+  /// Pixel coordinates are not mulitplied by the [pixelRatio].
 
   Matrix get samplerMatrix {
 
-    num sx = 1.0 / renderTexture.width;
-    num sy = 1.0 / renderTexture.height;
+    var pr = this.pixelRatio;
+    var sx = 1.0 / this.renderTexture.width;
+    var sy = 1.0 / this.renderTexture.height;
 
     if (rotation == 0) {
-      return new Matrix( sx, 0.0, 0.0,  sy, sx * (textureX - offsetX), sy * (textureY - offsetY));
+      var tx = textureRectangle.left + sourceRectangle.left;
+      var ty = textureRectangle.top + sourceRectangle.top;
+      return new Matrix(sx * pr, 0.0, 0.0, sy * pr, sx * tx, sy * ty);
     } else if (rotation == 1) {
-      return new Matrix(0.0,  sy, -sx, 0.0, sx * (textureX + offsetY), sy * (textureY - offsetX));
+      var tx = textureRectangle.right - sourceRectangle.top;
+      var ty = textureRectangle.top + sourceRectangle.left;
+      return new Matrix(0.0, sy * pr, 0.0 - sx * pr, 0.0, sx * tx, sy * ty);
     } else if (rotation == 2) {
-      return new Matrix(-sx, 0.0, 0.0, -sy, sx * (textureX + offsetX), sy * (textureY + offsetY));
+      var tx = textureRectangle.right - sourceRectangle.left;
+      var ty = textureRectangle.bottom - sourceRectangle.top;
+      return new Matrix(0.0 - sx * pr, 0.0, 0.0, 0.0 - sy * pr, sx * tx, sy * ty);
     } else if (rotation == 3) {
-      return new Matrix(0.0, -sy,  sx, 0.0, sx * (textureX - offsetY), sy * (textureY + offsetX));
+      var tx = textureRectangle.left + sourceRectangle.top;
+      var ty = textureRectangle.bottom - sourceRectangle.left;
+      return new Matrix(0.0, 0.0 - sy * pr, sx * pr, 0.0, sx * tx, sy * ty);
     } else {
       throw new Error();
     }
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   RenderTextureQuad clip(Rectangle<int> rectangle) {
 
-    int left = minInt(offsetX + textureWidth, maxInt(offsetX, rectangle.left));
-    int top = minInt(offsetY + textureHeight, maxInt(offsetY, rectangle.top));
-    int right = maxInt(offsetX, minInt(offsetX + textureWidth, rectangle.right));
-    int bottom = maxInt(offsetY, minInt(offsetY + textureHeight, rectangle.bottom));
+    int tL = textureRectangle.left;
+    int tT = textureRectangle.top;
+    int tR = textureRectangle.right;
+    int tB = textureRectangle.bottom;
+    int sL = sourceRectangle.left;
+    int sT = sourceRectangle.top;
+    int sR = sourceRectangle.right;
+    int sB = sourceRectangle.bottom;
+    int rL = (rectangle.left * pixelRatio).round();
+    int rT = (rectangle.top * pixelRatio).round();
+    int rR = (rectangle.right * pixelRatio).round();
+    int rB = (rectangle.bottom * pixelRatio).round();
 
-    int clipTextureX = 0;
-    int clipTextureY = 0;
-    int clipTextureWidth = right - left;
-    int clipTextureHeight = bottom - top;
-    int clipOffsetX = left;
-    int clipOffsetY = top;
+    int texL = tL;
+    int texT = tT;
+    int texR = tR;
+    int texB = tB;
+    int srcL = sL;
+    int srcT = sT;
 
     if (rotation == 0) {
-      clipTextureX = textureX - offsetX + left;
-      clipTextureY = textureY - offsetY + top;
+      texL = minInt(tR, maxInt(tL, tL + sL + rL));
+      texT = minInt(tB, maxInt(tT, tT + sT + rT));
+      texR = maxInt(tL, minInt(tR, tL + sL + rR));
+      texB = maxInt(tT, minInt(tB, tT + sT + rB));
+      srcL = sL - texL + tL;
+      srcT = sT - texT + tT;
     } else if (rotation == 1) {
-      clipTextureX = textureX + offsetY - top;
-      clipTextureY = textureY - offsetX + left;
+      texL = minInt(tR, maxInt(tL, tR - sT - rB));
+      texT = minInt(tB, maxInt(tT, tT + sL + rL));
+      texR = maxInt(tL, minInt(tR, tR - sT - rT));
+      texB = maxInt(tT, minInt(tB, tT + sL + rR));
+      srcL = sL - texT + tT;
+      srcT = sT + texR - tR;
     } else if (rotation == 2) {
-      clipTextureX = textureX + offsetX - left;
-      clipTextureY = textureY + offsetY - top;
+      texL = minInt(tR, maxInt(tL, tR - sL - rR));
+      texT = minInt(tB, maxInt(tT, tB - sT - rB));
+      texR = maxInt(tL, minInt(tR, tR - sL - rL));
+      texB = maxInt(tT, minInt(tB, tB - sT - rT));
+      srcL = sL + texR - tR;
+      srcT = sT + texB - tB;
     } else if (rotation == 3) {
-      clipTextureX = textureX - offsetY + top;
-      clipTextureY = textureY + offsetX - left;
+      texL = minInt(tR, maxInt(tL, tL + sT + rT));
+      texT = minInt(tB, maxInt(tT, tB - sL - rR));
+      texR = maxInt(tL, minInt(tR, tL + sT + rB));
+      texB = maxInt(tT, minInt(tB, tB - sL - rL));
+      srcL = sL + texB - tB;
+      srcT = sT - texL + tL;
     }
 
-    return new RenderTextureQuad(
-        renderTexture, rotation, clipOffsetX, clipOffsetY,
-        clipTextureX, clipTextureY, clipTextureWidth, clipTextureHeight);
+    return new RenderTextureQuad(renderTexture,
+        new Rectangle<int>(texL, texT, texR - texL, texB - texT),
+        new Rectangle<int>(srcL, srcT, sR - sL, sB - sT),
+        rotation, pixelRatio);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   RenderTextureQuad cut(Rectangle<int> rectangle) {
 
-    int left = minInt(offsetX + textureWidth, maxInt(offsetX, rectangle.left));
-    int top = minInt(offsetY + textureHeight, maxInt(offsetY, rectangle.top));
-    int right = maxInt(offsetX, minInt(offsetX + textureWidth, rectangle.right));
-    int bottom = maxInt(offsetY, minInt(offsetY + textureHeight, rectangle.bottom));
+    int tL = textureRectangle.left;
+    int tT = textureRectangle.top;
+    int tR = textureRectangle.right;
+    int tB = textureRectangle.bottom;
+    int sL = sourceRectangle.left;
+    int sT = sourceRectangle.top;
+    int rL = (rectangle.left * pixelRatio).round();
+    int rT = (rectangle.top * pixelRatio).round();
+    int rR = (rectangle.right * pixelRatio).round();
+    int rB = (rectangle.bottom * pixelRatio).round();
 
-    int cutTextureX = 0;
-    int cutTextureY = 0;
-    int cutTextureWidth = right - left;
-    int cutTextureHeight = bottom - top;
-    int cutOffsetX = left - rectangle.left;
-    int cutOffsetY = top - rectangle.top;
-
-    if (rotation == 0) {
-      cutTextureX = textureX - offsetX + left;
-      cutTextureY = textureY - offsetY + top;
-    } else if (rotation == 1) {
-      cutTextureX = textureX + offsetY - top;
-      cutTextureY = textureY - offsetX + left;
-    } else if (rotation == 2) {
-      cutTextureX = textureX + offsetX - left;
-      cutTextureY = textureY + offsetY - top;
-    } else if (rotation == 3) {
-      cutTextureX = textureX - offsetY + top;
-      cutTextureY = textureY + offsetX - left;
-    }
-
-    return new RenderTextureQuad(
-        renderTexture, rotation, cutOffsetX, cutOffsetY,
-        cutTextureX, cutTextureY, cutTextureWidth, cutTextureHeight);
-  }
-
-  //-----------------------------------------------------------------------------------------------
-  //-----------------------------------------------------------------------------------------------
-
-  Rectangle<int> _getImageDataRectangle() {
-
-    num pixelRatio = this.pixelRatio;
-    int left = 0, top = 0, right = 1, bottom = 1;
+    int texL = tL;
+    int texT = tT;
+    int texR = tR;
+    int texB = tB;
+    int srcL = sL;
+    int srcT = sT;
 
     if (rotation == 0) {
-      left = textureX;
-      top = textureY;
-      right = textureX + textureWidth;
-      bottom = textureY + textureHeight;
+      texL = minInt(tR, maxInt(tL, tL + sL + rL));
+      texT = minInt(tB, maxInt(tT, tT + sT + rT));
+      texR = maxInt(tL, minInt(tR, tL + sL + rR));
+      texB = maxInt(tT, minInt(tB, tT + sT + rB));
+      srcL = sL - texL + tL + rL;
+      srcT = sT - texT + tT + rT;
     } else if (rotation == 1) {
-      left = textureX - textureHeight;
-      top = textureY;
-      right = textureX;
-      bottom = textureY + textureWidth;
+      texL = minInt(tR, maxInt(tL, tR - sT - rB));
+      texT = minInt(tB, maxInt(tT, tT - sL + rL));
+      texR = maxInt(tL, minInt(tR, tR - sT - rT));
+      texB = maxInt(tT, minInt(tB, tT - sL + rR));
+      srcL = sL - texT + tT + rL;
+      srcT = sT + texR - tR + rT;
     } else if (rotation == 2) {
-      left = textureX - textureWidth;
-      top = textureY - textureHeight;
-      right = textureX;
-      bottom = textureY;
+      texL = minInt(tR, maxInt(tL, tR - sL - rR));
+      texT = minInt(tB, maxInt(tT, tB - sT - rB));
+      texR = maxInt(tL, minInt(tR, tR - sL - rL));
+      texB = maxInt(tT, minInt(tB, tB - sT - rT));
+      srcL = sL + texR - tR + rL;
+      srcT = sT + texB - tB + rT;
     } else if (rotation == 3) {
-      left = textureX;
-      top = textureY - textureWidth;
-      right = textureX + textureHeight;
-      bottom = textureY;
+      texL = minInt(tR, maxInt(tL, tL + sT + rT));
+      texT = minInt(tB, maxInt(tT, tB - sL - rR));
+      texR = maxInt(tL, minInt(tR, tL + sT + rB));
+      texB = maxInt(tT, minInt(tB, tB - sL - rL));
+      srcL = sL + texB - tB + rL;
+      srcT = sT - texL + tL + rT;
     }
 
-    left = (left * pixelRatio).round();
-    top = (top * pixelRatio).round();
-    right = (right * pixelRatio).round();
-    bottom = (bottom * pixelRatio).round();
-
-    return new Rectangle<int>(left, top, right - left, bottom - top);
+    return new RenderTextureQuad(renderTexture,
+        new Rectangle<int>(texL, texT, texR - texL, texB - texT),
+        new Rectangle<int>(srcL, srcT, rR - rL, rB - rT),
+        rotation, pixelRatio);
   }
+
+  //---------------------------------------------------------------------------
 
   ImageData createImageData() {
-    var rectangle = _getImageDataRectangle();
+    var rect = textureRectangle;
     var context = renderTexture.canvas.context2D;
-    return context.createImageData(rectangle.width, rectangle.height);
+    return context.createImageData(rect.width, rect.height);
   }
 
   ImageData getImageData() {
-    var rect = _getImageDataRectangle();
+    var rect = textureRectangle;
     var context = renderTexture.canvas.context2D;
     return context.getImageData(rect.left, rect.top, rect.width, rect.height);
   }
 
   void putImageData(ImageData imageData) {
-    var rect = _getImageDataRectangle();
+    var rect = textureRectangle;
     var context = renderTexture.canvas.context2D;
     context.putImageData(imageData, rect.left, rect.top);
-  }
-
-  RenderTextureQuad withPixelRatio(num pixelRatio) {
-    // TODO: Fix pixelRatio
-    return this;
   }
 
 }

@@ -7,7 +7,6 @@ class RenderTexture {
 
   CanvasImageSource _source;
   CanvasElement _canvas;
-  RenderTextureQuad _quad;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
   RenderContextWebGL _renderContext = null;
 
@@ -26,7 +25,6 @@ class RenderTexture {
     _width = ensureInt(width);
     _height = ensureInt(height);
     _source = _canvas = new CanvasElement(width: _width, height: _height);
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
 
     if (fillColor != 0) {
       var context = _canvas.context2D;
@@ -39,14 +37,12 @@ class RenderTexture {
     _width = ensureInt(imageElement.width);
     _height = ensureInt(imageElement.height);
     _source = imageElement;
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
   }
 
   RenderTexture.fromCanvasElement(CanvasElement canvasElement) {
     _width = ensureInt(canvasElement.width);
     _height = ensureInt(canvasElement.height);
     _source = _canvas = canvasElement;
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
   }
 
   RenderTexture.fromVideoElement(VideoElement videoElement) {
@@ -54,14 +50,12 @@ class RenderTexture {
     _width = ensureInt(videoElement.videoWidth);
     _height = ensureInt(videoElement.videoHeight);
     _source = videoElement;
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
     _globalFrameListeners.insert(0, _onGlobalFrame);
   }
 
   RenderTexture.rawWebGL(int width, int height) {
     _width = ensureInt(width);
     _height = ensureInt(height);
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -69,7 +63,12 @@ class RenderTexture {
   int get width => _width;
   int get height => _height;
   CanvasImageSource get source => _source;
-  RenderTextureQuad get quad => _quad;
+
+  RenderTextureQuad get quad {
+    return new RenderTextureQuad(this,
+        new Rectangle<int>(0, 0, _width, _height),
+        new Rectangle<int>(0, 0, _width, _height), 0, 1.0);
+  }
 
   CanvasElement get canvas {
     if (_source is CanvasElement) {
@@ -161,7 +160,6 @@ class RenderTexture {
       _width = width;
       _height = height;
       _canvas = _source = new CanvasElement(width: _width, height: _height);
-      _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
     }
   }
 

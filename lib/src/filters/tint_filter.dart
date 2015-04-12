@@ -150,14 +150,10 @@ class TintFilterProgram extends RenderProgram {
   void renderTintFilterQuad(
     RenderState renderState, RenderTextureQuad renderTextureQuad, TintFilter tintFilter) {
 
+    Float32List pqList = renderTextureQuad.pqList;
+    Float32List uvList = renderTextureQuad.uvList;
     Matrix matrix = renderState.globalMatrix;
     num alpha = renderState.globalAlpha;
-
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
-    Float32List uvList = renderTextureQuad.uvList;
 
     num colorR = tintFilter.factorR.toDouble();
     num colorG = tintFilter.factorG.toDouble();
@@ -168,12 +164,12 @@ class TintFilterProgram extends RenderProgram {
     num mb = matrix.b;
     num mc = matrix.c;
     num md = matrix.d;
-    num ox = matrix.tx + offsetX * ma + offsetY * mc;
-    num oy = matrix.ty + offsetX * mb + offsetY * md;
-    num ax = ma * width;
-    num bx = mb * width;
-    num cy = mc * height;
-    num dy = md * height;
+    num ox = matrix.tx + pqList[0] * ma + pqList[1] * mc;
+    num oy = matrix.ty + pqList[0] * mb + pqList[1] * md;
+    num ax = pqList[8] * ma;
+    num bx = pqList[8] * mb;
+    num cy = pqList[9] * mc;
+    num dy = pqList[9] * md;
 
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!

@@ -4,7 +4,7 @@ import 'package:unittest/unittest.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {
-
+/*
   var rt = new RenderTexture(50, 100, 0xFFFF00FF);
 
   test('CreateRenderTextureQuad', () {
@@ -632,5 +632,5 @@ void main() {
 
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
-
+*/
 }

@@ -56,9 +56,8 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
         var frameMap = frame as Map;
         var fileName = frameMap["filename"] as String;
         var frameName = getFilenameWithoutExtension(fileName);
-        var taf = new TextureAtlasFrame._fromJson(textureAtlas, frameName, frameMap);
-        taf.renderTexture = renderTexture;
-        textureAtlas.frames.add(taf);
+        var taf = _createFrame(textureAtlas, pixelRatio, frameName, frameMap);
+        textureAtlas.frames.add(taf..renderTexture = renderTexture);
       }
     }
 
@@ -66,15 +65,31 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
       for(String fileName in frames.keys) {
         var frameMap = frames[fileName] as Map;
         var frameName = getFilenameWithoutExtension(fileName);
-        var taf = new TextureAtlasFrame._fromJson(textureAtlas, frameName, frameMap);
-        taf.renderTexture = renderTexture;
-        textureAtlas.frames.add(taf);
+        var taf = _createFrame(textureAtlas, pixelRatio, frameName, frameMap);
+        textureAtlas.frames.add(taf..renderTexture = renderTexture);
       }
     }
 
-    // TODO: PixelRatio
-
     return textureAtlas;
+  }
+
+  TextureAtlasFrame _createFrame(TextureAtlas texturAtlas, num pixelRatio,
+                                 String frameName, Map frameMap) {
+
+    int rotation = ensureBool(frameMap["rotated"]) ? 1 : 0;
+    int offsetX = ensureInt(frameMap["spriteSourceSize"]["x"]);
+    int offsetY = ensureInt(frameMap["spriteSourceSize"]["y"]);
+    int originalWidth = ensureInt(frameMap["sourceSize"]["w"]);
+    int originalHeight = ensureInt(frameMap["sourceSize"]["h"]);
+    int frameX = ensureInt(frameMap["frame"]["x"]);
+    int frameY = ensureInt(frameMap["frame"]["y"]);
+    int frameWidth = ensureInt(frameMap["frame"][rotation == 0 ? "w" : "h"]);
+    int frameHeight = ensureInt(frameMap["frame"][rotation == 0 ? "h" : "w"]);
+
+    return new TextureAtlasFrame(
+        texturAtlas, frameName, rotation, pixelRatio,
+        offsetX, offsetY, originalWidth, originalHeight,
+        frameX, frameY, frameWidth, frameHeight);
   }
 }
 
@@ -155,8 +170,8 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
         var frameRotation = 0;
         var frameX = 0, frameY = 0;
         var frameWidth = 0, frameHeight = 0;
-        var frameOriginalWidth = 0, frameOriginalHeight = 0;
-        var frameOffsetX = 0, frameOffsetY = 0;
+        var originalWidth = 0, originalHeight = 0;
+        var offsetX = 0, offsetY = 0;
 
         while(++lineIndex < lines.length) {
 
@@ -175,16 +190,17 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
             frameWidth = int.parse(values[0]);
             frameHeight = int.parse(values[1]);
           } else if (key == "orig" && values.length == 2) {
-            frameOriginalWidth = int.parse(values[0]);
-            frameOriginalHeight = int.parse(values[1]);
+            originalWidth = int.parse(values[0]);
+            originalHeight = int.parse(values[1]);
           } else if (key == "offset" && values.length == 2) {
-            frameOffsetX = int.parse(values[0]);
-            frameOffsetY = int.parse(values[1]);
+            offsetX = int.parse(values[0]);
+            offsetY = int.parse(values[1]);
           }
         }
 
-        var taf = new TextureAtlasFrame(textureAtlas, frameName, frameRotation,
-            frameOriginalWidth, frameOriginalHeight, frameOffsetX, frameOffsetY,
+        var taf = new TextureAtlasFrame(
+            textureAtlas, frameName, frameRotation, pixelRatio,
+            offsetX, offsetY, originalWidth, originalHeight,
             frameX, frameY, frameWidth, frameHeight);
 
         textureAtlasFrames[imageName].add(taf);
@@ -201,8 +217,6 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
         textureAtlasFrame.renderTexture = renderTexture;
       }
     }
-
-    // TODO: PixelRatio
 
     return textureAtlas;
   }

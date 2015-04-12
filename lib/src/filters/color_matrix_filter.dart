@@ -327,14 +327,10 @@ class ColorMatrixFilterProgram extends RenderProgram {
                                    RenderTextureQuad renderTextureQuad,
                                    ColorMatrixFilter colorMatrixFilter) {
 
+    Float32List pqList = renderTextureQuad.pqList;
+    Float32List uvList = renderTextureQuad.uvList;
     Matrix matrix = renderState.globalMatrix;
     num alpha = renderState.globalAlpha;
-
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
-    Float32List uvList = renderTextureQuad.uvList;
 
     Float32List colorMatrixList = colorMatrixFilter._colorMatrixList;
     Float32List colorOffsetList = colorMatrixFilter._colorOffsetList;
@@ -354,8 +350,8 @@ class ColorMatrixFilterProgram extends RenderProgram {
 
     for(int vertex = 0, index = _quadCount * 96; vertex < 4; vertex++, index += 24) {
 
-      num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
-      num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+      num x = pqList[vertex + vertex + 0];
+      num y = pqList[vertex + vertex + 1];
 
       if (index > vxData.length - 24) return; // dart2js_hint
 

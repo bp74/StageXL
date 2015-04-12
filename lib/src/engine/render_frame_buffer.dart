@@ -50,9 +50,7 @@ class RenderFrameBuffer {
   //-----------------------------------------------------------------------------------------------
 
   void resize(int width, int height) {
-
     if (_width != width || _height != height) {
-
       _width = width;
       _height = height;
       _renderTexture.resize(width, height);

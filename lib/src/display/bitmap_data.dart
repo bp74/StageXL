@@ -7,8 +7,8 @@ part of stagexl.display;
 
 class BitmapData implements BitmapDrawable {
 
-  int _width = 0;
-  int _height = 0;
+  num _width = 0;
+  num _height = 0;
 
   RenderTexture _renderTexture;
   RenderTextureQuad _renderTextureQuad;
@@ -18,40 +18,40 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   BitmapData(int width, int height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
-    _width = ensureInt(width);
-    _height = ensureInt(height);
-    _renderTexture = new RenderTexture(_width, _height, fillColor);
+    int textureWidth = (width * pixelRatio).round();
+    int textureHeight = (height * pixelRatio).round();
+    _renderTexture = new RenderTexture(textureWidth, textureHeight, fillColor);
     _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
+    _width = _renderTextureQuad.pixelWidth;
+    _height = _renderTextureQuad.pixelHeight;
   }
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
     _renderTexture = new RenderTexture.fromImageElement(imageElement);
     _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
-    _width = ensureInt(_renderTexture.width);
-    _height = ensureInt(_renderTexture.height);
+    _width = _renderTextureQuad.pixelWidth;
+    _height = _renderTextureQuad.pixelHeight;
   }
 
   BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
     _renderTexture = new RenderTexture.fromVideoElement(videoElement);
     _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
-    _width = ensureInt(_renderTexture.width);
-    _height = ensureInt(_renderTexture.height);
+    _width = _renderTextureQuad.pixelWidth;
+    _height = _renderTextureQuad.pixelHeight;
   }
 
   BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
-    _width = ensureInt(rectangle.width);
-    _height = ensureInt(rectangle.height);
     _renderTexture = bitmapData.renderTexture;
     _renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
+    _width = _renderTextureQuad.pixelWidth;
+    _height = _renderTextureQuad.pixelHeight;
   }
 
-  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad, [int width, int height]) {
-    if (width == null) width = renderTextureQuad.textureWidth + renderTextureQuad.offsetX;
-    if (height == null) height = renderTextureQuad.textureHeight + renderTextureQuad.offsetY;
-    _width = ensureInt(width);
-    _height = ensureInt(height);
+  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad) {
     _renderTexture = renderTextureQuad.renderTexture;
     _renderTextureQuad = renderTextureQuad;
+    _width = _renderTextureQuad.pixelWidth;
+    _height = _renderTextureQuad.pixelHeight;
   }
 
   //----------------------------------------------------------------------------
@@ -100,11 +100,7 @@ class BitmapData implements BitmapDrawable {
   /// Return a dataUrl for this BitmapData.
 
   String toDataUrl([String type = 'image/png', num quality]) {
-    if (identical(_renderTextureQuad, _renderTexture.quad)) {
-      return _renderTexture.canvas.toDataUrl(type, quality);
-    } else {
-      return clone().toDataUrl(type, quality);
-    }
+    return this.clone().renderTexture.canvas.toDataUrl(type, quality);
   }
 
   //----------------------------------------------------------------------------
@@ -146,10 +142,10 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  int get width => _width;
-  int get height => _height;
+  num get width => _width;
+  num get height => _height;
 
-  Rectangle<int> get rectangle => new Rectangle<int>(0, 0, _width, _height);
+  Rectangle<num> get rectangle => new Rectangle<num>(0, 0, _width, _height);
   RenderTexture get renderTexture => _renderTextureQuad.renderTexture;
   RenderTextureQuad get renderTextureQuad => _renderTextureQuad;
 

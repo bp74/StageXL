@@ -17,9 +17,6 @@ part of stagexl.display_ex;
 
 class VideoObject extends InteractiveObject {
 
-  final Video video;
-  final RenderTexture renderTexture;
-
   static const EventStreamProvider<Event> endedEvent = const EventStreamProvider<Event>("videoEnded");
   static const EventStreamProvider<Event> pauseEvent = const EventStreamProvider<Event>("videoPause");
   static const EventStreamProvider<Event> errorEvent = const EventStreamProvider<Event>("videoError");
@@ -30,9 +27,15 @@ class VideoObject extends InteractiveObject {
   EventStream<Event> get onError => VideoObject.errorEvent.forTarget(this);
   EventStream<Event> get onPlay  => VideoObject.playEvent.forTarget(this);
 
-  VideoObject(Video video, [bool autoplay = false]) :
-    this.video = video,
-    this.renderTexture = new RenderTexture.fromVideoElement(video.videoElement) {
+  Video _video;
+  RenderTexture _renderTexture;
+  RenderTextureQuad _renderTextureQuad;
+
+  VideoObject(Video video, [bool autoplay = false]) {
+
+    _video = video;
+    _renderTexture = new RenderTexture.fromVideoElement(video.videoElement);
+    _renderTextureQuad = _renderTexture.quad;
 
     var videoElement = video.videoElement;
     videoElement.onEnded.listen((e) => this.dispatchEvent(new Event("videoEnded")));
@@ -45,21 +48,27 @@ class VideoObject extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
+  Video get video => _video;
+  RenderTexture get renderTexture => _renderTexture;
+  RenderTextureQuad get renderTextureQuad => _renderTextureQuad;
+
+  //----------------------------------------------------------------------------
+
   @override
   Rectangle<num> get bounds {
-    var width = this.renderTexture.width;
-    var height = this.renderTexture.height;
+    var width = _renderTextureQuad.pixelWidth;
+    var height = _renderTextureQuad.pixelHeight;
     return new Rectangle<num>(0.0, 0.0, width, height);
   }
 
   @override
   void render(RenderState renderState) {
-    renderState.renderQuad(renderTexture.quad);
+    renderState.renderQuad(_renderTextureQuad);
   }
 
   @override
   void renderFiltered(RenderState renderState) {
-    renderState.renderQuadFiltered(renderTexture.quad, this.filters);
+    renderState.renderQuadFiltered(_renderTextureQuad, this.filters);
   }
 
   //----------------------------------------------------------------------------

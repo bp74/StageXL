@@ -26,11 +26,8 @@ class AlphaMaskFilter extends BitmapFilter {
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
     Matrix matrix = renderTextureQuad.drawMatrix;
+    Float32List pqList = renderTextureQuad.pqList;
     CanvasElement canvas = renderTextureQuad.renderTexture.canvas;
     RenderContextCanvas renderContext = new RenderContextCanvas(canvas);
     RenderState renderState = new RenderState(renderContext, matrix);
@@ -39,7 +36,7 @@ class AlphaMaskFilter extends BitmapFilter {
     context.save();
     context.globalCompositeOperation = "destination-in";
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-    context.rect(offsetX, offsetY, width, height);
+    context.rect(pqList[0], pqList[1], pqList[8], pqList[9]);
     context.clip();
     renderState.globalMatrix.prepend(this.matrix);
     renderState.renderQuad(this.bitmapData.renderTextureQuad);
@@ -165,10 +162,7 @@ class AlphaMaskFilterProgram extends RenderProgram {
     Matrix texMatrix = renderTextureQuad.samplerMatrix;
     Matrix posMatrix = renderState.globalMatrix;
 
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
+    Float32List pqList = renderTextureQuad.pqList;
     num alpha = renderState.globalAlpha;
 
     // Calculate mask bounds and transformation matrix
@@ -198,8 +192,8 @@ class AlphaMaskFilterProgram extends RenderProgram {
 
     for(int vertex = 0, index = _quadCount * 44; vertex < 4; vertex++, index += 11) {
 
-      num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
-      num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+      num x = pqList[vertex + vertex + 0];
+      num y = pqList[vertex + vertex + 1];
 
       if (index > vxData.length - 11) return; // dart2js_hint
 

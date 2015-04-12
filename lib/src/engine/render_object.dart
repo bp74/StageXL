@@ -37,9 +37,11 @@ class _RenderTextureQuadObject implements RenderObject {
 
   _RenderTextureQuadObject(this.renderTextureQuad, this.filters);
 
-  Rectangle<num> get bounds => new Rectangle<num>(
-      renderTextureQuad.offsetX, renderTextureQuad.offsetY,
-      renderTextureQuad.textureWidth, renderTextureQuad.textureHeight);
+  Rectangle<num> get bounds {
+    num w = renderTextureQuad.pixelWidth;
+    num h = renderTextureQuad.pixelHeight;
+    return new Rectangle<num>(0.0, 0.0, w, h);
+  }
 
   void render(RenderState renderState) {
     renderState.renderQuad(this.renderTextureQuad);

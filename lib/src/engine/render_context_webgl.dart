@@ -235,8 +235,10 @@ class RenderContextWebGL extends RenderContext {
         if (renderFrameBufferMap.containsKey(renderPassSource)) {
           sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
           sourceRenderTextureQuad = new RenderTextureQuad(
-              sourceRenderFrameBuffer.renderTexture, 0,
-              boundsLeft, boundsTop, 0, 0, boundsWidth, boundsHeight);
+              sourceRenderFrameBuffer.renderTexture,
+              new Rectangle<int>(0, 0, boundsWidth, boundsHeight),
+              new Rectangle<int>(-boundsLeft, -boundsTop, boundsWidth, boundsHeight),
+              0, 1.0);
         } else {
           throw new StateError("Invalid renderPassSource!");
         }

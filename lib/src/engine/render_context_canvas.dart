@@ -47,13 +47,14 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderQuad(
-    RenderState renderState, RenderTextureQuad renderTextureQuad) {
+  void renderQuad(RenderState renderState,
+                  RenderTextureQuad renderTextureQuad) {
 
     var context = _renderingContext;
     var source = renderTextureQuad.renderTexture.source;
     var rotation = renderTextureQuad.rotation;
     var xyList = renderTextureQuad.xyList;
+    var pqList = renderTextureQuad.pqList;
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
     var blendMode = renderState.globalBlendMode;
@@ -70,67 +71,31 @@ class RenderContextCanvas extends RenderContext {
 
     if (rotation == 0) {
 
-      var sourceX = xyList[0];
-      var sourceY = xyList[1];
-      var sourceWidth = xyList[4] - sourceX;
-      var sourceHeight = xyList[5] - sourceY;
-      var destinationX = renderTextureQuad.offsetX;
-      var destinationY = renderTextureQuad.offsetY;
-      var destinationWidth= renderTextureQuad.textureWidth;
-      var destinationHeight = renderTextureQuad.textureHeight;
-
       context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          sourceX, sourceY, sourceWidth, sourceHeight,
-          destinationX, destinationY, destinationWidth, destinationHeight);
+          xyList[0], xyList[1], xyList[8], xyList[9],
+          pqList[0], pqList[1], pqList[8], pqList[9]);
 
     } else if (rotation == 1) {
 
-      var sourceX = xyList[6];
-      var sourceY = xyList[7];
-      var sourceWidth = xyList[2] - sourceX;
-      var sourceHeight = xyList[3] - sourceY;
-      var destinationX = 0.0 - renderTextureQuad.offsetY - renderTextureQuad.textureHeight;
-      var destinationY = renderTextureQuad.offsetX;
-      var destinationWidth = renderTextureQuad.textureHeight;
-      var destinationHeight = renderTextureQuad.textureWidth;
-
       context.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          sourceX, sourceY, sourceWidth, sourceHeight,
-          destinationX, destinationY, destinationWidth, destinationHeight);
+          xyList[6], xyList[7], xyList[8], xyList[9],
+          0.0 - pqList[5], pqList[0], pqList[9], pqList[8]);
 
     } else if (rotation == 2) {
 
-      var sourceX = xyList[4];
-      var sourceY = xyList[5];
-      var sourceWidth = xyList[0] - sourceX;
-      var sourceHeight = xyList[1] - sourceY;
-      var destinationX = 0.0 - renderTextureQuad.offsetX - renderTextureQuad.textureWidth;
-      var destinationY = 0.0 - renderTextureQuad.offsetY- renderTextureQuad.textureHeight;
-      var destinationWidth= renderTextureQuad.textureWidth;
-      var destinationHeight = renderTextureQuad.textureHeight;
-
       context.setTransform(-matrix.a, -matrix.b, -matrix.c, -matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          sourceX, sourceY, sourceWidth, sourceHeight,
-          destinationX, destinationY, destinationWidth, destinationHeight);
+          xyList[4], xyList[5], xyList[8], xyList[9],
+          0.0 - pqList[4], 0.0 - pqList[5],  pqList[8], pqList[9]);
 
     } else if (rotation == 3) {
 
-      var sourceX = xyList[2];
-      var sourceY = xyList[3];
-      var sourceWidth = xyList[6] - sourceX;
-      var sourceHeight = xyList[7] - sourceY;
-      var destinationX = renderTextureQuad.offsetY;
-      var destinationY = 0.0 - renderTextureQuad.offsetX - renderTextureQuad.textureWidth;
-      var destinationWidth = renderTextureQuad.textureHeight;
-      var destinationHeight = renderTextureQuad.textureWidth;
-
       context.setTransform(matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          sourceX, sourceY, sourceWidth, sourceHeight,
-          destinationX, destinationY, destinationWidth, destinationHeight);
+          xyList[2], xyList[3], xyList[8], xyList[9],
+          pqList[1], 0.0 - pqList[4], pqList[9], pqList[8]);
     }
   }
 
