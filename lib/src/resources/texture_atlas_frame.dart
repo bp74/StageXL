@@ -27,10 +27,10 @@ class TextureAtlasFrame {
 
   BitmapData getBitmapData() {
 
-    var textureRect = new Rectangle<int>(frameX, frameY, frameWidth, frameHeight);
-    var sourceRect = new Rectangle<int>(-offsetX, -offsetY, originalWidth, originalHeight);
+    var sourceRect = new Rectangle<int>(frameX, frameY, frameWidth, frameHeight);
+    var offsetRect = new Rectangle<int>(-offsetX, -offsetY, originalWidth, originalHeight);
     var renderTextureQuad = new RenderTextureQuad(
-        renderTexture, textureRect, sourceRect, rotation, pixelRatio);
+        renderTexture, sourceRect, offsetRect, rotation, pixelRatio);
 
     return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }

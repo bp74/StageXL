@@ -881,8 +881,8 @@ abstract class DisplayObject
   void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
 
     RenderTexture renderTexture = null;
-    Rectangle<int> textureRectangle = new Rectangle<int>(0, 0, width, height);
-    Rectangle<int> sourceRectangle = new Rectangle<int>(-x, -y, width, height);
+    Rectangle<int> sourceRectangle = new Rectangle<int>(0, 0, width, height);
+    Rectangle<int> offsetRectangle = new Rectangle<int>(-x, -y, width, height);
     num pixelRatio = 1.0;
 
     // TODO: PixelRatio
@@ -896,7 +896,7 @@ abstract class DisplayObject
 
     _cacheDebugBorder = debugBorder;
     _cacheTextureQuad = new RenderTextureQuad(
-        renderTexture, textureRectangle, sourceRectangle, 0, pixelRatio);
+        renderTexture, sourceRectangle, offsetRectangle, 0, pixelRatio);
 
     refreshCache();
   }
