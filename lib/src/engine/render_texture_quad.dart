@@ -64,10 +64,10 @@ class RenderTextureQuad {
 
   //---------------------------------------------------------------------------
 
-  num get pixelWidth => offsetRectangle.width / pixelRatio;
-  num get pixelHeight => offsetRectangle.height / pixelRatio;
+  num get targetWidth => offsetRectangle.width / pixelRatio;
+  num get targetHeight => offsetRectangle.height / pixelRatio;
 
-  Rectangle<num> get pixelRectangle {
+  Rectangle<num> get targetRectangle {
     num l = offsetRectangle.left / pixelRatio;
     num t = offsetRectangle.top / pixelRatio;
     num w = offsetRectangle.width / pixelRatio;

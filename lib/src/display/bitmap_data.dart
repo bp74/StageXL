@@ -22,36 +22,36 @@ class BitmapData implements BitmapDrawable {
     int textureHeight = (height * pixelRatio).round();
     _renderTexture = new RenderTexture(textureWidth, textureHeight, fillColor);
     _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
-    _width = _renderTextureQuad.pixelWidth;
-    _height = _renderTextureQuad.pixelHeight;
+    _width = _renderTextureQuad.targetWidth;
+    _height = _renderTextureQuad.targetHeight;
   }
 
   BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
     _renderTexture = new RenderTexture.fromImageElement(imageElement);
     _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
-    _width = _renderTextureQuad.pixelWidth;
-    _height = _renderTextureQuad.pixelHeight;
+    _width = _renderTextureQuad.targetWidth;
+    _height = _renderTextureQuad.targetHeight;
   }
 
   BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
     _renderTexture = new RenderTexture.fromVideoElement(videoElement);
     _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
-    _width = _renderTextureQuad.pixelWidth;
-    _height = _renderTextureQuad.pixelHeight;
+    _width = _renderTextureQuad.targetWidth;
+    _height = _renderTextureQuad.targetHeight;
   }
 
   BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
     _renderTexture = bitmapData.renderTexture;
     _renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
-    _width = _renderTextureQuad.pixelWidth;
-    _height = _renderTextureQuad.pixelHeight;
+    _width = _renderTextureQuad.targetWidth;
+    _height = _renderTextureQuad.targetHeight;
   }
 
   BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad) {
     _renderTexture = renderTextureQuad.renderTexture;
     _renderTextureQuad = renderTextureQuad;
-    _width = _renderTextureQuad.pixelWidth;
-    _height = _renderTextureQuad.pixelHeight;
+    _width = _renderTextureQuad.targetWidth;
+    _height = _renderTextureQuad.targetHeight;
   }
 
   //----------------------------------------------------------------------------

@@ -56,8 +56,8 @@ class VideoObject extends InteractiveObject {
 
   @override
   Rectangle<num> get bounds {
-    var width = _renderTextureQuad.pixelWidth;
-    var height = _renderTextureQuad.pixelHeight;
+    var width = _renderTextureQuad.targetWidth;
+    var height = _renderTextureQuad.targetHeight;
     return new Rectangle<num>(0.0, 0.0, width, height);
   }
 
