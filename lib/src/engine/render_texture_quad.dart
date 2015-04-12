@@ -173,32 +173,34 @@ class RenderTextureQuad {
     int ofsL = oL;
     int ofsT = oT;
 
+    print("here");
+
     if (rotation == 0) {
-      srcL = minInt(sR, maxInt(sL, sL + oL + rL));
-      srcT = minInt(sB, maxInt(sT, sT + oT + rT));
-      srcR = maxInt(sL, minInt(sR, sL + oL + rR));
-      srcB = maxInt(sT, minInt(sB, sT + oT + rB));
+      srcL = clampInt(sL + oL + rL, sL, sR);
+      srcT = clampInt(sT + oT + rT, sT, sB);
+      srcR = clampInt(sL + oL + rR, sL, sR);
+      srcB = clampInt(sT + oT + rB, sT, sB);
       ofsL = oL - srcL + sL;
       ofsT = oT - srcT + sT;
     } else if (rotation == 1) {
-      srcL = minInt(sR, maxInt(sL, sR - oT - rB));
-      srcT = minInt(sB, maxInt(sT, sT + oL + rL));
-      srcR = maxInt(sL, minInt(sR, sR - oT - rT));
-      srcB = maxInt(sT, minInt(sB, sT + oL + rR));
+      srcL = clampInt(sR - oT - rB, sL, sR);
+      srcT = clampInt(sT + oL + rL, sT, sB);
+      srcR = clampInt(sR - oT - rT, sL, sR);
+      srcB = clampInt(sT + oL + rR, sT, sB);
       ofsL = oL - srcT + sT;
       ofsT = oT + srcR - sR;
     } else if (rotation == 2) {
-      srcL = minInt(sR, maxInt(sL, sR - oL - rR));
-      srcT = minInt(sB, maxInt(sT, sB - oT - rB));
-      srcR = maxInt(sL, minInt(sR, sR - oL - rL));
-      srcB = maxInt(sT, minInt(sB, sB - oT - rT));
+      srcL = clampInt(sR - oL - rR, sL, sR);
+      srcT = clampInt(sB - oT - rB, sT, sB);
+      srcR = clampInt(sR - oL - rL, sL, sR);
+      srcB = clampInt(sB - oT - rT, sT, sB);
       ofsL = oL + srcR - sR;
       ofsT = oT + srcB - sB;
     } else if (rotation == 3) {
-      srcL = minInt(sR, maxInt(sL, sL + oT + rT));
-      srcT = minInt(sB, maxInt(sT, sB - oL - rR));
-      srcR = maxInt(sL, minInt(sR, sL + oT + rB));
-      srcB = maxInt(sT, minInt(sB, sB - oL - rL));
+      srcL = clampInt(sL + oT + rT, sL, sR);
+      srcT = clampInt(sB - oL - rR, sT, sB);
+      srcR = clampInt(sL + oT + rB, sL, sR);
+      srcB = clampInt(sB - oL - rL, sT, sB);
       ofsL = oL + srcB - sB;
       ofsT = oT - srcL + sL;
     }
@@ -232,31 +234,31 @@ class RenderTextureQuad {
     int ofsT = oT;
 
     if (rotation == 0) {
-      srcL = minInt(sR, maxInt(sL, sL + oL + rL));
-      srcT = minInt(sB, maxInt(sT, sT + oT + rT));
-      srcR = maxInt(sL, minInt(sR, sL + oL + rR));
-      srcB = maxInt(sT, minInt(sB, sT + oT + rB));
+      srcL = clampInt(sL + oL + rL, sL, sR);
+      srcT = clampInt(sT + oT + rT, sT, sB);
+      srcR = clampInt(sL + oL + rR, sL, sR);
+      srcB = clampInt(sT + oT + rB, sT, sB);
       ofsL = oL - srcL + sL + rL;
       ofsT = oT - srcT + sT + rT;
     } else if (rotation == 1) {
-      srcL = minInt(sR, maxInt(sL, sR - oT - rB));
-      srcT = minInt(sB, maxInt(sT, sT - oL + rL));
-      srcR = maxInt(sL, minInt(sR, sR - oT - rT));
-      srcB = maxInt(sT, minInt(sB, sT - oL + rR));
+      srcL = clampInt(sR - oT - rB, sL, sR);
+      srcT = clampInt(sT - oL + rL, sT, sB);
+      srcR = clampInt(sR - oT - rT, sL, sR);
+      srcB = clampInt(sT - oL + rR, sT, sB);
       ofsL = oL - srcT + sT + rL;
       ofsT = oT + srcR - sR + rT;
     } else if (rotation == 2) {
-      srcL = minInt(sR, maxInt(sL, sR - oL - rR));
-      srcT = minInt(sB, maxInt(sT, sB - oT - rB));
-      srcR = maxInt(sL, minInt(sR, sR - oL - rL));
-      srcB = maxInt(sT, minInt(sB, sB - oT - rT));
+      srcL = clampInt(sR - oL - rR, sL, sR);
+      srcT = clampInt(sB - oT - rB, sT, sB);
+      srcR = clampInt(sR - oL - rL, sL, sR);
+      srcB = clampInt(sB - oT - rT, sT, sB);
       ofsL = oL + srcR - sR + rL;
       ofsT = oT + srcB - sB + rT;
     } else if (rotation == 3) {
-      srcL = minInt(sR, maxInt(sL, sL + oT + rT));
-      srcT = minInt(sB, maxInt(sT, sB - oL - rR));
-      srcR = maxInt(sL, minInt(sR, sL + oT + rB));
-      srcB = maxInt(sT, minInt(sB, sB - oL - rL));
+      srcL = clampInt(sL + oT + rT, sL, sR);
+      srcT = clampInt(sB - oL - rR, sT, sB);
+      srcR = clampInt(sL + oT + rB, sL, sR);
+      srcB = clampInt(sB - oL - rL, sT, sB);
       ofsL = oL + srcB - sB + rL;
       ofsT = oT - srcL + sL + rT;
     }
