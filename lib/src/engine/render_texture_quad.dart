@@ -173,8 +173,6 @@ class RenderTextureQuad {
     int ofsL = oL;
     int ofsT = oT;
 
-    print("here");
-
     if (rotation == 0) {
       srcL = clampInt(sL + oL + rL, sL, sR);
       srcT = clampInt(sT + oT + rT, sT, sB);
