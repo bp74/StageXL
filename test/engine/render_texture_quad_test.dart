@@ -490,6 +490,8 @@ void main() {
     var rect2 = new Rectangle(2, 9, 53, 37);
     var quad2 = quad1.cut(rect2);
     expect(quad1.xyList, equals([5, 7, 48, 7, 48, 74, 5, 74, 43, 67]));
+    expect(quad1.pqList, equals([0, 0, 43, 0, 43, 67, 0, 67, 43, 67]));
+    expect(quad2.xyList, equals([7, 16, 48, 16, 48, 53, 7, 53, 41, 37]));
     expect(quad2.pqList, equals([0, 0, 41, 0, 41, 37, 0, 37, 41, 37]));
   });
 
@@ -505,6 +507,37 @@ void main() {
     expect(quad1.pqList, equals([0, 0, 85, 0, 85, 30, 0, 30, 85, 30]));
     expect(quad2.xyList, equals([34, 7, 34, 60, 13, 60, 13, 7, 21, 53]));
     expect(quad2.pqList, equals([0, 0, 53, 0, 53, 21, 0, 21, 53, 21]));
+  });
+
+  //---------------------------------------------------------------------------
+
+
+  test('ComplicatedClipCutClip', () {
+    var src = new Rectangle<int>(0, 0, 50, 100);
+    var ofs = new Rectangle<int>(0, 0, 50, 100);
+    var rtq = new RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    var rect1 = new Rectangle(5, 7, 43, 67);
+    var quad1 = rtq.clip(rect1);
+    var rect2 = new Rectangle(2, 9, 53, 37);
+    var quad2 = quad1.cut(rect2);
+    expect(quad1.xyList, equals([5, 7, 48, 7, 48, 74, 5, 74, 43, 67]));
+    expect(quad1.pqList, equals([5, 7, 48, 7, 48, 74, 5, 74, 43, 67]));
+    expect(quad2.xyList, equals([5, 9, 48, 9, 48, 46, 5, 46, 43, 37]));
+    expect(quad2.pqList, equals([3, 0, 46, 0, 46, 37, 3, 37, 43, 37]));
+  });
+
+  test('ComplicatedClipCutClipRotated', () {
+    var src = new Rectangle<int>(0, 0, 50, 100);
+    var ofs = new Rectangle<int>(0, 0, 100, 50);
+    var rtq = new RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    var rect1 = new Rectangle(5, 7, 85, 30);
+    var quad1 = rtq.clip(rect1);
+    var rect2 = new Rectangle(2, 9, 53, 37);
+    var quad2 = quad1.cut(rect2);
+    expect(quad1.xyList, equals([43, 5, 43, 90, 13, 90, 13, 5, 30, 85]));
+    expect(quad1.pqList, equals([5, 7, 90, 7, 90, 37, 5, 37, 85, 30]));
+    expect(quad2.xyList, equals([41, 5, 41, 55, 13, 55, 13, 5, 28, 50]));
+    expect(quad2.pqList, equals([3, 0, 53, 0, 53, 28, 3, 28, 50, 28]));
   });
 
 }

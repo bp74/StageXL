@@ -256,9 +256,9 @@ class RenderTextureQuad {
       ofsT = oT - srcT + sT + rT;
     } else if (rotation == 1) {
       srcL = clampInt(sR - oT - rB, sL, sR);
-      srcT = clampInt(sT - oL + rL, sT, sB);
+      srcT = clampInt(sT + oL + rL, sT, sB);
       srcR = clampInt(sR - oT - rT, sL, sR);
-      srcB = clampInt(sT - oL + rR, sT, sB);
+      srcB = clampInt(sT + oL + rR, sT, sB);
       ofsL = oL - srcT + sT + rL;
       ofsT = oT + srcR - sR + rT;
     } else if (rotation == 2) {
