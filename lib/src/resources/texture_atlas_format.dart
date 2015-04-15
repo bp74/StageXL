@@ -187,8 +187,8 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
             frameX = int.parse(values[0]);
             frameY = int.parse(values[1]);
           } else if (key == "size" && values.length == 2) {
-            frameWidth = int.parse(values[0]);
-            frameHeight = int.parse(values[1]);
+            frameWidth = int.parse(values[frameRotation == 0 ? 0 : 1]);
+            frameHeight = int.parse(values[frameRotation == 0 ? 1 : 0]);
           } else if (key == "orig" && values.length == 2) {
             originalWidth = int.parse(values[0]);
             originalHeight = int.parse(values[1]);
