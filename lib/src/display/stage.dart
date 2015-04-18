@@ -11,10 +11,6 @@ part of stagexl.display;
 
 class Stage extends DisplayObjectContainer {
 
-  static bool autoHiDpi = env.autoHiDPI;
-  static bool get isMobile => env.isMobileDevice;
-  static num get devicePixelRatio => env.devicePixelRatio;
-
   CanvasElement _canvas;
   RenderContext _renderContext;
   Juggler _juggler = new Juggler();
@@ -395,7 +391,9 @@ class Stage extends DisplayObjectContainer {
     contentRectangle.width = clientWidth / scaleX;
     contentRectangle.height = clientHeight / scaleY;
 
-    var pixelRatio = Stage.autoHiDpi ? devicePixelRatio : 1.0;
+    var pixelRatio = env.devicePixelRatio;
+
+    // TODO: PixelRatio
 
     // stage to canvas coordinate transformation
     _stageTransformation.setTo(scaleX, 0.0, 0.0, scaleY, pivotX, pivotY);
