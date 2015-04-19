@@ -64,6 +64,70 @@ class RenderTextureQuad {
 
   //---------------------------------------------------------------------------
 
+  factory RenderTextureQuad.slice(RenderTextureQuad renderTextureQuad,
+      Rectangle<int> sourceRrectangle, Rectangle<int> offsetRectangle) {
+
+    RenderTexture renderTexture = renderTextureQuad.renderTexture;
+    num pixelRatio = renderTextureQuad.pixelRatio;
+    int rotation = renderTextureQuad.rotation;
+
+    int oldSrcL = renderTextureQuad.sourceRectangle.left;
+    int oldSrcT = renderTextureQuad.sourceRectangle.top;
+    int oldSrcR = renderTextureQuad.sourceRectangle.right;
+    int oldSrcB = renderTextureQuad.sourceRectangle.bottom;
+    int oldOfsL = renderTextureQuad.offsetRectangle.left;
+    int oldOfsT = renderTextureQuad.offsetRectangle.top;
+
+    int newSrcL = sourceRrectangle.left;
+    int newSrcT = sourceRrectangle.top;
+    int newSrcR = sourceRrectangle.right;
+    int newSrcB = sourceRrectangle.bottom;
+    int newOfsL = offsetRectangle.left;
+    int newOfsT = offsetRectangle.top;
+    int newOfsW = offsetRectangle.width;
+    int newOfsH = offsetRectangle.height;
+
+    int srcL = 0, srcT = 0, srcR = 0, srcB = 0;
+    int ofsL = 0, ofsT = 0;
+
+    if (rotation == 0) {
+      srcL = clampInt(oldSrcL + oldOfsL + newSrcL, oldSrcL, oldSrcR);
+      srcT = clampInt(oldSrcT + oldOfsT + newSrcT, oldSrcT, oldSrcB);
+      srcR = clampInt(oldSrcL + oldOfsL + newSrcR, oldSrcL, oldSrcR);
+      srcB = clampInt(oldSrcT + oldOfsT + newSrcB, oldSrcT, oldSrcB);
+      ofsL = newOfsL + newSrcL + oldOfsL + oldSrcL - srcL;
+      ofsT = newOfsT + newSrcT + oldOfsT + oldSrcT - srcT;
+    } else if (rotation == 1) {
+      srcL = clampInt(oldSrcR - oldOfsT - newSrcB, oldSrcL, oldSrcR);
+      srcT = clampInt(oldSrcT + oldOfsL + newSrcL, oldSrcT, oldSrcB);
+      srcR = clampInt(oldSrcR - oldOfsT - newSrcT, oldSrcL, oldSrcR);
+      srcB = clampInt(oldSrcT + oldOfsL + newSrcR, oldSrcT, oldSrcB);
+      ofsL = newOfsL + newSrcL + oldOfsL + oldSrcT - srcT;
+      ofsT = newOfsT + newSrcT + oldOfsT - oldSrcR + srcR;
+    } else if (rotation == 2) {
+      srcL = clampInt(oldSrcR - oldOfsL - newSrcR, oldSrcL, oldSrcR);
+      srcT = clampInt(oldSrcB - oldOfsT - newSrcB, oldSrcT, oldSrcB);
+      srcR = clampInt(oldSrcR - oldOfsL - newSrcL, oldSrcL, oldSrcR);
+      srcB = clampInt(oldSrcB - oldOfsT - newSrcT, oldSrcT, oldSrcB);
+      ofsL = newOfsL + newSrcL + oldOfsL - oldSrcR + srcR;
+      ofsT = newOfsT + newSrcT + oldOfsT - oldSrcB + srcB;
+    } else if (rotation == 3) {
+      srcL = clampInt(oldSrcL + oldOfsT + newSrcT, oldSrcL, oldSrcR);
+      srcT = clampInt(oldSrcB - oldOfsL - newSrcR, oldSrcT, oldSrcB);
+      srcR = clampInt(oldSrcL + oldOfsT + newSrcB, oldSrcL, oldSrcR);
+      srcB = clampInt(oldSrcB - oldOfsL - newSrcL, oldSrcT, oldSrcB);
+      ofsL = newOfsL + newSrcL + oldOfsL - oldSrcB + srcB;
+      ofsT = newOfsT + newSrcT + oldOfsT + oldSrcL - srcL;
+    }
+
+    return new RenderTextureQuad(renderTexture,
+        new Rectangle<int>(srcL, srcT, srcR - srcL, srcB - srcT),
+        new Rectangle<int>(ofsL, ofsT, newOfsW, newOfsH),
+        rotation, pixelRatio);
+  }
+
+  //---------------------------------------------------------------------------
+
   num get targetWidth => offsetRectangle.width / pixelRatio;
   num get targetHeight => offsetRectangle.height / pixelRatio;
 
@@ -160,64 +224,16 @@ class RenderTextureQuad {
   /// learn more about this topic.
 
   RenderTextureQuad clip(Rectangle<int> rectangle) {
-
-    int sL = sourceRectangle.left;
-    int sT = sourceRectangle.top;
-    int sR = sourceRectangle.right;
-    int sB = sourceRectangle.bottom;
-    int oL = offsetRectangle.left;
-    int oT = offsetRectangle.top;
-    int oR = offsetRectangle.right;
-    int oB = offsetRectangle.bottom;
     int rL = (rectangle.left * pixelRatio).round();
     int rT = (rectangle.top * pixelRatio).round();
     int rR = (rectangle.right * pixelRatio).round();
     int rB = (rectangle.bottom * pixelRatio).round();
-
-    int srcL = sL;
-    int srcT = sT;
-    int srcR = sR;
-    int srcB = sB;
-    int ofsL = oL;
-    int ofsT = oT;
-
-    if (rotation == 0) {
-      srcL = clampInt(sL + oL + rL, sL, sR);
-      srcT = clampInt(sT + oT + rT, sT, sB);
-      srcR = clampInt(sL + oL + rR, sL, sR);
-      srcB = clampInt(sT + oT + rB, sT, sB);
-      ofsL = oL - srcL + sL;
-      ofsT = oT - srcT + sT;
-    } else if (rotation == 1) {
-      srcL = clampInt(sR - oT - rB, sL, sR);
-      srcT = clampInt(sT + oL + rL, sT, sB);
-      srcR = clampInt(sR - oT - rT, sL, sR);
-      srcB = clampInt(sT + oL + rR, sT, sB);
-      ofsL = oL - srcT + sT;
-      ofsT = oT + srcR - sR;
-    } else if (rotation == 2) {
-      srcL = clampInt(sR - oL - rR, sL, sR);
-      srcT = clampInt(sB - oT - rB, sT, sB);
-      srcR = clampInt(sR - oL - rL, sL, sR);
-      srcB = clampInt(sB - oT - rT, sT, sB);
-      ofsL = oL + srcR - sR;
-      ofsT = oT + srcB - sB;
-    } else if (rotation == 3) {
-      srcL = clampInt(sL + oT + rT, sL, sR);
-      srcT = clampInt(sB - oL - rR, sT, sB);
-      srcR = clampInt(sL + oT + rB, sL, sR);
-      srcB = clampInt(sB - oL - rL, sT, sB);
-      ofsL = oL + srcB - sB;
-      ofsT = oT - srcL + sL;
-    }
-
-    return new RenderTextureQuad(renderTexture,
-        new Rectangle<int>(srcL, srcT, srcR - srcL, srcB - srcT),
-        new Rectangle<int>(ofsL, ofsT, oR - oL, oB - oT),
-        rotation, pixelRatio);
+    int ow = this.offsetRectangle.width;
+    int oh = this.offsetRectangle.height;
+    var sourceRectangle = new Rectangle<int>(rL, rT, rR - rL, rB - rT);
+    var offsetRectangle = new Rectangle<int>(0 - rL, 0 - rT, ow, oh);
+    return new RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);
   }
-
-  //---------------------------------------------------------------------------
 
   /// Cuts a new RenderTextureQuad out of this RenderTextureQuad. The offset
   /// of the new RenderTextureQuad will be adjusted to match the origin of
@@ -228,59 +244,13 @@ class RenderTextureQuad {
   /// learn more about this topic.
 
   RenderTextureQuad cut(Rectangle<int> rectangle) {
-
-    int sL = sourceRectangle.left;
-    int sT = sourceRectangle.top;
-    int sR = sourceRectangle.right;
-    int sB = sourceRectangle.bottom;
-    int oL = offsetRectangle.left;
-    int oT = offsetRectangle.top;
     int rL = (rectangle.left * pixelRatio).round();
     int rT = (rectangle.top * pixelRatio).round();
     int rR = (rectangle.right * pixelRatio).round();
     int rB = (rectangle.bottom * pixelRatio).round();
-
-    int srcL = sL;
-    int srcT = sT;
-    int srcR = sR;
-    int srcB = sB;
-    int ofsL = oL;
-    int ofsT = oT;
-
-    if (rotation == 0) {
-      srcL = clampInt(sL + oL + rL, sL, sR);
-      srcT = clampInt(sT + oT + rT, sT, sB);
-      srcR = clampInt(sL + oL + rR, sL, sR);
-      srcB = clampInt(sT + oT + rB, sT, sB);
-      ofsL = oL - srcL + sL + rL;
-      ofsT = oT - srcT + sT + rT;
-    } else if (rotation == 1) {
-      srcL = clampInt(sR - oT - rB, sL, sR);
-      srcT = clampInt(sT + oL + rL, sT, sB);
-      srcR = clampInt(sR - oT - rT, sL, sR);
-      srcB = clampInt(sT + oL + rR, sT, sB);
-      ofsL = oL - srcT + sT + rL;
-      ofsT = oT + srcR - sR + rT;
-    } else if (rotation == 2) {
-      srcL = clampInt(sR - oL - rR, sL, sR);
-      srcT = clampInt(sB - oT - rB, sT, sB);
-      srcR = clampInt(sR - oL - rL, sL, sR);
-      srcB = clampInt(sB - oT - rT, sT, sB);
-      ofsL = oL + srcR - sR + rL;
-      ofsT = oT + srcB - sB + rT;
-    } else if (rotation == 3) {
-      srcL = clampInt(sL + oT + rT, sL, sR);
-      srcT = clampInt(sB - oL - rR, sT, sB);
-      srcR = clampInt(sL + oT + rB, sL, sR);
-      srcB = clampInt(sB - oL - rL, sT, sB);
-      ofsL = oL + srcB - sB + rL;
-      ofsT = oT - srcL + sL + rT;
-    }
-
-    return new RenderTextureQuad(renderTexture,
-        new Rectangle<int>(srcL, srcT, srcR - srcL, srcB - srcT),
-        new Rectangle<int>(ofsL, ofsT, rR - rL, rB - rT),
-        rotation, pixelRatio);
+    var sourceRectangle = new Rectangle<int>(rL, rT, rR - rL, rB - rT);
+    var offsetRectangle = new Rectangle<int>(0, 0, rR - rL, rB - rT);
+    return new RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);
   }
 
   //---------------------------------------------------------------------------
