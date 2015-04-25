@@ -133,7 +133,7 @@ class TintFilterProgram extends RenderProgram {
     _renderBufferVertex.activate(renderContext);
     _renderBufferVertex.bindAttribute(attributes["aVertexPosition"],  2, 32,  0);
     _renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 32,  8);
-    _renderBufferVertex.bindAttribute(attributes["aVertexColor"],     2, 32, 16);
+    _renderBufferVertex.bindAttribute(attributes["aVertexColor"],     4, 32, 16);
   }
 
   @override
