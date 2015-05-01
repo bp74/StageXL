@@ -65,7 +65,7 @@ class RenderTextureQuad {
   //---------------------------------------------------------------------------
 
   factory RenderTextureQuad.slice(RenderTextureQuad renderTextureQuad,
-      Rectangle<int> sourceRrectangle, Rectangle<int> offsetRectangle) {
+      Rectangle<int> sourceRectangle, Rectangle<int> offsetRectangle) {
 
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     num pixelRatio = renderTextureQuad.pixelRatio;
@@ -78,10 +78,10 @@ class RenderTextureQuad {
     int oldOfsL = renderTextureQuad.offsetRectangle.left;
     int oldOfsT = renderTextureQuad.offsetRectangle.top;
 
-    int newSrcL = sourceRrectangle.left;
-    int newSrcT = sourceRrectangle.top;
-    int newSrcR = sourceRrectangle.right;
-    int newSrcB = sourceRrectangle.bottom;
+    int newSrcL = sourceRectangle.left;
+    int newSrcT = sourceRectangle.top;
+    int newSrcR = sourceRectangle.right;
+    int newSrcB = sourceRectangle.bottom;
     int newOfsL = offsetRectangle.left;
     int newOfsT = offsetRectangle.top;
     int newOfsW = offsetRectangle.width;
