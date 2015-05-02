@@ -252,10 +252,6 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
       super.render(renderState);
       renderContext.activateProjectionMatrix(_oldProjectionMatrix3D);
 
-    } else {
-
-      // TODO: We could simulate the 3d-transformation with 2d scales
-      // and 2d transformations - not perfect but better than nothing.
     }
   }
 
