@@ -9,6 +9,7 @@
 library stagexl.animation;
 
 import 'dart:math';
+import 'dart:async';
 
 part 'animation/animatable.dart';
 part 'animation/animation_chain.dart';

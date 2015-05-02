@@ -35,6 +35,7 @@ class Juggler implements Animatable {
   _AnimatableLink _lastAnimatableLink;
 
   num _elapsedTime = 0.0;
+  final _elapsedTimeChangedEvent = new StreamController<num>.broadcast();
 
   Juggler() {
     _firstAnimatableLink = new _AnimatableLink();
@@ -44,9 +45,45 @@ class Juggler implements Animatable {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  /// The total elapsed time.
+  /// The elapsed time since the juggler has started.
 
   num get elapsedTime => _elapsedTime;
+
+  /// A stream of [elapsedTime] changes.
+  ///
+  /// The stream sends the changes of [elapsedTime] and is executed before all
+  /// other animatables are processed.
+
+  Stream<num> get onElapsedTimeChanged => _elapsedTimeChangedEvent.stream;
+
+  /// Returns a Future which completes after [time] seconds.
+  ///
+  /// The [delay] method is based on the [onElapsedTimeChanged] stream
+  /// and is therefore executed before all other animatables.
+
+  Future delay(num time) async {
+    var nextTime = this.elapsedTime + time;
+    await for(var elapsedTime in this.onElapsedTimeChanged) {
+      if (elapsedTime >= nextTime) break;
+    }
+  }
+
+  /// Returns a Stream which fires every [time] seconds.
+  ///
+  /// The [interval] method is based on the [onElapsedTimeChanged] stream
+  /// and is therefore executed before all other animatables. The stream
+  /// returns a counter with the number of completed intervals.
+
+  Stream<int> interval(num time) async* {
+    var count = 0;
+    var nextTime = this.elapsedTime + time;
+    await for(var elapsedTime in this.onElapsedTimeChanged) {
+      while (elapsedTime >= nextTime) {
+        yield ++count;
+        nextTime = nextTime + time;
+      }
+    }
+  }
 
   //----------------------------------------------------------------------------
 
@@ -57,6 +94,7 @@ class Juggler implements Animatable {
   /// juggler.
 
   void add(Animatable animatable) {
+
     if (animatable is! Animatable) {
       throw new ArgumentError(
           "The supplied animatable does not extend type Animatable.");
@@ -256,7 +294,7 @@ class Juggler implements Animatable {
   ///         new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
   ///         new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
   ///       ..onComplete = () => print("complete");
-  ///
+
   AnimationChain addChain(List<Animatable> animatables) {
     var animationChain = new AnimationChain();
     for (int i = 0; i < animatables.length; i++) {
@@ -273,6 +311,7 @@ class Juggler implements Animatable {
   bool advanceTime(num time) {
 
     _elapsedTime += time;
+    _elapsedTimeChangedEvent.add(_elapsedTime);
 
     // Call advanceTime of current animatables.
     // Do not call advanceTime of newly added animatables.
