@@ -1,13 +1,14 @@
 part of stagexl.engine;
 
-class RenderEngine {
-  static const String WebGL = "WebGL";
-  static const String Canvas2D = "Canvas2D";
-}
+/// The implementation kind of the render context.
 
-class RenderContextEvent {
+enum RenderEngine { WebGL , Canvas2D  }
 
-}
+/// The base class for all events fired by a render context.
+
+class RenderContextEvent { }
+
+/// The interface for all implementations of a render context.
 
 abstract class RenderContext {
 
@@ -17,7 +18,7 @@ abstract class RenderContext {
   Stream<RenderContextEvent> get onContextLost => _contextLostEvent.stream;
   Stream<RenderContextEvent> get onContextRestored => _contextRestoredEvent.stream;
 
-  String get renderEngine;
+  RenderEngine get renderEngine;
 
   void reset();
   void clear(int color);

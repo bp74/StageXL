@@ -37,41 +37,78 @@ export 'src/ui.dart';
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+/// The default configurations for various StageXL features.
+///
+/// The system environment in which the application is running:
+///
+///     StageXL.environment.devicePixelRatio
+///     StageXL.environment.isMobileDevice
+///     StageXL.environment.isLittleEndianSystem
+///
+/// The default [StageOptions] used by the [Stage] constructor:
+///
+///     StageXL.stageOptions.renderEngine = RenderEngine.WebGL;
+///     StageXL.stageOptions.stageRenderMode = StageRenderMode.AUTO;
+///     StageXL.stageOptions.stageScaleMode = StageScaleMode.SHOW_ALL;
+///     StageXL.stageOptions.stageAlign = StageAlign.NONE;
+///     StageXL.stageOptions.backgroundColor = Color.White;
+///     StageXL.stageOptions.transparent = false;
+///     StageXL.stageOptions.antialias = false;
+///     StageXL.stageOptions.maxPixelRatio = 5.0;
+///
+/// The default [BitmapDataLoadOptions] used by [BitmapData.load]:
+///
+///     StageXL.bitmapDataLoadOptions.jpg = true;
+///     StageXL.bitmapDataLoadOptions.png = true;
+///     StageXL.bitmapDataLoadOptions.webp = false;
+///     StageXL.bitmapDataLoadOptions.maxPixelRatio = 2;
+///     StageXL.bitmapDataLoadOptions.corsEnabled = false;
+///
+/// The default [SoundLoadOptions] used by [Sound.load]:
+///
+///     StageXL.soundLoadOptions.mp3 = true;
+///     StageXL.soundLoadOptions.mp4 = true;
+///     StageXL.soundLoadOptions.ogg = true;
+///     StageXL.soundLoadOptions.ac3 = true;
+///     StageXL.soundLoadOptions.wav = true;
+///     StageXL.soundLoadOptions.alternativeUrls = null;
+///     StageXL.soundLoadOptions.ignoreErrors = true;
+///     StageXL.soundLoadOptions.corsEnabled = false;
+///
+/// The default [VideoLoadOptions] used by [Video.load]:
+///
+///     StageXL.videoLoadOptions.mp4 = true;
+///     StageXL.videoLoadOptions.webm = true;
+///     StageXL.videoLoadOptions.ogg = true;
+///     StageXL.videoLoadOptions.alternativeUrls = null;
+///     StageXL.videoLoadOptions.loadData = false;
+///     StageXL.videoLoadOptions.corsEnabled = false;
+
 class StageXL {
 
-  // TODO: Add pixelRatio config for stage, cache, textfield, ...
+  /// The system environment in which the application is running.
 
-  /// The device pixel ratio is the ratio between physical pixels and
-  /// logical pixels.
+  static final Environment environment = new Environment._internal();
+
+  /// The default [StageOptions] used by the [Stage] constructor.
   ///
-  /// For instance, the iPhone 4 and iPhone 4S reports a device pixel ratio
-  /// of 2, because the physical linear resolution is double the logical
-  /// resolution. The iPhone 6 reports a device pixel ratio of 3. Some
-  /// devices may even report a device pixel ratio of 1.325 (Nexus 7 v1).
+  /// The default options are used if no individual options are passed to
+  /// the [Stage] constructor. Please note that this property is
+  /// just a forward to [Stage.defaultOptions].
 
-  static final num devicePixelRatio = env.devicePixelRatio;
+  static StageOptions get stageOptions {
+    return Stage.defaultOptions;
+  }
 
-  /// This flag indicates if the application is running on a mobile device.
+  static void set stageOptions(StageOptions options) {
+    Stage.defaultOptions = options;
+  }
+
+  /// The default [BitmapDataLoadOptions] used by [BitmapData.load].
   ///
-  /// The user agent string of the browser is used to get this information.
-  /// Therefore the flag may not be accurate on all devices.
-
-  static final bool isMobileDevice = env.isMobileDevice;
-
-  /// This flag indicates if the application is running on a device
-  /// with a little endian CPU architecture.
-  ///
-  /// The method [RenderTextureQuad.getImageData] allows low level texture
-  /// access and the RGBA value of each pixel is affected by the endianness
-  /// of the CPU architecture. <http://en.wikipedia.org/wiki/Endianness>
-
-  static final bool isLittleEndianSystem = env.isLittleEndianSystem;
-
-  /// The default loader configuration for [BitmapData.load].
-  ///
-  /// This is just the default configuration, every load operation can use
-  /// individual loader configurations. Please note that this property is
-  /// forwarded to [BitmapData.defaultLoadOptions].
+  /// The default options are used if no individual options are passed to
+  /// the [BitmapData.load] method. Please note that this property is
+  /// just a forward to [BitmapData.defaultLoadOptions].
 
   static BitmapDataLoadOptions get bitmapDataLoadOptions {
     return BitmapData.defaultLoadOptions;
@@ -81,11 +118,11 @@ class StageXL {
     BitmapData.defaultLoadOptions = options;
   }
 
-  /// The default loader configuration for [Sound.load].
+  /// The default [SoundLoadOptions] used by [Sound.load].
   ///
-  /// This is just the default configuration, every load operation can use
-  /// individual loader configurations. Please note that this property is
-  /// forwarded to [Sound.defaultLoadOptions].
+  /// The default options are used if no individual options are passed to
+  /// the [Sound.load] method. Please note that this property is
+  /// just a forward to [Sound.defaultLoadOptions].
 
   static SoundLoadOptions get soundLoadOptions {
     return Sound.defaultLoadOptions;
@@ -94,5 +131,56 @@ class StageXL {
   static void set soundLoadOptions(SoundLoadOptions options) {
     Sound.defaultLoadOptions = options;
   }
+
+  /// The default [VideoLoadOptions] used by [Video.load].
+  ///
+  /// The default options are used if no individual options are passed to
+  /// the [Video.load] method. Please note that this property is
+  /// just a forward to [Video.defaultLoadOptions].
+
+  static VideoLoadOptions get videoLoadOptions {
+    return Video.defaultLoadOptions;
+  }
+
+  static void set videoLoadOptions(VideoLoadOptions options) {
+    Video.defaultLoadOptions = options;
+  }
+
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+/// The system environment in which the application is running.
+
+class Environment {
+
+  Environment._internal();
+
+  /// The device pixel ratio is the ratio between physical pixels and
+  /// logical pixels.
+  ///
+  /// For instance, the iPhone 4 and iPhone 4S reports a device pixel ratio
+  /// of 2, because the physical linear resolution is double the logical
+  /// resolution. The iPhone 6 reports a device pixel ratio of 3. Some
+  /// devices may even report a device pixel ratio of 1.325 (Nexus 7 v1).
+
+  final num devicePixelRatio = env.devicePixelRatio;
+
+  /// This flag indicates if the application is running on a mobile device.
+  ///
+  /// The user agent string of the browser is used to get this information.
+  /// Therefore the flag may not be accurate on all devices.
+
+  final bool isMobileDevice = env.isMobileDevice;
+
+  /// This flag indicates if the application is running on a device
+  /// with a little endian CPU architecture.
+  ///
+  /// The method [RenderTextureQuad.getImageData] allows low level texture
+  /// access and the RGBA value of each pixel is affected by the endianness
+  /// of the CPU architecture. <http://en.wikipedia.org/wiki/Endianness>
+
+  final bool isLittleEndianSystem = env.isLittleEndianSystem;
 
 }

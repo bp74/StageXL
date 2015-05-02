@@ -17,7 +17,7 @@ class RenderContextCanvas extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   CanvasRenderingContext2D get rawContext => _renderingContext;
-  String get renderEngine => RenderEngine.Canvas2D;
+  RenderEngine get renderEngine => RenderEngine.Canvas2D;
 
   //-----------------------------------------------------------------------------------------------
 

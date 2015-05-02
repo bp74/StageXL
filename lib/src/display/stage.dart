@@ -1,15 +1,54 @@
 part of stagexl.display;
 
-/// The Stage is the drawing area wher all display objects are rendered to.
+/// The StageRenderMode defines how often the Stage is rendered by
+/// the [RenderLoop] where the Stage is attached to.
+
+enum StageRenderMode {
+  AUTO,
+  STOP,
+  ONCE
+}
+
+/// The StageScaleMode defines how the Stage is scaled inside of the Canvas.
+
+enum StageScaleMode {
+  EXACT_FIT,
+  NO_BORDER,
+  NO_SCALE, SHOW_ALL
+}
+
+/// The StageAlign defines how the content of the Stage is aligned inside
+/// of the Canvas. The setting controls where the origin (point 0,0) of the
+/// Stage will be placed on the Canvas.
+
+enum StageAlign {
+  TOP_LEFT,
+  TOP,
+  TOP_RIGHT,
+  LEFT,
+  NONE,
+  RIGHT,
+  BOTTOM_LEFT,
+  BOTTOM,
+  BOTTOM_RIGHT
+}
+
+/// The Stage is the drawing area where all display objects are rendered to.
 /// Place a Canvas element to your HTML and use the Stage to wrap all the
 /// rendering functions to this Canvas element.
 ///
-/// Example:
+/// Example HTML:
 ///
-/// HTML: <canvas id="stage" width="800" height="600"></canvas>
-/// Dart: var stage = new Stage(querySelector("#stage"));
+///     <canvas id="stage"></canvas>
+///
+/// Example Dart:
+///
+///     var canvas = querySelector("#stage");
+///     var stage = new Stage(canvas, width: 800, height: 600);
 
 class Stage extends DisplayObjectContainer {
+
+  static StageOptions defaultOptions = new StageOptions();
 
   CanvasElement _canvas;
   RenderContext _renderContext;
@@ -19,11 +58,11 @@ class Stage extends DisplayObjectContainer {
   int _color = 0;
   int _sourceWidth = 0;
   int _sourceHeight = 0;
-  int _frameRate = 30;
   int _stageWidth = 0;
   int _stageHeight = 0;
-  Rectangle<num> _contentRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
+  num _pixelRatio = 1.0;
 
+  Rectangle<num> _contentRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
   Matrix _clientTransformation = new Matrix.fromIdentity();
   Matrix _stageTransformation = new Matrix.fromIdentity();
 
@@ -54,36 +93,25 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  Stage(CanvasElement canvas, {int width, int height,
-    bool webGL: false, bool alpha: false, int frameRate: 30,
-    int color: Color.White}) {
+  Stage(CanvasElement canvas, {int width, int height, StageOptions options}) {
 
-    if (canvas is! CanvasElement) {
-      throw new ArgumentError("The canvas argument is not a CanvasElement");
-    }
-
-    _canvas = canvas;
-
+    if (canvas is! CanvasElement) throw new ArgumentError("canvas");
     if (canvas.tabIndex == -1) canvas.tabIndex = 0;
     if (canvas.style.outline == "") canvas.style.outline = "none";
+    if (options == null) options = Stage.defaultOptions;
+    if (width == null) width = canvas.width;
+    if (height == null) height = canvas.height;
 
-    _color = ensureInt(color);
-    _sourceWidth = ensureInt((width != null) ? width : canvas.width);
-    _sourceHeight = ensureInt((width != null) ? height : canvas.height);
-    _frameRate = ensureInt((frameRate != null) ? frameRate : 30);
-
-    if (webGL && gl.RenderingContext.supported) {
-      try {
-        _renderContext = new RenderContextWebGL(canvas, alpha: alpha);
-      } catch (e) {
-        _renderContext = new RenderContextCanvas(canvas);
-      }
-    } else {
-      _renderContext = new RenderContextCanvas(canvas);
-    }
-
+    _canvas = canvas;
+    _color = options.backgroundColor;
+    _stageAlign = options.stageAlign;
+    _stageScaleMode = options.stageScaleMode;
+    _stageRenderMode = options.stageRenderMode;
+    _sourceWidth = ensureInt(width);
+    _sourceHeight = ensureInt(height);
+    _pixelRatio = min(options.maxPixelRatio, env.devicePixelRatio);
+    _renderContext = _createRenderContext(canvas, options);
     _renderState = new RenderState(_renderContext);
-    _updateCanvasSize();
 
     print("StageXL render engine : ${_renderContext.renderEngine}");
 
@@ -101,6 +129,7 @@ class Stage extends DisplayObjectContainer {
     Multitouch.onInputModeChanged.listen(_onMultitouchInputModeChanged);
 
     _onMultitouchInputModeChanged(Multitouch.inputMode);
+    _updateCanvasSize();
   }
 
   //----------------------------------------------------------------------------
@@ -110,7 +139,7 @@ class Stage extends DisplayObjectContainer {
   /// The returned string is defined in [RenderEngine] and is either "WebGL"
   /// or "Canvas2D".
 
-  String get renderEngine => _renderContext.renderEngine;
+  RenderEngine get renderEngine => _renderContext.renderEngine;
 
   /// Gets the [RenderLoop] where this Stage was added to, or
   /// NULL in case this Stage is not added to a [RenderLoop].
@@ -163,13 +192,13 @@ class Stage extends DisplayObjectContainer {
     _updateCanvasSize();
   }
 
-  /// Gets and sets the default frame rate for MovieClips. This value has no
-  /// impact on the frame rate of the Stage itself.
+  /// Gets and sets the pixel ratio of the Stage.
 
-  int get frameRate => _frameRate;
+  num get pixelRatio => _pixelRatio;
 
-  void set frameRate(int value) {
-    _frameRate = value;
+  void set pixelRatio(num value) {
+    _pixelRatio = ensureNum(value);
+    _updateCanvasSize();
   }
 
   /// Gets and sets the [InteractiveObject] (a DisplayObject which can
@@ -191,7 +220,7 @@ class Stage extends DisplayObjectContainer {
   }
 
   /// Gets and sets the scale mode of this Stage. You can choose between
-  /// four dfferent modes defined in [StageScaleMode].
+  /// four different modes defined in [StageScaleMode].
 
   StageScaleMode get scaleMode => _stageScaleMode;
 
@@ -289,6 +318,23 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
+  RenderContext _createRenderContext(CanvasElement canvas, StageOptions options) {
+    if (options.renderEngine == RenderEngine.WebGL) {
+      try {
+        return new RenderContextWebGL(canvas,
+            alpha: options.transparent, antialias: options.antialias);
+      } catch (e) {
+        return new RenderContextCanvas(canvas);
+      }
+    } else if (options.renderEngine == RenderEngine.Canvas2D) {
+      return new RenderContextCanvas(canvas);
+    } else {
+      throw new StateError("Unknown RenderEngine");
+    }
+  }
+
+  //----------------------------------------------------------------------------
+
   void _startDrag(Sprite sprite, Point<num> globalPoint, Point<num> anchorPoint,
                   Rectangle<num> bounds, int touchPointID) {
 
@@ -305,10 +351,10 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  _updateCanvasSize() {
+  void _updateCanvasSize() {
 
-    int clientLeft, clientTop;
-    int clientWidth, clientHeight;
+    int clientLeft = 0, clientTop = 0;
+    int clientWidth = 0, clientHeight = 0;
     int sourceWidth = _sourceWidth;
     int sourceHeight = _sourceHeight;
 
@@ -358,50 +404,54 @@ class Stage extends DisplayObjectContainer {
     }
 
     switch (_stageAlign) {
-      case StageAlign.TOP_RIGHT:
-      case StageAlign.RIGHT:
-      case StageAlign.BOTTOM_RIGHT:
-        pivotX = (clientWidth - sourceWidth * scaleX);
+      case StageAlign.LEFT:
+      case StageAlign.BOTTOM_LEFT:
+      case StageAlign.TOP_LEFT:
+        pivotX = 0.0;
         break;
       case StageAlign.TOP:
       case StageAlign.NONE:
       case StageAlign.BOTTOM:
         pivotX = (clientWidth - sourceWidth * scaleX) / 2;
         break;
+      case StageAlign.TOP_RIGHT:
+      case StageAlign.RIGHT:
+      case StageAlign.BOTTOM_RIGHT:
+        pivotX = (clientWidth - sourceWidth * scaleX);
+        break;
     }
 
     switch (_stageAlign) {
-      case StageAlign.BOTTOM_LEFT:
-      case StageAlign.BOTTOM:
-      case StageAlign.BOTTOM_RIGHT:
-        pivotY = (clientHeight - sourceHeight * scaleY);
+      case StageAlign.TOP_LEFT:
+      case StageAlign.TOP:
+      case StageAlign.TOP_RIGHT:
+        pivotY = 0.0;
         break;
       case StageAlign.LEFT:
       case StageAlign.NONE:
       case StageAlign.RIGHT:
         pivotY = (clientHeight - sourceHeight * scaleY) / 2;
         break;
+      case StageAlign.BOTTOM_LEFT:
+      case StageAlign.BOTTOM:
+      case StageAlign.BOTTOM_RIGHT:
+        pivotY = (clientHeight - sourceHeight * scaleY);
+        break;
     }
 
     //----------------------------
 
-    var contentRectangle = _contentRectangle;
-    contentRectangle.left = - pivotX / scaleX;
-    contentRectangle.top = - pivotY / scaleY;
-    contentRectangle.width = clientWidth / scaleX;
-    contentRectangle.height = clientHeight / scaleY;
-
-    var pixelRatio = env.devicePixelRatio;
-
-    // TODO: PixelRatio
+    _contentRectangle.left = - pivotX / scaleX;
+    _contentRectangle.top = - pivotY / scaleY;
+    _contentRectangle.width = clientWidth / scaleX;
+    _contentRectangle.height = clientHeight / scaleY;
 
     // stage to canvas coordinate transformation
     _stageTransformation.setTo(scaleX, 0.0, 0.0, scaleY, pivotX, pivotY);
     _stageTransformation.scale(pixelRatio, pixelRatio);
 
     // client to stage coordinate transformation
-    _clientTransformation.setTo(
-        1.0, 0.0, 0.0, 1.0, - clientLeft - pivotX, - clientTop - pivotY);
+    _clientTransformation.setTo(1.0, 0.0, 0.0, 1.0, - clientLeft - pivotX, - clientTop - pivotY);
     _clientTransformation.scale(1.0 / scaleX, 1.0 / scaleY);
 
     //----------------------------
@@ -415,8 +465,7 @@ class Stage extends DisplayObjectContainer {
 
       // update hi-dpi canvas style size if client size has changed
 
-      if (_canvas.clientWidth != clientWidth ||
-          _canvas.clientHeight != clientHeight) {
+      if (_canvas.clientWidth != clientWidth || _canvas.clientHeight != clientHeight) {
         _canvas.style.width = "${clientWidth}px";
         _canvas.style.height = "${clientHeight}px";
       }
@@ -428,7 +477,7 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  _updateMouseCursor() {
+  void _updateMouseCursor() {
 
     var mouseTarget = _mouseTarget;
     var mouseCursor = Mouse.cursor;
@@ -450,7 +499,7 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  _onMouseEvent(html.MouseEvent event) {
+  void _onMouseEvent(html.MouseEvent event) {
 
     event.preventDefault();
 
@@ -604,7 +653,7 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  _onMouseWheelEvent(html.WheelEvent event) {
+  void _onMouseWheelEvent(html.WheelEvent event) {
 
     var stagePoint = _clientTransformation.transformPoint(event.client);
     var localPoint = new Point<num>(0.0, 0.0);
@@ -627,7 +676,7 @@ class Stage extends DisplayObjectContainer {
 
   List<StreamSubscription<html.TouchEvent>> _touchEventSubscriptions = [];
 
-  _onMultitouchInputModeChanged(MultitouchInputMode inputMode) {
+  void _onMultitouchInputModeChanged(MultitouchInputMode inputMode) {
 
     _touchEventSubscriptions.forEach((s) => s.cancel());
 
@@ -645,7 +694,7 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  _onTouchEvent(html.TouchEvent event) {
+  void _onTouchEvent(html.TouchEvent event) {
 
     if (env.isCocoonJS) {
 
@@ -683,8 +732,9 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  _onTouchEventProcessor(String eventType, int identifier, math.Point client,
-                         bool altKey, bool ctrlKey, bool shiftKey) {
+  void _onTouchEventProcessor(
+      String eventType, int identifier, math.Point client,
+      bool altKey, bool ctrlKey, bool shiftKey) {
 
     var stagePoint = _clientTransformation.transformPoint(client);
     var localPoint = new Point<num>(0.0, 0.0);
@@ -799,7 +849,7 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  _onKeyEvent(html.KeyboardEvent event) {
+  void _onKeyEvent(html.KeyboardEvent event) {
 
     if (event.keyCode == 8) event.preventDefault();
     if (_focus == null) return;

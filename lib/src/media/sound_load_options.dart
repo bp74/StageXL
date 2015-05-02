@@ -47,7 +47,6 @@ class SoundLoadOptions {
       mp3: this.mp3, mp4: this.mp4, ogg: this.ogg, ac3: this.ac3, wav: this.wav,
       alternativeUrls: this.alternativeUrls, ignoreErrors: this.ignoreErrors);
 
-
   //-------------------------------------------------------------------------------------------------
 
   /// Determine which audio files is the most likely to play smoothly,

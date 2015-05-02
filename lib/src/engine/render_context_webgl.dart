@@ -68,7 +68,7 @@ class RenderContextWebGL extends RenderContext {
   //-----------------------------------------------------------------------------------------------
 
   gl.RenderingContext get rawContext => _renderingContext;
-  String get renderEngine => RenderEngine.WebGL;
+  RenderEngine get renderEngine => RenderEngine.WebGL;
 
   RenderTexture get activeRenderTexture => _activeRenderTexture;
   RenderProgram get activeRenderProgram => _activeRenderProgram;
