@@ -15,7 +15,7 @@ The source code for this samples is available on GitHub:
 
 <https://github.com/bp74/StageXL_Samples>
 
-Flash developers who are not familiar with the Dart language, may take a look at the ActionScript to Dart comparision on the StageXL homapge:
+Flash developers who are not familiar with the Dart language, may take a look at the ActionScript to Dart comparison on the StageXL homepage:
 
 <http://www.stagexl.org/docs/actionscript-dart.html>
 
