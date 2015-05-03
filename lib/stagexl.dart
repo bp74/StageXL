@@ -183,4 +183,8 @@ class Environment {
 
   final bool isLittleEndianSystem = env.isLittleEndianSystem;
 
+  /// This flag indicates if the application is running on a device
+  /// which support TouchEvents and therefore has a touch screen.
+
+  final bool isTouchEventSupported = env.isTouchEventSupported;
 }
