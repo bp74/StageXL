@@ -5,7 +5,7 @@ part of stagexl.display;
 ///
 /// The [BitmapData.defaultLoadOptions] object is the default for all
 /// loading operations if no BitmapDataLoadOptions are provided to the
-/// BitmapData.load function.
+/// [BitmapData.load] function.
 
 class BitmapDataLoadOptions {
 

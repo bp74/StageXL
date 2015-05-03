@@ -1,5 +1,12 @@
 part of stagexl.media;
 
+/// The SoundLoadOptions class contains different options to configure
+/// how videos are loaded from the server.
+///
+/// The [Sound.defaultLoadOptions] object is the default for all
+/// loading operations if no SoundLoadOptions are provided to the
+/// [Sound.load] function.
+
 class SoundLoadOptions {
 
   /// The application provides *mp3* files as an option to load audio files.

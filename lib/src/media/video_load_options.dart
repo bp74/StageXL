@@ -1,5 +1,12 @@
 part of stagexl.media;
 
+/// The VideoLoadOptions class contains different options to configure
+/// how videos are loaded from the server.
+///
+/// The [Video.defaultLoadOptions] object is the default for all
+/// loading operations if no VideoLoadOptions are provided to the
+/// [Video.load] function.
+
 class VideoLoadOptions {
 
   /// The application provides *mp4* files as an option to load video files.
