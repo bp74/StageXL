@@ -44,6 +44,7 @@ export 'src/ui.dart';
 ///     StageXL.environment.devicePixelRatio
 ///     StageXL.environment.isMobileDevice
 ///     StageXL.environment.isLittleEndianSystem
+///     StageXL.environment.isTouchEventSupported
 ///
 /// The default [StageOptions] used by the [Stage] constructor:
 ///
