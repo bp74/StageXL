@@ -65,8 +65,7 @@ class Video {
   /// are provided for the [load] method. This default video load options
   /// enable all supported video file formats: mp4, webm and ogg.
 
-  static VideoLoadOptions defaultLoadOptions =
-      new VideoLoadOptions(mp4:true, webm:true, ogg:true);
+  static VideoLoadOptions defaultLoadOptions = new VideoLoadOptions();
 
   /// Use this method to load a video from a given [url]. If you don't
   /// provide [videoLoadOptions] the [defaultLoadOptions] will be used.

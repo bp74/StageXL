@@ -1,5 +1,12 @@
 part of stagexl.display;
 
+/// The BitmapDataLoadOptions class contains different options to configure
+/// how BitmapDatas are loaded from the server.
+///
+/// The [BitmapData.defaultLoadOptions] object is the default for all
+/// loading operations if no BitmapDataLoadOptions are provided to the
+/// BitmapData.load function.
+
 class BitmapDataLoadOptions {
 
   /// The application provides *png* files for lossless images.
@@ -41,19 +48,4 @@ class BitmapDataLoadOptions {
 
   bool corsEnabled = false;
 
-  /// The BitmapDataLoadOptions class contains different options to configure
-  /// how BitmapDatas are loaded from the server.
-  ///
-  /// The [BitmapData.defaultLoadOptions] object is the default for all
-  /// loading operations if no BitmapDataLoadOptions are provided to the
-  /// BitmapData.load function.
-
-  BitmapDataLoadOptions({
-    this.png: true,
-    this.jpg: true,
-    this.webp: false,
-    this.maxPixelRatio: 2,
-    this.corsEnabled: false
-  });
 }
-
