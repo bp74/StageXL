@@ -40,6 +40,24 @@ class SoundLoadOptions {
 
   //---------------------------------------------------------------------------
 
+  /// Create a deep clone of this [SoundLoadOptions].
+
+  SoundLoadOptions clone() {
+    var options = new SoundLoadOptions();
+    var urls = this.alternativeUrls;
+    options.mp3 = this.mp3;
+    options.mp4 = this.mp4;
+    options.ogg = this.ogg;
+    options.ac3 = this.ac3;
+    options.wav = this.wav;
+    options.alternativeUrls = urls == null ? null : urls.toList();
+    options.ignoreErrors = this.ignoreErrors;
+    options.corsEnabled = this.corsEnabled;
+    return options;
+  }
+
+  //---------------------------------------------------------------------------
+
   /// Determine which audio files is the most likely to play smoothly,
   /// based on the supported types and formats available.
 

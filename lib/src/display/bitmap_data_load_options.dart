@@ -24,7 +24,7 @@ class BitmapDataLoadOptions {
 
   bool webp = false;
 
-  /// The maximum pixel ratio for images on HiDpi displays.
+  /// The maximum pixel ratio for images on HiDPI displays.
   ///
   /// The loader automatically detects the device's display pixel ratio
   /// and accordingly loads high resoltion images. The application has
@@ -47,5 +47,19 @@ class BitmapDataLoadOptions {
   /// to download images from a third party server.
 
   bool corsEnabled = false;
+
+  //---------------------------------------------------------------------------
+
+  /// Create a deep clone of this [BitmapDataLoadOptions].
+
+  BitmapDataLoadOptions clone() {
+    var options = new BitmapDataLoadOptions();
+    options.png = this.png;
+    options.jpg = this.jpg;
+    options.webp = this.webp;
+    options.maxPixelRatio = this.maxPixelRatio;
+    options.corsEnabled = this.corsEnabled;
+    return options;
+  }
 
 }

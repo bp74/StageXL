@@ -67,4 +67,21 @@ class StageOptions {
 
   num maxPixelRatio = 5.0;
 
+  //---------------------------------------------------------------------------
+
+  /// Create a deep clone of this [StageOptions].
+
+  StageOptions clone() {
+    var options = new StageOptions();
+    options.renderEngine = this.renderEngine;
+    options.stageRenderMode = this.stageRenderMode;
+    options.stageScaleMode = this.stageScaleMode;
+    options.stageAlign = this.stageAlign;
+    options.backgroundColor = this.backgroundColor;
+    options.transparent = this.transparent;
+    options.antialias = this.antialias;
+    options.maxPixelRatio = this.maxPixelRatio;
+    return options;
+  }
+
 }

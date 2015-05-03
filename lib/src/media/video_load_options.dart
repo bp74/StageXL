@@ -33,6 +33,22 @@ class VideoLoadOptions {
 
   //---------------------------------------------------------------------------
 
+  /// Create a deep clone of this [VideoLoadOptions].
+
+  VideoLoadOptions clone() {
+    var options = new VideoLoadOptions();
+    var urls = this.alternativeUrls;
+    options.mp4 = this.mp4;
+    options.webm = this.webm;
+    options.ogg = this.ogg;
+    options.alternativeUrls = urls == null ? null : urls.toList();
+    options.loadData = this.loadData;
+    options.corsEnabled = this.corsEnabled;
+    return options;
+  }
+
+  //---------------------------------------------------------------------------
+
   /// Determine which video files is the most likely to play smoothly,
   /// based on the supported types and formats available.
 
