@@ -16,9 +16,9 @@ class ColorMatrixFilter extends BitmapFilter {
   Float32List _colorMatrixList = new Float32List(16);
   Float32List _colorOffsetList = new Float32List(4);
 
-  final num _lumaR = 0.213;
-  final num _lumaG = 0.715;
-  final num _lumaB = 0.072;
+  static const num _lumaR = 0.213;
+  static const num _lumaG = 0.715;
+  static const num _lumaB = 0.072;
 
   ColorMatrixFilter(List<num> colorMatrix, List<num> colorOffset) {
 
