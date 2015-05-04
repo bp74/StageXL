@@ -54,30 +54,30 @@ class Juggler implements Animatable {
   /// The stream sends the changes of [elapsedTime] and is executed before all
   /// other animatables are processed.
 
-  Stream<num> get onElapsedTimeChanged => _elapsedTimeChangedEvent.stream;
+  Stream<num> get onElapsedTimeChange => _elapsedTimeChangedEvent.stream;
 
   /// Returns a Future which completes after [time] seconds.
   ///
-  /// The [delay] method is based on the [onElapsedTimeChanged] stream
+  /// The [delay] method is based on the [onElapsedTimeChange] stream
   /// and is therefore executed before all other animatables.
 
   Future delay(num time) async {
     var nextTime = this.elapsedTime + time;
-    await for(var elapsedTime in this.onElapsedTimeChanged) {
+    await for(var elapsedTime in this.onElapsedTimeChange) {
       if (elapsedTime >= nextTime) break;
     }
   }
 
   /// Returns a Stream which fires every [time] seconds.
   ///
-  /// The [interval] method is based on the [onElapsedTimeChanged] stream
+  /// The [interval] method is based on the [onElapsedTimeChange] stream
   /// and is therefore executed before all other animatables. The stream
   /// returns a counter with the number of completed intervals.
 
   Stream<int> interval(num time) async* {
     var count = 0;
     var nextTime = this.elapsedTime + time;
-    await for(var elapsedTime in this.onElapsedTimeChanged) {
+    await for(var elapsedTime in this.onElapsedTimeChange) {
       while (elapsedTime >= nextTime) {
         yield ++count;
         nextTime = nextTime + time;
