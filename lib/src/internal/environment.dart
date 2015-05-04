@@ -11,6 +11,7 @@ final Future<bool> isWebpSupported = _checkWebpSupport();
 final bool isMobileDevice = _checkMobileDevice();
 final bool isCocoonJS = _checkCocoonJS();
 final bool isLittleEndianSystem = _checkLittleEndianSystem();
+final bool isTouchEventSupported = _checkTouchEventSupport();
 
 //-------------------------------------------------------------------------------------
 
@@ -73,4 +74,14 @@ Future<bool> _checkWebpSupport() {
       'CdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
 
   return completer.future;
+}
+
+//-------------------------------------------------------------------------------------
+
+bool _checkTouchEventSupport() {
+  try {
+    return TouchEvent.supported;
+  } catch (e) {
+    return false;
+  }
 }

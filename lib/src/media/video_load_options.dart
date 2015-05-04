@@ -1,45 +1,58 @@
 part of stagexl.media;
 
+/// The VideoLoadOptions class contains different options to configure
+/// how videos are loaded from the server.
+///
+/// The [Video.defaultLoadOptions] object is the default for all
+/// loading operations if no VideoLoadOptions are provided to the
+/// [Video.load] function.
+
 class VideoLoadOptions {
 
   /// The application provides *mp4* files as an option to load video files.
-  bool mp4;
+
+  bool mp4 = true;
 
   /// The application provides *webm* files as an option to load video files.
-  bool webm;
+
+  bool webm = true;
 
   /// The application provides *ogg* files as an option to load video files.
-  bool ogg;
+
+  bool ogg = true;
 
   /// A list of alternative urls for video files in the case where the
   /// primary url does not work or the file type is not supported by the
   /// browser. If this value is null, the alternative urls are calcualted
   /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
-  List<String> alternativeUrls;
+
+  List<String> alternativeUrls = null;
 
   /// Do not stream the video but download the video file as a whole.
   /// A DataUrl string will be used for the VideoElement source.
-  bool loadData;
+
+  bool loadData = false;
 
   /// Use CORS to download the video. This is often necessary when you have
   /// to download video from a third party server.
-  bool corsEnabled;
+
+  bool corsEnabled = false;
 
   //---------------------------------------------------------------------------
 
-  VideoLoadOptions({
-      this.mp4: false,
-      this.webm: false,
-      this.ogg: false,
-      this.alternativeUrls: null,
-      this.loadData: false,
-      this.corsEnabled: false
-    });
+  /// Create a deep clone of this [VideoLoadOptions].
 
-  VideoLoadOptions clone() => new VideoLoadOptions(
-      mp4: this.mp4, webm: this.webm, ogg: this.ogg,
-      alternativeUrls: this.alternativeUrls,
-      loadData: loadData);
+  VideoLoadOptions clone() {
+    var options = new VideoLoadOptions();
+    var urls = this.alternativeUrls;
+    options.mp4 = this.mp4;
+    options.webm = this.webm;
+    options.ogg = this.ogg;
+    options.alternativeUrls = urls == null ? null : urls.toList();
+    options.loadData = this.loadData;
+    options.corsEnabled = this.corsEnabled;
+    return options;
+  }
 
   //---------------------------------------------------------------------------
 

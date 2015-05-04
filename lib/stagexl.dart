@@ -44,6 +44,7 @@ export 'src/ui.dart';
 ///     StageXL.environment.devicePixelRatio
 ///     StageXL.environment.isMobileDevice
 ///     StageXL.environment.isLittleEndianSystem
+///     StageXL.environment.isTouchEventSupported
 ///
 /// The default [StageOptions] used by the [Stage] constructor:
 ///
@@ -183,4 +184,8 @@ class Environment {
 
   final bool isLittleEndianSystem = env.isLittleEndianSystem;
 
+  /// This flag indicates if the application is running on a device
+  /// which support TouchEvents and therefore has a touch screen.
+
+  final bool isTouchEventSupported = env.isTouchEventSupported;
 }

@@ -2,6 +2,7 @@ library stagexl.ui.multitouch;
 
 import 'dart:async';
 import 'dart:html' as html;
+import '../internal/environment.dart' as env;
 
 /// The input modes for touch screen devices.
 class MultitouchInputMode {
@@ -50,7 +51,7 @@ class Multitouch {
 
   /// Indicates whether the current environment supports basic touch input.
   /// Touch events are listed in the [TouchEvent] class.
-  static bool supportsTouchEvents = _checkTouchEvents();
+  static bool supportsTouchEvents = env.isTouchEventSupported;
 
   /// A list of multi-touch contact types supported in the current environment.
   /// The list of Strings can be used as event types to register event
@@ -81,13 +82,4 @@ class Multitouch {
     _inputModeChangedEvent.add(value);
   }
 
-  //------------------------------------------------------------------
-
-  static bool _checkTouchEvents() {
-    try {
-      return html.TouchEvent.supported;
-    } catch (e) {
-      return false;
-    }
-  }
 }

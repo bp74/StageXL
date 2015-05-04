@@ -63,7 +63,11 @@ class Juggler implements Animatable {
 
   Future delay(num time) async {
     var nextTime = this.elapsedTime + time;
+<<<<<<< HEAD
     await for(var elapsedTime in this.onElapsedTimeChange) {
+=======
+    await for (var elapsedTime in this.onElapsedTimeChanged) {
+>>>>>>> origin/master
       if (elapsedTime >= nextTime) break;
     }
   }
@@ -77,7 +81,11 @@ class Juggler implements Animatable {
   Stream<int> interval(num time) async* {
     var count = 0;
     var nextTime = this.elapsedTime + time;
+<<<<<<< HEAD
     await for(var elapsedTime in this.onElapsedTimeChange) {
+=======
+    await for (var elapsedTime in this.onElapsedTimeChanged) {
+>>>>>>> origin/master
       while (elapsedTime >= nextTime) {
         yield ++count;
         nextTime = nextTime + time;
@@ -166,7 +174,7 @@ class Juggler implements Animatable {
   bool containsTweens(TweenObject tweenObject) {
 
     var link = _firstAnimatableLink;
-    while(identical(link, _lastAnimatableLink) == false) {
+    while (identical(link, _lastAnimatableLink) == false) {
       var animatable = link.animatable;
       if (animatable is Tween && identical(animatable.tweenObject, tweenObject)) {
         return true;
