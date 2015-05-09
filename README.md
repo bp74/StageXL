@@ -39,7 +39,7 @@ questions on StackOverflow.
 
 * StageXL Forum: <https://groups.google.com/forum/#!forum/stagexl>
 * StageXL GitHub Issues: <https://github.com/bp74/StageXL/issues>
-* StageXL StackOverflow: <http://stackoverflow.com/questions/tagged/stagexl>
+* StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 * StageXL API Reference: <http://www.stagexl.org/docs/api/index.html>
 
 ## Examples
