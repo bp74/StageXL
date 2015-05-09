@@ -11,8 +11,8 @@ no prior experience with Flash are using StageXL for their applications.
 
 ## Extension Libraries
 
-StageXL provides a rich set of built-in features. Even more adanvaced use cases 
-may require an extension library with a specialied set of features. The number
+StageXL provides a rich set of built-in features. Even more advanced use cases 
+may require an extension library with a specialised set of features. The number
 of extension libraries is growing over time, here is a list of the most popular
 StageXL extension libraries.   
 
@@ -36,7 +36,7 @@ questions on StackOverflow.
 
 ## Examples
 
-We are actively working on more examples to covering a wide range of use cases. 
+We are working on more examples to covering a wide range of use cases. 
 Please take a look at the StageXL samples repository for our ongoing work. 
 Don't hesitate to send example requests that would help you to learn about 
 a particular feature.
