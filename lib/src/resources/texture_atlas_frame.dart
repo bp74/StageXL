@@ -38,59 +38,78 @@ class TextureAtlasFrame {
     var taqRenderTexture = this.textureAtlasQuad.renderTexture;
     var taqPixelRatio = this.textureAtlasQuad.pixelRatio;
     var taqRotation = this.textureAtlasQuad.rotation;
-    var taqSrcL = this.textureAtlasQuad.sourceRectangle.left;
-    var taqSrcT = this.textureAtlasQuad.sourceRectangle.top;
-    var taqSrcR = this.textureAtlasQuad.sourceRectangle.right;
-    var taqSrcB = this.textureAtlasQuad.sourceRectangle.bottom;
-    var taqOfsL = this.textureAtlasQuad.offsetRectangle.left;
-    var taqOfsT = this.textureAtlasQuad.offsetRectangle.top;
+    var taqSourceL = this.textureAtlasQuad.sourceRectangle.left;
+    var taqSourceT = this.textureAtlasQuad.sourceRectangle.top;
+    var taqSourceR = this.textureAtlasQuad.sourceRectangle.right;
+    var taqSourceB = this.textureAtlasQuad.sourceRectangle.bottom;
+    var taqOffsetL = this.textureAtlasQuad.offsetRectangle.left;
+    var taqOffsetT = this.textureAtlasQuad.offsetRectangle.top;
 
-    var newSrcL = this.frameX;
-    var newSrcT = this.frameY;
-    var newSrcR = this.frameX + this.frameWidth;
-    var newSrcB = this.frameY + this.frameHeight;
-    var newOfsL = 0 - this.offsetX;
-    var newOfsT = 0 - this.offsetY;
-    var newOfsW = this.originalWidth;
-    var newOfsH = this.originalHeight;
+    var newRenderTexture = taqRenderTexture;
+    var newPixelRatio = taqPixelRatio;
+    var newRotation = (taqRotation + this.rotation) % 4;
+    var newSourceL = this.frameX;
+    var newSourceT = this.frameY;
+    var newSourceR = this.frameX + this.frameWidth;
+    var newSourceB = this.frameY + this.frameHeight;
+    var newOffsetL = 0 - this.offsetX;
+    var newOffsetT = 0 - this.offsetY;
+    var newOffsetW = this.originalWidth;
+    var newOffsetH = this.originalHeight;
 
-    var srcL = 0, srcT = 0, srcR = 0, srcB = 0;
-    var ofsL = 0, ofsT = 0;
+    var tmpSourceL = 0;
+    var tmpSourceT = 0;
+    var tmpSourceR = 0;
+    var tmpSourceB = 0;
 
     if (taqRotation == 0) {
-      srcL = clampInt(taqSrcL + taqOfsL + newSrcL, taqSrcL, taqSrcR);
-      srcT = clampInt(taqSrcT + taqOfsT + newSrcT, taqSrcT, taqSrcB);
-      srcR = clampInt(taqSrcL + taqOfsL + newSrcR, taqSrcL, taqSrcR);
-      srcB = clampInt(taqSrcT + taqOfsT + newSrcB, taqSrcT, taqSrcB);
-      ofsL = newOfsL + newSrcL + taqOfsL + taqSrcL - srcL;
-      ofsT = newOfsT + newSrcT + taqOfsT + taqSrcT - srcT;
+      tmpSourceL = taqSourceL + taqOffsetL + newSourceL;
+      tmpSourceT = taqSourceT + taqOffsetT + newSourceT;
+      tmpSourceR = taqSourceL + taqOffsetL + newSourceR;
+      tmpSourceB = taqSourceT + taqOffsetT + newSourceB;
     } else if (taqRotation == 1) {
-      srcL = clampInt(taqSrcR - taqOfsT - newSrcB, taqSrcL, taqSrcR);
-      srcT = clampInt(taqSrcT + taqOfsL + newSrcL, taqSrcT, taqSrcB);
-      srcR = clampInt(taqSrcR - taqOfsT - newSrcT, taqSrcL, taqSrcR);
-      srcB = clampInt(taqSrcT + taqOfsL + newSrcR, taqSrcT, taqSrcB);
-      ofsL = newOfsL + newSrcL + taqOfsL + taqSrcT - srcT;
-      ofsT = newOfsT + newSrcT + taqOfsT - taqSrcR + srcR;
+      tmpSourceL = taqSourceR - taqOffsetT - newSourceB;
+      tmpSourceT = taqSourceT + taqOffsetL + newSourceL;
+      tmpSourceR = taqSourceR - taqOffsetT - newSourceT;
+      tmpSourceB = taqSourceT + taqOffsetL + newSourceR;
     } else if (taqRotation == 2) {
-      srcL = clampInt(taqSrcR - taqOfsL - newSrcR, taqSrcL, taqSrcR);
-      srcT = clampInt(taqSrcB - taqOfsT - newSrcB, taqSrcT, taqSrcB);
-      srcR = clampInt(taqSrcR - taqOfsL - newSrcL, taqSrcL, taqSrcR);
-      srcB = clampInt(taqSrcB - taqOfsT - newSrcT, taqSrcT, taqSrcB);
-      ofsL = newOfsL + newSrcL + taqOfsL - taqSrcR + srcR;
-      ofsT = newOfsT + newSrcT + taqOfsT - taqSrcB + srcB;
+      tmpSourceL = taqSourceR - taqOffsetL - newSourceR;
+      tmpSourceT = taqSourceB - taqOffsetT - newSourceB;
+      tmpSourceR = taqSourceR - taqOffsetL - newSourceL;
+      tmpSourceB = taqSourceB - taqOffsetT - newSourceT;
     } else if (taqRotation == 3) {
-      srcL = clampInt(taqSrcL + taqOfsT + newSrcT, taqSrcL, taqSrcR);
-      srcT = clampInt(taqSrcB - taqOfsL - newSrcR, taqSrcT, taqSrcB);
-      srcR = clampInt(taqSrcL + taqOfsT + newSrcB, taqSrcL, taqSrcR);
-      srcB = clampInt(taqSrcB - taqOfsL - newSrcL, taqSrcT, taqSrcB);
-      ofsL = newOfsL + newSrcL + taqOfsL - taqSrcB + srcB;
-      ofsT = newOfsT + newSrcT + taqOfsT + taqSrcL - srcL;
+      tmpSourceL = taqSourceL + taqOffsetT + newSourceT;
+      tmpSourceT = taqSourceB - taqOffsetL - newSourceR;
+      tmpSourceR = taqSourceL + taqOffsetT + newSourceB;
+      tmpSourceB = taqSourceB - taqOffsetL - newSourceL;
     }
 
-    var renderTextureQuad = new RenderTextureQuad(taqRenderTexture,
-        new Rectangle<int>(srcL, srcT, srcR - srcL, srcB - srcT),
-        new Rectangle<int>(ofsL, ofsT, newOfsW, newOfsH),
-        (taqRotation + this.rotation) % 4, taqPixelRatio);
+    newSourceL = clampInt(tmpSourceL, taqSourceL, taqSourceR);
+    newSourceT = clampInt(tmpSourceT, taqSourceT, taqSourceB);
+    newSourceR = clampInt(tmpSourceR, taqSourceL, taqSourceR);
+    newSourceB = clampInt(tmpSourceB, taqSourceT, taqSourceB);
+
+    if (newRotation == 0) {
+      newOffsetL += tmpSourceL - newSourceL;
+      newOffsetT += tmpSourceT - newSourceT;
+    } else if (newRotation == 1) {
+      newOffsetL += tmpSourceT - newSourceT;
+      newOffsetT += newSourceR - tmpSourceR;
+    } else if (newRotation == 2) {
+      newOffsetL += newSourceR - tmpSourceR;
+      newOffsetT += tmpSourceB - newSourceB;
+    } else if (newRotation == 3) {
+      newOffsetL += newSourceB - tmpSourceB;
+      newOffsetT += newSourceL - tmpSourceL;
+    }
+
+    var newSourceW = newSourceR - newSourceL;
+    var newSourceH = newSourceB - newSourceT;
+
+    var renderTextureQuad = new RenderTextureQuad(newRenderTexture,
+        new Rectangle<int>(newSourceL, newSourceT, newSourceW, newSourceH),
+        new Rectangle<int>(newOffsetL, newOffsetT, newOffsetW, newOffsetH),
+        newRotation, newPixelRatio);
 
     return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
