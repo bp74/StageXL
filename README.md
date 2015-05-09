@@ -12,7 +12,7 @@ draw call batching, pixel masking, pixel filters, pixel blending,
 texture filtering, hierarchical display list, sprite sheet animations, 
 rich animation framework, audio and video support, interaction events,
 3D transformations of 2D objects, resource management, text rendering 
-and many more features as well as extensibility for even more features.
+and many other features as well as extensibility for even more features.
 
 [![Build Status](https://drone.io/github.com/bp74/StageXL/status.png)](https://drone.io/github.com/bp74/StageXL/latest)
 
@@ -54,10 +54,16 @@ a particular feature.
 
 ## Roadmap
 
+Besides improving our existing features and improving performance as much
+as possible, we are always thinking about new features we want to add next.
+Please send us your ideas and requests to make those things a reality you
+care about most. Some of the things we will tackle in the near future are:
+
 * Getting closer to version 1.0.
 * Runtime support for GAF Converter.
 * Runtime support for Tiled Map Editor.
 * Support for Sky (native runtime environment for Android).
+* A new StageXL homepage with more articles / blog posts.
 
 ## Adobe Flash heritage
 
