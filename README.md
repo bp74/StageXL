@@ -1,11 +1,18 @@
 # StageXL 
 
-StageXL is a package for the Dart programming language. 
-It offers an easy to use and complete API for impressive 2D content like 
-games and other rich applications. The library started as an easy migration 
-path for Adobe Flash developers to HTML5. Therefore the StageXL API is for 
-the most part identical to the Flash API. Today many developers who have 
-no prior experience with Flash are using StageXL for their applications.
+StageXL is a fast and universal 2D rendering engine for HTML5 and Dart. 
+It provides a wide range of features for 2D games or other graphically 
+rich content. The WebGL based engine is highly optimized to reduce the
+number of draw calls sent to the GPU and therefore delivers top-class
+performance. The automatic fallback to a Canvas2D based engine guarantees 
+compatibility with older browsers or legacy hardware. 
+
+Some of the features provided by StageXL are: texture atlas support, 
+draw call batching, pixel masking, pixel filters, pixel blending,
+texture filtering, hierarchical display list, sprite sheet animations, 
+rich animation framework, audio and video support, interaction events,
+3D transformations of 2D objects, resource management, text rendering 
+and many more features and easy extensibility for even more features.
 
 [![Build Status](https://drone.io/github.com/bp74/StageXL/status.png)](https://drone.io/github.com/bp74/StageXL/latest)
 
@@ -31,8 +38,9 @@ developers to find answers quickly, therefore it would be great to get your
 questions on StackOverflow.
 
 * StageXL Forum: <https://groups.google.com/forum/#!forum/stagexl>
-* StageXL GitHub: <https://github.com/bp74/StageXL/issues>
+* StageXL GitHub Issues: <https://github.com/bp74/StageXL/issues>
 * StageXL StackOverflow: <http://stackoverflow.com/questions/tagged/stagexl>
+* StageXL API Reference: <http://www.stagexl.org/docs/api/index.html>
 
 ## Examples
 
@@ -60,5 +68,5 @@ language is easy to use for everyone who is familiar with ActionScript.
 
 * Toolkit for Dart: <http://toolkitfordart.github.io>
 * ActionScript to Dart converter: <https://github.com/blockforest/stagexl-converter-pubrun>
-* ActionScript to Dart comparision: <http://www.stagexl.org/docs/actionscript-dart.html>
+* ActionScript to Dart comparison: <http://www.stagexl.org/docs/actionscript-dart.html>
  
