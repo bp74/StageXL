@@ -12,7 +12,7 @@ package. This file is normally updated whenever we push a new version to pub.
   * Added BitmapDataLoadOptions.maxPixelRatio (replaces old autoHiDpi). 
   * Added TextureAtlas loader abstraction for custom loaders.
   * Improved pixel ratio configuration for HiDPI BitmapDatas.   
-  * Fixed render texture updates on iOS8.
+  * Fixed RenderTexture update/resize/filtering on iOS8.
   * Fixed TintFilter showing the wrong ARGB values.
   * Breaking Change: changed Stage constructor arguments and properties.
   * Breaking Change: changed BitmapData constructor arguments and properties.
