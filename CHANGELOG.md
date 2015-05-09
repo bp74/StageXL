@@ -4,7 +4,7 @@ This file contains highlights of the changes we have made in each version.
 For questions regarding new features or breaking changes, please follow the
 announcements on the StageXL forum or use one of the support links below:
 
-  * StageXL Forum <http://www.stagexl.org/forum.html>
+  * StageXL Forum <https://groups.google.com/forum/#!forum/stagexl>
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow <http://stackoverflow.com/questions/tagged/stagexl>
   
