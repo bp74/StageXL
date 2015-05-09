@@ -67,62 +67,78 @@ class RenderTextureQuad {
   factory RenderTextureQuad.slice(RenderTextureQuad renderTextureQuad,
       Rectangle<int> sourceRectangle, Rectangle<int> offsetRectangle) {
 
-    RenderTexture renderTexture = renderTextureQuad.renderTexture;
-    num pixelRatio = renderTextureQuad.pixelRatio;
-    int rotation = renderTextureQuad.rotation;
+    var renderTexture = renderTextureQuad.renderTexture;
+    var pixelRatio = renderTextureQuad.pixelRatio;
+    var rotation = renderTextureQuad.rotation;
 
-    int oldSrcL = renderTextureQuad.sourceRectangle.left;
-    int oldSrcT = renderTextureQuad.sourceRectangle.top;
-    int oldSrcR = renderTextureQuad.sourceRectangle.right;
-    int oldSrcB = renderTextureQuad.sourceRectangle.bottom;
-    int oldOfsL = renderTextureQuad.offsetRectangle.left;
-    int oldOfsT = renderTextureQuad.offsetRectangle.top;
+    var oldSourceL = renderTextureQuad.sourceRectangle.left;
+    var oldSourceT = renderTextureQuad.sourceRectangle.top;
+    var oldSourceR = renderTextureQuad.sourceRectangle.right;
+    var oldSourceB = renderTextureQuad.sourceRectangle.bottom;
+    var oldOffsetL = renderTextureQuad.offsetRectangle.left;
+    var oldOffsetT = renderTextureQuad.offsetRectangle.top;
 
-    int newSrcL = sourceRectangle.left;
-    int newSrcT = sourceRectangle.top;
-    int newSrcR = sourceRectangle.right;
-    int newSrcB = sourceRectangle.bottom;
-    int newOfsL = offsetRectangle.left;
-    int newOfsT = offsetRectangle.top;
-    int newOfsW = offsetRectangle.width;
-    int newOfsH = offsetRectangle.height;
+    var newSourceL = sourceRectangle.left;
+    var newSourceT = sourceRectangle.top;
+    var newSourceR = sourceRectangle.right;
+    var newSourceB = sourceRectangle.bottom;
+    var newOffsetL = offsetRectangle.left;
+    var newOffsetT = offsetRectangle.top;
+    var newOffsetW = offsetRectangle.width;
+    var newOffsetH = offsetRectangle.height;
 
-    int srcL = 0, srcT = 0, srcR = 0, srcB = 0;
-    int ofsL = 0, ofsT = 0;
+    var tmpSourceL = 0;
+    var tmpSourceT = 0;
+    var tmpSourceR = 0;
+    var tmpSourceB = 0;
 
     if (rotation == 0) {
-      srcL = clampInt(oldSrcL + oldOfsL + newSrcL, oldSrcL, oldSrcR);
-      srcT = clampInt(oldSrcT + oldOfsT + newSrcT, oldSrcT, oldSrcB);
-      srcR = clampInt(oldSrcL + oldOfsL + newSrcR, oldSrcL, oldSrcR);
-      srcB = clampInt(oldSrcT + oldOfsT + newSrcB, oldSrcT, oldSrcB);
-      ofsL = newOfsL + newSrcL + oldOfsL + oldSrcL - srcL;
-      ofsT = newOfsT + newSrcT + oldOfsT + oldSrcT - srcT;
+      tmpSourceL = oldSourceL + oldOffsetL + newSourceL;
+      tmpSourceT = oldSourceT + oldOffsetT + newSourceT;
+      tmpSourceR = oldSourceL + oldOffsetL + newSourceR;
+      tmpSourceB = oldSourceT + oldOffsetT + newSourceB;
     } else if (rotation == 1) {
-      srcL = clampInt(oldSrcR - oldOfsT - newSrcB, oldSrcL, oldSrcR);
-      srcT = clampInt(oldSrcT + oldOfsL + newSrcL, oldSrcT, oldSrcB);
-      srcR = clampInt(oldSrcR - oldOfsT - newSrcT, oldSrcL, oldSrcR);
-      srcB = clampInt(oldSrcT + oldOfsL + newSrcR, oldSrcT, oldSrcB);
-      ofsL = newOfsL + newSrcL + oldOfsL + oldSrcT - srcT;
-      ofsT = newOfsT + newSrcT + oldOfsT - oldSrcR + srcR;
+      tmpSourceL = oldSourceR - oldOffsetT - newSourceB;
+      tmpSourceT = oldSourceT + oldOffsetL + newSourceL;
+      tmpSourceR = oldSourceR - oldOffsetT - newSourceT;
+      tmpSourceB = oldSourceT + oldOffsetL + newSourceR;
     } else if (rotation == 2) {
-      srcL = clampInt(oldSrcR - oldOfsL - newSrcR, oldSrcL, oldSrcR);
-      srcT = clampInt(oldSrcB - oldOfsT - newSrcB, oldSrcT, oldSrcB);
-      srcR = clampInt(oldSrcR - oldOfsL - newSrcL, oldSrcL, oldSrcR);
-      srcB = clampInt(oldSrcB - oldOfsT - newSrcT, oldSrcT, oldSrcB);
-      ofsL = newOfsL + newSrcL + oldOfsL - oldSrcR + srcR;
-      ofsT = newOfsT + newSrcT + oldOfsT - oldSrcB + srcB;
+      tmpSourceL = oldSourceR - oldOffsetL - newSourceR;
+      tmpSourceT = oldSourceB - oldOffsetT - newSourceB;
+      tmpSourceR = oldSourceR - oldOffsetL - newSourceL;
+      tmpSourceB = oldSourceB - oldOffsetT - newSourceT;
     } else if (rotation == 3) {
-      srcL = clampInt(oldSrcL + oldOfsT + newSrcT, oldSrcL, oldSrcR);
-      srcT = clampInt(oldSrcB - oldOfsL - newSrcR, oldSrcT, oldSrcB);
-      srcR = clampInt(oldSrcL + oldOfsT + newSrcB, oldSrcL, oldSrcR);
-      srcB = clampInt(oldSrcB - oldOfsL - newSrcL, oldSrcT, oldSrcB);
-      ofsL = newOfsL + newSrcL + oldOfsL - oldSrcB + srcB;
-      ofsT = newOfsT + newSrcT + oldOfsT + oldSrcL - srcL;
+      tmpSourceL = oldSourceL + oldOffsetT + newSourceT;
+      tmpSourceT = oldSourceB - oldOffsetL - newSourceR;
+      tmpSourceR = oldSourceL + oldOffsetT + newSourceB;
+      tmpSourceB = oldSourceB - oldOffsetL - newSourceL;
     }
 
+    newSourceL = clampInt(tmpSourceL, oldSourceL, oldSourceR);
+    newSourceT = clampInt(tmpSourceT, oldSourceT, oldSourceB);
+    newSourceR = clampInt(tmpSourceR, oldSourceL, oldSourceR);
+    newSourceB = clampInt(tmpSourceB, oldSourceT, oldSourceB);
+
+    if (rotation == 0) {
+      newOffsetL += tmpSourceL - newSourceL;
+      newOffsetT += tmpSourceT - newSourceT;
+    } else if (rotation == 1) {
+      newOffsetL += tmpSourceT - newSourceT;
+      newOffsetT += newSourceR - tmpSourceR;
+    } else if (rotation == 2) {
+      newOffsetL += newSourceR - tmpSourceR;
+      newOffsetT += tmpSourceB - newSourceB;
+    } else if (rotation == 3) {
+      newOffsetL += newSourceB - tmpSourceB;
+      newOffsetT += newSourceL - tmpSourceL;
+    }
+
+    var newSourceW = newSourceR - newSourceL;
+    var newSourceH = newSourceB - newSourceT;
+
     return new RenderTextureQuad(renderTexture,
-        new Rectangle<int>(srcL, srcT, srcR - srcL, srcB - srcT),
-        new Rectangle<int>(ofsL, ofsT, newOfsW, newOfsH),
+        new Rectangle<int>(newSourceL, newSourceT, newSourceW, newSourceH),
+        new Rectangle<int>(newOffsetL, newOffsetT, newOffsetW, newOffsetH),
         rotation, pixelRatio);
   }
 
