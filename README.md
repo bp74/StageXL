@@ -12,7 +12,7 @@ draw call batching, pixel masking, pixel filters, pixel blending,
 texture filtering, hierarchical display list, sprite sheet animations, 
 rich animation framework, audio and video support, interaction events,
 3D transformations of 2D objects, resource management, text rendering 
-and many more features and easy extensibility for even more features.
+and many more features as well as extensibility for even more features.
 
 [![Build Status](https://drone.io/github.com/bp74/StageXL/status.png)](https://drone.io/github.com/bp74/StageXL/latest)
 
