@@ -1,7 +1,7 @@
 # StageXL 
 
 StageXL is a fast and universal 2D rendering engine for HTML5 and Dart. 
-It provides a wide range of features for 2D games or other graphically 
+It provides a wide range of features for 2D games and other graphically 
 rich content. The WebGL based engine is highly optimized to reduce the
 number of draw calls sent to the GPU and therefore delivers top-class
 performance. The automatic fallback to a Canvas2D based engine guarantees 
@@ -29,7 +29,7 @@ StageXL extension libraries.
 * Particle Emitter: <https://github.com/bp74/StageXL_Particle>
 * Rich Text Field: <https://github.com/realbluesky/StageXL_RichTextField>
 
-## Get Help
+## Getting Help
 
 The easiest way to get started or to accomplish a task is to ask questions.
 We are actively tracking the following websites and answer questions as fast
@@ -44,7 +44,7 @@ questions on StackOverflow.
 
 ## Examples
 
-We are working on more examples to covering a wide range of use cases. 
+We are working on more examples to covering a wider range of use cases. 
 Please take a look at the StageXL samples repository for our ongoing work. 
 Don't hesitate to send example requests that would help you to learn about 
 a particular feature.
@@ -69,7 +69,7 @@ care about most. Some of the things we will tackle in the near future are:
 
 StageXL started as an easy migration path for Adobe Flash developers and their
 products to HTML5. Therefore StageXL provides the same display list API you
-may have used for many years in Flash. Furthermore the Dart programming
+may have used in Flash for many years. Furthermore the Dart programming
 language is easy to use for everyone who is familiar with ActionScript. 
 
 * Toolkit for Dart: <http://toolkitfordart.github.io>
