@@ -3,6 +3,26 @@
 This file contains highlights of what changes on each version of the StageXL
 package. This file is normally updated whenever we push a new version to pub.
 
+#### Pub version 0.12.0-dev
+  * Added StageXL global default configuration options.
+  * Added Juggler asynchronous/reactive features.
+  * Added SoundChannel play() and pause() methods.
+  * Added SoundChannel position, paused, stopped properties.
+  * Added SoundMixer.unlockMobileAudio() convenience method.
+  * Added BitmapDataLoadOptions.maxPixelRatio (replaces old autoHiDpi). 
+  * Added TextureAtlas loader abstraction for custom loaders.
+  * Improved pixel ratio configuration for HiDPI BitmapDatas.   
+  * Fixed render texture updates on iOS8.
+  * Fixed TintFilter showing the wrong ARGB values.
+  * Breaking Change: changed Stage constructor arguments and properties.
+  * Breaking Change: changed BitmapData constructor arguments and properties.
+  * Breaking Change: changed RenderTextureQuad constructor and properties.
+  
+This version contains a few breaking changes. 
+If you experience a problem please report the issue either in the 
+[StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
+or in the [StageXL Forum](http://www.stagexl.org/forum.html).
+  
 #### Pub version 0.11.0+1
   * Added hashCode getter in Point, Rectangle, Circle, Vector.
   
@@ -23,8 +43,8 @@ package. This file is normally updated whenever we push a new version to pub.
   * Internal simplifications and optimizations.  
   * Requires Dart SDK 1.9 or higher.    
 
-This version contains a few minor breaking changes. If you experience 
-a problem please report the issue either in the 
+This version contains a few breaking changes. 
+If you experience a problem please report the issue either in the 
 [StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
 or in the [StageXL Forum](http://www.stagexl.org/forum.html).
 
