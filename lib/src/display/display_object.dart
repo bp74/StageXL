@@ -61,9 +61,6 @@ abstract class DisplayObject
   final Matrix _transformationMatrix = new Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
 
-  @deprecated Shadow shadow;
-  @deprecated String compositeOperation;
-
   //-------------------------------------------------------------------------------------------------
 
   static const EventStreamProvider<Event> addedEvent = const EventStreamProvider<Event>(Event.ADDED);
