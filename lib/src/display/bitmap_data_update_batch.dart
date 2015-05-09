@@ -142,8 +142,7 @@ class BitmapDataUpdateBatch {
 
     var rectangle = new Rectangle<int>(x, y, 1, 1);
     var renderTextureQuad = this.bitmapData.renderTextureQuad.clip(rectangle);
-    if (renderTextureQuad.xyList[8] == 0) return 0;
-    if (renderTextureQuad.xyList[9] == 0) return 0;
+    if (renderTextureQuad.sourceRectangle.isEmpty) return Color.Transparent;
 
     var isLittleEndianSystem = env.isLittleEndianSystem;
     var imageData = renderTextureQuad.getImageData();
