@@ -8,9 +8,9 @@ class RenderTextureQuad {
   final int rotation;
   final num pixelRatio;
 
-  final Float32List pqList = new Float32List(10);
+  final Int32List abList = new Int32List(10);
+  final Float32List xyList = new Float32List(10);
   final Float32List uvList = new Float32List(10);
-  final Int32List xyList = new Int32List(10);
 
   //---------------------------------------------------------------------------
 
@@ -26,40 +26,40 @@ class RenderTextureQuad {
     int r = l + w;
     int b = t + h;
 
-    // Vertex positions + size
-
-    pqList[0] = pqList[6] = l / pixelRatio;
-    pqList[1] = pqList[3] = t / pixelRatio;
-    pqList[2] = pqList[4] = r / pixelRatio;
-    pqList[5] = pqList[7] = b / pixelRatio;
-    pqList[8] = w / pixelRatio;
-    pqList[9] = h / pixelRatio;
-
     // Source coordinates + size
 
-    xyList[0] = a == 0 || a == 3 ? sourceRectangle.left : sourceRectangle.right;
-    xyList[1] = a == 0 || a == 1 ? sourceRectangle.top : sourceRectangle.bottom;
-    xyList[2] = a == 2 || a == 3 ? sourceRectangle.left : sourceRectangle.right;
-    xyList[3] = a == 0 || a == 3 ? sourceRectangle.top : sourceRectangle.bottom;
-    xyList[4] = a == 1 || a == 2 ? sourceRectangle.left : sourceRectangle.right;
-    xyList[5] = a == 2 || a == 3 ? sourceRectangle.top : sourceRectangle.bottom;
-    xyList[6] = a == 0 || a == 1 ? sourceRectangle.left : sourceRectangle.right;
-    xyList[7] = a == 1 || a == 2 ? sourceRectangle.top : sourceRectangle.bottom;
-    xyList[8] = sourceRectangle.width;
-    xyList[9] = sourceRectangle.height;
+    abList[0] = a == 0 || a == 3 ? sourceRectangle.left : sourceRectangle.right;
+    abList[1] = a == 0 || a == 1 ? sourceRectangle.top : sourceRectangle.bottom;
+    abList[2] = a == 2 || a == 3 ? sourceRectangle.left : sourceRectangle.right;
+    abList[3] = a == 0 || a == 3 ? sourceRectangle.top : sourceRectangle.bottom;
+    abList[4] = a == 1 || a == 2 ? sourceRectangle.left : sourceRectangle.right;
+    abList[5] = a == 2 || a == 3 ? sourceRectangle.top : sourceRectangle.bottom;
+    abList[6] = a == 0 || a == 1 ? sourceRectangle.left : sourceRectangle.right;
+    abList[7] = a == 1 || a == 2 ? sourceRectangle.top : sourceRectangle.bottom;
+    abList[8] = sourceRectangle.width;
+    abList[9] = sourceRectangle.height;
+
+    // Vertex positions + size
+
+    xyList[0] = xyList[6] = l / pixelRatio;
+    xyList[1] = xyList[3] = t / pixelRatio;
+    xyList[2] = xyList[4] = r / pixelRatio;
+    xyList[5] = xyList[7] = b / pixelRatio;
+    xyList[8] = w / pixelRatio;
+    xyList[9] = h / pixelRatio;
 
     // WebGL coordinates + size
 
-    uvList[0] = xyList[0] / renderTexture.width;
-    uvList[1] = xyList[1] / renderTexture.height;
-    uvList[2] = xyList[2] / renderTexture.width;
-    uvList[3] = xyList[3] / renderTexture.height;
-    uvList[4] = xyList[4] / renderTexture.width;
-    uvList[5] = xyList[5] / renderTexture.height;
-    uvList[6] = xyList[6] / renderTexture.width;
-    uvList[7] = xyList[7] / renderTexture.height;
-    uvList[8] = xyList[8] / renderTexture.width;
-    uvList[9] = xyList[9] / renderTexture.height;
+    uvList[0] = abList[0] / renderTexture.width;
+    uvList[1] = abList[1] / renderTexture.height;
+    uvList[2] = abList[2] / renderTexture.width;
+    uvList[3] = abList[3] / renderTexture.height;
+    uvList[4] = abList[4] / renderTexture.width;
+    uvList[5] = abList[5] / renderTexture.height;
+    uvList[6] = abList[6] / renderTexture.width;
+    uvList[7] = abList[7] / renderTexture.height;
+    uvList[8] = abList[8] / renderTexture.width;
+    uvList[9] = abList[9] / renderTexture.height;
   }
 
   //---------------------------------------------------------------------------

@@ -47,14 +47,13 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderQuad(RenderState renderState,
-                  RenderTextureQuad renderTextureQuad) {
+  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
 
     var context = _renderingContext;
     var source = renderTextureQuad.renderTexture.source;
     var rotation = renderTextureQuad.rotation;
+    var abList = renderTextureQuad.abList;
     var xyList = renderTextureQuad.xyList;
-    var pqList = renderTextureQuad.pqList;
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
     var blendMode = renderState.globalBlendMode;
@@ -73,29 +72,29 @@ class RenderContextCanvas extends RenderContext {
 
       context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          xyList[0], xyList[1], xyList[8], xyList[9],
-          pqList[0], pqList[1], pqList[8], pqList[9]);
+          abList[0], abList[1], abList[8], abList[9],
+          xyList[0], xyList[1], xyList[8], xyList[9]);
 
     } else if (rotation == 1) {
 
       context.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          xyList[6], xyList[7], xyList[8], xyList[9],
-          0.0 - pqList[7], pqList[6], pqList[9], pqList[8]);
+          abList[6], abList[7], abList[8], abList[9],
+          0.0 - xyList[7], xyList[6], xyList[9], xyList[8]);
 
     } else if (rotation == 2) {
 
       context.setTransform(-matrix.a, -matrix.b, -matrix.c, -matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          xyList[4], xyList[5], xyList[8], xyList[9],
-          0.0 - pqList[4], 0.0 - pqList[5],  pqList[8], pqList[9]);
+          abList[4], abList[5], abList[8], abList[9],
+          0.0 - xyList[4], 0.0 - xyList[5],  xyList[8], xyList[9]);
 
     } else if (rotation == 3) {
 
       context.setTransform(matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          xyList[2], xyList[3], xyList[8], xyList[9],
-          pqList[3], 0.0 - pqList[2], pqList[9], pqList[8]);
+          abList[2], abList[3], abList[8], abList[9],
+          xyList[3], 0.0 - xyList[2], xyList[9], xyList[8]);
     }
   }
 

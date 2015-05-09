@@ -253,7 +253,7 @@ class GlowFilterProgram extends RenderProgram {
       RenderState renderState, RenderTextureQuad renderTextureQuad,
       int color, num alpha, num radiusX, num radiusY) {
 
-    Float32List pqList = renderTextureQuad.pqList;
+    Float32List xyList = renderTextureQuad.xyList;
     Float32List uvList = renderTextureQuad.uvList;
     Matrix matrix = renderState.globalMatrix;
 
@@ -270,8 +270,8 @@ class GlowFilterProgram extends RenderProgram {
 
     for(int vertex = 0, index = 0; vertex < 4; vertex++, index += 4) {
 
-      num x = pqList[vertex + vertex + 0];
-      num y = pqList[vertex + vertex + 1];
+      num x = xyList[vertex + vertex + 0];
+      num y = xyList[vertex + vertex + 1];
 
       if (index > vxData.length - 4) return; // dart2js_hint
 

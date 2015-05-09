@@ -183,7 +183,7 @@ class NormalMapFilterProgram extends RenderProgram {
     Matrix texMatrix = renderTextureQuad.samplerMatrix;
     Matrix posMatrix = renderState.globalMatrix;
     num alpha = renderState.globalAlpha;
-    Float32List pqList = renderTextureQuad.pqList;
+    Float32List xyList = renderTextureQuad.xyList;
 
     // Ambient color, light color, light position
 
@@ -221,8 +221,8 @@ class NormalMapFilterProgram extends RenderProgram {
 
     for(int vertex = 0, index = _quadCount * 76; vertex < 4; vertex++, index += 19) {
 
-      num x = pqList[vertex + vertex + 0];
-      num y = pqList[vertex + vertex + 1];
+      num x = xyList[vertex + vertex + 0];
+      num y = xyList[vertex + vertex + 1];
 
       if (index > vxData.length - 19) return; // dart2js_hint
 
