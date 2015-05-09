@@ -1,11 +1,16 @@
-# changelog
+# Change Log
 
-This file contains highlights of what changes on each version of the StageXL
-package. This file is normally updated whenever we push a new version to pub.
+This file contains highlights of the changes we have made in each version.
+For questions regarding new features or breaking changes, please follow the
+announcements on the StageXL forum or use one of the support links below:
 
+  * StageXL Forum <http://www.stagexl.org/forum.html>
+  * StageXL GitHub <https://github.com/bp74/StageXL/issues>
+  * StageXL StackOverflow <http://stackoverflow.com/questions/tagged/stagexl>
+  
 #### Pub version 0.12.0-dev
   * Added StageXL global default configuration options.
-  * Added Juggler asynchronous/reactive features.
+  * Added Juggler async/await and reactive features.
   * Added SoundChannel play() and pause() methods.
   * Added SoundChannel position, paused, stopped properties.
   * Added SoundMixer.unlockMobileAudio() convenience method.
@@ -17,11 +22,6 @@ package. This file is normally updated whenever we push a new version to pub.
   * Breaking Change: changed Stage constructor arguments and properties.
   * Breaking Change: changed BitmapData constructor arguments and properties.
   * Breaking Change: changed RenderTextureQuad constructor and properties.
-  
-This version contains a few breaking changes. 
-If you experience a problem please report the issue either in the 
-[StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
-or in the [StageXL Forum](http://www.stagexl.org/forum.html).
   
 #### Pub version 0.11.0+1
   * Added hashCode getter in Point, Rectangle, Circle, Vector.
@@ -42,11 +42,6 @@ or in the [StageXL Forum](http://www.stagexl.org/forum.html).
   * Make TextureAtlasFormat.JSONARRAY the default.
   * Internal simplifications and optimizations.  
   * Requires Dart SDK 1.9 or higher.    
-
-This version contains a few breaking changes. 
-If you experience a problem please report the issue either in the 
-[StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
-or in the [StageXL Forum](http://www.stagexl.org/forum.html).
 
 #### Pub version 0.10.3
   * Added InputEvent as base class for MouseEvent and TouchEvent.
@@ -91,11 +86,6 @@ or in the [StageXL Forum](http://www.stagexl.org/forum.html).
   * Deprecated Mask.targetSpace property.
   * Bugfixes and performance improvements.
   * Internal refactoring to use mini-libs.
-  
-This version contains a few minor breaking changes. If you experience 
-a problem please report the issue either in the 
-[StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
-or in the [StageXL Forum](http://www.stagexl.org/forum.html).
 
 #### Pub version 0.9.4+2
   * Fixed an issue with TouchEvents in Dartium.
