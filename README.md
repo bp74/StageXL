@@ -1,24 +1,53 @@
-# StageXL
+# StageXL 
 
-StageXL is a package for the Dart programming language. It offers an easy to use and complete API for impressive 2D content like games and other rich applications. The library started as an easy migration path for Adobe Flash developers to HTML5. Therefore the StageXL API is for the most part identical to the Flash API. Today many developers who have no prior experience with Flash are using StageXL for their applications.
-
-StageXL homepage: <http://www.stagexl.org>  
-Dart homepage: <http://www.dartlang.org>  
-
-## Get more information
-
-Please visit the StageXL Samples website to get a glimpse of the kind of applications you can built with StageXL and Dart. It shows two casual games and many other demos and examples. 
-
-<http://www.stagexl.org/samples>
-
-The source code for this samples is available on GitHub:
-
-<https://github.com/bp74/StageXL_Samples>
-
-Flash developers who are not familiar with the Dart language, may take a look at the ActionScript to Dart comparison on the StageXL homepage:
-
-<http://www.stagexl.org/docs/actionscript-dart.html>
-
----
+StageXL is a package for the Dart programming language. 
+It offers an easy to use and complete API for impressive 2D content like 
+games and other rich applications. The library started as an easy migration 
+path for Adobe Flash developers to HTML5. Therefore the StageXL API is for 
+the most part identical to the Flash API. Today many developers who have 
+no prior experience with Flash are using StageXL for their applications.
 
 [![Build Status](https://drone.io/github.com/bp74/StageXL/status.png)](https://drone.io/github.com/bp74/StageXL/latest)
+
+## Extension Libraries
+
+StageXL provides a rich set of built-in features. Even more adanvaced use cases 
+may require an extension library with a specialied set of features. The number
+of extension libraries is growing over time, here is a list of the most popular
+StageXL extension libraries.   
+
+  * Bitmap Fonts: <https://github.com/bp74/StageXL_BitmapFont>
+  * Spine Runtime: <https://github.com/bp74/StageXL_Spine>
+  * Flump Runtime: <https://github.com/bp74/StageXL_Flump>
+  * Particle Emitter: <https://github.com/bp74/StageXL_Particle>
+  * Rich Text Field: <https://github.com/realbluesky/StageXL_RichTextField>
+
+## Get Help
+
+The easiest way to get started or to accomplish a task is to ask questions.
+We are actively tracking the following websites and answer questions as fast
+as possible. We would like to get more FAQs on StackOverflow to help other
+developers to find answers quickly, therefore it would be great to get your
+questions on StackOverflow.
+
+  * StageXL Forum: <https://groups.google.com/forum/#!forum/stagexl>
+  * StageXL GitHub: <https://github.com/bp74/StageXL/issues>
+  * StageXL StackOverflow: <http://stackoverflow.com/questions/tagged/stagexl>
+
+## Examples
+
+We are actively working on more examples to covering a wide range of use cases. 
+Please take a look at the StageXL samples repository for our ongoing work. 
+Don't hesitate to send example requests that would help you to learn about 
+a particular feature.
+
+  * GitHub repository: <https://github.com/bp74/StageXL_Samples>
+  * StageXL homepage: <http://www.stagexl.org/samples> 
+
+## Roadmap
+
+  * Getting to version 1.0
+  * Runtime support for GAF Converter
+  * Runtime support for Tiled Map Editor
+  * Support for Sky (native runtime environment for Android)
+
