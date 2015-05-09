@@ -38,6 +38,22 @@ int maxInt(int a, int b) {
   }
 }
 
+num minNum(num a, num b) {
+  if (a <= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+num maxNum(num a, num b) {
+  if (a >= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
 int clampInt(int value, int lower, int upper) {
   if (value <= lower) {
     return lower;

@@ -28,3 +28,4 @@ part 'resources/sprite_sheet.dart';
 part 'resources/texture_atlas.dart';
 part 'resources/texture_atlas_format.dart';
 part 'resources/texture_atlas_frame.dart';
+part 'resources/texture_atlas_loader.dart';
