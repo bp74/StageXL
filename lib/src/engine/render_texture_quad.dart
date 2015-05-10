@@ -64,13 +64,16 @@ class RenderTextureQuad {
 
   //---------------------------------------------------------------------------
 
-  factory RenderTextureQuad.slice(RenderTextureQuad renderTextureQuad,
-      Rectangle<int> sourceRectangle, Rectangle<int> offsetRectangle) {
+  factory RenderTextureQuad.slice(
+      RenderTextureQuad renderTextureQuad,
+      Rectangle<int> sourceRectangle,
+      Rectangle<int> offsetRectangle,
+      [int rotation = 0]) {
 
     var renderTexture = renderTextureQuad.renderTexture;
     var pixelRatio = renderTextureQuad.pixelRatio;
-    var rotation = renderTextureQuad.rotation;
 
+    var oldRotation = renderTextureQuad.rotation;
     var oldSourceL = renderTextureQuad.sourceRectangle.left;
     var oldSourceT = renderTextureQuad.sourceRectangle.top;
     var oldSourceR = renderTextureQuad.sourceRectangle.right;
@@ -78,6 +81,7 @@ class RenderTextureQuad {
     var oldOffsetL = renderTextureQuad.offsetRectangle.left;
     var oldOffsetT = renderTextureQuad.offsetRectangle.top;
 
+    var newRotation = (renderTextureQuad.rotation + rotation) % 4;
     var newSourceL = sourceRectangle.left;
     var newSourceT = sourceRectangle.top;
     var newSourceR = sourceRectangle.right;
@@ -92,22 +96,22 @@ class RenderTextureQuad {
     var tmpSourceR = 0;
     var tmpSourceB = 0;
 
-    if (rotation == 0) {
+    if (oldRotation == 0) {
       tmpSourceL = oldSourceL + oldOffsetL + newSourceL;
       tmpSourceT = oldSourceT + oldOffsetT + newSourceT;
       tmpSourceR = oldSourceL + oldOffsetL + newSourceR;
       tmpSourceB = oldSourceT + oldOffsetT + newSourceB;
-    } else if (rotation == 1) {
+    } else if (oldRotation == 1) {
       tmpSourceL = oldSourceR - oldOffsetT - newSourceB;
       tmpSourceT = oldSourceT + oldOffsetL + newSourceL;
       tmpSourceR = oldSourceR - oldOffsetT - newSourceT;
       tmpSourceB = oldSourceT + oldOffsetL + newSourceR;
-    } else if (rotation == 2) {
+    } else if (oldRotation == 2) {
       tmpSourceL = oldSourceR - oldOffsetL - newSourceR;
       tmpSourceT = oldSourceB - oldOffsetT - newSourceB;
       tmpSourceR = oldSourceR - oldOffsetL - newSourceL;
       tmpSourceB = oldSourceB - oldOffsetT - newSourceT;
-    } else if (rotation == 3) {
+    } else if (oldRotation == 3) {
       tmpSourceL = oldSourceL + oldOffsetT + newSourceT;
       tmpSourceT = oldSourceB - oldOffsetL - newSourceR;
       tmpSourceR = oldSourceL + oldOffsetT + newSourceB;
@@ -119,16 +123,16 @@ class RenderTextureQuad {
     newSourceR = clampInt(tmpSourceR, oldSourceL, oldSourceR);
     newSourceB = clampInt(tmpSourceB, oldSourceT, oldSourceB);
 
-    if (rotation == 0) {
+    if (newRotation == 0) {
       newOffsetL += tmpSourceL - newSourceL;
       newOffsetT += tmpSourceT - newSourceT;
-    } else if (rotation == 1) {
+    } else if (newRotation == 1) {
       newOffsetL += tmpSourceT - newSourceT;
       newOffsetT += newSourceR - tmpSourceR;
-    } else if (rotation == 2) {
+    } else if (newRotation == 2) {
       newOffsetL += newSourceR - tmpSourceR;
       newOffsetT += tmpSourceB - newSourceB;
-    } else if (rotation == 3) {
+    } else if (newRotation == 3) {
       newOffsetL += newSourceB - tmpSourceB;
       newOffsetT += newSourceL - tmpSourceL;
     }
@@ -139,7 +143,7 @@ class RenderTextureQuad {
     return new RenderTextureQuad(renderTexture,
         new Rectangle<int>(newSourceL, newSourceT, newSourceW, newSourceH),
         new Rectangle<int>(newOffsetL, newOffsetT, newOffsetW, newOffsetH),
-        rotation, pixelRatio);
+        newRotation, pixelRatio);
   }
 
   //---------------------------------------------------------------------------
