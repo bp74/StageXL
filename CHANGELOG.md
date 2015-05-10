@@ -6,7 +6,7 @@ announcements on the StageXL forum or use one of the support links below:
 
   * StageXL Forum <https://groups.google.com/forum/#!forum/stagexl>
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
-  * StageXL StackOverflow <http://stackoverflow.com/questions/tagged/stagexl>
+  * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
   
 #### Pub version 0.12.0-dev
   * Added StageXL global default configuration options.
@@ -19,8 +19,8 @@ announcements on the StageXL forum or use one of the support links below:
   * Improved pixel ratio configuration for HiDPI BitmapDatas.   
   * Fixed RenderTexture update/resize/filtering on iOS8.
   * Fixed TintFilter showing the wrong ARGB values.
-  * Breaking Change: changed Stage constructor arguments and properties.
-  * Breaking Change: changed BitmapData constructor arguments and properties.
+  * Breaking Change: changed Stage constructor and properties.
+  * Breaking Change: changed BitmapData constructor and properties.
   * Breaking Change: changed RenderTextureQuad constructor and properties.
   
 #### Pub version 0.11.0+1
@@ -35,7 +35,7 @@ announcements on the StageXL forum or use one of the support links below:
   * Added NormalMapFilter for light effects.
   * Added quality setting for blur, glow and drop shadow filter.
   * Optimized filters for Bitmap, TextField, FlipBook and VideoObject.
-  * Optimizes overall performance for filters and display objects.  
+  * Optimized overall performance for filters and display objects.  
   * Optimized onAddedToStage and onRemovedFromStage event dispatching.
   * Optimized memory consumption for BitmapData loading.
   * Fixed SimpleButton setters for the state display objects. 
