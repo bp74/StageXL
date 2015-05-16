@@ -25,10 +25,10 @@ class _DisplayObjectCache {
 
   void update() {
 
-    var l = (pixelRatio * this.bounds.left).floor();
-    var t = (pixelRatio * this.bounds.top).floor();
-    var r = (pixelRatio * this.bounds.right).ceil();
-    var b = (pixelRatio * this.bounds.bottom).ceil();
+    var l = (pixelRatio * bounds.left).floor();
+    var t = (pixelRatio * bounds.top).floor();
+    var r = (pixelRatio * bounds.right).ceil();
+    var b = (pixelRatio * bounds.bottom).ceil();
     var w = r - l;
     var h = b - t;
 
@@ -60,7 +60,7 @@ class _DisplayObjectCache {
 
     var filters = this.displayObject.filters;
 
-    if (filters != null) {
+    if (filters != null && filters.length > 0) {
       var bitmapData = new BitmapData.fromRenderTextureQuad(renderTextureQuad);
       filters.forEach((filter) => filter.apply(bitmapData));
     }
