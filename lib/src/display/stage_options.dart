@@ -11,6 +11,15 @@ class StageOptions {
 
   RenderEngine renderEngine = RenderEngine.WebGL;
 
+  /// The [InputEventMode] used for input events on the [Stage].
+  ///
+  /// You can opt-in for touch events if you set the `TouchOnly` or
+  /// `TouchAndMouse` value. The second one is recommended because
+  /// you won't get any input events if you choose `TouchOnly` when
+  /// there is no touch screen available.
+
+  InputEventMode inputEventMode = InputEventMode.MouseOnly;
+
   /// The [StageRenderMode] used to render the [Stage].
 
   StageRenderMode stageRenderMode = StageRenderMode.AUTO;

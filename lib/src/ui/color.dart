@@ -1,5 +1,8 @@
 library stagexl.ui.color;
 
+/// Use the list of color values defined in [Color] to have
+/// easy access to the ARGB values of different colors.
+
 class Color {
 
   static const int AliceBlue = 0xFFF0F8FF;

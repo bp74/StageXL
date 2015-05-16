@@ -68,6 +68,7 @@ class Stage extends DisplayObjectContainer {
 
   InteractiveObject _focus = null;
   RenderState _renderState = null;
+  InputEventMode _inputEventMode = InputEventMode.MouseOnly;
   StageRenderMode _stageRenderMode = StageRenderMode.AUTO;
   StageScaleMode _stageScaleMode = StageScaleMode.SHOW_ALL;
   StageAlign _stageAlign = StageAlign.NONE;
@@ -107,6 +108,7 @@ class Stage extends DisplayObjectContainer {
     _stageAlign = options.stageAlign;
     _stageScaleMode = options.stageScaleMode;
     _stageRenderMode = options.stageRenderMode;
+    _inputEventMode = options.inputEventMode;
     _sourceWidth = ensureInt(width);
     _sourceHeight = ensureInt(height);
     _pixelRatio = min(options.maxPixelRatio, env.devicePixelRatio);
@@ -118,17 +120,36 @@ class Stage extends DisplayObjectContainer {
     canvas.onKeyDown.listen(_onKeyEvent);
     canvas.onKeyUp.listen(_onKeyEvent);
     canvas.onKeyPress.listen(_onKeyEvent);
-    canvas.onMouseDown.listen(_onMouseEvent);
-    canvas.onMouseUp.listen(_onMouseEvent);
-    canvas.onMouseMove.listen(_onMouseEvent);
-    canvas.onMouseOut.listen(_onMouseEvent);
-    canvas.onContextMenu.listen(_onMouseEvent);
-    canvas.onMouseWheel.listen(_onMouseWheelEvent);
+
+    var listenToMouseEvents =
+        _inputEventMode == InputEventMode.MouseOnly ||
+        _inputEventMode == InputEventMode.MouseAndTouch;
+
+    if (listenToMouseEvents) {
+      canvas.onMouseDown.listen(_onMouseEvent);
+      canvas.onMouseUp.listen(_onMouseEvent);
+      canvas.onMouseMove.listen(_onMouseEvent);
+      canvas.onMouseOut.listen(_onMouseEvent);
+      canvas.onContextMenu.listen(_onMouseEvent);
+      canvas.onMouseWheel.listen(_onMouseWheelEvent);
+    }
+
+    var listenToTouchEvents =
+        _inputEventMode == InputEventMode.TouchOnly ||
+        _inputEventMode == InputEventMode.MouseAndTouch;
+
+    if (listenToTouchEvents && env.isTouchEventSupported) {
+      canvas.onTouchStart.listen(_onTouchEvent);
+      canvas.onTouchEnd.listen(_onTouchEvent);
+      canvas.onTouchMove.listen(_onTouchEvent);
+      canvas.onTouchEnter.listen(_onTouchEvent);
+      canvas.onTouchLeave.listen(_onTouchEvent);
+      canvas.onTouchCancel.listen(_onTouchEvent);
+    }
 
     Mouse.onCursorChanged.listen((cursorName) => _updateMouseCursor());
-    Multitouch.onInputModeChanged.listen(_onMultitouchInputModeChanged);
 
-    _onMultitouchInputModeChanged(Multitouch.inputMode);
+    _updateMouseCursor();
     _updateCanvasSize();
   }
 
@@ -672,26 +693,6 @@ class Stage extends DisplayObjectContainer {
   }
 
   //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
-
-  List<StreamSubscription<html.TouchEvent>> _touchEventSubscriptions = [];
-
-  void _onMultitouchInputModeChanged(MultitouchInputMode inputMode) {
-
-    _touchEventSubscriptions.forEach((s) => s.cancel());
-
-    if (inputMode == MultitouchInputMode.TOUCH_POINT) {
-      _touchEventSubscriptions = [
-        _canvas.onTouchStart.listen(_onTouchEvent),
-        _canvas.onTouchEnd.listen(_onTouchEvent),
-        _canvas.onTouchMove.listen(_onTouchEvent),
-        _canvas.onTouchEnter.listen(_onTouchEvent),
-        _canvas.onTouchLeave.listen(_onTouchEvent),
-        _canvas.onTouchCancel.listen(_onTouchEvent)
-      ];
-    }
-  }
-
   //----------------------------------------------------------------------------
 
   void _onTouchEvent(html.TouchEvent event) {

@@ -22,6 +22,7 @@ announcements on the StageXL forum or use one of the support links below:
   * Breaking Change: changed Stage constructor and properties.
   * Breaking Change: changed BitmapData constructor and properties.
   * Breaking Change: changed RenderTextureQuad constructor and properties.
+  * Breaking Change: removed Multitouch class in favor of Stage options.
   
 #### Pub version 0.11.0+1
   * Added hashCode getter in Point, Rectangle, Circle, Vector.
