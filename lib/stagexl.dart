@@ -49,6 +49,7 @@ export 'src/ui.dart';
 /// The default [StageOptions] used by the [Stage] constructor:
 ///
 ///     StageXL.stageOptions.renderEngine = RenderEngine.WebGL;
+///     StageXL.stageOptions.inputEventMode = InputEventMode.MouseOnly;
 ///     StageXL.stageOptions.stageRenderMode = StageRenderMode.AUTO;
 ///     StageXL.stageOptions.stageScaleMode = StageScaleMode.SHOW_ALL;
 ///     StageXL.stageOptions.stageAlign = StageAlign.NONE;

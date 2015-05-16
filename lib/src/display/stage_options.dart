@@ -83,6 +83,7 @@ class StageOptions {
   StageOptions clone() {
     var options = new StageOptions();
     options.renderEngine = this.renderEngine;
+    options.inputEventMode = this.inputEventMode;
     options.stageRenderMode = this.stageRenderMode;
     options.stageScaleMode = this.stageScaleMode;
     options.stageAlign = this.stageAlign;
