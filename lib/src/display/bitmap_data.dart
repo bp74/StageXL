@@ -8,8 +8,8 @@ part of stagexl.display;
 /// runtime and draw arbitrary content onto it's surface.
 ///
 /// The BitmapData class is not a display object and therefore can't be added
-/// to the display list (the stage or and other container). Use the [Bitmap]
-/// class to create display objects which will use and show this BitmapData.
+/// to the display list (the stage or any other container). Use the [Bitmap]
+/// class to create a display object which will show this BitmapData.
 ///
 /// The BitmapData class contains a series of built-in methods that are
 /// useful for creation and manipulation of pixel data. Consider using the
