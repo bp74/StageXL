@@ -1,9 +1,20 @@
 part of stagexl.display;
 
-/// A drawable Bitmap surface.
+/// The BitmapData class lets you load or create arbitrarily sized transparent
+/// or opaque bitmap images and manipulate them in various ways at runtime.
 ///
-/// If you need to batch drawing operations for better performance,
-/// please use [BitmapDataUpdateBatch] instead.
+/// Most of the time you will load BitmapDatas from static image files or
+/// get them from a texture atlas. You may also create a BitmapData at
+/// runtime and draw arbitrary content onto it's surface.
+///
+/// The BitmapData class is not a display object and therefore can't be added
+/// to the display list (the stage or and other container). Use the [Bitmap]
+/// class to create display objects which will use and show this BitmapData.
+///
+/// The BitmapData class contains a series of built-in methods that are
+/// useful for creation and manipulation of pixel data. Consider using the
+/// [BitmapDataUpdateBatch] for multiple sequential manipulations for better
+/// performance.
 
 class BitmapData implements BitmapDrawable {
 
