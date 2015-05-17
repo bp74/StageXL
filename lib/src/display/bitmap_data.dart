@@ -7,51 +7,42 @@ part of stagexl.display;
 
 class BitmapData implements BitmapDrawable {
 
-  num _width = 0;
-  num _height = 0;
-
-  RenderTexture _renderTexture;
-  RenderTextureQuad _renderTextureQuad;
+  final num width;
+  final num height;
+  final RenderTextureQuad renderTextureQuad;
 
   static BitmapDataLoadOptions defaultLoadOptions = new BitmapDataLoadOptions();
 
+  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad) :
+    this.renderTextureQuad = renderTextureQuad,
+    this.width = renderTextureQuad.targetWidth,
+    this.height = renderTextureQuad.targetHeight;
+
   //----------------------------------------------------------------------------
 
-  BitmapData(int width, int height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
+  factory BitmapData(int width, int height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
     int textureWidth = (width * pixelRatio).round();
     int textureHeight = (height * pixelRatio).round();
-    _renderTexture = new RenderTexture(textureWidth, textureHeight, fillColor);
-    _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
-    _width = _renderTextureQuad.targetWidth;
-    _height = _renderTextureQuad.targetHeight;
+    var renderTexture = new RenderTexture(textureWidth, textureHeight, fillColor);
+    var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
-    _renderTexture = new RenderTexture.fromImageElement(imageElement);
-    _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
-    _width = _renderTextureQuad.targetWidth;
-    _height = _renderTextureQuad.targetHeight;
+  factory BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
+    var renderTexture = new RenderTexture.fromImageElement(imageElement);
+    var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
-    _renderTexture = new RenderTexture.fromVideoElement(videoElement);
-    _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
-    _width = _renderTextureQuad.targetWidth;
-    _height = _renderTextureQuad.targetHeight;
+  factory BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
+    var renderTexture = new RenderTexture.fromVideoElement(videoElement);
+    var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
-    _renderTexture = bitmapData.renderTexture;
-    _renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
-    _width = _renderTextureQuad.targetWidth;
-    _height = _renderTextureQuad.targetHeight;
-  }
-
-  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad) {
-    _renderTexture = renderTextureQuad.renderTexture;
-    _renderTextureQuad = renderTextureQuad;
-    _width = _renderTextureQuad.targetWidth;
-    _height = _renderTextureQuad.targetHeight;
+  factory BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
+    var renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
   //----------------------------------------------------------------------------
@@ -91,8 +82,8 @@ class BitmapData implements BitmapDrawable {
   /// Returns a new BitmapData with a copy of this BitmapData's texture.
 
   BitmapData clone([num pixelRatio]) {
-    if (pixelRatio == null) pixelRatio = _renderTextureQuad.pixelRatio;
-    var bitmapData = new BitmapData(_width, _height, Color.Transparent, pixelRatio);
+    if (pixelRatio == null) pixelRatio = renderTextureQuad.pixelRatio;
+    var bitmapData = new BitmapData(width, height, Color.Transparent, pixelRatio);
     bitmapData.drawPixels(this, this.rectangle, new Point<int>(0, 0));
     return bitmapData;
   }
@@ -120,8 +111,8 @@ class BitmapData implements BitmapDrawable {
   List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, {
     int frameCount: null, int frameSpacing: 0, int frameMargin: 0 }) {
 
-    var cols = (_width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
-    var rows = (_height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
+    var cols = (width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
+    var rows = (height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
     var frames = new List<BitmapData>();
 
     frameCount = (frameCount == null) ? rows * cols : min(frameCount, rows * cols);
@@ -142,12 +133,8 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  num get width => _width;
-  num get height => _height;
-
-  Rectangle<num> get rectangle => new Rectangle<num>(0, 0, _width, _height);
-  RenderTexture get renderTexture => _renderTextureQuad.renderTexture;
-  RenderTextureQuad get renderTextureQuad => _renderTextureQuad;
+  Rectangle<num> get rectangle => new Rectangle<num>(0, 0, width, height);
+  RenderTexture get renderTexture => renderTextureQuad.renderTexture;
 
   //----------------------------------------------------------------------------
 
@@ -249,6 +236,6 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   render(RenderState renderState) {
-    renderState.renderQuad(_renderTextureQuad);
+    renderState.renderQuad(renderTextureQuad);
   }
 }
