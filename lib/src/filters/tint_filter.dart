@@ -114,7 +114,9 @@ class TintFilterProgram extends RenderProgram {
     varying vec4 vColor;
 
     void main() {
-      gl_FragColor = texture2D(uSampler, vTextCoord)* vColor;
+      vec4 color = texture2D(uSampler, vTextCoord);
+      color = vec4(color.rgb / (color.a + 0.001), color.a) * vColor;
+      gl_FragColor = vec4(color.rgb * color.a, color.a);
     }
     """;
 
