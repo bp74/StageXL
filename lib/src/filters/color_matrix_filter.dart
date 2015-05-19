@@ -284,7 +284,7 @@ class ColorMatrixFilterProgram extends RenderProgram {
     void main() {
       vec4 color = texture2D(uSampler, vTexCoord);
       mat4 colorMatrix = mat4(vMatrixR, vMatrixG, vMatrixB, vMatrixA);
-      color = vec4(color.rgb / (color.a + 0.001), color.a);
+      color = vec4(color.rgb / color.a, color.a);
       color = vOffset + color * colorMatrix;
       gl_FragColor = vec4(color.rgb * color.a, color.a);
     }
