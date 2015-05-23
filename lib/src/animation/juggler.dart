@@ -18,7 +18,7 @@ class _AnimatableLink {
 ///
 /// Examples:
 ///
-///     var tween = new Tween(sprite, 1.0, TransitionFunction.easeIn);
+///     var tween = new Tween(sprite, 1.0, Transition.easeIn);
 ///     tween.animate.x.to(1.0);
 ///     stage.juggler.add(tween);
 ///
@@ -99,7 +99,8 @@ class Juggler implements Animatable {
     var startTime = this.elapsedTime;
     await for(var elapsedTime in this.onElapsedTimeChange) {
       var currentTime = elapsedTime - startTime;
-      yield currentTime < time ? currentTime : time;
+      var clampedTime = currentTime < time ? currentTime : time;
+      yield clampedTime;
       if (currentTime >= time) break;
     }
   }
@@ -120,8 +121,8 @@ class Juggler implements Animatable {
     var deltaValue = targetValue - startValue;
     await for(var elapsedTime in this.onElapsedTimeChange) {
       var currentTime = elapsedTime - startTime;
-      var clampTime = currentTime < time ? currentTime : time;
-      yield startValue + deltaValue * transition(clampTime / time);
+      var clampedTime = currentTime < time ? currentTime : time;
+      yield startValue + deltaValue * transition(clampedTime / time);
       if (currentTime >= time) break;
     }
   }
