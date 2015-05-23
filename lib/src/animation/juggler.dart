@@ -127,12 +127,14 @@ class Juggler implements Animatable {
   }
 
   //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   /// Adds the [animatable] to this juggler who will take care that it is
   /// animated.
   ///
   /// When the animatable is finished it is automatically removed from this
-  /// juggler.
+  /// juggler. An animatable is finished as soon as it's advanceTime method
+  /// returns false.
 
   void add(Animatable animatable) {
 
@@ -149,8 +151,6 @@ class Juggler implements Animatable {
     }
   }
 
-  //----------------------------------------------------------------------------
-
   /// Removes the specified [animatable] from this juggler.
 
   void remove(Animatable animatable) {
@@ -165,8 +165,6 @@ class Juggler implements Animatable {
       }
     }
   }
-
-  //----------------------------------------------------------------------------
 
   /// Returns true if this juggler contains the specified [animatable].
 
@@ -183,6 +181,20 @@ class Juggler implements Animatable {
     return false;
   }
 
+  /// Removes all [Animatable]s from this juggler.
+
+  void clear() {
+
+    var link = _firstAnimatableLink;
+    while (identical(link, _lastAnimatableLink) == false) {
+      link.animatable = null;
+      link = link.nextAnimatableLink;
+    }
+
+    _lastAnimatableLink = _firstAnimatableLink;
+  }
+
+  //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
   /// Removes all tweens from the specified [tweenObject].
@@ -198,8 +210,6 @@ class Juggler implements Animatable {
       link = link.nextAnimatableLink;
     }
   }
-
-  //----------------------------------------------------------------------------
 
   /// Returns true if this juggler contains tweens for the specified
   /// [tweenObject].
@@ -219,19 +229,6 @@ class Juggler implements Animatable {
   }
 
   //----------------------------------------------------------------------------
-
-  /// Removes all [Animatable]s from this juggler.
-  void clear() {
-    var link = _firstAnimatableLink;
-    while (identical(link, _lastAnimatableLink) == false) {
-      link.animatable = null;
-      link = link.nextAnimatableLink;
-    }
-
-    _lastAnimatableLink = _firstAnimatableLink;
-  }
-
-  //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
   /// This is a convenience method that creates a [DelayedCall] and adds it to
@@ -239,7 +236,7 @@ class Juggler implements Animatable {
   ///
   /// Example:
   ///
-  ///     // Delay the call of �action� by 5.0 seconds.
+  ///     // Delay the call of action by 5.0 seconds.
   ///     juggler.delayCall(action, 5.0);
 
   DelayedCall delayCall(Function action, num delay) {
@@ -248,15 +245,15 @@ class Juggler implements Animatable {
     return delayedCall;
   }
 
-  /// This is a convenience method that creates a [Tween] and adds it to this
-  /// juggler. See [Tween] for more details.
+  /// This is a convenience method that creates a [Tween] and adds it to
+  /// this juggler. See [Tween] for more details.
   ///
   /// Example:
   ///
   ///     // Animate the x and y properties of the spaceship.
-  ///     juggler.addTween(spaceship, 2.0, Transition.linear)
-  ///       ..animate.x.to(100)
-  ///       ..animate.y.to(200);
+  ///     var tween = juggler.addTween(spaceship, 2.0, Transition.linear);
+  ///     tween.animate.x.to(100);
+  ///     tween.animate.y.to(200);
 
   Tween addTween(TweenObject tweenObject, num time, [
                  TransitionFunction transition = Transition.linear]) {
