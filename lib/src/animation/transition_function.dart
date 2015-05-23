@@ -12,7 +12,7 @@ part of stagexl.animation;
 ///     // a linear transition
 ///     var transition = (ratio) => ratio;
 ///
-///     // a quadratic transtion
+///     // a quadratic transition
 ///     var transition = (ratio) => ratio * ratio;
 ///
 typedef num EaseFunction(num ratio);

@@ -11,7 +11,7 @@ part of stagexl.animation;
 ///     transition.onUpdate = (value) => print('the value changed to $value');
 ///     renderLoop.juggler.add(transition);
 ///
-///     vare easeFunction = TransitionFunction.easeInOutQuadratic;
+///     var easeFunction = TransitionFunction.easeInOutQuadratic;
 ///     stage.juggler.transition(0.0, 100.0, 1.0, easeFunction, (v) => {
 ///       print('the value changed to $v'));
 ///     });
