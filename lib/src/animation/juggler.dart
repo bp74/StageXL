@@ -58,8 +58,8 @@ class Juggler implements Animatable {
 
   /// Returns a Future which completes after [time] seconds.
   ///
-  /// The [delay] method is based on the [onElapsedTimeChange] stream
-  /// and is therefore executed before all other animatables.
+  /// This method is based on the [onElapsedTimeChange] stream and
+  /// is therefore executed before all other animatables.
 
   Future delay(num time) async {
     var nextTime = this.elapsedTime + time;
@@ -68,12 +68,13 @@ class Juggler implements Animatable {
     }
   }
 
-  /// Returns a Stream which fires every [time] seconds.
+  /// Returns a Stream of counter values which fires every [time] seconds.
   ///
-  /// The [interval] method is based on the [onElapsedTimeChange] stream
-  /// and is therefore executed before all other animatables. The stream
-  /// returns a counter with the number of completed intervals. The stream
-  /// ends automatically after [time] seconds.
+  /// The stream returns a counter with the number of completed intervals.
+  /// The stream ends automatically after [time] seconds.
+  ///
+  /// This method is based on the [onElapsedTimeChange] stream and
+  /// is therefore executed before all other animatables.
 
   Stream<int> interval(num time) async* {
     var count = 0;
@@ -86,18 +87,41 @@ class Juggler implements Animatable {
     }
   }
 
-  /// Returns a Stream which fires for [time] seconds.
+  /// Returns a Stream of relative time which fires for [time] seconds.
   ///
-  /// The [timespan] method is based on the [onElapsedTimeChange] stream and
-  /// is therefore executed before all other animatables. The stream returns
-  /// the relative time since the start of the method and ends automatically
-  /// after [time] seconds.
+  /// The stream returns the relative time since the start of the method.
+  /// The stream ends automatically after [time] seconds.
+  ///
+  /// This method is based on the [onElapsedTimeChange] stream and
+  /// is therefore executed before all other animatables.
 
   Stream<num> timespan(num time) async* {
     var startTime = this.elapsedTime;
     await for(var elapsedTime in this.onElapsedTimeChange) {
       var currentTime = elapsedTime - startTime;
       yield currentTime < time ? currentTime : time;
+      if (currentTime >= time) break;
+    }
+  }
+
+  /// Returns a Stream of translated values which fires for [time] seconds.
+  ///
+  /// The stream returns the translated values based on the [transition] and
+  /// the time elapsed since the start of the method. The stream ends
+  /// automatically after [time] seconds.
+  ///
+  /// This method is based on the [onElapsedTimeChange] stream and
+  /// is therefore executed before all other animatables.
+
+  Stream<num> translation(num startValue, num targetValue, num time, [
+      TransitionFunction transition = Transition.linear]) async* {
+
+    var startTime = this.elapsedTime;
+    var deltaValue = targetValue - startValue;
+    await for(var elapsedTime in this.onElapsedTimeChange) {
+      var currentTime = elapsedTime - startTime;
+      var clampTime = currentTime < time ? currentTime : time;
+      yield startValue + deltaValue * transition(clampTime / time);
       if (currentTime >= time) break;
     }
   }
