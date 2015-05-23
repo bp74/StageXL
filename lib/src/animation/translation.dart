@@ -3,6 +3,11 @@ part of stagexl.animation;
 /// The [Translation] class animates a value by continuously calling
 /// the [onUpdate] function.
 ///
+/// Use one of the predefined [Transition] functions to control the progress
+/// of the animation (linear, easeInQuadratic, easeInCubic, ...). If none of
+/// the predefined [Transition] functions fulfills your needs you can also
+/// define your own function (see [TransitionFunction]).
+///
 /// Examples:
 ///
 ///     var translation = new Translation(0.0, 100.0, 1.0, Transition.linear);
