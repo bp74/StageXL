@@ -72,7 +72,8 @@ class Juggler implements Animatable {
   ///
   /// The [interval] method is based on the [onElapsedTimeChange] stream
   /// and is therefore executed before all other animatables. The stream
-  /// returns a counter with the number of completed intervals.
+  /// returns a counter with the number of completed intervals. The stream
+  /// ends automatically after [time] seconds.
 
   Stream<int> interval(num time) async* {
     var count = 0;
@@ -82,6 +83,22 @@ class Juggler implements Animatable {
         yield ++count;
         nextTime = nextTime + time;
       }
+    }
+  }
+
+  /// Returns a Stream which fires for [time] seconds.
+  ///
+  /// The [timespan] method is based on the [onElapsedTimeChange] stream and
+  /// is therefore executed before all other animatables. The stream returns
+  /// the relative time since the start of the method and ends automatically
+  /// after [time] seconds.
+
+  Stream<num> timespan(num time) async* {
+    var startTime = this.elapsedTime;
+    await for(var elapsedTime in this.onElapsedTimeChange) {
+      var currentTime = elapsedTime - startTime;
+      yield currentTime < time ? currentTime : time;
+      if (currentTime >= time) break;
     }
   }
 
