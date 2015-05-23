@@ -17,8 +17,12 @@ part 'animation/animation_group.dart';
 part 'animation/delayed_call.dart';
 part 'animation/juggler.dart';
 part 'animation/transition.dart';
-part 'animation/transition_function.dart';
+part 'animation/translation.dart';
 part 'animation/tween.dart';
 part 'animation/tween_object.dart';
 part 'animation/tween_property.dart';
 part 'animation/tween_property_accessor.dart';
+
+/// Deprecated. Please use [TransitionFunction] instead.
+@deprecated
+typedef num EaseFunction(num ratio);

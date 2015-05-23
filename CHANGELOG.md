@@ -16,13 +16,20 @@ announcements on the StageXL forum or use one of the support links below:
   * Added SoundMixer.unlockMobileAudio() convenience method.
   * Added BitmapDataLoadOptions.maxPixelRatio (replaces old autoHiDpi). 
   * Added TextureAtlas loader abstraction for custom loaders.
-  * Improved pixel ratio configuration for HiDPI BitmapDatas.   
+  * Added pixel ratio support for DisplayObject and TextField cache.
+  * Improved pixel ratio support for HiDPI BitmapDatas.   
   * Fixed RenderTexture update/resize/filtering on iOS8.
   * Fixed TintFilter showing the wrong ARGB values.
   * Breaking Change: changed Stage constructor and properties.
   * Breaking Change: changed BitmapData constructor and properties.
   * Breaking Change: changed RenderTextureQuad constructor and properties.
+  * Breaking Change: renamed Transition to Translation (Juggler).
+  * Breaking Change: renamed TransitionFunction to Transition (Juggler).
+  * Breaking Change: renamed Juggler.tween to Juggler.addTween. 
   * Breaking Change: removed Multitouch class in favor of Stage options.
+  
+This version contains quite a few breaking changes and we are sorry for it. 
+We do this in an effort to to get closer to a 1.0 release.
   
 #### Pub version 0.11.0+1
   * Added hashCode getter in Point, Rectangle, Circle, Vector.

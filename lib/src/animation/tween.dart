@@ -7,9 +7,7 @@ part of stagexl.animation;
 /// Use one of the predefined [TransitionFunction] functions to control the
 /// progress of the animation (linear, easeInQuadratic, easeInCubic, ...). If
 /// none of the predefined [TransitionFunction] functions fulfills your needs
-/// you can also use one of your own function (see [EaseFunction]).
-///
-/// See also: [Juggler]
+/// you can also use one of your own function (see [Transition]).
 ///
 /// Examples:
 ///
@@ -25,14 +23,14 @@ part of stagexl.animation;
 ///     sawtooth.animate.y.to(10);
 ///     stage.juggler.add(sawtooth);
 ///
-///     stage.juggler.tween(mySprite, 1.0, TransitionFunction.easeInCubic)
+///     stage.juggler.addTween(mySprite, 1.0, TransitionFunction.easeInCubic)
 ///       ..delay = 0.5
 ///       ..animate.alpha.to(0.0);
-///
+
 class Tween implements Animatable {
 
   final TweenObject _tweenObject;
-  final EaseFunction _transitionFunction;
+  final TransitionFunction _transition;
   final List<TweenProperty> _tweenPropertyList = new List<TweenProperty>();
 
   Function _onStart;
@@ -53,10 +51,10 @@ class Tween implements Animatable {
   /// display objects can be used with with tweens.
 
   Tween(TweenObject tweenObject, num time, [
-    EaseFunction transitionFunction = TransitionFunction.linear]) :
+        TransitionFunction transition = Transition.linear]) :
 
     _tweenObject = tweenObject,
-    _transitionFunction = transitionFunction {
+    _transition = transition {
 
     if (_tweenObject is! TweenObject) {
       throw new ArgumentError("tweenObject");
@@ -129,7 +127,7 @@ class Tween implements Animatable {
         // calculate transition ratio and value
 
         num ratio = _currentTime / _totalTime;
-        num transition = _transitionFunction(ratio).toDouble();
+        num transition = _transition(ratio).toDouble();
 
         for (int i = 0; i < _tweenPropertyList.length; i++) {
           _tweenPropertyList[i]._update(transition, _roundToInt);

@@ -78,7 +78,7 @@ class TimelineTween {
   static const int REVERSE = 2;
 
   //static List<TimelineTween> _tweens = [];
-  static EaseFunction _linearEase = TransitionFunction.linear;
+  static TransitionFunction _linearEase = Transition.linear;
 
   /**
    * Returns a new tween instance. This is functionally identical to using "new TimelineTween(...)", but looks cleaner
@@ -312,10 +312,10 @@ class TimelineTween {
    * @param {Function} ease Optional. The easing function to use for this tween. Defaults to a linear ease.
    * @return {TimelineTween} This tween instance (for chaining calls).
    **/
-  TimelineTween to(Map<String, dynamic> props, [num duration, EaseFunction ease]) {
+  TimelineTween to(Map<String, dynamic> props, [num duration, TransitionFunction ease]) {
     return t(props, duration, ease);
   }
-  TimelineTween t(Map<String, dynamic> props, [num duration = 0, EaseFunction ease]) {
+  TimelineTween t(Map<String, dynamic> props, [num duration = 0, TransitionFunction ease]) {
     num d = 0;
     if (duration != null && !duration.isNaN && duration > 0) d = duration;
     return _addStep(new TimelineStep(d, _cloneProps(_curQueueProps), ease, _cloneProps(_appendQueueProps(props))));
