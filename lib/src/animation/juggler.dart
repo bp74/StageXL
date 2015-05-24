@@ -53,6 +53,10 @@ class Juggler implements Animatable {
   ///
   /// The stream sends the changes of [elapsedTime] and is executed before all
   /// other animatables are processed.
+  ///
+  ///     await for (var elapsedTime in juggler.onElapsedTimeChange) {
+  ///        print(elapsedTime);
+  ///     }
 
   Stream<num> get onElapsedTimeChange => _elapsedTimeChangedEvent.stream;
 
@@ -60,6 +64,8 @@ class Juggler implements Animatable {
   ///
   /// This method is based on the [onElapsedTimeChange] stream and
   /// is therefore executed before all other animatables.
+  ///
+  ///     await juggler.delay(1.0);
 
   Future delay(num time) async {
     var nextTime = this.elapsedTime + time;
@@ -75,6 +81,10 @@ class Juggler implements Animatable {
   ///
   /// This method is based on the [onElapsedTimeChange] stream and
   /// is therefore executed before all other animatables.
+  ///
+  ///     await for (var counter in juggler.interval(0.5)) {
+  ///       print(counter);
+  ///     }
 
   Stream<int> interval(num time) async* {
     var count = 0;
@@ -94,6 +104,10 @@ class Juggler implements Animatable {
   ///
   /// This method is based on the [onElapsedTimeChange] stream and
   /// is therefore executed before all other animatables.
+  ///
+  ///     await for (var time in juggler.timespan(2.0)) {
+  ///       print(time);
+  ///     }
 
   Stream<num> timespan(num time) async* {
     var startTime = this.elapsedTime;
@@ -113,6 +127,11 @@ class Juggler implements Animatable {
   ///
   /// This method is based on the [onElapsedTimeChange] stream and
   /// is therefore executed before all other animatables.
+  ///
+  ///     var transition = Transition.easeInSine;
+  ///     await for (var value in juggler.translation(0.0, 10.0, 5.0, transition)) {
+  ///       print(value);
+  ///     }
 
   Stream<num> translation(num startValue, num targetValue, num time, [
       TransitionFunction transition = Transition.linear]) async* {
