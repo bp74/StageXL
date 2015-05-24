@@ -85,6 +85,9 @@ class Juggler implements Animatable {
   ///     await for (var counter in juggler.interval(0.5)) {
   ///       print(counter);
   ///     }
+  ///
+  ///     var stream = juggler.interval(0.5).take(10);
+  ///     stream.listen((counter) => print(counter));
 
   Stream<int> interval(num time) async* {
     var count = 0;
@@ -108,6 +111,9 @@ class Juggler implements Animatable {
   ///     await for (var time in juggler.timespan(2.0)) {
   ///       print(time);
   ///     }
+  ///
+  ///     var stream = juggler.timespan(2.0).map((time) => 2.0 * time);
+  ///     stream.listen((value) => print(value));
 
   Stream<num> timespan(num time) async* {
     var startTime = this.elapsedTime;
