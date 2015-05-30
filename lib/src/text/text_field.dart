@@ -36,6 +36,7 @@ class TextField extends InteractiveObject {
   bool _cacheAsBitmap = true;
 
   RenderTexture _renderTexture;
+  RenderTextureQuad _renderTextureQuad;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -234,8 +235,8 @@ class TextField extends InteractiveObject {
     _refreshTextLineMetrics();
 
     if (renderState.renderContext is RenderContextWebGL || _cacheAsBitmap ) {
-      _refreshCache();
-      renderState.renderQuad(_renderTexture.quad);
+      _refreshCache(renderState.globalMatrix);
+      renderState.renderQuad(_renderTextureQuad);
     } else if (renderState.renderContext is RenderContextCanvas) {
       RenderContextCanvas renderContextCanvas = renderState.renderContext;
       renderContextCanvas.setTransform(renderState.globalMatrix);
@@ -268,8 +269,8 @@ class TextField extends InteractiveObject {
       super.renderFiltered(renderState);
     } if (renderState.renderContext is RenderContextWebGL || _cacheAsBitmap) {
       _refreshTextLineMetrics();
-      _refreshCache();
-      renderState.renderQuadFiltered(_renderTexture.quad, this.filters);
+      _refreshCache(renderState.globalMatrix);
+      renderState.renderQuadFiltered(_renderTextureQuad, this.filters);
     } else {
       super.renderFiltered(renderState);
     }
@@ -506,7 +507,7 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  _refreshCache() {
+  _refreshCache(Matrix globalMatrix) {
 
     if ((_refreshPending & 2) == 0) {
       return;
@@ -514,18 +515,19 @@ class TextField extends InteractiveObject {
       _refreshPending &= 255 - 2;
     }
 
-    var width = max(1, _width).ceil();
-    var height =  max(1, _height).ceil();
+    var pixelRatio = sqrt(globalMatrix.det.abs());
+    var width = max(1, _width * pixelRatio).ceil();
+    var height =  max(1, _height * pixelRatio).ceil();
 
     if (_renderTexture == null) {
       _renderTexture = new RenderTexture(width, height, Color.Transparent);
+      _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
     } else {
       _renderTexture.resize(width, height);
+      _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
     }
 
-    // TODO: PixelRatio
-
-    var matrix = _renderTexture.quad.drawMatrix;
+    var matrix = _renderTextureQuad.drawMatrix;
     var context = _renderTexture.canvas.context2D;
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     context.clearRect(0, 0, _width, _height);
