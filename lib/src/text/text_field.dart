@@ -90,7 +90,7 @@ class TextField extends InteractiveObject {
   }
 
   void set text(String value) {
-    _text = value.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+    _text = value;
     _caretIndex = _text.length;
     _refreshPending |= 3;
   }
@@ -317,7 +317,8 @@ class TextField extends InteractiveObject {
     var availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
     var canvasContext = _dummyCanvasContext;
     var paragraphLines = new List<int>();
-    var paragraphs = _text.split('\n');
+    var paragraphSplit = new RegExp(r"\r\n|\r|\n");
+    var paragraphs = _text.split(paragraphSplit);
 
     canvasContext.font = fontStyle + " "; // IE workaround
     canvasContext.textAlign = "start";
