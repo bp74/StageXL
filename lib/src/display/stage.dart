@@ -97,7 +97,7 @@ class Stage extends DisplayObjectContainer {
   Stage(CanvasElement canvas, {int width, int height, StageOptions options}) {
 
     if (canvas is! CanvasElement) throw new ArgumentError("canvas");
-    if (canvas.tabIndex == -1) canvas.tabIndex = 0;
+    if (canvas.tabIndex <= 0) canvas.tabIndex = 1;
     if (canvas.style.outline == "") canvas.style.outline = "none";
     if (options == null) options = Stage.defaultOptions;
     if (width == null) width = canvas.width;
