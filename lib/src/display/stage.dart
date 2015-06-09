@@ -73,6 +73,11 @@ class Stage extends DisplayObjectContainer {
   StageScaleMode _stageScaleMode = StageScaleMode.SHOW_ALL;
   StageAlign _stageAlign = StageAlign.NONE;
 
+  bool _preventDefaultOnTouch = true;
+  bool _preventDefaultOnMouse = true;
+  bool _preventDefaultOnWheel = true;
+  bool _preventDefaultOnKeyboard = true;
+
   String _mouseCursor = MouseCursor.DEFAULT;
   Point<num> _mousePosition = new Point<num>(0.0, 0.0);
   InteractiveObject _mouseTarget = null;
@@ -109,6 +114,12 @@ class Stage extends DisplayObjectContainer {
     _stageScaleMode = options.stageScaleMode;
     _stageRenderMode = options.stageRenderMode;
     _inputEventMode = options.inputEventMode;
+
+    _preventDefaultOnTouch = options.preventDefaultOnTouch;
+    _preventDefaultOnMouse = options.preventDefaultOnMouse;
+    _preventDefaultOnWheel = options.preventDefaultOnWheel;
+    _preventDefaultOnKeyboard = options.preventDefaultOnKeyboard;
+
     _sourceWidth = ensureInt(width);
     _sourceHeight = ensureInt(height);
     _pixelRatio = min(options.maxPixelRatio, env.devicePixelRatio);
@@ -522,7 +533,7 @@ class Stage extends DisplayObjectContainer {
 
   void _onMouseEvent(html.MouseEvent event) {
 
-    event.preventDefault();
+    if (_preventDefaultOnMouse) event.preventDefault();
 
     int time = new DateTime.now().millisecondsSinceEpoch;
     int button = event.button;
@@ -676,6 +687,8 @@ class Stage extends DisplayObjectContainer {
 
   void _onMouseWheelEvent(html.WheelEvent event) {
 
+    if (_preventDefaultOnWheel) event.preventDefault();
+
     var stagePoint = _clientTransformation.transformPoint(event.client);
     var localPoint = new Point<num>(0.0, 0.0);
 
@@ -683,13 +696,17 @@ class Stage extends DisplayObjectContainer {
     if (target == null) return;
 
     target.globalToLocal(stagePoint, localPoint);
+
     var mouseEvent = new MouseEvent(MouseEvent.MOUSE_WHEEL, true,
         localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
         event.altKey, event.ctrlKey, event.shiftKey,
         event.deltaX, event.deltaY, false, 0);
 
     target.dispatchEvent(mouseEvent);
-    if (mouseEvent.stopsPropagation) event.preventDefault();
+
+    if (mouseEvent.isImmediatePropagationStopped) event.stopImmediatePropagation();
+    if (mouseEvent.isPropagationStopped) event.stopPropagation();
+    if (mouseEvent.isDefaultPrevented) event.preventDefault();
   }
 
   //----------------------------------------------------------------------------
@@ -703,7 +720,7 @@ class Stage extends DisplayObjectContainer {
       var jsChangedTouches = new JsArray.from(jsEvent["changedTouches"]);
       var eventType = ensureString(jsEvent["type"]);
 
-      jsEvent.callMethod("preventDefault");
+      if (_preventDefaultOnTouch) jsEvent.callMethod("preventDefault");
 
       for(var changedTouch in jsChangedTouches) {
         var jsChangedTouch = new JsObject.fromBrowserObject(changedTouch);
@@ -716,7 +733,7 @@ class Stage extends DisplayObjectContainer {
 
     } else {
 
-      event.preventDefault();
+      if (_preventDefaultOnTouch) event.preventDefault();
 
       var eventType = event.type;
       var altKey = event.altKey;
@@ -852,7 +869,7 @@ class Stage extends DisplayObjectContainer {
 
   void _onKeyEvent(html.KeyboardEvent event) {
 
-    if (event.keyCode == 8) event.preventDefault();
+    if (_preventDefaultOnKeyboard) event.preventDefault();
     if (_focus == null) return;
 
     if (event.type == "keypress") {
@@ -867,7 +884,9 @@ class Stage extends DisplayObjectContainer {
 
       _focus.dispatchEvent(textEvent);
 
-      if (textEvent.stopsPropagation) event.preventDefault();
+      if (textEvent.isImmediatePropagationStopped) event.stopImmediatePropagation();
+      if (textEvent.isPropagationStopped) event.stopPropagation();
+      if (textEvent.isDefaultPrevented) event.preventDefault();
 
     } else {
 
@@ -888,7 +907,9 @@ class Stage extends DisplayObjectContainer {
 
       _focus.dispatchEvent(keyboardEvent);
 
-      if (keyboardEvent.stopsPropagation) event.preventDefault();
+      if (keyboardEvent.isImmediatePropagationStopped) event.stopImmediatePropagation();
+      if (keyboardEvent.isPropagationStopped) event.stopPropagation();
+      if (keyboardEvent.isDefaultPrevented) event.preventDefault();
     }
   }
 

@@ -69,4 +69,13 @@ abstract class InputEvent extends Event {
       this.stageX, this.stageY,
       this.altKey, this.ctrlKey, this.shiftKey) : super(type, bubbles);
 
+  //---------------------------------------------------------------------------
+
+  bool _isDefaultPrevented = false;
+
+  void preventDefault() {
+    _isDefaultPrevented = true;
+  }
+
+  bool get isDefaultPrevented => _isDefaultPrevented;
 }

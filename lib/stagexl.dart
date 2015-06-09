@@ -57,6 +57,10 @@ export 'src/ui.dart';
 ///     StageXL.stageOptions.transparent = false;
 ///     StageXL.stageOptions.antialias = false;
 ///     StageXL.stageOptions.maxPixelRatio = 5.0;
+///     StageXL.stageOptions.preventDefaultOnTouch = true;
+///     StageXL.stageOptions.preventDefaultOnMouse = true;
+///     StageXL.stageOptions.preventDefaultOnWheel = false;
+///     StageXL.stageOptions.preventDefaultOnKeyboard = false;
 ///
 /// The default [BitmapDataLoadOptions] used by [BitmapData.load]:
 ///

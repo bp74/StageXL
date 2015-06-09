@@ -61,7 +61,7 @@ class StageOptions {
   ///
   /// Please note that the Canvas2D render engine will not be affected by
   /// this setting because the underlying API does not provide this feature.
-  /// The WebGL render engine supports anti-aliasing but there is perforamce
+  /// The WebGL render engine supports anti-aliasing but there is performance
   /// penalty fo setting this flag to 'true'.
 
   bool antialias = false;
@@ -75,6 +75,42 @@ class StageOptions {
   /// performance is more important than perfectly sharp edges or pixels.
 
   num maxPixelRatio = 5.0;
+
+  /// Prevents the browser's default behaviour for touch events.
+  ///
+  /// This value enabled or disables the default behaviour for html touch
+  /// events that are targeted on the Stage. If the value is `true` the
+  /// browser will ignore the event. This does not affect the event
+  /// propagation from the Stage to the display objects.
+
+  bool preventDefaultOnTouch = true;
+
+  /// Prevents the browser's default behaviour for mouse events.
+  ///
+  /// This value enabled or disables the default behaviour for html mouse
+  /// events that are targeted on the Stage. If the value is `true` the
+  /// browser will ignore the event. This does not affect the event
+  /// propagation from the Stage to the display objects.
+
+  bool preventDefaultOnMouse = true;
+
+  /// Prevents the browser's default behaviour for wheel events.
+  ///
+  /// This value enabled or disables the default behaviour for html wheel
+  /// events that are targeted on the Stage. If the value is `true` the
+  /// browser will ignore the event. This does not affect the event
+  /// propagation from the Stage to the display objects.
+
+  bool preventDefaultOnWheel = false;
+
+  /// Prevents the browser's default behaviour for keyboard events.
+  ///
+  /// This value enabled or disables the default behaviour for html keyboard
+  /// events that are targeted on the Stage. If the value is `true` the
+  /// browser will ignore the event. This does not affect the event
+  /// propagation from the Stage to the display objects.
+
+  bool preventDefaultOnKeyboard = false;
 
   //---------------------------------------------------------------------------
 
@@ -91,6 +127,10 @@ class StageOptions {
     options.transparent = this.transparent;
     options.antialias = this.antialias;
     options.maxPixelRatio = this.maxPixelRatio;
+    options.preventDefaultOnTouch = this.preventDefaultOnTouch;
+    options.preventDefaultOnMouse = this.preventDefaultOnMouse;
+    options.preventDefaultOnWheel = this.preventDefaultOnWheel;
+    options.preventDefaultOnKeyboard = this.preventDefaultOnKeyboard;
     return options;
   }
 

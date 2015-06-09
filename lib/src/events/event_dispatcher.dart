@@ -145,8 +145,8 @@ class EventDispatcher {
 
   void dispatchEventRaw(Event event, EventDispatcher target, EventPhase eventPhase) {
 
-    event._stopsPropagation = false;
-    event._stopsImmediatePropagation = false;
+    event._isPropagationStopped = false;
+    event._isImmediatePropagationStopped = false;
 
     var eventStreams = _eventStreams;
     if (eventStreams == null) return;

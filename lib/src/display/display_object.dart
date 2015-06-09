@@ -913,15 +913,15 @@ abstract class DisplayObject
 
     for(int i = ancestors.length - 1; i >= 0 && event.captures; i--) {
       ancestors[i].dispatchEventRaw(event, this, EventPhase.CAPTURING_PHASE);
-      if (event.stopsPropagation) return;
+      if (event.isPropagationStopped) return;
     }
 
     dispatchEventRaw(event, this, EventPhase.AT_TARGET);
-    if (event.stopsPropagation) return;
+    if (event.isPropagationStopped) return;
 
     for(int i = 0; i < ancestors.length && event.bubbles; i++) {
       ancestors[i].dispatchEventRaw(event, this, EventPhase.BUBBLING_PHASE);
-      if (event.stopsPropagation) return;
+      if (event.isPropagationStopped) return;
     }
   }
 

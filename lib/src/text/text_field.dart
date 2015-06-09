@@ -630,6 +630,7 @@ class TextField extends InteractiveObject {
       switch(keyboardEvent.keyCode) {
 
         case html.KeyCode.BACKSPACE:
+          keyboardEvent.preventDefault();
           if (caretIndex > 0) {
             _text = text.substring(0, caretIndex - 1) + text.substring(caretIndex);
             caretIndexNew = caretIndex - 1;
@@ -637,22 +638,26 @@ class TextField extends InteractiveObject {
           break;
 
         case html.KeyCode.END:
+          keyboardEvent.preventDefault();
           var tlm = textLineMetrics[caretLine];
           caretIndexNew = tlm._textIndex + tlm._text.length;
           break;
 
         case html.KeyCode.HOME:
+          keyboardEvent.preventDefault();
           var tlm = textLineMetrics[caretLine];
           caretIndexNew = tlm._textIndex;
           break;
 
         case html.KeyCode.LEFT:
+          keyboardEvent.preventDefault();
           if (caretIndex > 0) {
             caretIndexNew = caretIndex - 1;
           }
           break;
 
         case html.KeyCode.UP:
+          keyboardEvent.preventDefault();
           if (caretLine > 0 && caretLine < textLineMetrics.length) {
             var tlmFrom = textLineMetrics[caretLine ];
             var tlmTo = textLineMetrics[caretLine - 1];
@@ -664,12 +669,14 @@ class TextField extends InteractiveObject {
           break;
 
         case html.KeyCode.RIGHT:
+          keyboardEvent.preventDefault();
           if (caretIndex < textLength) {
             caretIndexNew = caretIndex + 1;
           }
           break;
 
         case html.KeyCode.DOWN:
+          keyboardEvent.preventDefault();
           if (caretLine >= 0 && caretLine < textLineMetrics.length - 1) {
             var tlmFrom = textLineMetrics[caretLine ];
             var tlmTo = textLineMetrics[caretLine + 1];
@@ -681,6 +688,7 @@ class TextField extends InteractiveObject {
           break;
 
         case html.KeyCode.DELETE:
+          keyboardEvent.preventDefault();
           if (caretIndex < textLength) {
             _text = text.substring(0, caretIndex) + text.substring(caretIndex + 1);
             caretIndexNew = caretIndex;
@@ -701,6 +709,8 @@ class TextField extends InteractiveObject {
   _onTextInput(TextEvent textEvent) {
 
     if (_type == TextFieldType.INPUT) {
+
+      textEvent.preventDefault();
 
       var textLength = _text.length;
       var caretIndex = _caretIndex;
