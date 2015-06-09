@@ -76,36 +76,36 @@ class StageOptions {
 
   num maxPixelRatio = 5.0;
 
-  /// Prevents the browser's default behaviour for touch events.
+  /// Prevents the browser's default behavior for touch events.
   ///
-  /// This value enabled or disables the default behaviour for html touch
+  /// This value enabled or disables the default behavior for html touch
   /// events that are targeted on the Stage. If the value is `true` the
   /// browser will ignore the event. This does not affect the event
   /// propagation from the Stage to the display objects.
 
   bool preventDefaultOnTouch = true;
 
-  /// Prevents the browser's default behaviour for mouse events.
+  /// Prevents the browser's default behavior for mouse events.
   ///
-  /// This value enabled or disables the default behaviour for html mouse
+  /// This value enabled or disables the default behavior for html mouse
   /// events that are targeted on the Stage. If the value is `true` the
   /// browser will ignore the event. This does not affect the event
   /// propagation from the Stage to the display objects.
 
   bool preventDefaultOnMouse = true;
 
-  /// Prevents the browser's default behaviour for wheel events.
+  /// Prevents the browser's default behavior for wheel events.
   ///
-  /// This value enabled or disables the default behaviour for html wheel
+  /// This value enabled or disables the default behavior for html wheel
   /// events that are targeted on the Stage. If the value is `true` the
   /// browser will ignore the event. This does not affect the event
   /// propagation from the Stage to the display objects.
 
   bool preventDefaultOnWheel = false;
 
-  /// Prevents the browser's default behaviour for keyboard events.
+  /// Prevents the browser's default behavior for keyboard events.
   ///
-  /// This value enabled or disables the default behaviour for html keyboard
+  /// This value enabled or disables the default behavior for html keyboard
   /// events that are targeted on the Stage. If the value is `true` the
   /// browser will ignore the event. This does not affect the event
   /// propagation from the Stage to the display objects.

@@ -50,12 +50,10 @@ class Stage extends DisplayObjectContainer {
 
   static StageOptions defaultOptions = new StageOptions();
 
-  CanvasElement _canvas;
-  RenderContext _renderContext;
-  Juggler _juggler = new Juggler();
+  CanvasElement _canvas = null;
+  RenderContext _renderContext = null;
   RenderLoop _renderLoop = null;
 
-  int _color = 0;
   int _sourceWidth = 0;
   int _sourceHeight = 0;
   int _stageWidth = 0;
@@ -66,17 +64,11 @@ class Stage extends DisplayObjectContainer {
   Matrix _clientTransformation = new Matrix.fromIdentity();
   Matrix _stageTransformation = new Matrix.fromIdentity();
 
-  InteractiveObject _focus = null;
   RenderState _renderState = null;
   InputEventMode _inputEventMode = InputEventMode.MouseOnly;
   StageRenderMode _stageRenderMode = StageRenderMode.AUTO;
   StageScaleMode _stageScaleMode = StageScaleMode.SHOW_ALL;
   StageAlign _stageAlign = StageAlign.NONE;
-
-  bool _preventDefaultOnTouch = true;
-  bool _preventDefaultOnMouse = true;
-  bool _preventDefaultOnWheel = true;
-  bool _preventDefaultOnKeyboard = true;
 
   String _mouseCursor = MouseCursor.DEFAULT;
   Point<num> _mousePosition = new Point<num>(0.0, 0.0);
@@ -85,6 +77,38 @@ class Stage extends DisplayObjectContainer {
   List<_Drag> _drags = new List<_Drag>();
   Map<int, _TouchPoint> _touchPoints = new Map<int, _TouchPoint>();
   List<_MouseButton> _mouseButtons = _MouseButton.createDefaults();
+
+  //----------------------------------------------------------------------------
+
+  /// A dedicated [Juggler] for this Stage. This Juggler is driven by the
+  /// [RenderLoop] where this Stage is added to. If this Stage is not added
+  /// to a RenderLoop, the [Juggler] will not advance in time.
+
+  final Juggler juggler = new Juggler();
+
+  /// The interactive object with keyboard focus or null if focus is not set.
+
+  InteractiveObject focus = null;
+
+  /// Gets and sets the background color of this Stage.
+
+  int backgroundColor = Color.White;
+
+  /// Prevents the browser's default behavior for touch events.
+
+  bool preventDefaultOnTouch = true;
+
+  /// Prevents the browser's default behavior for mouse events.
+
+  bool preventDefaultOnMouse = true;
+
+  /// Prevents the browser's default behavior for wheel events.
+
+  bool preventDefaultOnWheel = false;
+
+  /// Prevents the browser's default behavior for keyboard events.
+
+  bool preventDefaultOnKeyboard = false;
 
   //----------------------------------------------------------------------------
 
@@ -108,21 +132,21 @@ class Stage extends DisplayObjectContainer {
     if (width == null) width = canvas.width;
     if (height == null) height = canvas.height;
 
+    backgroundColor = options.backgroundColor;
+    preventDefaultOnTouch = options.preventDefaultOnTouch;
+    preventDefaultOnMouse = options.preventDefaultOnMouse;
+    preventDefaultOnWheel = options.preventDefaultOnWheel;
+    preventDefaultOnKeyboard = options.preventDefaultOnKeyboard;
+
     _canvas = canvas;
-    _color = options.backgroundColor;
     _stageAlign = options.stageAlign;
     _stageScaleMode = options.stageScaleMode;
     _stageRenderMode = options.stageRenderMode;
     _inputEventMode = options.inputEventMode;
 
-    _preventDefaultOnTouch = options.preventDefaultOnTouch;
-    _preventDefaultOnMouse = options.preventDefaultOnMouse;
-    _preventDefaultOnWheel = options.preventDefaultOnWheel;
-    _preventDefaultOnKeyboard = options.preventDefaultOnKeyboard;
-
     _sourceWidth = ensureInt(width);
     _sourceHeight = ensureInt(height);
-    _pixelRatio = min(options.maxPixelRatio, env.devicePixelRatio);
+    _pixelRatio = minNum(options.maxPixelRatio, env.devicePixelRatio);
     _renderContext = _createRenderContext(canvas, options);
     _renderState = new RenderState(_renderContext);
 
@@ -178,12 +202,6 @@ class Stage extends DisplayObjectContainer {
 
   RenderLoop get renderLoop => _renderLoop;
 
-  /// Gets the [Juggler] of this Stage. The Juggler is driven by the
-  /// [RenderLoop] where this Stage is added to. If this Stage is not
-  /// added to a RenderLoop, the [Juggler] will not advance in time.
-
-  Juggler get juggler => _juggler;
-
   /// Gets the last known mouse position in Stage coordinates.
 
   Point<num> get mousePosition => _mousePosition;
@@ -233,15 +251,6 @@ class Stage extends DisplayObjectContainer {
     _updateCanvasSize();
   }
 
-  /// Gets and sets the [InteractiveObject] (a DisplayObject which can
-  /// receive user input like mouse, touch or keyboard).
-
-  InteractiveObject get focus => _focus;
-
-  void set focus(InteractiveObject value) {
-    _focus = value;
-  }
-
   /// Gets and sets the render mode of this Stage. You can choose between
   /// three different modes defined in [StageRenderMode].
 
@@ -269,14 +278,6 @@ class Stage extends DisplayObjectContainer {
   void set align(StageAlign value) {
     _stageAlign = value;
     _updateCanvasSize();
-  }
-
-  /// Gets and sets the background color of this Stage.
-
-  int get backgroundColor => _color;
-
-  void set backgroundColor(int value) {
-    _color = value;
   }
 
   //----------------------------------------------------------------------------
@@ -333,7 +334,7 @@ class Stage extends DisplayObjectContainer {
       _updateCanvasSize();
 
       _renderContext.reset();
-      _renderContext.clear(_color);
+      _renderContext.clear(backgroundColor);
 
       _renderState.reset(_stageTransformation);
       _renderState.currentTime = ensureNum(currentTime);
@@ -533,7 +534,7 @@ class Stage extends DisplayObjectContainer {
 
   void _onMouseEvent(html.MouseEvent event) {
 
-    if (_preventDefaultOnMouse) event.preventDefault();
+    if (preventDefaultOnMouse) event.preventDefault();
 
     int time = new DateTime.now().millisecondsSinceEpoch;
     int button = event.button;
@@ -687,7 +688,7 @@ class Stage extends DisplayObjectContainer {
 
   void _onMouseWheelEvent(html.WheelEvent event) {
 
-    if (_preventDefaultOnWheel) event.preventDefault();
+    if (preventDefaultOnWheel) event.preventDefault();
 
     var stagePoint = _clientTransformation.transformPoint(event.client);
     var localPoint = new Point<num>(0.0, 0.0);
@@ -720,7 +721,7 @@ class Stage extends DisplayObjectContainer {
       var jsChangedTouches = new JsArray.from(jsEvent["changedTouches"]);
       var eventType = ensureString(jsEvent["type"]);
 
-      if (_preventDefaultOnTouch) jsEvent.callMethod("preventDefault");
+      if (preventDefaultOnTouch) jsEvent.callMethod("preventDefault");
 
       for(var changedTouch in jsChangedTouches) {
         var jsChangedTouch = new JsObject.fromBrowserObject(changedTouch);
@@ -733,7 +734,7 @@ class Stage extends DisplayObjectContainer {
 
     } else {
 
-      if (_preventDefaultOnTouch) event.preventDefault();
+      if (preventDefaultOnTouch) event.preventDefault();
 
       var eventType = event.type;
       var altKey = event.altKey;
@@ -869,8 +870,8 @@ class Stage extends DisplayObjectContainer {
 
   void _onKeyEvent(html.KeyboardEvent event) {
 
-    if (_preventDefaultOnKeyboard) event.preventDefault();
-    if (_focus == null) return;
+    if (preventDefaultOnKeyboard) event.preventDefault();
+    if (focus == null) return;
 
     if (event.type == "keypress") {
 
@@ -882,7 +883,7 @@ class Stage extends DisplayObjectContainer {
       var text = new String.fromCharCodes([charCode]);
       var textEvent = new TextEvent(TextEvent.TEXT_INPUT, true, text);
 
-      _focus.dispatchEvent(textEvent);
+      focus.dispatchEvent(textEvent);
 
       if (textEvent.isImmediatePropagationStopped) event.stopImmediatePropagation();
       if (textEvent.isPropagationStopped) event.stopPropagation();
@@ -905,7 +906,7 @@ class Stage extends DisplayObjectContainer {
           event.keyCode, keyLocation,
           event.altKey, event.ctrlKey, event.shiftKey);
 
-      _focus.dispatchEvent(keyboardEvent);
+      focus.dispatchEvent(keyboardEvent);
 
       if (keyboardEvent.isImmediatePropagationStopped) event.stopImmediatePropagation();
       if (keyboardEvent.isPropagationStopped) event.stopPropagation();
