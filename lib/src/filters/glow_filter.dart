@@ -119,7 +119,7 @@ class GlowFilter extends BitmapFilter {
     int width = ensureInt(imageData.width);
     int height = ensureInt(imageData.height);
 
-    num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
+    num pixelRatio = renderTextureQuad.pixelRatio;
     int blurX = (this.blurX * pixelRatio).round();
     int blurY = (this.blurY * pixelRatio).round();
     int alphaChannel = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.ALPHA);
@@ -253,10 +253,7 @@ class GlowFilterProgram extends RenderProgram {
       RenderState renderState, RenderTextureQuad renderTextureQuad,
       int color, num alpha, num radiusX, num radiusY) {
 
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
+    Float32List xyList = renderTextureQuad.xyList;
     Float32List uvList = renderTextureQuad.uvList;
     Matrix matrix = renderState.globalMatrix;
 
@@ -273,8 +270,8 @@ class GlowFilterProgram extends RenderProgram {
 
     for(int vertex = 0, index = 0; vertex < 4; vertex++, index += 4) {
 
-      int x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
-      int y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+      num x = xyList[vertex + vertex + 0];
+      num y = xyList[vertex + vertex + 1];
 
       if (index > vxData.length - 4) return; // dart2js_hint
 

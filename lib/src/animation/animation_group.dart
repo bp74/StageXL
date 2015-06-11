@@ -17,7 +17,7 @@ part of stagexl.animation;
 ///     juggler.add(ag);
 ///
 ///     juggler.addGroup([
-///          new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
+///        new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
 ///        new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
 ///        ..onComplete = () => print("complete");
 ///

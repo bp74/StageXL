@@ -47,8 +47,8 @@ class Event {
   EventPhase _eventPhase = EventPhase.AT_TARGET;
   EventDispatcher _target = null;
   EventDispatcher _currentTarget = null;
-  bool _stopsPropagation = false;
-  bool _stopsImmediatePropagation = false;
+  bool _isPropagationStopped = false;
+  bool _isImmediatePropagationStopped = false;
 
   /// Creates an [Event] of specified [type].
   Event(String type, [bool bubbles = false]) : _type = type, _bubbles = bubbles;
@@ -64,8 +64,9 @@ class Event {
   /// prevents processing of event listeners in both the current node and 
   /// subsequent nodes. Additional calls to this method have no effect. This 
   /// method can be called in any phase of the event flow.
+
   void stopPropagation() {
-    _stopsPropagation = true;
+    _isPropagationStopped = true;
   }
 
   /// Prevents processing of any event listeners in the current node and any 
@@ -74,19 +75,21 @@ class Event {
   /// This method takes effect immediately, and it affects event listeners in 
   /// the current node. In contrast, the [stopPropagation] method doesn't take 
   /// effect until all the event listeners in the current node finish processing.
+
   void stopImmediatePropagation() {
-    _stopsPropagation = true;
-    _stopsImmediatePropagation = true;
+    _isPropagationStopped = true;
+    _isImmediatePropagationStopped = true;
   }
 
-  /// Indicates if the propagation of this event has been stopped. 
+  /// Indicates if the propagation of this event has been stopped.
   /// 
   /// If true, processing of any event listeners in nodes subsequent to the 
   /// current node in the event flow is prevented. This does not affect any 
   /// event listeners  in the current node ([currentTarget]). In contrast, 
   /// [stopsImmediatePropagation] indicates if processing of event listeners 
   /// in both the current node and subsequent nodes is prevented.
-  bool get stopsPropagation => _stopsPropagation;
+
+  bool get isPropagationStopped => _isPropagationStopped;
   
   /// Indicates if the propagation of this event has been stopped. 
   /// 
@@ -95,9 +98,11 @@ class Event {
   /// immediately, and it affects event listeners in the current node. In 
   /// contrast, [stopsPropagation] indicates that it doesn't take effect until 
   /// all the event listeners in the current node finish processing.
-  bool get stopsImmediatePropagation => _stopsImmediatePropagation;
+
+  bool get isImmediatePropagationStopped => _isImmediatePropagationStopped;
 
   /// The type of event.
+
   String get type => _type;
   
   /// Indicates whether an event is a bubbling event. If the event can bubble, 
@@ -108,9 +113,11 @@ class Event {
   /// to the node just before the target node; the target phase, which comprises 
   /// the target node; and the bubbling phase, which flows from the node 
   /// subsequent to the target node back up the display list hierarchy.
+
   bool get bubbles => _bubbles;
   
   /// Indicates whether an event is a capturing event. 
+
   bool get captures => true;
 
   /// The current phase in the event flow. 
@@ -120,12 +127,14 @@ class Event {
   /// * The capture phase ([EventPhase.CAPTURING_PHASE]).
   /// * The target phase ([EventPhase.AT_TARGET]).
   /// * The bubbling phase ([EventPhase.BUBBLING_PHASE]).
+
   EventPhase get eventPhase => _eventPhase;
   
   /// The event target. 
   /// 
   /// This property contains the target node. For example, if a user clicks an 
   /// OK button, the target node is the display list node containing that button.
+
   EventDispatcher get target => _target;
   
   /// The object that is actively processing the Event object with an event 
@@ -134,5 +143,7 @@ class Event {
   /// For example, if a user clicks an OK button, the current target could be 
   /// the node containing that button or one of its ancestors that has 
   /// registered an event listener for that event.
+
   EventDispatcher get currentTarget => _currentTarget;
+
 }

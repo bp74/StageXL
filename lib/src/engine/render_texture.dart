@@ -5,14 +5,10 @@ class RenderTexture {
   int _width = 0;
   int _height = 0;
 
-  num _storePixelRatio = 1.0;
-  int _storeWidth = 0;
-  int _storeHeight = 0;
-
   CanvasImageSource _source;
   CanvasElement _canvas;
-  RenderTextureQuad _quad;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
+  RenderContextWebGL _renderContext = null;
 
   int _contextIdentifier = -1;
   bool _textureSourceWorkaround = false;
@@ -21,120 +17,97 @@ class RenderTexture {
 
   //-----------------------------------------------------------------------------------------------
 
-  RenderTexture(int width, int height, int fillColor, num storePixelRatio) {
+  RenderTexture(int width, int height, int fillColor) {
 
-    if (width == 0 && height == 0) throw new ArgumentError();
+    if (width <= 0) throw new ArgumentError("width");
+    if (height <= 0) throw new ArgumentError("height");
 
     _width = ensureInt(width);
     _height = ensureInt(height);
-    _storePixelRatio = ensureNum(storePixelRatio);
-    _storeWidth = (_width * _storePixelRatio).round();
-    _storeHeight = (_height * _storePixelRatio).round();
-
-    _source = _canvas = new CanvasElement(width: _storeWidth, height: _storeHeight);
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
+    _source = _canvas = new CanvasElement(width: _width, height: _height);
 
     if (fillColor != 0) {
       var context = _canvas.context2D;
       context.fillStyle = color2rgba(fillColor);
-      context.fillRect(0, 0, _storeWidth, _storeHeight);
+      context.fillRect(0, 0, _width, _height);
     }
   }
 
-  RenderTexture.fromImageElement(ImageElement imageElement, num imagePixelRatio) {
-
-    _storePixelRatio = ensureNum(imagePixelRatio);
-    _width = (ensureNum(imageElement.width) / _storePixelRatio).floor();
-    _height = (ensureNum(imageElement.height) / _storePixelRatio).floor();
-    _storeWidth = (_width * _storePixelRatio).round();
-    _storeHeight = (_height * _storePixelRatio).round();
+  RenderTexture.fromImageElement(ImageElement imageElement) {
+    _width = ensureInt(imageElement.width);
+    _height = ensureInt(imageElement.height);
     _source = imageElement;
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
   }
 
-  RenderTexture.fromCanvasElement(CanvasElement canvasElement, num canvasPixelRatio) {
-
-    _storePixelRatio = ensureNum(canvasPixelRatio);
-    _width = (ensureNum(canvasElement.width) / _storePixelRatio).floor();
-    _height = (ensureNum(canvasElement.height) / _storePixelRatio).floor();
-    _storeWidth = (_width * _storePixelRatio).round();
-    _storeHeight = (_height * _storePixelRatio).round();
+  RenderTexture.fromCanvasElement(CanvasElement canvasElement) {
+    _width = ensureInt(canvasElement.width);
+    _height = ensureInt(canvasElement.height);
     _source = _canvas = canvasElement;
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
   }
 
-  RenderTexture.fromVideoElement(VideoElement videoElement, num videoPixelRatio) {
-
-    if (videoElement.readyState < 3) {
-      throw new ArgumentError("VideoElement is not loaded completely.");
-    }
-
-    _storePixelRatio = ensureNum(videoPixelRatio);
-    _width = (ensureNum(videoElement.videoWidth) / _storePixelRatio).floor();
-    _height = (ensureNum(videoElement.videoHeight) / _storePixelRatio).floor();
-    _storeWidth = (_width * _storePixelRatio).round();
-    _storeHeight = (_height * _storePixelRatio).round();
+  RenderTexture.fromVideoElement(VideoElement videoElement) {
+    if (videoElement.readyState < 3) throw new ArgumentError("videoElement");
+    _width = ensureInt(videoElement.videoWidth);
+    _height = ensureInt(videoElement.videoHeight);
     _source = videoElement;
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
-
     _globalFrameListeners.insert(0, _onGlobalFrame);
   }
 
-  RenderTexture.fromRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer, num storePixelRatio) {
-
-    _storePixelRatio = ensureNum(storePixelRatio);
-    _storeWidth = ensureInt(renderFrameBuffer.width);
-    _storeHeight = ensureInt(renderFrameBuffer.height);
-    _width = (_storeWidth / _storePixelRatio).round();
-    _height = (_storeHeight / _storePixelRatio).round();
-    _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
-
-    _contextIdentifier = renderFrameBuffer.renderContext.contextIdentifier;
-    _renderingContext = renderFrameBuffer.renderingContext;
-    _texture = renderFrameBuffer.texture;
+  RenderTexture.rawWebGL(int width, int height) {
+    _width = ensureInt(width);
+    _height = ensureInt(height);
   }
 
   //-----------------------------------------------------------------------------------------------
+
+  int get width => _width;
+  int get height => _height;
+  CanvasImageSource get source => _source;
+
+  RenderTextureQuad get quad {
+    return new RenderTextureQuad(this,
+        new Rectangle<int>(0, 0, _width, _height),
+        new Rectangle<int>(0, 0, _width, _height), 0, 1.0);
+  }
 
   CanvasElement get canvas {
     if (_source is CanvasElement) {
       return _source;
     } else if (_source is ImageElement) {
       ImageElement imageElement = _source;
-      _canvas = _source = new CanvasElement(width: _storeWidth, height: _storeHeight);
-      _canvas.context2D.drawImageScaled(imageElement, 0, 0, _storeWidth, _storeHeight);
+      _canvas = _source = new CanvasElement(width: _width, height: _height);
+      _canvas.context2D.drawImageScaled(imageElement, 0, 0, _width, _height);
       return _canvas;
     } else {
       throw new StateError("RenderTexture is read only.");
     }
   }
 
-  CanvasImageSource get source => _source;
-  RenderTextureQuad get quad => _quad;
-  RenderTextureFiltering get filtering => _filtering;
-
   gl.Texture get texture => _texture;
   int get contextIdentifier => _contextIdentifier;
 
-  int get width => _width;
-  int get height => _height;
-
-  int get storeWidth => _storeWidth;
-  int get storeHeight => _storeHeight;
-  num get storePixelRatio => _storePixelRatio;
-
   //-----------------------------------------------------------------------------------------------
 
-  set filtering(RenderTextureFiltering filtering) {
-    if (_filtering != filtering) {
-      _filtering = filtering;
-      if (_texture != null) {
-        _renderingContext.activeTexture(gl.TEXTURE10);
-        _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
-        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
-        _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
-      }
-    }
+  /// Get or set the filtering used for this RenderTexture.
+  ///
+  /// The default is [RenderTextureFiltering.LINEAR] which is fine
+  /// for most use cases. In games with 2D pixel art it is sometimes better
+  /// to use the [RenderTextureFiltering.NEAREST] filtering.
+
+  RenderTextureFiltering get filtering => _filtering;
+
+  void set filtering(RenderTextureFiltering filtering) {
+
+    if (_filtering == filtering) return;
+
+    _filtering = filtering;
+
+    if (_renderContext == null || _texture == null) return;
+    if (_renderContext.contextIdentifier != contextIdentifier) return;
+
+    _renderContext.activateRenderTexture(this);
+    _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
+    _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -142,9 +115,11 @@ class RenderTexture {
   /// Call the dispose method to release memory allocated by WebGL.
 
   void dispose() {
+
     if (_renderingContext != null && _texture != null) {
       _renderingContext.deleteTexture(_texture);
     }
+
     _texture = null;
     _source = null;
     _canvas = null;
@@ -156,33 +131,65 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   void resize(int width, int height) {
-    if (_source == null || _source is VideoElement) {
+
+    if (_source is VideoElement) {
+
       throw new StateError("RenderTexture is not resizeable.");
-    } else if (width != _width || height != _height) {
-      _width = ensureInt(width);
-      _height = ensureInt(height);
-      _storeWidth = (_width * _storePixelRatio).round();
-      _storeHeight = (_height * _storePixelRatio).round();
-      _canvas = _source = new CanvasElement(width: _storeWidth, height: _storeHeight);
-      _quad = new RenderTextureQuad(this, 0, 0, 0, 0, 0, _width, _height);
+
+    } else if (_width == width && _height == height) {
+
+      // there is no need to resize the texture
+
+    } else if (_source == null) {
+
+      _width = width;
+      _height = height;
+
+      if (_renderContext == null || _texture == null) return;
+      if (_renderContext.contextIdentifier != contextIdentifier) return;
+
+      var target = gl.TEXTURE_2D;
+      var rgba = gl.RGBA;
+      var type = gl.UNSIGNED_BYTE;
+
+      _renderContext.activateRenderTexture(this);
+      _renderingContext.texImage2DTyped(target, 0, rgba, _width, _height, 0, rgba, type, null);
+
+    } else {
+
+      _width = width;
+      _height = height;
+      _canvas = _source = new CanvasElement(width: _width, height: _height);
     }
   }
 
   //-----------------------------------------------------------------------------------------------
 
+  /// Update the underlying WebGL texture with the source of this RenderTexture.
+  ///
+  /// The source of the RenderTexture is an ImageElement, CanvasElement or
+  /// VideoElement. If changes are made to the source you have to call the
+  /// [update] method to apply those changes to the WebGL texture.
+  ///
+  /// The progress in a VideoElement will automatically updated the
+  /// RenderTexture and you don't need to call the [update] method.
+
   void update() {
-    if (_texture != null) {
-      _renderingContext.activeTexture(gl.TEXTURE10);
-      _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
-      if (_textureSourceWorkaround) {
-        _canvas.context2D.drawImage(_source, 0, 0);
-        _renderingContext.texImage2DCanvas(
-            gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
-      } else {
-        _renderingContext.texImage2DUntyped(
-            gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _source);
-      }
-      _renderingContext.bindTexture(gl.TEXTURE_2D, null);
+
+    if (_renderContext == null || _texture == null) return;
+    if (_renderContext.contextIdentifier != contextIdentifier) return;
+
+    var target = gl.TEXTURE_2D;
+    var rgba = gl.RGBA;
+    var type = gl.UNSIGNED_BYTE;
+
+    if (_textureSourceWorkaround) {
+      _canvas.context2D.drawImage(_source, 0, 0);
+      _renderContext.activateRenderTexture(this);
+      _renderingContext.texImage2DCanvas(target, 0, rgba, rgba, type, _canvas);
+    } else {
+      _renderContext.activateRenderTexture(this);
+      _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _source);
     }
   }
 
@@ -192,25 +199,36 @@ class RenderTexture {
 
     if (this.contextIdentifier != renderContext.contextIdentifier) {
 
+      var target = gl.TEXTURE_2D;
+      var rgba = gl.RGBA;
+      var type = gl.UNSIGNED_BYTE;
+
+      _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
       _texture = _renderingContext.createTexture();
 
       _renderingContext.activeTexture(textureSlot);
-      _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
-      _renderingContext.texImage2DUntyped(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _source);
-      _textureSourceWorkaround = _renderingContext.getError() == gl.INVALID_VALUE;
+      _renderingContext.bindTexture(target, _texture);
+
+      if (_source != null) {
+        _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _source);
+        _textureSourceWorkaround = _renderingContext.getError() == gl.INVALID_VALUE;
+      } else {
+        _renderingContext.texImage2DTyped(target, 0, rgba, width, height, 0, rgba, type, null);
+      }
+
+      if (_textureSourceWorkaround) {
+        // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
+        _canvas = new CanvasElement(width: width, height: height);
+        _canvas.context2D.drawImage(_source, 0, 0);
+        _renderingContext.texImage2DCanvas(target, 0, rgba, rgba, type, _canvas);
+      }
+
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
-
-      if (_textureSourceWorkaround) {
-        // IE sucks! WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
-        _canvas = new CanvasElement(width: this.storeWidth, height: this.storeHeight);
-        _canvas.context2D.drawImage(_source, 0, 0);
-        _renderingContext.texImage2DCanvas(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _canvas);
-      }
 
     } else {
 
@@ -227,9 +245,10 @@ class RenderTexture {
     if (source is VideoElement) {
       var videoElement = source as VideoElement;
       var currentTime = videoElement.currentTime;
-      if (_videoUpdateTime == currentTime) return;
-      _videoUpdateTime = currentTime;
-      update();
+      if (_videoUpdateTime != currentTime) {
+        _videoUpdateTime = currentTime;
+        update();
+      }
     }
   }
 

@@ -15,9 +15,9 @@ part of stagexl.display;
 /// display object instance.
 ///
 /// Note: The Bitmap class is not a subclass of the [InteractiveObject] class,
-/// so it cannot dispatch mouse events. However, you can use the
-/// addEventListener() method of the display object container that contains the
-/// Bitmap object.
+/// so it cannot dispatch mouse or touch events. However, you can listen to
+/// input events on the Bitmap's parent display object.
+
 class Bitmap extends DisplayObject {
 
   /// The BitmapData object being referenced.

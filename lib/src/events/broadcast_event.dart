@@ -69,8 +69,8 @@ _dispatchBroadcastEvent(BroadcastEvent broadcastEvent,
   for (int i = 0; i < length; i++) {
     var subscription = subscriptions[i];
     if (subscription.isCanceled == false) {
-      broadcastEvent._stopsPropagation = false;
-      broadcastEvent._stopsImmediatePropagation = false;
+      broadcastEvent._isPropagationStopped = false;
+      broadcastEvent._isImmediatePropagationStopped = false;
       broadcastEvent._target = subscription.eventStream.target;
       broadcastEvent._currentTarget = subscription.eventStream.target;
       broadcastEvent._eventPhase = EventPhase.AT_TARGET;

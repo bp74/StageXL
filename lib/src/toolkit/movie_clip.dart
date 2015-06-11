@@ -30,6 +30,9 @@ part of stagexl.toolkit;
 /// **Note:** This class is not intended to be used directly. It is needed by 
 /// the 'Toolkit for Dart' to export from Flash Professional to Dart/StageXL.
 class MovieClip extends Sprite {
+
+  static int defaultFrameRate = 30;
+
   /**
    * Read-only. The MovieClip will advance independently of its parent, even if its parent is paused.
    * This is the default mode.
@@ -223,7 +226,7 @@ class MovieClip extends Sprite {
 
   bool _advanceTime(num time) {
     if (!paused && mode == MovieClip.INDEPENDENT && stage != null) {
-      var f = frameRate > 0 ? frameRate : stage.frameRate;
+      var f = frameRate > 0 ? frameRate : defaultFrameRate;
       num sPerFrame = 1 / f;
       num df = min(1, time / sPerFrame);
       _prevPosition = (_prevPos < 0) ? 0 : _prevPosition + df;

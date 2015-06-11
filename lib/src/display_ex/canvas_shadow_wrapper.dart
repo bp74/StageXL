@@ -5,7 +5,7 @@ part of stagexl.display_ex;
 /// which is the recommended technique to render shadows in WebGL.
 ///
 /// The CanvasShadowWrapper takes an arbitrary DisplayObject and renders
-/// it with a drop shadow if the render engine is Cancas2D (not WebGL).
+/// it with a drop shadow if the render engine is Canvas2D (not WebGL).
 ///
 /// Example with deprecated shadow property:
 ///

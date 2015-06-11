@@ -44,6 +44,7 @@ part 'display/bitmap_filter.dart';
 part 'display/bitmap_filter_program.dart';
 part 'display/color_transform.dart';
 part 'display/display_object.dart';
+part 'display/display_object_cache.dart';
 part 'display/display_object_children.dart';
 part 'display/display_object_container.dart';
 part 'display/display_object_container_3d.dart';
@@ -56,44 +57,8 @@ part 'display/simple_button.dart';
 part 'display/sprite.dart';
 part 'display/sprite_3d.dart';
 part 'display/stage.dart';
-part 'display/stage_align.dart';
-part 'display/stage_render_mode.dart';
-part 'display/stage_scale_mode.dart';
+part 'display/stage_options.dart';
 part 'display/stage_tools.dart';
 
 final Matrix _tmpMatrix = new Matrix.fromIdentity();
 final Matrix _identityMatrix = new Matrix.fromIdentity();
-
-//-----------------------------------------------------------------------------
-
-/// The Shadow class is deprecated.
-/// Please use the DropShadowFilter class instead.
-///
-@deprecated
-class Shadow {
-  int color;
-  num offsetX;
-  num offsetY;
-  num blur;
-  DisplayObject targetSpace;
-  Shadow(this.color, this.offsetX, this.offsetY, this.blur);
-}
-
-/// The CompositeOperation is deprecated.
-/// Please use the BlendMode class instead.
-///
-@deprecated
-class CompositeOperation {
-  static const String SOURCE_OVER       = "source-over";
-  static const String SOURCE_IN         = "source-in";
-  static const String SOURCE_OUT        = "source-out";
-  static const String SOURCE_ATOP       = "source-atop";
-  static const String DESTINATION_OVER  = "destination-over";
-  static const String DESTINATION_IN    = "destination-in";
-  static const String DESTINATION_OUT   = "destination-out";
-  static const String DESTINATION_ATOP  = "destination-atop";
-  static const String LIGHTER           = "lighter";
-  static const String DARKER            = "darker";
-  static const String COPY              = "copy";
-  static const String XOR               = "xor";
-}

@@ -52,17 +52,13 @@ abstract class DisplayObject
   Mask _mask = null;
   BlendMode _blendMode = null;
   List<BitmapFilter> _filters = [];
-  RenderTextureQuad _cacheTextureQuad = null;
-  bool _cacheDebugBorder = false;
+  _DisplayObjectCache _cache = null;
 
   String _name = "";
   DisplayObjectParent _parent = null;
 
   final Matrix _transformationMatrix = new Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
-
-  @deprecated Shadow shadow;
-  @deprecated String compositeOperation;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -378,7 +374,9 @@ abstract class DisplayObject
   ///
   /// See also [applyCache], [refreshCache] and [removeCache].
 
-  RenderTextureQuad get cache => _cacheTextureQuad;
+  RenderTextureQuad get cache {
+    return _cache != null ? _cache.renderTextureQuad : null;
+  }
 
   /// The [DisplayObjectContainer] object that contains this display object.
   ///
@@ -872,67 +870,33 @@ abstract class DisplayObject
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  /// Caches a rectangular area of this display object for better performance.
+  /// Draws the specified area of this display object to an internal render
+  /// texture and the engine will use this texture to optimize performance.
   ///
-  /// If the cached area changes, the cache must be refreshed using
-  /// [refreshCache] or removed using [removeCache]. Calling [applyCache] again
-  /// with the same parameters will refresh the cache.
+  /// This is useful when the display object contains many static children or
+  /// a [Graphics] vector object. If the cached area changes, the cache must be
+  /// refreshed using [refreshCache] or removed using [removeCache].
 
-  void applyCache(int x, int y, int width, int height, {bool debugBorder: false}) {
+  void applyCache(int x, int y, int width, int height, {
+      bool debugBorder: false, num pixelRatio: 1.0}) {
 
-    var pixelRatio = Stage.autoHiDpi ? env.devicePixelRatio : 1.0;
-
-    var renderTexture = _cacheTextureQuad == null
-        ? new RenderTexture(width, height, Color.Transparent, pixelRatio)
-        : _cacheTextureQuad.renderTexture..resize(width, height);
-
-    _cacheTextureQuad = new RenderTextureQuad(renderTexture, 0, x, y, 0, 0, width, height);
-    _cacheDebugBorder = debugBorder;
-
-    refreshCache();
+    _cache = _cache != null ? _cache : new _DisplayObjectCache(this);
+    _cache.debugBorder = debugBorder;
+    _cache.pixelRatio = pixelRatio;
+    _cache.bounds = new Rectangle<int>(x, y, width, height);
+    _cache.update();
   }
 
   /// Refreshes the cached area of this display object.
 
   void refreshCache() {
-
-    if (_cacheTextureQuad == null) return;
-
-    var canvas = _cacheTextureQuad.renderTexture.canvas;
-    var matrix = _cacheTextureQuad.drawMatrix;
-    var renderContext = new RenderContextCanvas(canvas);
-    var renderState = new RenderState(renderContext, matrix);
-
-    renderContext.clear(Color.Transparent);
-    render(renderState);
-
-    if (_filters != null) {
-      var cacheBitmapData = new BitmapData.fromRenderTextureQuad(_cacheTextureQuad);
-      for(int i = 0; i < _filters.length; i++) {
-        _filters[i].apply(cacheBitmapData);
-      }
-    }
-
-    if (_cacheDebugBorder) {
-      canvas.context2D
-          ..setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
-          ..lineWidth = 1
-          ..lineJoin = "miter"
-          ..lineCap = "butt"
-          ..strokeStyle = "#FF00FF"
-          ..strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
-    }
-
-    _cacheTextureQuad.renderTexture.update();
+    if (_cache != null) _cache.update();
   }
 
-  /// Removes the previousely cached area of this display object.
+  /// Removes the previously cached area of this display object.
 
   void removeCache() {
-    if (_cacheTextureQuad != null) {
-      _cacheTextureQuad.renderTexture.dispose();
-      _cacheTextureQuad = null;
-    }
+    if (_cache != null) _cache.dispose();
   }
 
   //----------------------------------------------------------------------------
@@ -949,15 +913,15 @@ abstract class DisplayObject
 
     for(int i = ancestors.length - 1; i >= 0 && event.captures; i--) {
       ancestors[i].dispatchEventRaw(event, this, EventPhase.CAPTURING_PHASE);
-      if (event.stopsPropagation) return;
+      if (event.isPropagationStopped) return;
     }
 
     dispatchEventRaw(event, this, EventPhase.AT_TARGET);
-    if (event.stopsPropagation) return;
+    if (event.isPropagationStopped) return;
 
     for(int i = 0; i < ancestors.length && event.bubbles; i++) {
       ancestors[i].dispatchEventRaw(event, this, EventPhase.BUBBLING_PHASE);
-      if (event.stopsPropagation) return;
+      if (event.isPropagationStopped) return;
     }
   }
 

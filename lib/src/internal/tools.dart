@@ -22,9 +22,47 @@ String color2rgba(int color) {
 
 //-----------------------------------------------------------------------------
 
-int minInt(int a, int b) => a < b ? a : b;
+int minInt(int a, int b) {
+  if (a <= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
 
-int maxInt(int a, int b) => a > b ? a : b;
+int maxInt(int a, int b) {
+  if (a >= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+num minNum(num a, num b) {
+  if (a <= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+num maxNum(num a, num b) {
+  if (a >= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+int clampInt(int value, int lower, int upper) {
+  if (value <= lower) {
+    return lower;
+  } else if (value >= upper) {
+    return upper;
+  } else {
+    return value;
+  }
+}
 
 //-----------------------------------------------------------------------------
 

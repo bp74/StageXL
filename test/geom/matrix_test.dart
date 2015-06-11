@@ -70,11 +70,11 @@ void main() {
   });
 
   test('Matrix.rotate', () {
-    // ToDO
+    // ToDo
   });
 
   test('Matrix.skew', () {
-    // ToDO
+    // ToDo
   });
 
   test('Matrix.scale', () {

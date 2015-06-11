@@ -1,5 +1,11 @@
 part of stagexl.events;
 
+enum InputEventMode {
+  MouseOnly,
+  TouchOnly,
+  MouseAndTouch
+}
+
 /// The [InputEvent] is a common base class for [MouseEvent] and [TouchEvent].
 ///
 /// This makes it more convenient to use the same event listener for mouse
@@ -8,9 +14,7 @@ part of stagexl.events;
 ///
 /// Example:
 ///
-///     if (Multitouch.supportsTouchEvents) {
-///       Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
-///     }
+///     StageXL.stageOptions.inputEventMode = InputEventMode.MouseAndTouch;
 ///
 ///     var sprite = new Sprite();
 ///     sprite.onMouseDown.listen(onSpriteSelected);
@@ -65,4 +69,13 @@ abstract class InputEvent extends Event {
       this.stageX, this.stageY,
       this.altKey, this.ctrlKey, this.shiftKey) : super(type, bubbles);
 
+  //---------------------------------------------------------------------------
+
+  bool _isDefaultPrevented = false;
+
+  void preventDefault() {
+    _isDefaultPrevented = true;
+  }
+
+  bool get isDefaultPrevented => _isDefaultPrevented;
 }

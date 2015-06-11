@@ -14,8 +14,7 @@ abstract class Sound {
 
   /// The default loading options for the [Sound.load] method.
 
-  static SoundLoadOptions defaultLoadOptions = new SoundLoadOptions(
-      mp3:true, mp4:true, ogg:true, ac3: true, wav:true);
+  static SoundLoadOptions defaultLoadOptions = new SoundLoadOptions();
 
   /// Loads a sound from a file url.
   ///

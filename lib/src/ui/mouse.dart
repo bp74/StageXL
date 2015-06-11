@@ -34,6 +34,9 @@ class MouseCursorData {
   MouseCursorData(this.url, this.hotSpot);
 }
 
+/// Use the static properties of the [Mouse] class to control
+/// the appearance of the mouse cursor.
+
 class Mouse {
 
   static bool _cursorHidden = false;

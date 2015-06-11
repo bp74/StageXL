@@ -114,7 +114,10 @@ class TintFilterProgram extends RenderProgram {
     varying vec4 vColor;
 
     void main() {
-      gl_FragColor = texture2D(uSampler, vTextCoord)* vColor;
+      vec4 color = texture2D(uSampler, vTextCoord);
+      color = vec4(color.rgb / color.a, color.a);
+      color = color * vColor;
+      gl_FragColor = vec4(color.rgb * color.a, color.a);
     }
     """;
 
@@ -133,7 +136,7 @@ class TintFilterProgram extends RenderProgram {
     _renderBufferVertex.activate(renderContext);
     _renderBufferVertex.bindAttribute(attributes["aVertexPosition"],  2, 32,  0);
     _renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 32,  8);
-    _renderBufferVertex.bindAttribute(attributes["aVertexColor"],     2, 32, 16);
+    _renderBufferVertex.bindAttribute(attributes["aVertexColor"],     4, 32, 16);
   }
 
   @override
@@ -150,14 +153,10 @@ class TintFilterProgram extends RenderProgram {
   void renderTintFilterQuad(
     RenderState renderState, RenderTextureQuad renderTextureQuad, TintFilter tintFilter) {
 
+    Float32List xyList = renderTextureQuad.xyList;
+    Float32List uvList = renderTextureQuad.uvList;
     Matrix matrix = renderState.globalMatrix;
     num alpha = renderState.globalAlpha;
-
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
-    Float32List uvList = renderTextureQuad.uvList;
 
     num colorR = tintFilter.factorR.toDouble();
     num colorG = tintFilter.factorG.toDouble();
@@ -168,12 +167,12 @@ class TintFilterProgram extends RenderProgram {
     num mb = matrix.b;
     num mc = matrix.c;
     num md = matrix.d;
-    num ox = matrix.tx + offsetX * ma + offsetY * mc;
-    num oy = matrix.ty + offsetX * mb + offsetY * md;
-    num ax = ma * width;
-    num bx = mb * width;
-    num cy = mc * height;
-    num dy = md * height;
+    num ox = matrix.tx + xyList[0] * ma + xyList[1] * mc;
+    num oy = matrix.ty + xyList[0] * mb + xyList[1] * md;
+    num ax = xyList[8] * ma;
+    num bx = xyList[8] * mb;
+    num cy = xyList[9] * mc;
+    num dy = xyList[9] * md;
 
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!

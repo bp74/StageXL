@@ -7,14 +7,15 @@ part of stagexl.display;
 
 class DisplayObjectChildren implements Iterable<DisplayObject> {
 
+  // TODO: implements EfficientLengthIterable<DisplayObject> (Dart SDK 1.11)
+  // TODO: Implement the rest of the List<DisplayObject> interface ?
+
   final DisplayObjectParent parent;
   final List<DisplayObject> _children;
 
   DisplayObjectChildren._(this.parent, this._children);
 
   //---------------------------------------------------------------------------
-
-  // TODO: Implement the rest of the List<DisplayObject> interface.
 
   void clear() {
     this.parent.removeChildren();

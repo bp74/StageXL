@@ -16,9 +16,7 @@ class DisplacementMapFilter extends BitmapFilter {
   final num scaleY;
 
   DisplacementMapFilter(BitmapData bitmapData, [
-                        Matrix matrix = null,
-                        num scaleX = 16.0,
-                        num scaleY = 16.0]) :
+    Matrix matrix = null, num scaleX = 16.0, num scaleY = 16.0]) :
 
     bitmapData = bitmapData,
     matrix = (matrix != null) ? matrix : new Matrix.fromIdentity(),
@@ -57,7 +55,8 @@ class DisplacementMapFilter extends BitmapFilter {
     var srcData = srcImageData.data;
     var dstData = dstImageData.data;
 
-    num pixelRatio = renderTextureQuad.renderTexture.storePixelRatio;
+    Float32List xyList = renderTextureQuad.xyList;
+    num pixelRatio = renderTextureQuad.pixelRatio;
     num scaleX = pixelRatio * this.scaleX;
     num scaleY = pixelRatio * this.scaleX;
     int channelX = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.RED);
@@ -68,7 +67,7 @@ class DisplacementMapFilter extends BitmapFilter {
     //     y + ((colorG(x, y) - 128) * scaleY) / 256)];
 
     Matrix matrix = this.matrix.cloneInvert();
-    matrix.prependTranslation(renderTextureQuad.offsetX, renderTextureQuad.offsetY);
+    matrix.prependTranslation(xyList[0], xyList[1]);
 
     for(int dstY = 0; dstY < dstHeight; dstY++) {
       num mx = dstY * matrix.c + matrix.tx;
@@ -124,43 +123,43 @@ class DisplacementMapFilterProgram extends BitmapFilterProgram {
 
   String get fragmentShaderSource => """
       precision mediump float;
-      uniform sampler2D uSampler;
+      uniform sampler2D uTexSampler;
       uniform sampler2D uMapSampler;
       uniform mat3 uMapMatrix;
-      uniform vec2 uMapScale;
+      uniform mat3 uDisMatrix;
       varying vec2 vTextCoord;
       varying float vAlpha;
       void main() {
         vec3 mapCoord = vec3(vTextCoord.xy, 1) * uMapMatrix;
         vec4 mapColor = texture2D(uMapSampler, mapCoord.xy);
-        vec2 displacement = uMapScale * (mapColor.rg - 0.5);
-        gl_FragColor = texture2D(uSampler, vTextCoord + displacement) * vAlpha;
+        vec3 displacement = vec3(mapColor.rg - 0.5, 1) * uDisMatrix;
+        gl_FragColor = texture2D(uTexSampler, vTextCoord + displacement.xy) * vAlpha;
       }
       """;
 
   void configure(DisplacementMapFilter displacementMapFilter, RenderTextureQuad renderTextureQuad) {
 
-    //var matrix = renderTextureQuad.samplerMatrix.cloneInvert();
-    //matrix.concat(displacementMapFilter.matrix.cloneInvert());
-    //matrix.concat(displacementMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
+    var mapMatrix = new Matrix.fromIdentity();
+    mapMatrix.copyFromAndConcat(displacementMapFilter.matrix, renderTextureQuad.samplerMatrix);
+    mapMatrix.invertAndConcat(displacementMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
 
-    var matrix = new Matrix.fromIdentity();
-    matrix.copyFromAndConcat(displacementMapFilter.matrix, renderTextureQuad.samplerMatrix);
-    matrix.invertAndConcat(displacementMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
+    var disMatrix = new Matrix.fromIdentity();
+    disMatrix.copyFrom(renderTextureQuad.samplerMatrix);
+    disMatrix.scale(displacementMapFilter.scaleX, displacementMapFilter.scaleY);
 
     var uMapMatrix = new Float32List.fromList([
-        matrix.a, matrix.c, matrix.tx,
-        matrix.b, matrix.d, matrix.ty,
-        0.0, 0.0, 1.0]);
+      mapMatrix.a, mapMatrix.c, mapMatrix.tx,
+      mapMatrix.b, mapMatrix.d, mapMatrix.ty,
+      0.0, 0.0, 1.0]);
 
-    var uMapScaleX = displacementMapFilter.scaleX / renderTextureQuad.textureWidth;
-    var uMapScaleY = displacementMapFilter.scaleY / renderTextureQuad.textureHeight;
-    var uMapMatrixLocation = uniforms["uMapMatrix"];
-    var uMapSamplerLocation = uniforms["uMapSampler"];
-    var uMapScaleLocation = uniforms["uMapScale"];
+    var uDisMatrix = new Float32List.fromList([
+      disMatrix.a, disMatrix.c, 0.0,
+      disMatrix.b, disMatrix.d, 0.0,
+      0.0, 0.0, 1.0]);
 
-    renderingContext.uniformMatrix3fv(uMapMatrixLocation, false, uMapMatrix);
-    renderingContext.uniform1i(uMapSamplerLocation, 1);
-    renderingContext.uniform2f(uMapScaleLocation, uMapScaleX, uMapScaleY);
+    renderingContext.uniform1i(uniforms["uTexSampler"], 0);
+    renderingContext.uniform1i(uniforms["uMapSampler"], 1);
+    renderingContext.uniformMatrix3fv(uniforms["uMapMatrix"], false, uMapMatrix);
+    renderingContext.uniformMatrix3fv(uniforms["uDisMatrix"], false, uDisMatrix);
   }
 }

@@ -1,62 +1,65 @@
 part of stagexl.display;
 
-/// A drawable Bitmap surface.
+/// The BitmapData class lets you load or create arbitrarily sized transparent
+/// or opaque bitmap images and manipulate them in various ways at runtime.
 ///
-/// If you need to batch drawing operations for better performance,
-/// please use [BitmapDataUpdateBatch] instead.
+/// Most of the time you will load BitmapDatas from static image files or
+/// get them from a texture atlas. You may also create a BitmapData at
+/// runtime and draw arbitrary content onto it's surface.
+///
+/// The BitmapData class is not a display object and therefore can't be added
+/// to the display list (the stage or any other container). Use the [Bitmap]
+/// class to create a display object which will show this BitmapData.
+///
+/// The BitmapData class contains a series of built-in methods that are
+/// useful for creation and manipulation of pixel data. Consider using the
+/// [BitmapDataUpdateBatch] for multiple sequential manipulations for better
+/// performance.
 
 class BitmapData implements BitmapDrawable {
 
-  int _width = 0;
-  int _height = 0;
-
-  RenderTexture _renderTexture;
-  RenderTextureQuad _renderTextureQuad;
+  final num width;
+  final num height;
+  final RenderTextureQuad renderTextureQuad;
 
   static BitmapDataLoadOptions defaultLoadOptions = new BitmapDataLoadOptions();
 
+  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad) :
+    this.renderTextureQuad = renderTextureQuad,
+    this.width = renderTextureQuad.targetWidth,
+    this.height = renderTextureQuad.targetHeight;
+
   //----------------------------------------------------------------------------
 
-  BitmapData(int width, int height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
-    _width = ensureInt(width);
-    _height = ensureInt(height);
-    _renderTexture = new RenderTexture(_width, _height, fillColor, pixelRatio);
-    _renderTextureQuad = _renderTexture.quad;
+  factory BitmapData(int width, int height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
+    int textureWidth = (width * pixelRatio).round();
+    int textureHeight = (height * pixelRatio).round();
+    var renderTexture = new RenderTexture(textureWidth, textureHeight, fillColor);
+    var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
-    _renderTexture = new RenderTexture.fromImageElement(imageElement, pixelRatio);
-    _renderTextureQuad = _renderTexture.quad;
-    _width = ensureInt(_renderTexture.width);
-    _height = ensureInt(_renderTexture.height);
+  factory BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
+    var renderTexture = new RenderTexture.fromImageElement(imageElement);
+    var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
-    _renderTexture = new RenderTexture.fromVideoElement(videoElement, pixelRatio);
-    _renderTextureQuad = _renderTexture.quad;
-    _width = ensureInt(_renderTexture.width);
-    _height = ensureInt(_renderTexture.height);
+  factory BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
+    var renderTexture = new RenderTexture.fromVideoElement(videoElement);
+    var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
-    _width = ensureInt(rectangle.width);
-    _height = ensureInt(rectangle.height);
-    _renderTexture = bitmapData.renderTexture;
-    _renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
-  }
-
-  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad, [int width, int height]) {
-    if (width == null) width = renderTextureQuad.textureWidth + renderTextureQuad.offsetX;
-    if (height == null) height = renderTextureQuad.textureHeight + renderTextureQuad.offsetY;
-    _width = ensureInt(width);
-    _height = ensureInt(height);
-    _renderTexture = renderTextureQuad.renderTexture;
-    _renderTextureQuad = renderTextureQuad;
+  factory BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
+    var renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
+    return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
   //----------------------------------------------------------------------------
 
   /// Loads a BitmapData from the given url.
+
   static Future<BitmapData> load(String url, [BitmapDataLoadOptions bitmapDataLoadOptions]) {
 
     if (bitmapDataLoadOptions == null) {
@@ -88,20 +91,18 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   /// Returns a new BitmapData with a copy of this BitmapData's texture.
+
   BitmapData clone([num pixelRatio]) {
-    if (pixelRatio == null) pixelRatio = _renderTexture.storePixelRatio;
-    var bitmapData = new BitmapData(_width, _height, Color.Transparent, pixelRatio);
+    if (pixelRatio == null) pixelRatio = renderTextureQuad.pixelRatio;
+    var bitmapData = new BitmapData(width, height, Color.Transparent, pixelRatio);
     bitmapData.drawPixels(this, this.rectangle, new Point<int>(0, 0));
     return bitmapData;
   }
 
   /// Return a dataUrl for this BitmapData.
+
   String toDataUrl([String type = 'image/png', num quality]) {
-    if (identical(_renderTextureQuad, _renderTexture.quad)) {
-      return _renderTexture.canvas.toDataUrl(type, quality);
-    } else {
-      return clone().toDataUrl(type, quality);
-    }
+    return this.clone().renderTexture.canvas.toDataUrl(type, quality);
   }
 
   //----------------------------------------------------------------------------
@@ -117,11 +118,12 @@ class BitmapData implements BitmapDrawable {
   /// of this BitmapData. If your frames are also separated by space or have an
   /// additional margin for each frame, you can specify this with the spacing or
   /// margin parameter (in pixel).
+
   List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, {
     int frameCount: null, int frameSpacing: 0, int frameMargin: 0 }) {
 
-    var cols = (_width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
-    var rows = (_height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
+    var cols = (width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
+    var rows = (height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
     var frames = new List<BitmapData>();
 
     frameCount = (frameCount == null) ? rows * cols : min(frameCount, rows * cols);
@@ -142,12 +144,8 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  int get width => _width;
-  int get height => _height;
-
-  Rectangle<int> get rectangle => new Rectangle<int>(0, 0, _width, _height);
-  RenderTexture get renderTexture => _renderTextureQuad.renderTexture;
-  RenderTextureQuad get renderTextureQuad => _renderTextureQuad;
+  Rectangle<num> get rectangle => new Rectangle<num>(0, 0, width, height);
+  RenderTexture get renderTexture => renderTextureQuad.renderTexture;
 
   //----------------------------------------------------------------------------
 
@@ -249,6 +247,6 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   render(RenderState renderState) {
-    renderState.renderQuad(_renderTextureQuad);
+    renderState.renderQuad(renderTextureQuad);
   }
 }

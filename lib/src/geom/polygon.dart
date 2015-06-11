@@ -151,7 +151,9 @@ class Polygon {
       }
 
       if(earFound) {
-        result.addAll([i0, i1, i2]);
+        result.add(i0);
+        result.add(i1);
+        result.add(i2);
         available.removeAt((i + 1) % al);
         al--;
         i = 0;
@@ -160,7 +162,9 @@ class Polygon {
       }
     }
 
-    result.addAll([available[0], available[1], available[2]]);
+    result.add(available[0]);
+    result.add(available[1]);
+    result.add(available[2]);
 
     // http://dartbug.com/10489
     return result.toList(growable: false);

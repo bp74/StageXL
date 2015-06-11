@@ -1,8 +1,36 @@
-# changelog
+# Change Log
 
-This file contains highlights of what changes on each version of the StageXL
-package. This file is normally updated whenever we push a new version to pub.
+This file contains highlights of the changes we have made in each version.
+For questions regarding new features or breaking changes, please follow the
+announcements on the StageXL forum or use one of the support links below:
 
+  * StageXL Forum <https://groups.google.com/forum/#!forum/stagexl>
+  * StageXL GitHub <https://github.com/bp74/StageXL/issues>
+  * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
+  
+#### Pub version 0.12.0-dev
+  * Added StageXL global default configuration options.
+  * Added Juggler async/await and reactive features.
+  * Added SoundChannel play() and pause() methods.
+  * Added SoundChannel position, paused, stopped properties.
+  * Added SoundMixer.unlockMobileAudio() convenience method.
+  * Added BitmapDataLoadOptions.maxPixelRatio (replaces old autoHiDpi). 
+  * Added TextureAtlas loader abstraction for custom loaders.
+  * Added pixel ratio support for DisplayObject and TextField cache.
+  * Improved pixel ratio support for HiDPI BitmapDatas.   
+  * Fixed RenderTexture update/resize/filtering on iOS8.
+  * Fixed TintFilter showing the wrong ARGB values.
+  * Breaking Change: changed Stage constructor and properties.
+  * Breaking Change: changed BitmapData constructor and properties.
+  * Breaking Change: changed RenderTextureQuad constructor and properties.
+  * Breaking Change: renamed Transition to Translation (Juggler).
+  * Breaking Change: renamed TransitionFunction to Transition (Juggler).
+  * Breaking Change: renamed Juggler.tween to Juggler.addTween. 
+  * Breaking Change: removed Multitouch class in favor of Stage options.
+  
+This version contains quite a few breaking changes and we are sorry for it. 
+We do this in an effort to to get closer to a 1.0 release.
+  
 #### Pub version 0.11.0+1
   * Added hashCode getter in Point, Rectangle, Circle, Vector.
   
@@ -15,18 +43,13 @@ package. This file is normally updated whenever we push a new version to pub.
   * Added NormalMapFilter for light effects.
   * Added quality setting for blur, glow and drop shadow filter.
   * Optimized filters for Bitmap, TextField, FlipBook and VideoObject.
-  * Optimizes overall performance for filters and display objects.  
+  * Optimized overall performance for filters and display objects.  
   * Optimized onAddedToStage and onRemovedFromStage event dispatching.
   * Optimized memory consumption for BitmapData loading.
   * Fixed SimpleButton setters for the state display objects. 
   * Make TextureAtlasFormat.JSONARRAY the default.
   * Internal simplifications and optimizations.  
   * Requires Dart SDK 1.9 or higher.    
-
-This version contains a few minor breaking changes. If you experience 
-a problem please report the issue either in the 
-[StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
-or in the [StageXL Forum](http://www.stagexl.org/forum.html).
 
 #### Pub version 0.10.3
   * Added InputEvent as base class for MouseEvent and TouchEvent.
@@ -71,11 +94,6 @@ or in the [StageXL Forum](http://www.stagexl.org/forum.html).
   * Deprecated Mask.targetSpace property.
   * Bugfixes and performance improvements.
   * Internal refactoring to use mini-libs.
-  
-This version contains a few minor breaking changes. If you experience 
-a problem please report the issue either in the 
-[StageXL GitHub issue tracker](https://github.com/bp74/StageXL/issues) 
-or in the [StageXL Forum](http://www.stagexl.org/forum.html).
 
 #### Pub version 0.9.4+2
   * Fixed an issue with TouchEvents in Dartium.

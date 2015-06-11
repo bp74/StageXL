@@ -8,16 +8,17 @@ part of stagexl.display_ex;
 class Scale9Bitmap extends Bitmap {
 
   BitmapData _bitmapData;
-  Rectangle<int> _grid;
-  int _width;
-  int _height;
-  List<RenderTextureQuad> _renderTextureQuads;
+  Rectangle<num> _grid;
+  num _width = 0.0;
+  num _height = 0.0;
 
-  Scale9Bitmap(BitmapData bitmapData, Rectangle<int> grid) : super(bitmapData) {
+  final List<RenderTextureQuad> _slices = new List<RenderTextureQuad>(9);
+
+  Scale9Bitmap(BitmapData bitmapData, Rectangle<num> grid) : super(bitmapData) {
     _bitmapData = bitmapData;
     _grid = grid;
-    _width = ensureInt(bitmapData.width);
-    _height = ensureInt(bitmapData.height);
+    _width = ensureNum(bitmapData.width);
+    _height = ensureNum(bitmapData.height);
     _updateRenderTextureQuads();
   }
 
@@ -26,26 +27,26 @@ class Scale9Bitmap extends Bitmap {
   /// Gets and sets the width of this Scale9Bitmap. In contrast to other
   /// display objects, this does not affect the scaleX factor.
 
-  int get width => _width;
+  num get width => _width;
 
-  void set width(int value) {
-    _width = ensureInt(value);
+  void set width(num value) {
+    _width = ensureNum(value);
   }
 
   /// Gets and sets the height of this Scale9Bitmap. In contrast to other
   /// display objects, this does not affect the scaleY factor.
 
-  int get height => _height;
+  num get height => _height;
 
-  void set height(int value) {
-    _height = ensureInt(value);
+  void set height(num value) {
+    _height = ensureNum(value);
   }
 
   /// Gets and sets the grid rectangle within the BitmapData to be scaled.
 
-  Rectangle<int> get grid => _grid;
+  Rectangle<num> get grid => _grid;
 
-  void set grid(Rectangle<int> value) {
+  void set grid(Rectangle<num> value) {
     _grid = value;
     _updateRenderTextureQuads();
   }
@@ -76,28 +77,28 @@ class Scale9Bitmap extends Bitmap {
   @override
   void render(RenderState renderState) {
 
-    var x1 = _grid.left;
-    var x2 = _grid.right;
-    var x3 = ensureInt(bitmapData.width);
-    var y1 = _grid.top;
-    var y2 = _grid.bottom;
-    var y3 = ensureInt(bitmapData.height);
-    var width = _width;
-    var height = _height;
-
     var globalMatrix = renderState.globalMatrix;
     var renderContext = renderState.renderContext;
     var tempMatrix = globalMatrix.clone();
 
-    for (int x = 0; x < 3; x++) {
-      var a = (x == 1) ? (width - x1 - x3 + x2) / (x2 - x1) : 1.0;
-      var tx = (x == 1) ? x1 : ((x == 2) ? width - x3 + x2 : 0);
-      for (int y = 0; y < 3; y++) {
-        var d = (y == 1) ? (height - y1 - y3 + y2) / (y2 - y1) : 1.0;
-        var ty = (y == 1) ? y1 : ((y == 2) ? height - y3 + y2 : 0);
-        globalMatrix.setTo(a, 0, 0, d, tx, ty);
+    var w0 = _slices[0].targetWidth;
+    var h0 = _slices[0].targetHeight;
+    var w1 = _slices[4].targetWidth;
+    var h1 = _slices[4].targetHeight;
+    var w2 = _slices[8].targetWidth;
+    var h2 = _slices[8].targetHeight;
+
+    for (int j = 0; j < 3; j++) {
+      var sh = j == 0 ? h0 : j == 2 ? h2 : h1;
+      var th = j == 0 ? h0 : j == 2 ? h2 : height - h0 - h2;
+      var ty = j == 0 ? 0 : j == 1 ? h0 : height - h2;
+      for (int i = 0; i < 3; i++) {
+        var sw = i == 0 ? w0 : i == 2 ? w2 : w1;
+        var tw = i == 0 ? w0 : i == 2 ? w2 : width - w0 - w2;
+        var tx = i == 0 ? 0 : i == 1 ? w0 : width - w2;
+        globalMatrix.setTo(tw / sw, 0, 0, th / sh, tx, ty);
         globalMatrix.concat(tempMatrix);
-        renderContext.renderQuad(renderState, _renderTextureQuads[x + y * 3]);
+        renderContext.renderQuad(renderState, _slices[i + j * 3]);
       }
     }
 
@@ -108,27 +109,32 @@ class Scale9Bitmap extends Bitmap {
 
   _updateRenderTextureQuads() {
 
+    var rtq = bitmapData.renderTextureQuad;
+
     var x0 = 0;
-    var x1 = _grid.left;
-    var x2 = _grid.right;
-    var x3 = bitmapData.width;
+    var x1 = (rtq.pixelRatio * grid.left).round();
+    var x2 = (rtq.pixelRatio * grid.right).round();
+    var x3 = (rtq.sourceRectangle.width);
+
     var y0 = 0;
-    var y1 = _grid.top;
-    var y2 = _grid.bottom;
-    var y3 = bitmapData.height;
+    var y1 = (rtq.pixelRatio * grid.top).round();
+    var y2 = (rtq.pixelRatio * grid.bottom).round();
+    var y3 = (rtq.sourceRectangle.height);
 
-    var renderTextureQuad = this.bitmapData.renderTextureQuad;
-
-    _renderTextureQuads = [
-      renderTextureQuad.cut(new Rectangle<int>(x0, y0, x1 - x0, y1 - y0)),
-      renderTextureQuad.cut(new Rectangle<int>(x1, y0, x2 - x1, y1 - y0)),
-      renderTextureQuad.cut(new Rectangle<int>(x2, y0, x3 - x2, y1 - y0)),
-      renderTextureQuad.cut(new Rectangle<int>(x0, y1, x1 - x0, y2 - y1)),
-      renderTextureQuad.cut(new Rectangle<int>(x1, y1, x2 - x1, y2 - y1)),
-      renderTextureQuad.cut(new Rectangle<int>(x2, y1, x3 - x2, y2 - y1)),
-      renderTextureQuad.cut(new Rectangle<int>(x0, y2, x1 - x0, y3 - y2)),
-      renderTextureQuad.cut(new Rectangle<int>(x1, y2, x2 - x1, y3 - y2)),
-      renderTextureQuad.cut(new Rectangle<int>(x2, y2, x3 - x2, y3 - y2))
-    ];
+    for (int j = 0; j < 3; j++) {
+      var y = (j == 0 ? y0 : j == 1 ? y1 : y2);
+      var h = (j == 0 ? y1 : j == 1 ? y2 : y3) - y;
+      for (int i = 0; i < 3; i++) {
+        var x = (i == 0 ? x0 : i == 1 ? x1 : x2);
+        var w = (i == 0 ? x1 : i == 1 ? x2 : x3) - x;
+        var source = new Rectangle<int>(x, y, w, h);
+        var offset = new Rectangle<int>(0, 0, w, h);
+        var slice = new RenderTextureQuad.slice(rtq, source, offset);
+        _slices[i + j * 3] = slice;
+      }
+    }
   }
+
 }
+
+

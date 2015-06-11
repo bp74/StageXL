@@ -3,9 +3,10 @@ part of stagexl.events;
 /// The [TouchEvent] class lets you handle events on devices that detect user
 /// contact with the device (such as a finger on a touch screen).
 ///
-/// Use the Multitouch class to determine the current environment's support for
-/// touch interaction, and to manage the support of touch interaction if the
-/// current environment supports it.
+/// You have to opt-in for touch events by setting the InputEventMode
+/// to `TouchOnly` or `MouseAndTouch` in the stage options like this:
+///
+///     StageXL.stageOptions.inputEventMode = InputEventMode.MouseAndTouch;
 
 class TouchEvent extends InputEvent {
 

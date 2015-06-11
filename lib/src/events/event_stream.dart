@@ -195,7 +195,7 @@ class EventStream<T extends Event> extends Stream<T> {
       subscription.eventListener(event);
       InputEvent.current = null;
 
-      if (event.stopsImmediatePropagation) return;
+      if (event.isImmediatePropagationStopped) return;
     }
   }
 

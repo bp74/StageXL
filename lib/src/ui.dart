@@ -1,8 +1,13 @@
-/// Control the mouse cursor, support for multitouch and a long list
-/// of predefined colors you can use in your application.
+/// User interface related definitions and classes.
 ///
+/// Use the static properties of the [Mouse] class to control
+/// the appearance of the mouse cursor.
+///
+/// Use the list of color values defined in [Color] to have
+/// easy access to the ARGB values of different colors.
+
 library stagexl.ui;
 
 export 'ui/color.dart';
 export 'ui/mouse.dart';
-export 'ui/multitouch.dart';
+

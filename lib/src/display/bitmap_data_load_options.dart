@@ -1,5 +1,12 @@
 part of stagexl.display;
 
+/// The BitmapDataLoadOptions class contains different options to configure
+/// how BitmapDatas are loaded from the server.
+///
+/// The [BitmapData.defaultLoadOptions] object is the default for all
+/// loading operations if no BitmapDataLoadOptions are provided to the
+/// [BitmapData.load] function.
+
 class BitmapDataLoadOptions {
 
   /// The application provides *png* files for lossless images.
@@ -17,7 +24,7 @@ class BitmapDataLoadOptions {
 
   bool webp = false;
 
-  /// The maximum pixel ratio for images on HiDpi displays.
+  /// The maximum pixel ratio for images on HiDPI displays.
   ///
   /// The loader automatically detects the device's display pixel ratio
   /// and accordingly loads high resoltion images. The application has
@@ -41,19 +48,18 @@ class BitmapDataLoadOptions {
 
   bool corsEnabled = false;
 
-  /// The BitmapDataLoadOptions class contains different options to configure
-  /// how BitmapDatas are loaded from the server.
-  ///
-  /// The [BitmapData.defaultLoadOptions] object is the default for all
-  /// loading operations if no BitmapDataLoadOptions are provided to the
-  /// BitmapData.load function.
+  //---------------------------------------------------------------------------
 
-  BitmapDataLoadOptions({
-    this.png: true,
-    this.jpg: true,
-    this.webp: false,
-    this.maxPixelRatio: 2,
-    this.corsEnabled: false
-  });
+  /// Create a deep clone of this [BitmapDataLoadOptions].
+
+  BitmapDataLoadOptions clone() {
+    var options = new BitmapDataLoadOptions();
+    options.png = this.png;
+    options.jpg = this.jpg;
+    options.webp = this.webp;
+    options.maxPixelRatio = this.maxPixelRatio;
+    options.corsEnabled = this.corsEnabled;
+    return options;
+  }
+
 }
-

@@ -2,6 +2,7 @@ library stagexl.filters.normal_map;
 
 import 'dart:math' as math;
 import 'dart:web_gl' as gl;
+import 'dart:typed_data';
 
 import '../display.dart';
 import '../engine.dart';
@@ -181,12 +182,8 @@ class NormalMapFilterProgram extends RenderProgram {
     Matrix mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
     Matrix texMatrix = renderTextureQuad.samplerMatrix;
     Matrix posMatrix = renderState.globalMatrix;
-
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
     num alpha = renderState.globalAlpha;
+    Float32List xyList = renderTextureQuad.xyList;
 
     // Ambient color, light color, light position
 
@@ -224,8 +221,8 @@ class NormalMapFilterProgram extends RenderProgram {
 
     for(int vertex = 0, index = _quadCount * 76; vertex < 4; vertex++, index += 19) {
 
-      num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
-      num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+      num x = xyList[vertex + vertex + 0];
+      num y = xyList[vertex + vertex + 1];
 
       if (index > vxData.length - 19) return; // dart2js_hint
 

@@ -64,29 +64,21 @@ abstract class BitmapFilterProgram extends RenderProgram {
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
 
+    Float32List xyList = renderTextureQuad.xyList;
+    Float32List uvList = renderTextureQuad.uvList;
     Matrix matrix = renderState.globalMatrix;
     num alpha = renderState.globalAlpha;
 
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
-    Float32List uvList = renderTextureQuad.uvList;
-
-    // x' = tx + a * x + c * y
-    // y' = ty + b * x + d * y
-
-    num a = matrix.a;
-    num b = matrix.b;
-    num c = matrix.c;
-    num d = matrix.d;
-
-    num ox = matrix.tx + offsetX * a + offsetY * c;
-    num oy = matrix.ty + offsetX * b + offsetY * d;
-    num ax = a * width;
-    num bx = b * width;
-    num cy = c * height;
-    num dy = d * height;
+    num ma = matrix.a;
+    num mb = matrix.b;
+    num mc = matrix.c;
+    num md = matrix.d;
+    num ox = matrix.tx + xyList[0] * ma + xyList[1] * mc;
+    num oy = matrix.ty + xyList[0] * mb + xyList[1] * md;
+    num ax = xyList[8] * ma;
+    num bx = xyList[8] * mb;
+    num cy = xyList[9] * mc;
+    num dy = xyList[9] * md;
 
     var vxData = _renderBufferVertex.data;
     if (vxData == null) return;

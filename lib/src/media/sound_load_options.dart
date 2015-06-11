@@ -1,54 +1,69 @@
 part of stagexl.media;
 
+/// The SoundLoadOptions class contains different options to configure
+/// how videos are loaded from the server.
+///
+/// The [Sound.defaultLoadOptions] object is the default for all
+/// loading operations if no SoundLoadOptions are provided to the
+/// [Sound.load] function.
+
 class SoundLoadOptions {
 
   /// The application provides *mp3* files as an option to load audio files.
-  bool mp3;
+
+  bool mp3 = true;
 
   /// The application provides *mp4* files as an option to load audio files.
-  bool mp4;
+
+  bool mp4 = true;
 
   /// The application provides *ogg* files as an option to load audio files.
-  bool ogg;
+
+  bool ogg = true;
 
   /// The application provides *ac3* files as an option to load audio files.
-  bool ac3;
+
+  bool ac3 = true;
 
   /// The application provides *wav* files as an option to load audio files.
-  bool wav;
+
+  bool wav = true;
 
   /// A list of alternative urls for sound samples in the case where the
   /// primary url does not work or the file type is not supported by the
   /// browser. If this value is null, the alternative urls are calcualted
   /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
-  List<String> alternativeUrls;
+
+  List<String> alternativeUrls = null;
 
   /// Ignore loading errors and use a silent audio sample instead.
-  bool ignoreErrors;
+
+  bool ignoreErrors = true;
 
   /// Use CORS to download the video. This is often necessary when you have
   /// to download video from a third party server.
-  bool corsEnabled;
+
+  bool corsEnabled = false;
 
   //---------------------------------------------------------------------------
 
-  SoundLoadOptions({
-    this.mp3: false,
-    this.mp4: false,
-    this.ogg: false,
-    this.ac3: false,
-    this.wav: false,
-    this.alternativeUrls: null,
-    this.ignoreErrors: true,
-    this.corsEnabled: false
-  });
+  /// Create a deep clone of this [SoundLoadOptions].
 
-  SoundLoadOptions clone() => new SoundLoadOptions(
-      mp3: this.mp3, mp4: this.mp4, ogg: this.ogg, ac3: this.ac3, wav: this.wav,
-      alternativeUrls: this.alternativeUrls, ignoreErrors: this.ignoreErrors);
+  SoundLoadOptions clone() {
+    var options = new SoundLoadOptions();
+    var urls = this.alternativeUrls;
+    options.mp3 = this.mp3;
+    options.mp4 = this.mp4;
+    options.ogg = this.ogg;
+    options.ac3 = this.ac3;
+    options.wav = this.wav;
+    options.alternativeUrls = urls == null ? null : urls.toList();
+    options.ignoreErrors = this.ignoreErrors;
+    options.corsEnabled = this.corsEnabled;
+    return options;
+  }
 
-
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Determine which audio files is the most likely to play smoothly,
   /// based on the supported types and formats available.

@@ -16,9 +16,9 @@ class ColorMatrixFilter extends BitmapFilter {
   Float32List _colorMatrixList = new Float32List(16);
   Float32List _colorOffsetList = new Float32List(4);
 
-  final num _lumaR = 0.213;
-  final num _lumaG = 0.715;
-  final num _lumaB = 0.072;
+  static const num _lumaR = 0.213;
+  static const num _lumaG = 0.715;
+  static const num _lumaB = 0.072;
 
   ColorMatrixFilter(List<num> colorMatrix, List<num> colorOffset) {
 
@@ -284,7 +284,7 @@ class ColorMatrixFilterProgram extends RenderProgram {
     void main() {
       vec4 color = texture2D(uSampler, vTexCoord);
       mat4 colorMatrix = mat4(vMatrixR, vMatrixG, vMatrixB, vMatrixA);
-      color = vec4(color.rgb / (color.a + 0.001), color.a);
+      color = vec4(color.rgb / color.a, color.a);
       color = vOffset + color * colorMatrix;
       gl_FragColor = vec4(color.rgb * color.a, color.a);
     }
@@ -327,14 +327,10 @@ class ColorMatrixFilterProgram extends RenderProgram {
                                    RenderTextureQuad renderTextureQuad,
                                    ColorMatrixFilter colorMatrixFilter) {
 
+    Float32List xyList = renderTextureQuad.xyList;
+    Float32List uvList = renderTextureQuad.uvList;
     Matrix matrix = renderState.globalMatrix;
     num alpha = renderState.globalAlpha;
-
-    int width = renderTextureQuad.textureWidth;
-    int height = renderTextureQuad.textureHeight;
-    int offsetX = renderTextureQuad.offsetX;
-    int offsetY = renderTextureQuad.offsetY;
-    Float32List uvList = renderTextureQuad.uvList;
 
     Float32List colorMatrixList = colorMatrixFilter._colorMatrixList;
     Float32List colorOffsetList = colorMatrixFilter._colorOffsetList;
@@ -354,8 +350,8 @@ class ColorMatrixFilterProgram extends RenderProgram {
 
     for(int vertex = 0, index = _quadCount * 96; vertex < 4; vertex++, index += 24) {
 
-      num x = offsetX + (vertex == 1 || vertex == 2 ? width  : 0);
-      num y = offsetY + (vertex == 2 || vertex == 3 ? height : 0);
+      num x = xyList[vertex + vertex + 0];
+      num y = xyList[vertex + vertex + 1];
 
       if (index > vxData.length - 24) return; // dart2js_hint
 

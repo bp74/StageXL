@@ -265,56 +265,72 @@ abstract class InteractiveObject extends DisplayObject {
 
   /// Dispatched when the user moves the point of contact away from
   /// InteractiveObject instance on a touch-enabled device.
-  /// Note: See the [Multitouch] class for environment compatibility information.
+  ///
+  /// You have to opt-in for touch events by setting the InputEventMode
+  /// to `TouchOnly` or `MouseAndTouch` in the stage options.
+
   EventStream<TouchEvent> get onTouchOut => InteractiveObject.touchOutEvent.forTarget(this);
   
   /// Dispatched when the user moves the point of contact over an
   /// InteractiveObject instance on a touch-enabled device.
   /// 
-  /// Note: See the [Multitouch] class for environment compatibility information.
+  /// You have to opt-in for touch events by setting the InputEventMode
+  /// to `TouchOnly` or `MouseAndTouch` in the stage options.
+
   EventStream<TouchEvent> get onTouchOver => InteractiveObject.touchOverEvent.forTarget(this);
   
   /// Dispatched when the user touches the device, and is continuously
   /// dispatched until the point of contact is removed.
   /// 
-  /// Note that this event does not require actual movement of the point of
-  /// contact to be dispatched.
-  /// 
-  /// Note: See the [Multitouch] class for environment compatibility information.
+  /// You have to opt-in for touch events by setting the InputEventMode
+  /// to `TouchOnly` or `MouseAndTouch` in the stage options.
+
   EventStream<TouchEvent> get onTouchMove => InteractiveObject.touchMoveEvent.forTarget(this);
   
   /// Dispatched when the user first contacts a touch-enabled device.
   /// 
-  /// Note: See the [Multitouch] class for environment compatibility information.
+  /// You have to opt-in for touch events by setting the InputEventMode
+  /// to `TouchOnly` or `MouseAndTouch` in the stage options.
+
   EventStream<TouchEvent> get onTouchBegin => InteractiveObject.touchBeginEvent.forTarget(this);
   
   /// Dispatched when the user removes contact with a touch-enabled device.
   /// 
-  /// Note: See the [Multitouch] class for environment compatibility information.
+  /// You have to opt-in for touch events by setting the InputEventMode
+  /// to `TouchOnly` or `MouseAndTouch` in the stage options.
+
   EventStream<TouchEvent> get onTouchEnd => InteractiveObject.touchEndEvent.forTarget(this);
   
   /// Dispatched when the touch event is canceled.
   /// 
-  /// Note: See the [Multitouch] class for environment compatibility information.
+  /// You have to opt-in for touch events by setting the InputEventMode
+  /// to `TouchOnly` or `MouseAndTouch` in the stage options.
+
   EventStream<TouchEvent> get onTouchCancel => InteractiveObject.touchCancelEvent.forTarget(this);
   
   /// Dispatched when the user moves the point of contact away from an
   /// InteractiveObject instance on a touch-enabled device.
   /// 
-  /// Note: See the [Multitouch] class for environment compatibility information.
+  /// You have to opt-in for touch events by setting the InputEventMode
+  /// to `TouchOnly` or `MouseAndTouch` in the stage options.
+
   EventStream<TouchEvent> get onTouchRollOut => InteractiveObject.touchRollOut.forTarget(this);
   
   /// Dispatched when the user moves the point of contact over an
   /// InteractiveObject instance on a touch-enabled device.
   /// 
-  /// Note: See the [Multitouch] class for environment compatibility information.
+  /// You have to opt-in for touch events by setting the InputEventMode
+  /// to `TouchOnly` or `MouseAndTouch` in the stage options.
+
   EventStream<TouchEvent> get onTouchRollOver => InteractiveObject.touchRollOver.forTarget(this);
   
   /// Dispatched when the user lifts the point of contact over the same
   /// InteractiveObject instance on which the contact was initiated on a
   /// touch-enabled device.
   /// 
-  /// Note: See the [Multitouch] class for environment compatibility information.
+  /// You have to opt-in for touch events by setting the InputEventMode
+  /// to `TouchOnly` or `MouseAndTouch` in the stage options.
+
   EventStream<TouchEvent> get onTouchTap => InteractiveObject.touchTap.forTarget(this);
 
   // keyboard events

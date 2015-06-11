@@ -49,9 +49,10 @@ class TimelineStep {
   int t;
   Map<String, dynamic> p0;
   Map<String, dynamic> p1;
-  EaseFunction e;
+  TransitionFunction e;
 
-  TimelineStep(num duration, Map<String, dynamic> start, EaseFunction ease, Map<String, dynamic> end) {
+  TimelineStep(num duration, Map<String, dynamic> start,
+               TransitionFunction ease, Map<String, dynamic> end) {
     d = duration;
     p0 = start;
     p1 = end;
