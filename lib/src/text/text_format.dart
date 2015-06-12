@@ -9,6 +9,7 @@ class TextFormat {
   int strokeColor;
   GraphicsGradient fillGradient;
 
+  int weight;
   bool bold;
   bool italic;
   bool underline;
@@ -27,6 +28,7 @@ class TextFormat {
     this.strokeWidth  : 0.0,
     this.strokeColor  : Color.Black,
     this.fillGradient : null,
+    this.weight       : 400,
     this.bold         : false,
     this.italic       : false,
     this.underline    : false,
@@ -43,15 +45,15 @@ class TextFormat {
 
   TextFormat clone() => new TextFormat(font, size, color,
       strokeWidth: strokeWidth, strokeColor: strokeColor, fillGradient: fillGradient,
-      bold: bold, italic: italic, underline: underline, align: align,
+      weight: weight, bold: bold, italic: italic, underline: underline, align: align,
       topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin,
       indent: indent, leading: leading);
 
   //-------------------------------------------------------------------------------------------------
 
   String get _cssFontStyle {
-    var fontStyle = "${size}px ${font}";
-    if (bold) fontStyle = "bold $fontStyle";
+    var fontStyle = "${weight} ${size}px ${font}";
+    if (bold) fontStyle = "bold ${size}px ${font}";
     if (italic) fontStyle = "italic $fontStyle";
     return fontStyle;
   }
