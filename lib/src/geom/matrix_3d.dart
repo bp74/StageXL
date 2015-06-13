@@ -70,6 +70,25 @@ class Matrix3D {
     }
   }
 
+  Point<num> transformPointInverse(math.Point<num> point, [Point<num> returnPoint]) {
+
+    var px = point.x.toDouble();
+    var py = point.y.toDouble();
+
+    var td = px * (m01 * m13 - m03 * m11) + py * (m10 * m03 - m00 * m13) + m00 * m11 - m10 * m01;
+    var tx = px * (m11 * m33 - m13 * m31) + py * (m30 * m13 - m10 * m33) + m10 * m31 - m30 * m11;
+    var ty = px * (m03 * m31 - m01 * m33) + py * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
+
+    if (returnPoint is Point) {
+      returnPoint.setTo(tx / td, ty / td);
+      return returnPoint;
+    } else {
+      return new Point<num>(tx / td, ty / td);
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
   Rectangle<num> transformRectangle(math.Rectangle<num> rectangle, [Rectangle<num> returnRectangle]) {
 
     num rl = rectangle.left.toDouble();

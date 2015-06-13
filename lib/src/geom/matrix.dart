@@ -106,6 +106,8 @@ class Matrix {
     }
   }
 
+  //-------------------------------------------------------------------------------------------------
+
   Point<num> transformPoint(math.Point<num> point, [Point<num> returnPoint]) {
 
     var px = point.x.toDouble();
@@ -120,6 +122,23 @@ class Matrix {
       return new Point<num>(tx, ty);
     }
   }
+
+  Point<num> transformPointInverse(math.Point<num> point, [Point<num> returnPoint]) {
+
+    var px = point.x.toDouble();
+    var py = point.y.toDouble();
+    var tx = (this.d * (px - this.tx) - this.c * (py - this.ty)) / this.det;
+    var ty = (this.a * (py - this.ty) - this.b * (px - this.tx)) / this.det;
+
+    if (returnPoint is Point) {
+      returnPoint.setTo(tx, ty);
+      return returnPoint;
+    } else {
+      return new Point<num>(tx, ty);
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------
 
   Rectangle<num> transformRectangle(math.Rectangle<num> rectangle, [Rectangle<num> returnRectangle]) {
 
