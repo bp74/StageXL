@@ -31,7 +31,7 @@ class Sprite extends DisplayObjectContainer {
   ///
   /// If this method is called within the context of a touch event, the drag
   /// will be performed accordingly all future touch events with the same
-  /// [TouchEvent.touchPointID]. Otherwise the drag will be performened based
+  /// [TouchEvent.touchPointID]. Otherwise the drag will be performed based
   /// on mouse events.
   ///
   /// The sprite remains draggable until explicitly stopped through a call
@@ -85,9 +85,8 @@ class Sprite extends DisplayObjectContainer {
 
   @override
   Rectangle<num> get bounds {
-    return graphics != null
-      ? super.bounds.boundingBox(graphics.bounds)
-      : super.bounds;
+    var bounds = super.bounds;
+    return _graphics == null ? bounds : bounds.boundingBox(_graphics.bounds);
   }
 
   //----------------------------------------------------------------------------
@@ -113,22 +112,28 @@ class Sprite extends DisplayObjectContainer {
   @override
   DisplayObject hitTestInput(num localX, num localY) {
 
-    if (this.hitArea != null) {
-      var point = new Point(localX, localY);
-      this.localToGlobal(point, point);
-      this.hitArea.globalToLocal(point, point);
+    var hitArea = this.hitArea;
+    var graphics = _graphics;
+    var target = null;
 
-      var target = this.hitArea.hitTestInput(point.x, point.y);
+    if (hitArea != null) {
+      var point = new Point<num>(localX, localY);
+      this.localToGlobal(point, point);
+      hitArea.globalToLocal(point, point);
+      target = hitArea.hitTestInput(point.x, point.y);
       return target != null ? this : null;
     }
 
-    var target = super.hitTestInput(localX, localY);
+    target = super.hitTestInput(localX, localY);
+
     if (target == null && graphics != null) {
       target = graphics.hitTest(localX, localY) ? this : null;
     }
 
     return target;
   }
+
+  //----------------------------------------------------------------------------
 
   @override
   render(RenderState renderState) {

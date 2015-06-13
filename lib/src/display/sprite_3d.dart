@@ -13,273 +13,140 @@ part of stagexl.display;
 ///     flip.rotationY = PI / 4
 ///     flip.addTo(stage);
 ///
-class Sprite3D  extends Sprite
-implements TweenObject3D {
+class Sprite3D extends DisplayObjectContainer3D implements Sprite {
+
+  Graphics _graphics = null;
+
+  /// Specifies the Graphics object that belongs to this sprite where vector
+  /// drawing commands can occur.
+
+  Graphics get graphics {
+    return _graphics != null ? _graphics : _graphics = new Graphics();
+  }
+
+  void set graphics(Graphics value) {
+    _graphics = value;
+  }
+
+  //----------------------------------------------------------------------------
+
+  /// Specifies the display object over which the sprite is being dragged, or on
+  /// which the sprite was dropped.
+
+  DisplayObject dropTarget = null;
+
+  /// Lets the user drag this sprite with the mouse or the current touch point.
+  ///
+  /// If this method is called within the context of a touch event, the drag
+  /// will be performed accordingly all future touch events with the same
+  /// [TouchEvent.touchPointID]. Otherwise the drag will be performed based
+  /// on mouse events.
+  ///
+  /// The sprite remains draggable until explicitly stopped through a call
+  /// to the [stopDrag] method.
+  ///
+  /// With [lockCenter] you can specify whether the draggable sprite is locked
+  /// to the center of the pointer position (true), or locked to the point where
+  /// the user first clicked the sprite (false).
+  ///
+  /// [bounds] is the value relative to the coordinates of the Sprite's
+  /// parent that specify a constraint rectangle for the Sprite.
+
+  void startDrag([bool lockCenter = false, Rectangle<num> bounds = null]) {
+
+    var stage = this.stage;
+    var inputEvent = InputEvent.current;
+    var globalPoint = new Point<num>(0.0, 0.0);
+    var anchorPoint = new Point<num>(0.0, 0.0);
+    var touchPointID = 0;
+
+    if (inputEvent == null && stage != null) {
+      globalPoint.copyFrom(stage.mousePosition);
+    } else if (inputEvent is MouseEvent) {
+      globalPoint.setTo(inputEvent.stageX, inputEvent.stageY);
+    } else if (inputEvent is TouchEvent) {
+      globalPoint.setTo(inputEvent.stageX, inputEvent.stageY);
+      touchPointID = inputEvent.touchPointID;
+    } else return;
+
+    if (lockCenter) {
+      anchorPoint = this.bounds.center;
+    } else {
+      globalToLocal(globalPoint, anchorPoint);
+    }
+
+    stage._startDrag(this, globalPoint, anchorPoint, bounds, touchPointID);
+  }
+
+  /// Ends the [startDrag] method.
+  ///
+  /// A sprite that was made draggable with the [startDrag] method remains
+  /// draggable until a [stopDrag] method is added or the sprite was dragged
+  /// with a different touch point.
+
+  void stopDrag() {
+    var stage = this.stage;
+    if (stage != null) stage._stopDrag(this);
+  }
+
+  //----------------------------------------------------------------------------
+
+  @override
+  Rectangle<num> get bounds {
+    var bounds = super.bounds;
+    return _graphics == null ? bounds : bounds.boundingBox(_graphics.bounds);
+  }
+
+  //----------------------------------------------------------------------------
+
+  /// Designates another sprite to serve as the hit area for a sprite.
+  ///
+  /// If the hitArea is null (the default), the sprite itself is used as the hit
+  /// area. The value of the hitArea property can be a reference to a Sprite
+  /// object.
+  ///
+  /// You can change the hitArea property at any time; the modified sprite
+  /// immediately uses the new hit area behavior. The sprite designated as the
+  /// hit area does not need to be visible; its graphical shape, although not
+  /// visible, is still detected as the hit area.
+  ///
+  /// Note: You must set to false the [mouseEnabled] property of the sprite
+  /// designated as the hit area. Otherwise, your sprite button might not work
+  /// because the sprite designated as the hit area receives the user input
+  /// events instead of your sprite button.
 
-PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
+  Sprite hitArea = null;
 
-num _offsetX = 0.0;
-num _offsetY = 0.0;
-num _offsetZ = 0.0;
-num _rotationX = 0.0;
-num _rotationY = 0.0;
-num _rotationZ = 0.0;
+  @override
+  DisplayObject hitTestInput(num localX, num localY) {
 
-bool _transformationMatrix3DRefresh = false;
-final Matrix3D _transformationMatrix3D = new Matrix3D.fromIdentity();
-final Matrix3D _projectionMatrix3D = new Matrix3D.fromIdentity();
-final Matrix3D _oldProjectionMatrix3D = new Matrix3D.fromIdentity();
+    var hitArea = this.hitArea;
+    var graphics = _graphics;
+    var target = null;
 
-//---------------------------------------------------------------------------
+    if (hitArea != null) {
+      var point = new Point<num>(localX, localY);
+      this.localToGlobal(point, point);
+      hitArea.globalToLocal(point, point);
+      target = hitArea.hitTestInput(point.x, point.y);
+      return target != null ? this : null;
+    }
 
-/// The offset to the x-axis for all children in 3D space.
+    target = super.hitTestInput(localX, localY);
 
-num get offsetX => _offsetX;
+    if (target == null && graphics != null) {
+      target = graphics.hitTest(localX, localY) ? this : null;
+    }
 
-set offsetX(num value) {
-if (value is num) _offsetX = value;
-_transformationMatrix3DRefresh = true;
-}
+    return target;
+  }
 
-/// The offset to the y-axis for all children in 3D space.
+  //----------------------------------------------------------------------------
 
-num get offsetY => _offsetY;
+  @override
+  void _renderWithProjection(RenderState renderState) {
+    if (_graphics != null) _graphics.render(renderState);
+    super._renderWithProjection(renderState);
+  }
 
-set offsetY(num value) {
-if (value is num) _offsetY = value;
-_transformationMatrix3DRefresh = true;
-}
-
-/// The offset to the z-axis for all children in 3D space.
-
-num get offsetZ => _offsetZ;
-
-set offsetZ(num value) {
-if (value is num) _offsetZ = value;
-_transformationMatrix3DRefresh = true;
-}
-
-/// The x-axis rotation in 3D space.
-
-num get rotationX => _rotationX;
-
-set rotationX(num value) {
-if (value is num) _rotationX = value;
-_transformationMatrix3DRefresh = true;
-}
-
-/// The y-axis rotation in 3D space.
-
-num get rotationY => _rotationY;
-
-set rotationY(num value) {
-if (value is num) _rotationY = value;
-_transformationMatrix3DRefresh = true;
-}
-
-/// The z-axis rotation in 3D space.
-
-num get rotationZ => _rotationZ;
-
-set rotationZ(num value) {
-if (value is num) _rotationZ = value;
-_transformationMatrix3DRefresh = true;
-}
-
-//---------------------------------------------------------------------------
-
-Matrix3D get transformationMatrix3D {
-
-if (_transformationMatrix3DRefresh) {
-  _transformationMatrix3DRefresh = false;
-  _transformationMatrix3D.setIdentity();
-  _transformationMatrix3D.rotateX(0.0 - rotationX);
-  _transformationMatrix3D.rotateY(0.0 + rotationY);
-  _transformationMatrix3D.rotateZ(0.0 - rotationZ);
-  _transformationMatrix3D.translate(offsetX, offsetY, offsetZ);
-}
-
-return _transformationMatrix3D;
-}
-
-//---------------------------------------------------------------------------
-
-Matrix3D get projectionMatrix3D {
-_calculateProjectionMatrix(_identityMatrix);
-return _projectionMatrix3D;
-}
-
-//---------------------------------------------------------------------------
-
-bool get isForwardFacing {
-
-var matrix = this.globalTransformationMatrix3D;
-
-num m00 = matrix.m00;
-num m10 = matrix.m10;
-num m30 = matrix.m30;
-num m01 = matrix.m01;
-num m11 = matrix.m11;
-num m31 = matrix.m31;
-num m03 = matrix.m03;
-num m13 = matrix.m13;
-num m33 = matrix.m33;
-
-num x1 = (0.0 + m30) / (0.0 + m33);
-num y1 = (0.0 + m31) / (0.0 + m33);
-num x2 = (m00 + m30) / (m03 + m33);
-num y2 = (m01 + m31) / (m03 + m33);
-num x3 = (m10 + m30) / (m13 + m33);
-num y3 = (m11 + m31) / (m13 + m33);
-
-return x1 * (y3 - y2) + x2 * (y1 - y3) + x3 * (y2 - y1) <= 0;
-}
-
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-
-@override
-Rectangle<num> get boundsTransformed {
-
-_calculateProjectionMatrix(this.transformationMatrix);
-
-var rectangle = this.bounds;
-return _projectionMatrix3D.transformRectangle(rectangle, rectangle);
-}
-
-//---------------------------------------------------------------------------
-
-@override
-Point<num> localToParent(Point<num> localPoint, [Point<num> returnPoint]) {
-
-_calculateProjectionMatrix(this.transformationMatrix);
-
-num m00 = _projectionMatrix3D.m00;
-num m10 = _projectionMatrix3D.m10;
-num m30 = _projectionMatrix3D.m30;
-num m01 = _projectionMatrix3D.m01;
-num m11 = _projectionMatrix3D.m11;
-num m31 = _projectionMatrix3D.m31;
-num m03 = _projectionMatrix3D.m03;
-num m13 = _projectionMatrix3D.m13;
-num m33 = _projectionMatrix3D.m33;
-
-var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
-var x = localPoint.x.toDouble();
-var y = localPoint.y.toDouble();
-
-var td = m03 * x + m13 * y + m33;
-var tx = m00 * x + m10 * y + m30;
-var ty = m01 * x + m11 * y + m31;
-
-p.x = tx / td;
-p.y = ty / td;
-
-return p;
-}
-
-//---------------------------------------------------------------------------
-
-@override
-Point<num> parentToLocal(Point<num> parentPoint, [Point<num> returnPoint]) {
-
-_calculateProjectionMatrix(this.transformationMatrix);
-
-num m00 = _projectionMatrix3D.m00;
-num m10 = _projectionMatrix3D.m10;
-num m30 = _projectionMatrix3D.m30;
-num m01 = _projectionMatrix3D.m01;
-num m11 = _projectionMatrix3D.m11;
-num m31 = _projectionMatrix3D.m31;
-num m03 = _projectionMatrix3D.m03;
-num m13 = _projectionMatrix3D.m13;
-num m33 = _projectionMatrix3D.m33;
-
-var p = returnPoint is Point ? returnPoint : new Point<num>(0.0, 0.0);
-var x = parentPoint.x.toDouble();
-var y = parentPoint.y.toDouble();
-
-var td = x * (m01 * m13 - m03 * m11) + y * (m10 * m03 - m00 * m13) + m00 * m11 - m10 * m01;
-var tx = x * (m11 * m33 - m13 * m31) + y * (m30 * m13 - m10 * m33) + m10 * m31 - m30 * m11;
-var ty = x * (m03 * m31 - m01 * m33) + y * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
-
-p.x = tx / td;
-p.y = ty / td;
-
-return p;
-}
-
-//---------------------------------------------------------------------------
-
-@override
-DisplayObject hitTestInput(num localX, num localY) {
-
-_calculateProjectionMatrix(_identityMatrix);
-
-num m00 = _projectionMatrix3D.m00;
-num m10 = _projectionMatrix3D.m10;
-num m30 = _projectionMatrix3D.m30;
-num m01 = _projectionMatrix3D.m01;
-num m11 = _projectionMatrix3D.m11;
-num m31 = _projectionMatrix3D.m31;
-num m03 = _projectionMatrix3D.m03;
-num m13 = _projectionMatrix3D.m13;
-num m33 = _projectionMatrix3D.m33;
-
-num px = localX.toDouble();
-num py = localY.toDouble();
-
-num td = px * (m01 * m13 - m03 * m11) + py * (m10 * m03 - m00 * m13) + m00 * m11 - m10 * m01;
-num tx = px * (m11 * m33 - m13 * m31) + py * (m30 * m13 - m10 * m33) + m10 * m31 - m30 * m11;
-num ty = px * (m03 * m31 - m01 * m33) + py * (m00 * m33 - m30 * m03) + m30 * m01 - m00 * m31;
-
-return super.hitTestInput(tx / td, ty / td);
-}
-
-//---------------------------------------------------------------------------
-
-@override
-void render(RenderState renderState) {
-
-var renderContext = renderState.renderContext;
-if (renderContext is RenderContextWebGL) {
-
-  var activeProjectionMatrix = renderContext.activeProjectionMatrix;
-  var globalMatrix = renderState.globalMatrix;
-
-  _oldProjectionMatrix3D.copyFromMatrix3D(activeProjectionMatrix);
-
-  _calculateProjectionMatrix(globalMatrix);
-  _tmpMatrix.copyFromAndInvert(globalMatrix);
-  _projectionMatrix3D.concat(activeProjectionMatrix);
-  _projectionMatrix3D.prepend2D(_tmpMatrix);
-
-  renderContext.activateProjectionMatrix(_projectionMatrix3D);
-  super.render(renderState);
-  renderContext.activateProjectionMatrix(_oldProjectionMatrix3D);
-
-} else {
-
-  // TODO: We could simulate the 3d-transformation with 2d scales
-  // and 2d transformations - not perfect but better than nothing.
-  super.render(renderState);
-}
-}
-
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-
-void _calculateProjectionMatrix(Matrix matrix) {
-
-var perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
-var transformationMatrix3D = this.transformationMatrix3D;
-var pivotX = this.pivotX.toDouble();
-var pivotY = this.pivotY.toDouble();
-
-_projectionMatrix3D.copyFromMatrix2D(matrix);
-_projectionMatrix3D.prependTranslation(pivotX, pivotY, 0.0);
-_projectionMatrix3D.prepend(perspectiveMatrix3D);
-_projectionMatrix3D.prepend(transformationMatrix3D);
-_projectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
-}
 }

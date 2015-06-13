@@ -17,6 +17,8 @@ announcements on the StageXL forum or use one of the support links below:
   * Added BitmapDataLoadOptions.maxPixelRatio (replaces old autoHiDpi). 
   * Added TextureAtlas loader abstraction for custom loaders.
   * Added pixel ratio support for DisplayObject and TextField cache.
+  * Added Sprite3D implementation of Sprite interface.
+  * Added TextFormat.weight additionally to bold property. 
   * Improved pixel ratio support for HiDPI BitmapDatas.   
   * Fixed RenderTexture update/resize/filtering on iOS8.
   * Fixed TintFilter showing the wrong ARGB values.

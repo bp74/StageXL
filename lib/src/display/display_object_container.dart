@@ -432,6 +432,13 @@ abstract class DisplayObjectContainer
           if (mask.hitTest(maskX, maskY) == false) continue;
         }
 
+        if (child is DisplayObjectContainer3D) {
+          var point = new Point<num>(childX, childY);
+          child.projectionMatrix3D.transformPointInverse(point, point);
+          childX = point.x;
+          childY = point.y;
+        }
+
         var displayObject = child.hitTestInput(childX, childY);
         if (displayObject == null) continue;
 
