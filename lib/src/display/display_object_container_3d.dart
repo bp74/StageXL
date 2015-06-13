@@ -160,16 +160,6 @@ abstract class DisplayObjectContainer3D
   //---------------------------------------------------------------------------
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
-    var point = new Point<num>(localX, localY);
-    _calculateProjectionMatrix(_identityMatrix);
-    _projectionMatrix3D.transformPointInverse(point, point);
-    return super.hitTestInput(point.x, point.y);
-  }
-
-  //---------------------------------------------------------------------------
-
-  @override
   void render(RenderState renderState) {
 
     var renderContext = renderState.renderContext;
