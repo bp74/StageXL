@@ -114,17 +114,16 @@ class RenderState {
 
     var cs1 = _currentContextState;
     var cs2 = _currentContextState.nextContextState;
+    var maskBefore = mask != null && mask.relativeToParent == true;
+    var maskAfter = mask != null && mask.relativeToParent == false;
 
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
     cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
     cs2.alpha = alpha * cs1.alpha;
 
-    if (mask != null) {
-      _currentContextState = mask.relativeToParent ? cs1 : cs2;
-      renderContext.beginRenderMask(this, mask);
-    }
+    //-----------
 
-    _currentContextState = cs2;
+    if (maskBefore) renderContext.beginRenderMask(this, mask);
 
     if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
       RenderObject3D renderObject3D = renderObject;
@@ -136,6 +135,12 @@ class RenderState {
       renderContextWebGL.activateProjectionMatrix(cs2.matrix3D);
     }
 
+    _currentContextState = cs2;
+
+    //-----------
+
+    if (maskAfter) renderContext.beginRenderMask(this, mask);
+
     if (cache != null) {
       renderQuad(cache);
     } else if (filters.length > 0) {
@@ -144,18 +149,20 @@ class RenderState {
       renderObject.render(this);
     }
 
+    if (maskAfter) renderContext.beginRenderMask(this, mask);
+
+    //-----------
+
+    _currentContextState = cs1;
+
     if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
       RenderContextWebGL renderContextWebGL = renderContext;
       renderContextWebGL.activateProjectionMatrix(cs1.matrix3D);
     }
 
-    if (mask != null) {
-      _currentContextState = mask.relativeToParent ? cs1 : cs2;
-      renderContext.endRenderMask(this, mask);
-    }
-
-    _currentContextState = cs1;
+    if (maskBefore) renderContext.endRenderMask(this, mask);
   }
+
 }
 
 
