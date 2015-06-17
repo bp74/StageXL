@@ -159,7 +159,7 @@ abstract class DisplayObjectContainer3D
   //---------------------------------------------------------------------------
 
   void _calculateProjectionMatrix(Matrix matrix) {
-    _projectionMatrix3D.copyFromMatrix2D(matrix);
+    _projectionMatrix3D.copyFrom2D(matrix);
     _projectionMatrix3D.prependTranslation(pivotX, pivotY, 0.0);
     _projectionMatrix3D.prepend(perspectiveProjection.perspectiveMatrix3D);
     _projectionMatrix3D.prepend(transformationMatrix3D);

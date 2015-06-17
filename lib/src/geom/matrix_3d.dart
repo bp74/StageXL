@@ -21,11 +21,11 @@ class Matrix3D {
   }
 
   Matrix3D.fromMatrix2D(Matrix matrix) {
-    this.copyFromMatrix2D(matrix);
+    this.copyFrom2D(matrix);
   }
 
   Matrix3D.fromMatrix3D(Matrix3D matrix) {
-    this.copyFromMatrix3D(matrix);
+    this.copyFrom(matrix);
   }
 
   Matrix3D clone() => new Matrix3D.fromMatrix3D(this);
@@ -270,7 +270,7 @@ class Matrix3D {
 
   //-------------------------------------------------------------------------------------------------
 
-  void copyFromMatrix2D(Matrix matrix) {
+  void copyFrom2D(Matrix matrix) {
 
     _data[00] = matrix.a;
     _data[01] = matrix.c;
@@ -290,7 +290,7 @@ class Matrix3D {
     _data[15] = 1.0;
   }
 
-  void copyFromMatrix3D(Matrix3D matrix) {
+  void copyFrom(Matrix3D matrix) {
 
     _data[00] = matrix.m00;
     _data[01] = matrix.m10;
@@ -410,6 +410,38 @@ class Matrix3D {
     _data[07] = m30 * n01 + m31 * n11 + m33 * n31;
   }
 
+  void concatInverse2D(Matrix matrix) {
+
+    num m00 = this.m00;
+    num m10 = this.m10;
+    num m20 = this.m20;
+    num m30 = this.m30;
+    num m01 = this.m01;
+    num m11 = this.m11;
+    num m21 = this.m21;
+    num m31 = this.m31;
+    num m03 = this.m03;
+    num m13 = this.m13;
+    num m23 = this.m23;
+    num m33 = this.m33;
+
+    num n00 = 0.0 + matrix.d / matrix.det;
+    num n10 = 0.0 - matrix.c / matrix.det;
+    num n30 = 0.0 - matrix.tx * n00 - matrix.ty * n10;
+    num n01 = 0.0 - matrix.b / matrix.det;
+    num n11 = 0.0 + matrix.a / matrix.det;
+    num n31 = 0.0 - matrix.tx * n01 - matrix.ty * n11;
+
+    _data[00] = m00 * n00 + m01 * n10 + m03 * n30;
+    _data[01] = m10 * n00 + m11 * n10 + m13 * n30;
+    _data[02] = m20 * n00 + m21 * n10 + m23 * n30;
+    _data[03] = m30 * n00 + m31 * n10 + m33 * n30;
+    _data[04] = m00 * n01 + m01 * n11 + m03 * n31;
+    _data[05] = m10 * n01 + m11 * n11 + m13 * n31;
+    _data[06] = m20 * n01 + m21 * n11 + m23 * n31;
+    _data[07] = m30 * n01 + m31 * n11 + m33 * n31;
+  }
+
   void prepend2D(Matrix matrix) {
 
     num m00 = matrix.a;
@@ -418,6 +450,42 @@ class Matrix3D {
     num m01 = matrix.b;
     num m11 = matrix.d;
     num m31 = matrix.ty;
+
+    num n00 = this.m00;
+    num n10 = this.m10;
+    num n30 = this.m30;
+    num n01 = this.m01;
+    num n11 = this.m11;
+    num n31 = this.m31;
+    num n02 = this.m02;
+    num n12 = this.m12;
+    num n32 = this.m32;
+    num n03 = this.m03;
+    num n13 = this.m13;
+    num n33 = this.m33;
+
+    _data[00] = m00 * n00 + m01 * n10;
+    _data[01] = m10 * n00 + m11 * n10;
+    _data[03] = m30 * n00 + m31 * n10 + n30;
+    _data[04] = m00 * n01 + m01 * n11;
+    _data[05] = m10 * n01 + m11 * n11;
+    _data[07] = m30 * n01 + m31 * n11 + n31;
+    _data[08] = m00 * n02 + m01 * n12;
+    _data[09] = m10 * n02 + m11 * n12;
+    _data[11] = m30 * n02 + m31 * n12 + n32;
+    _data[12] = m00 * n03 + m01 * n13;
+    _data[13] = m10 * n03 + m11 * n13;
+    _data[15] = m30 * n03 + m31 * n13 + n33;
+  }
+
+  void prependInverse2D(Matrix matrix) {
+
+    num m00 = 0.0 + matrix.d / matrix.det;
+    num m10 = 0.0 - matrix.c / matrix.det;
+    num m30 = 0.0 - matrix.tx * m00 - matrix.ty * m10;
+    num m01 = 0.0 - matrix.b / matrix.det;
+    num m11 = 0.0 + matrix.a / matrix.det;
+    num m31 = 0.0 - matrix.tx * m01 - matrix.ty * m11;
 
     num n00 = this.m00;
     num n10 = this.m10;

@@ -129,12 +129,11 @@ class RenderState {
     if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
       RenderObject3D renderObject3D = renderObject;
       RenderContextWebGL renderContextWebGL = renderContext;
-      Matrix3D objectProjectionMatrix = renderObject3D.projectionMatrix3D;
-      cs2.matrix3D.copyFromMatrix3D(renderContextWebGL.activeProjectionMatrix);
-      objectProjectionMatrix.concat2D(cs2.matrix);
-      objectProjectionMatrix.concat(cs2.matrix3D);
-      objectProjectionMatrix.prepend2D(cs2.matrix.cloneInvert()); // TODO: optimize!
-      renderContextWebGL.activateProjectionMatrix(objectProjectionMatrix);
+      cs1.matrix3D.copyFrom(renderContextWebGL.activeProjectionMatrix);
+      cs2.matrix3D.copyFrom2DAndConcat(cs2.matrix, cs1.matrix3D);
+      cs2.matrix3D.prepend(renderObject3D.projectionMatrix3D);
+      cs2.matrix3D.prependInverse2D(cs2.matrix);
+      renderContextWebGL.activateProjectionMatrix(cs2.matrix3D);
     }
 
     if (cache != null) {
@@ -147,7 +146,7 @@ class RenderState {
 
     if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
       RenderContextWebGL renderContextWebGL = renderContext;
-      renderContextWebGL.activateProjectionMatrix(cs2.matrix3D);
+      renderContextWebGL.activateProjectionMatrix(cs1.matrix3D);
     }
 
     if (mask != null) {
