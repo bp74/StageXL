@@ -149,7 +149,7 @@ class RenderState {
       renderObject.render(this);
     }
 
-    if (maskAfter) renderContext.beginRenderMask(this, mask);
+    if (maskAfter) renderContext.endRenderMask(this, mask);
 
     //-----------
 
