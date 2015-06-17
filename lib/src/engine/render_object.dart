@@ -21,6 +21,10 @@ abstract class RenderObject {
   void renderFiltered(RenderState renderState);
 }
 
+abstract class RenderObject3D extends RenderObject {
+  Matrix3D get projectionMatrix3D;
+}
+
 /// This class is as a wrapper for a [RenderTextureQuad] to be used with
 /// the [RenderContext.renderObjectFiltered] method. It is necessary as a
 /// fallback if the [RenderTextureQuad] can't be rendered in the fast path.

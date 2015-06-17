@@ -144,9 +144,9 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   //----------------------------------------------------------------------------
 
   @override
-  void _renderWithProjection(RenderState renderState) {
+  render(RenderState renderState) {
     if (_graphics != null) _graphics.render(renderState);
-    super._renderWithProjection(renderState);
+    super.render(renderState);
   }
 
 }

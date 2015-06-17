@@ -3,6 +3,7 @@ part of stagexl.engine;
 class _ContextState {
 
   final Matrix matrix = new Matrix.fromIdentity();
+  final Matrix3D matrix3D = new Matrix3D.fromIdentity();
   num alpha = 1.0;
   BlendMode blendMode = BlendMode.NORMAL;
 
@@ -125,12 +126,28 @@ class RenderState {
 
     _currentContextState = cs2;
 
+    if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
+      RenderObject3D renderObject3D = renderObject;
+      RenderContextWebGL renderContextWebGL = renderContext;
+      Matrix3D objectProjectionMatrix = renderObject3D.projectionMatrix3D;
+      cs2.matrix3D.copyFromMatrix3D(renderContextWebGL.activeProjectionMatrix);
+      objectProjectionMatrix.concat2D(cs2.matrix);
+      objectProjectionMatrix.concat(cs2.matrix3D);
+      objectProjectionMatrix.prepend2D(cs2.matrix.cloneInvert()); // TODO: optimize!
+      renderContextWebGL.activateProjectionMatrix(objectProjectionMatrix);
+    }
+
     if (cache != null) {
       renderQuad(cache);
     } else if (filters.length > 0) {
       renderObject.renderFiltered(this);
     } else {
       renderObject.render(this);
+    }
+
+    if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
+      RenderContextWebGL renderContextWebGL = renderContext;
+      renderContextWebGL.activateProjectionMatrix(cs2.matrix3D);
     }
 
     if (mask != null) {
