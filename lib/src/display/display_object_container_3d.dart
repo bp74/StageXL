@@ -100,16 +100,11 @@ abstract class DisplayObjectContainer3D
 
   Matrix3D get projectionMatrix3D {
 
-    var perspectiveMatrix3D = this.perspectiveProjection.perspectiveMatrix3D;
-    var transformationMatrix3D = this.transformationMatrix3D;
-    var pivotX = this.pivotX.toDouble();
-    var pivotY = this.pivotY.toDouble();
-
     _projectionMatrix3D.setIdentity();
     _projectionMatrix3D.prependTranslation(pivotX, pivotY, 0.0);
-    _projectionMatrix3D.prepend(perspectiveMatrix3D);
+    _projectionMatrix3D.prepend(perspectiveProjection.perspectiveMatrix3D);
     _projectionMatrix3D.prepend(transformationMatrix3D);
-    _projectionMatrix3D.prependTranslation(-pivotX, -pivotY, 0.0);
+    _projectionMatrix3D.prependTranslation(0.0 - pivotX, 0.0 - pivotY, 0.0);
 
     return _projectionMatrix3D;
   }
