@@ -22,6 +22,7 @@ announcements on the StageXL forum or use one of the support links below:
   * Improved pixel ratio support for HiDPI BitmapDatas.   
   * Fixed RenderTexture update/resize/filtering on iOS8.
   * Fixed TintFilter showing the wrong ARGB values.
+  * Fixed cache and mask support for Sprite3D.
   * Breaking Change: changed Stage constructor and properties.
   * Breaking Change: changed BitmapData constructor and properties.
   * Breaking Change: changed RenderTextureQuad constructor and properties.
