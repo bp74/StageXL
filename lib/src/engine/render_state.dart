@@ -3,6 +3,7 @@ part of stagexl.engine;
 class _ContextState {
 
   final Matrix matrix = new Matrix.fromIdentity();
+  final Matrix3D matrix3D = new Matrix3D.fromIdentity();
   num alpha = 1.0;
   BlendMode blendMode = BlendMode.NORMAL;
 
@@ -113,17 +114,32 @@ class RenderState {
 
     var cs1 = _currentContextState;
     var cs2 = _currentContextState.nextContextState;
+    var maskBefore = mask != null && mask.relativeToParent == true;
+    var maskAfter = mask != null && mask.relativeToParent == false;
 
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
     cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
     cs2.alpha = alpha * cs1.alpha;
 
-    if (mask != null) {
-      _currentContextState = mask.relativeToParent ? cs1 : cs2;
-      renderContext.beginRenderMask(this, mask);
+    //-----------
+
+    if (maskBefore) renderContext.beginRenderMask(this, mask);
+
+    if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
+      RenderObject3D renderObject3D = renderObject;
+      RenderContextWebGL renderContextWebGL = renderContext;
+      cs1.matrix3D.copyFrom(renderContextWebGL.activeProjectionMatrix);
+      cs2.matrix3D.copyFrom2DAndConcat(cs2.matrix, cs1.matrix3D);
+      cs2.matrix3D.prepend(renderObject3D.projectionMatrix3D);
+      cs2.matrix3D.prependInverse2D(cs2.matrix);
+      renderContextWebGL.activateProjectionMatrix(cs2.matrix3D);
     }
 
     _currentContextState = cs2;
+
+    //-----------
+
+    if (maskAfter) renderContext.beginRenderMask(this, mask);
 
     if (cache != null) {
       renderQuad(cache);
@@ -133,13 +149,20 @@ class RenderState {
       renderObject.render(this);
     }
 
-    if (mask != null) {
-      _currentContextState = mask.relativeToParent ? cs1 : cs2;
-      renderContext.endRenderMask(this, mask);
-    }
+    if (maskAfter) renderContext.endRenderMask(this, mask);
+
+    //-----------
 
     _currentContextState = cs1;
+
+    if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
+      RenderContextWebGL renderContextWebGL = renderContext;
+      renderContextWebGL.activateProjectionMatrix(cs1.matrix3D);
+    }
+
+    if (maskBefore) renderContext.endRenderMask(this, mask);
   }
+
 }
 
 

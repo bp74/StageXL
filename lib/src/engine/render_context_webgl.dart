@@ -415,7 +415,7 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateProjectionMatrix(Matrix3D matrix) {
-    _projectionMatrix.copyFromMatrix3D(matrix);
+    _projectionMatrix.copyFrom(matrix);
     _activeRenderProgram.flush();
     _activeRenderProgram.projectionMatrix = _projectionMatrix;
   }
