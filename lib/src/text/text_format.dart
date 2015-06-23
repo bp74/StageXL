@@ -43,7 +43,7 @@ class TextFormat {
 
   //-------------------------------------------------------------------------------------------------
 
-  TextFormat clone() => new TextFormat(font, size, color,
+  TextFormat clone() => new TextFormat(font, size, color, 
       strokeWidth: strokeWidth, strokeColor: strokeColor, fillGradient: fillGradient,
       weight: weight, bold: bold, italic: italic, underline: underline, align: align,
       topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin,
