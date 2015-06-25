@@ -29,8 +29,7 @@ class RenderProgramTriangle extends RenderProgram {
     varying vec4 vColor;
 
     void main() {
-      // gl_FragColor = vColor;
-       gl_FragColor = vec4(vColor.rgb * vColor.a, vColor.a);
+      gl_FragColor = vec4(vColor.rgb * vColor.a, vColor.a);
     }
     """;
 
