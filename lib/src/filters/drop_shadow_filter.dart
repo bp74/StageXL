@@ -183,6 +183,7 @@ class DropShadowFilter extends BitmapFilter {
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     int passCount = _renderPassSources.length;
     num passScale = pow(0.5, pass >> 1);
+    num pixelRatio = sqrt(renderState.globalMatrix.det.abs());
 
     if (pass == passCount - 1) {
 
@@ -202,10 +203,10 @@ class DropShadowFilter extends BitmapFilter {
           renderState, renderTextureQuad,
           pass == passCount - 2 ? this.color : this.color | 0xFF000000,
           pass == passCount - 2 ? renderState.globalAlpha : 1.0,
-          pass == 0 ? distance * cos(angle) / renderTexture.width : 0.0,
-          pass == 0 ? distance * sin(angle) / renderTexture.height : 0.0,
-          pass.isEven ? passScale * blurX / renderTexture.width : 0.0,
-          pass.isEven ? 0.0 : passScale * blurY / renderTexture.height);
+          pass == 0 ? pixelRatio * distance * cos(angle) / renderTexture.width : 0.0,
+          pass == 0 ? pixelRatio * distance * sin(angle) / renderTexture.height : 0.0,
+          pass.isEven ? pixelRatio * passScale * blurX / renderTexture.width : 0.0,
+          pass.isEven ? 0.0 : pixelRatio * passScale * blurY / renderTexture.height);
     }
   }
 }
