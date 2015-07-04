@@ -272,6 +272,7 @@ class RenderContextWebGL extends RenderContext {
 
         if (renderPassSources.skip(pass + 1).every((rps) => rps != renderPassSource)) {
           renderFrameBufferMap.remove(renderPassSource);
+          this.flush();
           this.releaseRenderFrameBuffer(sourceRenderFrameBuffer);
         }
       }
