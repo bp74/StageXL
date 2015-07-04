@@ -153,11 +153,12 @@ class GlowFilter extends BitmapFilter {
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     int passCount = _renderPassSources.length;
     num passScale = pow(0.5, pass >> 1);
+    num pixelRatio = sqrt(renderState.globalMatrix.det.abs());
 
     if (pass == passCount - 1) {
 
       if (!this.knockout && !this.hideObject) {
-        renderState.renderQuad(renderTextureQuad);
+        renderContext.renderQuad(renderState, renderTextureQuad);
       }
 
     } else {
@@ -172,8 +173,8 @@ class GlowFilter extends BitmapFilter {
           renderState, renderTextureQuad,
           pass == passCount - 2 ? this.color : this.color | 0xFF000000,
           pass == passCount - 2 ? renderState.globalAlpha : 1.0,
-          pass.isEven ? passScale * blurX / renderTexture.width : 0.0,
-          pass.isEven ? 0.0 : passScale * blurY / renderTexture.height);
+          pass.isEven ? pixelRatio * passScale * blurX / renderTexture.width : 0.0,
+          pass.isEven ? 0.0 : pixelRatio * passScale * blurY / renderTexture.height);
     }
   }
 }
