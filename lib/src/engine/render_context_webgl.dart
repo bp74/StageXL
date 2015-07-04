@@ -165,6 +165,7 @@ class RenderContextWebGL extends RenderContext {
 
     var bounds = renderObject.bounds;
     var filters = renderObject.filters;
+    var pixelRatio = math.sqrt(renderState.globalMatrix.det.abs());
 
     var boundsLeft = bounds.left.floor();
     var boundsTop = bounds.top.floor();
@@ -178,6 +179,11 @@ class RenderContextWebGL extends RenderContext {
       boundsRight += overlap.right;
       boundsBottom += overlap.bottom;
     }
+
+    boundsLeft = (boundsLeft * pixelRatio).floor();
+    boundsTop = (boundsTop * pixelRatio).floor();
+    boundsRight = (boundsRight * pixelRatio).ceil();
+    boundsBottom = (boundsBottom * pixelRatio).ceil();
 
     var boundsWidth = boundsRight - boundsLeft;
     var boundsHeight = boundsBottom - boundsTop;
@@ -195,6 +201,7 @@ class RenderContextWebGL extends RenderContext {
     filterProjectionMatrix.translate(-1.0, -1.0, 0.0);
 
     filterRenderFrameBuffer.resize(boundsWidth, boundsHeight);
+    filterRenderState.globalMatrix.scale(pixelRatio, pixelRatio);
     renderFrameBufferMap[0] = filterRenderFrameBuffer;
 
     //----------------------------------------------
@@ -238,7 +245,7 @@ class RenderContextWebGL extends RenderContext {
               sourceRenderFrameBuffer.renderTexture,
               new Rectangle<int>(0, 0, boundsWidth, boundsHeight),
               new Rectangle<int>(-boundsLeft, -boundsTop, boundsWidth, boundsHeight),
-              0, 1.0);
+              0, pixelRatio);
         } else {
           throw new StateError("Invalid renderPassSource!");
         }

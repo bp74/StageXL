@@ -14,6 +14,7 @@
 library stagexl.engine;
 
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:web_gl' as gl;
 import 'dart:typed_data';
 
