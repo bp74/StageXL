@@ -134,6 +134,7 @@ class BlurFilter extends BitmapFilter {
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     int passCount = _renderPassSources.length;
     num passScale = pow(0.5, pass >> 1);
+    num pixelRatio = sqrt(renderState.globalMatrix.det.abs());
 
     BlurFilterProgram renderProgram = renderContext.getRenderProgram(
         r"$BlurFilterProgram", () => new BlurFilterProgram());
@@ -144,8 +145,8 @@ class BlurFilter extends BitmapFilter {
     renderProgram.renderBlurFilterQuad(
         renderState, renderTextureQuad,
         pass == passCount - 1 ? renderState.globalAlpha : 1.0,
-        pass.isEven ? passScale * blurX / renderTexture.width : 0.0,
-        pass.isEven ? 0.0 : passScale * blurY / renderTexture.height);
+        pass.isEven ? pixelRatio * passScale * blurX / renderTexture.width : 0.0,
+        pass.isEven ? 0.0 : pixelRatio * passScale * blurY / renderTexture.height);
   }
 }
 
