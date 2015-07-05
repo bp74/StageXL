@@ -80,16 +80,18 @@ class HtmlObject extends DisplayObject {
     var globalMatrix = renderState.globalMatrix;
     var globalAlpha = renderState.globalAlpha;
     var visibility = this.visible && this.off == false;
+    var stage = this.stage;
+    var pixelRatio = stage != null ? stage.pixelRatio : 1.0;
 
-    var mxa = globalMatrix.a.toStringAsFixed(4);
-    var mxb = globalMatrix.b.toStringAsFixed(4);
-    var mxc = globalMatrix.c.toStringAsFixed(4);
-    var mxd = globalMatrix.d.toStringAsFixed(4);
-    var mxtx = globalMatrix.tx.toStringAsFixed(4);
-    var mxty = globalMatrix.ty.toStringAsFixed(4);
+    var ma = (globalMatrix.a / pixelRatio).toStringAsFixed(4);
+    var mb = (globalMatrix.b / pixelRatio).toStringAsFixed(4);
+    var mc = (globalMatrix.c / pixelRatio).toStringAsFixed(4);
+    var md = (globalMatrix.d / pixelRatio).toStringAsFixed(4);
+    var mtx = (globalMatrix.tx / pixelRatio).toStringAsFixed(4);
+    var mty = (globalMatrix.ty / pixelRatio).toStringAsFixed(4);
 
     var styleOpacity = globalAlpha.toStringAsFixed(4);
-    var styleTransform = "matrix($mxa,$mxb,$mxc,$mxd,$mxtx,$mxty)";
+    var styleTransform = "matrix($ma,$mb,$mc,$md,$mtx,$mty)";
     var styleVisibility = visibility ? "visible" : "hidden";
 
     if (_styleVisibility != styleVisibility) {
