@@ -32,6 +32,7 @@ class GraphicsPath {
   void circle(double x, double y, double radius, bool antiClockwise) {
 
     // TODO: implement antiClockwise
+    // TODO: adjust steps
 
     var steps = 40;
     var cosR = math.cos(2 * math.PI / steps);
@@ -55,7 +56,31 @@ class GraphicsPath {
   }
 
   void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
-    // TODO: implement quadraticCurveTo path
+
+    // TODO: adjust steps
+
+    if (_currentSegment == null) {
+
+      this.moveTo(endY, endY);
+
+    } else {
+
+      var steps = 10;
+      var x1 = _currentSegment.lastVertexX;
+      var y1 = _currentSegment.lastVertexY;
+      var x2 = controlX;
+      var y2 = controlY;
+      var x3 = endX;
+      var y3 = endY;
+
+      for(int s = 0; s <= steps; s++) {
+        var t0 = s / steps;
+        var t1 = 1.0 - t0;
+        var x = t1 * t1 * x1 + 2 * t1 * t0 * x2 + t0 * t0 * x3;
+        var y = t1 * t1 * y1 + 2 * t1 * t0 * y2 + t0 * t0 * y3;
+        _currentSegment.addVertex(x, y);
+      }
+    }
   }
 
   void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {

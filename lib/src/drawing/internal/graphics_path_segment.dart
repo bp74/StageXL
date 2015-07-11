@@ -8,6 +8,10 @@ class GraphicsPathSegment {
   Int16List _indexBuffer = null;
   int _vertexCount = 0;
 
+  int get vertexCount => _vertexCount;
+  double get lastVertexX =>  _vertexBuffer[(_vertexCount - 1) * 2 + 0];
+  double get lastVertexY =>  _vertexBuffer[(_vertexCount - 1) * 2 + 1];
+
   //---------------------------------------------------------------------------
 
   void addVertex(double x, double y) {
