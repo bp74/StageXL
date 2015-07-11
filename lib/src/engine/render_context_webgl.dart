@@ -105,7 +105,7 @@ class RenderContextWebGL extends RenderContext {
     num a = colorGetA(color) / 255.0;
 
     _renderingContext.colorMask(true, true, true, true);
-    _renderingContext.clearColor(r, g, b, a);
+    _renderingContext.clearColor(r * a, g * a, b * a, a);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
     _updateStencilDepth(0);
   }

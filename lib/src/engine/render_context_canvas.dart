@@ -35,10 +35,14 @@ class RenderContextCanvas extends RenderContext {
     setBlendMode(BlendMode.NORMAL);
     setAlpha(1.0);
 
-    if (color & 0xFF000000 == 0) {
+    int alpha = colorGetA(color);
+
+    if (alpha < 255) {
       _renderingContext.clearRect(0, 0, _canvasElement.width, _canvasElement.height);
-    } else {
-      _renderingContext.fillStyle = color2rgb(color);
+    }
+
+    if (alpha > 0) {
+      _renderingContext.fillStyle = color2rgba(color);
       _renderingContext.fillRect(0, 0, _canvasElement.width, _canvasElement.height);
     }
   }
