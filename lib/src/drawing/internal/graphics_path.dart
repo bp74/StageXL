@@ -19,6 +19,24 @@ class GraphicsPath {
     }
   }
 
+  void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
+    // TODO: implement arc path
+  }
+
+  void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
+    // TODO: implement arcTo path
+  }
+
+  void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
+    // TODO: implement quadraticCurveTo path
+  }
+
+  void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
+    // TODO: implement bezierCurveTo path
+  }
+
+  //---------------------------------------------------------------------------
+
   void fillColor(RenderState renderState, int color) {
     // TODO: non-zero winding rule
     for(var segment in _segments) {

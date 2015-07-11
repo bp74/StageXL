@@ -42,24 +42,37 @@ abstract class GraphicsContext {
     _path.lineTo(x, y + height);
   }
 
+  void rectRound(double x, double y, double width, double height, double ellipseWidth, double ellipseHeight) {
+    _pathCheck();
+    _path.moveTo(x + ellipseWidth, y);
+    _path.lineTo(x + width - ellipseWidth, y);
+    _path.quadraticCurveTo(x + width, y, x + width, y + ellipseHeight);
+    _path.lineTo(x + width, y + height - ellipseHeight);
+    _path.quadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height);
+    _path.lineTo(x + ellipseWidth, y + height);
+    _path.quadraticCurveTo(x, y + height, x, y + height - ellipseHeight);
+    _path.lineTo(x, y + ellipseHeight);
+    _path.quadraticCurveTo(x, y, x + ellipseWidth, y);
+  }
+
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
     _pathCheck();
-    // TODO: implement arc path
+    _path.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
 
   void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
     _pathCheck();
-    // TODO: implement arcTo path
+    _path.arcTo(controlX, controlY, endX, endY, radius);
   }
 
   void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
     _pathCheck();
-    // TODO: implement quadraticCurveTo path
+    _path.quadraticCurveTo(controlX, controlY, endX, endY);
   }
 
   void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
     _pathCheck();
-    // TODO: implement bezierCurveTo path
+    _path.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
 
   //---------------------------------------------------------------------------

@@ -23,6 +23,7 @@ part 'drawing/commands/graphics_command_line_to.dart';
 part 'drawing/commands/graphics_command_move_to.dart';
 part 'drawing/commands/graphics_command_quadratic_curve_to.dart';
 part 'drawing/commands/graphics_command_rect.dart';
+part 'drawing/commands/graphics_command_rect_round.dart';
 part 'drawing/commands/graphics_command_stroke_color.dart';
 part 'drawing/commands/graphics_command_stroke_gradient.dart';
 part 'drawing/commands/graphics_command_stroke_pattern.dart';

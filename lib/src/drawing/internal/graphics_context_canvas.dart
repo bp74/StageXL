@@ -39,6 +39,18 @@ class GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.rect(x, y, width, height);
   }
 
+  void rectRound(double x, double y, double width, double height, double ellipseWidth, double ellipseHeight) {
+    _canvasContext.moveTo(x + ellipseWidth, y);
+    _canvasContext.lineTo(x + width - ellipseWidth, y);
+    _canvasContext.quadraticCurveTo(x + width, y, x + width, y + ellipseHeight);
+    _canvasContext.lineTo(x + width, y + height - ellipseHeight);
+    _canvasContext.quadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height);
+    _canvasContext.lineTo(x + ellipseWidth, y + height);
+    _canvasContext.quadraticCurveTo(x, y + height, x, y + height - ellipseHeight);
+    _canvasContext.lineTo(x, y + ellipseHeight);
+    _canvasContext.quadraticCurveTo(x, y, x + ellipseWidth, y);
+  }
+
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
     _canvasContext.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }

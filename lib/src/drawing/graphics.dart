@@ -40,79 +40,82 @@ class Graphics {
   }
 
   /// Start drawing a freeform path.
-  void beginPath() =>
+  void beginPath() {
     _commands.add(new _GraphicsCommandBeginPath());
+  }
 
   /// Stop drawing a freeform path.
-  void closePath() =>
+  void closePath() {
     _commands.add(new _GraphicsCommandClosePath());
+  }
 
   /// Moves the next point in the path to [x] and [y]
-  void moveTo(num x, num y) =>
+  void moveTo(num x, num y) {
     _commands.add(new _GraphicsCommandMoveTo(x, y));
+  }
 
   /// From the current point in the path, draw a line to [x] and [y]
-  void lineTo(num x, num y) =>
+  void lineTo(num x, num y) {
     _commands.add(new _GraphicsCommandLineTo(x, y));
+  }
 
   /// From the current point in the path, draw an arc to [endX] and [endY]
-  void arcTo(num controlX, num controlY, num endX, num endY, num radius) =>
+  void arcTo(num controlX, num controlY, num endX, num endY, num radius) {
     _commands.add(new _GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
+  }
 
   /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
   void quadraticCurveTo(num controlX, num controlY, num endX, num endY) =>
     _commands.add(new _GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
 
   /// From the current point in the path, draw a bezier curve to [endX] and [endY]
-  bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) =>
+  bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
     _commands.add(new _GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
+  }
 
   /// Draw an arc at [x] and [y].
-  void arc(num x, num y, num radius, num startAngle, num endAngle, bool antiClockwise) =>
+  void arc(num x, num y, num radius, num startAngle, num endAngle, bool antiClockwise) {
     _commands.add(new _GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
+  }
 
   /// Draw a rectangle at [x] and [y]
-  void rect(num x, num y, num width, num height) =>
-    _commands.add(new _GraphicsCommandRect(x,y, width, height));
-
-  /// Apply a stroke color to the **previously drawn** vector object.
-  void strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
-    _commands.add(new _GraphicsCommandStrokeColor(color, width, joints, caps));
-
-  /// Apply a stroke color to the **previously drawn** vector object.
-  void strokeGradient(GraphicsGradient gradient, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
-    _commands.add(new _GraphicsCommandStrokeGradient(gradient, width, joints, caps));
-
-  /// Apply a stroke pattern to the **previously drawn** vector object.
-  void strokePattern(GraphicsPattern pattern, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
-    _commands.add(new _GraphicsCommandStrokePattern(pattern, width, joints, caps));
-
-  /// Apply a fill color to the **previously drawn** vector object.
-  void fillColor(int color) =>
-    _commands.add(new _GraphicsCommandFillColor(color));
-
-  /// Apply a fill gradient to the **previously drawn** vector object.
-  void fillGradient(GraphicsGradient gradient) =>
-    _commands.add(new _GraphicsCommandFillGradient(gradient));
-
-  /// Apply a fill pattern to the **previously drawn** vector object.
-  void fillPattern(GraphicsPattern pattern) =>
-    _commands.add(new _GraphicsCommandFillPattern(pattern));
-
-  //---------------------------------------------------------------------------
+  void rect(num x, num y, num width, num height) {
+    _commands.add(new _GraphicsCommandRect(x, y, width, height));
+  }
 
   /// Draw a rounded rectangle at [x] and [y].
   void rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
-    // TODO: create dedicated graphics command
-    _commands.add(new _GraphicsCommandMoveTo(x + ellipseWidth, y));
-    _commands.add(new _GraphicsCommandLineTo(x + width - ellipseWidth, y));
-    _commands.add(new _GraphicsCommandQuadraticCurveTo(x + width, y, x + width, y + ellipseHeight));
-    _commands.add(new _GraphicsCommandLineTo(x + width, y + height - ellipseHeight));
-    _commands.add(new _GraphicsCommandQuadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height));
-    _commands.add(new _GraphicsCommandLineTo(x + ellipseWidth, y + height));
-    _commands.add(new _GraphicsCommandQuadraticCurveTo(x, y + height, x, y + height - ellipseHeight));
-    _commands.add(new _GraphicsCommandLineTo(x, y + ellipseHeight));
-    _commands.add(new _GraphicsCommandQuadraticCurveTo(x, y, x + ellipseWidth, y));
+    _commands.add(new _GraphicsCommandRectRound(x, y, width, height, ellipseWidth, ellipseHeight));
+  }
+
+  /// Apply a stroke color to the **previously drawn** vector object.
+  void strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) {
+    _commands.add(new _GraphicsCommandStrokeColor(color, width, joints, caps));
+  }
+
+  /// Apply a stroke color to the **previously drawn** vector object.
+  void strokeGradient(GraphicsGradient gradient, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) {
+    _commands.add(new _GraphicsCommandStrokeGradient(gradient, width, joints, caps));
+  }
+
+  /// Apply a stroke pattern to the **previously drawn** vector object.
+  void strokePattern(GraphicsPattern pattern, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) {
+    _commands.add(new _GraphicsCommandStrokePattern(pattern, width, joints, caps));
+  }
+
+  /// Apply a fill color to the **previously drawn** vector object.
+  void fillColor(int color) {
+    _commands.add(new _GraphicsCommandFillColor(color));
+  }
+
+  /// Apply a fill gradient to the **previously drawn** vector object.
+  void fillGradient(GraphicsGradient gradient) {
+    _commands.add(new _GraphicsCommandFillGradient(gradient));
+  }
+
+  /// Apply a fill pattern to the **previously drawn** vector object.
+  void fillPattern(GraphicsPattern pattern) {
+    _commands.add(new _GraphicsCommandFillPattern(pattern));
   }
 
   //---------------------------------------------------------------------------
