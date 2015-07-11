@@ -201,7 +201,7 @@ class Graphics {
   //---------------------------------------------------------------------------
 
   void renderMask(RenderState renderState) {
-    if (renderState.renderContext is RenderContextWebGL) {
+    if (renderState.renderContext is RenderContextCanvas) {
       var graphicsContext = new GraphicsContextCanvasMask(renderState);
       graphicsContext.applyGraphicsCommands(_commands);
       // TODO: call Canvas2D clip
