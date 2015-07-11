@@ -10,7 +10,7 @@ abstract class _GraphicsCommand {
     // override in command.
   }
 
-  void drawWebGL(RenderState renderState) {
+  void drawWebGL(RenderState renderState, {GraphicsOptions options}) {
     // override in command.
   }
 
@@ -22,6 +22,10 @@ abstract class _GraphicsCommand {
   }
 
   //---------------------------------------------------------------------------
+
+  void renderWebGL(CanvasRenderingContext2D context) {
+    drawCanvas(context);
+  }
 
   void renderCanvas(CanvasRenderingContext2D context) {
     drawCanvas(context);

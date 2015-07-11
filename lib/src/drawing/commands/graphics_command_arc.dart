@@ -62,5 +62,29 @@ class _GraphicsCommandArc extends _GraphicsCommand {
     context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
 
+  //---------------------------------------------------------------------------
+
+  @override
+  void drawWebGL(RenderState renderState, {GraphicsOptions options}) {
+    if(options != null && endAngle == (PI *2).toDouble()){
+      int steps = 80;
+      var currentX = x + radius;
+      var currentY = y;
+      var cosR = cos(2 * PI / steps);
+      var sinR = sin(2 * PI / steps);
+      var tx = x - x * cosR + y * sinR;
+      var ty = y - x * sinR - y * cosR;
+
+      for (int s = 0; s < steps; s++) {
+        var nextX = currentX * cosR - currentY * sinR + tx;
+        var nextY = currentX * sinR + currentY * cosR + ty;
+        renderState.renderTriangle(
+            x, y, currentX, currentY, nextX, nextY, options.fillColor);
+        currentX = nextX;
+        currentY = nextY;
+      }
+    }
+  }
+
 }
 

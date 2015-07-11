@@ -29,4 +29,18 @@ class _GraphicsCommandRect extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.rect(x, y, width, height);
   }
+
+  @override
+  void drawWebGL(RenderState renderState, {GraphicsOptions options}) {
+
+    if(options != null){
+      var l = x;
+      var t = y;
+      var r = x + width;
+      var b = y + height;
+
+      renderState.renderTriangle(l, t, r, t, r, b, options.fillColor);
+      renderState.renderTriangle(l, t, r, b, l, b, options.fillColor);
+    }
+  }
 }
