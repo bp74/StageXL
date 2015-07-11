@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandFillPattern extends GraphicsCommandFill {
+class _GraphicsCommandFillPattern extends GraphicsCommand {
 
   final GraphicsPattern pattern;
 

@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandFillGradient extends GraphicsCommandFill {
+class _GraphicsCommandFillGradient extends GraphicsCommand {
 
   final GraphicsGradient gradient;
 

@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandFillColor extends GraphicsCommandFill {
+class _GraphicsCommandFillColor extends GraphicsCommand {
 
   final int color;
 

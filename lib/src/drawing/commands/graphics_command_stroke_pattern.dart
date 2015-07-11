@@ -1,12 +1,19 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandStrokePattern extends GraphicsCommandStroke {
+class _GraphicsCommandStrokePattern extends GraphicsCommand {
 
   final GraphicsPattern pattern;
+  final double lineWidth;
+  final String lineJoin;
+  final String lineCap;
 
-  _GraphicsCommandStrokePattern(
-      GraphicsPattern pattern, num lineWidth, String lineJoin, String lineCap) :
-        super (lineWidth, lineJoin, lineCap),  pattern = pattern;
+  _GraphicsCommandStrokePattern(GraphicsPattern pattern, num lineWidth, String lineJoin, String lineCap) :
+      pattern = pattern,
+      lineWidth = lineWidth.toDouble(),
+      lineJoin = lineJoin,
+      lineCap = lineCap;
+
+  //---------------------------------------------------------------------------
 
   @override
   void updateContext(GraphicsContext context) {

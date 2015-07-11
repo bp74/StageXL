@@ -1,12 +1,19 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandStrokeGradient extends GraphicsCommandStroke {
+class _GraphicsCommandStrokeGradient extends GraphicsCommand {
 
   final GraphicsGradient gradient;
+  final double lineWidth;
+  final String lineJoin;
+  final String lineCap;
 
-  _GraphicsCommandStrokeGradient(
-      GraphicsGradient gradient, num lineWidth, String lineJoin, String lineCap) :
-        super (lineWidth, lineJoin, lineCap),  gradient = gradient;
+  _GraphicsCommandStrokeGradient(GraphicsGradient gradient, num lineWidth, String lineJoin, String lineCap) :
+      gradient = gradient,
+      lineWidth = lineWidth.toDouble(),
+      lineJoin = lineJoin,
+      lineCap = lineCap;
+
+  //---------------------------------------------------------------------------
 
   @override
   void updateContext(GraphicsContext context) {

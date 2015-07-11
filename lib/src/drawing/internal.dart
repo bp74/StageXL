@@ -9,8 +9,6 @@ import '../geom.dart';
 
 part 'internal/graphics_bounds.dart';
 part 'internal/graphics_command.dart';
-part 'internal/graphics_command_fill.dart';
-part 'internal/graphics_command_stroke.dart';
 part 'internal/graphics_context.dart';
 part 'internal/graphics_context_bounds.dart';
 part 'internal/graphics_context_canvas.dart';
