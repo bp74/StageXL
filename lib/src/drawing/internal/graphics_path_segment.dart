@@ -2,6 +2,8 @@ part of stagexl.drawing.internal;
 
 class GraphicsPathSegment {
 
+  // TODO: Cache the segments to make it fast.
+
   Float32List _vertexBuffer = new Float32List(16);
   Int16List _indexBuffer = null;
   int _vertexCount = 0;

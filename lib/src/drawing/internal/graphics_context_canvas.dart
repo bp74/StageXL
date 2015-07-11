@@ -17,28 +17,34 @@ class GraphicsContextCanvas extends GraphicsContext {
 
   //---------------------------------------------------------------------------
 
+  @override
   void beginPath() {
     _canvasContext.beginPath();
   }
 
+  @override
   void closePath() {
     _canvasContext.closePath();
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   void moveTo(double x, double y) {
     _canvasContext.moveTo(x, y);
   }
 
+  @override
   void lineTo(double x, double y) {
     _canvasContext.lineTo(x, y);
   }
 
+  @override
   void rect(double x, double y, double width, double height) {
     _canvasContext.rect(x, y, width, height);
   }
 
+  @override
   void rectRound(double x, double y, double width, double height, double ellipseWidth, double ellipseHeight) {
     _canvasContext.moveTo(x + ellipseWidth, y);
     _canvasContext.lineTo(x + width - ellipseWidth, y);
@@ -51,19 +57,23 @@ class GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.quadraticCurveTo(x, y, x + ellipseWidth, y);
   }
 
+  @override
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
     _canvasContext.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
 
+  @override
   void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
     _canvasContext.arcTo(controlX, controlY, endX, endY, radius);
   }
 
+  @override
   void circle(double x, double y, double radius, bool antiClockwise) {
     _canvasContext.moveTo(x + radius, y);
     _canvasContext.arc(x, y, radius, 0, 2 * math.PI, antiClockwise);
   }
 
+  @override
   void ellipse(double x, double y, double width, double height) {
 
     num kappa = 0.5522848;
@@ -83,26 +93,31 @@ class GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.bezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym);
   }
 
+  @override
   void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
     _canvasContext.quadraticCurveTo(controlX, controlY, endX, endY);
   }
 
+  @override
   void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
     _canvasContext.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   void fillColor(int color) {
     _canvasContext.fillStyle = color2rgba(color);
     _canvasContext.fill();
   }
 
+  @override
   void fillGradient(GraphicsGradient gradient) {
     _canvasContext.fillStyle = gradient.getCanvasGradient(_canvasContext);
     _canvasContext.fill();
   }
 
+  @override
   void fillPattern(GraphicsPattern pattern) {
 
     _canvasContext.fillStyle = pattern.getCanvasPattern(_canvasContext);
@@ -120,6 +135,7 @@ class GraphicsContextCanvas extends GraphicsContext {
 
   //---------------------------------------------------------------------------
 
+  @override
   void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
     _canvasContext.strokeStyle = color2rgba(color);
     _canvasContext.lineWidth = lineWidth;
@@ -128,6 +144,7 @@ class GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.stroke();
   }
 
+  @override
   void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
     _canvasContext.strokeStyle = gradient.getCanvasGradient(_canvasContext);
     _canvasContext.lineWidth = lineWidth;
@@ -136,6 +153,7 @@ class GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.stroke();
   }
 
+  @override
   void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
 
     _canvasContext.strokeStyle = pattern.getCanvasPattern(_canvasContext);
@@ -163,26 +181,32 @@ class GraphicsContextCanvasMask extends GraphicsContextCanvas {
 
   GraphicsContextCanvasMask(RenderState renderState) : super(renderState);
 
+  @override
   void fillColor(int color) {
     // do nothing
   }
 
+  @override
   void fillGradient(GraphicsGradient gradient) {
     // do nothing
   }
 
+  @override
   void fillPattern(GraphicsPattern pattern) {
     // do nothing
   }
 
+  @override
   void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
     // do nothing
   }
 
+  @override
   void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
     // do nothing
   }
 
+  @override
   void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
     // do nothing
   }
