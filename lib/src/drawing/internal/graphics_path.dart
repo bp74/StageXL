@@ -19,6 +19,8 @@ class GraphicsPath {
     }
   }
 
+  //---------------------------------------------------------------------------
+
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
     // TODO: implement arc path
   }
@@ -29,6 +31,10 @@ class GraphicsPath {
 
   void circle(double x, double y, double radius, bool antiClockwise) {
     // TODO: implement circle path
+  }
+
+  void ellipse(double x, double y, double width, double height) {
+    // TODO: implement ellipse path
   }
 
   void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {

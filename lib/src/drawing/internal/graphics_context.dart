@@ -70,6 +70,11 @@ abstract class GraphicsContext {
     _path.circle(x, y, radius, antiClockwise);
   }
 
+  void ellipse(double x, double y, double width, double height) {
+    _pathCheck();
+    _path.ellipse(x, y, width, height);
+  }
+
   void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
     _pathCheck();
     _path.quadraticCurveTo(controlX, controlY, endX, endY);

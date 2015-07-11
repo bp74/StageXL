@@ -74,12 +74,17 @@ class Graphics {
     _commands.add(new _GraphicsCommandCircle(x, y, radius, antiClockwise));
   }
 
+  /// Draw an ellipse at [x] and [y]
+  void ellipse(num x, num y, num width, num height) {
+    _commands.add(new _GraphicsCommandEllipse(x, y, width, height));
+  }
+
   /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
   void quadraticCurveTo(num controlX, num controlY, num endX, num endY) =>
     _commands.add(new _GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
 
   /// From the current point in the path, draw a bezier curve to [endX] and [endY]
-  bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
+  void bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
     _commands.add(new _GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
   }
 
@@ -121,28 +126,6 @@ class Graphics {
   /// Apply a fill pattern to the **previously drawn** vector object.
   void fillPattern(GraphicsPattern pattern) {
     _commands.add(new _GraphicsCommandFillPattern(pattern));
-  }
-
-  //---------------------------------------------------------------------------
-
-  /// Draw an ellipse at [x] and [y]
-  void ellipse(num x, num y, num width, num height) {
-    // TODO: create dedicated graphics command
-    num kappa = 0.5522848;
-    num ox = (width / 2) * kappa;
-    num oy = (height / 2) * kappa;
-    num x1 = x - width / 2;
-    num y1 = y - height / 2;
-    num x2 = x + width / 2;
-    num y2 = y + height / 2;
-    num xm = x;
-    num ym = y;
-
-    _commands.add(new _GraphicsCommandMoveTo(x1, ym));
-    _commands.add(new _GraphicsCommandBezierCurveTo(x1, ym - oy, xm - ox, y1, xm, y1));
-    _commands.add(new _GraphicsCommandBezierCurveTo(xm + ox, y1, x2, ym - oy, x2, ym));
-    _commands.add(new _GraphicsCommandBezierCurveTo(x2, ym + oy, xm + ox, y2, xm, y2));
-    _commands.add(new _GraphicsCommandBezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym));
   }
 
   //---------------------------------------------------------------------------
