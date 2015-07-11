@@ -66,18 +66,14 @@ class GraphicsPath {
     } else {
 
       var steps = 10;
-      var x1 = _currentSegment.lastVertexX;
-      var y1 = _currentSegment.lastVertexY;
-      var x2 = controlX;
-      var y2 = controlY;
-      var x3 = endX;
-      var y3 = endY;
+      var vx = _currentSegment.lastVertexX;
+      var vy = _currentSegment.lastVertexY;
 
       for(int s = 0; s <= steps; s++) {
-        var t0 = s / steps;
-        var t1 = 1.0 - t0;
-        var x = t1 * t1 * x1 + 2 * t1 * t0 * x2 + t0 * t0 * x3;
-        var y = t1 * t1 * y1 + 2 * t1 * t0 * y2 + t0 * t0 * y3;
+        num t0 = s / steps;
+        num t1 = 1.0 - t0;
+        num x = t1 * t1 * vx + 2 * t1 * t0 * controlX + t0 * t0 * endX;
+        num y = t1 * t1 * vy + 2 * t1 * t0 * controlY + t0 * t0 * endY;
         _currentSegment.addVertex(x, y);
       }
     }
