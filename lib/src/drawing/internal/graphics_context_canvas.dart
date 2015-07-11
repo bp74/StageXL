@@ -75,7 +75,6 @@ class GraphicsContextCanvas extends GraphicsContext {
     num xm = x;
     num ym = y;
 
-    _pathCheck();
     _canvasContext.moveTo(x1, ym);
     _canvasContext.bezierCurveTo(x1, ym - oy, xm - ox, y1, xm, y1);
     _canvasContext.bezierCurveTo(xm + ox, y1, x2, ym - oy, x2, ym);
