@@ -15,6 +15,7 @@ part 'drawing/commands/graphics_command_arc.dart';
 part 'drawing/commands/graphics_command_arc_to.dart';
 part 'drawing/commands/graphics_command_begin_path.dart';
 part 'drawing/commands/graphics_command_bezier_curve_to.dart';
+part 'drawing/commands/graphics_command_circle.dart';
 part 'drawing/commands/graphics_command_close_path.dart';
 part 'drawing/commands/graphics_command_fill_color.dart';
 part 'drawing/commands/graphics_command_fill_gradient.dart';

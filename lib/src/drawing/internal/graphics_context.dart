@@ -65,6 +65,11 @@ abstract class GraphicsContext {
     _path.arcTo(controlX, controlY, endX, endY, radius);
   }
 
+  void circle(double x, double y, double radius, bool antiClockwise) {
+    _pathCheck();
+    _path.circle(x, y, radius, antiClockwise);
+  }
+
   void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
     _pathCheck();
     _path.quadraticCurveTo(controlX, controlY, endX, endY);

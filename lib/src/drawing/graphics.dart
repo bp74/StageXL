@@ -59,9 +59,19 @@ class Graphics {
     _commands.add(new _GraphicsCommandLineTo(x, y));
   }
 
+  /// Draw an arc at [x] and [y].
+  void arc(num x, num y, num radius, num startAngle, num endAngle, [bool antiClockwise = false]) {
+    _commands.add(new _GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
+  }
+
   /// From the current point in the path, draw an arc to [endX] and [endY]
   void arcTo(num controlX, num controlY, num endX, num endY, num radius) {
     _commands.add(new _GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
+  }
+
+  /// Draw a circle at [x] and [y]
+  void circle(num x, num y, num radius, [bool antiClockwise = false]) {
+    _commands.add(new _GraphicsCommandCircle(x, y, radius, antiClockwise));
   }
 
   /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
@@ -71,11 +81,6 @@ class Graphics {
   /// From the current point in the path, draw a bezier curve to [endX] and [endY]
   bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
     _commands.add(new _GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
-  }
-
-  /// Draw an arc at [x] and [y].
-  void arc(num x, num y, num radius, num startAngle, num endAngle, bool antiClockwise) {
-    _commands.add(new _GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
   }
 
   /// Draw a rectangle at [x] and [y]
@@ -116,15 +121,6 @@ class Graphics {
   /// Apply a fill pattern to the **previously drawn** vector object.
   void fillPattern(GraphicsPattern pattern) {
     _commands.add(new _GraphicsCommandFillPattern(pattern));
-  }
-
-  //---------------------------------------------------------------------------
-
-  /// Draw a circle at [x] and [y]
-  void circle(num x, num y, num radius) {
-    // TODO: create dedicated graphics command
-    _commands.add(new _GraphicsCommandMoveTo(x + radius, y));
-    _commands.add(new _GraphicsCommandArc(x, y, radius, 0, PI * 2, false));
   }
 
   //---------------------------------------------------------------------------

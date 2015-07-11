@@ -59,6 +59,10 @@ class GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.arcTo(controlX, controlY, endX, endY, radius);
   }
 
+  void circle(double x, double y, double radius, bool antiClockwise) {
+    _canvasContext.arc(x, y, radius, 0, 2 * math.PI, antiClockwise);
+  }
+
   void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
     _canvasContext.quadraticCurveTo(controlX, controlY, endX, endY);
   }

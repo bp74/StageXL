@@ -27,6 +27,10 @@ class GraphicsPath {
     // TODO: implement arcTo path
   }
 
+  void circle(double x, double y, double radius, bool antiClockwise) {
+    // TODO: implement circle path
+  }
+
   void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
     // TODO: implement quadraticCurveTo path
   }
