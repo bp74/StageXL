@@ -1,9 +1,9 @@
-part of stagexl.drawing;
+part of stagexl.drawing.internal;
 
-abstract class _GraphicsCommandFill extends _GraphicsCommand {
-
+abstract class GraphicsCommandFill extends GraphicsCommand {
+/*
   @override
-  void updateBounds(_GraphicsBounds bounds) {
+  void updateBounds(GraphicsBounds bounds) {
     bounds.fill();
   }
 
@@ -24,4 +24,5 @@ abstract class _GraphicsCommandFill extends _GraphicsCommand {
   void renderMaskCanvas(CanvasRenderingContext2D context) {
     // no action
   }
+  */
 }

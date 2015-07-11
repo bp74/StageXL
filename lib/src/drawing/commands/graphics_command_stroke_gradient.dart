@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandStrokeGradient extends _GraphicsCommandStroke {
+class _GraphicsCommandStrokeGradient extends GraphicsCommandStroke {
 
   final GraphicsGradient gradient;
 
@@ -9,6 +9,12 @@ class _GraphicsCommandStrokeGradient extends _GraphicsCommandStroke {
         super (lineWidth, lineJoin, lineCap),  gradient = gradient;
 
   @override
+  void updateContext(GraphicsContext context) {
+    context.strokeGradient(gradient, lineWidth, lineJoin, lineCap);
+  }
+
+  /*
+  @override
   void drawCanvas(CanvasRenderingContext2D context) {
     context.strokeStyle = gradient.getCanvasGradient(context);
     context.lineWidth = lineWidth;
@@ -16,4 +22,5 @@ class _GraphicsCommandStrokeGradient extends _GraphicsCommandStroke {
     context.lineCap = lineCap;
     context.stroke();
   }
+  */
 }

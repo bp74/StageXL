@@ -1,11 +1,17 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandFillPattern extends _GraphicsCommandFill {
+class _GraphicsCommandFillPattern extends GraphicsCommandFill {
 
   final GraphicsPattern pattern;
 
   _GraphicsCommandFillPattern(this.pattern);
 
+  @override
+  void updateContext(GraphicsContext context) {
+    context.fillPattern(pattern);
+  }
+
+  /*
   @override
   void drawCanvas(CanvasRenderingContext2D context) {
 
@@ -21,4 +27,5 @@ class _GraphicsCommandFillPattern extends _GraphicsCommandFill {
       context.fill();
     }
   }
+  */
 }

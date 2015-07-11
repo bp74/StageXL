@@ -1,6 +1,6 @@
-part of stagexl.drawing;
+part of stagexl.drawing.internal;
 
-class _GraphicsBounds {
+class GraphicsBounds {
 
   // cursor coordinates
   num cursorX = double.NAN;
@@ -28,18 +28,18 @@ class _GraphicsBounds {
       !pathTop.isInfinite && !pathBottom.isInfinite;
 
   bool get hasBounds =>
-      !boundsLeft.isInfinite && !boundsRight.isInfinite &&
-      !boundsTop.isInfinite && !boundsBottom.isInfinite;
+  !boundsLeft.isInfinite && !boundsRight.isInfinite &&
+  !boundsTop.isInfinite && !boundsBottom.isInfinite;
 
   //---------------------------------------------------------------
 
-  resetPath() {
+  void resetPath() {
     cursorX = cursorY = double.NAN;
     pathLeft = pathTop = double.INFINITY;
     pathRight = pathBottom = double.NEGATIVE_INFINITY;
   }
 
-  updateCursor(num x, num y) {
+  void updateCursor(num x, num y) {
     cursorX = x;
     cursorY = y;
   }
@@ -55,7 +55,7 @@ class _GraphicsBounds {
     }
   }
 
-  stroke(num lineWidth) {
+  void stroke(num lineWidth) {
     if (hasPath) {
       var lw = lineWidth / 2;
       var left = pathLeft - lw;
@@ -70,7 +70,7 @@ class _GraphicsBounds {
     }
   }
 
-  fill() {
+  void fill() {
     if (hasPath) {
       if (boundsLeft > pathLeft) boundsLeft = pathLeft;
       if (boundsRight < pathRight) boundsRight = pathRight;

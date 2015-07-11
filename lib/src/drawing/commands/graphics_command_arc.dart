@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandArc extends _GraphicsCommand {
+class _GraphicsCommandArc extends GraphicsCommand {
 
   final double x;
   final double y;
@@ -23,7 +23,14 @@ class _GraphicsCommandArc extends _GraphicsCommand {
   //---------------------------------------------------------------------------
 
   @override
-  void updateBounds(_GraphicsBounds bounds) {
+  void updateContext(GraphicsContext context) {
+    context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
+  }
+
+
+/*
+  @override
+  void updateBounds(GraphicsBounds bounds) {
 
     var initPoint = new Vector(radius, 0);
     var startPoint = initPoint.rotate(startAngle);
@@ -61,6 +68,6 @@ class _GraphicsCommandArc extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
-
+*/
 }
 

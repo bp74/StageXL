@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandRect extends _GraphicsCommand {
+class _GraphicsCommandRect extends GraphicsCommand {
 
   final double x;
   final double y;
@@ -16,7 +16,13 @@ class _GraphicsCommandRect extends _GraphicsCommand {
   //---------------------------------------------------------------------------
 
   @override
-  void updateBounds(_GraphicsBounds bounds) {
+  void updateContext(GraphicsContext context) {
+    context.rect(x, y, width, height);
+  }
+
+/*
+  @override
+  void updateBounds(GraphicsBounds bounds) {
 
     bounds.updateCursor(x, y);
     bounds.updatePath(x, y);
@@ -29,4 +35,5 @@ class _GraphicsCommandRect extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.rect(x, y, width, height);
   }
+  */
 }

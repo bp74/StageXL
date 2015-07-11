@@ -30,113 +30,105 @@ class Graphics {
     "w":48,"x":49,"y":50,"z":51,"0":52,"1":53,"2":54,"3":55,
     "4":56,"5":57,"6":58,"7":59,"8":60,"9":61,"+":62,"/":63};
 
-  final List<_GraphicsCommand> _commands = new List<_GraphicsCommand>();
-  final Rectangle<num> _boundsRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
-
-  bool _boundsRefresh = true;
-
-  void clear() {
-    _commands.clear();
-    _boundsRefresh = true;
-  }
-
-  void _addCommand(_GraphicsCommand command) {
-    _commands.add(command);
-    _boundsRefresh = true;
-  }
+  final List<GraphicsCommand> _commands = new List<GraphicsCommand>();
 
   //---------------------------------------------------------------------------
 
+  /// Clear all previously added graphics commands.
+  void clear() {
+    _commands.clear();
+  }
+
   /// Start drawing a freeform path.
   void beginPath() =>
-    _addCommand(new _GraphicsCommandBeginPath());
+    _commands.add(new _GraphicsCommandBeginPath());
 
   /// Stop drawing a freeform path.
   void closePath() =>
-    _addCommand(new _GraphicsCommandClosePath());
+    _commands.add(new _GraphicsCommandClosePath());
 
   /// Moves the next point in the path to [x] and [y]
   void moveTo(num x, num y) =>
-    _addCommand(new _GraphicsCommandMoveTo(x, y));
+    _commands.add(new _GraphicsCommandMoveTo(x, y));
 
   /// From the current point in the path, draw a line to [x] and [y]
   void lineTo(num x, num y) =>
-    _addCommand(new _GraphicsCommandLineTo(x, y));
+    _commands.add(new _GraphicsCommandLineTo(x, y));
 
   /// From the current point in the path, draw an arc to [endX] and [endY]
   void arcTo(num controlX, num controlY, num endX, num endY, num radius) =>
-    _addCommand(new _GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
+    _commands.add(new _GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
 
   /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
   void quadraticCurveTo(num controlX, num controlY, num endX, num endY) =>
-    _addCommand(new _GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
+    _commands.add(new _GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
 
   /// From the current point in the path, draw a bezier curve to [endX] and [endY]
   bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) =>
-    _addCommand(new _GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
+    _commands.add(new _GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
 
   /// Draw an arc at [x] and [y].
   void arc(num x, num y, num radius, num startAngle, num endAngle, bool antiClockwise) =>
-    _addCommand(new _GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
+    _commands.add(new _GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
 
   /// Draw a rectangle at [x] and [y]
   void rect(num x, num y, num width, num height) =>
-    _addCommand(new _GraphicsCommandRect(x,y, width, height));
+    _commands.add(new _GraphicsCommandRect(x,y, width, height));
 
   /// Apply a stroke color to the **previously drawn** vector object.
   void strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
-    _addCommand(new _GraphicsCommandStrokeColor(color2rgba(color), width, joints, caps));
+    _commands.add(new _GraphicsCommandStrokeColor(color, width, joints, caps));
 
   /// Apply a stroke color to the **previously drawn** vector object.
   void strokeGradient(GraphicsGradient gradient, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
-    _addCommand(new _GraphicsCommandStrokeGradient(gradient, width, joints, caps));
+    _commands.add(new _GraphicsCommandStrokeGradient(gradient, width, joints, caps));
 
   /// Apply a stroke pattern to the **previously drawn** vector object.
   void strokePattern(GraphicsPattern pattern, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) =>
-    _addCommand(new _GraphicsCommandStrokePattern(pattern, width, joints, caps));
+    _commands.add(new _GraphicsCommandStrokePattern(pattern, width, joints, caps));
 
   /// Apply a fill color to the **previously drawn** vector object.
   void fillColor(int color) =>
-    _addCommand(new _GraphicsCommandFillColor(color2rgba(color)));
+    _commands.add(new _GraphicsCommandFillColor(color));
 
   /// Apply a fill gradient to the **previously drawn** vector object.
   void fillGradient(GraphicsGradient gradient) =>
-    _addCommand(new _GraphicsCommandFillGradient(gradient));
+    _commands.add(new _GraphicsCommandFillGradient(gradient));
 
   /// Apply a fill pattern to the **previously drawn** vector object.
   void fillPattern(GraphicsPattern pattern) =>
-    _addCommand(new _GraphicsCommandFillPattern(pattern));
+    _commands.add(new _GraphicsCommandFillPattern(pattern));
 
   //---------------------------------------------------------------------------
 
   /// Draw a rounded rectangle at [x] and [y].
   void rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
-
-    _addCommand(new _GraphicsCommandMoveTo(x + ellipseWidth, y));
-    _addCommand(new _GraphicsCommandLineTo(x + width - ellipseWidth, y));
-    _addCommand(new _GraphicsCommandQuadraticCurveTo(x + width, y, x + width, y + ellipseHeight));
-    _addCommand(new _GraphicsCommandLineTo(x + width, y + height - ellipseHeight));
-    _addCommand(new _GraphicsCommandQuadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height));
-    _addCommand(new _GraphicsCommandLineTo(x + ellipseWidth, y + height));
-    _addCommand(new _GraphicsCommandQuadraticCurveTo(x, y + height, x, y + height - ellipseHeight));
-    _addCommand(new _GraphicsCommandLineTo(x, y + ellipseHeight));
-    _addCommand(new _GraphicsCommandQuadraticCurveTo(x, y, x + ellipseWidth, y));
+    // TODO: create dedicated graphics command
+    _commands.add(new _GraphicsCommandMoveTo(x + ellipseWidth, y));
+    _commands.add(new _GraphicsCommandLineTo(x + width - ellipseWidth, y));
+    _commands.add(new _GraphicsCommandQuadraticCurveTo(x + width, y, x + width, y + ellipseHeight));
+    _commands.add(new _GraphicsCommandLineTo(x + width, y + height - ellipseHeight));
+    _commands.add(new _GraphicsCommandQuadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height));
+    _commands.add(new _GraphicsCommandLineTo(x + ellipseWidth, y + height));
+    _commands.add(new _GraphicsCommandQuadraticCurveTo(x, y + height, x, y + height - ellipseHeight));
+    _commands.add(new _GraphicsCommandLineTo(x, y + ellipseHeight));
+    _commands.add(new _GraphicsCommandQuadraticCurveTo(x, y, x + ellipseWidth, y));
   }
 
   //---------------------------------------------------------------------------
 
   /// Draw a circle at [x] and [y]
   void circle(num x, num y, num radius) {
-
-    _addCommand(new _GraphicsCommandMoveTo(x + radius, y));
-    _addCommand(new _GraphicsCommandArc(x, y, radius, 0, PI * 2, false));
+    // TODO: create dedicated graphics command
+    _commands.add(new _GraphicsCommandMoveTo(x + radius, y));
+    _commands.add(new _GraphicsCommandArc(x, y, radius, 0, PI * 2, false));
   }
 
   //---------------------------------------------------------------------------
 
   /// Draw an ellipse at [x] and [y]
   void ellipse(num x, num y, num width, num height) {
-
+    // TODO: create dedicated graphics command
     num kappa = 0.5522848;
     num ox = (width / 2) * kappa;
     num oy = (height / 2) * kappa;
@@ -147,11 +139,11 @@ class Graphics {
     num xm = x;
     num ym = y;
 
-    _addCommand(new _GraphicsCommandMoveTo(x1, ym));
-    _addCommand(new _GraphicsCommandBezierCurveTo(x1, ym - oy, xm - ox, y1, xm, y1));
-    _addCommand(new _GraphicsCommandBezierCurveTo(xm + ox, y1, x2, ym - oy, x2, ym));
-    _addCommand(new _GraphicsCommandBezierCurveTo(x2, ym + oy, xm + ox, y2, xm, y2));
-    _addCommand(new _GraphicsCommandBezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym));
+    _commands.add(new _GraphicsCommandMoveTo(x1, ym));
+    _commands.add(new _GraphicsCommandBezierCurveTo(x1, ym - oy, xm - ox, y1, xm, y1));
+    _commands.add(new _GraphicsCommandBezierCurveTo(xm + ox, y1, x2, ym - oy, x2, ym));
+    _commands.add(new _GraphicsCommandBezierCurveTo(x2, ym + oy, xm + ox, y2, xm, y2));
+    _commands.add(new _GraphicsCommandBezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym));
   }
 
   //---------------------------------------------------------------------------
@@ -197,13 +189,17 @@ class Graphics {
 
   Rectangle<num> get bounds {
 
+    // TODO: Implement with new GraphicsContext
+    return new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
+
+    /*
     if (_boundsRefresh){
 
-      var graphicsBounds = new _GraphicsBounds();
+      var graphicsBounds = new GraphicsBounds();
       var commands = _commands;
 
       for(int i = 0; i < commands.length; i++) {
-        commands[i].updateBounds(graphicsBounds);
+        // commands[i].updateBounds(graphicsBounds);
       }
 
       _boundsRefresh = false;
@@ -211,11 +207,17 @@ class Graphics {
     }
 
     return _boundsRectangle.clone();
+    */
   }
 
   //---------------------------------------------------------------------------
 
   bool hitTest(num localX, num localY) {
+
+    // TODO: Implement with new GraphicsContext
+    return false;
+
+    /*
 
     var hit = false;
     var context = _dummyCanvasContext;
@@ -225,68 +227,32 @@ class Graphics {
       context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
       context.beginPath();
       for(int i = 0; i < commands.length && hit == false; i++) {
-        hit = commands[i].hitTest(context, localX, localY);
+         hit = commands[i].hitTest(context, localX, localY);
       }
     }
     return hit;
+    */
   }
 
   //---------------------------------------------------------------------------
 
   void render(RenderState renderState) {
-    if (renderState.renderContext is RenderContextWebGL) {
-      _renderWebGL(renderState);
+    if (renderState.renderContext is RenderContextCanvas) {
+      var graphicsContext = new GraphicsContextCanvas(renderState);
+      graphicsContext.applyGraphicsCommands(_commands);
     } else {
-      _renderCanvas(renderState);
+      var graphicsContext = new GraphicsContextRender(renderState);
+      graphicsContext.applyGraphicsCommands(_commands);
     }
   }
 
   void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextWebGL) {
-      _renderMaskWebGL(renderState);
+      var graphicsContext = new GraphicsContextCanvasMask(renderState);
+      graphicsContext.applyGraphicsCommands(_commands);
+      // TODO: call Canvas2D clip
     }else {
-      _renderMaskCanvas(renderState);
-    }
-  }
-
-  //---------------------------------------------------------------------------
-
-  // TODO: Native support for Graphics in WebGL will be added later.
-
-  void _renderWebGL(RenderState renderState) {
-  }
-
-  void _renderMaskWebGL(RenderState renderState) {
-  }
-
-  //---------------------------------------------------------------------------
-
-  void _renderCanvas(RenderState renderState) {
-
-    RenderContextCanvas renderContext = renderState.renderContext;
-    var rawContext = renderContext.rawContext;
-    var commands = _commands;
-
-    renderContext.setTransform(renderState.globalMatrix);
-    renderContext.setAlpha(renderState.globalAlpha);
-    rawContext.beginPath();
-
-    for(int i = 0; i < commands.length; i++) {
-      commands[i].renderCanvas(rawContext);
-    }
-  }
-
-  void _renderMaskCanvas(RenderState renderState) {
-
-    RenderContextCanvas renderContext = renderState.renderContext;
-    var rawContext = renderContext.rawContext;
-    var commands = _commands;
-
-    renderContext.setTransform(renderState.globalMatrix);
-    rawContext.beginPath();
-
-    for(int i = 0; i < commands.length; i++) {
-      commands[i].renderMaskCanvas(rawContext);
+      // TODO: implement WebGL masks
     }
   }
 

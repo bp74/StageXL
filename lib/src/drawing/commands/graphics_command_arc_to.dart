@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandArcTo extends _GraphicsCommand {
+class _GraphicsCommandArcTo extends GraphicsCommand {
 
   final double controlX;
   final double controlY;
@@ -21,7 +21,13 @@ class _GraphicsCommandArcTo extends _GraphicsCommand {
   //---------------------------------------------------------------------------
 
   @override
-  void updateBounds(_GraphicsBounds bounds) {
+  void updateContext(GraphicsContext context) {
+    context.arcTo(controlX, controlY, endX, endY, radius);
+  }
+
+/*
+  @override
+  void updateBounds(GraphicsBounds bounds) {
 
     if (bounds.hasCursor) {
 
@@ -70,5 +76,5 @@ class _GraphicsCommandArcTo extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.arcTo(controlX, controlY, endX, endY, radius);
   }
-
+*/
 }

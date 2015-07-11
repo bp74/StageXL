@@ -1,19 +1,26 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandStrokeColor extends _GraphicsCommandStroke {
+class _GraphicsCommandStrokeColor extends GraphicsCommandStroke {
 
-  final String color;
+  final int color;
 
   _GraphicsCommandStrokeColor(
-      String color, num lineWidth, String lineJoin, String lineCap) :
+      int color, num lineWidth, String lineJoin, String lineCap) :
         super (lineWidth, lineJoin, lineCap), color = color;
 
   @override
+  void updateContext(GraphicsContext context) {
+    context.strokeColor(color, lineWidth, lineJoin, lineCap);
+  }
+
+/*
+  @override
   void drawCanvas(CanvasRenderingContext2D context) {
-    context.strokeStyle = color;
+    context.strokeStyle = color2rgba(color);
     context.lineWidth = lineWidth;
     context.lineJoin = lineJoin;
     context.lineCap = lineCap;
     context.stroke();
   }
+  */
 }

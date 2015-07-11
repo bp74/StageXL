@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
+class _GraphicsCommandBezierCurveTo extends GraphicsCommand {
 
   final double controlX1;
   final double controlY1;
@@ -24,6 +24,13 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
 
   //---------------------------------------------------------------------------
 
+  @override
+  void updateContext(GraphicsContext context) {
+    context.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
+  }
+
+  /*
+
   // first derivative root finding for cubic Bézier curves
   // http://processingjs.nihongoresources.com/bezierinfo/
   // http://processingjs.nihongoresources.com/bezierinfo/sketchsource.php?sketch=simpleQuadraticBezier
@@ -40,10 +47,8 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
     return dn != 0.0 ? <double>[(tl + tr) / dn, (tl - tr) / dn] : <double>[-1.0, -1.0];
   }
 
-  //---------------------------------------------------------------------------
-
   @override
-  void updateBounds(_GraphicsBounds bounds) {
+  void updateBounds(GraphicsBounds bounds) {
 
     if (bounds.hasCursor == false) {
       bounds.updateCursor(controlX1, controlY1);
@@ -88,6 +93,6 @@ class _GraphicsCommandBezierCurveTo extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
-
+  */
 }
 

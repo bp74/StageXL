@@ -1,12 +1,12 @@
-part of stagexl.drawing;
+part of stagexl.drawing.internal;
 
-abstract class _GraphicsCommandStroke extends _GraphicsCommand {
+abstract class GraphicsCommandStroke extends GraphicsCommand {
 
   final double lineWidth;
   final String lineJoin;
   final String lineCap;
 
-  _GraphicsCommandStroke(num lineWidth, String lineJoin, String lineCap) :
+  GraphicsCommandStroke(num lineWidth, String lineJoin, String lineCap) :
 
     lineWidth = lineWidth.toDouble(),
     lineJoin = lineJoin,
@@ -14,8 +14,9 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
 
   //---------------------------------------------------------------------------
 
+  /*
   @override
-  void updateBounds(_GraphicsBounds bounds) {
+  void updateBounds(GraphicsBounds bounds) {
     bounds.stroke(lineWidth);
   }
 
@@ -40,4 +41,5 @@ abstract class _GraphicsCommandStroke extends _GraphicsCommand {
   void renderMaskCanvas(CanvasRenderingContext2D context) {
     // no action
   }
+  */
 }

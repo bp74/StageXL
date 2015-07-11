@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandStrokePattern extends _GraphicsCommandStroke {
+class _GraphicsCommandStrokePattern extends GraphicsCommandStroke {
 
   final GraphicsPattern pattern;
 
@@ -8,6 +8,12 @@ class _GraphicsCommandStrokePattern extends _GraphicsCommandStroke {
       GraphicsPattern pattern, num lineWidth, String lineJoin, String lineCap) :
         super (lineWidth, lineJoin, lineCap),  pattern = pattern;
 
+  @override
+  void updateContext(GraphicsContext context) {
+    context.strokePattern(pattern, lineWidth, lineJoin, lineCap);
+  }
+
+  /*
   @override
   void drawCanvas(CanvasRenderingContext2D context) {
     context.strokeStyle = pattern.getCanvasPattern(context);
@@ -26,4 +32,5 @@ class _GraphicsCommandStrokePattern extends _GraphicsCommandStroke {
       context.stroke();
     }
   }
+  */
 }

@@ -1,11 +1,17 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandBeginPath extends _GraphicsCommand {
+class _GraphicsCommandBeginPath extends GraphicsCommand {
 
   _GraphicsCommandBeginPath();
 
   @override
-  void updateBounds(_GraphicsBounds bounds) {
+  void updateContext(GraphicsContext context) {
+    context.beginPath();
+  }
+
+  /*
+  @override
+  void updateBounds(GraphicsBounds bounds) {
     bounds.resetPath();
   }
 
@@ -13,4 +19,5 @@ class _GraphicsCommandBeginPath extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.beginPath();
   }
+  */
 }

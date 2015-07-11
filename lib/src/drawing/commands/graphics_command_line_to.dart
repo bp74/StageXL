@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandLineTo extends _GraphicsCommand {
+class _GraphicsCommandLineTo extends GraphicsCommand {
 
   final double x;
   final double y;
@@ -10,7 +10,13 @@ class _GraphicsCommandLineTo extends _GraphicsCommand {
     y = y.toDouble();
 
   @override
-  void updateBounds(_GraphicsBounds bounds) {
+  void updateContext(GraphicsContext context) {
+    context.lineTo(x, y);
+  }
+
+  /*
+  @override
+  void updateBounds(GraphicsBounds bounds) {
 
     if (bounds.hasCursor == false) {
       bounds.updateCursor(x, y);
@@ -25,5 +31,5 @@ class _GraphicsCommandLineTo extends _GraphicsCommand {
   void drawCanvas(CanvasRenderingContext2D context) {
     context.lineTo(x, y);
   }
-
+  */
 }
