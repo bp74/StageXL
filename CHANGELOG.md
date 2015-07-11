@@ -8,6 +8,12 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
   
+#### Pub version 0.12.0+1
+  * Enabled HiDPI filters. 
+  * Fixed stage with transparent background color.
+  * Fixed rendering issue with sequential filters. 
+  * Fixed color of primitive WebGL triangles.
+  
 #### Pub version 0.12.0
   * Added StageXL global default configuration options.
   * Added Juggler async/await and reactive features.
