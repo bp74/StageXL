@@ -72,15 +72,42 @@ class GraphicsPath {
       for(int s = 0; s <= steps; s++) {
         num t0 = s / steps;
         num t1 = 1.0 - t0;
-        num x = t1 * t1 * vx + 2 * t1 * t0 * controlX + t0 * t0 * endX;
-        num y = t1 * t1 * vy + 2 * t1 * t0 * controlY + t0 * t0 * endY;
+        var b0 = t1 * t1;
+        var b1 = t1 * t0 * 2.0;
+        var b2 = t0 * t0;
+        num x = b0 * vx + b1 * controlX + b2 * endX;
+        num y = b0 * vy + b1 * controlY + b2 * endY;
         _currentSegment.addVertex(x, y);
       }
     }
   }
 
   void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
-    // TODO: implement bezierCurveTo path
+
+    // TODO: adjust steps
+
+    if (_currentSegment == null) {
+
+      this.moveTo(endY, endY);
+
+    } else {
+
+      var steps = 10;
+      var vx = _currentSegment.lastVertexX;
+      var vy = _currentSegment.lastVertexY;
+
+      for(int s = 0; s <= steps; s++) {
+        num t0 = s / steps;
+        num t1 = 1.0 - t0;
+        var b0 = t1 * t1 * t1;
+        var b1 = t0 * t1 * t1 * 3.0;
+        var b2 = t0 * t0 * t1 * 3.0;
+        var b3 = t0 * t0 * t0;
+        num x = b0 * vx + b1 * controlX1 + b2 * controlX2 + b3 * endX;
+        num y = b0 * vy + b1 * controlY1 + b2 * controlY2 + b3 * endY;
+        _currentSegment.addVertex(x, y);
+      }
+    }
   }
 
   //---------------------------------------------------------------------------

@@ -9,7 +9,7 @@ class GraphicsContextRender extends GraphicsContext {
 
   @override
   void fillColor(int color) {
-    if (_path != null) _path.fillColor(renderState, color);
+    _path.fillColor(renderState, color);
   }
 
   @override
