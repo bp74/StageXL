@@ -60,6 +60,7 @@ class GraphicsContextCanvas extends GraphicsContext {
   }
 
   void circle(double x, double y, double radius, bool antiClockwise) {
+    _canvasContext.moveTo(x + radius, y);
     _canvasContext.arc(x, y, radius, 0, 2 * math.PI, antiClockwise);
   }
 
