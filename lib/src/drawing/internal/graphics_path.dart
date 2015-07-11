@@ -65,16 +65,16 @@ class GraphicsPath {
 
     } else {
 
-      var steps = 10;
-      var vx = _currentSegment.lastVertexX;
-      var vy = _currentSegment.lastVertexY;
+      int steps = 10;
+      num vx = _currentSegment.lastVertexX;
+      num vy = _currentSegment.lastVertexY;
 
       for(int s = 0; s <= steps; s++) {
         num t0 = s / steps;
         num t1 = 1.0 - t0;
-        var b0 = t1 * t1;
-        var b1 = t1 * t0 * 2.0;
-        var b2 = t0 * t0;
+        num b0 = t1 * t1;
+        num b1 = t1 * t0 * 2.0;
+        num b2 = t0 * t0;
         num x = b0 * vx + b1 * controlX + b2 * endX;
         num y = b0 * vy + b1 * controlY + b2 * endY;
         _currentSegment.addVertex(x, y);
@@ -92,17 +92,17 @@ class GraphicsPath {
 
     } else {
 
-      var steps = 10;
-      var vx = _currentSegment.lastVertexX;
-      var vy = _currentSegment.lastVertexY;
+      int steps = 10;
+      num vx = _currentSegment.lastVertexX;
+      num vy = _currentSegment.lastVertexY;
 
       for(int s = 0; s <= steps; s++) {
         num t0 = s / steps;
         num t1 = 1.0 - t0;
-        var b0 = t1 * t1 * t1;
-        var b1 = t0 * t1 * t1 * 3.0;
-        var b2 = t0 * t0 * t1 * 3.0;
-        var b3 = t0 * t0 * t0;
+        num b0 = t1 * t1 * t1;
+        num b1 = t0 * t1 * t1 * 3.0;
+        num b2 = t0 * t0 * t1 * 3.0;
+        num b3 = t0 * t0 * t0;
         num x = b0 * vx + b1 * controlX1 + b2 * controlX2 + b3 * endX;
         num y = b0 * vy + b1 * controlY1 + b2 * controlY2 + b3 * endY;
         _currentSegment.addVertex(x, y);
