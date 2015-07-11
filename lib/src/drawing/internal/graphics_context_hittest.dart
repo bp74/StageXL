@@ -2,6 +2,8 @@ part of stagexl.drawing.internal;
 
 class GraphicsContextHitTest extends GraphicsContext {
 
+  bool hit = false;
+
   // TODO: implements hittest calculation.
 
   @override

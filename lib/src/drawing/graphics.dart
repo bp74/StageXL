@@ -177,53 +177,16 @@ class Graphics {
   //---------------------------------------------------------------------------
 
   Rectangle<num> get bounds {
-
-    // TODO: Implement with new GraphicsContext
-    return new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
-
-    /*
-    if (_boundsRefresh){
-
-      var graphicsBounds = new GraphicsBounds();
-      var commands = _commands;
-
-      for(int i = 0; i < commands.length; i++) {
-        // commands[i].updateBounds(graphicsBounds);
-      }
-
-      _boundsRefresh = false;
-      _boundsRectangle.copyFrom(graphicsBounds.getRectangle());
-    }
-
-    return _boundsRectangle.clone();
-    */
+    var graphicsContext = new GraphicsContextBounds();
+    graphicsContext.applyGraphicsCommands(_commands);
+    return graphicsContext.bounds;
   }
-
-  //---------------------------------------------------------------------------
 
   bool hitTest(num localX, num localY) {
-
-    // TODO: Implement with new GraphicsContext
-    return false;
-
-    /*
-
-    var hit = false;
-    var context = _dummyCanvasContext;
-    var commands = _commands;
-
-    if (this.bounds.contains(localX, localY)) {
-      context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-      context.beginPath();
-      for(int i = 0; i < commands.length && hit == false; i++) {
-         hit = commands[i].hitTest(context, localX, localY);
-      }
-    }
-    return hit;
-    */
+    var graphicsContext = new GraphicsContextHitTest();
+    graphicsContext.applyGraphicsCommands(_commands);
+    return graphicsContext.hit;
   }
-
-  //---------------------------------------------------------------------------
 
   void render(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
@@ -234,6 +197,8 @@ class Graphics {
       graphicsContext.applyGraphicsCommands(_commands);
     }
   }
+
+  //---------------------------------------------------------------------------
 
   void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextWebGL) {
