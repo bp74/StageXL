@@ -8,13 +8,12 @@ class _GraphicsCommandQuadraticCurveTo extends GraphicsCommand {
   final double endY;
 
   _GraphicsCommandQuadraticCurveTo(
-      num controlX, num controlY,
-      num endX, num endY) :
+      num controlX, num controlY, num endX, num endY) :
 
-    controlX = controlX.toDouble(),
-    controlY = controlY.toDouble(),
-    endX = endX.toDouble(),
-    endY = endY.toDouble();
+      this.controlX = controlX.toDouble(),
+      this.controlY = controlY.toDouble(),
+      this.endX = endX.toDouble(),
+      this.endY = endY.toDouble();
 
   //---------------------------------------------------------------------------
 
@@ -63,13 +62,6 @@ class _GraphicsCommandQuadraticCurveTo extends GraphicsCommand {
     bounds.updatePath(mx, my);
     bounds.updatePath(ex, ey);
     bounds.updateCursor(ex, ey);
-  }
-
-  //---------------------------------------------------------------------------
-
-  @override
-  void drawCanvas(CanvasRenderingContext2D context) {
-    context.quadraticCurveTo(controlX, controlY, endX, endY);
   }
   */
 }

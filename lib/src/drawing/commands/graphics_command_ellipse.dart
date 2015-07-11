@@ -7,11 +7,13 @@ class _GraphicsCommandEllipse extends GraphicsCommand {
   final double width;
   final double height;
 
-  _GraphicsCommandEllipse(num x, num y, num width, num height) :
-      x = x.toDouble(),
-      y = y.toDouble(),
-      width = width.toDouble(),
-      height = height.toDouble();
+  _GraphicsCommandEllipse(
+      num x, num y, num width, num height) :
+
+      this.x = x.toDouble(),
+      this.y = y.toDouble(),
+      this.width = width.toDouble(),
+      this.height = height.toDouble();
 
   //---------------------------------------------------------------------------
 

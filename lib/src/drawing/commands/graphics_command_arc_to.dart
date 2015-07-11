@@ -12,11 +12,11 @@ class _GraphicsCommandArcTo extends GraphicsCommand {
       num controlX, num controlY,
       num endX, num endY, num radius) :
 
-    controlX = controlX.toDouble(),
-    controlY = controlY.toDouble(),
-    endX = endX.toDouble(),
-    endY = endY.toDouble(),
-    radius = radius.toDouble();
+      this.controlX = controlX.toDouble(),
+      this.controlY = controlY.toDouble(),
+      this.endX = endX.toDouble(),
+      this.endY = endY.toDouble(),
+      this.radius = radius.toDouble();
 
   //---------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ class _GraphicsCommandArcTo extends GraphicsCommand {
     context.arcTo(controlX, controlY, endX, endY, radius);
   }
 
-/*
+  /*
   @override
   void updateBounds(GraphicsBounds bounds) {
 
@@ -69,12 +69,5 @@ class _GraphicsCommandArcTo extends GraphicsCommand {
       bounds.updateCursor(controlX, controlY);
     }
   }
-
-  //---------------------------------------------------------------------------
-
-  @override
-  void drawCanvas(CanvasRenderingContext2D context) {
-    context.arcTo(controlX, controlY, endX, endY, radius);
-  }
-*/
+  */
 }

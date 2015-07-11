@@ -9,13 +9,16 @@ class _GraphicsCommandRectRound extends GraphicsCommand {
   final double ellipseWidth;
   final double ellipseHeight;
 
-  _GraphicsCommandRectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) :
-      x = x.toDouble(),
-      y = y.toDouble(),
-      width = width.toDouble(),
-      height = height.toDouble(),
-      ellipseWidth = ellipseWidth.toDouble(),
-      ellipseHeight = ellipseHeight.toDouble();
+  _GraphicsCommandRectRound(
+      num x, num y, num width, num height,
+      num ellipseWidth, num ellipseHeight) :
+
+      this.x = x.toDouble(),
+      this.y = y.toDouble(),
+      this.width = width.toDouble(),
+      this.height = height.toDouble(),
+      this.ellipseWidth = ellipseWidth.toDouble(),
+      this.ellipseHeight = ellipseHeight.toDouble();
 
   //---------------------------------------------------------------------------
 

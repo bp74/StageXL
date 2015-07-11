@@ -7,11 +7,14 @@ class _GraphicsCommandStrokeGradient extends GraphicsCommand {
   final String lineJoin;
   final String lineCap;
 
-  _GraphicsCommandStrokeGradient(GraphicsGradient gradient, num lineWidth, String lineJoin, String lineCap) :
-      gradient = gradient,
-      lineWidth = lineWidth.toDouble(),
-      lineJoin = lineJoin,
-      lineCap = lineCap;
+  _GraphicsCommandStrokeGradient(
+      GraphicsGradient gradient,
+      num lineWidth, String lineJoin, String lineCap) :
+
+      this.gradient = gradient,
+      this.lineWidth = lineWidth.toDouble(),
+      this.lineJoin = lineJoin,
+      this.lineCap = lineCap;
 
   //---------------------------------------------------------------------------
 
@@ -19,15 +22,4 @@ class _GraphicsCommandStrokeGradient extends GraphicsCommand {
   void updateContext(GraphicsContext context) {
     context.strokeGradient(gradient, lineWidth, lineJoin, lineCap);
   }
-
-  /*
-  @override
-  void drawCanvas(CanvasRenderingContext2D context) {
-    context.strokeStyle = gradient.getCanvasGradient(context);
-    context.lineWidth = lineWidth;
-    context.lineJoin = lineJoin;
-    context.lineCap = lineCap;
-    context.stroke();
-  }
-  */
 }

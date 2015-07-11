@@ -6,26 +6,10 @@ class _GraphicsCommandFillPattern extends GraphicsCommand {
 
   _GraphicsCommandFillPattern(this.pattern);
 
+  //---------------------------------------------------------------------------
+
   @override
   void updateContext(GraphicsContext context) {
     context.fillPattern(pattern);
   }
-
-  /*
-  @override
-  void drawCanvas(CanvasRenderingContext2D context) {
-
-    context.fillStyle = pattern.getCanvasPattern(context);
-    var matrix = pattern.matrix;
-
-    if (matrix != null) {
-      context.save();
-      context.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-      context.fill();
-      context.restore();
-    } else {
-      context.fill();
-    }
-  }
-  */
 }

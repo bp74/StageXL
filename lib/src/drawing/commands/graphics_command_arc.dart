@@ -13,12 +13,12 @@ class _GraphicsCommandArc extends GraphicsCommand {
       num x, num y, num radius,
       num startAngle, num endAngle, bool antiClockwise) :
 
-    x = x.toDouble(),
-    y = y.toDouble(),
-    radius = radius.toDouble(),
-    startAngle = startAngle.toDouble(),
-    endAngle = endAngle.toDouble(),
-    antiClockwise = antiClockwise;
+      this.x = x.toDouble(),
+      this.y = y.toDouble(),
+      this.radius = radius.toDouble(),
+      this.startAngle = startAngle.toDouble(),
+      this.endAngle = endAngle.toDouble(),
+      this.antiClockwise = antiClockwise;
 
   //---------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ class _GraphicsCommandArc extends GraphicsCommand {
   }
 
 
-/*
+  /*
   @override
   void updateBounds(GraphicsBounds bounds) {
 
@@ -61,13 +61,6 @@ class _GraphicsCommandArc extends GraphicsCommand {
 
     bounds.updateCursor(x + endPoint.x, y + endPoint.y);
   }
-
-  //---------------------------------------------------------------------------
-
-  @override
-  void drawCanvas(CanvasRenderingContext2D context) {
-    context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
-  }
-*/
+  */
 }
 

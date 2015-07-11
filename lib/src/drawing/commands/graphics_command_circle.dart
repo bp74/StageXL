@@ -7,11 +7,13 @@ class _GraphicsCommandCircle extends GraphicsCommand {
   final double radius;
   final bool antiClockwise;
 
-  _GraphicsCommandCircle(num x, num y, num radius, bool antiClockwise) :
-      x = x.toDouble(),
-      y = y.toDouble(),
-      radius = radius.toDouble(),
-      antiClockwise = antiClockwise;
+  _GraphicsCommandCircle(
+      num x, num y, num radius, bool antiClockwise) :
+
+      this.x = x.toDouble(),
+      this.y = y.toDouble(),
+      this.radius = radius.toDouble(),
+      this.antiClockwise = antiClockwise;
 
   //---------------------------------------------------------------------------
 

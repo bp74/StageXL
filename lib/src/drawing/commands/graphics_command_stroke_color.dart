@@ -7,11 +7,13 @@ class _GraphicsCommandStrokeColor extends GraphicsCommand {
   final String lineJoin;
   final String lineCap;
 
-  _GraphicsCommandStrokeColor(int color, num lineWidth, String lineJoin, String lineCap) :
-      color = color.toInt(),
-      lineWidth = lineWidth.toDouble(),
-      lineJoin = lineJoin,
-      lineCap = lineCap;
+  _GraphicsCommandStrokeColor(
+      int color, num lineWidth, String lineJoin, String lineCap) :
+
+      this.color = color.toInt(),
+      this.lineWidth = lineWidth.toDouble(),
+      this.lineJoin = lineJoin,
+      this.lineCap = lineCap;
 
   //---------------------------------------------------------------------------
 
@@ -19,15 +21,4 @@ class _GraphicsCommandStrokeColor extends GraphicsCommand {
   void updateContext(GraphicsContext context) {
     context.strokeColor(color, lineWidth, lineJoin, lineCap);
   }
-
-/*
-  @override
-  void drawCanvas(CanvasRenderingContext2D context) {
-    context.strokeStyle = color2rgba(color);
-    context.lineWidth = lineWidth;
-    context.lineJoin = lineJoin;
-    context.lineCap = lineCap;
-    context.stroke();
-  }
-  */
 }

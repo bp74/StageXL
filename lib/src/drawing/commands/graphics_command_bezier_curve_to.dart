@@ -14,12 +14,12 @@ class _GraphicsCommandBezierCurveTo extends GraphicsCommand {
       num controlX2, num controlY2,
       num endX, num endY) :
 
-    controlX1 = controlX1.toDouble(),
-    controlY1 = controlY1.toDouble(),
-    controlX2 = controlX2.toDouble(),
-    controlY2 = controlY2.toDouble(),
-    endX = endX.toDouble(),
-    endY = endY.toDouble();
+      this.controlX1 = controlX1.toDouble(),
+      this.controlY1 = controlY1.toDouble(),
+      this.controlX2 = controlX2.toDouble(),
+      this.controlY2 = controlY2.toDouble(),
+      this.endX = endX.toDouble(),
+      this.endY = endY.toDouble();
 
 
   //---------------------------------------------------------------------------
@@ -85,13 +85,6 @@ class _GraphicsCommandBezierCurveTo extends GraphicsCommand {
 
     bounds.updatePath(ex, ey);
     bounds.updateCursor(endX, endY);
-  }
-
-  //---------------------------------------------------------------------------
-
-  @override
-  void drawCanvas(CanvasRenderingContext2D context) {
-    context.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
   */
 }

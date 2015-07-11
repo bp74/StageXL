@@ -8,10 +8,10 @@ class _GraphicsCommandRect extends GraphicsCommand {
   final double height;
 
   _GraphicsCommandRect(num x, num y, num width, num height) :
-    x = x.toDouble(),
-    y = y.toDouble(),
-    width = width.toDouble(),
-    height = height.toDouble();
+      this.x = x.toDouble(),
+      this.y = y.toDouble(),
+      this.width = width.toDouble(),
+      this.height = height.toDouble();
 
   //---------------------------------------------------------------------------
 
@@ -19,21 +19,4 @@ class _GraphicsCommandRect extends GraphicsCommand {
   void updateContext(GraphicsContext context) {
     context.rect(x, y, width, height);
   }
-
-/*
-  @override
-  void updateBounds(GraphicsBounds bounds) {
-
-    bounds.updateCursor(x, y);
-    bounds.updatePath(x, y);
-    bounds.updatePath(x + width, y);
-    bounds.updatePath(x + width, y + height);
-    bounds.updatePath(x, y + height);
-  }
-
-  @override
-  void drawCanvas(CanvasRenderingContext2D context) {
-    context.rect(x, y, width, height);
-  }
-  */
 }
