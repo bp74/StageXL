@@ -41,21 +41,22 @@ class GraphicsGradient {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
+  CanvasGradient _getCanvasGradient(CanvasRenderingContext2D context) {
 
     // ToDo: Maybe we should cache the CanvasGradient for a given context.
     // This could improve performance!
 
     CanvasGradient canvasGradient;
 
-    if (_kind == "linear")
+    if (_kind == "linear") {
       canvasGradient = context.createLinearGradient(_startX, _startY, _endX, _endY);
-
-    if (_kind == "radial")
+    }
+    if (_kind == "radial") {
       canvasGradient = context.createRadialGradient(_startX, _startY, _startRadius, _endX, _endY, _endRadius);
-
-    for(var colorStop in _colorStops)
-      canvasGradient.addColorStop(colorStop["offset"], colorStop["color"]);
+    }
+    for (var colorStop in _colorStops) {
+     canvasGradient.addColorStop(colorStop["offset"], colorStop["color"]);
+    }
 
     return canvasGradient;
   }

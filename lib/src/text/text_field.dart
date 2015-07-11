@@ -572,7 +572,7 @@ class TextField extends InteractiveObject {
     context.lineWidth = lineWidth;
     context.strokeStyle = color2rgb(textFormat.color);
     context.fillStyle = textFormat.fillGradient != null
-        ? textFormat.fillGradient.getCanvasGradient(context)
+        ? textFormat.fillGradient._getCanvasGradient(context)
         : color2rgb(textFormat.color);
 
     for(int i = 0; i < _textLineMetrics.length; i++) {
