@@ -8,7 +8,6 @@ import '../internal/tools.dart';
 import '../engine.dart';
 import '../geom.dart';
 
-part 'internal/graphics_bounds.dart';
 part 'internal/graphics_command.dart';
 part 'internal/graphics_context.dart';
 part 'internal/graphics_context_bounds.dart';
