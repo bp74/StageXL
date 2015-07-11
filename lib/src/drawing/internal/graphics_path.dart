@@ -44,7 +44,7 @@ class GraphicsPath {
 
     this.moveTo(ax, ay);
 
-    for (int s = 0; s < steps; s++) {
+    for (int s = 1; s <= steps; s++) {
       var bx = ax * cosR - ay * sinR + tx;
       var by = ax * sinR + ay * cosR + ty;
       _currentSegment.addVertex(ax = bx, ay = by);
@@ -69,7 +69,7 @@ class GraphicsPath {
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
 
-      for(int s = 0; s <= steps; s++) {
+      for(int s = 1; s <= steps; s++) {
         num t0 = s / steps;
         num t1 = 1.0 - t0;
         num b0 = t1 * t1;
@@ -96,7 +96,7 @@ class GraphicsPath {
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
 
-      for(int s = 0; s <= steps; s++) {
+      for(int s = 1; s <= steps; s++) {
         num t0 = s / steps;
         num t1 = 1.0 - t0;
         num b0 = t1 * t1 * t1;
