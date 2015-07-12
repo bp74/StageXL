@@ -198,14 +198,13 @@ class Graphics {
     }
   }
 
-  //---------------------------------------------------------------------------
-
   void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
       var graphicsContext = new GraphicsContextCanvasMask(renderState);
       graphicsContext.applyGraphicsCommands(_commands);
-    }else {
-      // TODO: implement WebGL masks
+    } else {
+      var graphicsContext = new GraphicsContextRender(renderState);
+      graphicsContext.applyGraphicsCommands(_commands);
     }
   }
 
