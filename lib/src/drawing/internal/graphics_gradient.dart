@@ -41,7 +41,7 @@ class GraphicsGradient {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  CanvasGradient _getCanvasGradient(CanvasRenderingContext2D context) {
+  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
 
     // ToDo: Maybe we should cache the CanvasGradient for a given context.
     // This could improve performance!

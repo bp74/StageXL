@@ -113,14 +113,14 @@ class GraphicsContextCanvas extends GraphicsContext {
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    _canvasContext.fillStyle = gradient._getCanvasGradient(_canvasContext);
+    _canvasContext.fillStyle = gradient.getCanvasGradient(_canvasContext);
     _canvasContext.fill();
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
 
-    _canvasContext.fillStyle = pattern._getCanvasPattern(_canvasContext);
+    _canvasContext.fillStyle = pattern.getCanvasPattern(_canvasContext);
 
     var matrix = pattern.matrix;
     if (matrix != null) {
@@ -146,7 +146,7 @@ class GraphicsContextCanvas extends GraphicsContext {
 
   @override
   void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    _canvasContext.strokeStyle = gradient._getCanvasGradient(_canvasContext);
+    _canvasContext.strokeStyle = gradient.getCanvasGradient(_canvasContext);
     _canvasContext.lineWidth = lineWidth;
     _canvasContext.lineJoin = lineJoin;
     _canvasContext.lineCap = lineCap;
@@ -156,7 +156,7 @@ class GraphicsContextCanvas extends GraphicsContext {
   @override
   void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
 
-    _canvasContext.strokeStyle = pattern._getCanvasPattern(_canvasContext);
+    _canvasContext.strokeStyle = pattern.getCanvasPattern(_canvasContext);
     _canvasContext.lineWidth = lineWidth;
     _canvasContext.lineJoin = lineJoin;
     _canvasContext.lineCap = lineCap;

@@ -20,7 +20,7 @@ class GraphicsPattern {
 
   //---------------------------------------------------------------------------
 
-  CanvasPattern _getCanvasPattern(CanvasRenderingContext2D context) {
+  CanvasPattern getCanvasPattern(CanvasRenderingContext2D context) {
     var renderTexture = renderTextureQuad.renderTexture;
     return context.createPattern(renderTexture.source, repeatOption);
   }

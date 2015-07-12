@@ -1,7 +1,5 @@
 library stagexl.drawing;
 
-import 'dart:math' hide Point, Rectangle;
-
 import 'geom.dart';
 import 'engine.dart';
 import 'drawing/internal.dart';

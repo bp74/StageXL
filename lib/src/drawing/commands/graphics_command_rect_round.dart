@@ -1,4 +1,4 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
 class _GraphicsCommandRectRound extends GraphicsCommand {
 
