@@ -14,12 +14,12 @@ class GraphicsContextRender extends GraphicsContext {
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    // TODO: implement render fillGradient
+    _path.fillColor(renderState, 0xFFFF00FF);
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-    // TODO: implement render fillPattern
+    _path.fillColor(renderState, 0xFFFF00FF);
   }
 
   //---------------------------------------------------------------------------
