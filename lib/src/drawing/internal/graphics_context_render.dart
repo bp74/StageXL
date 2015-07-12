@@ -40,3 +40,42 @@ class GraphicsContextRender extends GraphicsContext {
   }
 
 }
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+class GraphicsContextRenderMask extends GraphicsContextRender {
+
+  GraphicsContextRenderMask(RenderState renderState) : super(renderState);
+
+  @override
+  void fillColor(int color) {
+    _path.fillColor(renderState, 0xFFFF00FF);
+  }
+
+  @override
+  void fillGradient(GraphicsGradient gradient) {
+    _path.fillColor(renderState, 0xFFFF00FF);
+  }
+
+  @override
+  void fillPattern(GraphicsPattern pattern) {
+    _path.fillColor(renderState, 0xFFFF00FF);
+  }
+
+  @override
+  void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
+    // do nothing
+  }
+
+  @override
+  void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
+    // do nothing
+  }
+
+  @override
+  void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
+    // do nothing
+  }
+}
+

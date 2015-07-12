@@ -203,7 +203,7 @@ class Graphics {
       var graphicsContext = new GraphicsContextCanvasMask(renderState);
       graphicsContext.applyGraphicsCommands(_commands);
     } else {
-      var graphicsContext = new GraphicsContextRender(renderState);
+      var graphicsContext = new GraphicsContextRenderMask(renderState);
       graphicsContext.applyGraphicsCommands(_commands);
     }
   }
