@@ -45,6 +45,23 @@ class GraphicsContextCanvas extends GraphicsContext {
   }
 
   @override
+  void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
+    _canvasContext.arcTo(controlX, controlY, endX, endY, radius);
+  }
+
+  @override
+  void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
+    _canvasContext.quadraticCurveTo(controlX, controlY, endX, endY);
+  }
+
+  @override
+  void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
+    _canvasContext.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
+  }
+
+  //---------------------------------------------------------------------------
+
+  @override
   void rect(double x, double y, double width, double height) {
     _canvasContext.rect(x, y, width, height);
   }
@@ -65,11 +82,6 @@ class GraphicsContextCanvas extends GraphicsContext {
   @override
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
     _canvasContext.arc(x, y, radius, startAngle, endAngle, antiClockwise);
-  }
-
-  @override
-  void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
-    _canvasContext.arcTo(controlX, controlY, endX, endY, radius);
   }
 
   @override
@@ -96,16 +108,6 @@ class GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.bezierCurveTo(xm + ox, y1, x2, ym - oy, x2, ym);
     _canvasContext.bezierCurveTo(x2, ym + oy, xm + ox, y2, xm, y2);
     _canvasContext.bezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym);
-  }
-
-  @override
-  void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
-    _canvasContext.quadraticCurveTo(controlX, controlY, endX, endY);
-  }
-
-  @override
-  void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
-    _canvasContext.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
 
   //---------------------------------------------------------------------------

@@ -35,6 +35,20 @@ abstract class GraphicsContext {
     _path.lineTo(x, y);
   }
 
+  void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
+    _path.arcTo(controlX, controlY, endX, endY, radius);
+  }
+
+  void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
+    _path.quadraticCurveTo(controlX, controlY, endX, endY);
+  }
+
+  void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
+    _path.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
+  }
+
+  //---------------------------------------------------------------------------
+
   void rect(double x, double y, double width, double height) {
     _path.moveTo(x, y);
     _path.lineTo(x, y);
@@ -59,24 +73,12 @@ abstract class GraphicsContext {
     _path.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
 
-  void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
-    _path.arcTo(controlX, controlY, endX, endY, radius);
-  }
-
   void circle(double x, double y, double radius, bool antiClockwise) {
     _path.circle(x, y, radius, antiClockwise);
   }
 
   void ellipse(double x, double y, double width, double height) {
     _path.ellipse(x, y, width, height);
-  }
-
-  void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
-    _path.quadraticCurveTo(controlX, controlY, endX, endY);
-  }
-
-  void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
-    _path.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
 
   //---------------------------------------------------------------------------
