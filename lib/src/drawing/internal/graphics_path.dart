@@ -5,6 +5,14 @@ class GraphicsPath {
   List<GraphicsPathSegment> _segments = new List<GraphicsPathSegment>();
   GraphicsPathSegment _currentSegment;
 
+  GraphicsPath clone() {
+    var path = new GraphicsPath();
+    // TODO: create a deep clone
+    return path;
+  }
+
+  //---------------------------------------------------------------------------
+
   void moveTo(double x, double y) {
     _currentSegment = new GraphicsPathSegment();
     _currentSegment.addVertex(x, y);

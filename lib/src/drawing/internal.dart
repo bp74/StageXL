@@ -9,9 +9,11 @@ import '../engine.dart';
 import '../geom.dart';
 
 part 'internal/graphics_command.dart';
+part 'internal/graphics_command_set_path.dart';
 part 'internal/graphics_context.dart';
 part 'internal/graphics_context_bounds.dart';
 part 'internal/graphics_context_canvas.dart';
+part 'internal/graphics_context_compiler.dart';
 part 'internal/graphics_context_hittest.dart';
 part 'internal/graphics_context_render.dart';
 part 'internal/graphics_gradient.dart';

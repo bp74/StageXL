@@ -21,6 +21,10 @@ abstract class GraphicsContext {
     // TODO: Close path
   }
 
+  void setPath(GraphicsPath path) {
+    _path = path;
+  }
+
   //---------------------------------------------------------------------------
 
   void moveTo(double x, double y) {
