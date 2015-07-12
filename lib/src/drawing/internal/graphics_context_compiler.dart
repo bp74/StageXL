@@ -3,18 +3,6 @@ part of stagexl.drawing.internal;
 class GraphicsContextCompiler extends GraphicsContext {
 
   final List<GraphicsCommand> commands = new List<GraphicsCommand>();
-  GraphicsCommand _currentCommand = null;
-
-  //---------------------------------------------------------------------------
-
-  @override
-  void applyGraphicsCommands(List<GraphicsCommand> commands) {
-    this.commands.clear();
-    for(int i = 0; i < commands.length; i++) {
-      _currentCommand = commands[i];
-      _currentCommand.updateContext(this);
-    }
-  }
 
   //---------------------------------------------------------------------------
 
@@ -53,7 +41,7 @@ class GraphicsContextCompiler extends GraphicsContext {
   void _addCompiledCommands() {
     var path = _path.clone();
     var pathCommand = new GraphicsCommandSetPath(path);
-    var drawCommand = _currentCommand;
+    var drawCommand = _command;
     this.commands.add(pathCommand);
     this.commands.add(drawCommand);
   }

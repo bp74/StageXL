@@ -3,11 +3,12 @@ part of stagexl.drawing.internal;
 abstract class GraphicsContext {
 
   GraphicsPath _path = new GraphicsPath();
+  GraphicsCommand _command = null;
 
   void applyGraphicsCommands(List<GraphicsCommand> commands) {
     for(int i = 0; i < commands.length; i++) {
-      var command = commands[i];
-      command.updateContext(this);
+      _command = commands[i];
+      _command.updateContext(this);
     }
   }
 
