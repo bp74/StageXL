@@ -84,10 +84,14 @@ class GraphicsPathSegment {
       num x3 = _vertexBuffer[i2 * 2 + 0];
       num y3 = _vertexBuffer[i2 * 2 + 1];
 
+      num x31 = x3 - x1;
+      num y31 = y3 - y1;
+      num x21 = x2 - x1;
+      num y21 = y2 - y1;
+      num d = y21 * x31 - x21 * y31;
       bool earFound = false;
-      var d = (y1 - y2) * (x3 - x2) + (x2 - x1) * (y3 - y2);
 
-      if ((d == 0) || (d > 0) == clockwise) {
+      if ((d == 0) || (d < 0) == clockwise) {
 
         earFound = true;
 
@@ -96,10 +100,6 @@ class GraphicsPathSegment {
           int vi = available[j];
           if(vi == i0 || vi == i1 || vi == i2) continue;
 
-          num x31 = x3 - x1;
-          num y31 = y3 - y1;
-          num x21 = x2 - x1;
-          num y21 = y2 - y1;
           num x01 = _vertexBuffer[vi * 2 + 0] - x1;
           num y01 = _vertexBuffer[vi * 2 + 1] - y1;
 
