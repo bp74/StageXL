@@ -83,27 +83,39 @@ class GraphicsPathSegment {
       num x3 = _vertexBuffer[i2 * 2 + 0];
       num y3 = _vertexBuffer[i2 * 2 + 1];
 
-      num y23 = y2 - y3;
-      num x32 = x3 - x2;
-      num y31 = y3 - y1;
-      num x13 = x1 - x3;
-      num det = y23 * x13 - x32 * y31;
-      num minD = det < 0.0 ? det : 0.0;
-      num maxD = det > 0.0 ? det : 0.0;
-      var earFound = true;
+      bool earFound = false;
 
-      for(int j = 0; j < available.length && det < 0.0 && earFound; j++) {
-        int vi = available[j];
-        if (vi == i0 || vi == i1 || vi == i2) continue;
-        num dx = _vertexBuffer[vi * 2 + 0] - x3;
-        num dy = _vertexBuffer[vi * 2 + 1] - y3;
-        num a = y23 * dx + x32 * dy;
-        if (a < minD || a > maxD) continue;
-        num b = y31 * dx + x13 * dy;
-        if (b < minD || b > maxD) continue;
-        num c = det - a - b;
-        if (c < minD || c > maxD) continue;
-        earFound = false;
+      if((y1 - y2) * (x3 - x2) + (x2 - x1) * (y3 - y2) >= 0) {
+
+        earFound = true;
+
+        for(int j = 0; j < available.length; j++) {
+
+          int vi = available[j];
+          if(vi == i0 || vi == i1 || vi == i2) continue;
+
+          num x31 = x3 - x1;
+          num y31 = y3 - y1;
+          num x21 = x2 - x1;
+          num y21 = y2 - y1;
+          num x01 = _vertexBuffer[vi * 2 + 0] - x1;
+          num y01 = _vertexBuffer[vi * 2 + 1] - y1;
+
+          num dot00 = x31 * x31 + y31 * y31;
+          num dot01 = x31 * x21 + y31 * y21;
+          num dot02 = x31 * x01 + y31 * y01;
+          num dot11 = x21 * x21 + y21 * y21;
+          num dot12 = x21 * x01 + y21 * y01;
+
+          num invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+          num u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+          num v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+          if((u >= 0) && (v >= 0) && (u + v < 1)) {
+            earFound = false;
+            break;
+          }
+        }
       }
 
       if(earFound) {
