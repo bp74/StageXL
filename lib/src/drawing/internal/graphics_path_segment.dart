@@ -62,9 +62,10 @@ class GraphicsPathSegment {
     // TODO: benchmark more triangulation methods
     // http://erich.realtimerendering.com/ptinpoly/
 
-    List<int> result = new List<int>();
-    List<int> available = new List<int>();
-    int index = 0;
+    var result = new List<int>();
+    var available = new List<int>();
+    var clockwise = _checkClockwise();
+    var index = 0;
 
     for(int p = 0; p < _vertexCount; p++) {
       available.add(p);
@@ -84,8 +85,9 @@ class GraphicsPathSegment {
       num y3 = _vertexBuffer[i2 * 2 + 1];
 
       bool earFound = false;
+      var d = (y1 - y2) * (x3 - x2) + (x2 - x1) * (y3 - y2);
 
-      if((y1 - y2) * (x3 - x2) + (x2 - x1) * (y3 - y2) >= 0) {
+      if ((d == 0) || (d > 0) == clockwise) {
 
         earFound = true;
 
@@ -134,6 +136,23 @@ class GraphicsPathSegment {
     result.add(available[2]);
 
     _indexBuffer = new Int16List.fromList(result);
+  }
+
+  num _getArea() {
+    num value = 0.0;
+    for(int i = 0; i < _vertexCount; i++) {
+      int j = (i + 1) % _vertexCount;
+      num x1 = _vertexBuffer[i * 2 + 0];
+      num y1 = _vertexBuffer[i * 2 + 1];
+      num x2 = _vertexBuffer[j * 2 + 0];
+      num y2 = _vertexBuffer[j * 2 + 1];
+      value -= (x2 - x1) * (y2 + y1);
+    }
+    return value / 2.0;
+  }
+
+  bool _checkClockwise() {
+    return _getArea() > 0.0;
   }
 
 }
