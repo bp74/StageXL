@@ -67,6 +67,8 @@ class GraphicsPathSegment {
     var clockwise = _checkClockwise();
     var index = 0;
 
+    print(_getArea());
+
     for(int p = 0; p < _vertexCount; p++) {
       available.add(p);
     }
@@ -138,18 +140,28 @@ class GraphicsPathSegment {
     _indexBuffer = new Int16List.fromList(result);
   }
 
+  //---------------------------------------------------------------------------
+
   num _getArea() {
+
+    if (_vertexCount < 3) return 0.0;
+
     num value = 0.0;
+    num x1 = _vertexBuffer[(_vertexCount - 1) * 2 + 0];
+    num y1 = _vertexBuffer[(_vertexCount - 1) * 2 + 1];
+
     for(int i = 0; i < _vertexCount; i++) {
-      int j = (i + 1) % _vertexCount;
-      num x1 = _vertexBuffer[i * 2 + 0];
-      num y1 = _vertexBuffer[i * 2 + 1];
-      num x2 = _vertexBuffer[j * 2 + 0];
-      num y2 = _vertexBuffer[j * 2 + 1];
-      value -= (x2 - x1) * (y2 + y1);
+      num x2 = _vertexBuffer[i * 2 + 0];
+      num y2 = _vertexBuffer[i * 2 + 1];
+      value += (x1 - x2) * (y1 + y2);
+      x1 = x2;
+      y1 = y2;
     }
+
     return value / 2.0;
   }
+
+  //---------------------------------------------------------------------------
 
   bool _checkClockwise() {
     return _getArea() > 0.0;
