@@ -2,11 +2,12 @@ part of stagexl.drawing.internal;
 
 class GraphicsPathSegment {
 
-  // TODO: Cache the segments to make it fast.
-
   Float32List _vertexBuffer = new Float32List(16);
-  Int16List _indexBuffer = null;
   int _vertexCount = 0;
+
+  Int16List _indexBuffer = null;
+  bool _clockwise = true;
+  num _area = 0.0;
 
   int get vertexCount => _vertexCount;
   double get lastVertexX =>  _vertexBuffer[(_vertexCount - 1) * 2 + 0];
@@ -35,7 +36,7 @@ class GraphicsPathSegment {
   void fillColor(RenderState renderState, int color) {
 
     if (_vertexCount < 3) return;
-    if (_indexBuffer == null) _triangulateVertexBuffer();
+    if (_indexBuffer == null) _compute();
 
     // TODO: optimize for WebGL RenderProgramTriangle
 
@@ -57,19 +58,36 @@ class GraphicsPathSegment {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  void _triangulateVertexBuffer() {
+  void _compute() {
+
+    var buffer = _vertexBuffer;
+    var count = _vertexCount;
+
+    if (_vertexCount < 3) {
+      _area = 0.0;
+      _clockwise = true;
+      _indexBuffer = new Int16List(0);
+    } else {
+      _area = _getArea(buffer, count);
+      _clockwise = _area >= 0.0;
+      _indexBuffer = _getIndexBuffer(buffer, count, _clockwise);
+    }
+
+    print(_area);
+  }
+
+  //---------------------------------------------------------------------------
+
+  Int16List _getIndexBuffer(Float32List buffer, int count, bool clockwise) {
 
     // TODO: benchmark more triangulation methods
     // http://erich.realtimerendering.com/ptinpoly/
 
     var result = new List<int>();
     var available = new List<int>();
-    var clockwise = _checkClockwise();
     var index = 0;
 
-    print(_getArea());
-
-    for(int p = 0; p < _vertexCount; p++) {
+    for(int p = 0; p < count; p++) {
       available.add(p);
     }
 
@@ -79,12 +97,12 @@ class GraphicsPathSegment {
       int i1 = available[(index + 1) % available.length];
       int i2 = available[(index + 2) % available.length];
 
-      num x1 = _vertexBuffer[i0 * 2 + 0];
-      num y1 = _vertexBuffer[i0 * 2 + 1];
-      num x2 = _vertexBuffer[i1 * 2 + 0];
-      num y2 = _vertexBuffer[i1 * 2 + 1];
-      num x3 = _vertexBuffer[i2 * 2 + 0];
-      num y3 = _vertexBuffer[i2 * 2 + 1];
+      num x1 = buffer[i0 * 2 + 0];
+      num y1 = buffer[i0 * 2 + 1];
+      num x2 = buffer[i1 * 2 + 0];
+      num y2 = buffer[i1 * 2 + 1];
+      num x3 = buffer[i2 * 2 + 0];
+      num y3 = buffer[i2 * 2 + 1];
 
       num x31 = x3 - x1;
       num y31 = y3 - y1;
@@ -102,8 +120,8 @@ class GraphicsPathSegment {
           int vi = available[j];
           if(vi == i0 || vi == i1 || vi == i2) continue;
 
-          num x01 = _vertexBuffer[vi * 2 + 0] - x1;
-          num y01 = _vertexBuffer[vi * 2 + 1] - y1;
+          num x01 = buffer[vi * 2 + 0] - x1;
+          num y01 = buffer[vi * 2 + 1] - y1;
 
           num dot00 = x31 * x31 + y31 * y31;
           num dot01 = x31 * x21 + y31 * y21;
@@ -137,34 +155,26 @@ class GraphicsPathSegment {
     result.add(available[1]);
     result.add(available[2]);
 
-    _indexBuffer = new Int16List.fromList(result);
+    return new Int16List.fromList(result);
   }
 
   //---------------------------------------------------------------------------
 
-  num _getArea() {
-
-    if (_vertexCount < 3) return 0.0;
+  num _getArea(Float32List buffer, int count) {
 
     num value = 0.0;
-    num x1 = _vertexBuffer[(_vertexCount - 1) * 2 + 0];
-    num y1 = _vertexBuffer[(_vertexCount - 1) * 2 + 1];
+    num x1 = buffer[(count - 1) * 2 + 0];
+    num y1 = buffer[(count - 1) * 2 + 1];
 
-    for(int i = 0; i < _vertexCount; i++) {
-      num x2 = _vertexBuffer[i * 2 + 0];
-      num y2 = _vertexBuffer[i * 2 + 1];
+    for(int i = 0; i < count; i++) {
+      num x2 = buffer[i * 2 + 0];
+      num y2 = buffer[i * 2 + 1];
       value += (x1 - x2) * (y1 + y2);
       x1 = x2;
       y1 = y2;
     }
 
     return value / 2.0;
-  }
-
-  //---------------------------------------------------------------------------
-
-  bool _checkClockwise() {
-    return _getArea() > 0.0;
   }
 
 }
