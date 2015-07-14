@@ -3,9 +3,11 @@ part of stagexl.drawing.internal;
 class GraphicsPathSegment {
 
   Float32List _vertexBuffer = new Float32List(16);
-  int _vertexCount = 0;
+  Int16List _indexBuffer = new Int16List(32);
 
-  Int16List _indexBuffer = null;
+  int _vertexCount = 0;
+  int _indexCount = 0;
+
   bool _clockwise = true;
   num _area = 0.0;
 
@@ -17,13 +19,13 @@ class GraphicsPathSegment {
 
   void addVertex(double x, double y) {
 
-    var length = _vertexBuffer.length;
     var offset = _vertexCount * 2;
+    var length = _vertexBuffer.length;
+    var buffer = _vertexBuffer;
 
     if (offset + 2 > length) {
-      var oldBuffer = _vertexBuffer;
       _vertexBuffer = new Float32List(length + minInt(length, 256));
-      _vertexBuffer.setAll(0, oldBuffer);
+      _vertexBuffer.setAll(0, buffer);
     }
 
     _vertexBuffer[offset + 0] = x;
@@ -33,14 +35,30 @@ class GraphicsPathSegment {
 
   //---------------------------------------------------------------------------
 
+  void addIndex(int index) {
+
+    var offset = _indexCount;
+    var length = _indexBuffer.length;
+    var buffer = _indexBuffer;
+
+    if (offset + 1 > length) {
+      _indexBuffer = new Int16List(length + minInt(length, 256));
+      _indexBuffer.setAll(0, buffer);
+    }
+
+    _indexBuffer[offset] = index;
+    _indexCount++;
+  }
+
+  //---------------------------------------------------------------------------
+
   void fillColor(RenderState renderState, int color) {
 
-    if (_vertexCount < 3) return;
-    if (_indexBuffer == null) _compute();
+    _compute();
 
     // TODO: optimize for WebGL RenderProgramTriangle
 
-    for(int i = 0; i < _indexBuffer.length - 2; i += 3) {
+    for(int i = 0; i < _indexCount - 2; i += 3) {
       int i0 = _indexBuffer[i + 0];
       int i1 = _indexBuffer[i + 1];
       int i2 = _indexBuffer[i + 2];
@@ -59,26 +77,21 @@ class GraphicsPathSegment {
   //---------------------------------------------------------------------------
 
   void _compute() {
-
-    var buffer = _vertexBuffer;
-    var count = _vertexCount;
-
     if (_vertexCount < 3) {
       _area = 0.0;
       _clockwise = true;
-      _indexBuffer = new Int16List(0);
+      _indexCount = 0;
     } else {
-      _area = _getArea(buffer, count);
+      _calculateArea(_vertexBuffer, _vertexCount);
       _clockwise = _area >= 0.0;
-      _indexBuffer = _getIndexBuffer(buffer, count, _clockwise);
+      _indexCount = 0;
+      _calculateIndexBuffer(_vertexBuffer, _vertexCount, _clockwise);
     }
-
-    print(_area);
   }
 
   //---------------------------------------------------------------------------
 
-  Int16List _getIndexBuffer(Float32List buffer, int count, bool clockwise) {
+  void _calculateIndexBuffer(Float32List buffer, int count, bool clockwise) {
 
     // TODO: benchmark more triangulation methods
     // http://erich.realtimerendering.com/ptinpoly/
@@ -141,9 +154,9 @@ class GraphicsPathSegment {
       }
 
       if(earFound) {
-        result.add(i0);
-        result.add(i1);
-        result.add(i2);
+        addIndex(i0);
+        addIndex(i1);
+        addIndex(i2);
         available.removeAt((index + 1) % available.length);
         index = 0;
       } else if (index++ > 3 * available.length) {
@@ -151,16 +164,14 @@ class GraphicsPathSegment {
       }
     }
 
-    result.add(available[0]);
-    result.add(available[1]);
-    result.add(available[2]);
-
-    return new Int16List.fromList(result);
+    addIndex(available[0]);
+    addIndex(available[1]);
+    addIndex(available[2]);
   }
 
   //---------------------------------------------------------------------------
 
-  num _getArea(Float32List buffer, int count) {
+  void _calculateArea(Float32List buffer, int count) {
 
     num value = 0.0;
     num x1 = buffer[(count - 1) * 2 + 0];
@@ -174,7 +185,7 @@ class GraphicsPathSegment {
       y1 = y2;
     }
 
-    return value / 2.0;
+    _area = value / 2.0;
   }
 
 }
