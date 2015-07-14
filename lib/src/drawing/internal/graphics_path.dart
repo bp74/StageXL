@@ -3,15 +3,22 @@ part of stagexl.drawing.internal;
 class GraphicsPath {
 
   List<GraphicsPathSegment> _segments = new List<GraphicsPathSegment>();
-  GraphicsPathSegment _currentSegment;
+  GraphicsPathSegment _currentSegment = null;
 
   GraphicsPath clone() {
-    var path = new GraphicsPath();
-    // TODO: create a deep clone
-    return path;
+    // TODO: implement GraphicsPath clone
+    return null;
   }
 
   //---------------------------------------------------------------------------
+
+  void close() {
+    if (_currentSegment != null && _currentSegment.vertexCount > 0) {
+      var x = _currentSegment.firstVertexX;
+      var y = _currentSegment.firstVertexY;
+      _currentSegment.addVertex(x, y);
+    }
+  }
 
   void moveTo(double x, double y) {
     _currentSegment = new GraphicsPathSegment();

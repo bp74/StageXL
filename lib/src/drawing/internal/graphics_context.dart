@@ -19,7 +19,7 @@ abstract class GraphicsContext {
   }
 
   void closePath() {
-    // TODO: Close path
+    _path.close();
   }
 
   void setPath(GraphicsPath path) {

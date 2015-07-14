@@ -7,13 +7,32 @@ class GraphicsPathSegment {
 
   int _vertexCount = 0;
   int _indexCount = 0;
-
   bool _clockwise = true;
   num _area = 0.0;
 
+  //---------------------------------------------------------------------------
+
   int get vertexCount => _vertexCount;
-  double get lastVertexX =>  _vertexBuffer[(_vertexCount - 1) * 2 + 0];
-  double get lastVertexY =>  _vertexBuffer[(_vertexCount - 1) * 2 + 1];
+  double get lastVertexX => _vertexBuffer[(_vertexCount - 1) * 2 + 0];
+  double get lastVertexY => _vertexBuffer[(_vertexCount - 1) * 2 + 1];
+  double get firstVertexX => _vertexBuffer[0];
+  double get firstVertexY => _vertexBuffer[1];
+
+  //---------------------------------------------------------------------------
+
+  GraphicsPathSegment clone() {
+    // TODO: implement GraphicsPathSegment clone
+    return null;
+  }
+
+  //---------------------------------------------------------------------------
+
+  void reset() {
+    _vertexCount = 0;
+    _indexCount = 0;
+    _clockwise = true;
+    _area = 0.0;
+  }
 
   //---------------------------------------------------------------------------
 
@@ -85,13 +104,13 @@ class GraphicsPathSegment {
       _calculateArea(_vertexBuffer, _vertexCount);
       _clockwise = _area >= 0.0;
       _indexCount = 0;
-      _calculateIndexBuffer(_vertexBuffer, _vertexCount, _clockwise);
+      _calculateIndices(_vertexBuffer, _vertexCount, _clockwise);
     }
   }
 
   //---------------------------------------------------------------------------
 
-  void _calculateIndexBuffer(Float32List buffer, int count, bool clockwise) {
+  void _calculateIndices(Float32List buffer, int count, bool clockwise) {
 
     // TODO: benchmark more triangulation methods
     // http://erich.realtimerendering.com/ptinpoly/
