@@ -103,29 +103,49 @@ class GraphicsPath {
   //---------------------------------------------------------------------------
 
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
-    // TODO: implement arc path
-  }
 
-  void circle(double x, double y, double radius, bool antiClockwise) {
+    num tau = 2.0 * math.PI;
+    num start = (startAngle % tau);
+    num delta = (endAngle % tau) - start;
 
-    // TODO: implement antiClockwise
-    // TODO: adjust steps
+    if (antiClockwise) {
+      if (endAngle > startAngle) {
+        if (delta >= 0.0) delta -= tau;
+      } else if (startAngle - endAngle >= tau) {
+        delta = 0.0 - tau;
+      } else {
+        delta = (delta % tau) - tau;
+      }
+    } else {
+      if (endAngle < startAngle) {
+        if (delta <= 0.0) delta += tau;
+      } else if (endAngle - startAngle >= tau) {
+        delta = 0.0 + tau;
+      } else {
+        delta %= tau;
+      }
+    }
 
-    var steps = 40;
-    var cosR = math.cos(2 * math.PI / steps);
-    var sinR = math.sin(2 * math.PI / steps);
+    int steps = (60 * delta / tau).abs().ceil();
+    var cosR = math.cos(delta / steps);
+    var sinR = math.sin(delta / steps);
     var tx = x - x * cosR + y * sinR;
     var ty = y - x * sinR - y * cosR;
-    var ax = x + radius;
-    var ay = y;
+    var ax = x + math.cos(start) * radius;
+    var ay = y + math.sin(start) * radius;
 
-    this.moveTo(ax, ay);
+    this.lineTo(ax, ay);
 
     for (int s = 1; s <= steps; s++) {
       var bx = ax * cosR - ay * sinR + tx;
       var by = ax * sinR + ay * cosR + ty;
       _currentSegment.addVertex(ax = bx, ay = by);
     }
+  }
+
+  void circle(double x, double y, double radius, bool antiClockwise) {
+    this.moveTo(x + radius, y);
+    this.arc(x, y, radius, 0.0, 2 * math.PI, antiClockwise);
   }
 
   void ellipse(double x, double y, double width, double height) {
