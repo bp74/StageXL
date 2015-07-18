@@ -6,15 +6,11 @@ class GraphicsPath {
   GraphicsPathSegment _currentSegment = null;
 
   GraphicsPath clone() {
-
-    var clonedSegments = new List<GraphicsPathSegment>();
+    var clonedPath = new GraphicsPath();
     for(var segment in _segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
-      clonedSegments.add(segment.clone());
+      clonedPath._segments.add(segment.clone());
     }
-
-    var clonedPath = new GraphicsPath();
-    clonedPath._segments.addAll(clonedSegments);
     return clonedPath;
   }
 
