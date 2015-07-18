@@ -27,40 +27,4 @@ class _GraphicsCommandArc extends GraphicsCommand {
     context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
 
-
-  /*
-  @override
-  void updateBounds(GraphicsBounds bounds) {
-
-    var initPoint = new Vector(radius, 0);
-    var startPoint = initPoint.rotate(startAngle);
-    var endPoint = initPoint.rotate(endAngle);
-
-    if (bounds.hasCursor == false) {
-      bounds.updateCursor(x + startPoint.x, y + startPoint.y);
-    }
-
-    var angle1 = startAngle;
-    var angle2 = endAngle;
-
-    if (antiClockwise) {
-      if (angle1 < angle2) angle1 = angle1 + 2 * PI;
-    } else {
-      if (angle2 < angle1) angle2 = angle2 + 2 * PI;
-    }
-
-    var arcAngle = angle2 - angle1;
-    var arcSteps = (arcAngle * 30).abs() ~/ PI + 1;
-
-    bounds.updatePath(bounds.cursorX, bounds.cursorY);
-
-    for (var i = 0; i <= arcSteps; i++) {
-      var v = initPoint.rotate(angle1 + i * arcAngle / arcSteps);
-      bounds.updatePath(x + v.x, y + v.y);
-    }
-
-    bounds.updateCursor(x + endPoint.x, y + endPoint.y);
-  }
-  */
 }
-

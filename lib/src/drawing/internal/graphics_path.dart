@@ -127,22 +127,18 @@ class GraphicsPath {
     num start = (startAngle % tau);
     num delta = (endAngle % tau) - start;
 
-    if (antiClockwise) {
-      if (endAngle > startAngle) {
-        if (delta >= 0.0) delta -= tau;
-      } else if (startAngle - endAngle >= tau) {
-        delta = 0.0 - tau;
-      } else {
-        delta = (delta % tau) - tau;
-      }
+    if (antiClockwise && endAngle > startAngle) {
+      if (delta > 0.0) delta -= tau;
+    } else if (antiClockwise && startAngle - endAngle >= tau) {
+      delta = 0.0 - tau;
+    } else if (antiClockwise) {
+      delta = (delta % tau) - tau;
+    } else if (endAngle < startAngle) {
+      if (delta < 0.0) delta += tau;
+    } else if (endAngle - startAngle >= tau) {
+      delta = 0.0 + tau;
     } else {
-      if (endAngle < startAngle) {
-        if (delta <= 0.0) delta += tau;
-      } else if (endAngle - startAngle >= tau) {
-        delta = 0.0 + tau;
-      } else {
-        delta %= tau;
-      }
+      delta %= tau;
     }
 
     int steps = (60 * delta / tau).abs().ceil();
