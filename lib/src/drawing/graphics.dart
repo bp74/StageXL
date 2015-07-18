@@ -179,14 +179,14 @@ class Graphics {
   //---------------------------------------------------------------------------
 
   Rectangle<num> get bounds {
-    var commands = _getCommands(useCompiled: true);
+    var commands = _getCommands(true);
     var graphicsContext = new GraphicsContextBounds();
     graphicsContext.applyGraphicsCommands(commands);
     return graphicsContext.bounds;
   }
 
   bool hitTest(num localX, num localY) {
-    var commands = _getCommands(useCompiled: true);
+    var commands = _getCommands(true);
     var graphicsContext = new GraphicsContextHitTest();
     graphicsContext.applyGraphicsCommands(commands);
     return graphicsContext.hit;
@@ -194,11 +194,11 @@ class Graphics {
 
   void render(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
-      var commands = _getCommands(useCompiled: false);
+      var commands = _getCommands(false);
       var graphicsContext = new GraphicsContextCanvas(renderState);
       graphicsContext.applyGraphicsCommands(commands);
     } else {
-      var commands = _getCommands(useCompiled: true);
+      var commands = _getCommands(true);
       var graphicsContext = new GraphicsContextRender(renderState);
       graphicsContext.applyGraphicsCommands(commands);
     }
@@ -206,11 +206,11 @@ class Graphics {
 
   void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
-      var commands = _getCommands(useCompiled: true);
+      var commands = _getCommands(true);
       var graphicsContext = new GraphicsContextCanvasMask(renderState);
       graphicsContext.applyGraphicsCommands(commands);
     } else {
-      var commands = _getCommands(useCompiled: true);
+      var commands = _getCommands(true);
       var graphicsContext = new GraphicsContextRenderMask(renderState);
       graphicsContext.applyGraphicsCommands(commands);
     }
@@ -223,7 +223,7 @@ class Graphics {
     _compiledCommands.clear();
   }
 
-  List<GraphicsCommand> _getCommands({useCompiled: true}) {
+  List<GraphicsCommand> _getCommands(bool useCompiled) {
     if (useCompiled && _compiledCommands.length == 0) {
       var graphicsContext = new GraphicsContextCompiler(_compiledCommands);
       graphicsContext.applyGraphicsCommands(_originalCommands);
