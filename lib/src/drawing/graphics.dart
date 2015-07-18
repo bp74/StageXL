@@ -33,6 +33,8 @@ class Graphics {
   final List<GraphicsCommand> _originalCommands = new List<GraphicsCommand>();
   final List<GraphicsCommand> _compiledCommands = new List<GraphicsCommand>();
 
+  Rectangle<num> _bounds = null;
+
   //---------------------------------------------------------------------------
 
   /// Clear all previously added graphics commands.
@@ -179,17 +181,25 @@ class Graphics {
   //---------------------------------------------------------------------------
 
   Rectangle<num> get bounds {
-    var commands = _getCommands(true);
-    var graphicsContext = new GraphicsContextBounds();
-    graphicsContext.applyGraphicsCommands(commands);
-    return graphicsContext.bounds;
+    if (_bounds == null) {
+      var commands = _getCommands(true);
+      var graphicsContext = new GraphicsContextBounds();
+      graphicsContext.applyGraphicsCommands(commands);
+      _bounds = graphicsContext.bounds;
+    }
+    return _bounds;
   }
 
   bool hitTest(num localX, num localY) {
-    var commands = _getCommands(true);
-    var graphicsContext = new GraphicsContextHitTest();
-    graphicsContext.applyGraphicsCommands(commands);
-    return graphicsContext.hit;
+    if (this.bounds.contains(localX, localY)) {
+      var commands = _getCommands(true);
+      var graphicsContext = new GraphicsContextHitTest();
+      graphicsContext.applyGraphicsCommands(commands);
+      //return graphicsContext.hit;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void render(RenderState renderState) {
@@ -221,6 +231,7 @@ class Graphics {
   void _addCommand(GraphicsCommand command) {
     _originalCommands.add(command);
     _compiledCommands.clear();
+    _bounds = null;
   }
 
   List<GraphicsCommand> _getCommands(bool useCompiled) {
