@@ -52,7 +52,6 @@ abstract class GraphicsContext {
 
   void rect(double x, double y, double width, double height) {
     _path.moveTo(x, y);
-    _path.lineTo(x, y);
     _path.lineTo(x + width, y);
     _path.lineTo(x + width, y + height);
     _path.lineTo(x, y + height);

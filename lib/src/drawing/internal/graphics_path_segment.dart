@@ -2,36 +2,51 @@ part of stagexl.drawing.internal;
 
 class GraphicsPathSegment {
 
-  Float32List _vertexBuffer = new Float32List(16);
-  Int16List _indexBuffer = new Int16List(32);
+  Float32List _vertexBuffer = null;
+  Int16List _indexBuffer = null;
 
   int _vertexCount = 0;
   int _indexCount = 0;
-  bool _clockwise = true;
-  num _area = 0.0;
+  bool _clockwise = null;
+
+  //---------------------------------------------------------------------------
+
+  GraphicsPathSegment(int vertexBufferSize, int indexBufferSize) :
+      _vertexBuffer = new Float32List(vertexBufferSize),
+      _indexBuffer = new Int16List(indexBufferSize);
+
+  GraphicsPathSegment clone() {
+    var vertexBufferSize = _vertexCount * 2;
+    var indexBufferSize = _indexCount;
+    var segment = new GraphicsPathSegment(vertexBufferSize, indexBufferSize);
+    segment._vertexBuffer.setRange(0, vertexBufferSize, _vertexBuffer);
+    segment._indexBuffer.setRange(0, indexBufferSize, _indexBuffer);
+    segment._vertexCount = _vertexCount;
+    segment._indexCount = _indexCount;
+    segment._clockwise = _clockwise;
+    return segment;
+  }
 
   //---------------------------------------------------------------------------
 
   int get vertexCount => _vertexCount;
+  int get indexCount => _indexCount;
+
   double get lastVertexX => _vertexBuffer[(_vertexCount - 1) * 2 + 0];
   double get lastVertexY => _vertexBuffer[(_vertexCount - 1) * 2 + 1];
   double get firstVertexX => _vertexBuffer[0];
   double get firstVertexY => _vertexBuffer[1];
 
-  //---------------------------------------------------------------------------
-
-  GraphicsPathSegment clone() {
-    // TODO: implement GraphicsPathSegment clone
-    return null;
-  }
+  bool get clockwise => _clockwise = _clockwise is! bool
+      ? _calculateArea(_vertexBuffer, _vertexCount) >= 0.0
+      : _clockwise;
 
   //---------------------------------------------------------------------------
 
   void reset() {
     _vertexCount = 0;
     _indexCount = 0;
-    _clockwise = true;
-    _area = 0.0;
+    _clockwise = null;
   }
 
   //---------------------------------------------------------------------------
@@ -50,6 +65,7 @@ class GraphicsPathSegment {
     _vertexBuffer[offset + 0] = x;
     _vertexBuffer[offset + 1] = y;
     _vertexCount += 1;
+    _clockwise = null;
   }
 
   //---------------------------------------------------------------------------
@@ -71,9 +87,14 @@ class GraphicsPathSegment {
 
   //---------------------------------------------------------------------------
 
-  void fillColor(RenderState renderState, int color) {
+  void calculateIndices() {
+    _indexCount = 0;
+    _calculateIndices(_vertexBuffer, _vertexCount, clockwise);
+  }
 
-    _compute();
+  //---------------------------------------------------------------------------
+
+  void fillColor(RenderState renderState, int color) {
 
     // TODO: optimize for WebGL RenderProgramTriangle
 
@@ -95,27 +116,13 @@ class GraphicsPathSegment {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  void _compute() {
-    if (_vertexCount < 3) {
-      _area = 0.0;
-      _clockwise = true;
-      _indexCount = 0;
-    } else {
-      _calculateArea(_vertexBuffer, _vertexCount);
-      _clockwise = _area >= 0.0;
-      _indexCount = 0;
-      _calculateIndices(_vertexBuffer, _vertexCount, _clockwise);
-    }
-  }
-
-  //---------------------------------------------------------------------------
-
   void _calculateIndices(Float32List buffer, int count, bool clockwise) {
+
+    if (count < 3) return;
 
     // TODO: benchmark more triangulation methods
     // http://erich.realtimerendering.com/ptinpoly/
 
-    var result = new List<int>();
     var available = new List<int>();
     var index = 0;
 
@@ -190,7 +197,9 @@ class GraphicsPathSegment {
 
   //---------------------------------------------------------------------------
 
-  void _calculateArea(Float32List buffer, int count) {
+  double _calculateArea(Float32List buffer, int count) {
+
+    if (count < 3) return 0.0;
 
     num value = 0.0;
     num x1 = buffer[(count - 1) * 2 + 0];
@@ -204,7 +213,7 @@ class GraphicsPathSegment {
       y1 = y2;
     }
 
-    _area = value / 2.0;
+    return value / 2.0;
   }
 
 }

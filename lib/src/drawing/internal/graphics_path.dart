@@ -6,8 +6,16 @@ class GraphicsPath {
   GraphicsPathSegment _currentSegment = null;
 
   GraphicsPath clone() {
-    // TODO: implement GraphicsPath clone
-    return null;
+
+    var clonedSegments = new List<GraphicsPathSegment>();
+    for(var segment in _segments) {
+      if (segment.indexCount == 0) segment.calculateIndices();
+      clonedSegments.add(segment.clone());
+    }
+
+    var clonedPath = new GraphicsPath();
+    clonedPath._segments.addAll(clonedSegments);
+    return clonedPath;
   }
 
   //---------------------------------------------------------------------------
@@ -21,7 +29,7 @@ class GraphicsPath {
   }
 
   void moveTo(double x, double y) {
-    _currentSegment = new GraphicsPathSegment();
+    _currentSegment = new GraphicsPathSegment(16, 32);
     _currentSegment.addVertex(x, y);
     _segments.add(_currentSegment);
   }
@@ -145,6 +153,7 @@ class GraphicsPath {
   void fillColor(RenderState renderState, int color) {
     // TODO: non-zero winding rule
     for(var segment in _segments) {
+      if (segment.indexCount == 0) segment.calculateIndices();
       segment.fillColor(renderState, color);
     }
   }

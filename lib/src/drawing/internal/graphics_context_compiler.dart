@@ -2,7 +2,9 @@ part of stagexl.drawing.internal;
 
 class GraphicsContextCompiler extends GraphicsContext {
 
-  final List<GraphicsCommand> commands = new List<GraphicsCommand>();
+  final List<GraphicsCommand> commands;
+
+  GraphicsContextCompiler(this.commands);
 
   //---------------------------------------------------------------------------
 
