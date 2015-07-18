@@ -10,41 +10,51 @@ class GraphicsContextCompiler extends GraphicsContext {
 
   @override
   void fillColor(int color) {
-    _addCompiledCommands();
+    _addCommandsForFill();
   }
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    _addCompiledCommands();
+    _addCommandsForFill();
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-    _addCompiledCommands();
+    _addCommandsForFill();
   }
 
   @override
   void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    // TODO: implement compiler strokeColor
+    _addCommandsForStroke();
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    // TODO: implement compiler strokeGradient
+    _addCommandsForStroke();
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    // TODO: implement compiler strokePattern
+    _addCommandsForStroke();
   }
 
   //---------------------------------------------------------------------------
 
-  void _addCompiledCommands() {
+  void _addCommandsForFill() {
     var path = _path.clone();
     var pathCommand = new GraphicsCommandSetPath(path);
     var drawCommand = _command;
     this.commands.add(pathCommand);
     this.commands.add(drawCommand);
   }
+
+  void _addCommandsForStroke() {
+    // TODO: revisit this code once we have stroke paths.
+    var path = _path.clone();
+    var pathCommand = new GraphicsCommandSetPath(path);
+    var drawCommand = _command;
+    this.commands.add(pathCommand);
+    this.commands.add(drawCommand);
+  }
+
 }
