@@ -65,6 +65,23 @@ class Graphics {
     _addCommand(new _GraphicsCommandLineTo(x, y));
   }
 
+  /// From the current point in the path, draw an arc to [endX] and [endY]
+  void arcTo(num controlX, num controlY, num endX, num endY, num radius) {
+    _addCommand(new _GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
+  }
+
+  /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
+  void quadraticCurveTo(num controlX, num controlY, num endX, num endY) {
+    _addCommand(new _GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
+  }
+
+  /// From the current point in the path, draw a bezier curve to [endX] and [endY]
+  void bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
+    _addCommand(new _GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
+  }
+
+  //---------------------------------------------------------------------------
+
   /// Draw a rectangle at [x] and [y]
   void rect(num x, num y, num width, num height) {
     _addCommand(new _GraphicsCommandRect(x, y, width, height));
@@ -80,11 +97,6 @@ class Graphics {
     _addCommand(new _GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
   }
 
-  /// From the current point in the path, draw an arc to [endX] and [endY]
-  void arcTo(num controlX, num controlY, num endX, num endY, num radius) {
-    _addCommand(new _GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
-  }
-
   /// Draw a circle at [x] and [y]
   void circle(num x, num y, num radius, [bool antiClockwise = false]) {
     _addCommand(new _GraphicsCommandCircle(x, y, radius, antiClockwise));
@@ -93,16 +105,6 @@ class Graphics {
   /// Draw an ellipse at [x] and [y]
   void ellipse(num x, num y, num width, num height) {
     _addCommand(new _GraphicsCommandEllipse(x, y, width, height));
-  }
-
-  /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
-  void quadraticCurveTo(num controlX, num controlY, num endX, num endY) {
-    _addCommand(new _GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
-  }
-
-  /// From the current point in the path, draw a bezier curve to [endX] and [endY]
-  void bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
-    _addCommand(new _GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
   }
 
   //---------------------------------------------------------------------------
