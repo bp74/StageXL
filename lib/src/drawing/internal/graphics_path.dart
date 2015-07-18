@@ -14,6 +14,8 @@ class GraphicsPath {
     return clonedPath;
   }
 
+  Iterable<GraphicsPathSegment> get segments => _segments;
+
   //---------------------------------------------------------------------------
 
   void close() {

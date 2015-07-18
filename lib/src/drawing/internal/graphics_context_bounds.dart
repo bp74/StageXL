@@ -57,7 +57,7 @@ class GraphicsContextBounds extends GraphicsContext {
   //---------------------------------------------------------------------------
 
   void _updateBounds() {
-    for(var segment in _path._segments) {
+    for(var segment in _path.segments) {
       _minX = _minX > segment.minX ? segment.minX : _minX;
       _minY = _minY > segment.minY ? segment.minY : _minY;
       _maxX = _maxX < segment.maxX ? segment.maxX : _maxX;
