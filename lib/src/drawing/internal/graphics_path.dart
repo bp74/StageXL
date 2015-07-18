@@ -102,6 +102,25 @@ class GraphicsPath {
 
   //---------------------------------------------------------------------------
 
+  void rect(double x, double y, double width, double height) {
+    this.moveTo(x, y);
+    this.lineTo(x + width, y);
+    this.lineTo(x + width, y + height);
+    this.lineTo(x, y + height);
+  }
+
+  void rectRound(double x, double y, double width, double height, double ellipseWidth, double ellipseHeight) {
+    this.moveTo(x + ellipseWidth, y);
+    this.lineTo(x + width - ellipseWidth, y);
+    this.quadraticCurveTo(x + width, y, x + width, y + ellipseHeight);
+    this.lineTo(x + width, y + height - ellipseHeight);
+    this.quadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height);
+    this.lineTo(x + ellipseWidth, y + height);
+    this.quadraticCurveTo(x, y + height, x, y + height - ellipseHeight);
+    this.lineTo(x, y + ellipseHeight);
+    this.quadraticCurveTo(x, y, x + ellipseWidth, y);
+  }
+
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
 
     num tau = 2.0 * math.PI;

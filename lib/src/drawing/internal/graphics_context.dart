@@ -51,22 +51,11 @@ abstract class GraphicsContext {
   //---------------------------------------------------------------------------
 
   void rect(double x, double y, double width, double height) {
-    _path.moveTo(x, y);
-    _path.lineTo(x + width, y);
-    _path.lineTo(x + width, y + height);
-    _path.lineTo(x, y + height);
+    _path.rect(x, y, width, height);
   }
 
   void rectRound(double x, double y, double width, double height, double ellipseWidth, double ellipseHeight) {
-    _path.moveTo(x + ellipseWidth, y);
-    _path.lineTo(x + width - ellipseWidth, y);
-    _path.quadraticCurveTo(x + width, y, x + width, y + ellipseHeight);
-    _path.lineTo(x + width, y + height - ellipseHeight);
-    _path.quadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height);
-    _path.lineTo(x + ellipseWidth, y + height);
-    _path.quadraticCurveTo(x, y + height, x, y + height - ellipseHeight);
-    _path.lineTo(x, y + ellipseHeight);
-    _path.quadraticCurveTo(x, y, x + ellipseWidth, y);
+    _path.rectRound(x, y, width, height, ellipseWidth, ellipseHeight);
   }
 
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
