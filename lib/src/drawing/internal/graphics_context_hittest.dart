@@ -31,17 +31,17 @@ class GraphicsContextHitTest extends GraphicsContext {
 
   @override
   void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    // TODO: implement hittest strokeColor
+    _updateHitForStroke(lineWidth, lineJoin, lineCap);
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    // TODO: implement hittest strokeGradient
+    _updateHitForStroke(lineWidth, lineJoin, lineCap);
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    // TODO: implement hittest strokePattern
+    _updateHitForStroke(lineWidth, lineJoin, lineCap);
   }
 
   //---------------------------------------------------------------------------
@@ -50,5 +50,8 @@ class GraphicsContextHitTest extends GraphicsContext {
     _hit = _hit || _path.hitTest(_localX, _localY);
   }
 
+  void _updateHitForStroke(double lineWidth, String lineJoin, String lineCap) {
+    // TODO: revisit this code once we have stroke paths.
+  }
 
 }
