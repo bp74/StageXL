@@ -2,37 +2,53 @@ part of stagexl.drawing.internal;
 
 class GraphicsContextHitTest extends GraphicsContext {
 
-  bool hit = false;
+  bool _hit = false;
+  double _localX = 0.0;
+  double _localY = 0.0;
 
-  // TODO: implements hittest calculation.
+  GraphicsContextHitTest(num localX, num localY) :
+      _localX = localX.toDouble(),
+      _localY = localY.toDouble();
+
+  bool get hit => _hit;
+
+  //---------------------------------------------------------------------------
 
   @override
   void fillColor(int color) {
-    // check for hit in fill
+    _updateHitForFill();
   }
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    // check for hit in fill
+    _updateHitForFill();
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-    // check for hit in fill
+    _updateHitForFill();
   }
 
   @override
   void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    // check for hit in stroke
+    // TODO: implement hittest strokeColor
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    // check for hit in stroke
+    // TODO: implement hittest strokeGradient
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    // check for hit in stroke
+    // TODO: implement hittest strokePattern
   }
+
+  //---------------------------------------------------------------------------
+
+  void _updateHitForFill() {
+    _hit = _hit || _path.hitTest(_localX, _localY);
+  }
+
+
 }

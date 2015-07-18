@@ -7,7 +7,8 @@ class GraphicsPath {
 
   GraphicsPath clone() {
     var clonedPath = new GraphicsPath();
-    for(var segment in _segments) {
+    for(int i = 0; i < _segments.length; i++) {
+      var segment = _segments[i];
       if (segment.indexCount == 0) segment.calculateIndices();
       clonedPath._segments.add(segment.clone());
     }
@@ -150,10 +151,21 @@ class GraphicsPath {
 
   void fillColor(RenderState renderState, int color) {
     // TODO: non-zero winding rule
-    for(var segment in _segments) {
+    for(int i = 0; i < _segments.length; i++) {
+      var segment = _segments[i];
       if (segment.indexCount == 0) segment.calculateIndices();
       segment.fillColor(renderState, color);
     }
+  }
+
+  bool hitTest(double x, double y) {
+    int windingCount = 0;
+    for(int i = 0; i < _segments.length; i++) {
+      var segment = _segments[i];
+      if (segment.indexCount == 0) segment.calculateIndices();
+      if (segment.hitTest(x, y)) windingCount += segment.clockwise ? 1 : -1;
+    }
+    return windingCount != 0;
   }
 
 

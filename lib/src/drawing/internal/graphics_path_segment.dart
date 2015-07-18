@@ -120,6 +120,55 @@ class GraphicsPathSegment {
 
   //---------------------------------------------------------------------------
 
+  bool hitTest(double x, double y) {
+
+    if (_minX > x || _maxX < x) return false;
+    if (_minY > y || _maxY < y) return false;
+
+    for(int i = 0; i <= _indexCount - 3; i += 3) {
+
+      int i0 = _indexBuffer[i + 0];
+      int i1 = _indexBuffer[i + 1];
+      int i2 = _indexBuffer[i + 2];
+
+      num x1 = _vertexBuffer[i0 * 2 + 0];
+      num x2 = _vertexBuffer[i1 * 2 + 0];
+      num x3 = _vertexBuffer[i2 * 2 + 0];
+      if (x1 < x && x2 < x && x3 < x) continue;
+      if (x1 > x && x2 > x && x3 > x) continue;
+
+      num y1 = _vertexBuffer[i0 * 2 + 1];
+      num y2 = _vertexBuffer[i1 * 2 + 1];
+      num y3 = _vertexBuffer[i2 * 2 + 1];
+      if (y1 < y && y2 < y && y3 < y) continue;
+      if (y1 > y && y2 > y && y3 > y) continue;
+
+      num x31 = x3 - x1;
+      num y31 = y3 - y1;
+      num x21 = x2 - x1;
+      num y21 = y2 - y1;
+      num x01 = x - x1;
+      num y01 = y - y1;
+
+      num dot00 = x31 * x31 + y31 * y31;
+      num dot01 = x31 * x21 + y31 * y21;
+      num dot02 = x31 * x01 + y31 * y01;
+      num dot11 = x21 * x21 + y21 * y21;
+      num dot12 = x21 * x01 + y21 * y01;
+
+      num d = dot00 * dot11 - dot01 * dot01;
+      num u = dot11 * dot02 - dot01 * dot12;
+      num v = dot00 * dot12 - dot01 * dot02;
+
+      if ((d > 0.0) && (u >= 0.0) && (v >= 0.0) && (v + u < d)) return true;
+      if ((d < 0.0) && (u <= 0.0) && (v <= 0.0) && (v + u > d)) return true;
+    }
+
+    return false;
+  }
+
+  //---------------------------------------------------------------------------
+
   void fillColor(RenderState renderState, int color) {
 
     // TODO: optimize for WebGL RenderProgramTriangle
@@ -128,14 +177,14 @@ class GraphicsPathSegment {
       int i0 = _indexBuffer[i + 0];
       int i1 = _indexBuffer[i + 1];
       int i2 = _indexBuffer[i + 2];
-      num ax = _vertexBuffer[i0 * 2 + 0];
-      num ay = _vertexBuffer[i0 * 2 + 1];
-      num bx = _vertexBuffer[i1 * 2 + 0];
-      num by = _vertexBuffer[i1 * 2 + 1];
-      num cx = _vertexBuffer[i2 * 2 + 0];
-      num cy = _vertexBuffer[i2 * 2 + 1];
+      num x1 = _vertexBuffer[i0 * 2 + 0];
+      num y1 = _vertexBuffer[i0 * 2 + 1];
+      num x2 = _vertexBuffer[i1 * 2 + 0];
+      num y2 = _vertexBuffer[i1 * 2 + 1];
+      num x3 = _vertexBuffer[i2 * 2 + 0];
+      num y3 = _vertexBuffer[i2 * 2 + 1];
       var renderContext = renderState.renderContext;
-      renderContext.renderTriangle(renderState, ax, ay, bx, by, cx, cy, color);
+      renderContext.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
     }
   }
 
@@ -180,7 +229,7 @@ class GraphicsPathSegment {
 
         earFound = true;
 
-        for(int j = 0; j < available.length; j++) {
+        for(int j = 0; j < available.length && earFound; j++) {
 
           int vi = available[j];
           if(vi == i0 || vi == i1 || vi == i2) continue;
@@ -194,14 +243,12 @@ class GraphicsPathSegment {
           num dot11 = x21 * x21 + y21 * y21;
           num dot12 = x21 * x01 + y21 * y01;
 
-          num invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-          num u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-          num v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+          num d = dot00 * dot11 - dot01 * dot01;
+          num u = dot11 * dot02 - dot01 * dot12;
+          num v = dot00 * dot12 - dot01 * dot02;
 
-          if((u >= 0) && (v >= 0) && (u + v < 1)) {
-            earFound = false;
-            break;
-          }
+          if ((d > 0.0) && (u >= 0.0) && (v >= 0.0) && (v + u < d)) earFound = false;
+          if ((d < 0.0) && (u <= 0.0) && (v <= 0.0) && (v + u > d)) earFound = false;
         }
       }
 

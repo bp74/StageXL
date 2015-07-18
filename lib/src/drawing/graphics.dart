@@ -193,10 +193,9 @@ class Graphics {
   bool hitTest(num localX, num localY) {
     if (this.bounds.contains(localX, localY)) {
       var commands = _getCommands(true);
-      var graphicsContext = new GraphicsContextHitTest();
+      var graphicsContext = new GraphicsContextHitTest(localX, localY);
       graphicsContext.applyGraphicsCommands(commands);
-      //return graphicsContext.hit;
-      return true;
+      return graphicsContext.hit;
     } else {
       return false;
     }

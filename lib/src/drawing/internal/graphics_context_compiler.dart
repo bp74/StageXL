@@ -25,17 +25,17 @@ class GraphicsContextCompiler extends GraphicsContext {
 
   @override
   void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    _addCompiledCommands();
+    // TODO: implement compiler strokeColor
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    _addCompiledCommands();
+    // TODO: implement compiler strokeGradient
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    _addCompiledCommands();
+    // TODO: implement compiler strokePattern
   }
 
   //---------------------------------------------------------------------------
