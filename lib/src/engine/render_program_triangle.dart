@@ -2,8 +2,10 @@ part of stagexl.engine;
 
 class RenderProgramTriangle extends RenderProgram {
 
-  RenderBufferVertex _renderBufferVertex = null;
-  int _triangleCount = 0;
+  RenderBufferIndex _renderBufferIndex;
+  RenderBufferVertex _renderBufferVertex;
+  int _indexCount = 0;
+  int _vertexCount = 0;
 
   //---------------------------------------------------------------------------
   // aVertexPosition:   Float32(x), Float32(y)
@@ -40,6 +42,9 @@ class RenderProgramTriangle extends RenderProgram {
 
     super.activate(renderContext);
 
+    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
+    _renderBufferIndex.activate(renderContext);
+
     _renderBufferVertex = renderContext.renderBufferVertex;
     _renderBufferVertex.activate(renderContext);
     _renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 24, 0);
@@ -48,10 +53,12 @@ class RenderProgramTriangle extends RenderProgram {
 
   @override
   void flush() {
-    if (_triangleCount > 0) {
-      _renderBufferVertex.update(0, _triangleCount * 18);
-      _renderingContext.drawArrays(gl.TRIANGLES, 0, _triangleCount * 3);
-      _triangleCount = 0;
+    if (_vertexCount > 0 && _indexCount > 0) {
+      _renderBufferIndex.update(0, _indexCount);
+      _renderBufferVertex.update(0, _vertexCount * 6);
+      _renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
+      _indexCount = 0;
+      _vertexCount = 0;
     }
   }
 
@@ -78,38 +85,48 @@ class RenderProgramTriangle extends RenderProgram {
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
+    var ixData = _renderBufferIndex.data;
+    if (ixData == null) return;
+    if (ixData.length < _indexCount + 3) flush();
+
     var vxData = _renderBufferVertex.data;
     if (vxData == null) return;
-    if (vxData.length < _triangleCount * 18 + 18) flush();
+    if (vxData.length < _vertexCount * 6 + 3 * 6) flush();
 
-    var index = _triangleCount * 18;
-    if (index > vxData.length - 18) return;
+    var ixOffset = _indexCount;
+    var vxOffset = _vertexCount * 6;
+
+    // fill index buffer
+    ixData[ixOffset + 0] = _vertexCount + 0;
+    ixData[ixOffset + 1] = _vertexCount + 1;
+    ixData[ixOffset + 2] = _vertexCount + 2;
 
     // vertex 1
-    vxData[index + 00] = x1 * a + y1 * c + tx;
-    vxData[index + 01] = x1 * b + y1 * d + ty;
-    vxData[index + 02] = colorR;
-    vxData[index + 03] = colorG;
-    vxData[index + 04] = colorB;
-    vxData[index + 05] = colorA;
+    vxData[vxOffset + 00] = x1 * a + y1 * c + tx;
+    vxData[vxOffset + 01] = x1 * b + y1 * d + ty;
+    vxData[vxOffset + 02] = colorR;
+    vxData[vxOffset + 03] = colorG;
+    vxData[vxOffset + 04] = colorB;
+    vxData[vxOffset + 05] = colorA;
 
     // vertex 2
-    vxData[index + 06] = x2 * a + y2 * c + tx;
-    vxData[index + 07] = x2 * b + y2 * d + ty;
-    vxData[index + 08] = colorR;
-    vxData[index + 09] = colorG;
-    vxData[index + 10] = colorB;
-    vxData[index + 11] = colorA;
+    vxData[vxOffset + 06] = x2 * a + y2 * c + tx;
+    vxData[vxOffset + 07] = x2 * b + y2 * d + ty;
+    vxData[vxOffset + 08] = colorR;
+    vxData[vxOffset + 09] = colorG;
+    vxData[vxOffset + 10] = colorB;
+    vxData[vxOffset + 11] = colorA;
 
     // vertex 3
-    vxData[index + 12] = x3 * a + y3 * c + tx;
-    vxData[index + 13] = x3 * b + y3 * d + ty;
-    vxData[index + 14] = colorR;
-    vxData[index + 15] = colorG;
-    vxData[index + 16] = colorB;
-    vxData[index + 17] = colorA;
+    vxData[vxOffset + 12] = x3 * a + y3 * c + tx;
+    vxData[vxOffset + 13] = x3 * b + y3 * d + ty;
+    vxData[vxOffset + 14] = colorR;
+    vxData[vxOffset + 15] = colorG;
+    vxData[vxOffset + 16] = colorB;
+    vxData[vxOffset + 17] = colorA;
 
-    _triangleCount += 1;
+    _indexCount += 3;
+    _vertexCount += 3;
   }
 
   //---------------------------------------------------------------------------
@@ -119,23 +136,65 @@ class RenderProgramTriangle extends RenderProgram {
       int indexCount, Int16List indexList,
       int vertexCount, Float32List vertexList, int color) {
 
-    // TODO: implement renderTriangleMesh in WebGL
-    // TODO: make this render program use an index buffer!
+    Matrix matrix = renderState.globalMatrix;
+    num alpha = renderState.globalAlpha;
 
-    // this is just a fake to make it work
+    num colorA = colorGetA(color) / 255.0 * alpha;
+    num colorR = colorGetR(color) / 255.0;
+    num colorG = colorGetG(color) / 255.0;
+    num colorB = colorGetB(color) / 255.0;
 
-    for(int i = 0; i < indexCount - 2; i += 3) {
-      int i0 = indexList[i + 0];
-      int i1 = indexList[i + 1];
-      int i2 = indexList[i + 2];
-      num x1 = vertexList[i0 * 2 + 0];
-      num y1 = vertexList[i0 * 2 + 1];
-      num x2 = vertexList[i1 * 2 + 0];
-      num y2 = vertexList[i1 * 2 + 1];
-      num x3 = vertexList[i2 * 2 + 0];
-      num y3 = vertexList[i2 * 2 + 1];
-      this.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
+    num ma = matrix.a;
+    num mb = matrix.b;
+    num mc = matrix.c;
+    num md = matrix.d;
+    num mx = matrix.tx;
+    num my = matrix.ty;
+
+    // The following code contains dart2js_hints to keep
+    // the generated JavaScript code clean and fast!
+
+    var ixData = _renderBufferIndex.data;
+    if (ixData == null) return;
+    if (ixData.length < _indexCount + indexCount) flush();
+
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < _vertexCount * 6 + vertexCount * 6) flush();
+
+    var ixOffset = _indexCount;
+    var vxOffset = _vertexCount * 6;
+    var vertexListLength = vertexList.length;
+
+    // copy index list
+
+    for(var i = 0; i < indexCount; i++) {
+      if (ixOffset > ixData.length - 1) break;
+      ixData[ixOffset] = _vertexCount + indexList[i];
+      ixOffset += 1;
     }
+
+    // copy vertex list
+
+    for(var i = 0, o = 0 ; i < vertexCount; i++, o += 2) {
+
+      if (vxOffset > vxData.length - 6) break;
+      if (o > vertexListLength - 2) break;
+
+      num x = vertexList[o + 0];
+      num y = vertexList[o + 1];
+
+      vxData[vxOffset + 0] = mx + ma * x + mc * y;
+      vxData[vxOffset + 1] = my + mb * x + md * y;
+      vxData[vxOffset + 2] = colorR;
+      vxData[vxOffset + 3] = colorG;
+      vxData[vxOffset + 4] = colorB;
+      vxData[vxOffset + 5] = colorA;
+      vxOffset += 6;
+    }
+
+    _indexCount += indexCount;
+    _vertexCount += vertexCount;
   }
 
 }
