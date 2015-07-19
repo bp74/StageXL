@@ -55,20 +55,21 @@ class GraphicsPath {
       num v2y = endY - controlY;
       num l1 = math.sqrt(v1x * v1x + v1y * v1y);
       num l2 = math.sqrt(v2x * v2x + v2y * v2y);
-      num rads = math.atan2(v1y, v1x) - math.atan2(v2y, v2x);
+      num a1 = math.atan2(v1y, v1x);
+      num a2 = math.atan2(v2y, v2x);
+      num at = math.tan((a1 - a2) / 2.0);
 
-      num tn = math.tan(rads / 2.0);
-      num ra = tn > 0.0 ? radius : 0.0 - radius;
-      num tangent1x = controlX - v1x * tn * ra / l1;
-      num tangent1y = controlY - v1y * tn * ra / l1;
-      num tangent2x = controlX + v2x * tn * ra / l2;
-      num tangent2y = controlY + v2y * tn * ra / l2;
-      num centerX = tangent1x + v1y * ra / l1;
-      num centerY = tangent1y - v1x * ra / l1;
+      num ra = at > 0.0 ? radius : 0.0 - radius;
+      num point1x = controlX - at * ra * v1x / l1;
+      num point1y = controlY - at * ra * v1y / l1;
+      num point2x = controlX + at * ra * v2x / l2;
+      num point2y = controlY + at * ra * v2y / l2;
+      num centerX = point1x + ra * v1y / l1;
+      num centerY = point1y - ra * v1x / l1;
 
-      num angle1 = math.atan2(tangent1y - centerY, tangent1x - centerX);
-      num angle2 = math.atan2(tangent2y - centerY, tangent2x - centerX);
-      this.arc(centerX, centerY, radius, angle1, angle2, tn > 0.0);
+      num angle1 = math.atan2(point1y - centerY, point1x - centerX);
+      num angle2 = math.atan2(point2y - centerY, point2x - centerX);
+      this.arc(centerX, centerY, radius, angle1, angle2, at > 0.0);
     }
   }
 
