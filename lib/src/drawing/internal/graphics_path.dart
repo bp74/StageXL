@@ -51,25 +51,26 @@ class GraphicsPath {
 
       num v1x = controlX - _currentSegment.lastVertexX;
       num v1y = controlY - _currentSegment.lastVertexY;
+      num v1l = math.sqrt(v1x * v1x + v1y * v1y);
+      num v1a = math.atan2(v1y, v1x);
+
       num v2x = endX - controlX;
       num v2y = endY - controlY;
-      num l1 = math.sqrt(v1x * v1x + v1y * v1y);
-      num l2 = math.sqrt(v2x * v2x + v2y * v2y);
-      num a1 = math.atan2(v1y, v1x);
-      num a2 = math.atan2(v2y, v2x);
-      num at = math.tan((a1 - a2) / 2.0);
+      num v2l = math.sqrt(v2x * v2x + v2y * v2y);
+      num v2a = math.atan2(v2y, v2x);
 
-      num ra = at > 0.0 ? radius : 0.0 - radius;
-      num point1x = controlX - at * ra * v1x / l1;
-      num point1y = controlY - at * ra * v1y / l1;
-      num point2x = controlX + at * ra * v2x / l2;
-      num point2y = controlY + at * ra * v2y / l2;
-      num centerX = point1x + ra * v1y / l1;
-      num centerY = point1y - ra * v1x / l1;
+      num tan = math.tan((v1a - v2a) / 2.0);
+      num len = tan > 0.0 ? radius : 0.0 - radius;
+      num point1x = controlX - tan * len * v1x / v1l;
+      num point1y = controlY - tan * len * v1y / v1l;
+      num point2x = controlX + tan * len * v2x / v2l;
+      num point2y = controlY + tan * len * v2y / v2l;
+      num centerX = point1x + len * v1y / v1l;
+      num centerY = point1y - len * v1x / v1l;
 
       num angle1 = math.atan2(point1y - centerY, point1x - centerX);
       num angle2 = math.atan2(point2y - centerY, point2x - centerX);
-      this.arc(centerX, centerY, radius, angle1, angle2, at > 0.0);
+      this.arc(centerX, centerY, radius, angle1, angle2, tan > 0.0);
     }
   }
 
