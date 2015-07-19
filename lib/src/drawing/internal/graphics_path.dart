@@ -49,32 +49,25 @@ class GraphicsPath {
 
     } else {
 
-      num x0 = _currentSegment.lastVertexX;
-      num y0 = _currentSegment.lastVertexY;
-      num x1 = controlX;
-      num y1 = controlY;
-      num x2 = endX;
-      num y2 = endY;
-
-      num x01 = x1 - x0;
-      num y01 = y1 - y0;
-      num x12 = x2 - x1;
-      num y12 = y2 - y1;
-      num l01 = math.sqrt(x01 * x01 + y01 * y01);
-      num l12 = math.sqrt(x12 * x12 + y12 * y12);
-      num rads = math.atan2(y01, x01) - math.atan2(y12, x12);
+      num v1x = controlX - _currentSegment.lastVertexX;
+      num v1y = controlY - _currentSegment.lastVertexY;
+      num v2x = endX - controlX;
+      num v2y = endY - controlY;
+      num l1 = math.sqrt(v1x * v1x + v1y * v1y);
+      num l2 = math.sqrt(v2x * v2x + v2y * v2y);
+      num rads = math.atan2(v1y, v1x) - math.atan2(v2y, v2x);
 
       num tn = math.tan(rads / 2.0);
       num ra = tn > 0.0 ? radius : 0.0 - radius;
-      num tangentX1 = x1 - x01 * tn * ra / l01;
-      num tangentY1 = y1 - y01 * tn * ra / l01;
-      num tangentX2 = x1 + x12 * tn * ra / l12;
-      num tangentY2 = y1 + y12 * tn * ra / l12;
-      num centerX = tangentX1 + y01 * ra / l01;
-      num centerY = tangentY1 - x01 * ra / l01;
+      num tangent1x = controlX - v1x * tn * ra / l1;
+      num tangent1y = controlY - v1y * tn * ra / l1;
+      num tangent2x = controlX + v2x * tn * ra / l2;
+      num tangent2y = controlY + v2y * tn * ra / l2;
+      num centerX = tangent1x + v1y * ra / l1;
+      num centerY = tangent1y - v1x * ra / l1;
 
-      num angle1 = math.atan2(tangentY1 - centerY, tangentX1 - centerX);
-      num angle2 = math.atan2(tangentY2 - centerY, tangentX2 - centerX);
+      num angle1 = math.atan2(tangent1y - centerY, tangent1x - centerX);
+      num angle2 = math.atan2(tangent2y - centerY, tangent2x - centerX);
       this.arc(centerX, centerY, radius, angle1, angle2, tn > 0.0);
     }
   }
