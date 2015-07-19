@@ -42,7 +42,44 @@ class GraphicsPath {
   }
 
   void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
-    // TODO: implement arcTo path
+
+    if (_currentSegment == null) {
+
+      moveTo(controlX, controlY);
+
+    } else {
+
+      var v0 = new Vector(_currentSegment.lastVertexX, _currentSegment.lastVertexY);
+      var v1 = new Vector(controlX, controlY);
+      var v2 = new Vector(endX, endY);
+      var v01 = v1 - v0;
+      var v21 = v2 - v1;
+
+      var rads = v01.rads - v21.rads;
+      var tn = math.tan(rads / 2.0);
+      var ra = (tn > 0.0) ? radius : -radius;
+      var tangent1 = v1 - v01.scaleLength(tn * ra);
+      var tangent2 = v1 + v21.scaleLength(tn * ra);
+      var center = tangent1 + v01.normalLeft().scaleLength(ra);
+      var angle1 = (tangent1 - center).rads;
+      var angle2 = (tangent2 - center).rads;
+      var tau = 2.0 * math.PI;
+
+      if (tn < 0.0) { // clockwise
+        if (angle2 < angle1) angle2 = angle2 + tau;
+      } else {       // anti clockwise
+        if (angle1 < angle2) angle1 = angle1 + tau;
+      }
+
+      var arc = tangent1 - center;
+      var arcAngle = angle2 - angle1;
+      var arcSteps = (60 * arcAngle / tau).abs().ceil();
+
+      for (var i = 0; i <= arcSteps; i++) {
+        var v = center + arc.rotate(i * arcAngle / arcSteps);
+        _currentSegment.addVertex(v.x, v.y);
+      }
+    }
   }
 
   void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
