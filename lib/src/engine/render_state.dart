@@ -89,6 +89,14 @@ class RenderState {
     _renderContext.renderTriangle(this, x1, y1, x2, y2, x3, y3, color);
   }
 
+  void renderTriangleMesh(int indexCount, Int16List indexList,
+                          int vertexCount, Float32List vertexList, int color) {
+
+    _renderContext.renderTriangleMesh(this,
+        indexCount, indexList,
+        vertexCount, vertexList, color);
+  }
+
   void renderObjectFiltered(RenderObject renderObject) {
     _renderContext.renderObjectFiltered(this, renderObject);
   }

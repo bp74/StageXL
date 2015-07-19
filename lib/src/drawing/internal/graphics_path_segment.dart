@@ -170,22 +170,9 @@ class GraphicsPathSegment {
   //---------------------------------------------------------------------------
 
   void fillColor(RenderState renderState, int color) {
-
-    // TODO: optimize for WebGL RenderProgramTriangle
-
-    for(int i = 0; i < _indexCount - 2; i += 3) {
-      int i0 = _indexBuffer[i + 0];
-      int i1 = _indexBuffer[i + 1];
-      int i2 = _indexBuffer[i + 2];
-      num x1 = _vertexBuffer[i0 * 2 + 0];
-      num y1 = _vertexBuffer[i0 * 2 + 1];
-      num x2 = _vertexBuffer[i1 * 2 + 0];
-      num y2 = _vertexBuffer[i1 * 2 + 1];
-      num x3 = _vertexBuffer[i2 * 2 + 0];
-      num y3 = _vertexBuffer[i2 * 2 + 1];
-      var renderContext = renderState.renderContext;
-      renderContext.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
-    }
+    renderState.renderTriangleMesh(
+        _indexCount, _indexBuffer,
+        _vertexCount, _vertexBuffer, color);
   }
 
   //---------------------------------------------------------------------------

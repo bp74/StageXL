@@ -112,4 +112,30 @@ class RenderProgramTriangle extends RenderProgram {
     _triangleCount += 1;
   }
 
+  //---------------------------------------------------------------------------
+
+  void renderTriangleMesh(
+      RenderState renderState,
+      int indexCount, Int16List indexList,
+      int vertexCount, Float32List vertexList, int color) {
+
+    // TODO: implement renderTriangleMesh in WebGL
+    // TODO: make this render program use an index buffer!
+
+    // this is just a fake to make it work
+
+    for(int i = 0; i < indexCount - 2; i += 3) {
+      int i0 = indexList[i + 0];
+      int i1 = indexList[i + 1];
+      int i2 = indexList[i + 2];
+      num x1 = vertexList[i0 * 2 + 0];
+      num y1 = vertexList[i0 * 2 + 1];
+      num x2 = vertexList[i1 * 2 + 0];
+      num y2 = vertexList[i1 * 2 + 1];
+      num x3 = vertexList[i2 * 2 + 0];
+      num y3 = vertexList[i2 * 2 + 1];
+      this.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
+    }
+  }
+
 }

@@ -31,6 +31,11 @@ abstract class RenderContext {
     RenderState renderState,
     num x1, num y1, num x2, num y2, num x3, num y3, int color);
 
+  void renderTriangleMesh(
+      RenderState renderState,
+      int indexCount, Int16List indexList,
+      int vertexCount, Float32List vertexList, int color);
+
   void renderMesh(
     RenderState renderState, RenderTexture renderTexture,
     int indexCount, Int16List indexList,

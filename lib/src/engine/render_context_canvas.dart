@@ -138,6 +138,50 @@ class RenderContextCanvas extends RenderContext {
 
   //-----------------------------------------------------------------------------------------------
 
+  void renderTriangleMesh(
+      RenderState renderState,
+      int indexCount, Int16List indexList,
+      int vertexCount, Float32List vertexList, int color) {
+
+    var context = _renderingContext;
+    var matrix = renderState.globalMatrix;
+    var alpha = renderState.globalAlpha;
+    var blendMode = renderState.globalBlendMode;
+
+    if (_activeAlpha != alpha) {
+      _activeAlpha = alpha;
+      context.globalAlpha = alpha;
+    }
+
+    if (_activeBlendMode != blendMode) {
+      _activeBlendMode = blendMode;
+      context.globalCompositeOperation = blendMode.compositeOperation;
+    }
+
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    context.beginPath();
+
+    for(int i = 0; i < indexCount - 2; i += 3) {
+      int i0 = indexList[i + 0];
+      int i1 = indexList[i + 1];
+      int i2 = indexList[i + 2];
+      num x1 = vertexList[i0 * 2 + 0];
+      num y1 = vertexList[i0 * 2 + 1];
+      num x2 = vertexList[i1 * 2 + 0];
+      num y2 = vertexList[i1 * 2 + 1];
+      num x3 = vertexList[i2 * 2 + 0];
+      num y3 = vertexList[i2 * 2 + 1];
+      context.moveTo(x1, y1);
+      context.lineTo(x2, y2);
+      context.lineTo(x3, y3);
+    }
+
+    context.fillStyle = color2rgba(color);
+    context.fill();
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
   void renderMesh(
     RenderState renderState, RenderTexture renderTexture,
     int indexCount, Int16List indexList,

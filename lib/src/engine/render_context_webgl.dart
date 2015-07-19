@@ -138,7 +138,24 @@ class RenderContextWebGL extends RenderContext {
 
     activateRenderProgram(renderProgramTriangle);
     activateBlendMode(renderState.globalBlendMode);
-    renderProgramTriangle.renderTriangle(renderState, x1, y1, x2, y2, x3, y3, color);
+
+    renderProgramTriangle.renderTriangle(
+        renderState, x1, y1, x2, y2, x3, y3, color);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void renderTriangleMesh(
+      RenderState renderState,
+      int indexCount, Int16List indexList,
+      int vertexCount, Float32List vertexList, int color) {
+
+    activateRenderProgram(renderProgramTriangle);
+    activateBlendMode(renderState.globalBlendMode);
+
+    renderProgramTriangle.renderTriangleMesh(
+        renderState, indexCount, indexList,
+        vertexCount, vertexList, color);
   }
 
   //-----------------------------------------------------------------------------------------------
