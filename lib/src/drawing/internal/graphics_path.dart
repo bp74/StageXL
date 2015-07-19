@@ -73,25 +73,9 @@ class GraphicsPath {
       num centerX = tangentX1 + y01 * ra / l01;
       num centerY = tangentY1 - x01 * ra / l01;
 
-      num tau = 2.0 * math.PI;
       num angle1 = math.atan2(tangentY1 - centerY, tangentX1 - centerX);
       num angle2 = math.atan2(tangentY2 - centerY, tangentX2 - centerX);
-      if (tn < 0.0 && angle2 < angle1) angle2 = angle2 + tau; // clockwise
-      if (tn > 0.0 && angle1 < angle2) angle1 = angle1 + tau; // anti-clockwise
-
-      num arcX = tangentX1 - centerX;
-      num arcY = tangentY1 - centerY;
-      num arcAngle = angle2 - angle1;
-      num arcSteps = (60 * arcAngle / tau).abs().ceil();
-      num arcDelta = arcAngle / arcSteps;
-
-      for (var i = 0; i <= arcSteps; i++) {
-        num s = math.sin(i * arcDelta);
-        num c = math.cos(i * arcDelta);
-        num x = centerX + arcX * c - arcY * s;
-        num y = centerY + arcX * s + arcY * c;
-        _currentSegment.addVertex(x, y);
-      }
+      this.arc(centerX, centerY, radius, angle1, angle2, tn > 0.0);
     }
   }
 
