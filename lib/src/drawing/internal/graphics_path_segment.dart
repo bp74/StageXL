@@ -124,47 +124,28 @@ class GraphicsPathSegment {
 
     if (_minX > x || _maxX < x) return false;
     if (_minY > y || _maxY < y) return false;
+    if (_vertexCount < 3) return false;
 
-    for(int i = 0; i <= _indexCount - 3; i += 3) {
+    // Winding Number Method
+    // http://geomalgorithms.com/a03-_inclusion.html
 
-      int i0 = _indexBuffer[i + 0];
-      int i1 = _indexBuffer[i + 1];
-      int i2 = _indexBuffer[i + 2];
+    int wn = 0;
+    num ax = _vertexBuffer[(_vertexCount - 1) * 2 + 0];
+    num ay = _vertexBuffer[(_vertexCount - 1) * 2 + 1];
 
-      num x1 = _vertexBuffer[i0 * 2 + 0];
-      num x2 = _vertexBuffer[i1 * 2 + 0];
-      num x3 = _vertexBuffer[i2 * 2 + 0];
-      if (x1 < x && x2 < x && x3 < x) continue;
-      if (x1 > x && x2 > x && x3 > x) continue;
-
-      num y1 = _vertexBuffer[i0 * 2 + 1];
-      num y2 = _vertexBuffer[i1 * 2 + 1];
-      num y3 = _vertexBuffer[i2 * 2 + 1];
-      if (y1 < y && y2 < y && y3 < y) continue;
-      if (y1 > y && y2 > y && y3 > y) continue;
-
-      num x31 = x3 - x1;
-      num y31 = y3 - y1;
-      num x21 = x2 - x1;
-      num y21 = y2 - y1;
-      num x01 = x - x1;
-      num y01 = y - y1;
-
-      num dot00 = x31 * x31 + y31 * y31;
-      num dot01 = x31 * x21 + y31 * y21;
-      num dot02 = x31 * x01 + y31 * y01;
-      num dot11 = x21 * x21 + y21 * y21;
-      num dot12 = x21 * x01 + y21 * y01;
-
-      num d = dot00 * dot11 - dot01 * dot01;
-      num u = dot11 * dot02 - dot01 * dot12;
-      num v = dot00 * dot12 - dot01 * dot02;
-
-      if ((d > 0.0) && (u >= 0.0) && (v >= 0.0) && (v + u < d)) return true;
-      if ((d < 0.0) && (u <= 0.0) && (v <= 0.0) && (v + u > d)) return true;
+    for(int i = 0; i < _vertexCount; i++) {
+      num bx = _vertexBuffer[i * 2 + 0];
+      num by = _vertexBuffer[i * 2 + 1];
+      if (ay <= y) {
+        if (by >  y && (bx - ax) * (y - ay) - (x - ax) * (by - ay) > 0) wn++;
+      } else {
+        if (by <= y && (bx - ax) * (y - ay) - (x - ax) * (by - ay) < 0) wn--;
+      }
+      ax = bx;
+      ay = by;
     }
 
-    return false;
+    return wn != 0;
   }
 
   //---------------------------------------------------------------------------
