@@ -84,7 +84,7 @@ class GraphicsPath {
 
     } else {
 
-      int steps = 10;
+      int steps = 20;
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
 
@@ -111,7 +111,7 @@ class GraphicsPath {
 
     } else {
 
-      int steps = 10;
+      int steps = 20;
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
 
@@ -227,7 +227,7 @@ class GraphicsPath {
     for(int i = 0; i < _segments.length; i++) {
       var segment = _segments[i];
       if (segment.indexCount == 0) segment.calculateIndices();
-      if (segment.hitTest(x, y)) windingCount += segment.clockwise ? 1 : -1;
+      windingCount += segment.windingCountHitTest(x, y);
     }
     return windingCount != 0;
   }

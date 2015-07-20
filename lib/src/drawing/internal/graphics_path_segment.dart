@@ -120,11 +120,11 @@ class GraphicsPathSegment {
 
   //---------------------------------------------------------------------------
 
-  bool hitTest(double x, double y) {
+  int windingCountHitTest(double x, double y) {
 
-    if (_minX > x || _maxX < x) return false;
-    if (_minY > y || _maxY < y) return false;
-    if (_vertexCount < 3) return false;
+    if (_minX > x || _maxX < x) return 0;
+    if (_minY > y || _maxY < y) return 0;
+    if (_vertexCount < 3) return 0;
 
     // Winding Number Method
     // http://geomalgorithms.com/a03-_inclusion.html
@@ -145,7 +145,7 @@ class GraphicsPathSegment {
       ay = by;
     }
 
-    return wn != 0;
+    return wn;
   }
 
   //---------------------------------------------------------------------------
