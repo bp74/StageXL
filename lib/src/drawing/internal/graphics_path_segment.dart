@@ -191,23 +191,19 @@ class GraphicsPathSegment {
       num x21 = x2 - x1;
       num y21 = y2 - y1;
 
-      var earFound = false;
+      num u = 0.0, v = 0.0;
       num tmp = y31 * x21 - x31 * y21;
+      var earFound = (tmp == 0) || (tmp > 0) == clockwise;
 
-      if ((tmp == 0) || (tmp > 0) == clockwise) {
-        earFound = true;
-        for(int j = 0; j < available.length; j++) {
-          int vi = available[j];
-          if (vi != i0 && vi != i1 && vi != i2) {
-            num x01 = buffer[vi * 2 + 0] - x1;
-            num y01 = buffer[vi * 2 + 1] - y1;
-            num u = tmp * (x21 * y01 - y21 * x01);
-            num v = tmp * (y31 * x01 - x31 * y01);
-            if ((u >= 0.0) && (v >= 0.0) && (u + v < tmp * tmp)) {
-              earFound = false;
-              break;
-            }
-          }
+      for(int j = 0; j < available.length && earFound; j++) {
+        int vi = available[j];
+        if (vi != i0 && vi != i1 && vi != i2) {
+          num x01 = buffer[vi * 2 + 0] - x1;
+          num y01 = buffer[vi * 2 + 1] - y1;
+          if ((u = tmp * (x21 * y01 - y21 * x01)) < 0.0) continue;
+          if ((v = tmp * (y31 * x01 - x31 * y01)) < 0.0) continue;
+          if ((u + v >= tmp * tmp)) continue;
+          earFound = false;
         }
       }
 
