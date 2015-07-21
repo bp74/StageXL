@@ -190,33 +190,24 @@ class GraphicsPathSegment {
       num y31 = y3 - y1;
       num x21 = x2 - x1;
       num y21 = y2 - y1;
-      num d = y21 * x31 - x21 * y31;
-      bool earFound = false;
 
-      if ((d == 0) || (d < 0) == clockwise) {
+      var earFound = false;
+      num tmp = y31 * x21 - x31 * y21;
 
+      if ((tmp == 0) || (tmp > 0) == clockwise) {
         earFound = true;
-
-        for(int j = 0; j < available.length && earFound; j++) {
-
+        for(int j = 0; j < available.length; j++) {
           int vi = available[j];
-          if(vi == i0 || vi == i1 || vi == i2) continue;
-
-          num x01 = buffer[vi * 2 + 0] - x1;
-          num y01 = buffer[vi * 2 + 1] - y1;
-
-          num dot00 = x31 * x31 + y31 * y31;
-          num dot01 = x31 * x21 + y31 * y21;
-          num dot02 = x31 * x01 + y31 * y01;
-          num dot11 = x21 * x21 + y21 * y21;
-          num dot12 = x21 * x01 + y21 * y01;
-
-          num d = dot00 * dot11 - dot01 * dot01;
-          num u = dot11 * dot02 - dot01 * dot12;
-          num v = dot00 * dot12 - dot01 * dot02;
-
-          if ((d > 0.0) && (u >= 0.0) && (v >= 0.0) && (v + u < d)) earFound = false;
-          if ((d < 0.0) && (u <= 0.0) && (v <= 0.0) && (v + u > d)) earFound = false;
+          if (vi != i0 && vi != i1 && vi != i2) {
+            num x01 = buffer[vi * 2 + 0] - x1;
+            num y01 = buffer[vi * 2 + 1] - y1;
+            num u = tmp * (x21 * y01 - y21 * x01);
+            num v = tmp * (y31 * x01 - x31 * y01);
+            if ((u >= 0.0) && (v >= 0.0) && (u + v < tmp * tmp)) {
+              earFound = false;
+              break;
+            }
+          }
         }
       }
 
