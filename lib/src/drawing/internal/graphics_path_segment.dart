@@ -200,14 +200,15 @@ class GraphicsPathSegment {
         if (vi != i0 && vi != i1 && vi != i2) {
           num x01 = buffer[vi * 2 + 0] - x1;
           num y01 = buffer[vi * 2 + 1] - y1;
-          if ((u = tmp * (x21 * y01 - y21 * x01)) < 0.0) continue;
-          if ((v = tmp * (y31 * x01 - x31 * y01)) < 0.0) continue;
-          if ((u + v >= tmp * tmp)) continue;
-          earFound = false;
+          if ((u = tmp * (x21 * y01 - y21 * x01)) >= 0.0) {
+            if ((v = tmp * (y31 * x01 - x31 * y01)) >= 0.0) {
+              earFound = u + v >= tmp * tmp;
+            }
+          }
         }
       }
 
-      if(earFound) {
+      if (earFound) {
         addIndex(i0);
         addIndex(i1);
         addIndex(i2);
