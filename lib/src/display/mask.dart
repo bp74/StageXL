@@ -48,8 +48,10 @@ abstract class Mask implements RenderMask {
   /// Create a circular mask.
 
   factory Mask.circle(num x, num y, num radius) {
-    var circle = new Circle<num>(x, y, radius);
-    return new _CircleMask(circle);
+    var graphics = new Graphics();
+    graphics.circle(x, y, radius);
+    graphics.fillColor(Color.Magenta);
+    return new _GraphicsMask(graphics);
   }
 
   /// Create a custom mask with a polygonal shape defined by [points].
@@ -139,54 +141,6 @@ class _RectangleMask extends _TransformedMask {
 
       renderState.renderTriangle(l, t, r, t, r, b, Color.Magenta);
       renderState.renderTriangle(l, t, r, b, l, b, Color.Magenta);
-    }
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-class _CircleMask extends _TransformedMask {
-
-  final Circle<num> circle;
-
-  _CircleMask(this.circle);
-
-  @override
-  bool hitTestTransformed(num x, num y) {
-    return circle.contains(x, y);
-  }
-
-  @override
-  void renderMaskTransformed(RenderState renderState) {
-
-    var renderContext = renderState.renderContext;
-
-    if (renderContext is RenderContextCanvas) {
-
-      renderContext.setTransform(renderState.globalMatrix);
-      renderContext.rawContext.arc(circle.x, circle.y, circle.radius, 0, PI * 2.0, false);
-
-    } else {
-
-      var steps = 40;
-      var color = Color.Magenta;
-      var centerX = circle.x;
-      var centerY = circle.y;
-      var currentX = centerX + circle.radius;
-      var currentY = centerY;
-      var cosR = cos(2 * PI / steps);
-      var sinR = sin(2 * PI / steps);
-      var tx = centerX - centerX * cosR + centerY * sinR;
-      var ty = centerY - centerX * sinR - centerY * cosR;
-
-      for (int s = 0; s <= steps; s++) {
-        var nextX = currentX * cosR - currentY * sinR + tx;
-        var nextY = currentX * sinR + currentY * cosR + ty;
-        renderState.renderTriangle(
-            centerX, centerY, currentX, currentY, nextX, nextY, color);
-        currentX = nextX;
-        currentY = nextY;
-      }
     }
   }
 }
