@@ -217,7 +217,7 @@ class Graphics {
 
   void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
-      var commands = _getCommands(true);
+      var commands = _getCommands(false);
       var graphicsContext = new GraphicsContextCanvasMask(renderState);
       graphicsContext.applyGraphicsCommands(commands);
     } else {

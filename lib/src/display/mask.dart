@@ -38,7 +38,7 @@ abstract class Mask implements RenderMask {
 
   //---------------------------------------------------------------------------
 
-  /// Create a rectangluar mask.
+  /// Create a rectangular mask.
 
   factory Mask.rectangle(num x, num y, num width, num height) {
     var rectangle = new Rectangle<num>(x, y, width, height);
@@ -49,32 +49,29 @@ abstract class Mask implements RenderMask {
 
   factory Mask.circle(num x, num y, num radius) {
     var circle = new Circle<num>(x, y, radius);
-    return new _CirlceMask(circle);
+    return new _CircleMask(circle);
   }
 
   /// Create a custom mask with a polygonal shape defined by [points].
 
   factory Mask.custom(List<Point<num>> points) {
-    var polygon = new Polygon(points);
-    return new _PolygonMask(polygon);
+    var graphics = new Graphics();
+    points.forEach((p) => graphics.lineTo(p.x, p.y));
+    graphics.fillColor(Color.Magenta);
+    return new _GraphicsMask(graphics);
   }
 
-  /// Create a custom mask defined by a [Graphics] object. Currently
-  /// only the Canvas2D renderer supports this type of mask. You can't
-  /// use this mask with the WebGL renderer.
+  /// Create a custom mask defined by a [Graphics] object.
 
   factory Mask.graphics(Graphics graphics) {
     return new _GraphicsMask(graphics);
   }
 
-  /// Create a custom mask defined by a [Shape] object. Currently
-  /// only the Canvas2D renderer supports this type of mask. You can't
-  /// use this mask with the WebGL renderer.
+  /// Create a custom mask defined by a [Shape] object.
 
   factory Mask.shape(Shape shape) {
     return new _ShapeMask(shape);
   }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -148,11 +145,11 @@ class _RectangleMask extends _TransformedMask {
 
 //-----------------------------------------------------------------------------
 
-class _CirlceMask extends _TransformedMask {
+class _CircleMask extends _TransformedMask {
 
   final Circle<num> circle;
 
-  _CirlceMask(this.circle);
+  _CircleMask(this.circle);
 
   @override
   bool hitTestTransformed(num x, num y) {
@@ -189,52 +186,6 @@ class _CirlceMask extends _TransformedMask {
             centerX, centerY, currentX, currentY, nextX, nextY, color);
         currentX = nextX;
         currentY = nextY;
-      }
-    }
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-class _PolygonMask extends _TransformedMask {
-
-  final Polygon polygon;
-  final Rectangle<num> polygonBounds;
-  final List<int> polygonTriangles;
-
-  _PolygonMask(Polygon polygon) :
-    polygon = polygon,
-    polygonBounds = polygon.getBounds(),
-    polygonTriangles = polygon.triangulate();
-
-  @override
-  bool hitTestTransformed(num x, num y) {
-    return polygonBounds.contains(x, y) ? polygon.contains(x, y) : false;
-  }
-
-  @override
-  void renderMaskTransformed(RenderState renderState) {
-
-    var points = polygon.points;
-    var triangles = polygonTriangles;
-    var renderContext = renderState.renderContext;
-
-    if (renderContext is RenderContextCanvas) {
-
-      renderContext.setTransform(renderState.globalMatrix);
-      for (int i = 0; i <= points.length; i++) {
-        var point = points[i % points.length];
-        renderContext.rawContext.lineTo(point.x, point.y);
-      }
-
-    } else {
-
-      for (int i = 0; i <= triangles.length - 3; i += 3) {
-        var p1 = points[triangles[i + 0]];
-        var p2 = points[triangles[i + 1]];
-        var p3 = points[triangles[i + 2]];
-        renderState.renderTriangle(
-            p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, Color.Magenta);
       }
     }
   }
