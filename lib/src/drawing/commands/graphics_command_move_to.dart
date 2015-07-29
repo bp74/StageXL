@@ -1,11 +1,11 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandMoveTo extends GraphicsCommand {
+class GraphicsCommandMoveTo extends GraphicsCommand {
 
   final double x;
   final double y;
 
-  _GraphicsCommandMoveTo(num x, num y) :
+  GraphicsCommandMoveTo(num x, num y) :
       this.x = x.toDouble(),
       this.y = y.toDouble();
 

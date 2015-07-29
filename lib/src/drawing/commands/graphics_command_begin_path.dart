@@ -1,6 +1,6 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandBeginPath extends GraphicsCommand {
+class GraphicsCommandBeginPath extends GraphicsCommand {
 
   @override
   void updateContext(GraphicsContext context) {

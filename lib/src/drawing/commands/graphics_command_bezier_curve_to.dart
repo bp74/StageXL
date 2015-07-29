@@ -1,6 +1,6 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandBezierCurveTo extends GraphicsCommand {
+class GraphicsCommandBezierCurveTo extends GraphicsCommand {
 
   final double controlX1;
   final double controlY1;
@@ -9,7 +9,7 @@ class _GraphicsCommandBezierCurveTo extends GraphicsCommand {
   final double endX;
   final double endY;
 
-  _GraphicsCommandBezierCurveTo(
+  GraphicsCommandBezierCurveTo(
       num controlX1, num controlY1,
       num controlX2, num controlY2,
       num endX, num endY) :

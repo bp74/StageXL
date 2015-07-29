@@ -1,6 +1,6 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandRectRound extends GraphicsCommand {
+class GraphicsCommandRectRound extends GraphicsCommand {
 
   final double x;
   final double y;
@@ -9,7 +9,7 @@ class _GraphicsCommandRectRound extends GraphicsCommand {
   final double ellipseWidth;
   final double ellipseHeight;
 
-  _GraphicsCommandRectRound(
+  GraphicsCommandRectRound(
       num x, num y, num width, num height,
       num ellipseWidth, num ellipseHeight) :
 

@@ -1,13 +1,13 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandStrokeColor extends GraphicsCommand {
+class GraphicsCommandStrokeColor extends GraphicsCommand {
 
   final int color;
   final double lineWidth;
   final String lineJoin;
   final String lineCap;
 
-  _GraphicsCommandStrokeColor(
+  GraphicsCommandStrokeColor(
       int color, num lineWidth, String lineJoin, String lineCap) :
 
       this.color = color.toInt(),

@@ -1,13 +1,13 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandEllipse extends GraphicsCommand {
+class GraphicsCommandEllipse extends GraphicsCommand {
 
   final double x;
   final double y;
   final double width;
   final double height;
 
-  _GraphicsCommandEllipse(
+  GraphicsCommandEllipse(
       num x, num y, num width, num height) :
 
       this.x = x.toDouble(),

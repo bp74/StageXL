@@ -1,13 +1,13 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandCircle extends GraphicsCommand {
+class GraphicsCommandCircle extends GraphicsCommand {
 
   final double x;
   final double y;
   final double radius;
   final bool antiClockwise;
 
-  _GraphicsCommandCircle(
+  GraphicsCommandCircle(
       num x, num y, num radius, bool antiClockwise) :
 
       this.x = x.toDouble(),

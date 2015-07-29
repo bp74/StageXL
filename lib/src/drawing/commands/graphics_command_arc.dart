@@ -1,6 +1,6 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandArc extends GraphicsCommand {
+class GraphicsCommandArc extends GraphicsCommand {
 
   final double x;
   final double y;
@@ -9,7 +9,7 @@ class _GraphicsCommandArc extends GraphicsCommand {
   final double endAngle;
   final bool antiClockwise;
 
-  _GraphicsCommandArc(
+  GraphicsCommandArc(
       num x, num y, num radius,
       num startAngle, num endAngle, bool antiClockwise) :
 

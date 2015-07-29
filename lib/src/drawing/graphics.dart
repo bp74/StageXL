@@ -45,100 +45,100 @@ class Graphics {
 
   /// Start drawing a freeform path.
   void beginPath() {
-    _addCommand(new _GraphicsCommandBeginPath());
+    _addCommand(new GraphicsCommandBeginPath());
   }
 
   /// Stop drawing a freeform path.
   void closePath() {
-    _addCommand(new _GraphicsCommandClosePath());
+    _addCommand(new GraphicsCommandClosePath());
   }
 
   //---------------------------------------------------------------------------
 
   /// Moves the next point in the path to [x] and [y]
   void moveTo(num x, num y) {
-    _addCommand(new _GraphicsCommandMoveTo(x, y));
+    _addCommand(new GraphicsCommandMoveTo(x, y));
   }
 
   /// From the current point in the path, draw a line to [x] and [y]
   void lineTo(num x, num y) {
-    _addCommand(new _GraphicsCommandLineTo(x, y));
+    _addCommand(new GraphicsCommandLineTo(x, y));
   }
 
   /// From the current point in the path, draw an arc to [endX] and [endY]
   void arcTo(num controlX, num controlY, num endX, num endY, num radius) {
-    _addCommand(new _GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
+    _addCommand(new GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
   }
 
   /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
   void quadraticCurveTo(num controlX, num controlY, num endX, num endY) {
-    _addCommand(new _GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
+    _addCommand(new GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
   }
 
   /// From the current point in the path, draw a bezier curve to [endX] and [endY]
   void bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
-    _addCommand(new _GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
+    _addCommand(new GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
   }
 
   //---------------------------------------------------------------------------
 
   /// Draw a rectangle at [x] and [y]
   void rect(num x, num y, num width, num height) {
-    _addCommand(new _GraphicsCommandRect(x, y, width, height));
+    _addCommand(new GraphicsCommandRect(x, y, width, height));
   }
 
   /// Draw a rounded rectangle at [x] and [y].
   void rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
-    _addCommand(new _GraphicsCommandRectRound(x, y, width, height, ellipseWidth, ellipseHeight));
+    _addCommand(new GraphicsCommandRectRound(x, y, width, height, ellipseWidth, ellipseHeight));
   }
 
   /// Draw an arc at [x] and [y].
   void arc(num x, num y, num radius, num startAngle, num endAngle, [bool antiClockwise = false]) {
-    _addCommand(new _GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
+    _addCommand(new GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
   }
 
   /// Draw a circle at [x] and [y]
   void circle(num x, num y, num radius, [bool antiClockwise = false]) {
-    _addCommand(new _GraphicsCommandCircle(x, y, radius, antiClockwise));
+    _addCommand(new GraphicsCommandCircle(x, y, radius, antiClockwise));
   }
 
   /// Draw an ellipse at [x] and [y]
   void ellipse(num x, num y, num width, num height) {
-    _addCommand(new _GraphicsCommandEllipse(x, y, width, height));
+    _addCommand(new GraphicsCommandEllipse(x, y, width, height));
   }
 
   //---------------------------------------------------------------------------
 
   /// Apply a fill color to the **previously drawn** vector object.
   void fillColor(int color) {
-    _addCommand(new _GraphicsCommandFillColor(color));
+    _addCommand(new GraphicsCommandFillColor(color));
   }
 
   /// Apply a fill gradient to the **previously drawn** vector object.
   void fillGradient(GraphicsGradient gradient) {
-    _addCommand(new _GraphicsCommandFillGradient(gradient));
+    _addCommand(new GraphicsCommandFillGradient(gradient));
   }
 
   /// Apply a fill pattern to the **previously drawn** vector object.
   void fillPattern(GraphicsPattern pattern) {
-    _addCommand(new _GraphicsCommandFillPattern(pattern));
+    _addCommand(new GraphicsCommandFillPattern(pattern));
   }
 
   //---------------------------------------------------------------------------
 
   /// Apply a stroke color to the **previously drawn** vector object.
   void strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) {
-    _addCommand(new _GraphicsCommandStrokeColor(color, width, joints, caps));
+    _addCommand(new GraphicsCommandStrokeColor(color, width, joints, caps));
   }
 
   /// Apply a stroke color to the **previously drawn** vector object.
   void strokeGradient(GraphicsGradient gradient, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) {
-    _addCommand(new _GraphicsCommandStrokeGradient(gradient, width, joints, caps));
+    _addCommand(new GraphicsCommandStrokeGradient(gradient, width, joints, caps));
   }
 
   /// Apply a stroke pattern to the **previously drawn** vector object.
   void strokePattern(GraphicsPattern pattern, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) {
-    _addCommand(new _GraphicsCommandStrokePattern(pattern, width, joints, caps));
+    _addCommand(new GraphicsCommandStrokePattern(pattern, width, joints, caps));
   }
 
   //---------------------------------------------------------------------------

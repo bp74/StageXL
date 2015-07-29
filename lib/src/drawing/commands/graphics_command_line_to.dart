@@ -1,11 +1,11 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandLineTo extends GraphicsCommand {
+class GraphicsCommandLineTo extends GraphicsCommand {
 
   final double x;
   final double y;
 
-  _GraphicsCommandLineTo(num x, num y) :
+  GraphicsCommandLineTo(num x, num y) :
       this.x = x.toDouble(),
       this.y = y.toDouble();
 

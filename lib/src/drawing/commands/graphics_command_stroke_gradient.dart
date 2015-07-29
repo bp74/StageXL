@@ -1,13 +1,13 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandStrokeGradient extends GraphicsCommand {
+class GraphicsCommandStrokeGradient extends GraphicsCommand {
 
   final GraphicsGradient gradient;
   final double lineWidth;
   final String lineJoin;
   final String lineCap;
 
-  _GraphicsCommandStrokeGradient(
+  GraphicsCommandStrokeGradient(
       GraphicsGradient gradient,
       num lineWidth, String lineJoin, String lineCap) :
 

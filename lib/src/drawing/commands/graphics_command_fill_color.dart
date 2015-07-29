@@ -1,10 +1,10 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandFillColor extends GraphicsCommand {
+class GraphicsCommandFillColor extends GraphicsCommand {
 
   final int color;
 
-  _GraphicsCommandFillColor(this.color);
+  GraphicsCommandFillColor(this.color);
 
   //---------------------------------------------------------------------------
 

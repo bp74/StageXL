@@ -1,6 +1,6 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandArcTo extends GraphicsCommand {
+class GraphicsCommandArcTo extends GraphicsCommand {
 
   final double controlX;
   final double controlY;
@@ -8,7 +8,7 @@ class _GraphicsCommandArcTo extends GraphicsCommand {
   final double endY;
   final double radius;
 
-  _GraphicsCommandArcTo(
+  GraphicsCommandArcTo(
       num controlX, num controlY,
       num endX, num endY, num radius) :
 

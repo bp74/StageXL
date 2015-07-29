@@ -1,13 +1,13 @@
-part of stagexl.drawing;
+part of stagexl.drawing.commands;
 
-class _GraphicsCommandStrokePattern extends GraphicsCommand {
+class GraphicsCommandStrokePattern extends GraphicsCommand {
 
   final GraphicsPattern pattern;
   final double lineWidth;
   final String lineJoin;
   final String lineCap;
 
-  _GraphicsCommandStrokePattern(
+  GraphicsCommandStrokePattern(
       GraphicsPattern pattern,
       num lineWidth, String lineJoin, String lineCap) :
 
