@@ -1,5 +1,6 @@
 library stagexl.drawing.commands;
 
+import 'dart:math' as math;
 import 'internal.dart';
 
 part 'commands/graphics_command_arc.dart';

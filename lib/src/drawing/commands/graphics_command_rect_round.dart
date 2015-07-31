@@ -24,6 +24,14 @@ class GraphicsCommandRectRound extends GraphicsCommand {
 
   @override
   void updateContext(GraphicsContext context) {
-    context.rectRound(x, y, width, height, ellipseWidth, ellipseHeight);
+    context.moveTo(x + ellipseWidth, y);
+    context.lineTo(x + width - ellipseWidth, y);
+    context.quadraticCurveTo(x + width, y, x + width, y + ellipseHeight);
+    context.lineTo(x + width, y + height - ellipseHeight);
+    context.quadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height);
+    context.lineTo(x + ellipseWidth, y + height);
+    context.quadraticCurveTo(x, y + height, x, y + height - ellipseHeight);
+    context.lineTo(x, y + ellipseHeight);
+    context.quadraticCurveTo(x, y, x + ellipseWidth, y);
   }
 }

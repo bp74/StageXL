@@ -138,18 +138,6 @@ class GraphicsPath {
     this.lineTo(x, y + height);
   }
 
-  void rectRound(double x, double y, double width, double height, double ellipseWidth, double ellipseHeight) {
-    this.moveTo(x + ellipseWidth, y);
-    this.lineTo(x + width - ellipseWidth, y);
-    this.quadraticCurveTo(x + width, y, x + width, y + ellipseHeight);
-    this.lineTo(x + width, y + height - ellipseHeight);
-    this.quadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height);
-    this.lineTo(x + ellipseWidth, y + height);
-    this.quadraticCurveTo(x, y + height, x, y + height - ellipseHeight);
-    this.lineTo(x, y + ellipseHeight);
-    this.quadraticCurveTo(x, y, x + ellipseWidth, y);
-  }
-
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
 
     num tau = 2.0 * math.PI;
@@ -185,30 +173,6 @@ class GraphicsPath {
       var by = ax * sinR + ay * cosR + ty;
       _currentSegment.addVertex(ax = bx, ay = by);
     }
-  }
-
-  void circle(double x, double y, double radius, bool antiClockwise) {
-    this.moveTo(x + radius, y);
-    this.arc(x, y, radius, 0.0, 2 * math.PI, antiClockwise);
-  }
-
-  void ellipse(double x, double y, double width, double height) {
-
-    num kappa = 0.5522848;
-    num ox = (width / 2) * kappa;
-    num oy = (height / 2) * kappa;
-    num x1 = x - width / 2;
-    num y1 = y - height / 2;
-    num x2 = x + width / 2;
-    num y2 = y + height / 2;
-    num xm = x;
-    num ym = y;
-
-    this.moveTo(x1, ym);
-    this.bezierCurveTo(x1, ym - oy, xm - ox, y1, xm, y1);
-    this.bezierCurveTo(xm + ox, y1, x2, ym - oy, x2, ym);
-    this.bezierCurveTo(x2, ym + oy, xm + ox, y2, xm, y2);
-    this.bezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym);
   }
 
   //---------------------------------------------------------------------------

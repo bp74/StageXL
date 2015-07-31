@@ -19,6 +19,7 @@ class GraphicsCommandCircle extends GraphicsCommand {
 
   @override
   void updateContext(GraphicsContext context) {
-    context.circle(x, y, radius, antiClockwise);
+    context.moveTo(x + radius, y);
+    context.arc(x, y, radius, 0.0, 2 * math.PI, antiClockwise);
   }
 }

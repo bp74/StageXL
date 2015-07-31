@@ -48,26 +48,12 @@ abstract class GraphicsContext {
     _path.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
 
-  //---------------------------------------------------------------------------
-
   void rect(double x, double y, double width, double height) {
     _path.rect(x, y, width, height);
   }
 
-  void rectRound(double x, double y, double width, double height, double ellipseWidth, double ellipseHeight) {
-    _path.rectRound(x, y, width, height, ellipseWidth, ellipseHeight);
-  }
-
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
     _path.arc(x, y, radius, startAngle, endAngle, antiClockwise);
-  }
-
-  void circle(double x, double y, double radius, bool antiClockwise) {
-    _path.circle(x, y, radius, antiClockwise);
-  }
-
-  void ellipse(double x, double y, double width, double height) {
-    _path.ellipse(x, y, width, height);
   }
 
   //---------------------------------------------------------------------------
