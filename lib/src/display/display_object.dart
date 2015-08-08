@@ -515,43 +515,39 @@ abstract class DisplayObject
 
       _transformationMatrixRefresh = false;
 
-      num skewXrotation =  _skewX + _rotation;
-      num skewYrotation =  _skewY + _rotation;
+      var matrix = _transformationMatrix;
+      num rotation = _rotation;
       num scaleX = _scaleX;
       num scaleY = _scaleY;
-      num pivotX = _pivotX;
-      num pivotY = _pivotY;
+      num skewX = _skewX;
+      num skewY = _skewY;
 
       // ToDo: https://bugzilla.mozilla.org/show_bug.cgi?id=661452
       if (scaleX > -0.0001 && scaleX < 0.0001) scaleX = (scaleX >= 0) ? 0.0001 : -0.0001;
       if (scaleY > -0.0001 && scaleY < 0.0001) scaleY = (scaleY >= 0) ? 0.0001 : -0.0001;
 
-      if (skewXrotation == 0.0 && skewYrotation == 0.0) {
-
-        _transformationMatrix.setTo(scaleX, 0.0, 0.0, scaleY, _x - pivotX * scaleX, _y - pivotY * scaleY);
-
+      if (skewX != 0.0 || skewY != 0.0) {
+        num ma = scaleX * cos(skewY + rotation);
+        num mb = scaleX * sin(skewY + rotation);
+        num mc = - scaleY * sin(skewX + rotation);
+        num md = scaleY * cos(skewX + rotation);
+        num mx = _x - _pivotX * ma - _pivotY * mc;
+        num my = _y - _pivotX * mb - _pivotY * md;
+        matrix.setTo(ma, mb, mc, md, mx, my);
+      } else if (rotation != 0.0) {
+        num cr = cos(rotation);
+        num sr = sin(rotation);
+        num ma = scaleX * cr;
+        num mb = scaleX * sr;
+        num mc = - scaleY * sr;
+        num md = scaleY * cr;
+        num mx = _x - _pivotX * ma - _pivotY * mc;
+        num my = _y - _pivotX * mb - _pivotY * md;
+        matrix.setTo(ma, mb, mc, md, mx, my);
       } else {
-
-        num a, b, c, d;
-        num cosX = cos(skewXrotation);
-        num sinX = sin(skewXrotation);
-
-        if (skewXrotation == skewYrotation) {
-          a =   scaleX * cosX;
-          b =   scaleX * sinX;
-          c = - scaleY * sinX;
-          d =   scaleY * cosX;
-        } else {
-          a =   scaleX * cos(skewYrotation);
-          b =   scaleX * sin(skewYrotation);
-          c = - scaleY * sinX;
-          d =   scaleY * cosX;
-        }
-
-        num tx =  _x - (pivotX * a + pivotY * c);
-        num ty =  _y - (pivotX * b + pivotY * d);
-
-        _transformationMatrix.setTo(a, b, c, d, tx, ty);
+        num mx = _x - _pivotX * scaleX;
+        num my = _y - _pivotY * scaleY;
+        matrix.setTo(scaleX, 0.0, 0.0, scaleY, mx, my);
       }
     }
 
