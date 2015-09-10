@@ -45,6 +45,17 @@ class Juggler implements Animatable {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
+  /// Check whether this Juggler has active animatables or not.
+
+  bool get hasAnimatables {
+    var link = _firstAnimatableLink;
+    while (identical(link, _lastAnimatableLink) == false) {
+      if (link.animatable != null) return true;
+      link = link.nextAnimatableLink;
+    }
+    return false;
+  }
+
   /// The elapsed time since the juggler has started.
 
   num get elapsedTime => _elapsedTime;
