@@ -106,7 +106,7 @@ class Point<T extends num> implements math.Point<T> {
 
   /// Calculates the distance from this Point to another Point.
 
-  num distanceTo(math.Point<num> point) {
+  double distanceTo(math.Point<T> point) {
     return sqrt(squaredDistanceTo(point));
   }
 

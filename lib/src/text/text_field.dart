@@ -295,7 +295,7 @@ class TextField extends InteractiveObject {
     var startIndex = 0;
     var checkLine = '';
     var validLine = '';
-    var lineWidth = 0;
+    var lineWidth = 0.0;
     var lineIndent = 0;
 
     var textFormat = _defaultTextFormat;

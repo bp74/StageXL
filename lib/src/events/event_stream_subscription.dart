@@ -42,7 +42,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   }
 
   @override
-  void onError(void handleError(error)) {
+  void onError(Function handleError) {
     // This stream has no errors.
   }
 

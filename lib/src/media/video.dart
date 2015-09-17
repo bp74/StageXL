@@ -104,7 +104,7 @@ class Video {
     StreamSubscription onCanPlaySubscription = null;
     StreamSubscription onErrorSubscription = null;
 
-    void onCanPlay(e) {
+    void onCanPlay(html.Event e) {
       var video = new Video._(videoElement);
       video.volume = this.volume;
       video.muted = this.muted;
@@ -113,7 +113,7 @@ class Video {
       completer.complete(video);
     }
 
-    void onError(e) {
+    void onError(html.Event e) {
       onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
       completer.completeError(e);

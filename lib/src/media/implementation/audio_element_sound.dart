@@ -32,6 +32,8 @@ class AudioElementSound extends Sound {
       return new AudioElementSound._(audioElement);
     } catch (e) {
       if (soundLoadOptions.ignoreErrors) {
+        // dartanalyzer --strong known issues
+        // https://github.com/dart-lang/dev_compiler/issues/316
         return MockSound.load(url, soundLoadOptions);
       } else {
         throw new StateError("Failed to load audio.");
@@ -41,7 +43,7 @@ class AudioElementSound extends Sound {
 
   static Future<Sound> loadDataUrl(String dataUrl) async {
 
-    var audioUrls = [dataUrl];
+    var audioUrls = <String>[dataUrl];
     var loadData = false;
     var corsEnabled = false;
 
@@ -61,7 +63,7 @@ class AudioElementSound extends Sound {
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
     var startTime = 0.0;
     var duration = _audioElement.duration;
-    if (duration.isInfinite) duration = 3600;
+    if (duration.isInfinite) duration = 3600.0;
     return new AudioElementSoundChannel(
         this, startTime, duration, loop, soundTransform);
   }
@@ -84,7 +86,7 @@ class AudioElementSound extends Sound {
       }
     }
 
-    var audioElement = _audioElement.clone(true);
+    var audioElement = _audioElement.clone(true) as AudioElement;
     var audioCanPlay = audioElement.onCanPlay.first;
     if (audioElement.readyState == 0) await audioCanPlay;
     audioElement.onEnded.listen(_onAudioEnded);
@@ -97,7 +99,7 @@ class AudioElementSound extends Sound {
     _soundChannels[audioElement] = null;
   }
 
-  void _onAudioEnded(event) {
+  void _onAudioEnded(html.Event event) {
     var audioElement = event.target;
     var soundChannel = _soundChannels[audioElement];
     if (soundChannel != null) soundChannel._onAudioEnded();

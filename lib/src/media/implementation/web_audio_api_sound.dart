@@ -29,6 +29,8 @@ class WebAudioApiSound extends Sound {
     }
 
     if (soundLoadOptions.ignoreErrors) {
+      // dartanalyzer --strong known issues
+      // https://github.com/dart-lang/dev_compiler/issues/316
       return MockSound.load(url, soundLoadOptions);
     } else {
       throw new StateError("Failed to load audio.");

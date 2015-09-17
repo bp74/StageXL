@@ -28,7 +28,7 @@ part of stagexl.events;
 
 class EventDispatcher {
 
-  Map<String, EventStream> _eventStreams;
+  Map<String, EventStream<Event>> _eventStreams;
 
   //----------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ class EventDispatcher {
 
     var eventStreams = _eventStreams;
     if (eventStreams == null) {
-      eventStreams = new Map<String, EventStream>();
+      eventStreams = new Map<String, EventStream<Event>>();
       _eventStreams = eventStreams;
     }
 

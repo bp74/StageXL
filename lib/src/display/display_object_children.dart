@@ -83,9 +83,7 @@ class DisplayObjectChildren implements Iterable<DisplayObject> {
     return _children.any(test);
   }
 
-  bool contains(DisplayObject element) {
-    return _children.contains(element);
-  }
+  bool contains(Object element) => _children.contains(element);
 
   DisplayObject elementAt(int index) {
     return _children[index];

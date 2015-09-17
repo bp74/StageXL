@@ -540,8 +540,8 @@ class Stage extends DisplayObjectContainer {
     int button = event.button;
 
     InteractiveObject target = null;
-    Point stagePoint = _clientTransformation.transformPoint(event.client);
-    Point localPoint = new Point<num>(0.0, 0.0);
+    var stagePoint = _clientTransformation.transformPoint(event.client);
+    var localPoint = new Point<num>(0.0, 0.0);
 
     if (button < 0 || button > 2) return;
     if (event.type == "mousemove" && _mousePosition == stagePoint) return;
