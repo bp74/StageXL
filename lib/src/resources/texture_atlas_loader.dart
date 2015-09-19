@@ -84,7 +84,7 @@ class _TextureAtlasLoaderTextureAtlas extends TextureAtlasLoader {
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
     var name = this.namePrefix + getFilenameWithoutExtension(filename);
     var bitmapData = this.textureAtlas.getBitmapData(name);
-    return new Future.value(bitmapData.renderTextureQuad);
+    return bitmapData.renderTextureQuad;
   }
 }
 

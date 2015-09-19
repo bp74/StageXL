@@ -60,7 +60,7 @@ class BitmapData implements BitmapDrawable {
 
   /// Loads a BitmapData from the given url.
 
-  static Future<BitmapData> load(String url, [BitmapDataLoadOptions bitmapDataLoadOptions]) {
+  static Future<BitmapData> load(String url, [BitmapDataLoadOptions bitmapDataLoadOptions]) async {
 
     if (bitmapDataLoadOptions == null) {
       bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
@@ -83,9 +83,8 @@ class BitmapData implements BitmapDrawable {
     }
 
     var imageLoader = new ImageLoader(url, webpAvailable, corsEnabled);
-    return imageLoader.done.then((image) {
-      return new BitmapData.fromImageElement(image, pixelRatio);
-    });
+    var image = await imageLoader.done;
+    return new BitmapData.fromImageElement(image, pixelRatio);
   }
 
   //----------------------------------------------------------------------------

@@ -147,12 +147,12 @@ class DisplacementMapFilterProgram extends BitmapFilterProgram {
     disMatrix.copyFrom(renderTextureQuad.samplerMatrix);
     disMatrix.scale(displacementMapFilter.scaleX, displacementMapFilter.scaleY);
 
-    var uMapMatrix = new Float32List.fromList([
+    var uMapMatrix = new Float32List.fromList(<double>[
       mapMatrix.a, mapMatrix.c, mapMatrix.tx,
       mapMatrix.b, mapMatrix.d, mapMatrix.ty,
       0.0, 0.0, 1.0]);
 
-    var uDisMatrix = new Float32List.fromList([
+    var uDisMatrix = new Float32List.fromList(<double>[
       disMatrix.a, disMatrix.c, 0.0,
       disMatrix.b, disMatrix.d, 0.0,
       0.0, 0.0, 1.0]);

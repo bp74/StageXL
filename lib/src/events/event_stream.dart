@@ -24,9 +24,9 @@ class EventStream<T extends Event> extends Stream<T> {
   bool get isBroadcast => true;
 
   @override
-  Stream<T> asBroadcastStream({
-    void onListen(StreamSubscription subscription),
-    void onCancel(StreamSubscription subscription)}) => this;
+  Stream<T> asBroadcastStream(
+          {void onListen(StreamSubscription<T> subscription),
+          void onCancel(StreamSubscription<T> subscription)}) => this;
 
   bool get hasSubscriptions => _subscriptions.length > 0;
   bool get hasCapturingSubscriptions => _capturingSubscriptionCount > 0;
@@ -53,9 +53,11 @@ class EventStream<T extends Event> extends Stream<T> {
   /// as the stream has no errors and is never done.
 
   @override
-  EventStreamSubscription<T> listen(void onData(T event), {
-    void onError(error), void onDone(),
-    bool cancelOnError: false, int priority: 0 }) {
+  EventStreamSubscription<T> listen(void onData(T event),
+      {Function onError,
+      void onDone(),
+      bool cancelOnError: false,
+      int priority: 0}) {
 
     return _subscribe(onData, false, priority);
   }
@@ -98,15 +100,15 @@ class EventStream<T extends Event> extends Stream<T> {
   //----------------------------------------------------------------------------
 
   EventStreamSubscription<T> _subscribe(
-      EventListener eventListener, bool captures, int priority) {
-
-    var subscription = new EventStreamSubscription<T>._(this,
-        eventListener, captures, priority);
+      EventListener<T> eventListener, bool captures, int priority) {
+    var subscription = new EventStreamSubscription<T>._(
+        this, eventListener, captures, priority);
 
     // Insert the new subscription according to its priority.
 
     var oldSubscriptions = _subscriptions;
-    var newSubscriptions = new List(oldSubscriptions.length + 1);
+    var newSubscriptions =
+        new List<EventStreamSubscription>(oldSubscriptions.length + 1);
     var index = newSubscriptions.length - 1;
 
     for(int o = 0, n = 0; o < oldSubscriptions.length; o++) {
@@ -157,7 +159,8 @@ class EventStream<T extends Event> extends Stream<T> {
     var oldSubscriptions = _subscriptions;
     if (oldSubscriptions.length == 0) return;
 
-    var newSubscriptions = new List(oldSubscriptions.length - 1);
+    var newSubscriptions =
+        new List<EventStreamSubscription>(oldSubscriptions.length - 1);
 
     for(int o = 0, n = 0; o < oldSubscriptions.length; o++) {
       var oldSubscription = oldSubscriptions[o];
@@ -179,6 +182,8 @@ class EventStream<T extends Event> extends Stream<T> {
 
     var subscriptions = _subscriptions;
     var isCapturing = eventPhase == EventPhase.CAPTURING_PHASE;
+    // dartanalyzer --strong known issues
+    // https://github.com/dart-lang/dev_compiler/issues/327
     var inputEvent = event is InputEvent ? event : null;
 
     for(var i = 0; i < subscriptions.length; i++) {

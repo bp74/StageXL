@@ -51,18 +51,17 @@ class ResourceManager {
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
-  Future<ResourceManager> load() {
+  Future<ResourceManager> load() async {
 
     var futures = this.pendingResources.map((r) => r.complete);
 
-    return Future.wait(futures).then((value) {
-      var errors = this.failedResources.length;
-      if (errors > 0) {
-        throw new StateError("Failed to load $errors resource(s).");
-      } else {
-        return this;
-      }
-    });
+    await Future.wait(futures);
+    var errors = this.failedResources.length;
+    if (errors > 0) {
+      throw new StateError("Failed to load $errors resource(s).");
+    } else {
+      return this;
+    }
   }
 
   //-----------------------------------------------------------------------------------------------

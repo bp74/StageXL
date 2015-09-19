@@ -27,7 +27,7 @@ part of stagexl.toolkit;
 * OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/// **Note:** This class is not intended to be used directly. It is needed by 
+/// **Note:** This class is not intended to be used directly. It is needed by
 /// the 'Toolkit for Dart' to export from Flash Professional to Dart/StageXL.
 class MovieClip extends Sprite {
 
@@ -135,7 +135,8 @@ class MovieClip extends Sprite {
    * @param loop Initial value for the loop property.
    * @param labels A hash of labels to pass to the timeline instance associated with this MovieClip.
    **/
-  MovieClip([String mode, int startPosition, bool loop, Map<String, num> labels])
+  MovieClip(
+      [String mode, int startPosition, bool loop, Map<String, int> labels])
       : super() {
 
     this.mode = mode != null ? mode : MovieClip.INDEPENDENT;
