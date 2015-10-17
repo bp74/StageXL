@@ -56,7 +56,8 @@ class NormalMapFilterProgram extends RenderProgram {
 
   RenderBufferIndex _renderBufferIndex;
   RenderBufferVertex _renderBufferVertex;
-  int _quadCount = 0;
+  int _indexCount = 0;
+  int _vertexCount = 0;
 
   //---------------------------------------------------------------------------
   // aVertexPosition:      Float32(x), Float32(y)
@@ -150,7 +151,7 @@ class NormalMapFilterProgram extends RenderProgram {
     super.renderingContext.uniform1i(uniforms["uTexSampler"], 0);
     super.renderingContext.uniform1i(uniforms["uMapSampler"], 1);
 
-    _renderBufferIndex = renderContext.renderBufferIndexQuads;
+    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
     _renderBufferIndex.activate(renderContext);
 
     _renderBufferVertex = renderContext.renderBufferVertex;
@@ -166,24 +167,30 @@ class NormalMapFilterProgram extends RenderProgram {
 
   @override
   void flush() {
-    if (_quadCount > 0) {
-      _renderBufferVertex.update(0, _quadCount * 4 * 19);
-      renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
-      _quadCount = 0;
+    if (_vertexCount > 0 && _indexCount > 0) {
+      _renderBufferIndex.update(0, _indexCount);
+      _renderBufferVertex.update(0, _vertexCount * 19);
+      renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
+      _indexCount = 0;
+      _vertexCount = 0;
     }
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderNormalMapQuad(RenderState renderState,
-                           RenderTextureQuad renderTextureQuad,
-                           NormalMapFilter normalMapFilter) {
+  void renderNormalMapQuad(
+      RenderState renderState,
+      RenderTextureQuad renderTextureQuad,
+      NormalMapFilter normalMapFilter) {
 
+    num alpha = renderState.globalAlpha;
     Matrix mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
     Matrix texMatrix = renderTextureQuad.samplerMatrix;
     Matrix posMatrix = renderState.globalMatrix;
-    num alpha = renderState.globalAlpha;
-    Float32List xyList = renderTextureQuad.xyList;
+    var ixList = renderTextureQuad.ixList;
+    var vxList = renderTextureQuad.vxList;
+    var indexCount = ixList.length;
+    var vertexCount = vxList.length >> 2;
 
     // Ambient color, light color, light position
 
@@ -206,47 +213,61 @@ class NormalMapFilterProgram extends RenderProgram {
     num lightZ =  math.sqrt(texMatrix.det) * normalMapFilter.lightZ;
     num lightRadius = math.sqrt(texMatrix.det) * normalMapFilter.lightRadius;
 
-    // Check if the index and vertex buffer are valid and if
-    // we need to flush the render program to free the buffers.
+    // The following code contains dart2js_hints to keep
+    // the generated JavaScript code clean and fast!
 
     var ixData = _renderBufferIndex.data;
     if (ixData == null) return;
-    if (ixData.length < _quadCount * 6 + 6) flush();
+    if (ixData.length < (indexCount + _indexCount)) flush();
 
     var vxData = _renderBufferVertex.data;
     if (vxData == null) return;
-    if (vxData.length < _quadCount * 76 + 76) flush();
+    if (vxData.length < (vertexCount + _vertexCount) * 19) flush();
 
-    // Calculate the 4 vertices of the RenderTextureQuad
+    // copy index list
 
-    for(int vertex = 0, index = _quadCount * 76; vertex < 4; vertex++, index += 19) {
+    var ixOffset = _indexCount;
 
-      num x = xyList[vertex + vertex + 0];
-      num y = xyList[vertex + vertex + 1];
-
-      if (index > vxData.length - 19) return; // dart2js_hint
-
-      vxData[index + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
-      vxData[index + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
-      vxData[index + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
-      vxData[index + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
-      vxData[index + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
-      vxData[index + 05] = mapMatrix.ty + x * mapMatrix.b + y * mapMatrix.d;
-      vxData[index + 06] = ambientR;
-      vxData[index + 07] = ambientG;
-      vxData[index + 08] = ambientB;
-      vxData[index + 09] = ambientA;
-      vxData[index + 10] = lightR;
-      vxData[index + 11] = lightG;
-      vxData[index + 12] = lightB;
-      vxData[index + 13] = lightA;
-      vxData[index + 14] = lightX;
-      vxData[index + 15] = lightY;
-      vxData[index + 16] = lightZ;
-      vxData[index + 17] = lightRadius;
-      vxData[index + 18] = alpha;
+    for(var i = 0; i < indexCount; i++) {
+      if (ixOffset > ixData.length - 1) break;
+      ixData[ixOffset] = _vertexCount + ixList[i];
+      ixOffset += 1;
     }
 
-    _quadCount += 1;
+    // copy vertex list
+
+    var vxOffset = _vertexCount * 8;
+
+    for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
+
+      if (o > vxList.length - 4) break;
+      num x = vxList[o + 0];
+      num y = vxList[o + 1];
+
+      if (vxOffset > vxData.length - 19) break;
+      vxData[vxOffset + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
+      vxData[vxOffset + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
+      vxData[vxOffset + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
+      vxData[vxOffset + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
+      vxData[vxOffset + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
+      vxData[vxOffset + 05] = mapMatrix.ty + x * mapMatrix.b + y * mapMatrix.d;
+      vxData[vxOffset + 06] = ambientR;
+      vxData[vxOffset + 07] = ambientG;
+      vxData[vxOffset + 08] = ambientB;
+      vxData[vxOffset + 09] = ambientA;
+      vxData[vxOffset + 10] = lightR;
+      vxData[vxOffset + 11] = lightG;
+      vxData[vxOffset + 12] = lightB;
+      vxData[vxOffset + 13] = lightA;
+      vxData[vxOffset + 14] = lightX;
+      vxData[vxOffset + 15] = lightY;
+      vxData[vxOffset + 16] = lightZ;
+      vxData[vxOffset + 17] = lightRadius;
+      vxData[vxOffset + 18] = alpha;
+      vxOffset += 19;
+    }
+
+    _indexCount += indexCount;
+    _vertexCount += vertexCount;
   }
 }
