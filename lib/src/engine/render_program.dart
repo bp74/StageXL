@@ -34,8 +34,8 @@ abstract class RenderProgram {
   //---------------------------------------------------------------------------
 
   void set projectionMatrix(Matrix3D matrix) {
-    var uIndex = uniforms["uProjectionMatrix"];
-    renderingContext.uniformMatrix4fv(uIndex, false, matrix.data);
+    var location = uniforms["uProjectionMatrix"];
+    renderingContext.uniformMatrix4fv(location, false, matrix.data);
   }
 
   //---------------------------------------------------------------------------
@@ -75,21 +75,6 @@ abstract class RenderProgram {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  gl.Shader _createShader(gl.RenderingContext rc, String source, int type) {
-
-    var shader = rc.createShader(type);
-    rc.shaderSource(shader, source);
-    rc.compileShader(shader);
-
-    var status = rc.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (status) return shader;
-    var cl = rc.isContextLost();
-    var error = cl ? "Error" : rc.getShaderInfoLog(shader);
-    throw new StateError(error);
-  }
-
-  //---------------------------------------------------------------------------
-
   gl.Program _createProgram(gl.RenderingContext rc) {
 
     var program = rc.createProgram();
@@ -101,10 +86,25 @@ abstract class RenderProgram {
     rc.linkProgram(program);
 
     var status = rc.getProgramParameter(program, gl.LINK_STATUS);
-    if (status) return program;
+    if (status == true) return program;
+
     var cl = rc.isContextLost();
-    var error = cl ? "Error" : rc.getProgramInfoLog(program);
-    throw new StateError(error);
+    throw new StateError(cl ? "ContextLost" : rc.getProgramInfoLog(program));
+  }
+
+  //---------------------------------------------------------------------------
+
+  gl.Shader _createShader(gl.RenderingContext rc, String source, int type) {
+
+    var shader = rc.createShader(type);
+    rc.shaderSource(shader, source);
+    rc.compileShader(shader);
+
+    var status = rc.getShaderParameter(shader, gl.COMPILE_STATUS);
+    if (status == true) return shader;
+
+    var cl = rc.isContextLost();
+    throw new StateError(cl ? "ContextLost" : rc.getShaderInfoLog(shader));
   }
 
   //---------------------------------------------------------------------------
@@ -113,8 +113,9 @@ abstract class RenderProgram {
 
     _attributes.clear();
     int count = rc.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
-    for(int index = 0; index < count; index++) {
-      var activeInfo = rc.getActiveAttrib(program, index);
+
+    for(int i = 0; i < count; i++) {
+      var activeInfo = rc.getActiveAttrib(program, i);
       var location = rc.getAttribLocation(program, activeInfo.name);
       rc.enableVertexAttribArray(location);
       _attributes[activeInfo.name] = location;
@@ -127,6 +128,7 @@ abstract class RenderProgram {
 
     _uniforms.clear();
     int count = rc.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+
     for(int i = 0; i < count; i++) {
       var activeInfo = rc.getActiveUniform(program, i);
       var location = rc.getUniformLocation(program, activeInfo.name);
