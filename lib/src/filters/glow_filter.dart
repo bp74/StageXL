@@ -244,7 +244,6 @@ class GlowFilterProgram extends RenderProgramQuad {
 
     renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
     renderingContext.uniform4f(uniforms["uColor"], r, g, b, a);
-    renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
   }
 
 }
