@@ -9,6 +9,10 @@ class RenderTextureQuad {
   final num pixelRatio;
 
   final Int32List abList = new Int32List(10);
+  final Int16List ixList = new Int16List(6);
+  final Float32List vxList = new Float32List(16);
+
+  // TODO: remove and replace with vxList
   final Float32List xyList = new Float32List(10);
   final Float32List uvList = new Float32List(10);
 
@@ -39,25 +43,55 @@ class RenderTextureQuad {
     abList[8] = sourceRectangle.width;
     abList[9] = sourceRectangle.height;
 
-    // Vertex positions + size
+    // Vertex list with x/y/u/v
 
-    xyList[0] = xyList[6] = l / pixelRatio;
-    xyList[1] = xyList[3] = t / pixelRatio;
-    xyList[2] = xyList[4] = r / pixelRatio;
-    xyList[5] = xyList[7] = b / pixelRatio;
+    vxList[00] = l / pixelRatio;
+    vxList[01] = t / pixelRatio;
+    vxList[02] = abList[0] / renderTexture.width;
+    vxList[03] = abList[1] / renderTexture.height;
+    vxList[04] = r / pixelRatio;
+    vxList[05] = t / pixelRatio;
+    vxList[06] = abList[2] / renderTexture.width;
+    vxList[07] = abList[3] / renderTexture.height;
+    vxList[08] = r / pixelRatio;
+    vxList[09] = b / pixelRatio;
+    vxList[10] = abList[4] / renderTexture.width;
+    vxList[11] = abList[5] / renderTexture.height;
+    vxList[12] = l / pixelRatio;
+    vxList[13] = b / pixelRatio;
+    vxList[14] = abList[6] / renderTexture.width;
+    vxList[15] = abList[7] / renderTexture.height;
+
+    // Index list
+
+    ixList[0] = 0;
+    ixList[1] = 1;
+    ixList[2] = 2;
+    ixList[3] = 0;
+    ixList[4] = 2;
+    ixList[5] = 3;
+
+    // TODO: replace xyList and uvList with vxList
+
+    xyList[0] = vxList[00];
+    xyList[1] = vxList[01];
+    xyList[2] = vxList[04];
+    xyList[3] = vxList[05];
+    xyList[4] = vxList[08];
+    xyList[5] = vxList[09];
+    xyList[6] = vxList[12];
+    xyList[7] = vxList[13];
     xyList[8] = w / pixelRatio;
     xyList[9] = h / pixelRatio;
 
-    // WebGL coordinates + size
-
-    uvList[0] = abList[0] / renderTexture.width;
-    uvList[1] = abList[1] / renderTexture.height;
-    uvList[2] = abList[2] / renderTexture.width;
-    uvList[3] = abList[3] / renderTexture.height;
-    uvList[4] = abList[4] / renderTexture.width;
-    uvList[5] = abList[5] / renderTexture.height;
-    uvList[6] = abList[6] / renderTexture.width;
-    uvList[7] = abList[7] / renderTexture.height;
+    uvList[0] = vxList[02];
+    uvList[1] = vxList[03];
+    uvList[2] = vxList[06];
+    uvList[3] = vxList[07];
+    uvList[4] = vxList[10];
+    uvList[5] = vxList[11];
+    uvList[6] = vxList[14];
+    uvList[7] = vxList[15];
     uvList[8] = abList[8] / renderTexture.width;
     uvList[9] = abList[9] / renderTexture.height;
   }

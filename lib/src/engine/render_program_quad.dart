@@ -4,14 +4,14 @@ class RenderProgramQuad extends RenderProgram {
 
   RenderBufferIndex _renderBufferIndex;
   RenderBufferVertex _renderBufferVertex;
+  int _indexCount = 0;
+  int _vertexCount = 0;
 
   //---------------------------------------------------------------------------
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexTextCoord:  Float32(u), Float32(v)
   // aVertexAlpha:      Float32(alpha)
   //---------------------------------------------------------------------------
-
-  int _quadCount = 0;
 
   String get vertexShaderSource => """
 
@@ -50,7 +50,7 @@ class RenderProgramQuad extends RenderProgram {
     super.activate(renderContext);
     super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-    _renderBufferIndex = renderContext.renderBufferIndexQuads;
+    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
     _renderBufferIndex.activate(renderContext);
 
     _renderBufferVertex = renderContext.renderBufferVertex;
@@ -62,76 +62,161 @@ class RenderProgramQuad extends RenderProgram {
 
   @override
   void flush() {
-    if (_quadCount > 0) {
-      _renderBufferVertex.update(0, _quadCount * 20);
-      _renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
-      _quadCount = 0;
+    if (_vertexCount > 0 && _indexCount > 0) {
+      _renderBufferIndex.update(0, _indexCount);
+      _renderBufferVertex.update(0, _vertexCount * 5);
+      _renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
+      _indexCount = 0;
+      _vertexCount = 0;
     }
   }
 
   //---------------------------------------------------------------------------
 
   void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+    _rqSimple(renderState, renderTextureQuad);
+  }
 
-    Float32List xyList = renderTextureQuad.xyList;
-    Float32List uvList = renderTextureQuad.uvList;
-    Matrix matrix = renderState.globalMatrix;
+  //---------------------------------------------------------------------------
+
+  void _rqSimple(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+
     num alpha = renderState.globalAlpha;
+    Matrix matrix = renderState.globalMatrix;
+    Float32List vxList = renderTextureQuad.vxList;
+    int indexCount = 6;
+    int vertexCount = 4;
 
     num ma = matrix.a;
     num mb = matrix.b;
     num mc = matrix.c;
     num md = matrix.d;
-    num ox = matrix.tx + xyList[0] * ma + xyList[1] * mc;
-    num oy = matrix.ty + xyList[0] * mb + xyList[1] * md;
-    num ax = xyList[8] * ma;
-    num bx = xyList[8] * mb;
-    num cy = xyList[9] * mc;
-    num dy = xyList[9] * md;
+    num mx = matrix.tx;
+    num my = matrix.ty;
+
+    num ox = mx + vxList[0] * ma + vxList[1] * mc;
+    num oy = my + vxList[0] * mb + vxList[1] * md;
+    num ax = vxList[8] * ma - vxList[0] * ma;
+    num bx = vxList[8] * mb - vxList[0] * mb;
+    num cy = vxList[9] * mc - vxList[1] * mc;
+    num dy = vxList[9] * md - vxList[1] * md;
 
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
     var ixData = _renderBufferIndex.data;
     if (ixData == null) return;
-    if (ixData.length < _quadCount * 6 + 6) flush();
+    if (ixData.length < (indexCount + _indexCount)) flush();
 
     var vxData = _renderBufferVertex.data;
     if (vxData == null) return;
-    if (vxData.length < _quadCount * 20 + 20) flush();
+    if (vxData.length < (vertexCount + _vertexCount) * 5) flush();
 
-    var index = _quadCount * 20;
-    if (index > vxData.length - 20) return;
+    // copy index list
 
-    // vertex 1
-    vxData[index + 00] = ox;
-    vxData[index + 01] = oy;
-    vxData[index + 02] = uvList[0];
-    vxData[index + 03] = uvList[1];
-    vxData[index + 04] = alpha;
+    var ixOffset = _indexCount;
+    if (ixOffset > ixData.length - 6) return;
 
-    // vertex 2
-    vxData[index + 05] = ox + ax;
-    vxData[index + 06] = oy + bx;
-    vxData[index + 07] = uvList[2];
-    vxData[index + 08] = uvList[3];
-    vxData[index + 09] = alpha;
+    ixData[ixOffset + 0] = _vertexCount + 0;
+    ixData[ixOffset + 1] = _vertexCount + 1;
+    ixData[ixOffset + 2] = _vertexCount + 2;
+    ixData[ixOffset + 3] = _vertexCount + 0;
+    ixData[ixOffset + 4] = _vertexCount + 2;
+    ixData[ixOffset + 5] = _vertexCount + 3;
 
-    // vertex 3
-    vxData[index + 10] = ox + ax + cy;
-    vxData[index + 11] = oy + bx + dy;
-    vxData[index + 12] = uvList[4];
-    vxData[index + 13] = uvList[5];
-    vxData[index + 14] = alpha;
+    // copy vertex list
 
-    // vertex 4
-    vxData[index + 15] = ox + cy;
-    vxData[index + 16] = oy + dy;
-    vxData[index + 17] = uvList[6];
-    vxData[index + 18] = uvList[7];
-    vxData[index + 19] = alpha;
+    var vxOffset = _vertexCount * 5;
+    if (vxOffset > vxData.length - 20) return;
 
-    _quadCount += 1;
+    vxData[vxOffset + 00] = ox;
+    vxData[vxOffset + 01] = oy;
+    vxData[vxOffset + 02] = vxList[2];
+    vxData[vxOffset + 03] = vxList[3];
+    vxData[vxOffset + 04] = alpha;
+    vxData[vxOffset + 05] = ox + ax;
+    vxData[vxOffset + 06] = oy + bx;
+    vxData[vxOffset + 07] = vxList[6];
+    vxData[vxOffset + 08] = vxList[7];
+    vxData[vxOffset + 09] = alpha;
+    vxData[vxOffset + 10] = ox + ax + cy;
+    vxData[vxOffset + 11] = oy + bx + dy;
+    vxData[vxOffset + 12] = vxList[10];
+    vxData[vxOffset + 13] = vxList[11];
+    vxData[vxOffset + 14] = alpha;
+    vxData[vxOffset + 15] = ox + cy;
+    vxData[vxOffset + 16] = oy + dy;
+    vxData[vxOffset + 17] = vxList[14];
+    vxData[vxOffset + 18] = vxList[15];
+    vxData[vxOffset + 19] = alpha;
+
+    _indexCount += indexCount;
+    _vertexCount += vertexCount;
   }
+
+  //---------------------------------------------------------------------------
+
+  void _rqComplex(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+
+    num alpha = renderState.globalAlpha;
+    Matrix matrix = renderState.globalMatrix;
+    Int16List ixList = renderTextureQuad.ixList;
+    Float32List vxList = renderTextureQuad.vxList;
+    int indexCount = ixList.length;
+    int vertexCount = vxList.length >> 2;
+
+    num ma = matrix.a;
+    num mb = matrix.b;
+    num mc = matrix.c;
+    num md = matrix.d;
+    num mx = matrix.tx;
+    num my = matrix.ty;
+
+    // The following code contains dart2js_hints to keep
+    // the generated JavaScript code clean and fast!
+
+    var ixData = _renderBufferIndex.data;
+    if (ixData == null) return;
+    if (ixData.length < (indexCount + _indexCount)) flush();
+
+    var vxData = _renderBufferVertex.data;
+    if (vxData == null) return;
+    if (vxData.length < (vertexCount + _vertexCount) * 5) flush();
+
+    // copy index list
+
+    var ixOffset = _indexCount;
+
+    for(var i = 0; i < indexCount; i++) {
+      if (ixOffset > ixData.length - 1) break;
+      ixData[ixOffset] = _vertexCount + ixList[i];
+      ixOffset += 1;
+    }
+
+    // copy vertex list
+
+    var vxOffset = _vertexCount * 5;
+
+    for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
+
+      if (o > vxList.length - 4) break;
+      num x = vxList[o + 0];
+      num y = vxList[o + 1];
+      num u = vxList[o + 2];
+      num v = vxList[o + 3];
+
+      if (vxOffset > vxData.length - 5) break;
+      vxData[vxOffset + 0] = mx + ma * x + mc * y;
+      vxData[vxOffset + 1] = my + mb * x + md * y;
+      vxData[vxOffset + 2] = u;
+      vxData[vxOffset + 3] = v;
+      vxData[vxOffset + 4] = alpha;
+      vxOffset += 5;
+    }
+
+    _indexCount += indexCount;
+    _vertexCount += vertexCount;
+  }
+
 
 }
