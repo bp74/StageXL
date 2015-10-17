@@ -1,7 +1,6 @@
 library stagexl.filters.normal_map;
 
 import 'dart:math' as math;
-import 'dart:web_gl' as gl;
 
 import '../display.dart';
 import '../engine.dart';
@@ -53,10 +52,6 @@ class NormalMapFilter extends BitmapFilter {
 
 class NormalMapFilterProgram extends RenderProgram {
 
-  int _indexCount = 0;
-  int _vertexCount = 0;
-
-  //---------------------------------------------------------------------------
   // aVertexPosition:      Float32(x), Float32(y)
   // aVertexTexCoord:      Float32(u), Float32(v)
   // aVertexMapCoord:      Float32(v), Float32(v)
@@ -64,7 +59,6 @@ class NormalMapFilterProgram extends RenderProgram {
   // aVertexLightColor:    Float32(r), Float32(g), Float32(b), Float32(a)
   // aVertexLightCoord:    Float32(x), Float32(y), Float32(z), Float32(r)
   // aVertexAlpha:         Float32(a)
-  //---------------------------------------------------------------------------
 
   @override
   String get vertexShaderSource => """
@@ -160,17 +154,6 @@ class NormalMapFilterProgram extends RenderProgram {
     renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],        1, 76, 72);
   }
 
-  @override
-  void flush() {
-    if (_vertexCount > 0 && _indexCount > 0) {
-      renderBufferIndex.update(0, _indexCount);
-      renderBufferVertex.update(0, _vertexCount * 19);
-      renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
-      _indexCount = 0;
-      _vertexCount = 0;
-    }
-  }
-
   //-----------------------------------------------------------------------------------------------
 
   void renderNormalMapQuad(
@@ -212,26 +195,32 @@ class NormalMapFilterProgram extends RenderProgram {
     // the generated JavaScript code clean and fast!
 
     var ixData = renderBufferIndex.data;
+    var ixPosition = renderBufferIndex.position;
     if (ixData == null) return;
-    if (ixData.length < (indexCount + _indexCount)) flush();
+    if (ixData.length < ixPosition + indexCount) flush();
 
     var vxData = renderBufferVertex.data;
+    var vxPosition = renderBufferVertex.position;
     if (vxData == null) return;
-    if (vxData.length < (vertexCount + _vertexCount) * 19) flush();
+    if (vxData.length < vxPosition + vertexCount * 19) flush();
 
     // copy index list
 
-    var ixOffset = _indexCount;
+    var ixIndex = renderBufferIndex.position;
+    var vxCount = renderBufferVertex.count;
 
     for(var i = 0; i < indexCount; i++) {
-      if (ixOffset > ixData.length - 1) break;
-      ixData[ixOffset] = _vertexCount + ixList[i];
-      ixOffset += 1;
+      if (ixIndex > ixData.length - 1) break;
+      ixData[ixIndex] = vxCount + ixList[i];
+      ixIndex += 1;
     }
+
+    renderBufferIndex.position += indexCount;
+    renderBufferIndex.count += indexCount;
 
     // copy vertex list
 
-    var vxOffset = _vertexCount * 8;
+    var vxIndex = renderBufferVertex.position;
 
     for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
 
@@ -239,30 +228,30 @@ class NormalMapFilterProgram extends RenderProgram {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
 
-      if (vxOffset > vxData.length - 19) break;
-      vxData[vxOffset + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
-      vxData[vxOffset + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
-      vxData[vxOffset + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
-      vxData[vxOffset + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
-      vxData[vxOffset + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
-      vxData[vxOffset + 05] = mapMatrix.ty + x * mapMatrix.b + y * mapMatrix.d;
-      vxData[vxOffset + 06] = ambientR;
-      vxData[vxOffset + 07] = ambientG;
-      vxData[vxOffset + 08] = ambientB;
-      vxData[vxOffset + 09] = ambientA;
-      vxData[vxOffset + 10] = lightR;
-      vxData[vxOffset + 11] = lightG;
-      vxData[vxOffset + 12] = lightB;
-      vxData[vxOffset + 13] = lightA;
-      vxData[vxOffset + 14] = lightX;
-      vxData[vxOffset + 15] = lightY;
-      vxData[vxOffset + 16] = lightZ;
-      vxData[vxOffset + 17] = lightRadius;
-      vxData[vxOffset + 18] = alpha;
-      vxOffset += 19;
+      if (vxIndex > vxData.length - 19) break;
+      vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
+      vxData[vxIndex + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
+      vxData[vxIndex + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
+      vxData[vxIndex + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
+      vxData[vxIndex + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
+      vxData[vxIndex + 05] = mapMatrix.ty + x * mapMatrix.b + y * mapMatrix.d;
+      vxData[vxIndex + 06] = ambientR;
+      vxData[vxIndex + 07] = ambientG;
+      vxData[vxIndex + 08] = ambientB;
+      vxData[vxIndex + 09] = ambientA;
+      vxData[vxIndex + 10] = lightR;
+      vxData[vxIndex + 11] = lightG;
+      vxData[vxIndex + 12] = lightB;
+      vxData[vxIndex + 13] = lightA;
+      vxData[vxIndex + 14] = lightX;
+      vxData[vxIndex + 15] = lightY;
+      vxData[vxIndex + 16] = lightZ;
+      vxData[vxIndex + 17] = lightRadius;
+      vxData[vxIndex + 18] = alpha;
+      vxIndex += 19;
     }
 
-    _indexCount += indexCount;
-    _vertexCount += vertexCount;
+    renderBufferVertex.position += vertexCount * 19;
+    renderBufferVertex.count += vertexCount;
   }
 }

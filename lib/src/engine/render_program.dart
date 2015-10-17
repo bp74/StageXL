@@ -81,8 +81,19 @@ abstract class RenderProgram {
     renderingContext.useProgram(program);
   }
 
-  void flush() {
+  //-----------------------------------------------------------------------------------------------
 
+  void flush() {
+    if (renderBufferIndex.position > 0 && renderBufferVertex.position > 0) {
+      int count = renderBufferIndex.position;
+      renderBufferIndex.update();
+      renderBufferIndex.position = 0;
+      renderBufferIndex.count = 0;
+      renderBufferVertex.update();
+      renderBufferVertex.position = 0;
+      renderBufferVertex.count = 0;
+      renderingContext.drawElements(gl.TRIANGLES, count, gl.UNSIGNED_SHORT, 0);
+    }
   }
 
   //-----------------------------------------------------------------------------------------------

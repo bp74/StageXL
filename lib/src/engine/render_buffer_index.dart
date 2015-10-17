@@ -5,6 +5,9 @@ class RenderBufferIndex {
   final Int16List data;
   final int usage;
 
+  int position = 0;   // position in data list
+  int count = 0;      // count of indices
+
   int _contextIdentifier = -1;
   gl.Buffer _buffer = null;
   gl.RenderingContext _renderingContext = null;
@@ -41,8 +44,9 @@ class RenderBufferIndex {
     _renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _buffer);
   }
 
-  void update(int offset, int length) {
-    var indexUpdate = new Int16List.view(data.buffer, offset, length);
-    _renderingContext.bufferSubDataTyped(gl.ELEMENT_ARRAY_BUFFER, 0, indexUpdate);
+  void update() {
+    var update = new Int16List.view(data.buffer, 0, this.position);
+    _renderingContext.bufferSubDataTyped(gl.ELEMENT_ARRAY_BUFFER, 0, update);
   }
+
 }

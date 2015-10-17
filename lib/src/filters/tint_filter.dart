@@ -1,7 +1,6 @@
 library stagexl.filters.tint;
 
 import 'dart:html' show ImageData;
-import 'dart:web_gl' as gl;
 
 import '../display.dart';
 import '../engine.dart';
@@ -79,14 +78,9 @@ class TintFilter extends BitmapFilter {
 
 class TintFilterProgram extends RenderProgram {
 
-  int _indexCount = 0;
-  int _vertexCount = 0;
-
-  //---------------------------------------------------------------------------
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexTextCoord:  Float32(u), Float32(v)
   // aVertexColor:      Float32(r), Float32(g), Float32(b), Float32(a)
-  //---------------------------------------------------------------------------
 
   @override
   String get vertexShaderSource => """
@@ -135,17 +129,6 @@ class TintFilterProgram extends RenderProgram {
     renderBufferVertex.bindAttribute(attributes["aVertexColor"],     4, 32, 16);
   }
 
-  @override
-  void flush() {
-    if (_vertexCount > 0 && _indexCount > 0) {
-      renderBufferIndex.update(0, _indexCount);
-      renderBufferVertex.update(0, _vertexCount * 8);
-      renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
-      _indexCount = 0;
-      _vertexCount = 0;
-    }
-  }
-
   //-----------------------------------------------------------------------------------------------
 
   void renderTintFilterQuad(
@@ -176,26 +159,32 @@ class TintFilterProgram extends RenderProgram {
     // the generated JavaScript code clean and fast!
 
     var ixData = renderBufferIndex.data;
+    var ixPosition = renderBufferIndex.position;
     if (ixData == null) return;
-    if (ixData.length < (indexCount + _indexCount)) flush();
+    if (ixData.length < ixPosition + indexCount) flush();
 
     var vxData = renderBufferVertex.data;
+    var vxPosition = renderBufferVertex.position;
     if (vxData == null) return;
-    if (vxData.length < (vertexCount + _vertexCount) * 8) flush();
+    if (vxData.length < vxPosition + vertexCount * 8) flush();
 
     // copy index list
 
-    var ixOffset = _indexCount;
+    var ixIndex = renderBufferIndex.position;
+    var vxCount = renderBufferVertex.count;
 
     for(var i = 0; i < indexCount; i++) {
-      if (ixOffset > ixData.length - 1) break;
-      ixData[ixOffset] = _vertexCount + ixList[i];
-      ixOffset += 1;
+      if (ixIndex > ixData.length - 1) break;
+      ixData[ixIndex] = vxCount + ixList[i];
+      ixIndex += 1;
     }
+
+    renderBufferIndex.position += indexCount;
+    renderBufferIndex.count += indexCount;
 
     // copy vertex list
 
-    var vxOffset = _vertexCount * 8;
+    var vxIndex = renderBufferVertex.position;
 
     for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
 
@@ -205,19 +194,19 @@ class TintFilterProgram extends RenderProgram {
       num u = vxList[o + 2];
       num v = vxList[o + 3];
 
-      if (vxOffset > vxData.length - 8) break;
-      vxData[vxOffset + 0] = mx + ma * x + mc * y;
-      vxData[vxOffset + 1] = my + mb * x + md * y;
-      vxData[vxOffset + 2] = u;
-      vxData[vxOffset + 3] = v;
-      vxData[vxOffset + 4] = colorR;
-      vxData[vxOffset + 5] = colorG;
-      vxData[vxOffset + 6] = colorB;
-      vxData[vxOffset + 7] = colorA;
-      vxOffset += 8;
+      if (vxIndex > vxData.length - 8) break;
+      vxData[vxIndex + 0] = mx + ma * x + mc * y;
+      vxData[vxIndex + 1] = my + mb * x + md * y;
+      vxData[vxIndex + 2] = u;
+      vxData[vxIndex + 3] = v;
+      vxData[vxIndex + 4] = colorR;
+      vxData[vxIndex + 5] = colorG;
+      vxData[vxIndex + 6] = colorB;
+      vxData[vxIndex + 7] = colorA;
+      vxIndex += 8;
     }
 
-    _indexCount += indexCount;
-    _vertexCount += vertexCount;
+    renderBufferVertex.position += vertexCount * 8;
+    renderBufferVertex.count += vertexCount;
   }
 }
