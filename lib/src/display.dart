@@ -41,7 +41,6 @@ part 'display/bitmap_data_update_batch.dart';
 part 'display/bitmap_data_load_options.dart';
 part 'display/bitmap_drawable.dart';
 part 'display/bitmap_filter.dart';
-part 'display/bitmap_filter_program.dart';
 part 'display/color_transform.dart';
 part 'display/display_object.dart';
 part 'display/display_object_cache.dart';

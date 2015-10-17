@@ -113,13 +113,14 @@ class DisplacementMapFilter extends BitmapFilter {
     renderContext.activateRenderTextureAt(bitmapData.renderTexture, 1);
     renderProgram.configure(this, renderTextureQuad);
     renderProgram.renderQuad(renderState, renderTextureQuad);
+    renderProgram.flush();
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class DisplacementMapFilterProgram extends BitmapFilterProgram {
+class DisplacementMapFilterProgram extends RenderProgramQuad {
 
   String get fragmentShaderSource => """
       precision mediump float;
@@ -162,4 +163,5 @@ class DisplacementMapFilterProgram extends BitmapFilterProgram {
     renderingContext.uniformMatrix3fv(uniforms["uMapMatrix"], false, uMapMatrix);
     renderingContext.uniformMatrix3fv(uniforms["uDisMatrix"], false, uDisMatrix);
   }
+
 }

@@ -8,14 +8,14 @@ import '../geom.dart';
 import '../internal/tools.dart';
 
 /// This filter provide a simple ChromaKey solution
-///  that can be aplied on bitmap or video
+/// that can be applied on bitmap or video
 ///
 /// <int> backgroundColor
 /// @represent : the color you want to make transparent
 /// @default : 0xFF00FF00 > pure green
 ///
 /// <int> solidThreshold
-/// @represent : this minimal diference for a color to be consider solid
+/// @represent : this minimal difference for a color to be consider solid
 /// @default : 140
 /// @range : 0 <> 255
 ///
@@ -107,15 +107,16 @@ class ChromaKeyFilter extends BitmapFilter {
     renderContext.activateRenderTexture(renderTexture);
     renderProgram.configure(backgroundColor, solidThreshold, invisibleThreshold);
     renderProgram.renderQuad(renderState, renderTextureQuad);
+    renderProgram.flush();
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class ChromaKeyFilterProgram extends BitmapFilterProgram {
+class ChromaKeyFilterProgram extends RenderProgramQuad {
 
-  String get fragmentShaderSource =>  """
+  String get fragmentShaderSource => """
       precision mediump float;
       uniform sampler2D uSampler;
       varying vec2 vTextCoord;
@@ -174,6 +175,7 @@ class ChromaKeyFilterProgram extends BitmapFilterProgram {
       """;
 
   void configure(int backgroundColor, int solidThreshold, int invisibleThreshold) {
+
     num r = colorGetR(backgroundColor) / 255.0;
     num g = colorGetG(backgroundColor) / 255.0;
     num b = colorGetB(backgroundColor) / 255.0;
@@ -183,8 +185,10 @@ class ChromaKeyFilterProgram extends BitmapFilterProgram {
     renderingContext.uniform1f(uniforms["solidThreshold"], solidThreshold / 255.0);
     renderingContext.uniform1f(uniforms["invisibleThreshold"], invisibleThreshold / 255.0);
 
-    // this affect the color corection on semi transparent pixel, for now not public
-    // it is quite experimental
+    // this affect the color correction on semi transparent pixel,
+    // for now not public it is quite experimental
+
     renderingContext.uniform1f(uniforms["weight"], 0.8);
   }
+
 }
