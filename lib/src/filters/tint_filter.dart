@@ -82,7 +82,8 @@ class TintFilterProgram extends RenderProgram {
 
   RenderBufferIndex _renderBufferIndex;
   RenderBufferVertex _renderBufferVertex;
-  int _quadCount = 0;
+  int _indexCount = 0;
+  int _vertexCount = 0;
 
   //---------------------------------------------------------------------------
   // aVertexPosition:   Float32(x), Float32(y)
@@ -129,7 +130,7 @@ class TintFilterProgram extends RenderProgram {
     super.activate(renderContext);
     super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-    _renderBufferIndex = renderContext.renderBufferIndexQuads;
+    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
     _renderBufferIndex.activate(renderContext);
 
     _renderBufferVertex = renderContext.renderBufferVertex;
@@ -141,93 +142,87 @@ class TintFilterProgram extends RenderProgram {
 
   @override
   void flush() {
-    if (_quadCount > 0) {
-      _renderBufferVertex.update(0, _quadCount * 4 * 8);
-      renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
-      _quadCount = 0;
+    if (_vertexCount > 0 && _indexCount > 0) {
+      _renderBufferIndex.update(0, _indexCount);
+      _renderBufferVertex.update(0, _vertexCount * 8);
+      renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
+      _indexCount = 0;
+      _vertexCount = 0;
     }
   }
 
   //-----------------------------------------------------------------------------------------------
 
   void renderTintFilterQuad(
-    RenderState renderState, RenderTextureQuad renderTextureQuad, TintFilter tintFilter) {
+      RenderState renderState,
+      RenderTextureQuad renderTextureQuad,
+      TintFilter tintFilter) {
 
-    Float32List xyList = renderTextureQuad.xyList;
-    Float32List uvList = renderTextureQuad.uvList;
-    Matrix matrix = renderState.globalMatrix;
-    num alpha = renderState.globalAlpha;
+    var alpha = renderState.globalAlpha;
+    var matrix = renderState.globalMatrix;
+    var ixList = renderTextureQuad.ixList;
+    var vxList = renderTextureQuad.vxList;
+    var indexCount = ixList.length;
+    var vertexCount = vxList.length >> 2;
 
-    num colorR = tintFilter.factorR.toDouble();
-    num colorG = tintFilter.factorG.toDouble();
-    num colorB = tintFilter.factorB.toDouble();
-    num colorA = tintFilter.factorA.toDouble() * alpha;
+    var colorR = tintFilter.factorR.toDouble();
+    var colorG = tintFilter.factorG.toDouble();
+    var colorB = tintFilter.factorB.toDouble();
+    var colorA = tintFilter.factorA.toDouble() * alpha;
 
-    num ma = matrix.a;
-    num mb = matrix.b;
-    num mc = matrix.c;
-    num md = matrix.d;
-    num ox = matrix.tx + xyList[0] * ma + xyList[1] * mc;
-    num oy = matrix.ty + xyList[0] * mb + xyList[1] * md;
-    num ax = xyList[8] * ma;
-    num bx = xyList[8] * mb;
-    num cy = xyList[9] * mc;
-    num dy = xyList[9] * md;
+    var ma = matrix.a;
+    var mb = matrix.b;
+    var mc = matrix.c;
+    var md = matrix.d;
+    var mx = matrix.tx;
+    var my = matrix.ty;
 
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
     var ixData = _renderBufferIndex.data;
     if (ixData == null) return;
-    if (ixData.length < _quadCount * 6 + 6) flush();
+    if (ixData.length < (indexCount + _indexCount)) flush();
 
     var vxData = _renderBufferVertex.data;
     if (vxData == null) return;
-    if (vxData.length < _quadCount * 32 + 32) flush();
+    if (vxData.length < (vertexCount + _vertexCount) * 8) flush();
 
-    var index = _quadCount * 32;
-    if (index > vxData.length - 32) return;
+    // copy index list
 
-    // vertex 1
-    vxData[index + 00] = ox;
-    vxData[index + 01] = oy;
-    vxData[index + 02] = uvList[0];
-    vxData[index + 03] = uvList[1];
-    vxData[index + 04] = colorR;
-    vxData[index + 05] = colorG;
-    vxData[index + 06] = colorB;
-    vxData[index + 07] = colorA;
+    var ixOffset = _indexCount;
 
-    // vertex 2
-    vxData[index + 08] = ox + ax;
-    vxData[index + 09] = oy + bx;
-    vxData[index + 10] = uvList[2];
-    vxData[index + 11] = uvList[3];
-    vxData[index + 12] = colorR;
-    vxData[index + 13] = colorG;
-    vxData[index + 14] = colorB;
-    vxData[index + 15] = colorA;
+    for(var i = 0; i < indexCount; i++) {
+      if (ixOffset > ixData.length - 1) break;
+      ixData[ixOffset] = _vertexCount + ixList[i];
+      ixOffset += 1;
+    }
 
-    // vertex 3
-    vxData[index + 16] = ox + ax + cy;
-    vxData[index + 17] = oy + bx + dy;
-    vxData[index + 18] = uvList[4];
-    vxData[index + 19] = uvList[5];
-    vxData[index + 20] = colorR;
-    vxData[index + 21] = colorG;
-    vxData[index + 22] = colorB;
-    vxData[index + 23] = colorA;
+    // copy vertex list
 
-    // vertex 4
-    vxData[index + 24] = ox + cy;
-    vxData[index + 25] = oy + dy;
-    vxData[index + 26] = uvList[6];
-    vxData[index + 27] = uvList[7];
-    vxData[index + 28] = colorR;
-    vxData[index + 29] = colorG;
-    vxData[index + 30] = colorB;
-    vxData[index + 31] = colorA;
+    var vxOffset = _vertexCount * 8;
 
-    _quadCount += 1;
+    for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
+
+      if (o > vxList.length - 4) break;
+      num x = vxList[o + 0];
+      num y = vxList[o + 1];
+      num u = vxList[o + 2];
+      num v = vxList[o + 3];
+
+      if (vxOffset > vxData.length - 8) break;
+      vxData[vxOffset + 0] = mx + ma * x + mc * y;
+      vxData[vxOffset + 1] = my + mb * x + md * y;
+      vxData[vxOffset + 2] = u;
+      vxData[vxOffset + 3] = v;
+      vxData[vxOffset + 4] = colorR;
+      vxData[vxOffset + 5] = colorG;
+      vxData[vxOffset + 6] = colorB;
+      vxData[vxOffset + 7] = colorA;
+      vxOffset += 8;
+    }
+
+    _indexCount += indexCount;
+    _vertexCount += vertexCount;
   }
 }
