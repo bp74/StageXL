@@ -55,7 +55,7 @@ class DisplacementMapFilter extends BitmapFilter {
     var srcData = srcImageData.data;
     var dstData = dstImageData.data;
 
-    Float32List xyList = renderTextureQuad.xyList;
+    Float32List vxList = renderTextureQuad.vxList;
     num pixelRatio = renderTextureQuad.pixelRatio;
     num scaleX = pixelRatio * this.scaleX;
     num scaleY = pixelRatio * this.scaleX;
@@ -67,7 +67,7 @@ class DisplacementMapFilter extends BitmapFilter {
     //     y + ((colorG(x, y) - 128) * scaleY) / 256)];
 
     Matrix matrix = this.matrix.cloneInvert();
-    matrix.prependTranslation(xyList[0], xyList[1]);
+    matrix.prependTranslation(vxList[0], vxList[1]);
 
     for(int dstY = 0; dstY < dstHeight; dstY++) {
       num mx = dstY * matrix.c + matrix.tx;
