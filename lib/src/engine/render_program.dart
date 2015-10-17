@@ -6,6 +6,9 @@ abstract class RenderProgram {
   gl.RenderingContext _renderingContext = null;
   gl.Program _program = null;
 
+  RenderBufferIndex _renderBufferIndex = null;
+  RenderBufferVertex _renderBufferVertex = null;
+
   final Map<String, int> _attributes = new Map<String, int>();
   final Map<String, gl.UniformLocation> _uniforms = new Map<String, gl.UniformLocation>();
 
@@ -15,8 +18,11 @@ abstract class RenderProgram {
   String get fragmentShaderSource;
 
   int get contextIdentifier => _contextIdentifier;
+  RenderBufferIndex get renderBufferIndex => _renderBufferIndex;
+  RenderBufferVertex get renderBufferVertex => _renderBufferVertex;
   gl.RenderingContext get renderingContext => _renderingContext;
   gl.Program get program => _program;
+
   Map<String, int> get attributes => _attributes;
   Map<String, gl.UniformLocation> get uniforms => _uniforms;
 
@@ -35,6 +41,12 @@ abstract class RenderProgram {
       _program = renderingContext.createProgram();
       _attributes.clear();
       _uniforms.clear();
+
+      _renderBufferIndex = renderContext.renderBufferIndex;
+      _renderBufferIndex.activate(renderContext);
+
+      _renderBufferVertex = renderContext.renderBufferVertex;
+      _renderBufferVertex.activate(renderContext);
 
       var vertexShader = _createShader(renderingContext, vertexShaderSource, gl.VERTEX_SHADER);
       var fragmentShader = _createShader(renderingContext, fragmentShaderSource, gl.FRAGMENT_SHADER);

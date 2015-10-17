@@ -186,6 +186,7 @@ class GlowFilter extends BitmapFilter {
 
 class GlowFilterProgram extends RenderProgramQuad {
 
+  @override
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
@@ -208,6 +209,7 @@ class GlowFilterProgram extends RenderProgramQuad {
     }
     """;
 
+  @override
   String get fragmentShaderSource => """
     
     precision mediump float;

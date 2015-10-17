@@ -122,6 +122,7 @@ class DisplacementMapFilter extends BitmapFilter {
 
 class DisplacementMapFilterProgram extends RenderProgramQuad {
 
+  @override
   String get fragmentShaderSource => """
       precision mediump float;
       uniform sampler2D uTexSampler;

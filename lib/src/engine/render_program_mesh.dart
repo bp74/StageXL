@@ -2,8 +2,6 @@ part of stagexl.engine;
 
 class RenderProgramMesh extends RenderProgram {
 
-  RenderBufferIndex _renderBufferIndex;
-  RenderBufferVertex _renderBufferVertex;
   int _indexCount = 0;
   int _vertexCount = 0;
 
@@ -48,24 +46,20 @@ class RenderProgramMesh extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
 
     super.activate(renderContext);
-    super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
-    _renderBufferIndex.activate(renderContext);
+    renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-    _renderBufferVertex = renderContext.renderBufferVertex;
-    _renderBufferVertex.activate(renderContext);
-    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 32, 0);
-    _renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 32, 8);
-    _renderBufferVertex.bindAttribute(attributes["aVertexColor"], 4, 32, 16);
+    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 32, 0);
+    renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 32, 8);
+    renderBufferVertex.bindAttribute(attributes["aVertexColor"], 4, 32, 16);
   }
 
   @override
   void flush() {
     if (_vertexCount > 0 && _indexCount > 0) {
-      _renderBufferIndex.update(0, _indexCount);
-      _renderBufferVertex.update(0, _vertexCount * 8);
-      _renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
+      renderBufferIndex.update(0, _indexCount);
+      renderBufferVertex.update(0, _vertexCount * 8);
+      renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
       _indexCount = 0;
       _vertexCount = 0;
     }
@@ -96,11 +90,11 @@ class RenderProgramMesh extends RenderProgram {
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
-    var ixData = _renderBufferIndex.data;
+    var ixData = renderBufferIndex.data;
     if (ixData == null) return;
     if (ixData.length < _indexCount + indexCount) flush();
 
-    var vxData = _renderBufferVertex.data;
+    var vxData = renderBufferVertex.data;
     if (vxData == null) return;
     if (vxData.length < _vertexCount * 8 + vertexCount * 8) flush();
 

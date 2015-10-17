@@ -11,22 +11,9 @@ class RenderBufferIndex {
 
   //---------------------------------------------------------------------------
 
-  RenderBufferIndex.forTriangles(int triangles) :
-    data = new Int16List(triangles * 3),
+  RenderBufferIndex(int length) :
+    data = new Int16List(length * 3),
     usage = gl.DYNAMIC_DRAW;
-
-  RenderBufferIndex.forQuads(int quads) :
-    data = new Int16List(quads * 6),
-    usage = gl.STATIC_DRAW {
-    for(int i = 0, j = 0; i <= data.length - 6; i += 6, j +=4 ) {
-      data[i + 0] = j + 0;
-      data[i + 1] = j + 1;
-      data[i + 2] = j + 2;
-      data[i + 3] = j + 0;
-      data[i + 4] = j + 2;
-      data[i + 5] = j + 3;
-    }
-  }
 
   //---------------------------------------------------------------------------
 

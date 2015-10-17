@@ -2,8 +2,6 @@ part of stagexl.engine;
 
 class RenderProgramQuad extends RenderProgram {
 
-  RenderBufferIndex _renderBufferIndex;
-  RenderBufferVertex _renderBufferVertex;
   int _indexCount = 0;
   int _vertexCount = 0;
 
@@ -51,24 +49,20 @@ class RenderProgramQuad extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
 
     super.activate(renderContext);
-    super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
-    _renderBufferIndex.activate(renderContext);
+    renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-    _renderBufferVertex = renderContext.renderBufferVertex;
-    _renderBufferVertex.activate(renderContext);
-    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 20, 0);
-    _renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 20, 8);
-    _renderBufferVertex.bindAttribute(attributes["aVertexAlpha"], 1, 20, 16);
+    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 20, 0);
+    renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 20, 8);
+    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"], 1, 20, 16);
   }
 
   @override
   void flush() {
     if (_vertexCount > 0 && _indexCount > 0) {
-      _renderBufferIndex.update(0, _indexCount);
-      _renderBufferVertex.update(0, _vertexCount * 5);
-      _renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
+      renderBufferIndex.update(0, _indexCount);
+      renderBufferVertex.update(0, _vertexCount * 5);
+      renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
       _indexCount = 0;
       _vertexCount = 0;
     }
@@ -116,11 +110,11 @@ class RenderProgramQuad extends RenderProgram {
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
-    var ixData = _renderBufferIndex.data;
+    var ixData = renderBufferIndex.data;
     if (ixData == null) return;
     if (ixData.length < (indexCount + _indexCount)) flush();
 
-    var vxData = _renderBufferVertex.data;
+    var vxData = renderBufferVertex.data;
     if (vxData == null) return;
     if (vxData.length < (vertexCount + _vertexCount) * 5) flush();
 
@@ -189,11 +183,11 @@ class RenderProgramQuad extends RenderProgram {
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
-    var ixData = _renderBufferIndex.data;
+    var ixData = renderBufferIndex.data;
     if (ixData == null) return;
     if (ixData.length < (indexCount + _indexCount)) flush();
 
-    var vxData = _renderBufferVertex.data;
+    var vxData = renderBufferVertex.data;
     if (vxData == null) return;
     if (vxData.length < (vertexCount + _vertexCount) * 5) flush();
 

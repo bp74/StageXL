@@ -66,8 +66,6 @@ class AlphaMaskFilter extends BitmapFilter {
 
 class AlphaMaskFilterProgram extends RenderProgram {
 
-  RenderBufferIndex _renderBufferIndex;
-  RenderBufferVertex _renderBufferVertex;
   int _indexCount = 0;
   int _vertexCount = 0;
 
@@ -79,6 +77,7 @@ class AlphaMaskFilterProgram extends RenderProgram {
   // aVertexAlpha:     Float32(a)
   //---------------------------------------------------------------------------
 
+  @override
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
@@ -103,6 +102,7 @@ class AlphaMaskFilterProgram extends RenderProgram {
     }
     """;
 
+  @override
   String get fragmentShaderSource => """
 
     precision mediump float;
@@ -129,26 +129,22 @@ class AlphaMaskFilterProgram extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
 
     super.activate(renderContext);
-    super.renderingContext.uniform1i(uniforms["uTexSampler"], 0);
-    super.renderingContext.uniform1i(uniforms["uMskSampler"], 1);
 
-    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
-    _renderBufferIndex.activate(renderContext);
+    renderingContext.uniform1i(uniforms["uTexSampler"], 0);
+    renderingContext.uniform1i(uniforms["uMskSampler"], 1);
 
-    _renderBufferVertex = renderContext.renderBufferVertex;
-    _renderBufferVertex.activate(renderContext);
-    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 44,  0);
-    _renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"], 2, 44,  8);
-    _renderBufferVertex.bindAttribute(attributes["aVertexMskCoord"], 2, 44, 16);
-    _renderBufferVertex.bindAttribute(attributes["aVertexMskLimit"], 4, 44, 24);
-    _renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],    1, 44, 40);
+    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 44,  0);
+    renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"], 2, 44,  8);
+    renderBufferVertex.bindAttribute(attributes["aVertexMskCoord"], 2, 44, 16);
+    renderBufferVertex.bindAttribute(attributes["aVertexMskLimit"], 4, 44, 24);
+    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],    1, 44, 40);
   }
 
   @override
   void flush() {
     if (_vertexCount > 0 && _indexCount > 0) {
-      _renderBufferIndex.update(0, _indexCount);
-      _renderBufferVertex.update(0, _vertexCount * 11);
+      renderBufferIndex.update(0, _indexCount);
+      renderBufferVertex.update(0, _vertexCount * 11);
       renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
       _indexCount = 0;
       _vertexCount = 0;
@@ -187,11 +183,11 @@ class AlphaMaskFilterProgram extends RenderProgram {
     // Check if the index and vertex buffer are valid and if
     // we need to flush the render program to free the buffers.
 
-    var ixData = _renderBufferIndex.data;
+    var ixData = renderBufferIndex.data;
     if (ixData == null) return;
     if (ixData.length < (indexCount + _indexCount)) flush();
 
-    var vxData = _renderBufferVertex.data;
+    var vxData = renderBufferVertex.data;
     if (vxData == null) return;
     if (vxData.length < (vertexCount + _vertexCount) * 11) flush();
 

@@ -185,8 +185,6 @@ class DropShadowFilter extends BitmapFilter {
     num pixelRatioScale = pixelRatio * passScale;
     num pixelRatioDistance = pixelRatio * distance;
 
-    print(distance);
-
     if (pass == passCount - 1) {
 
       if (!this.knockout && !this.hideObject) {

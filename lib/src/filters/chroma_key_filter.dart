@@ -116,63 +116,67 @@ class ChromaKeyFilter extends BitmapFilter {
 
 class ChromaKeyFilterProgram extends RenderProgramQuad {
 
+  @override
   String get fragmentShaderSource => """
-      precision mediump float;
-      uniform sampler2D uSampler;
-      varying vec2 vTextCoord;
 
-      uniform vec4 backgroundColor;
-      uniform float solidThreshold;
-      uniform float invisibleThreshold;
+    precision mediump float;
+    uniform sampler2D uSampler;
+    varying vec2 vTextCoord;
 
-      uniform float weight;
+    uniform vec4 backgroundColor;
+    uniform float solidThreshold;
+    uniform float invisibleThreshold;
 
-      void main() {
-        // -- get pixel color
-        vec4 pixelColor = texture2D(uSampler, vTextCoord);
+    uniform float weight;
 
-        // -- calcul diference betwen chroma key color and actual pixelColor
-        float redDiff = abs(pixelColor.r - backgroundColor.r);
-        float greenDiff = abs(pixelColor.g - backgroundColor.g);
-        float blueDiff = abs(pixelColor.b - backgroundColor.b);
+    void main() {
+      // -- get pixel color
+      vec4 pixelColor = texture2D(uSampler, vTextCoord);
 
-        // is pixel close enouph to chroma key to be fully invisible
-        bool rCanBeInvisible = redDiff < invisibleThreshold;
-        bool gCanBeInvisible = greenDiff < invisibleThreshold;
-        bool bCanBeInvisible = blueDiff < invisibleThreshold;
+      // -- calcul diference betwen chroma key color and actual pixelColor
+      float redDiff = abs(pixelColor.r - backgroundColor.r);
+      float greenDiff = abs(pixelColor.g - backgroundColor.g);
+      float blueDiff = abs(pixelColor.b - backgroundColor.b);
 
-        // is pixel different enouph to chroma key to be fully visible
-        bool rCanBeSolid = redDiff > solidThreshold;
-        bool gCanBeSolid = greenDiff > solidThreshold;
-        bool bCanBeSolid = blueDiff > solidThreshold;
+      // is pixel close enouph to chroma key to be fully invisible
+      bool rCanBeInvisible = redDiff < invisibleThreshold;
+      bool gCanBeInvisible = greenDiff < invisibleThreshold;
+      bool bCanBeInvisible = blueDiff < invisibleThreshold;
 
-        if (rCanBeSolid || gCanBeSolid || bCanBeSolid) {
-          gl_FragColor = pixelColor;
+      // is pixel different enouph to chroma key to be fully visible
+      bool rCanBeSolid = redDiff > solidThreshold;
+      bool gCanBeSolid = greenDiff > solidThreshold;
+      bool bCanBeSolid = blueDiff > solidThreshold;
 
-        } else if (rCanBeInvisible && gCanBeInvisible && bCanBeInvisible) {
-          gl_FragColor = pixelColor * 0.0;
+      if (rCanBeSolid || gCanBeSolid || bCanBeSolid) {
+        gl_FragColor = pixelColor;
 
-        } else {
-          // semi transparent color
-          float alpha = 1.0;
+      } else if (rCanBeInvisible && gCanBeInvisible && bCanBeInvisible) {
+        gl_FragColor = pixelColor * 0.0;
 
-          // try tyo calculate the alpha as cloase as possible
-          float rAlpha = clamp((redDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
-          float gAlpha = clamp((greenDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
-          float bAlpha = clamp((blueDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
+      } else {
+        // semi transparent color
+        float alpha = 1.0;
 
-          alpha = min(rAlpha, gAlpha);
-          alpha = min(bAlpha, alpha);
+        // try tyo calculate the alpha as cloase as possible
+        float rAlpha = clamp((redDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
+        float gAlpha = clamp((greenDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
+        float bAlpha = clamp((blueDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
 
-          // try to ge back the original color
-          float red = pixelColor.r - (1.0 - redDiff) * (1.0 - alpha) * backgroundColor.r * weight;
-          float green = pixelColor.g - (1.0 - greenDiff) * (1.0 - alpha) * backgroundColor.g * weight;
-          float blue = pixelColor.b - (1.0 - blueDiff) * (1.0 - alpha) * backgroundColor.b * weight;
+        alpha = min(rAlpha, gAlpha);
+        alpha = min(bAlpha, alpha);
 
-          gl_FragColor = vec4(red, green, blue, alpha);
-        }
+        // try to ge back the original color
+        float red = pixelColor.r - (1.0 - redDiff) * (1.0 - alpha) * backgroundColor.r * weight;
+        float green = pixelColor.g - (1.0 - greenDiff) * (1.0 - alpha) * backgroundColor.g * weight;
+        float blue = pixelColor.b - (1.0 - blueDiff) * (1.0 - alpha) * backgroundColor.b * weight;
+
+        gl_FragColor = vec4(red, green, blue, alpha);
       }
-      """;
+    }
+    """;
+
+  //---------------------------------------------------------------------------
 
   void configure(int backgroundColor, int solidThreshold, int invisibleThreshold) {
 

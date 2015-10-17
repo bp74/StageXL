@@ -2,7 +2,6 @@ library stagexl.filters.normal_map;
 
 import 'dart:math' as math;
 import 'dart:web_gl' as gl;
-import 'dart:typed_data';
 
 import '../display.dart';
 import '../engine.dart';
@@ -54,8 +53,6 @@ class NormalMapFilter extends BitmapFilter {
 
 class NormalMapFilterProgram extends RenderProgram {
 
-  RenderBufferIndex _renderBufferIndex;
-  RenderBufferVertex _renderBufferVertex;
   int _indexCount = 0;
   int _vertexCount = 0;
 
@@ -69,6 +66,7 @@ class NormalMapFilterProgram extends RenderProgram {
   // aVertexAlpha:         Float32(a)
   //---------------------------------------------------------------------------
 
+  @override
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
@@ -99,6 +97,7 @@ class NormalMapFilterProgram extends RenderProgram {
     }
     """;
 
+  @override
   String get fragmentShaderSource => """
 
     precision mediump float;
@@ -148,28 +147,24 @@ class NormalMapFilterProgram extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
 
     super.activate(renderContext);
-    super.renderingContext.uniform1i(uniforms["uTexSampler"], 0);
-    super.renderingContext.uniform1i(uniforms["uMapSampler"], 1);
 
-    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
-    _renderBufferIndex.activate(renderContext);
+    renderingContext.uniform1i(uniforms["uTexSampler"], 0);
+    renderingContext.uniform1i(uniforms["uMapSampler"], 1);
 
-    _renderBufferVertex = renderContext.renderBufferVertex;
-    _renderBufferVertex.activate(renderContext);
-    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"],     2, 76,  0);
-    _renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"],     2, 76,  8);
-    _renderBufferVertex.bindAttribute(attributes["aVertexMapCoord"],     2, 76, 16);
-    _renderBufferVertex.bindAttribute(attributes["aVertexAmbientColor"], 4, 76, 24);
-    _renderBufferVertex.bindAttribute(attributes["aVertexLightColor"],   4, 76, 40);
-    _renderBufferVertex.bindAttribute(attributes["aVertexLightCoord"],   4, 76, 56);
-    _renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],        1, 76, 72);
+    renderBufferVertex.bindAttribute(attributes["aVertexPosition"],     2, 76,  0);
+    renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"],     2, 76,  8);
+    renderBufferVertex.bindAttribute(attributes["aVertexMapCoord"],     2, 76, 16);
+    renderBufferVertex.bindAttribute(attributes["aVertexAmbientColor"], 4, 76, 24);
+    renderBufferVertex.bindAttribute(attributes["aVertexLightColor"],   4, 76, 40);
+    renderBufferVertex.bindAttribute(attributes["aVertexLightCoord"],   4, 76, 56);
+    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],        1, 76, 72);
   }
 
   @override
   void flush() {
     if (_vertexCount > 0 && _indexCount > 0) {
-      _renderBufferIndex.update(0, _indexCount);
-      _renderBufferVertex.update(0, _vertexCount * 19);
+      renderBufferIndex.update(0, _indexCount);
+      renderBufferVertex.update(0, _vertexCount * 19);
       renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
       _indexCount = 0;
       _vertexCount = 0;
@@ -216,11 +211,11 @@ class NormalMapFilterProgram extends RenderProgram {
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
-    var ixData = _renderBufferIndex.data;
+    var ixData = renderBufferIndex.data;
     if (ixData == null) return;
     if (ixData.length < (indexCount + _indexCount)) flush();
 
-    var vxData = _renderBufferVertex.data;
+    var vxData = renderBufferVertex.data;
     if (vxData == null) return;
     if (vxData.length < (vertexCount + _vertexCount) * 19) flush();
 
