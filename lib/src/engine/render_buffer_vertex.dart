@@ -48,6 +48,7 @@ class RenderBufferVertex {
   }
 
   void bindAttribute(int index, int size, int stride, int offset) {
+    if (index == null) return;
     _renderingContext.vertexAttribPointer(index, size, gl.FLOAT, false, stride, offset);
   }
 }

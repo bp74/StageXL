@@ -16,9 +16,11 @@ class RenderProgramQuad extends RenderProgram {
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
+
     attribute vec2 aVertexPosition;
     attribute vec2 aVertexTextCoord;
     attribute float aVertexAlpha;
+
     varying vec2 vTextCoord;
     varying float vAlpha;
 
@@ -32,6 +34,7 @@ class RenderProgramQuad extends RenderProgram {
   String get fragmentShaderSource => """
 
     precision mediump float;
+
     uniform sampler2D uSampler;
 
     varying vec2 vTextCoord;
