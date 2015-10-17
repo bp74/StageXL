@@ -1,7 +1,6 @@
 library stagexl.filters.tint;
 
 import 'dart:html' show ImageData;
-import 'dart:typed_data';
 import 'dart:web_gl' as gl;
 
 import '../display.dart';
