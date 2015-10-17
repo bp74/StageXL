@@ -17,6 +17,9 @@ class TextureAtlasFrame {
   final int frameWidth;
   final int frameHeight;
 
+  final Float32List vxList;
+  final Int16List ixList;
+
   BitmapData _bitmapData = null;
 
   //---------------------------------------------------------------------------
@@ -24,11 +27,17 @@ class TextureAtlasFrame {
   TextureAtlasFrame(
       this.textureAtlas, this.textureAtlasQuad, this.name, this.rotation,
       this.offsetX, this.offsetY, this.originalWidth, this.originalHeight,
-      this.frameX, this.frameY, this.frameWidth, this.frameHeight) {
+      this.frameX, this.frameY, this.frameWidth, this.frameHeight,
+      this.vxList, this.ixList) {
 
     var s = new Rectangle<int>(frameX, frameY, frameWidth, frameHeight);
     var o = new Rectangle<int>(-offsetX, -offsetY, originalWidth, originalHeight);
     var q = new RenderTextureQuad.slice(textureAtlasQuad, s, o, rotation);
+
+    if (this.vxList != null && this.ixList != null) {
+      q.applyPolygonShape(this.vxList, this.ixList);
+    }
+
     _bitmapData = new BitmapData.fromRenderTextureQuad(q);
   }
 

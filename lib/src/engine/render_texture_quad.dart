@@ -8,13 +8,13 @@ class RenderTextureQuad {
   final int rotation;
   final num pixelRatio;
 
-  final Int32List abList = new Int32List(10);
+  final Int16List abList = new Int16List(10);
   final Int16List ixList = new Int16List(6);
   final Float32List vxList = new Float32List(16);
 
-  // TODO: remove and replace with vxList
-  final Float32List xyList = new Float32List(10);
-  final Float32List uvList = new Float32List(10);
+  Int16List _ixListPolygon = null;
+  Float32List _vxListPolygon = null;
+  bool _hasPolygonShape = false;
 
   //---------------------------------------------------------------------------
 
@@ -71,29 +71,56 @@ class RenderTextureQuad {
     ixList[4] = 2;
     ixList[5] = 3;
 
-    // TODO: replace xyList and uvList with vxList
+    // set default polygon vertices to quad shape
 
-    xyList[0] = vxList[00];
-    xyList[1] = vxList[01];
-    xyList[2] = vxList[04];
-    xyList[3] = vxList[05];
-    xyList[4] = vxList[08];
-    xyList[5] = vxList[09];
-    xyList[6] = vxList[12];
-    xyList[7] = vxList[13];
-    xyList[8] = w / pixelRatio;
-    xyList[9] = h / pixelRatio;
+    _vxListPolygon = vxList;
+    _ixListPolygon = ixList;
+    _hasPolygonShape = false;
+  }
 
-    uvList[0] = vxList[02];
-    uvList[1] = vxList[03];
-    uvList[2] = vxList[06];
-    uvList[3] = vxList[07];
-    uvList[4] = vxList[10];
-    uvList[5] = vxList[11];
-    uvList[6] = vxList[14];
-    uvList[7] = vxList[15];
-    uvList[8] = abList[8] / renderTexture.width;
-    uvList[9] = abList[9] / renderTexture.height;
+  //---------------------------------------------------------------------------
+
+  @deprecated
+  Float32List get xyList {
+
+    var list = new Float32List(10);
+    list[0] = vxList[00];
+    list[1] = vxList[01];
+    list[2] = vxList[04];
+    list[3] = vxList[05];
+    list[4] = vxList[08];
+    list[5] = vxList[09];
+    list[6] = vxList[12];
+    list[7] = vxList[13];
+
+    if (this.rotation == 0 || this.rotation == 2) {
+      list[8] = sourceRectangle.width / pixelRatio;
+      list[9] = sourceRectangle.height / pixelRatio;
+    } else {
+      list[8] = sourceRectangle.height / pixelRatio;
+      list[9] = sourceRectangle.width / pixelRatio;
+    }
+
+    return list;
+  }
+
+  //---------------------------------------------------------------------------
+
+  @deprecated
+  Float32List get uvList {
+
+    var list = new Float32List(10);
+    list[1] = vxList[03];
+    list[2] = vxList[06];
+    list[3] = vxList[07];
+    list[4] = vxList[10];
+    list[5] = vxList[11];
+    list[6] = vxList[14];
+    list[7] = vxList[15];
+    list[8] = abList[8] / renderTexture.width;
+    list[9] = abList[9] / renderTexture.height;
+
+    return list;
   }
 
   //---------------------------------------------------------------------------
@@ -185,6 +212,10 @@ class RenderTextureQuad {
   num get targetWidth => offsetRectangle.width / pixelRatio;
   num get targetHeight => offsetRectangle.height / pixelRatio;
 
+  Float32List get vxListPolygon => _vxListPolygon;
+  Int16List get ixListPolygon => _ixListPolygon;
+  bool get hasPolygonShape => _hasPolygonShape;
+
   Rectangle<num> get targetRectangle {
     num l = offsetRectangle.left / pixelRatio;
     num t = offsetRectangle.top / pixelRatio;
@@ -197,6 +228,20 @@ class RenderTextureQuad {
     return new RenderTextureQuad(this.renderTexture,
         this.sourceRectangle, this.offsetRectangle,
         this.rotation, pixelRatio);
+  }
+
+  //---------------------------------------------------------------------------
+
+  void removePolygonShape() {
+    _vxListPolygon = this.vxList;
+    _ixListPolygon = this.ixList;
+    _hasPolygonShape = false;
+  }
+
+  void applyPolygonShape(Float32List vxList, Int16List ixList) {
+    _vxListPolygon = vxList;
+    _ixListPolygon = ixList;
+    _hasPolygonShape = true;
   }
 
   //---------------------------------------------------------------------------

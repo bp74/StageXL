@@ -73,13 +73,22 @@ class RenderProgramQuad extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void renderQuad(RenderState renderState, RenderTextureQuad renderTextureQuad) {
-    _rqSimple(renderState, renderTextureQuad);
+  void renderQuad(
+      RenderState renderState,
+      RenderTextureQuad renderTextureQuad) {
+
+    if (renderTextureQuad.hasPolygonShape) {
+      _renderQuadWithPolygonShape(renderState, renderTextureQuad);
+    } else {
+      _renderQuadWithQuadShape(renderState, renderTextureQuad);
+    }
   }
 
   //---------------------------------------------------------------------------
 
-  void _rqSimple(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+  void _renderQuadWithQuadShape(
+      RenderState renderState,
+      RenderTextureQuad renderTextureQuad) {
 
     num alpha = renderState.globalAlpha;
     Matrix matrix = renderState.globalMatrix;
@@ -156,12 +165,14 @@ class RenderProgramQuad extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void _rqComplex(RenderState renderState, RenderTextureQuad renderTextureQuad) {
+  void _renderQuadWithPolygonShape(
+      RenderState renderState,
+      RenderTextureQuad renderTextureQuad) {
 
     num alpha = renderState.globalAlpha;
     Matrix matrix = renderState.globalMatrix;
-    Int16List ixList = renderTextureQuad.ixList;
-    Float32List vxList = renderTextureQuad.vxList;
+    Int16List ixList = renderTextureQuad.ixListPolygon;
+    Float32List vxList = renderTextureQuad.vxListPolygon;
     int indexCount = ixList.length;
     int vertexCount = vxList.length >> 2;
 
@@ -217,6 +228,5 @@ class RenderProgramQuad extends RenderProgram {
     _indexCount += indexCount;
     _vertexCount += vertexCount;
   }
-
 
 }
