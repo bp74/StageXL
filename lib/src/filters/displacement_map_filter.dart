@@ -55,7 +55,7 @@ class DisplacementMapFilter extends BitmapFilter {
     var srcData = srcImageData.data;
     var dstData = dstImageData.data;
 
-    Float32List vxList = renderTextureQuad.vxList;
+    Float32List vxList = renderTextureQuad.vxListQuad;
     num pixelRatio = renderTextureQuad.pixelRatio;
     num scaleX = pixelRatio * this.scaleX;
     num scaleY = pixelRatio * this.scaleX;

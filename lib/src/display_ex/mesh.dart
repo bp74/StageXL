@@ -210,10 +210,10 @@ class Mesh extends DisplayObject {
     var renderTextureQuad = bitmapData.renderTextureQuad;
     var renderTexture = bitmapData.renderTexture;
 
-    var u1 = renderTextureQuad.vxList[02];
-    var v1 = renderTextureQuad.vxList[03];
-    var u2 = renderTextureQuad.vxList[10];
-    var v2 = renderTextureQuad.vxList[11];
+    var u1 = renderTextureQuad.vxListQuad[02];
+    var v1 = renderTextureQuad.vxListQuad[03];
+    var u2 = renderTextureQuad.vxListQuad[10];
+    var v2 = renderTextureQuad.vxListQuad[11];
     var rotation = renderTextureQuad.rotation;
     var horizontal = rotation == 0 || rotation == 2;
 

@@ -77,22 +77,22 @@ class RenderProgramQuad extends RenderProgram {
       RenderState renderState,
       RenderTextureQuad renderTextureQuad) {
 
-    if (renderTextureQuad.hasPolygonShape) {
-      _renderQuadWithPolygonShape(renderState, renderTextureQuad);
+    if (renderTextureQuad.hasCustomVertices) {
+      _renderQuadWithCustomVertices(renderState, renderTextureQuad);
     } else {
-      _renderQuadWithQuadShape(renderState, renderTextureQuad);
+      _renderQuadOptimized(renderState, renderTextureQuad);
     }
   }
 
   //---------------------------------------------------------------------------
 
-  void _renderQuadWithQuadShape(
+  void _renderQuadOptimized(
       RenderState renderState,
       RenderTextureQuad renderTextureQuad) {
 
     num alpha = renderState.globalAlpha;
     Matrix matrix = renderState.globalMatrix;
-    Float32List vxList = renderTextureQuad.vxList;
+    Float32List vxList = renderTextureQuad.vxListQuad;
     int indexCount = 6;
     int vertexCount = 4;
 
@@ -165,14 +165,14 @@ class RenderProgramQuad extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void _renderQuadWithPolygonShape(
+  void _renderQuadWithCustomVertices(
       RenderState renderState,
       RenderTextureQuad renderTextureQuad) {
 
     num alpha = renderState.globalAlpha;
     Matrix matrix = renderState.globalMatrix;
-    Int16List ixList = renderTextureQuad.ixListPolygon;
-    Float32List vxList = renderTextureQuad.vxListPolygon;
+    Int16List ixList = renderTextureQuad.ixList;
+    Float32List vxList = renderTextureQuad.vxList;
     int indexCount = ixList.length;
     int vertexCount = vxList.length >> 2;
 

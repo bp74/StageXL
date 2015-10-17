@@ -35,7 +35,9 @@ class TextureAtlasFrame {
     var q = new RenderTextureQuad.slice(textureAtlasQuad, s, o, rotation);
 
     if (this.vxList != null && this.ixList != null) {
-      q.applyPolygonShape(this.vxList, this.ixList);
+      q.setCustomVertices(this.vxList, this.ixList);
+    } else {
+      q.setQuadVertices();
     }
 
     _bitmapData = new BitmapData.fromRenderTextureQuad(q);
