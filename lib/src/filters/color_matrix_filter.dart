@@ -236,7 +236,8 @@ class ColorMatrixFilterProgram extends RenderProgram {
 
   RenderBufferIndex _renderBufferIndex;
   RenderBufferVertex _renderBufferVertex;
-  int _quadCount = 0;
+  int _indexCount = 0;
+  int _vertexCount = 0;
 
   //---------------------------------------------------------------------------
   // aPosition:  Float32(x), Float32(y)
@@ -298,7 +299,7 @@ class ColorMatrixFilterProgram extends RenderProgram {
     super.activate(renderContext);
     super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-    _renderBufferIndex = renderContext.renderBufferIndexQuads;
+    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
     _renderBufferIndex.activate(renderContext);
 
     _renderBufferVertex = renderContext.renderBufferVertex;
@@ -314,73 +315,102 @@ class ColorMatrixFilterProgram extends RenderProgram {
 
   @override
   void flush() {
-    if (_quadCount > 0) {
-      _renderBufferVertex.update(0, _quadCount * 4 * 24);
-      renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
-      _quadCount = 0;
+    if (_vertexCount > 0 && _indexCount > 0) {
+      _renderBufferIndex.update(0, _indexCount);
+      _renderBufferVertex.update(0, _vertexCount * 24);
+      renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
+      _indexCount = 0;
+      _vertexCount = 0;
     }
   }
 
   //---------------------------------------------------------------------------
 
-  void renderColorMatrixFilterQuad(RenderState renderState,
-                                   RenderTextureQuad renderTextureQuad,
-                                   ColorMatrixFilter colorMatrixFilter) {
+  void renderColorMatrixFilterQuad(
+      RenderState renderState,
+      RenderTextureQuad renderTextureQuad,
+      ColorMatrixFilter colorMatrixFilter) {
 
-    Float32List xyList = renderTextureQuad.xyList;
-    Float32List uvList = renderTextureQuad.uvList;
-    Matrix matrix = renderState.globalMatrix;
-    num alpha = renderState.globalAlpha;
+    var alpha = renderState.globalAlpha;
+    var matrix = renderState.globalMatrix;
+    var ixList = renderTextureQuad.ixList;
+    var vxList = renderTextureQuad.vxList;
+    var indexCount = ixList.length;
+    var vertexCount = vxList.length >> 2;
 
-    Float32List colorMatrixList = colorMatrixFilter._colorMatrixList;
-    Float32List colorOffsetList = colorMatrixFilter._colorOffsetList;
+    var colorMatrixList = colorMatrixFilter._colorMatrixList;
+    var colorOffsetList = colorMatrixFilter._colorOffsetList;
 
-    // Check if the index and vertex buffer are valid and if
-    // we need to flush the render program to free the buffers.
+    var ma = matrix.a;
+    var mb = matrix.b;
+    var mc = matrix.c;
+    var md = matrix.d;
+    var mx = matrix.tx;
+    var my = matrix.ty;
+
+    // The following code contains dart2js_hints to keep
+    // the generated JavaScript code clean and fast!
 
     var ixData = _renderBufferIndex.data;
     if (ixData == null) return;
-    if (ixData.length < _quadCount * 6 + 6) flush();
+    if (ixData.length < (indexCount + _indexCount)) flush();
 
     var vxData = _renderBufferVertex.data;
     if (vxData == null) return;
-    if (vxData.length < _quadCount * 96 + 96) flush();
+    if (vxData.length < (vertexCount + _vertexCount) * 24) flush();
 
-    // Calculate the 4 vertices of the RenderTextureQuad
+    // copy index list
 
-    for(int vertex = 0, index = _quadCount * 96; vertex < 4; vertex++, index += 24) {
+    var ixOffset = _indexCount;
 
-      num x = xyList[vertex + vertex + 0];
-      num y = xyList[vertex + vertex + 1];
-
-      if (index > vxData.length - 24) return; // dart2js_hint
-
-      vxData[index + 00] = matrix.tx + x * matrix.a + y * matrix.c;
-      vxData[index + 01] = matrix.ty + x * matrix.b + y * matrix.d;
-      vxData[index + 02] = uvList[vertex + vertex + 0];
-      vxData[index + 03] = uvList[vertex + vertex + 1];
-      vxData[index + 04] = colorMatrixList[00];
-      vxData[index + 05] = colorMatrixList[01];
-      vxData[index + 06] = colorMatrixList[02];
-      vxData[index + 07] = colorMatrixList[03];
-      vxData[index + 08] = colorMatrixList[04];
-      vxData[index + 09] = colorMatrixList[05];
-      vxData[index + 10] = colorMatrixList[06];
-      vxData[index + 11] = colorMatrixList[07];
-      vxData[index + 12] = colorMatrixList[08];
-      vxData[index + 13] = colorMatrixList[09];
-      vxData[index + 14] = colorMatrixList[10];
-      vxData[index + 15] = colorMatrixList[11];
-      vxData[index + 16] = colorMatrixList[12] * alpha;
-      vxData[index + 17] = colorMatrixList[13] * alpha;
-      vxData[index + 18] = colorMatrixList[14] * alpha;
-      vxData[index + 19] = colorMatrixList[15] * alpha;
-      vxData[index + 20] = colorOffsetList[00] / 255.0;
-      vxData[index + 21] = colorOffsetList[01] / 255.0;
-      vxData[index + 22] = colorOffsetList[02] / 255.0;
-      vxData[index + 23] = colorOffsetList[03] / 255.0 * alpha;
+    for(var i = 0; i < indexCount; i++) {
+      if (ixOffset > ixData.length - 1) break;
+      ixData[ixOffset] = _vertexCount + ixList[i];
+      ixOffset += 1;
     }
 
-    _quadCount += 1;
+    // copy vertex list
+
+    var vxOffset = _vertexCount * 24;
+
+    for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
+
+      if (o > vxList.length - 4) break;
+      num x = vxList[o + 0];
+      num y = vxList[o + 1];
+      num u = vxList[o + 2];
+      num v = vxList[o + 3];
+
+      if (vxOffset > vxData.length - 24) break;
+      vxData[vxOffset + 00] = mx + ma * x + mc * y;
+      vxData[vxOffset + 01] = my + mb * x + md * y;
+      vxData[vxOffset + 02] = u;
+      vxData[vxOffset + 03] = v;
+      vxData[vxOffset + 04] = colorMatrixList[00];
+      vxData[vxOffset + 05] = colorMatrixList[01];
+      vxData[vxOffset + 06] = colorMatrixList[02];
+      vxData[vxOffset + 07] = colorMatrixList[03];
+      vxData[vxOffset + 08] = colorMatrixList[04];
+      vxData[vxOffset + 09] = colorMatrixList[05];
+      vxData[vxOffset + 10] = colorMatrixList[06];
+      vxData[vxOffset + 11] = colorMatrixList[07];
+      vxData[vxOffset + 12] = colorMatrixList[08];
+      vxData[vxOffset + 13] = colorMatrixList[09];
+      vxData[vxOffset + 14] = colorMatrixList[10];
+      vxData[vxOffset + 15] = colorMatrixList[11];
+      vxData[vxOffset + 16] = colorMatrixList[12] * alpha;
+      vxData[vxOffset + 17] = colorMatrixList[13] * alpha;
+      vxData[vxOffset + 18] = colorMatrixList[14] * alpha;
+      vxData[vxOffset + 19] = colorMatrixList[15] * alpha;
+      vxData[vxOffset + 20] = colorOffsetList[00] / 255.0;
+      vxData[vxOffset + 21] = colorOffsetList[01] / 255.0;
+      vxData[vxOffset + 22] = colorOffsetList[02] / 255.0;
+      vxData[vxOffset + 23] = colorOffsetList[03] / 255.0 * alpha;
+      vxOffset += 24;
+    }
+
+    _indexCount += indexCount;
+    _vertexCount += vertexCount;
   }
+
 }
