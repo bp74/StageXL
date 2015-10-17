@@ -2,7 +2,6 @@ library stagexl.filters.glow;
 
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show ImageData;
-import 'dart:web_gl' as gl;
 
 import '../display.dart';
 import '../engine.dart';
