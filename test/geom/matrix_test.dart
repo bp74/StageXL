@@ -1,7 +1,8 @@
+@TestOn("browser")
 library matrix_test;
 
 import 'dart:math';
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {

@@ -1,22 +1,30 @@
+@TestOn("browser")
 library spritesheet_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {
 
-  ResourceManager resourceManager = new ResourceManager();
-  BitmapData spiders;
+  ResourceManager resourceManager;
   SpriteSheet spritesheet;
+  BitmapData spiders;
 
-  resourceManager.addBitmapData('spiders', 'common/images/spider.png');
-
-  setUp(() {
-    return resourceManager.load().then((_) {
-      spiders = resourceManager.getBitmapData('spiders');
-      spritesheet = new SpriteSheet(spiders, 32, 32);
-    });
+  setUp(() async {
+    resourceManager = new ResourceManager();
+    resourceManager.addBitmapData('spiders', 'common/images/spider.png');
+    await resourceManager.load();
+    spiders = resourceManager.getBitmapData('spiders');
+    spritesheet = new SpriteSheet(spiders, 32, 32);
   });
+
+  tearDown(() {
+    resourceManager = null;
+    spiders = null;
+    spritesheet = null;
+  });
+
+  //---------------------------------------------------------------------------
 
   test('SpriteSheet assigns source BitmapData', () {
     expect(spritesheet.source, equals(spiders));
