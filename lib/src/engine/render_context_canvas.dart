@@ -58,7 +58,7 @@ class RenderContextCanvas extends RenderContext {
     var context = _renderingContext;
     var source = renderTextureQuad.renderTexture.source;
     var rotation = renderTextureQuad.rotation;
-    var abList = renderTextureQuad.abList;
+    var sourceRect = renderTextureQuad.sourceRectangle;
     var vxList = renderTextureQuad.vxListQuad;
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
@@ -78,28 +78,28 @@ class RenderContextCanvas extends RenderContext {
 
       context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          abList[0], abList[1], abList[8], abList[9],
+          sourceRect.left, sourceRect.top, sourceRect.width, sourceRect.height,
           vxList[0], vxList[1], vxList[8] - vxList[0], vxList[9] - vxList[1]);
 
     } else if (rotation == 1) {
 
       context.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          abList[6], abList[7], abList[8], abList[9],
+          sourceRect.left, sourceRect.top, sourceRect.width, sourceRect.height,
           0.0 - vxList[13], vxList[12], vxList[9] - vxList[1], vxList[8] - vxList[0]);
 
     } else if (rotation == 2) {
 
       context.setTransform(-matrix.a, -matrix.b, -matrix.c, -matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          abList[4], abList[5], abList[8], abList[9],
+          sourceRect.left, sourceRect.top, sourceRect.width, sourceRect.height,
           0.0 - vxList[8], 0.0 - vxList[9], vxList[8] - vxList[0], vxList[9] - vxList[1]);
 
     } else if (rotation == 3) {
 
       context.setTransform(matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
-          abList[2], abList[3], abList[8], abList[9],
+          sourceRect.left, sourceRect.top, sourceRect.width, sourceRect.height,
           vxList[5], 0.0 - vxList[4], vxList[9] - vxList[1], vxList[8] - vxList[0]);
     }
   }

@@ -8,7 +8,6 @@ class RenderTextureQuad {
   final int rotation;
   final num pixelRatio;
 
-  final Int16List abList = new Int16List(10);
   final Int16List ixListQuad = new Int16List(6);
   final Float32List vxListQuad = new Float32List(16);
 
@@ -22,45 +21,52 @@ class RenderTextureQuad {
                     this.sourceRectangle, this.offsetRectangle,
                     this.rotation, this.pixelRatio) {
 
-    int a = this.rotation;
-    int w = a == 0 || a == 2 ? sourceRectangle.width : sourceRectangle.height;
-    int h = a == 0 || a == 2 ? sourceRectangle.height : sourceRectangle.width;
-    int l = 0 - offsetRectangle.left;
-    int t = 0 - offsetRectangle.top;
-    int r = l + w;
-    int b = t + h;
+    Rectangle<int> sr = this.sourceRectangle;
+    Rectangle<int> or = this.offsetRectangle;
+    RenderTexture rt = this.renderTexture;
+    num pr = this.pixelRatio;
 
-    // Source coordinates + size
+    // Vertex list [x/y]
 
-    abList[0] = a == 0 || a == 3 ? sourceRectangle.left : sourceRectangle.right;
-    abList[1] = a == 0 || a == 1 ? sourceRectangle.top : sourceRectangle.bottom;
-    abList[2] = a == 2 || a == 3 ? sourceRectangle.left : sourceRectangle.right;
-    abList[3] = a == 0 || a == 3 ? sourceRectangle.top : sourceRectangle.bottom;
-    abList[4] = a == 1 || a == 2 ? sourceRectangle.left : sourceRectangle.right;
-    abList[5] = a == 2 || a == 3 ? sourceRectangle.top : sourceRectangle.bottom;
-    abList[6] = a == 0 || a == 1 ? sourceRectangle.left : sourceRectangle.right;
-    abList[7] = a == 1 || a == 2 ? sourceRectangle.top : sourceRectangle.bottom;
-    abList[8] = sourceRectangle.width;
-    abList[9] = sourceRectangle.height;
+    if (this.rotation == 0 || this.rotation == 2) {
+      vxListQuad[00] = vxListQuad[12] = (0 - or.left) / pr;
+      vxListQuad[01] = vxListQuad[05] = (0 - or.top) / pr;
+      vxListQuad[04] = vxListQuad[08] = (0 - or.left + sr.width) / pr;
+      vxListQuad[09] = vxListQuad[13] = (0 - or.top + sr.height) / pr;
+    } else if (this.rotation == 1 || this.rotation == 3) {
+      vxListQuad[00] = vxListQuad[12] = (0 - or.left) / pr;
+      vxListQuad[01] = vxListQuad[05] = (0 - or.top) / pr;
+      vxListQuad[04] = vxListQuad[08] = (0 - or.left + sr.height) / pr;
+      vxListQuad[09] = vxListQuad[13] = (0 - or.top + sr.width) / pr;
+    } else {
+      throw new Error();
+    }
 
-    // Vertex list with x/y/u/v
+    // Vertex list [u/v]
 
-    vxListQuad[00] = l / pixelRatio;
-    vxListQuad[01] = t / pixelRatio;
-    vxListQuad[02] = abList[0] / renderTexture.width;
-    vxListQuad[03] = abList[1] / renderTexture.height;
-    vxListQuad[04] = r / pixelRatio;
-    vxListQuad[05] = t / pixelRatio;
-    vxListQuad[06] = abList[2] / renderTexture.width;
-    vxListQuad[07] = abList[3] / renderTexture.height;
-    vxListQuad[08] = r / pixelRatio;
-    vxListQuad[09] = b / pixelRatio;
-    vxListQuad[10] = abList[4] / renderTexture.width;
-    vxListQuad[11] = abList[5] / renderTexture.height;
-    vxListQuad[12] = l / pixelRatio;
-    vxListQuad[13] = b / pixelRatio;
-    vxListQuad[14] = abList[6] / renderTexture.width;
-    vxListQuad[15] = abList[7] / renderTexture.height;
+    if (this.rotation == 0) {
+      vxListQuad[02] = vxListQuad[14] = sr.left / rt.width;
+      vxListQuad[03] = vxListQuad[07] = sr.top / rt.height;
+      vxListQuad[06] = vxListQuad[10] = sr.right / rt.width;
+      vxListQuad[11] = vxListQuad[15] = sr.bottom / rt.height;
+    } else if (this.rotation == 1) {
+      vxListQuad[02] = vxListQuad[06] = sr.right / rt.width;
+      vxListQuad[03] = vxListQuad[15] = sr.top / rt.height;
+      vxListQuad[07] = vxListQuad[11] = sr.bottom / rt.height;
+      vxListQuad[10] = vxListQuad[14] = sr.left / rt.width;
+    } else if (this.rotation == 2) {
+      vxListQuad[02] = vxListQuad[14] = sr.right / rt.width;
+      vxListQuad[03] = vxListQuad[07] = sr.bottom / rt.height;
+      vxListQuad[06] = vxListQuad[10] = sr.left / rt.width;
+      vxListQuad[11] = vxListQuad[15] = sr.top / rt.height;
+    } else if (this.rotation == 3) {
+      vxListQuad[02] = vxListQuad[06] = sr.left / rt.width;
+      vxListQuad[03] = vxListQuad[15] = sr.bottom / rt.height;
+      vxListQuad[07] = vxListQuad[11] = sr.top / rt.height;
+      vxListQuad[10] = vxListQuad[14] = sr.right / rt.width;
+    } else {
+      throw new Error();
+    }
 
     // Index list
 
@@ -76,45 +82,6 @@ class RenderTextureQuad {
     _vxList = vxListQuad;
     _ixList = ixListQuad;
     _hasCustomVertices = false;
-  }
-
-  //---------------------------------------------------------------------------
-
-  @deprecated
-  Float32List get xyList {
-    var list = new Float32List(10);
-    list[0] = vxListQuad[00];
-    list[1] = vxListQuad[01];
-    list[2] = vxListQuad[04];
-    list[3] = vxListQuad[05];
-    list[4] = vxListQuad[08];
-    list[5] = vxListQuad[09];
-    list[6] = vxListQuad[12];
-    list[7] = vxListQuad[13];
-    if (this.rotation == 0 || this.rotation == 2) {
-      list[8] = sourceRectangle.width / pixelRatio;
-      list[9] = sourceRectangle.height / pixelRatio;
-    } else {
-      list[8] = sourceRectangle.height / pixelRatio;
-      list[9] = sourceRectangle.width / pixelRatio;
-    }
-    return list;
-  }
-
-  @deprecated
-  Float32List get uvList {
-    var list = new Float32List(10);
-    list[0] = vxListQuad[02];
-    list[1] = vxListQuad[03];
-    list[2] = vxListQuad[06];
-    list[3] = vxListQuad[07];
-    list[4] = vxListQuad[10];
-    list[5] = vxListQuad[11];
-    list[6] = vxListQuad[14];
-    list[7] = vxListQuad[15];
-    list[8] = abList[8] / renderTexture.width;
-    list[9] = abList[9] / renderTexture.height;
-    return list;
   }
 
   //---------------------------------------------------------------------------
@@ -365,5 +332,63 @@ class RenderTextureQuad {
     var context = renderTexture.canvas.context2D;
     context.putImageData(imageData, rect.left, rect.top);
   }
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  @deprecated
+  Float32List get xyList {
+    var list = new Float32List(10);
+    list[0] = vxListQuad[00];
+    list[1] = vxListQuad[01];
+    list[2] = vxListQuad[04];
+    list[3] = vxListQuad[05];
+    list[4] = vxListQuad[08];
+    list[5] = vxListQuad[09];
+    list[6] = vxListQuad[12];
+    list[7] = vxListQuad[13];
+    if (this.rotation == 0 || this.rotation == 2) {
+      list[8] = sourceRectangle.width / pixelRatio;
+      list[9] = sourceRectangle.height / pixelRatio;
+    } else {
+      list[8] = sourceRectangle.height / pixelRatio;
+      list[9] = sourceRectangle.width / pixelRatio;
+    }
+    return list;
+  }
+
+  @deprecated
+  Float32List get uvList {
+    var list = new Float32List(10);
+    list[0] = vxListQuad[02];
+    list[1] = vxListQuad[03];
+    list[2] = vxListQuad[06];
+    list[3] = vxListQuad[07];
+    list[4] = vxListQuad[10];
+    list[5] = vxListQuad[11];
+    list[6] = vxListQuad[14];
+    list[7] = vxListQuad[15];
+    list[8] = sourceRectangle.width / renderTexture.width;
+    list[9] = sourceRectangle.height / renderTexture.height;
+    return list;
+  }
+
+  @deprecated
+  Int16List get abList {
+    var list = new Int16List(10);
+    var sr = sourceRectangle;
+    list[0] = rotation == 0 || rotation == 3 ? sr.left : sr.right;
+    list[1] = rotation == 0 || rotation == 1 ? sr.top : sr.bottom;
+    list[2] = rotation == 2 || rotation == 3 ? sr.left : sr.right;
+    list[3] = rotation == 0 || rotation == 3 ? sr.top : sr.bottom;
+    list[4] = rotation == 1 || rotation == 2 ? sr.left : sr.right;
+    list[5] = rotation == 2 || rotation == 3 ? sr.top : sr.bottom;
+    list[6] = rotation == 0 || rotation == 1 ? sr.left : sr.right;
+    list[7] = rotation == 1 || rotation == 2 ? sr.top : sr.bottom;
+    list[8] = sr.width;
+    list[9] = sr.height;
+    return list;
+  }
+
 
 }
