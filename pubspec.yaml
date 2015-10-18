@@ -10,3 +10,4 @@ dependencies:
   browser: any
 dev_dependencies:
   test: any
+  test_runner: any
