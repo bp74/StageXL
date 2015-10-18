@@ -1,7 +1,6 @@
 language: dart
-dart:
-  - stable
-  - dev
+dart: ["stable", "dev"]
+sudo: false
 with_content_shell: true
 before_script:
   - "export DISPLAY=:99.0"
