@@ -1,10 +1,5 @@
 language: dart
-dart:
-  - stable
-  - dev
+dart: ["stable", "dev"]
 with_content_shell: true
-before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-script: pub run test -p content-shell
-
+before_install: ["export DISPLAY=:99.0", "sh -e /etc/init.d/xvfb start"]
+script: pub run test test/all.dart -p content-shell
