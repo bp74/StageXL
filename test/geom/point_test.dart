@@ -1,6 +1,7 @@
+@TestOn("browser")
 library point_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {

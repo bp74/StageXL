@@ -2,8 +2,6 @@ library stagexl.filters.glow;
 
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show ImageData;
-import 'dart:typed_data';
-import 'dart:web_gl' as gl;
 
 import '../display.dart';
 import '../engine.dart';
@@ -154,6 +152,7 @@ class GlowFilter extends BitmapFilter {
     int passCount = _renderPassSources.length;
     num passScale = pow(0.5, pass >> 1);
     num pixelRatio = sqrt(renderState.globalMatrix.det.abs());
+    num pixelRatioScale = pixelRatio * passScale;
 
     if (pass == passCount - 1) {
 
@@ -169,12 +168,14 @@ class GlowFilter extends BitmapFilter {
       renderContext.activateRenderProgram(renderProgram);
       renderContext.activateRenderTexture(renderTexture);
 
-      renderProgram.renderGlowFilterQuad(
-          renderState, renderTextureQuad,
-          pass == passCount - 2 ? this.color : this.color | 0xFF000000,
-          pass == passCount - 2 ? renderState.globalAlpha : 1.0,
-          pass.isEven ? pixelRatio * passScale * blurX / renderTexture.width : 0.0,
-          pass.isEven ? 0.0 : pixelRatio * passScale * blurY / renderTexture.height);
+      renderProgram.configure(
+        pass == passCount - 2 ? this.color : this.color | 0xFF000000,
+        pass == passCount - 2 ? renderState.globalAlpha : 1.0,
+        pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
+        pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);
+
+      renderProgram.renderQuad(renderState, renderTextureQuad);
+      renderProgram.flush();
     }
   }
 }
@@ -182,40 +183,36 @@ class GlowFilter extends BitmapFilter {
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class GlowFilterProgram extends RenderProgram {
+class GlowFilterProgram extends RenderProgramQuad {
 
-  RenderBufferVertex _renderBufferVertex;
-
-  //---------------------------------------------------------------------------
-  // aVertexPosition:   Float32(x), Float32(y)
-  // aVertexTextCoord:  Float32(u), Float32(v)
-  //---------------------------------------------------------------------------
-
+  @override
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
     uniform vec2 uRadius;
 
-    attribute vec2 aPosition;
-    attribute vec2 aTexCoord;
+    attribute vec2 aVertexPosition;
+    attribute vec2 aVertexTextCoord;
 
     varying vec2 vBlurCoords[7];
 
     void main() {
-      vBlurCoords[0] = aTexCoord - uRadius * 1.2;
-      vBlurCoords[1] = aTexCoord - uRadius * 0.8;
-      vBlurCoords[2] = aTexCoord - uRadius * 0.4;
-      vBlurCoords[3] = aTexCoord;
-      vBlurCoords[4] = aTexCoord + uRadius * 0.4;
-      vBlurCoords[5] = aTexCoord + uRadius * 0.8;
-      vBlurCoords[6] = aTexCoord + uRadius * 1.2;
-      gl_Position = vec4(aPosition, 0.0, 1.0) * uProjectionMatrix;
+      vBlurCoords[0] = aVertexTextCoord - uRadius * 1.2;
+      vBlurCoords[1] = aVertexTextCoord - uRadius * 0.8;
+      vBlurCoords[2] = aVertexTextCoord - uRadius * 0.4;
+      vBlurCoords[3] = aVertexTextCoord;
+      vBlurCoords[4] = aVertexTextCoord + uRadius * 0.4;
+      vBlurCoords[5] = aVertexTextCoord + uRadius * 0.8;
+      vBlurCoords[6] = aVertexTextCoord + uRadius * 1.2;
+      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
     }
     """;
 
+  @override
   String get fragmentShaderSource => """
     
     precision mediump float;
+
     uniform sampler2D uSampler;
     uniform vec4 uColor;
 
@@ -237,59 +234,16 @@ class GlowFilterProgram extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  @override
-  void activate(RenderContextWebGL renderContext) {
-
-    super.activate(renderContext);
-
-    _renderBufferVertex = renderContext.renderBufferVertex;
-    _renderBufferVertex.activate(renderContext);
-    _renderBufferVertex.bindAttribute(attributes["aPosition"], 2, 16, 0);
-    _renderBufferVertex.bindAttribute(attributes["aTexCoord"], 2, 16, 8);
-  }
-
-  //---------------------------------------------------------------------------
-
-  void renderGlowFilterQuad(
-      RenderState renderState, RenderTextureQuad renderTextureQuad,
-      int color, num alpha, num radiusX, num radiusY) {
-
-    Float32List xyList = renderTextureQuad.xyList;
-    Float32List uvList = renderTextureQuad.uvList;
-    Matrix matrix = renderState.globalMatrix;
+  void configure(int color, num alpha, num radiusX, num radiusY) {
 
     num r = colorGetR(color) / 255.0;
     num g = colorGetG(color) / 255.0;
     num b = colorGetB(color) / 255.0;
     num a = colorGetA(color) / 255.0 * alpha;
 
-    // Calculate the 4 vertices of the RenderTextureQuad
-
-    var vxData = _renderBufferVertex.data;
-    if (vxData == null) return;
-    if (vxData.length < 16) return;
-
-    for(int vertex = 0, index = 0; vertex < 4; vertex++, index += 4) {
-
-      num x = xyList[vertex + vertex + 0];
-      num y = xyList[vertex + vertex + 1];
-
-      if (index > vxData.length - 4) return; // dart2js_hint
-
-      vxData[index + 0] = matrix.tx + x * matrix.a + y * matrix.c;
-      vxData[index + 1] = matrix.ty + x * matrix.b + y * matrix.d;
-      vxData[index + 2] = uvList[vertex + vertex + 0];
-      vxData[index + 3] = uvList[vertex + vertex + 1];
-    }
-
-    // Update vertex buffer and render quad
-
-    _renderBufferVertex.update(0, 16);
-
     renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
     renderingContext.uniform4f(uniforms["uColor"], r, g, b, a);
-    renderingContext.uniform1i(uniforms["uSampler"], 0);
-    renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
   }
+
 }
 

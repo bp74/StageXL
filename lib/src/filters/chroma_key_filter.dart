@@ -8,14 +8,14 @@ import '../geom.dart';
 import '../internal/tools.dart';
 
 /// This filter provide a simple ChromaKey solution
-///  that can be aplied on bitmap or video
+/// that can be applied on bitmap or video
 ///
 /// <int> backgroundColor
 /// @represent : the color you want to make transparent
 /// @default : 0xFF00FF00 > pure green
 ///
 /// <int> solidThreshold
-/// @represent : this minimal diference for a color to be consider solid
+/// @represent : this minimal difference for a color to be consider solid
 /// @default : 140
 /// @range : 0 <> 255
 ///
@@ -107,73 +107,79 @@ class ChromaKeyFilter extends BitmapFilter {
     renderContext.activateRenderTexture(renderTexture);
     renderProgram.configure(backgroundColor, solidThreshold, invisibleThreshold);
     renderProgram.renderQuad(renderState, renderTextureQuad);
+    renderProgram.flush();
   }
 }
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class ChromaKeyFilterProgram extends BitmapFilterProgram {
+class ChromaKeyFilterProgram extends RenderProgramQuad {
 
-  String get fragmentShaderSource =>  """
-      precision mediump float;
-      uniform sampler2D uSampler;
-      varying vec2 vTextCoord;
+  @override
+  String get fragmentShaderSource => """
 
-      uniform vec4 backgroundColor;
-      uniform float solidThreshold;
-      uniform float invisibleThreshold;
+    precision mediump float;
+    uniform sampler2D uSampler;
+    varying vec2 vTextCoord;
 
-      uniform float weight;
+    uniform vec4 backgroundColor;
+    uniform float solidThreshold;
+    uniform float invisibleThreshold;
 
-      void main() {
-        // -- get pixel color
-        vec4 pixelColor = texture2D(uSampler, vTextCoord);
+    uniform float weight;
 
-        // -- calcul diference betwen chroma key color and actual pixelColor
-        float redDiff = abs(pixelColor.r - backgroundColor.r);
-        float greenDiff = abs(pixelColor.g - backgroundColor.g);
-        float blueDiff = abs(pixelColor.b - backgroundColor.b);
+    void main() {
+      // -- get pixel color
+      vec4 pixelColor = texture2D(uSampler, vTextCoord);
 
-        // is pixel close enouph to chroma key to be fully invisible
-        bool rCanBeInvisible = redDiff < invisibleThreshold;
-        bool gCanBeInvisible = greenDiff < invisibleThreshold;
-        bool bCanBeInvisible = blueDiff < invisibleThreshold;
+      // -- calcul diference betwen chroma key color and actual pixelColor
+      float redDiff = abs(pixelColor.r - backgroundColor.r);
+      float greenDiff = abs(pixelColor.g - backgroundColor.g);
+      float blueDiff = abs(pixelColor.b - backgroundColor.b);
 
-        // is pixel different enouph to chroma key to be fully visible
-        bool rCanBeSolid = redDiff > solidThreshold;
-        bool gCanBeSolid = greenDiff > solidThreshold;
-        bool bCanBeSolid = blueDiff > solidThreshold;
+      // is pixel close enouph to chroma key to be fully invisible
+      bool rCanBeInvisible = redDiff < invisibleThreshold;
+      bool gCanBeInvisible = greenDiff < invisibleThreshold;
+      bool bCanBeInvisible = blueDiff < invisibleThreshold;
 
-        if (rCanBeSolid || gCanBeSolid || bCanBeSolid) {
-          gl_FragColor = pixelColor;
+      // is pixel different enouph to chroma key to be fully visible
+      bool rCanBeSolid = redDiff > solidThreshold;
+      bool gCanBeSolid = greenDiff > solidThreshold;
+      bool bCanBeSolid = blueDiff > solidThreshold;
 
-        } else if (rCanBeInvisible && gCanBeInvisible && bCanBeInvisible) {
-          gl_FragColor = pixelColor * 0.0;
+      if (rCanBeSolid || gCanBeSolid || bCanBeSolid) {
+        gl_FragColor = pixelColor;
 
-        } else {
-          // semi transparent color
-          float alpha = 1.0;
+      } else if (rCanBeInvisible && gCanBeInvisible && bCanBeInvisible) {
+        gl_FragColor = pixelColor * 0.0;
 
-          // try tyo calculate the alpha as cloase as possible
-          float rAlpha = clamp((redDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
-          float gAlpha = clamp((greenDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
-          float bAlpha = clamp((blueDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
+      } else {
+        // semi transparent color
+        float alpha = 1.0;
 
-          alpha = min(rAlpha, gAlpha);
-          alpha = min(bAlpha, alpha);
+        // try tyo calculate the alpha as cloase as possible
+        float rAlpha = clamp((redDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
+        float gAlpha = clamp((greenDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
+        float bAlpha = clamp((blueDiff - invisibleThreshold) / (solidThreshold - invisibleThreshold), 0.0, 1.0);
 
-          // try to ge back the original color
-          float red = pixelColor.r - (1.0 - redDiff) * (1.0 - alpha) * backgroundColor.r * weight;
-          float green = pixelColor.g - (1.0 - greenDiff) * (1.0 - alpha) * backgroundColor.g * weight;
-          float blue = pixelColor.b - (1.0 - blueDiff) * (1.0 - alpha) * backgroundColor.b * weight;
+        alpha = min(rAlpha, gAlpha);
+        alpha = min(bAlpha, alpha);
 
-          gl_FragColor = vec4(red, green, blue, alpha);
-        }
+        // try to ge back the original color
+        float red = pixelColor.r - (1.0 - redDiff) * (1.0 - alpha) * backgroundColor.r * weight;
+        float green = pixelColor.g - (1.0 - greenDiff) * (1.0 - alpha) * backgroundColor.g * weight;
+        float blue = pixelColor.b - (1.0 - blueDiff) * (1.0 - alpha) * backgroundColor.b * weight;
+
+        gl_FragColor = vec4(red, green, blue, alpha);
       }
-      """;
+    }
+    """;
+
+  //---------------------------------------------------------------------------
 
   void configure(int backgroundColor, int solidThreshold, int invisibleThreshold) {
+
     num r = colorGetR(backgroundColor) / 255.0;
     num g = colorGetG(backgroundColor) / 255.0;
     num b = colorGetB(backgroundColor) / 255.0;
@@ -183,8 +189,10 @@ class ChromaKeyFilterProgram extends BitmapFilterProgram {
     renderingContext.uniform1f(uniforms["solidThreshold"], solidThreshold / 255.0);
     renderingContext.uniform1f(uniforms["invisibleThreshold"], invisibleThreshold / 255.0);
 
-    // this affect the color corection on semi transparent pixel, for now not public
-    // it is quite experimental
+    // this affect the color correction on semi transparent pixel,
+    // for now not public it is quite experimental
+
     renderingContext.uniform1f(uniforms["weight"], 0.8);
   }
+
 }

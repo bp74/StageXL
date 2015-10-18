@@ -2,8 +2,6 @@ library stagexl.filters.blur;
 
 import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show ImageData;
-import 'dart:typed_data';
-import 'dart:web_gl' as gl;
 
 import '../display.dart';
 import '../engine.dart';
@@ -65,8 +63,8 @@ class BlurFilter extends BitmapFilter {
   }
 
   /// The quality of the blur effect in the range from 1 to 5.
-  /// A small value is sufficent for small blur radii, a high blur
-  /// radius may require a heigher quality setting.
+  /// A small value is sufficient for small blur radii, a high blur
+  /// radius may require a higher quality setting.
 
   int get quality => _quality;
 
@@ -127,14 +125,17 @@ class BlurFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
-  void renderFilter(RenderState renderState,
-                    RenderTextureQuad renderTextureQuad, int pass) {
+  void renderFilter(
+      RenderState renderState,
+      RenderTextureQuad renderTextureQuad,
+      int pass) {
 
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     int passCount = _renderPassSources.length;
     num passScale = pow(0.5, pass >> 1);
     num pixelRatio = sqrt(renderState.globalMatrix.det.abs());
+    num pixelRatioScale = pixelRatio * passScale;
 
     BlurFilterProgram renderProgram = renderContext.getRenderProgram(
         r"$BlurFilterProgram", () => new BlurFilterProgram());
@@ -142,51 +143,49 @@ class BlurFilter extends BitmapFilter {
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
 
-    renderProgram.renderBlurFilterQuad(
-        renderState, renderTextureQuad,
+    renderProgram.configure(
         pass == passCount - 1 ? renderState.globalAlpha : 1.0,
-        pass.isEven ? pixelRatio * passScale * blurX / renderTexture.width : 0.0,
-        pass.isEven ? 0.0 : pixelRatio * passScale * blurY / renderTexture.height);
+        pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
+        pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);
+
+    renderProgram.renderQuad(renderState, renderTextureQuad);
+    renderProgram.flush();
   }
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class BlurFilterProgram extends RenderProgram {
+class BlurFilterProgram extends RenderProgramQuad {
 
-  RenderBufferVertex _renderBufferVertex;
-
-  //---------------------------------------------------------------------------
-  // aPosition:  Float32(x), Float32(y)
-  // aTexCoord:  Float32(u), Float32(v)
-  //---------------------------------------------------------------------------
-
+  @override
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
     uniform vec2 uRadius;
 
-    attribute vec2 aPosition;
-    attribute vec2 aTexCoord;
+    attribute vec2 aVertexPosition;
+    attribute vec2 aVertexTextCoord;
 
     varying vec2 vBlurCoords[7];
 
     void main() {
-      vBlurCoords[0] = aTexCoord - uRadius * 1.2;
-      vBlurCoords[1] = aTexCoord - uRadius * 0.8;
-      vBlurCoords[2] = aTexCoord - uRadius * 0.4;
-      vBlurCoords[3] = aTexCoord;
-      vBlurCoords[4] = aTexCoord + uRadius * 0.4;
-      vBlurCoords[5] = aTexCoord + uRadius * 0.8;
-      vBlurCoords[6] = aTexCoord + uRadius * 1.2;
-      gl_Position = vec4(aPosition, 0.0, 1.0) * uProjectionMatrix;
+      vBlurCoords[0] = aVertexTextCoord - uRadius * 1.2;
+      vBlurCoords[1] = aVertexTextCoord - uRadius * 0.8;
+      vBlurCoords[2] = aVertexTextCoord - uRadius * 0.4;
+      vBlurCoords[3] = aVertexTextCoord;
+      vBlurCoords[4] = aVertexTextCoord + uRadius * 0.4;
+      vBlurCoords[5] = aVertexTextCoord + uRadius * 0.8;
+      vBlurCoords[6] = aVertexTextCoord + uRadius * 1.2;
+      gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
     }
     """;
 
+  @override
   String get fragmentShaderSource => """
 
     precision mediump float;
+
     uniform sampler2D uSampler;
     uniform float uAlpha;
 
@@ -207,53 +206,9 @@ class BlurFilterProgram extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  @override
-  void activate(RenderContextWebGL renderContext) {
-
-    super.activate(renderContext);
-
-    _renderBufferVertex = renderContext.renderBufferVertex;
-    _renderBufferVertex.activate(renderContext);
-    _renderBufferVertex.bindAttribute(attributes["aPosition"], 2, 16, 0);
-    _renderBufferVertex.bindAttribute(attributes["aTexCoord"], 2, 16, 8);
-  }
-
-  //---------------------------------------------------------------------------
-
-  void renderBlurFilterQuad(
-      RenderState renderState, RenderTextureQuad renderTextureQuad,
-      num alpha, num radiusX, num radiusY) {
-
-    Float32List xyList = renderTextureQuad.xyList;
-    Float32List uvList = renderTextureQuad.uvList;
-    Matrix matrix = renderState.globalMatrix;
-
-    // Calculate the 4 vertices of the RenderTextureQuad
-
-    var vxData = _renderBufferVertex.data;
-    if (vxData == null) return;
-    if (vxData.length < 16) return;
-
-    for(int vertex = 0, index = 0; vertex < 4; vertex++, index += 4) {
-
-      num x = xyList[vertex + vertex + 0];
-      num y = xyList[vertex + vertex + 1];
-
-      if (index > vxData.length - 4) return; // dart2js_hint
-
-      vxData[index + 0] = matrix.tx + x * matrix.a + y * matrix.c;
-      vxData[index + 1] = matrix.ty + x * matrix.b + y * matrix.d;
-      vxData[index + 2] = uvList[vertex + vertex + 0];
-      vxData[index + 3] = uvList[vertex + vertex + 1];
-    }
-
-    // Update vertex buffer and render quad
-
-    _renderBufferVertex.update(0, 16);
-
-    renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
+  void configure(num alpha, num radiusX, num radiusY) {
     renderingContext.uniform1f(uniforms["uAlpha"], alpha);
-    renderingContext.uniform1i(uniforms["uSampler"], 0);
-    renderingContext.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
   }
+
 }

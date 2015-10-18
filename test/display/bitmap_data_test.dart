@@ -1,22 +1,30 @@
+@TestOn("browser")
 library bitmap_data_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {
 
-  ResourceManager resourceManager = new ResourceManager();
-  BitmapData monster;
+  ResourceManager resourceManager;
   List<BitmapData> bitmapDatas;
+  BitmapData monster;
 
-  resourceManager.addBitmapData('monster', 'common/images/brainmonster.png');
-
-  setUp(() {
-    return resourceManager.load().then((_) {
-      monster = resourceManager.getBitmapData('monster');
-      bitmapDatas = monster.sliceIntoFrames(32, 64);
-    });
+  setUp(() async {
+    resourceManager = new ResourceManager();
+    resourceManager.addBitmapData('monster', 'common/images/brainmonster.png');
+    await resourceManager.load();
+    monster = resourceManager.getBitmapData('monster');
+    bitmapDatas = monster.sliceIntoFrames(32, 64);
   });
+
+  tearDown(() {
+    resourceManager = null;
+    bitmapDatas = null;
+    monster = null;
+  });
+
+  //---------------------------------------------------------------------------
 
   group('sliceSpriteSheet', () {
 

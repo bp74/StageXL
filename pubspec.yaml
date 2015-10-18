@@ -9,4 +9,4 @@ documentation: http://www.stagexl.org/docs/api/index.html
 dependencies:
   browser: any
 dev_dependencies:
-  unittest: '>=0.11.0 <0.12.0'
+  test: any

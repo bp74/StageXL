@@ -2,7 +2,6 @@ library stagexl.filters.alpha_mask;
 
 import 'dart:html' show CanvasElement, CanvasRenderingContext2D;
 import 'dart:typed_data';
-import 'dart:web_gl' as gl;
 
 import '../display.dart';
 import '../engine.dart';
@@ -27,7 +26,7 @@ class AlphaMaskFilter extends BitmapFilter {
         : bitmapData.renderTextureQuad.cut(rectangle);
 
     Matrix matrix = renderTextureQuad.drawMatrix;
-    Float32List xyList = renderTextureQuad.xyList;
+    Float32List vxList = renderTextureQuad.vxList;
     CanvasElement canvas = renderTextureQuad.renderTexture.canvas;
     RenderContextCanvas renderContext = new RenderContextCanvas(canvas);
     RenderState renderState = new RenderState(renderContext, matrix);
@@ -36,7 +35,7 @@ class AlphaMaskFilter extends BitmapFilter {
     context.save();
     context.globalCompositeOperation = "destination-in";
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-    context.rect(xyList[0], xyList[1], xyList[8], xyList[9]);
+    context.rect(vxList[0], vxList[1], vxList[8] - vxList[0], vxList[9] - vxList[1]);
     context.clip();
     renderState.globalMatrix.prepend(this.matrix);
     renderState.renderQuad(this.bitmapData.renderTextureQuad);
@@ -66,18 +65,13 @@ class AlphaMaskFilter extends BitmapFilter {
 
 class AlphaMaskFilterProgram extends RenderProgram {
 
-  RenderBufferIndex _renderBufferIndex;
-  RenderBufferVertex _renderBufferVertex;
-  int _quadCount = 0;
-
-  //---------------------------------------------------------------------------
   // aVertexPosition:  Float32(x), Float32(y)
   // aVertexTxtCoord:  Float32(u), Float32(v)
   // aVertexMskCoord:  Float32(u), Float32(v)
   // aVertexMskLimit:  Float32(u1), Float32(v1), Float32(u2), Float32(v2)
   // aVertexAlpha:     Float32(a)
-  //---------------------------------------------------------------------------
 
+  @override
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
@@ -102,6 +96,7 @@ class AlphaMaskFilterProgram extends RenderProgram {
     }
     """;
 
+  @override
   String get fragmentShaderSource => """
 
     precision mediump float;
@@ -128,50 +123,41 @@ class AlphaMaskFilterProgram extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
 
     super.activate(renderContext);
-    super.renderingContext.uniform1i(uniforms["uTexSampler"], 0);
-    super.renderingContext.uniform1i(uniforms["uMskSampler"], 1);
 
-    _renderBufferIndex = renderContext.renderBufferIndexQuads;
-    _renderBufferIndex.activate(renderContext);
+    renderingContext.uniform1i(uniforms["uTexSampler"], 0);
+    renderingContext.uniform1i(uniforms["uMskSampler"], 1);
 
-    _renderBufferVertex = renderContext.renderBufferVertex;
-    _renderBufferVertex.activate(renderContext);
-    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 44,  0);
-    _renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"], 2, 44,  8);
-    _renderBufferVertex.bindAttribute(attributes["aVertexMskCoord"], 2, 44, 16);
-    _renderBufferVertex.bindAttribute(attributes["aVertexMskLimit"], 4, 44, 24);
-    _renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],    1, 44, 40);
-  }
-
-  @override
-  void flush() {
-    if (_quadCount > 0) {
-      _renderBufferVertex.update(0, _quadCount * 4 * 11);
-      renderingContext.drawElements(gl.TRIANGLES, _quadCount * 6, gl.UNSIGNED_SHORT, 0);
-      _quadCount = 0;
-    }
+    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 44,  0);
+    renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"], 2, 44,  8);
+    renderBufferVertex.bindAttribute(attributes["aVertexMskCoord"], 2, 44, 16);
+    renderBufferVertex.bindAttribute(attributes["aVertexMskLimit"], 4, 44, 24);
+    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],    1, 44, 40);
   }
 
   //---------------------------------------------------------------------------
 
-  void renderAlphaMaskFilterQuad(RenderState renderState,
-                                 RenderTextureQuad renderTextureQuad,
-                                 AlphaMaskFilter alphaMaskFilter) {
+  void renderAlphaMaskFilterQuad(
+      RenderState renderState,
+      RenderTextureQuad renderTextureQuad,
+      AlphaMaskFilter alphaMaskFilter) {
 
-    RenderTextureQuad mskQuad = alphaMaskFilter.bitmapData.renderTextureQuad;
-    Matrix texMatrix = renderTextureQuad.samplerMatrix;
-    Matrix posMatrix = renderState.globalMatrix;
+    var alpha = renderState.globalAlpha;
+    var ixList = renderTextureQuad.ixList;
+    var vxList = renderTextureQuad.vxList;
+    var indexCount = ixList.length;
+    var vertexCount = vxList.length >> 2;
 
-    Float32List xyList = renderTextureQuad.xyList;
-    num alpha = renderState.globalAlpha;
+    var mskQuad = alphaMaskFilter.bitmapData.renderTextureQuad;
+    var texMatrix = renderTextureQuad.samplerMatrix;
+    var posMatrix = renderState.globalMatrix;
 
     // Calculate mask bounds and transformation matrix
 
-    Float32List mskBounds = mskQuad.uvList;
-    num mskBoundsX1 = mskBounds[0] < mskBounds[4] ? mskBounds[0] : mskBounds[4];
-    num mskBoundsX2 = mskBounds[0] > mskBounds[4] ? mskBounds[0] : mskBounds[4];
-    num mskBoundsY1 = mskBounds[1] < mskBounds[5] ? mskBounds[1] : mskBounds[5];
-    num mskBoundsY2 = mskBounds[1] > mskBounds[5] ? mskBounds[1] : mskBounds[5];
+    var bounds = mskQuad.vxList;
+    num mskBoundsX1 = bounds[2] < bounds[10] ? bounds[2] : bounds[10];
+    num mskBoundsX2 = bounds[2] > bounds[10] ? bounds[2] : bounds[10];
+    num mskBoundsY1 = bounds[3] < bounds[11] ? bounds[3] : bounds[11];
+    num mskBoundsY2 = bounds[3] > bounds[11] ? bounds[3] : bounds[11];
 
     Matrix mskMatrix = mskQuad.samplerMatrix;
     mskMatrix.invertAndConcat(alphaMaskFilter.matrix);
@@ -180,36 +166,57 @@ class AlphaMaskFilterProgram extends RenderProgram {
     // Check if the index and vertex buffer are valid and if
     // we need to flush the render program to free the buffers.
 
-    var ixData = _renderBufferIndex.data;
+    var ixData = renderBufferIndex.data;
+    var ixPosition = renderBufferIndex.position;
     if (ixData == null) return;
-    if (ixData.length < _quadCount * 6 + 6) flush();
+    if (ixData.length < ixPosition + indexCount) flush();
 
-    var vxData = _renderBufferVertex.data;
+    var vxData = renderBufferVertex.data;
+    var vxPosition = renderBufferVertex.position;
     if (vxData == null) return;
-    if (vxData.length < _quadCount * 44 + 44) flush();
+    if (vxData.length < vxPosition + vertexCount * 11) flush();
 
-    // Calculate the 4 vertices of the RenderTextureQuad
+    // copy index list
 
-    for(int vertex = 0, index = _quadCount * 44; vertex < 4; vertex++, index += 11) {
+    var ixIndex = renderBufferIndex.position;
+    var vxCount = renderBufferVertex.count;
 
-      num x = xyList[vertex + vertex + 0];
-      num y = xyList[vertex + vertex + 1];
-
-      if (index > vxData.length - 11) return; // dart2js_hint
-
-      vxData[index + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
-      vxData[index + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
-      vxData[index + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
-      vxData[index + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
-      vxData[index + 04] = mskMatrix.tx + x * mskMatrix.a + y * mskMatrix.c;
-      vxData[index + 05] = mskMatrix.ty + x * mskMatrix.b + y * mskMatrix.d;
-      vxData[index + 06] = mskBoundsX1;
-      vxData[index + 07] = mskBoundsY1;
-      vxData[index + 08] = mskBoundsX2;
-      vxData[index + 09] = mskBoundsY2;
-      vxData[index + 10] = alpha;
+    for(var i = 0; i < indexCount; i++) {
+      if (ixIndex > ixData.length - 1) break;
+      ixData[ixIndex] = vxCount + ixList[i];
+      ixIndex += 1;
     }
 
-    _quadCount += 1;
+    renderBufferIndex.position += indexCount;
+    renderBufferIndex.count += indexCount;
+
+    // copy vertex list
+
+    var vxIndex = renderBufferVertex.position;
+
+    for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
+
+      if (o > vxList.length - 4) break;
+      num x = vxList[o + 0];
+      num y = vxList[o + 1];
+
+      if (vxIndex > vxData.length - 11) break;
+      vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
+      vxData[vxIndex + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
+      vxData[vxIndex + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
+      vxData[vxIndex + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
+      vxData[vxIndex + 04] = mskMatrix.tx + x * mskMatrix.a + y * mskMatrix.c;
+      vxData[vxIndex + 05] = mskMatrix.ty + x * mskMatrix.b + y * mskMatrix.d;
+      vxData[vxIndex + 06] = mskBoundsX1;
+      vxData[vxIndex + 07] = mskBoundsY1;
+      vxData[vxIndex + 08] = mskBoundsX2;
+      vxData[vxIndex + 09] = mskBoundsY2;
+      vxData[vxIndex + 10] = alpha;
+      vxIndex += 11;
+    }
+
+    renderBufferVertex.position += vertexCount * 11;
+    renderBufferVertex.count += vertexCount;
   }
+
 }

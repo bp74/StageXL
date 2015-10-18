@@ -2,16 +2,9 @@ part of stagexl.engine;
 
 class RenderProgramMesh extends RenderProgram {
 
-  RenderBufferIndex _renderBufferIndex;
-  RenderBufferVertex _renderBufferVertex;
-  int _indexCount = 0;
-  int _vertexCount = 0;
-
-  //---------------------------------------------------------------------------
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexTextCoord:  Float32(u), Float32(v)
   // aVertextColor:     Float32(r), Float32(g), Float32(b), Float32(a)
-  //---------------------------------------------------------------------------
 
   String get vertexShaderSource => """
 
@@ -48,27 +41,12 @@ class RenderProgramMesh extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
 
     super.activate(renderContext);
-    super.renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-    _renderBufferIndex = renderContext.renderBufferIndexTriangles;
-    _renderBufferIndex.activate(renderContext);
+    renderingContext.uniform1i(uniforms["uSampler"], 0);
 
-    _renderBufferVertex = renderContext.renderBufferVertex;
-    _renderBufferVertex.activate(renderContext);
-    _renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 32, 0);
-    _renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 32, 8);
-    _renderBufferVertex.bindAttribute(attributes["aVertexColor"], 4, 32, 16);
-  }
-
-  @override
-  void flush() {
-    if (_vertexCount > 0 && _indexCount > 0) {
-      _renderBufferIndex.update(0, _indexCount);
-      _renderBufferVertex.update(0, _vertexCount * 8);
-      _renderingContext.drawElements(gl.TRIANGLES, _indexCount, gl.UNSIGNED_SHORT, 0);
-      _indexCount = 0;
-      _vertexCount = 0;
-    }
+    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 32, 0);
+    renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 32, 8);
+    renderBufferVertex.bindAttribute(attributes["aVertexColor"], 4, 32, 16);
   }
 
   //---------------------------------------------------------------------------
@@ -79,15 +57,10 @@ class RenderProgramMesh extends RenderProgram {
     int vertexCount, Float32List xyList, Float32List uvList,
     num r, num g, num b, num a) {
 
-    Matrix matrix = renderState.globalMatrix;
-    num alpha = renderState.globalAlpha;
+    // TODO: replace xyList and uvList with vertexList
 
-    num ma = matrix.a;
-    num mb = matrix.b;
-    num mc = matrix.c;
-    num md = matrix.d;
-    num mx = matrix.tx;
-    num my = matrix.ty;
+    var matrix = renderState.globalMatrix;
+    var alpha = renderState.globalAlpha;
 
     if (indexCount > indexList.length) throw new ArgumentError("indexList");
     if (vertexCount > xyList.length * 2) throw new ArgumentError("xyList");
@@ -96,53 +69,65 @@ class RenderProgramMesh extends RenderProgram {
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
 
-    var ixData = _renderBufferIndex.data;
+    var ixData = renderBufferIndex.data;
+    var ixPosition = renderBufferIndex.position;
     if (ixData == null) return;
-    if (ixData.length < _indexCount + indexCount) flush();
+    if (ixData.length < ixPosition + indexCount) flush();
 
-    var vxData = _renderBufferVertex.data;
+    var vxData = renderBufferVertex.data;
+    var vxPosition = renderBufferVertex.position;
     if (vxData == null) return;
-    if (vxData.length < _vertexCount * 8 + vertexCount * 8) flush();
-
-    var ixOffset = _indexCount;
-    var vxOffset = _vertexCount * 8;
-    var xyListLength = xyList.length;
-    var uvListLength = uvList.length;
+    if (vxData.length < vxPosition + vertexCount * 5) flush();
 
     // copy index list
 
+    var ixIndex = renderBufferIndex.position;
+    var vxCount = renderBufferVertex.count;
+
     for(var i = 0; i < indexCount; i++) {
-      if (ixOffset > ixData.length - 1) break;
-      ixData[ixOffset] = _vertexCount + indexList[i];
-      ixOffset += 1;
+      if (ixIndex > ixData.length - 1) break;
+      ixData[ixIndex] = vxCount + indexList[i];
+      ixIndex += 1;
     }
+
+    renderBufferIndex.position += indexCount;
+    renderBufferIndex.count += indexCount;
 
     // copy vertex list
 
+    var ma = matrix.a;
+    var mb = matrix.b;
+    var mc = matrix.c;
+    var md = matrix.d;
+    var mx = matrix.tx;
+    var my = matrix.ty;
+
+    var vxIndex = renderBufferVertex.position;
+
     for(var i = 0, o1 = 0, o2 = 0; i < vertexCount; i++, o1 += 2, o2 += 2) {
 
-      if (vxOffset > vxData.length - 8) break;
-      if (o1 > xyListLength - 2) break;
-      if (o2 > uvListLength - 2) break;
+      if (vxIndex > vxData.length - 8) break;
+      if (o1 > xyList.length - 2) break;
+      if (o2 > uvList.length - 2) break;
 
       num x = xyList[o1 + 0];
       num y = xyList[o1 + 1];
       num u = uvList[o2 + 0];
       num v = uvList[o2 + 1];
 
-      vxData[vxOffset + 0] = mx + ma * x + mc * y;
-      vxData[vxOffset + 1] = my + mb * x + md * y;
-      vxData[vxOffset + 2] = u;
-      vxData[vxOffset + 3] = v;
-      vxData[vxOffset + 4] = r;
-      vxData[vxOffset + 5] = g;
-      vxData[vxOffset + 6] = b;
-      vxData[vxOffset + 7] = a * alpha;
-      vxOffset += 8;
+      vxData[vxIndex + 0] = mx + ma * x + mc * y;
+      vxData[vxIndex + 1] = my + mb * x + md * y;
+      vxData[vxIndex + 2] = u;
+      vxData[vxIndex + 3] = v;
+      vxData[vxIndex + 4] = r;
+      vxData[vxIndex + 5] = g;
+      vxData[vxIndex + 6] = b;
+      vxData[vxIndex + 7] = a * alpha;
+      vxIndex += 8;
     }
 
-    _indexCount += indexCount;
-    _vertexCount += vertexCount;
+    renderBufferVertex.position += vertexCount * 8;
+    renderBufferVertex.count += vertexCount;
   }
 
 }

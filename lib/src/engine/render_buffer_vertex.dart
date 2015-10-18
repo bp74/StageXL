@@ -5,6 +5,9 @@ class RenderBufferVertex {
   final Float32List data;
   final int usage;
 
+  int position = 0;   // position in data list
+  int count = 0;      // count of vertices
+
   int _contextIdentifier = -1;
   gl.Buffer _buffer = null;
   gl.RenderingContext _renderingContext = null;
@@ -41,13 +44,13 @@ class RenderBufferVertex {
     _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _buffer);
   }
 
-  void update(int offset, int length) {
-    int offsetInBytes = offset * 4;
-    var vertexUpdate = new Float32List.view(data.buffer, offsetInBytes, length);
-    _renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, offsetInBytes, vertexUpdate);
+  void update() {
+    var update = new Float32List.view(data.buffer, 0, this.position);
+    _renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, update);
   }
 
   void bindAttribute(int index, int size, int stride, int offset) {
+    if (index == null) return;
     _renderingContext.vertexAttribPointer(index, size, gl.FLOAT, false, stride, offset);
   }
 }

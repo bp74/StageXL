@@ -1,9 +1,11 @@
+@TestOn("browser")
 library events_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {
+
   EventDispatcher dispatcher;
   const String eventType = "TEST_EVENT_TYPE";
 

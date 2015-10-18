@@ -8,9 +8,12 @@ class RenderTextureQuad {
   final int rotation;
   final num pixelRatio;
 
-  final Int32List abList = new Int32List(10);
-  final Float32List xyList = new Float32List(10);
-  final Float32List uvList = new Float32List(10);
+  final Int16List ixListQuad = new Int16List(6);
+  final Float32List vxListQuad = new Float32List(16);
+
+  Int16List _ixList = null;
+  Float32List _vxList = null;
+  bool _hasCustomVertices = false;
 
   //---------------------------------------------------------------------------
 
@@ -18,48 +21,67 @@ class RenderTextureQuad {
                     this.sourceRectangle, this.offsetRectangle,
                     this.rotation, this.pixelRatio) {
 
-    int a = this.rotation;
-    int w = a == 0 || a == 2 ? sourceRectangle.width : sourceRectangle.height;
-    int h = a == 0 || a == 2 ? sourceRectangle.height : sourceRectangle.width;
-    int l = 0 - offsetRectangle.left;
-    int t = 0 - offsetRectangle.top;
-    int r = l + w;
-    int b = t + h;
+    Rectangle<int> sr = this.sourceRectangle;
+    Rectangle<int> or = this.offsetRectangle;
+    RenderTexture rt = this.renderTexture;
+    num pr = this.pixelRatio;
 
-    // Source coordinates + size
+    // Vertex list [x/y]
 
-    abList[0] = a == 0 || a == 3 ? sourceRectangle.left : sourceRectangle.right;
-    abList[1] = a == 0 || a == 1 ? sourceRectangle.top : sourceRectangle.bottom;
-    abList[2] = a == 2 || a == 3 ? sourceRectangle.left : sourceRectangle.right;
-    abList[3] = a == 0 || a == 3 ? sourceRectangle.top : sourceRectangle.bottom;
-    abList[4] = a == 1 || a == 2 ? sourceRectangle.left : sourceRectangle.right;
-    abList[5] = a == 2 || a == 3 ? sourceRectangle.top : sourceRectangle.bottom;
-    abList[6] = a == 0 || a == 1 ? sourceRectangle.left : sourceRectangle.right;
-    abList[7] = a == 1 || a == 2 ? sourceRectangle.top : sourceRectangle.bottom;
-    abList[8] = sourceRectangle.width;
-    abList[9] = sourceRectangle.height;
+    if (this.rotation == 0 || this.rotation == 2) {
+      vxListQuad[00] = vxListQuad[12] = (0 - or.left) / pr;
+      vxListQuad[01] = vxListQuad[05] = (0 - or.top) / pr;
+      vxListQuad[08] = vxListQuad[04] = (0 - or.left + sr.width) / pr;
+      vxListQuad[09] = vxListQuad[13] = (0 - or.top + sr.height) / pr;
+    } else if (this.rotation == 1 || this.rotation == 3) {
+      vxListQuad[00] = vxListQuad[12] = (0 - or.left) / pr;
+      vxListQuad[01] = vxListQuad[05] = (0 - or.top) / pr;
+      vxListQuad[08] = vxListQuad[04] = (0 - or.left + sr.height) / pr;
+      vxListQuad[09] = vxListQuad[13] = (0 - or.top + sr.width) / pr;
+    } else {
+      throw new Error();
+    }
 
-    // Vertex positions + size
+    // Vertex list [u/v]
 
-    xyList[0] = xyList[6] = l / pixelRatio;
-    xyList[1] = xyList[3] = t / pixelRatio;
-    xyList[2] = xyList[4] = r / pixelRatio;
-    xyList[5] = xyList[7] = b / pixelRatio;
-    xyList[8] = w / pixelRatio;
-    xyList[9] = h / pixelRatio;
+    if (this.rotation == 0) {
+      vxListQuad[02] = vxListQuad[14] = sr.left / rt.width;
+      vxListQuad[03] = vxListQuad[07] = sr.top / rt.height;
+      vxListQuad[10] = vxListQuad[06] = sr.right / rt.width;
+      vxListQuad[11] = vxListQuad[15] = sr.bottom / rt.height;
+    } else if (this.rotation == 1) {
+      vxListQuad[02] = vxListQuad[06] = sr.right / rt.width;
+      vxListQuad[03] = vxListQuad[15] = sr.top / rt.height;
+      vxListQuad[10] = vxListQuad[14] = sr.left / rt.width;
+      vxListQuad[11] = vxListQuad[07] = sr.bottom / rt.height;
+    } else if (this.rotation == 2) {
+      vxListQuad[02] = vxListQuad[14] = sr.right / rt.width;
+      vxListQuad[03] = vxListQuad[07] = sr.bottom / rt.height;
+      vxListQuad[10] = vxListQuad[06] = sr.left / rt.width;
+      vxListQuad[11] = vxListQuad[15] = sr.top / rt.height;
+    } else if (this.rotation == 3) {
+      vxListQuad[02] = vxListQuad[06] = sr.left / rt.width;
+      vxListQuad[03] = vxListQuad[15] = sr.bottom / rt.height;
+      vxListQuad[10] = vxListQuad[14] = sr.right / rt.width;
+      vxListQuad[11] = vxListQuad[07] = sr.top / rt.height;
+    } else {
+      throw new Error();
+    }
 
-    // WebGL coordinates + size
+    // Index list
 
-    uvList[0] = abList[0] / renderTexture.width;
-    uvList[1] = abList[1] / renderTexture.height;
-    uvList[2] = abList[2] / renderTexture.width;
-    uvList[3] = abList[3] / renderTexture.height;
-    uvList[4] = abList[4] / renderTexture.width;
-    uvList[5] = abList[5] / renderTexture.height;
-    uvList[6] = abList[6] / renderTexture.width;
-    uvList[7] = abList[7] / renderTexture.height;
-    uvList[8] = abList[8] / renderTexture.width;
-    uvList[9] = abList[9] / renderTexture.height;
+    ixListQuad[0] = 0;
+    ixListQuad[1] = 1;
+    ixListQuad[2] = 2;
+    ixListQuad[3] = 0;
+    ixListQuad[4] = 2;
+    ixListQuad[5] = 3;
+
+    // set default vertices to quad vertices
+
+    _vxList = vxListQuad;
+    _ixList = ixListQuad;
+    _hasCustomVertices = false;
   }
 
   //---------------------------------------------------------------------------
@@ -151,6 +173,10 @@ class RenderTextureQuad {
   num get targetWidth => offsetRectangle.width / pixelRatio;
   num get targetHeight => offsetRectangle.height / pixelRatio;
 
+  Float32List get vxList => _vxList;
+  Int16List get ixList => _ixList;
+  bool get hasCustomVertices => _hasCustomVertices;
+
   Rectangle<num> get targetRectangle {
     num l = offsetRectangle.left / pixelRatio;
     num t = offsetRectangle.top / pixelRatio;
@@ -163,6 +189,20 @@ class RenderTextureQuad {
     return new RenderTextureQuad(this.renderTexture,
         this.sourceRectangle, this.offsetRectangle,
         this.rotation, pixelRatio);
+  }
+
+  //---------------------------------------------------------------------------
+
+  void setQuadVertices() {
+    _vxList = this.vxListQuad;
+    _ixList = this.ixListQuad;
+    _hasCustomVertices = false;
+  }
+
+  void setCustomVertices(Float32List vxList, Int16List ixList) {
+    _vxList = vxList;
+    _ixList = ixList;
+    _hasCustomVertices = true;
   }
 
   //---------------------------------------------------------------------------
@@ -292,5 +332,63 @@ class RenderTextureQuad {
     var context = renderTexture.canvas.context2D;
     context.putImageData(imageData, rect.left, rect.top);
   }
+
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  @deprecated
+  Float32List get xyList {
+    var list = new Float32List(10);
+    list[0] = vxListQuad[00];
+    list[1] = vxListQuad[01];
+    list[2] = vxListQuad[04];
+    list[3] = vxListQuad[05];
+    list[4] = vxListQuad[08];
+    list[5] = vxListQuad[09];
+    list[6] = vxListQuad[12];
+    list[7] = vxListQuad[13];
+    if (this.rotation == 0 || this.rotation == 2) {
+      list[8] = sourceRectangle.width / pixelRatio;
+      list[9] = sourceRectangle.height / pixelRatio;
+    } else {
+      list[8] = sourceRectangle.height / pixelRatio;
+      list[9] = sourceRectangle.width / pixelRatio;
+    }
+    return list;
+  }
+
+  @deprecated
+  Float32List get uvList {
+    var list = new Float32List(10);
+    list[0] = vxListQuad[02];
+    list[1] = vxListQuad[03];
+    list[2] = vxListQuad[06];
+    list[3] = vxListQuad[07];
+    list[4] = vxListQuad[10];
+    list[5] = vxListQuad[11];
+    list[6] = vxListQuad[14];
+    list[7] = vxListQuad[15];
+    list[8] = sourceRectangle.width / renderTexture.width;
+    list[9] = sourceRectangle.height / renderTexture.height;
+    return list;
+  }
+
+  @deprecated
+  Int16List get abList {
+    var list = new Int16List(10);
+    var sr = sourceRectangle;
+    list[0] = rotation == 0 || rotation == 3 ? sr.left : sr.right;
+    list[1] = rotation == 0 || rotation == 1 ? sr.top : sr.bottom;
+    list[2] = rotation == 2 || rotation == 3 ? sr.left : sr.right;
+    list[3] = rotation == 0 || rotation == 3 ? sr.top : sr.bottom;
+    list[4] = rotation == 1 || rotation == 2 ? sr.left : sr.right;
+    list[5] = rotation == 2 || rotation == 3 ? sr.top : sr.bottom;
+    list[6] = rotation == 0 || rotation == 1 ? sr.left : sr.right;
+    list[7] = rotation == 1 || rotation == 2 ? sr.top : sr.bottom;
+    list[8] = sr.width;
+    list[9] = sr.height;
+    return list;
+  }
+
 
 }
