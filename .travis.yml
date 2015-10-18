@@ -7,5 +7,5 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 script:
-  - "pub run test -c test/all.dart -p content-shell"
+  - "pub run test -p content-shell"
   - "dartanalyzer lib/stagexl.dart"

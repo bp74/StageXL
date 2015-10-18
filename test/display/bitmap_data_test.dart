@@ -12,7 +12,7 @@ void main() {
 
   setUp(() async {
     resourceManager = new ResourceManager();
-    resourceManager.addBitmapData('monster', 'common/images/brainmonster.png');
+    resourceManager.addBitmapData('monster', '../common/images/brainmonster.png');
     await resourceManager.load();
     monster = resourceManager.getBitmapData('monster');
     bitmapDatas = monster.sliceIntoFrames(32, 64);

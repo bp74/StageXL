@@ -12,7 +12,7 @@ void main() {
 
   setUp(() async {
     resourceManager = new ResourceManager();
-    resourceManager.addBitmapData('spiders', 'common/images/spider.png');
+    resourceManager.addBitmapData('spiders', '../common/images/spider.png');
     await resourceManager.load();
     spiders = resourceManager.getBitmapData('spiders');
     spritesheet = new SpriteSheet(spiders, 32, 32);

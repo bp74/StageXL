@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {
+
   test('new point', () {
     Point p = point12();
     testPoint(p, x: 1, y: 2);
