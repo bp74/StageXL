@@ -104,6 +104,7 @@ class RenderTextureQuad {
   @deprecated
   Float32List get uvList {
     var list = new Float32List(10);
+    list[0] = vxListQuad[02];
     list[1] = vxListQuad[03];
     list[2] = vxListQuad[06];
     list[3] = vxListQuad[07];
