@@ -31,12 +31,12 @@ class RenderTextureQuad {
     if (this.rotation == 0 || this.rotation == 2) {
       vxListQuad[00] = vxListQuad[12] = (0 - or.left) / pr;
       vxListQuad[01] = vxListQuad[05] = (0 - or.top) / pr;
-      vxListQuad[04] = vxListQuad[08] = (0 - or.left + sr.width) / pr;
+      vxListQuad[08] = vxListQuad[04] = (0 - or.left + sr.width) / pr;
       vxListQuad[09] = vxListQuad[13] = (0 - or.top + sr.height) / pr;
     } else if (this.rotation == 1 || this.rotation == 3) {
       vxListQuad[00] = vxListQuad[12] = (0 - or.left) / pr;
       vxListQuad[01] = vxListQuad[05] = (0 - or.top) / pr;
-      vxListQuad[04] = vxListQuad[08] = (0 - or.left + sr.height) / pr;
+      vxListQuad[08] = vxListQuad[04] = (0 - or.left + sr.height) / pr;
       vxListQuad[09] = vxListQuad[13] = (0 - or.top + sr.width) / pr;
     } else {
       throw new Error();
@@ -47,23 +47,23 @@ class RenderTextureQuad {
     if (this.rotation == 0) {
       vxListQuad[02] = vxListQuad[14] = sr.left / rt.width;
       vxListQuad[03] = vxListQuad[07] = sr.top / rt.height;
-      vxListQuad[06] = vxListQuad[10] = sr.right / rt.width;
+      vxListQuad[10] = vxListQuad[06] = sr.right / rt.width;
       vxListQuad[11] = vxListQuad[15] = sr.bottom / rt.height;
     } else if (this.rotation == 1) {
       vxListQuad[02] = vxListQuad[06] = sr.right / rt.width;
       vxListQuad[03] = vxListQuad[15] = sr.top / rt.height;
-      vxListQuad[07] = vxListQuad[11] = sr.bottom / rt.height;
       vxListQuad[10] = vxListQuad[14] = sr.left / rt.width;
+      vxListQuad[11] = vxListQuad[07] = sr.bottom / rt.height;
     } else if (this.rotation == 2) {
       vxListQuad[02] = vxListQuad[14] = sr.right / rt.width;
       vxListQuad[03] = vxListQuad[07] = sr.bottom / rt.height;
-      vxListQuad[06] = vxListQuad[10] = sr.left / rt.width;
+      vxListQuad[10] = vxListQuad[06] = sr.left / rt.width;
       vxListQuad[11] = vxListQuad[15] = sr.top / rt.height;
     } else if (this.rotation == 3) {
       vxListQuad[02] = vxListQuad[06] = sr.left / rt.width;
       vxListQuad[03] = vxListQuad[15] = sr.bottom / rt.height;
-      vxListQuad[07] = vxListQuad[11] = sr.top / rt.height;
       vxListQuad[10] = vxListQuad[14] = sr.right / rt.width;
+      vxListQuad[11] = vxListQuad[07] = sr.top / rt.height;
     } else {
       throw new Error();
     }
