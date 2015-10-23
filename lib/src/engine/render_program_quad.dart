@@ -108,33 +108,35 @@ class RenderProgramQuad extends RenderProgram {
 
     // copy vertex list
 
-    var ma = matrix.a;
-    var mb = matrix.b;
-    var mc = matrix.c;
-    var md = matrix.d;
-    var mx = matrix.tx;
-    var my = matrix.ty;
+    var ma1 = vxList[0] * matrix.a + matrix.tx;
+    var ma2 = vxList[8] * matrix.a + matrix.tx;
+    var mb1 = vxList[0] * matrix.b + matrix.ty;
+    var mb2 = vxList[8] * matrix.b + matrix.ty;
+    var mc1 = vxList[1] * matrix.c;
+    var mc2 = vxList[9] * matrix.c;
+    var md1 = vxList[1] * matrix.d;
+    var md2 = vxList[9] * matrix.d;
 
     var vxIndex = renderBufferVertex.position;
     if (vxIndex > vxData.length - 20) return;
 
-    vxData[vxIndex + 00] = mx + vxList[0] * ma + vxList[1] * mc;
-    vxData[vxIndex + 01] = my + vxList[0] * mb + vxList[1] * md;
+    vxData[vxIndex + 00] = ma1 + mc1;
+    vxData[vxIndex + 01] = mb1 + md1;
     vxData[vxIndex + 02] = vxList[2];
     vxData[vxIndex + 03] = vxList[3];
     vxData[vxIndex + 04] = alpha;
-    vxData[vxIndex + 05] = mx + vxList[4] * ma + vxList[5] * mc;
-    vxData[vxIndex + 06] = my + vxList[4] * mb + vxList[5] * md;
+    vxData[vxIndex + 05] = ma2 + mc1;
+    vxData[vxIndex + 06] = mb2 + md1;
     vxData[vxIndex + 07] = vxList[6];
     vxData[vxIndex + 08] = vxList[7];
     vxData[vxIndex + 09] = alpha;
-    vxData[vxIndex + 10] = mx + vxList[8] * ma + vxList[9] * mc;
-    vxData[vxIndex + 11] = my + vxList[8] * mb + vxList[9] * md;
+    vxData[vxIndex + 10] = ma2 + mc2;
+    vxData[vxIndex + 11] = mb2 + md2;
     vxData[vxIndex + 12] = vxList[10];
     vxData[vxIndex + 13] = vxList[11];
     vxData[vxIndex + 14] = alpha;
-    vxData[vxIndex + 15] = mx + vxList[12] * ma + vxList[13] * mc;
-    vxData[vxIndex + 16] = my + vxList[12] * mb + vxList[13] * md;
+    vxData[vxIndex + 15] = ma1 + mc2;
+    vxData[vxIndex + 16] = mb1 + md2;
     vxData[vxIndex + 17] = vxList[14];
     vxData[vxIndex + 18] = vxList[15];
     vxData[vxIndex + 19] = alpha;
