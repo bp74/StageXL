@@ -72,7 +72,7 @@ class RenderProgramTinted extends RenderProgram {
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData.length < vxPosition + vxListCount * 5) flush();
+    if (vxData.length < vxPosition + vxListCount * 8) flush();
 
     // copy index list
 
