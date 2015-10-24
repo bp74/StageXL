@@ -9,4 +9,4 @@ before_script:
 
 script:
   - pub run test -p content-shell
-  - dartanalyzer lib/stagexl.dart
+  - dartanalyzer --fatal-warnings lib/stagexl.dart

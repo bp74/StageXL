@@ -143,36 +143,39 @@ class Graphics {
 
   //---------------------------------------------------------------------------
 
-  void decode(String str)  {
-
+  void decode(String str) {
     var base64 = _BASE_64;
     var instructions = [moveTo, lineTo, quadraticCurveTo, bezierCurveTo, closePath];
     List<int> paramCount = [2, 2, 4, 6, 0];
     List<num> params = new List<num>();
-    var x=0, y=0;
-    var i=0, l=str.length;
+    var x = 0.0, y = 0.0;
+    var i = 0, l = str.length;
 
-    while (i<l) {
+    while (i < l) {
       var c = str[i];
       var n = base64[c];
-      var fi = n>>3; // highest order bits 1-3 code for operation.
+      // highest order bits 1-3 code for operation.
+      var fi = n >> 3;
       var f = instructions[fi];
       // check that we have a valid instruction & that the unused bits are empty:
-      if (f == null || (n&3) > 0) throw new StateError("bad path data (@$i): $c");
+      if (f == null || (n & 3) > 0) {
+        throw new StateError("bad path data (@$i): $c");
+      }
       var pl = paramCount[fi];
-      if (fi == 0) x=y=0; // move operations reset the position.
+      if (fi == 0) x = y = 0.0;
+      // move operations reset the position.
       params.length = 0;
       i++;
-      var charCount = (n>>2&1)+2;  // 4th header bit indicates number size for this operation.
-      for (var p=0; p<pl; p++) {
+      // 4th header bit indicates number size for this operation.
+      var charCount = (n >> 2 & 1) + 2;
+      for (var p = 0; p < pl; p++) {
         var v = base64[str[i]];
-        var sign = (v>>5) > 0 ? -1 : 1;
-        v = ((v&31)<<6)|(base64[str[i+1]]);
-        if (charCount == 3) v = (v<<6)|(base64[str[i+2]]);
-        v = sign*v/10;
-        if (p%2 > 0) x = (v += x);
-        else y = (v += y);
-        params.add(v);
+        var sign = (v >> 5) > 0 ? -1 : 1;
+        v = ((v & 31) << 6) | (base64[str[i + 1]]);
+        if (charCount == 3) v = (v << 6) | (base64[str[i + 2]]);
+        var w = sign * v / 10;
+        if (p % 2 > 0) x = (w += x); else y = (w += y);
+        params.add(w);
         i += charCount;
       }
       Function.apply(f, params);
