@@ -236,7 +236,7 @@ class TextField extends InteractiveObject {
 
     if (renderState.renderContext is RenderContextWebGL || _cacheAsBitmap ) {
       _refreshCache(renderState.globalMatrix);
-      renderState.renderQuad(_renderTextureQuad);
+      renderState.renderTextureQuad(_renderTextureQuad);
     } else if (renderState.renderContext is RenderContextCanvas) {
       RenderContextCanvas renderContextCanvas = renderState.renderContext;
       renderContextCanvas.setTransform(renderState.globalMatrix);
@@ -270,7 +270,7 @@ class TextField extends InteractiveObject {
     } if (renderState.renderContext is RenderContextWebGL || _cacheAsBitmap) {
       _refreshTextLineMetrics();
       _refreshCache(renderState.globalMatrix);
-      renderState.renderQuadFiltered(_renderTextureQuad, this.filters);
+      renderState.renderTextureQuadFiltered(_renderTextureQuad, this.filters);
     } else {
       super.renderFiltered(renderState);
     }

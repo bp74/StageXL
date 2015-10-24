@@ -151,9 +151,9 @@ class GraphicsPathSegment {
   //---------------------------------------------------------------------------
 
   void fillColor(RenderState renderState, int color) {
-    renderState.renderTriangleMesh(
-        _indexCount, _indexBuffer,
-        _vertexCount, _vertexBuffer, color);
+    var ixList = new Int16List.view(_indexBuffer.buffer, 0, _indexCount);
+    var vxList = new Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
+    renderState.renderTriangleMesh(ixList, vxList, color);
   }
 
   //---------------------------------------------------------------------------

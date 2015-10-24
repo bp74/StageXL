@@ -246,6 +246,6 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   render(RenderState renderState) {
-    renderState.renderQuad(renderTextureQuad);
+    renderState.renderTextureQuad(renderTextureQuad);
   }
 }

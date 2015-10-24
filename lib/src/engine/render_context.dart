@@ -24,30 +24,31 @@ abstract class RenderContext {
   void clear(int color);
   void flush();
 
-  void renderQuad(
-    RenderState renderState, RenderTextureQuad renderTextureQuad);
+  void beginRenderMask(RenderState renderState, RenderMask mask);
+  void endRenderMask(RenderState renderState, RenderMask mask);
+
+  //---------------------------------------------------------------------------
+
+  void renderTextureQuad(
+     RenderState renderState, RenderTextureQuad renderTextureQuad);
+
+  void renderTextureMesh(
+      RenderState renderState, RenderTexture renderTexture,
+      Int16List ixList, Float32List vxList);
 
   void renderTriangle(
-    RenderState renderState,
-    num x1, num y1, num x2, num y2, num x3, num y3, int color);
+      RenderState renderState,
+      num x1, num y1, num x2, num y2, num x3, num y3, int color);
 
   void renderTriangleMesh(
       RenderState renderState,
-      int indexCount, Int16List indexList,
-      int vertexCount, Float32List vertexList, int color);
+      Int16List ixList, Float32List vxList, int color);
 
-  void renderMesh(
-    RenderState renderState, RenderTexture renderTexture,
-    int indexCount, Int16List indexList,
-    int vertexCount, Float32List xyList, Float32List uvList);
+  void renderTextureQuadFiltered(
+      RenderState renderState, RenderTextureQuad renderTextureQuad,
+      List<RenderFilter> renderFilters);
 
   void renderObjectFiltered(
-    RenderState renderState, RenderObject renderObject);
+      RenderState renderState, RenderObject renderObject);
 
-  void renderQuadFiltered(
-    RenderState renderState, RenderTextureQuad renderTextureQuad,
-    List<RenderFilter> renderFilters);
-
-  void beginRenderMask(RenderState renderState, RenderMask mask);
-  void endRenderMask(RenderState renderState, RenderMask mask);
 }

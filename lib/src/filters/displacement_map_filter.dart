@@ -112,7 +112,7 @@ class DisplacementMapFilter extends BitmapFilter {
     renderContext.activateRenderTextureAt(renderTexture, 0);
     renderContext.activateRenderTextureAt(bitmapData.renderTexture, 1);
     renderProgram.configure(this, renderTextureQuad);
-    renderProgram.renderQuad(renderState, renderTextureQuad);
+    renderProgram.renderTextureQuad(renderState, renderTextureQuad);
     renderProgram.flush();
   }
 }
@@ -120,7 +120,7 @@ class DisplacementMapFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class DisplacementMapFilterProgram extends RenderProgramQuad {
+class DisplacementMapFilterProgram extends RenderProgramSimple {
 
   @override
   String get fragmentShaderSource => """

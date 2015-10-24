@@ -116,7 +116,7 @@ class BitmapDataUpdateBatch {
     renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);
     _renderContext.setTransform(renderState.globalMatrix);
     _renderContext.rawContext.clearRect(0, 0, sourceRect.width, sourceRect.height);
-    _renderContext.renderQuad(renderState, sourceQuad);
+    _renderContext.renderTextureQuad(renderState, sourceQuad);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -129,7 +129,7 @@ class BitmapDataUpdateBatch {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderState = new RenderState(_renderContext, _drawMatrix, 1.0, blendMode);
     renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);
-    renderState.renderQuad(sourceQuad);
+    renderState.renderTextureQuad(sourceQuad);
   }
 
   //-----------------------------------------------------------------------------------------------

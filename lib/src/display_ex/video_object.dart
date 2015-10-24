@@ -63,12 +63,12 @@ class VideoObject extends InteractiveObject {
 
   @override
   void render(RenderState renderState) {
-    renderState.renderQuad(_renderTextureQuad);
+    renderState.renderTextureQuad(_renderTextureQuad);
   }
 
   @override
   void renderFiltered(RenderState renderState) {
-    renderState.renderQuadFiltered(_renderTextureQuad, this.filters);
+    renderState.renderTextureQuadFiltered(_renderTextureQuad, this.filters);
   }
 
   //----------------------------------------------------------------------------

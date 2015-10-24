@@ -106,7 +106,7 @@ class ChromaKeyFilter extends BitmapFilter {
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
     renderProgram.configure(backgroundColor, solidThreshold, invisibleThreshold);
-    renderProgram.renderQuad(renderState, renderTextureQuad);
+    renderProgram.renderTextureQuad(renderState, renderTextureQuad);
     renderProgram.flush();
   }
 }
@@ -114,7 +114,7 @@ class ChromaKeyFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-class ChromaKeyFilterProgram extends RenderProgramQuad {
+class ChromaKeyFilterProgram extends RenderProgramSimple {
 
   @override
   String get fragmentShaderSource => """

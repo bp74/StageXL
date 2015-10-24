@@ -38,7 +38,7 @@ class AlphaMaskFilter extends BitmapFilter {
     context.rect(vxList[0], vxList[1], vxList[8] - vxList[0], vxList[9] - vxList[1]);
     context.clip();
     renderState.globalMatrix.prepend(this.matrix);
-    renderState.renderQuad(this.bitmapData.renderTextureQuad);
+    renderState.renderTextureQuad(this.bitmapData.renderTextureQuad);
     context.restore();
   }
 

@@ -166,6 +166,6 @@ class FlipBook extends InteractiveObject implements Animatable {
   void renderFiltered(RenderState renderState) {
     var bitmapData = _bitmapDatas[_currentFrame];
     var renderTextureQuad = bitmapData.renderTextureQuad;
-    renderState.renderQuadFiltered(renderTextureQuad, this.filters);
+    renderState.renderTextureQuadFiltered(renderTextureQuad, this.filters);
   }
 }

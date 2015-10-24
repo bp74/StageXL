@@ -32,26 +32,23 @@ class Mesh extends DisplayObject {
 
   BitmapData bitmapData;
 
-  final int vertexCount;
   final int indexCount;
   final int triangleCount;
-  final Float32List xyList;
-  final Float32List uvList;
-  final Int16List indexList;
+  final int vertexCount;
+  final Int16List ixList;
+  final Float32List vxList;
 
-  final Float32List _uvTemp;
+  Float32List _vxListTemp;
 
   /// Create a new Mesh with [vertexCount] vertices and [triangleCount]
   /// triangles.
 
-  Mesh(this.bitmapData, int vertexCount, int triangleCount) :
-    vertexCount = vertexCount,
-    triangleCount = triangleCount,
-    indexCount = triangleCount * 3,
-    xyList = new Float32List(vertexCount * 2),
-    uvList = new Float32List(vertexCount * 2),
-    indexList = new Int16List(triangleCount * 3),
-    _uvTemp = new Float32List(vertexCount * 2);
+  Mesh(this.bitmapData, int vertexCount, int triangleCount)
+      : indexCount = triangleCount * 3,
+        triangleCount = triangleCount,
+        vertexCount = vertexCount,
+        ixList = new Int16List(triangleCount * 3),
+        vxList = new Float32List(vertexCount * 4);
 
   /// Create a new grid shaped Mesh with the desired number of [columns]
   /// and [rows]. A 2x2 grid will create 9 vertices.
@@ -97,10 +94,11 @@ class Mesh extends DisplayObject {
   /// a 0.0 to 1.0 coordinate system of the BitmapData.
 
   void setVertex(int vertex, num x, num y, num u, num v) {
-    xyList[vertex * 2 + 0] = x.toDouble();
-    xyList[vertex * 2 + 1] = y.toDouble();
-    uvList[vertex * 2 + 0] = u.toDouble();
-    uvList[vertex * 2 + 1] = v.toDouble();
+    var offset = vertex << 2;
+    vxList[offset + 0] = x.toDouble();
+    vxList[offset + 1] = y.toDouble();
+    vxList[offset + 2] = u.toDouble();
+    vxList[offset + 3] = v.toDouble();
   }
 
   /// Set the XY values of a vertex.
@@ -109,8 +107,9 @@ class Mesh extends DisplayObject {
   /// system of the Display Object.
 
   void setVertexXY(int vertex, num x, num y) {
-    xyList[vertex * 2 + 0] = x.toDouble();
-    xyList[vertex * 2 + 1] = y.toDouble();
+    var offset = vertex << 2;
+    vxList[offset + 0] = x.toDouble();
+    vxList[offset + 1] = y.toDouble();
   }
 
   /// Set the UV values of a vertex.
@@ -119,22 +118,24 @@ class Mesh extends DisplayObject {
   /// of the BitmapData.
 
   void setVertexUV(int vertex, num u, num v) {
-    uvList[vertex * 2 + 0] = u.toDouble();
-    uvList[vertex * 2 + 1] = v.toDouble();
+    var offset = vertex << 2;
+    vxList[offset + 0] = u.toDouble();
+    vxList[offset + 1] = v.toDouble();
   }
 
   /// Set the corresponding vertex for an index.
 
   void setIndex(int index, int vertex) {
-    indexList[index] = vertex;
+    ixList[index] = vertex;
   }
 
   /// Set the corresponding vertices for the triangle indices.
 
   void setTriangleIndices(int triangle, int v1, int v2, int v3) {
-    indexList[triangle * 3 + 0] = v1;
-    indexList[triangle * 3 + 1] = v2;
-    indexList[triangle * 3 + 2] = v3;
+    var offset = triangle * 3;
+    ixList[offset + 0] = v1;
+    ixList[offset + 1] = v2;
+    ixList[offset + 2] = v3;
   }
 
   //---------------------------------------------------------------------------
@@ -147,10 +148,10 @@ class Mesh extends DisplayObject {
     double right = double.NEGATIVE_INFINITY;
     double bottom = double.NEGATIVE_INFINITY;
 
-    for (int i = 0; i < indexList.length; i++) {
-      int index = indexList[i + 0];
-      num vertexX = xyList[index * 2 + 0];
-      num vertexY = xyList[index * 2 + 1];
+    for (int i = 0; i < ixList.length; i++) {
+      int index = ixList[i + 0];
+      num vertexX = vxList[(index << 2) + 0];
+      num vertexY = vxList[(index << 2) + 1];
       if (left > vertexX) left = vertexX;
       if (right < vertexX) right = vertexX;
       if (top > vertexY) top = vertexY;
@@ -163,18 +164,18 @@ class Mesh extends DisplayObject {
   @override
   DisplayObject hitTestInput(num localX, num localY) {
 
-    for (int i = 0; i < indexList.length - 2; i += 3) {
+    for (int i = 0; i < ixList.length - 2; i += 3) {
 
-      int i1 = indexList[i + 0];
-      int i2 = indexList[i + 1];
-      int i3 = indexList[i + 2];
+      int i1 = ixList[i + 0] << 2;
+      int i2 = ixList[i + 1] << 2;
+      int i3 = ixList[i + 2] << 2;
 
-      num x1 = xyList[i1 * 2 + 0];
-      num y1 = xyList[i1 * 2 + 1];
-      num x2 = xyList[i2 * 2 + 0];
-      num y2 = xyList[i2 * 2 + 1];
-      num x3 = xyList[i3 * 2 + 0];
-      num y3 = xyList[i3 * 2 + 1];
+      num x1 = vxList[i1 + 0];
+      num y1 = vxList[i1 + 1];
+      num x2 = vxList[i2 + 0];
+      num y2 = vxList[i2 + 1];
+      num x3 = vxList[i3 + 0];
+      num y3 = vxList[i3 + 1];
 
       if (localX < x1 && localX < x2 && localX < x3) continue;
       if (localX > x1 && localX > x2 && localX > x3) continue;
@@ -210,23 +211,27 @@ class Mesh extends DisplayObject {
     var renderTextureQuad = bitmapData.renderTextureQuad;
     var renderTexture = bitmapData.renderTexture;
 
-    var u1 = renderTextureQuad.vxListQuad[02];
-    var v1 = renderTextureQuad.vxListQuad[03];
-    var u2 = renderTextureQuad.vxListQuad[10];
-    var v2 = renderTextureQuad.vxListQuad[11];
-    var rotation = renderTextureQuad.rotation;
-    var horizontal = rotation == 0 || rotation == 2;
+    var matrix = renderTextureQuad.samplerMatrix;
+    var ma = matrix.a * bitmapData.width;
+    var mb = matrix.b * bitmapData.width;
+    var mc = matrix.c * bitmapData.height;
+    var md = matrix.d * bitmapData.height;
+    var mx = matrix.tx;
+    var my = matrix.tx;
 
-    for (int i = 0; i < uvList.length - 1; i += 2) {
-      var u = horizontal ? uvList[i + 0] : uvList[i + 1];
-      var v = horizontal ? uvList[i + 1] : uvList[i + 0];
-      _uvTemp[i + 0] = u1 + (u2 - u1) * u;
-      _uvTemp[i + 1] = v1 + (v2 - v1) * v;
+    _vxListTemp = _vxListTemp ?? new Float32List(vxList.length);
+
+    for (int i = 0; i < _vxListTemp.length - 3; i += 4) {
+      var x = vxList[i + 2];
+      var y = vxList[i + 3];
+      _vxListTemp[i + 0] = vxList[i + 0];
+      _vxListTemp[i + 1] = vxList[i + 1];
+      _vxListTemp[i + 2] = mx + x * ma + y * mc;
+      _vxListTemp[i + 3] = my + x * mb + y * md;
     }
 
-    renderContext.renderMesh(
+    renderContext.renderTextureMesh(
         renderState, renderTexture,
-        indexCount, indexList,
-        vertexCount, xyList, _uvTemp);
+        ixList, _vxListTemp);
   }
 }

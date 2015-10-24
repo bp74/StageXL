@@ -148,7 +148,7 @@ class BlurFilter extends BitmapFilter {
         pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
         pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);
 
-    renderProgram.renderQuad(renderState, renderTextureQuad);
+    renderProgram.renderTextureQuad(renderState, renderTextureQuad);
     renderProgram.flush();
   }
 }
@@ -156,7 +156,7 @@ class BlurFilter extends BitmapFilter {
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class BlurFilterProgram extends RenderProgramQuad {
+class BlurFilterProgram extends RenderProgramSimple {
 
   @override
   String get vertexShaderSource => """

@@ -52,10 +52,10 @@ class _RenderTextureQuadObject implements RenderObject {
   }
 
   void render(RenderState renderState) {
-    renderState.renderQuad(this.renderTextureQuad);
+    renderState.renderTextureQuad(this.renderTextureQuad);
   }
 
   void renderFiltered(RenderState renderState) {
-    renderState.renderQuad(this.renderTextureQuad);
+    renderState.renderTextureQuad(this.renderTextureQuad);
   }
 }

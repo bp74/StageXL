@@ -48,8 +48,8 @@ class RenderState {
     if (blendMode is BlendMode) _firstContextState.blendMode = blendMode;
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   RenderContext get renderContext => _renderContext;
 
@@ -57,7 +57,7 @@ class RenderState {
   double get globalAlpha => _currentContextState.alpha;
   BlendMode get globalBlendMode => _currentContextState.blendMode;
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void reset([Matrix matrix, num alpha, BlendMode blendMode]) {
 
@@ -79,37 +79,37 @@ class RenderState {
     _currentContextState.blendMode = renderState.globalBlendMode;
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  void renderQuad(RenderTextureQuad renderTextureQuad) {
-    _renderContext.renderQuad(this, renderTextureQuad);
+  void flush() {
+    _renderContext.flush();
+  }
+
+  void renderTextureQuad(RenderTextureQuad renderTextureQuad) {
+    _renderContext.renderTextureQuad(this, renderTextureQuad);
+  }
+
+  void renderTextureMesh(RenderTexture renderTexture, Int16List ixList, Float32List vxList) {
+    _renderContext.renderTextureMesh(this, renderTexture, ixList, vxList);
   }
 
   void renderTriangle(num x1, num y1, num x2, num y2, num x3, num y3, int color) {
     _renderContext.renderTriangle(this, x1, y1, x2, y2, x3, y3, color);
   }
 
-  void renderTriangleMesh(int indexCount, Int16List indexList,
-                          int vertexCount, Float32List vertexList, int color) {
+  void renderTriangleMesh(Int16List ixList, Float32List vxList, int color) {
+    _renderContext.renderTriangleMesh(this, ixList, vxList, color);
+  }
 
-    _renderContext.renderTriangleMesh(this,
-        indexCount, indexList,
-        vertexCount, vertexList, color);
+  void renderTextureQuadFiltered(RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
+    _renderContext.renderTextureQuadFiltered(this, renderTextureQuad, renderFilters);
   }
 
   void renderObjectFiltered(RenderObject renderObject) {
     _renderContext.renderObjectFiltered(this, renderObject);
   }
 
-  void renderQuadFiltered(RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
-    _renderContext.renderQuadFiltered(this, renderTextureQuad, renderFilters);
-  }
-
-  void flush() {
-    _renderContext.flush();
-  }
-
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void renderObject(RenderObject renderObject) {
 
@@ -150,7 +150,7 @@ class RenderState {
     if (maskAfter) renderContext.beginRenderMask(this, mask);
 
     if (cache != null) {
-      renderQuad(cache);
+      this.renderTextureQuad(cache);
     } else if (filters.length > 0) {
       renderObject.renderFiltered(this);
     } else {

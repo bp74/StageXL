@@ -11,7 +11,8 @@ abstract class BitmapFilter extends RenderFilter {
   void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
   }
 
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    renderState.renderQuad(renderTextureQuad);
+  void renderFilter(
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+    renderState.renderTextureQuad(renderTextureQuad);
   }
 }

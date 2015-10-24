@@ -188,7 +188,7 @@ class DropShadowFilter extends BitmapFilter {
     if (pass == passCount - 1) {
 
       if (!this.knockout && !this.hideObject) {
-        renderContext.renderQuad(renderState, renderTextureQuad);
+        renderContext.renderTextureQuad(renderState, renderTextureQuad);
       }
 
     } else {
@@ -207,7 +207,7 @@ class DropShadowFilter extends BitmapFilter {
           pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
           pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);
 
-      renderProgram.renderQuad(renderState, renderTextureQuad);
+      renderProgram.renderTextureQuad(renderState, renderTextureQuad);
       renderProgram.flush();
     }
   }
@@ -216,7 +216,7 @@ class DropShadowFilter extends BitmapFilter {
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class DropShadowFilterProgram extends RenderProgramQuad {
+class DropShadowFilterProgram extends RenderProgramSimple {
 
   @override
   String get vertexShaderSource => """

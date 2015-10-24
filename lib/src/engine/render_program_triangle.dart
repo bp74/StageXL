@@ -120,11 +120,12 @@ class RenderProgramTriangle extends RenderProgram {
 
   void renderTriangleMesh(
       RenderState renderState,
-      int indexCount, Int16List indexList,
-      int vertexCount, Float32List vertexList, int color) {
+      Int16List ixList, Float32List vxList, int color) {
 
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
+    var ixListCount = ixList.length;
+    var vxListCount = vxList.length >> 1;
 
     var colorA = colorGetA(color) / 255.0 * alpha;
     var colorR = colorGetR(color) / 255.0;
@@ -136,27 +137,25 @@ class RenderProgramTriangle extends RenderProgram {
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData == null) return;
-    if (ixData.length < ixPosition + indexCount) flush();
+    if (ixData.length < ixPosition + ixListCount) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData == null) return;
-    if (vxData.length < vxPosition + vertexCount * 6) flush();
+    if (vxData.length < vxPosition + vxListCount * 6) flush();
 
     // copy index list
 
     var ixIndex = renderBufferIndex.position;
-    var vxCount = renderBufferVertex.count;
+    var vxOffset = renderBufferVertex.count;
 
-    for(var i = 0; i < indexCount; i++) {
+    for(var i = 0; i < ixListCount; i++) {
       if (ixIndex > ixData.length - 1) break;
-      ixData[ixIndex] = vxCount + indexList[i];
+      ixData[ixIndex] = vxOffset + ixList[i];
       ixIndex += 1;
     }
 
-    renderBufferIndex.position += indexCount;
-    renderBufferIndex.count += indexCount;
+    renderBufferIndex.position += ixListCount;
+    renderBufferIndex.count += ixListCount;
 
     // copy vertex list
 
@@ -169,13 +168,13 @@ class RenderProgramTriangle extends RenderProgram {
 
     var vxIndex = renderBufferVertex.position;
 
-    for(var i = 0, o = 0 ; i < vertexCount; i++, o += 2) {
+    for(var i = 0, o = 0 ; i < vxListCount; i++, o += 2) {
 
       if (vxIndex > vxData.length - 6) break;
-      if (o > vertexList.length - 2) break;
+      if (o > vxList.length - 2) break;
 
-      num x = vertexList[o + 0];
-      num y = vertexList[o + 1];
+      num x = vxList[o + 0];
+      num y = vxList[o + 1];
 
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
@@ -186,8 +185,8 @@ class RenderProgramTriangle extends RenderProgram {
       vxIndex += 6;
     }
 
-    renderBufferVertex.position += vertexCount * 6;
-    renderBufferVertex.count += vertexCount;
+    renderBufferVertex.position += vxListCount * 6;
+    renderBufferVertex.count += vxListCount;
   }
 
 }

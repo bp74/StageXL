@@ -77,6 +77,8 @@ class Scale9Bitmap extends Bitmap {
   @override
   void render(RenderState renderState) {
 
+    // TODO: user renderState.renderTextureMesh!
+
     var globalMatrix = renderState.globalMatrix;
     var renderContext = renderState.renderContext;
     var tempMatrix = globalMatrix.clone();
@@ -98,7 +100,7 @@ class Scale9Bitmap extends Bitmap {
         var tx = i == 0 ? 0 : i == 1 ? w0 : width - w2;
         globalMatrix.setTo(tw / sw, 0, 0, th / sh, tx, ty);
         globalMatrix.concat(tempMatrix);
-        renderContext.renderQuad(renderState, _slices[i + j * 3]);
+        renderContext.renderTextureQuad(renderState, _slices[i + j * 3]);
       }
     }
 
