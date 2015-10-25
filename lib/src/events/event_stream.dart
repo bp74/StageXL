@@ -182,9 +182,7 @@ class EventStream<T extends Event> extends Stream<T> {
 
     var subscriptions = _subscriptions;
     var isCapturing = eventPhase == EventPhase.CAPTURING_PHASE;
-    // dartanalyzer --strong known issues
-    // https://github.com/dart-lang/dev_compiler/issues/327
-    var inputEvent = event is InputEvent ? event : null;
+    var inputEvent = event is InputEvent ? event as InputEvent : null;
 
     for(var i = 0; i < subscriptions.length; i++) {
 
