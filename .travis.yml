@@ -8,5 +8,6 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 
 script:
+  - set -e
   - pub run test -p content-shell
-  - dartanalyzer --fatal-warnings lib/stagexl.dart
+  - dartanalyzer --fatal-hints --fatal-warnings lib/stagexl.dart
