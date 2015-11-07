@@ -10,8 +10,7 @@ class TextureAtlas {
 
   static Future<TextureAtlas> fromTextureAtlas(
       TextureAtlas textureAtlas, String namePrefix, String source, [
-      TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-      BitmapDataLoadOptions bitmapDataLoadOptions = null]) =>
+      TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY]) =>
           textureAtlasFormat.load(new _TextureAtlasLoaderTextureAtlas(
               textureAtlas, namePrefix, source));
 
