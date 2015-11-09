@@ -186,6 +186,7 @@ class Stage extends DisplayObjectContainer {
 
     _updateMouseCursor();
     _updateCanvasSize();
+    _renderContext.clear(backgroundColor);
   }
 
   //----------------------------------------------------------------------------
