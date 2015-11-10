@@ -8,6 +8,14 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
   
+#### Pub version 0.13.0-dev
+  * Added support for polygon sprite meshes.
+  * Added support for polygon texture packing.
+  * Added support for custom graphics masks in WebGL.
+  * Added initial support for vector graphics in WebGL.
+  * Added Juggler hasAnimatables getter.
+  * Fixed flickering on stage initialization.
+  
 #### Pub version 0.12.0+1
   * Enabled HiDPI filters. 
   * Fixed stage with transparent background color.
