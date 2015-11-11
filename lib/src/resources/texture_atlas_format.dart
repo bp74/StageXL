@@ -215,15 +215,17 @@ class _TextureAtlasFormatStarling  extends TextureAtlasFormat {
     for(var subTextureXml in xmlRoot.findAllElements("SubTexture")) {
 
       var name = _getString(subTextureXml, "name", "");
+      var rotation = _getBool(subTextureXml, "rotated", false) ? 1 : 0;
+
       var frameX = _getInt(subTextureXml, "x", 0);
       var frameY = _getInt(subTextureXml, "y", 0);
-      var frameHeight = _getInt(subTextureXml, "height", 0);
       var frameWidth = _getInt(subTextureXml, "width", 0);
+      var frameHeight = _getInt(subTextureXml, "height", 0);
+
       var offsetX = 0 - _getInt(subTextureXml, "frameX", 0);
-      var offsetY = 0 -_getInt(subTextureXml, "frameY", 0);
-      var originalWidth = _getInt(subTextureXml, "frameWidth", 0);
-      var originalHeight = _getInt(subTextureXml, "frameHeight", 0);
-      var rotation = _getBool(subTextureXml, "rotated", false) ? 1 : 0;
+      var offsetY = 0 - _getInt(subTextureXml, "frameY", 0);
+      var originalWidth = _getInt(subTextureXml, "frameWidth", frameWidth);
+      var originalHeight = _getInt(subTextureXml, "frameHeight", frameHeight);
 
       var textureAtlasFrame = new TextureAtlasFrame(
           textureAtlas, renderTextureQuad, name, rotation,
