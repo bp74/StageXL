@@ -13,8 +13,10 @@ announcements on the StageXL forum or use one of the support links below:
   * Added support for polygon texture packing.
   * Added support for custom graphics masks in WebGL.
   * Added initial support for vector graphics in WebGL.
+  * Added support for Starling texture atlas format.
   * Added Juggler hasAnimatables getter.
   * Fixed flickering on stage initialization.
+  * Simplified render program implementations.
   
 #### Pub version 0.12.0+1
   * Enabled HiDPI filters. 

@@ -8,5 +8,6 @@ environment:
 documentation: http://www.stagexl.org/docs/api/index.html
 dependencies:
   browser: any
+  xml: any
 dev_dependencies:
   test: any

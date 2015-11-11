@@ -12,6 +12,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:html' show HttpRequest;
+import 'package:xml/xml.dart';
 
 import 'display.dart';
 import 'engine.dart';

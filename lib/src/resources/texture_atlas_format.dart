@@ -5,14 +5,15 @@ abstract class TextureAtlasFormat {
   static const TextureAtlasFormat JSON = const _TextureAtlasFormatJson();
   static const TextureAtlasFormat JSONARRAY = const _TextureAtlasFormatJson();
   static const TextureAtlasFormat LIBGDX = const _TextureAtlasFormatLibGDX();
+  static const TextureAtlasFormat STARLING = const _TextureAtlasFormatStarling();
 
   const TextureAtlasFormat();
 
   Future<TextureAtlas> load(TextureAtlasLoader textureAtlasLoader);
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 class _TextureAtlasFormatJson extends TextureAtlasFormat {
 
@@ -104,8 +105,8 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
   }
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
 
@@ -192,5 +193,74 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
     }
 
     return textureAtlas;
+  }
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+class _TextureAtlasFormatStarling  extends TextureAtlasFormat {
+
+  const _TextureAtlasFormatStarling();
+
+  Future<TextureAtlas> load(TextureAtlasLoader loader) async {
+
+    var source = await loader.getSource();
+    var xmlRoot = parse(source).rootElement;
+    var textureAtlas = new TextureAtlas();
+
+    var imagePath = _getString(xmlRoot, "imagePath", "");
+    var renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
+
+    for(var subTextureXml in xmlRoot.findAllElements("SubTexture")) {
+
+      var name = _getString(subTextureXml, "name", "");
+      var frameX = _getInt(subTextureXml, "x", 0);
+      var frameY = _getInt(subTextureXml, "y", 0);
+      var frameHeight = _getInt(subTextureXml, "height", 0);
+      var frameWidth = _getInt(subTextureXml, "width", 0);
+      var offsetX = 0 - _getInt(subTextureXml, "frameX", 0);
+      var offsetY = 0 -_getInt(subTextureXml, "frameY", 0);
+      var originalWidth = _getInt(subTextureXml, "frameWidth", 0);
+      var originalHeight = _getInt(subTextureXml, "frameHeight", 0);
+      var rotation = _getBool(subTextureXml, "rotated", false) ? 1 : 0;
+
+      var textureAtlasFrame = new TextureAtlasFrame(
+          textureAtlas, renderTextureQuad, name, rotation,
+          offsetX, offsetY, originalWidth, originalHeight,
+          frameX, frameY, frameWidth, frameHeight,
+          null, null);
+
+      textureAtlas.frames.add(textureAtlasFrame);
+    }
+
+    return textureAtlas;
+  }
+
+  //---------------------------------------------------------------------------
+
+  String _getAttributeValue(XmlElement xml, String name) {
+    for(var attribute in xml.attributes) {
+      if (attribute.name.local == name) return attribute.value;
+    }
+    return null;
+  }
+
+  String _getString(XmlElement xml, String name, String defaultValue) {
+    var value = _getAttributeValue(xml, name);
+    return value is String ? value : defaultValue;
+  }
+
+  int _getInt(XmlElement xml, String name, int defaultValue) {
+    var value = _getAttributeValue(xml, name);
+    return value is String ? int.parse(value) : defaultValue;
+  }
+
+  bool _getBool(XmlElement xml, String name, bool defaultValue) {
+    var value = _getAttributeValue(xml, name);
+    if (value == null) return defaultValue;
+    if (value == "1" || value =="true") return true;
+    if (value == "0" || value =="false") return false;
+    throw new FormatException("Error converting '$name' to bool.");
   }
 }
