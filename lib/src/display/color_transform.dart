@@ -86,6 +86,36 @@ class ColorTransform {
 
   //---------------------------------------------------------------------------
 
+  void reset() {
+
+    multipliers[0] = 1.0;
+    multipliers[1] = 1.0;
+    multipliers[2] = 1.0;
+    multipliers[3] = 1.0;
+
+    offsets[0] = 0;
+    offsets[1] = 0;
+    offsets[2] = 0;
+    offsets[3] = 0;
+  }
+
+  //---------------------------------------------------------------------------
+
+  void copyFrom(ColorTransform other) {
+
+    multipliers[0] = other.multipliers[0];
+    multipliers[1] = other.multipliers[1];
+    multipliers[2] = other.multipliers[2];
+    multipliers[3] = other.multipliers[3];
+
+    offsets[0] = other.offsets[0];
+    offsets[1] = other.offsets[1];
+    offsets[2] = other.offsets[2];
+    offsets[3] = other.offsets[3];
+  }
+
+  //---------------------------------------------------------------------------
+
   void concat(ColorTransform second) {
 
     multipliers[0] = multipliers[0] * second.multipliers[0];
