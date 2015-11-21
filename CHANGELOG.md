@@ -8,7 +8,7 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
   
-#### Pub version 0.13.0-dev
+#### Pub version 0.13.0
   * Added support for polygon sprite meshes.
   * Added support for polygon texture packing.
   * Added support for custom graphics masks in WebGL.
