@@ -2,16 +2,18 @@ part of stagexl.engine;
 
 class _ContextState {
 
-  final Matrix matrix = new Matrix.fromIdentity();
-  final Matrix3D matrix3D = new Matrix3D.fromIdentity();
   num alpha = 1.0;
   BlendMode blendMode = BlendMode.NORMAL;
 
-  _ContextState _nextContextState;
+  final Matrix matrix = new Matrix.fromIdentity();
+  final Matrix3D matrix3D = new Matrix3D.fromIdentity();
+  final _ContextState previousContextState;
 
+  _ContextState(this.previousContextState);
+
+  _ContextState _nextContextState = null;
   _ContextState get nextContextState {
-    if (_nextContextState == null) _nextContextState = new _ContextState();
-    return _nextContextState;
+    return _nextContextState ??= new _ContextState(this);
   }
 }
 
@@ -19,8 +21,8 @@ class _ContextState {
 /// defined by the renderContext parameter.
 ///
 /// Most users won't ever use this class directly because it's only used
-/// internaly to render the display list. However, more advanced users may use
-/// it to create custom display objects.
+/// internally to render the display list. However, more advanced users
+/// may use it to create custom display objects.
 ///
 /// The [renderObject] method keeps track of the state for hierarchical objects
 /// from the display list and therefore can be called recursively.
@@ -39,7 +41,7 @@ class RenderState {
 
   RenderState(RenderContext renderContext, [Matrix matrix, num alpha, BlendMode blendMode]) :
     _renderContext = renderContext,
-    _firstContextState = new _ContextState() {
+    _firstContextState = new _ContextState(null) {
 
     _currentContextState = _firstContextState;
 
@@ -169,6 +171,21 @@ class RenderState {
     }
 
     if (maskBefore) renderContext.endRenderMask(this, mask);
+  }
+
+  //---------------------------------------------------------------------------
+
+  void push(Matrix matrix, num alpha, BlendMode blendMode) {
+    var cs1 = _currentContextState;
+    var cs2 = _currentContextState.nextContextState;
+    cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
+    cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
+    cs2.alpha = alpha * cs1.alpha;
+    _currentContextState = cs2;
+  }
+
+  void pop() {
+    _currentContextState = _currentContextState.previousContextState;
   }
 
 }
