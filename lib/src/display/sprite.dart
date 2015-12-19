@@ -84,6 +84,17 @@ class Sprite extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
 
   @override
+  List<DisplayObject> getObjectsUnderPoint(Point<num> point) {
+    var result = super.getObjectsUnderPoint(point);
+    if (_graphics != null && _graphics.hitTest(point.x, point.y)) {
+      result.insert(0, this);
+    }
+    return result;
+  }
+
+  //----------------------------------------------------------------------------
+
+  @override
   Rectangle<num> get bounds {
     if (_graphics == null) {
       return super.bounds;

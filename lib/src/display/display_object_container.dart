@@ -357,27 +357,21 @@ abstract class DisplayObjectContainer
   /// The [point] parameter is in the local coordinate system of
   /// this display object container.
 
-  List<DisplayObject> getObjectsUnderPoint(Point<num> point, [
-    List<DisplayObject> returnList]) {
+  List<DisplayObject> getObjectsUnderPoint(Point<num> point) {
 
-    var tmpPoint = new Point<num>(0.0, 0.0);
+    var result = new List<DisplayObject>();
+    var temp = new Point<num>(0.0, 0.0);
 
-    if (returnList is! List) {
-      returnList = new List<DisplayObject>();
-    }
-
-    for (int i = 0; i < _children.length; i++) {
-      var child = _children[i];
-      child.parentToLocal(point, tmpPoint);
-
+    for(var child in _children) {
+      child.parentToLocal(point, temp);
       if (child is DisplayObjectContainer) {
-        child.getObjectsUnderPoint(tmpPoint, returnList);
-      } else if (child.bounds.contains(tmpPoint.x, tmpPoint.y)) {
-        returnList.add(child);
+        result.addAll(child.getObjectsUnderPoint(temp));
+      } else if (child.bounds.contains(temp.x, temp.y)) {
+        result.add(child);
       }
     }
 
-    return returnList;
+    return result;
   }
 
   //----------------------------------------------------------------------------
