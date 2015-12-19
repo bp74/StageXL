@@ -8,6 +8,7 @@
 
 library stagexl.ui;
 
+export 'ui/align.dart';
 export 'ui/color.dart';
 export 'ui/mouse.dart';
 

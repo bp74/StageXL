@@ -724,6 +724,21 @@ abstract class DisplayObject
     return matrix.transformRectangle(rectangle, rectangle);
   }
 
+  /// Aligns the display object's pivot point relative to the current bounds.
+
+  void alignPivot([
+    HorizontalAlign hAlign = HorizontalAlign.Center,
+    VerticalAlign vAlign = VerticalAlign.Center]) {
+
+    var b = this.bounds;
+    if (hAlign == HorizontalAlign.Left) this.pivotX = b.left;
+    if (hAlign == HorizontalAlign.Center) this.pivotX = b.left + b.width / 2;
+    if (hAlign == HorizontalAlign.Right) this.pivotX = b.right;
+    if (vAlign == VerticalAlign.Top) this.pivotY = b.top;
+    if (vAlign == VerticalAlign.Center) this.pivotY = b.top + b.height / 2;
+    if (vAlign == VerticalAlign.Bottom) this.pivotY = b.bottom;
+  }
+
   //----------------------------------------------------------------------------
 
   /// Evaluates this display object to see if it overlaps or intersects with
