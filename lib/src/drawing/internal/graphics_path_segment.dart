@@ -189,8 +189,8 @@ class GraphicsPathSegment {
 
     // calculate joints
 
-    num v1x = 0.0, v1y = 0.0;
-    num n1x = 0.0, n1y = 0.0;
+    num n1x = 0.0;
+    num n1y = 0.0;
 
     for (var i = 0; i < length; i++) {
 
@@ -214,8 +214,8 @@ class GraphicsPathSegment {
         stroke.addVertex(v2x - ix, v2y - iy);
       }
 
-      v1x = v2x; v1y = v2y;
-      n1x = n2x; n1y = n2y;
+      n1x = n2x;
+      n1y = n2y;
 
       var strokeVertexCount = stroke.vertexCount;
       if (strokeVertexCount >= 4) {
