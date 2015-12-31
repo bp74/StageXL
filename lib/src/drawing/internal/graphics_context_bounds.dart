@@ -66,13 +66,12 @@ class GraphicsContextBounds extends GraphicsContext {
   }
 
   void _updateBoundsForStroke(double lineWidth, String lineJoin, String lineCap) {
-    // TODO: revisit this code once we have stroke paths.
-    double w = lineWidth / 2.0;
-    for(var segment in _path.segments) {
-      _minX = _minX > segment.minX - w ? segment.minX - w : _minX;
-      _minY = _minY > segment.minY - w ? segment.minY - w : _minY;
-      _maxX = _maxX < segment.maxX + w ? segment.maxX + w : _maxX;
-      _maxY = _maxY < segment.maxY + w ? segment.maxY + w : _maxY;
+    var stroke = _stroke ?? _path.calculateStroke(lineWidth, lineJoin, lineCap);
+    for(var segment in stroke.segments) {
+      _minX = _minX > segment.minX ? segment.minX : _minX;
+      _minY = _minY > segment.minY ? segment.minY : _minY;
+      _maxX = _maxX < segment.maxX ? segment.maxX : _maxX;
+      _maxY = _maxY < segment.maxY ? segment.maxY : _maxY;
     }
   }
 

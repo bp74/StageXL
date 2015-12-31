@@ -3,6 +3,7 @@ part of stagexl.drawing.internal;
 abstract class GraphicsContext {
 
   GraphicsPath _path = new GraphicsPath();
+  GraphicsPath _stroke = null;
   GraphicsCommand _command = null;
 
   void applyGraphicsCommands(List<GraphicsCommand> commands) {
@@ -24,6 +25,10 @@ abstract class GraphicsContext {
 
   void setPath(GraphicsPath path) {
     _path = path;
+  }
+
+  void setStroke(GraphicsPath stroke) {
+    _stroke = stroke;
   }
 
   //---------------------------------------------------------------------------

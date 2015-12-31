@@ -25,17 +25,17 @@ class GraphicsContextCompiler extends GraphicsContext {
 
   @override
   void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    _addCommandsForStroke();
+    _addCommandsForStroke(lineWidth, lineJoin, lineCap);
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    _addCommandsForStroke();
+    _addCommandsForStroke(lineWidth, lineJoin, lineCap);
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    _addCommandsForStroke();
+    _addCommandsForStroke(lineWidth, lineJoin, lineCap);
   }
 
   //---------------------------------------------------------------------------
@@ -48,12 +48,11 @@ class GraphicsContextCompiler extends GraphicsContext {
     this.commands.add(drawCommand);
   }
 
-  void _addCommandsForStroke() {
-    // TODO: revisit this code once we have stroke paths.
-    var path = _path.clone();
-    var pathCommand = new GraphicsCommandSetPath(path);
+  void _addCommandsForStroke(double lineWidth, String lineJoin, String lineCap) {
+    var stroke = _path.calculateStroke(lineWidth, lineJoin, lineCap);
+    var strokeCommand = new GraphicsCommandSetStroke(stroke);
     var drawCommand = _command;
-    this.commands.add(pathCommand);
+    this.commands.add(strokeCommand);
     this.commands.add(drawCommand);
   }
 

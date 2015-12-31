@@ -26,10 +26,8 @@ class GraphicsContextRender extends GraphicsContext {
 
   @override
   void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    for (var segment in _path.segments) {
-      var stroke = segment.calculateStroke(lineWidth, lineJoin, lineCap);
-      stroke.fillColor(renderState, color);
-    }
+    var stroke = _stroke ?? _path.calculateStroke(lineWidth, lineJoin, lineCap);
+    stroke.fillColor(renderState, color);
   }
 
   @override

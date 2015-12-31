@@ -51,7 +51,9 @@ class GraphicsContextHitTest extends GraphicsContext {
   }
 
   void _updateHitForStroke(double lineWidth, String lineJoin, String lineCap) {
-    // TODO: revisit this code once we have stroke paths.
+    var stroke = _stroke ?? _path.calculateStroke(lineWidth, lineJoin, lineCap);
+    // TODO: hitTest for strokes
+    //_hit = _hit || stroke.hitTest(_localX, _localY);
   }
 
 }

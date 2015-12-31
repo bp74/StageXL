@@ -169,7 +169,7 @@ class GraphicsPathSegment {
 
     var length = _vertexCount;
     var stroke = new GraphicsPathSegment(length * 2, length * 6);
-    if (_vertexCount < 2) return stroke;
+    if (length < 2) return stroke;
 
     // calculate normals
 

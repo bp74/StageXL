@@ -179,17 +179,22 @@ class GraphicsPath {
 
   void fillColor(RenderState renderState, int color) {
     // TODO: non-zero winding rule
-    for(int i = 0; i < _segments.length; i++) {
-      var segment = _segments[i];
+    for (var segment in _segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
       segment.fillColor(renderState, color);
     }
   }
 
+  GraphicsPath calculateStroke(num width, String joint, String caps) {
+    var stroke = new GraphicsPath();
+    var segments = _segments.map((s) => s.calculateStroke(width, joint, caps));
+    stroke._segments.addAll(segments);
+    return stroke;
+  }
+
   bool hitTest(double x, double y) {
     int windingCount = 0;
-    for(int i = 0; i < _segments.length; i++) {
-      var segment = _segments[i];
+    for (var segment in _segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
       windingCount += segment.windingCountHitTest(x, y);
     }
