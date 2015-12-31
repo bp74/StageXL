@@ -14,31 +14,33 @@ class GraphicsContextRender extends GraphicsContext {
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    _path.fillColor(renderState, 0xFFFF00FF);
+    this.fillColor(0xFFFF00FF);
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-    _path.fillColor(renderState, 0xFFFF00FF);
+    this.fillColor(0xFFFF00FF);
   }
 
   //---------------------------------------------------------------------------
 
   @override
   void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    // TODO: implement render strokeColor
+    for (var segment in _path.segments) {
+      var stroke = segment.calculateStroke(lineWidth, lineJoin, lineCap);
+      stroke.fillColor(renderState, color);
+    }
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    // TODO: implement render strokeGradient
+    this.strokeColor(0xFFFF00FF, lineWidth, lineJoin, lineCap);
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    // TODO: implement render strokePattern
+    this.strokeColor(0xFFFF00FF, lineWidth, lineJoin, lineCap);
   }
-
 }
 
 //-----------------------------------------------------------------------------

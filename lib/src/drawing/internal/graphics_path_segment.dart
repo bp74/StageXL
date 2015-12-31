@@ -157,6 +157,81 @@ class GraphicsPathSegment {
   }
 
   //---------------------------------------------------------------------------
+
+  GraphicsPathSegment calculateStroke(num width, String joint, String caps) {
+
+    // TODO: implement full stroke logic!
+    // joint, currently always JointStyle.MITER
+    // caps, currently always CapsStyle.BUTT
+    // calculate normals and joints in one go (avoid length segments)
+    // calculate correct miter limit (not infinite like now)
+    // take closePath into account
+
+    var length = _vertexCount;
+    var stroke = new GraphicsPathSegment(length * 2, length * 6);
+    if (_vertexCount < 2) return stroke;
+
+    // calculate normals
+
+    var normals = new Float32List(length * 2);
+
+    for (var i = 0; i < length - 1; i++) {
+      num x1 = _vertexBuffer[i * 2 + 0];
+      num y1 = _vertexBuffer[i * 2 + 1];
+      num x2 = _vertexBuffer[i * 2 + 2];
+      num y2 = _vertexBuffer[i * 2 + 3];
+      num vx = x2 - x1;
+      num vy = y2 - y1;
+      num vl = math.sqrt(vx * vx + vy * vy);
+      normals[i * 2 + 0] = 0.0 - (width / 2.0) * (vy / vl);
+      normals[i * 2 + 1] = 0.0 + (width / 2.0) * (vx / vl);
+    }
+
+    // calculate joints
+
+    num v1x = 0.0, v1y = 0.0;
+    num n1x = 0.0, n1y = 0.0;
+
+    for (var i = 0; i < length; i++) {
+
+      num v2x = _vertexBuffer[i * 2 + 0];
+      num v2y = _vertexBuffer[i * 2 + 1];
+      num n2x = normals[i * 2 + 0];
+      num n2y = normals[i * 2 + 1];
+
+      if (i == 0) {
+        stroke.addVertex(v2x + n2x, v2y + n2y);
+        stroke.addVertex(v2x - n2x, v2y - n2y);
+      } else if (i == length - 1) {
+        stroke.addVertex(v2x + n1x, v2y + n1y);
+        stroke.addVertex(v2x - n1x, v2y - n1y);
+      } else {
+        num id = (n2x * n1y - n2y * n1x);
+        num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
+        num ix = n1x - it * n1y;
+        num iy = n1y + it * n1x;
+        stroke.addVertex(v2x + ix, v2y + iy);
+        stroke.addVertex(v2x - ix, v2y - iy);
+      }
+
+      v1x = v2x; v1y = v2y;
+      n1x = n2x; n1y = n2y;
+
+      var strokeVertexCount = stroke.vertexCount;
+      if (strokeVertexCount >= 4) {
+        stroke.addIndex(strokeVertexCount - 4);
+        stroke.addIndex(strokeVertexCount - 2);
+        stroke.addIndex(strokeVertexCount - 3);
+        stroke.addIndex(strokeVertexCount - 3);
+        stroke.addIndex(strokeVertexCount - 2);
+        stroke.addIndex(strokeVertexCount - 1);
+      }
+    }
+
+    return stroke;
+  }
+
+  //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
   void _calculateIndices(Float32List buffer, int count, bool clockwise) {
