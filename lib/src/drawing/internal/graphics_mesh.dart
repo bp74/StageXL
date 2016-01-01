@@ -39,8 +39,8 @@ class GraphicsMesh {
   int get vertexCount => _vertexCount;
   int get indexCount => _indexCount;
 
-  double get lastVertexX => _vertexBuffer[(_vertexCount - 1) * 2 + 0];
-  double get lastVertexY => _vertexBuffer[(_vertexCount - 1) * 2 + 1];
+  double get lastVertexX => _vertexBuffer[_vertexCount * 2 - 2];
+  double get lastVertexY => _vertexBuffer[_vertexCount * 2 - 1];
   double get firstVertexX => _vertexBuffer[0];
   double get firstVertexY => _vertexBuffer[1];
 

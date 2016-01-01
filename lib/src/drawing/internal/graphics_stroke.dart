@@ -2,19 +2,18 @@ part of stagexl.drawing.internal;
 
 class GraphicsStroke {
 
-  final List<GraphicsStrokeSegment> _segments =  new List<GraphicsStrokeSegment>();
   final GraphicsPath path;
   final GraphicsCommandStroke command;
+  final List<GraphicsStrokeSegment> _segments = new List<GraphicsStrokeSegment>();
 
   GraphicsStroke(this.path, this.command) {
-    for (var segment in this.path.segments) {
-      _segments.add(new GraphicsStrokeSegment(this, segment));
+    for (var pathSegment in path.segments) {
+      _segments.add(new GraphicsStrokeSegment(this, pathSegment));
     }
   }
 
   Iterable<GraphicsStrokeSegment> get segments => _segments;
 
-  //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
   void fillColor(RenderState renderState, int color) {
@@ -27,7 +26,5 @@ class GraphicsStroke {
     // TODO: hitTest for strokes
     return false;
   }
-
-
 
 }

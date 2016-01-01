@@ -3,29 +3,40 @@ part of stagexl.drawing.internal;
 class GraphicsPathSegment extends GraphicsMesh {
 
   bool _clockwise = null;
+  bool _closed = false;
 
   GraphicsPathSegment() : super(16, 32);
 
-  GraphicsPathSegment.clone(GraphicsPathSegment segment)
-      : _clockwise = segment.clockwise,
-        super.clone(segment);
+  GraphicsPathSegment.clone(GraphicsPathSegment segment) : super.clone(segment) {
+    _clockwise = segment.clockwise;
+    _closed = segment.closed;
+  }
 
   //---------------------------------------------------------------------------
 
   bool get clockwise {
-    if (_clockwise is bool) return _clockwise;
-    var area = _calculateArea(_vertexBuffer, _vertexCount);
-    return _clockwise = area >= 0.0;
+    if (_clockwise is! bool) _clockwise = _calculateArea() >= 0.0;
+    return _clockwise;
   }
 
+  bool get closed {
+    return _closed;
+  }
+
+  void set closed(bool value) {
+    _closed = value;
+  }
+
+  //---------------------------------------------------------------------------
+
   void addVertex(double x, double y) {
-    super.addVertex(x, y);
+    _indexCount = 0;
     _clockwise = null;
+    super.addVertex(x, y);
   }
 
   void calculateIndices() {
-    _indexCount = 0;
-    _calculateIndices(_vertexBuffer, _vertexCount, clockwise);
+    _calculateIndices();
   }
 
   //---------------------------------------------------------------------------
@@ -61,14 +72,19 @@ class GraphicsPathSegment extends GraphicsMesh {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  void _calculateIndices(Float32List buffer, int count, bool clockwise) {
+  void _calculateIndices() {
 
+    _indexCount = 0;
+
+    var buffer = _vertexBuffer;
+    var count = _vertexCount;
     if (count < 3) return;
 
     // TODO: benchmark more triangulation methods
     // http://erich.realtimerendering.com/ptinpoly/
 
     var available = new List<int>();
+    var clockwise = this.clockwise;
     var index = 0;
 
     for(int p = 0; p < count; p++) {
@@ -124,8 +140,10 @@ class GraphicsPathSegment extends GraphicsMesh {
 
   //---------------------------------------------------------------------------
 
-  double _calculateArea(Float32List buffer, int count) {
+  double _calculateArea() {
 
+    var buffer = _vertexBuffer;
+    var count = _vertexCount;
     if (count < 3) return 0.0;
 
     num value = 0.0;

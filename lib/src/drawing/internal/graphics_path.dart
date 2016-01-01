@@ -19,10 +19,9 @@ class GraphicsPath {
   //---------------------------------------------------------------------------
 
   void close() {
-    if (_currentSegment != null && _currentSegment.vertexCount > 0) {
-      var x = _currentSegment.firstVertexX;
-      var y = _currentSegment.firstVertexY;
-      _currentSegment.addVertex(x, y);
+    if (_currentSegment != null) {
+      _currentSegment.closed = true;
+      _currentSegment = null;
     }
   }
 
@@ -34,7 +33,7 @@ class GraphicsPath {
 
   void lineTo(double x, double y) {
     if (_currentSegment == null) {
-      moveTo(x, y);
+      this.moveTo(x, y);
     } else {
       _currentSegment.addVertex(x, y);
     }
@@ -44,7 +43,7 @@ class GraphicsPath {
 
     if (_currentSegment == null) {
 
-      moveTo(controlX, controlY);
+      this.moveTo(controlX, controlY);
 
     } else {
 
