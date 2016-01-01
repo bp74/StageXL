@@ -75,7 +75,7 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
       var vertexCount = this.vertexCount;
       if (vertexCount >= 4) {
-        addTriangle(vertexCount - 4, vertexCount - 2, vertexCount - 3);
+        addTriangle(vertexCount - 4, vertexCount - 3, vertexCount - 2);
         addTriangle(vertexCount - 3, vertexCount - 2, vertexCount - 1);
       }
     }

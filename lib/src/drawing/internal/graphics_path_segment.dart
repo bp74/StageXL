@@ -6,17 +6,17 @@ class GraphicsPathSegment extends GraphicsMesh {
 
   GraphicsPathSegment() : super(16, 32);
 
-  GraphicsPathSegment.clone(GraphicsPathSegment segment) : super.clone(segment) {
-    _clockwise = _clockwise;
+  GraphicsPathSegment.clone(GraphicsPathSegment segment)
+      : _clockwise = segment.clockwise,
+        super.clone(segment);
+
+  //---------------------------------------------------------------------------
+
+  bool get clockwise {
+    if (_clockwise is bool) return _clockwise;
+    var area = _calculateArea(_vertexBuffer, _vertexCount);
+    return _clockwise = area >= 0.0;
   }
-
-  //---------------------------------------------------------------------------
-
-  bool get clockwise => _clockwise = _clockwise is! bool
-      ? _calculateArea(_vertexBuffer, _vertexCount) >= 0.0
-      : _clockwise;
-
-  //---------------------------------------------------------------------------
 
   void addVertex(double x, double y) {
     super.addVertex(x, y);

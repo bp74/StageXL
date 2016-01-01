@@ -24,14 +24,14 @@ class GraphicsMesh {
         _indexBuffer = new Int16List(mesh.indexCount) {
 
     _vertexCount = mesh.vertexCount;
-    _vertexBuffer.setRange(0, _vertexCount * 2, mesh._vertexBuffer);
     _indexCount = mesh.indexCount;
-    _indexBuffer.setRange(0, _indexCount, mesh._indexBuffer);
+    _minX = mesh.minX;
+    _minY = mesh.minY;
+    _maxX = mesh.maxX;
+    _maxY = mesh.maxY;
 
-    _minX = _minX;
-    _minY = _minY;
-    _maxX = _maxX;
-    _maxY = _maxY;
+    _vertexBuffer.setRange(0, _vertexCount * 2, mesh._vertexBuffer);
+    _indexBuffer.setRange(0, _indexCount, mesh._indexBuffer);
   }
 
   //---------------------------------------------------------------------------
