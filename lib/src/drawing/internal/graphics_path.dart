@@ -5,14 +5,13 @@ class GraphicsPath {
   List<GraphicsPathSegment> _segments = new List<GraphicsPathSegment>();
   GraphicsPathSegment _currentSegment = null;
 
-  GraphicsPath clone() {
-    var clonedPath = new GraphicsPath();
-    for(int i = 0; i < _segments.length; i++) {
-      var segment = _segments[i];
+  GraphicsPath();
+
+  GraphicsPath.clone(GraphicsPath path) {
+    for (var segment in path.segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
-      clonedPath._segments.add(segment.clone());
+      _segments.add(new GraphicsPathSegment.clone(segment));
     }
-    return clonedPath;
   }
 
   Iterable<GraphicsPathSegment> get segments => _segments;
@@ -28,7 +27,7 @@ class GraphicsPath {
   }
 
   void moveTo(double x, double y) {
-    _currentSegment = new GraphicsPathSegment(16, 32);
+    _currentSegment = new GraphicsPathSegment();
     _currentSegment.addVertex(x, y);
     _segments.add(_currentSegment);
   }
@@ -176,6 +175,7 @@ class GraphicsPath {
   }
 
   //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void fillColor(RenderState renderState, int color) {
     // TODO: non-zero winding rule
@@ -183,13 +183,6 @@ class GraphicsPath {
       if (segment.indexCount == 0) segment.calculateIndices();
       segment.fillColor(renderState, color);
     }
-  }
-
-  GraphicsPath calculateStroke(num width, String joint, String caps) {
-    var stroke = new GraphicsPath();
-    var segments = _segments.map((s) => s.calculateStroke(width, joint, caps));
-    stroke._segments.addAll(segments);
-    return stroke;
   }
 
   bool hitTest(double x, double y) {
@@ -200,6 +193,5 @@ class GraphicsPath {
     }
     return windingCount != 0;
   }
-
 
 }

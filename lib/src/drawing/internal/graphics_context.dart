@@ -3,7 +3,7 @@ part of stagexl.drawing.internal;
 abstract class GraphicsContext {
 
   GraphicsPath _path = new GraphicsPath();
-  GraphicsPath _stroke = null;
+  GraphicsStroke _stroke = null;
   GraphicsCommand _command = null;
 
   void applyGraphicsCommands(List<GraphicsCommand> commands) {
@@ -27,7 +27,7 @@ abstract class GraphicsContext {
     _path = path;
   }
 
-  void setStroke(GraphicsPath stroke) {
+  void setStroke(GraphicsStroke stroke) {
     _stroke = stroke;
   }
 
@@ -77,15 +77,15 @@ abstract class GraphicsContext {
 
   //---------------------------------------------------------------------------
 
-  void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
+  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
     // override in derived class
   }
 
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
+  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
     // override in derived class
   }
 
-  void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
+  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
     // override in derived class
   }
 

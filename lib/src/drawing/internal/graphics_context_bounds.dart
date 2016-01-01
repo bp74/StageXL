@@ -40,18 +40,18 @@ class GraphicsContextBounds extends GraphicsContext {
   }
 
   @override
-  void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    _updateBoundsForStroke(lineWidth, lineJoin, lineCap);
+  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
+    _updateBoundsForStroke();
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    _updateBoundsForStroke(lineWidth, lineJoin, lineCap);
+  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
+    _updateBoundsForStroke();
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    _updateBoundsForStroke(lineWidth, lineJoin, lineCap);
+  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
+    _updateBoundsForStroke();
   }
 
   //---------------------------------------------------------------------------
@@ -65,8 +65,8 @@ class GraphicsContextBounds extends GraphicsContext {
     }
   }
 
-  void _updateBoundsForStroke(double lineWidth, String lineJoin, String lineCap) {
-    var stroke = _stroke ?? _path.calculateStroke(lineWidth, lineJoin, lineCap);
+  void _updateBoundsForStroke() {
+    var stroke = _stroke ?? new GraphicsStroke(_path, _command);
     for(var segment in stroke.segments) {
       _minX = _minX > segment.minX ? segment.minX : _minX;
       _minY = _minY > segment.minY ? segment.minY : _minY;

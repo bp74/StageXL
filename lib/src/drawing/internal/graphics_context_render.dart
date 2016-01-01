@@ -25,19 +25,19 @@ class GraphicsContextRender extends GraphicsContext {
   //---------------------------------------------------------------------------
 
   @override
-  void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    var stroke = _stroke ?? _path.calculateStroke(lineWidth, lineJoin, lineCap);
+  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
+    var stroke = _stroke ?? new GraphicsStroke(_path, _command);
     stroke.fillColor(renderState, color);
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    this.strokeColor(0xFFFF00FF, lineWidth, lineJoin, lineCap);
+  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
+    this.strokeColor(0xFFFF00FF, width, jointStyle, capsStyle);
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    this.strokeColor(0xFFFF00FF, lineWidth, lineJoin, lineCap);
+  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
+    this.strokeColor(0xFFFF00FF, width, jointStyle, capsStyle);
   }
 }
 

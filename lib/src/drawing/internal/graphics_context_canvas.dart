@@ -102,30 +102,30 @@ class GraphicsContextCanvas extends GraphicsContext {
   //---------------------------------------------------------------------------
 
   @override
-  void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
+  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
     _canvasContext.strokeStyle = color2rgba(color);
-    _canvasContext.lineWidth = lineWidth;
-    _canvasContext.lineJoin = lineJoin;
-    _canvasContext.lineCap = lineCap;
+    _canvasContext.lineWidth = width;
+    _canvasContext.lineJoin = jointStyle;
+    _canvasContext.lineCap = capsStyle;
     _canvasContext.stroke();
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
+  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
     _canvasContext.strokeStyle = gradient.getCanvasGradient(_canvasContext);
-    _canvasContext.lineWidth = lineWidth;
-    _canvasContext.lineJoin = lineJoin;
-    _canvasContext.lineCap = lineCap;
+    _canvasContext.lineWidth = width;
+    _canvasContext.lineJoin = jointStyle;
+    _canvasContext.lineCap = capsStyle;
     _canvasContext.stroke();
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
+  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
 
     _canvasContext.strokeStyle = pattern.getCanvasPattern(_canvasContext);
-    _canvasContext.lineWidth = lineWidth;
-    _canvasContext.lineJoin = lineJoin;
-    _canvasContext.lineCap = lineCap;
+    _canvasContext.lineWidth = width;
+    _canvasContext.lineJoin = jointStyle;
+    _canvasContext.lineCap = capsStyle;
 
     var matrix = pattern.matrix;
     if (matrix != null) {

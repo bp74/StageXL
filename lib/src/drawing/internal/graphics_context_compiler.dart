@@ -24,32 +24,32 @@ class GraphicsContextCompiler extends GraphicsContext {
   }
 
   @override
-  void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    _addCommandsForStroke(lineWidth, lineJoin, lineCap);
+  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
+    _addCommandsForStroke();
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    _addCommandsForStroke(lineWidth, lineJoin, lineCap);
+  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
+    _addCommandsForStroke();
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    _addCommandsForStroke(lineWidth, lineJoin, lineCap);
+  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
+    _addCommandsForStroke();
   }
 
   //---------------------------------------------------------------------------
 
   void _addCommandsForFill() {
-    var path = _path.clone();
+    var path = new GraphicsPath.clone(_path);
     var pathCommand = new GraphicsCommandSetPath(path);
     var drawCommand = _command;
     this.commands.add(pathCommand);
     this.commands.add(drawCommand);
   }
 
-  void _addCommandsForStroke(double lineWidth, String lineJoin, String lineCap) {
-    var stroke = _path.calculateStroke(lineWidth, lineJoin, lineCap);
+  void _addCommandsForStroke() {
+    var stroke = new GraphicsStroke(_path, _command);
     var strokeCommand = new GraphicsCommandSetStroke(stroke);
     var drawCommand = _command;
     this.commands.add(strokeCommand);

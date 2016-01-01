@@ -1,25 +1,17 @@
 part of stagexl.drawing.commands;
 
-class GraphicsCommandStrokePattern extends GraphicsCommand {
+class GraphicsCommandStrokePattern extends GraphicsCommandStroke {
 
   final GraphicsPattern pattern;
-  final double lineWidth;
-  final String lineJoin;
-  final String lineCap;
 
   GraphicsCommandStrokePattern(
-      GraphicsPattern pattern,
-      num lineWidth, String lineJoin, String lineCap) :
-
-      this.pattern = pattern,
-      this.lineWidth = lineWidth.toDouble(),
-      this.lineJoin = lineJoin,
-      this.lineCap = lineCap;
+      this.pattern, num width, String jointStyle, String capsStyle) :
+        super(width.toDouble(), jointStyle, capsStyle);
 
   //---------------------------------------------------------------------------
 
   @override
   void updateContext(GraphicsContext context) {
-    context.strokePattern(pattern, lineWidth, lineJoin, lineCap);
+    context.strokePattern(pattern, width, jointStyle, capsStyle);
   }
 }

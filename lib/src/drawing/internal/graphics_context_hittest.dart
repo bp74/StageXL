@@ -30,18 +30,18 @@ class GraphicsContextHitTest extends GraphicsContext {
   }
 
   @override
-  void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
-    _updateHitForStroke(lineWidth, lineJoin, lineCap);
+  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
+    _updateHitForStroke();
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
-    _updateHitForStroke(lineWidth, lineJoin, lineCap);
+  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
+    _updateHitForStroke();
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
-    _updateHitForStroke(lineWidth, lineJoin, lineCap);
+  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
+    _updateHitForStroke();
   }
 
   //---------------------------------------------------------------------------
@@ -50,10 +50,9 @@ class GraphicsContextHitTest extends GraphicsContext {
     _hit = _hit || _path.hitTest(_localX, _localY);
   }
 
-  void _updateHitForStroke(double lineWidth, String lineJoin, String lineCap) {
-    // TODO: hitTest for strokes
-    // var stroke = _stroke ?? _path.calculateStroke(lineWidth, lineJoin, lineCap);
-    //_hit = _hit || stroke.hitTest(_localX, _localY);
+  void _updateHitForStroke() {
+    var stroke = _stroke ?? new GraphicsStroke(_path, _command);
+    _hit = _hit || stroke.hitTest(_localX, _localY);
   }
 
 }
