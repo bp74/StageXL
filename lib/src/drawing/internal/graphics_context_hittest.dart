@@ -30,17 +30,17 @@ class GraphicsContextHitTest extends GraphicsContext {
   }
 
   @override
-  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
+  void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     _updateHitForStroke();
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
+  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     _updateHitForStroke();
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
+  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     _updateHitForStroke();
   }
 

@@ -5,9 +5,9 @@ import 'engine.dart';
 import 'drawing/internal.dart';
 import 'drawing/commands.dart';
 
-export 'drawing/internal.dart' show GraphicsGradient, GraphicsPattern;
+export 'drawing/internal.dart'
+    show GraphicsGradient, GraphicsPattern, JointStyle, CapsStyle;
 
-part 'drawing/caps_style.dart';
 part 'drawing/graphics.dart';
-part 'drawing/joint_style.dart';
+
 

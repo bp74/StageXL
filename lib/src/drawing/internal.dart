@@ -22,3 +22,6 @@ part 'internal/graphics_path_segment.dart';
 part 'internal/graphics_pattern.dart';
 part 'internal/graphics_stroke.dart';
 part 'internal/graphics_stroke_segment.dart';
+
+enum JointStyle { MITER, ROUND, BEVEL }
+enum CapsStyle { BUTT, ROUND, SQUARE }

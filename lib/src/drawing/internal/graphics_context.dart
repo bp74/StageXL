@@ -77,15 +77,15 @@ abstract class GraphicsContext {
 
   //---------------------------------------------------------------------------
 
-  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
+  void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     // override in derived class
   }
 
-  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
+  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     // override in derived class
   }
 
-  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
+  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     // override in derived class
   }
 

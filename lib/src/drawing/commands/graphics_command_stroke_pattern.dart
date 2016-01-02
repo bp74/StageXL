@@ -5,7 +5,7 @@ class GraphicsCommandStrokePattern extends GraphicsCommandStroke {
   final GraphicsPattern pattern;
 
   GraphicsCommandStrokePattern(
-      this.pattern, num width, String jointStyle, String capsStyle) :
+      this.pattern, num width, JointStyle jointStyle, CapsStyle capsStyle) :
         super(width.toDouble(), jointStyle, capsStyle);
 
   //---------------------------------------------------------------------------

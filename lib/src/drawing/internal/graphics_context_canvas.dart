@@ -102,30 +102,31 @@ class GraphicsContextCanvas extends GraphicsContext {
   //---------------------------------------------------------------------------
 
   @override
-  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
+  void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
+
     _canvasContext.strokeStyle = color2rgba(color);
     _canvasContext.lineWidth = width;
-    _canvasContext.lineJoin = jointStyle;
-    _canvasContext.lineCap = capsStyle;
+    _canvasContext.lineJoin = _getLineJoin(jointStyle);
+    _canvasContext.lineCap = _getLineCap(capsStyle);;
     _canvasContext.stroke();
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
+  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     _canvasContext.strokeStyle = gradient.getCanvasGradient(_canvasContext);
     _canvasContext.lineWidth = width;
-    _canvasContext.lineJoin = jointStyle;
-    _canvasContext.lineCap = capsStyle;
+    _canvasContext.lineJoin = _getLineJoin(jointStyle);
+    _canvasContext.lineCap = _getLineCap(capsStyle);
     _canvasContext.stroke();
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
+  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
 
     _canvasContext.strokeStyle = pattern.getCanvasPattern(_canvasContext);
     _canvasContext.lineWidth = width;
-    _canvasContext.lineJoin = jointStyle;
-    _canvasContext.lineCap = capsStyle;
+    _canvasContext.lineJoin = _getLineJoin(jointStyle);
+    _canvasContext.lineCap = _getLineCap(capsStyle);;
 
     var matrix = pattern.matrix;
     if (matrix != null) {
@@ -136,6 +137,22 @@ class GraphicsContextCanvas extends GraphicsContext {
     } else {
       _canvasContext.stroke();
     }
+  }
+
+  //---------------------------------------------------------------------------
+
+  String _getLineJoin(JointStyle jointStyle) {
+    var lineJoin = "round";
+    if (jointStyle == JointStyle.MITER) lineJoin = "miter";
+    if (jointStyle == JointStyle.BEVEL) lineJoin = "bevel";
+    return lineJoin;
+  }
+
+  String _getLineCap(CapsStyle capsStyle) {
+    var lineCap = "round";
+    if (capsStyle == CapsStyle.BUTT) lineCap = "butt";
+    if (capsStyle == CapsStyle.SQUARE) lineCap = "square";
+    return lineCap;
   }
 
 }
@@ -163,17 +180,17 @@ class GraphicsContextCanvasMask extends GraphicsContextCanvas {
   }
 
   @override
-  void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
+  void strokeColor(int color, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
     // do nothing
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
+  void strokeGradient(GraphicsGradient gradient, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
     // do nothing
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
+  void strokePattern(GraphicsPattern pattern, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
     // do nothing
   }
 }

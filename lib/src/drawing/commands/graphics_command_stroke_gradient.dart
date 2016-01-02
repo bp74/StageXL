@@ -5,7 +5,7 @@ class GraphicsCommandStrokeGradient extends GraphicsCommandStroke {
   final GraphicsGradient gradient;
 
   GraphicsCommandStrokeGradient(
-      this.gradient, num width, String jointStyle, String capsStyle) :
+      this.gradient, num width, JointStyle jointStyle, CapsStyle capsStyle) :
         super(width.toDouble(), jointStyle, capsStyle);
 
   //---------------------------------------------------------------------------

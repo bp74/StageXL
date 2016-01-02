@@ -5,7 +5,7 @@ class GraphicsCommandStrokeColor extends GraphicsCommandStroke {
   final int color;
 
   GraphicsCommandStrokeColor(
-      this.color, num width, String jointStyle, String capsStyle) :
+      this.color, num width, JointStyle jointStyle, CapsStyle capsStyle) :
         super(width.toDouble(), jointStyle, capsStyle);
 
   //---------------------------------------------------------------------------

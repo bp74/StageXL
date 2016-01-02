@@ -25,18 +25,18 @@ class GraphicsContextRender extends GraphicsContext {
   //---------------------------------------------------------------------------
 
   @override
-  void strokeColor(int color, double width, String jointStyle, String capsStyle) {
+  void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     var stroke = _stroke ?? new GraphicsStroke(_path, _command);
     stroke.fillColor(renderState, color);
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double width, String jointStyle, String capsStyle) {
+  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     this.strokeColor(0xFFFF00FF, width, jointStyle, capsStyle);
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double width, String jointStyle, String capsStyle) {
+  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     this.strokeColor(0xFFFF00FF, width, jointStyle, capsStyle);
   }
 }
@@ -64,17 +64,17 @@ class GraphicsContextRenderMask extends GraphicsContextRender {
   }
 
   @override
-  void strokeColor(int color, double lineWidth, String lineJoin, String lineCap) {
+  void strokeColor(int color, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
     // do nothing
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, String lineJoin, String lineCap) {
+  void strokeGradient(GraphicsGradient gradient, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
     // do nothing
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double lineWidth, String lineJoin, String lineCap) {
+  void strokePattern(GraphicsPattern pattern, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
     // do nothing
   }
 }

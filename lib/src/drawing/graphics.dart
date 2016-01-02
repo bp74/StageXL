@@ -127,18 +127,30 @@ class Graphics {
   //---------------------------------------------------------------------------
 
   /// Apply a stroke color to the **previously drawn** vector object.
-  void strokeColor(int color, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) {
-    _addCommand(new GraphicsCommandStrokeColor(color, width, joints, caps));
+  void strokeColor(int color, [
+      num width = 1.0,
+      JointStyle jointStyle = JointStyle.ROUND,
+      CapsStyle capsStyle = CapsStyle.ROUND]) {
+
+    _addCommand(new GraphicsCommandStrokeColor(color, width, jointStyle, capsStyle));
   }
 
   /// Apply a stroke color to the **previously drawn** vector object.
-  void strokeGradient(GraphicsGradient gradient, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) {
-    _addCommand(new GraphicsCommandStrokeGradient(gradient, width, joints, caps));
+  void strokeGradient(GraphicsGradient gradient, [
+      num width = 1.0,
+      JointStyle jointStyle = JointStyle.ROUND,
+      CapsStyle capsStyle = CapsStyle.ROUND]) {
+
+    _addCommand(new GraphicsCommandStrokeGradient(gradient, width, jointStyle, capsStyle));
   }
 
   /// Apply a stroke pattern to the **previously drawn** vector object.
-  void strokePattern(GraphicsPattern pattern, [num width = 1.0, String joints = JointStyle.ROUND, String caps = CapsStyle.ROUND]) {
-    _addCommand(new GraphicsCommandStrokePattern(pattern, width, joints, caps));
+  void strokePattern(GraphicsPattern pattern, [
+      num width = 1.0,
+      JointStyle jointStyle = JointStyle.ROUND,
+      CapsStyle capsStyle = CapsStyle.ROUND]) {
+
+    _addCommand(new GraphicsCommandStrokePattern(pattern, width, jointStyle, capsStyle));
   }
 
   //---------------------------------------------------------------------------
