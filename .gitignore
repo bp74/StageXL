@@ -4,5 +4,7 @@
 .packages
 .pub/
 build/
-packages
+example/
+packages/
 pubspec.lock
+

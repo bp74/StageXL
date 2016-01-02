@@ -57,22 +57,19 @@ class GraphicsContextBounds extends GraphicsContext {
   //---------------------------------------------------------------------------
 
   void _updateBoundsForFill() {
-    for(var segment in _path.segments) {
-      _minX = _minX > segment.minX ? segment.minX : _minX;
-      _minY = _minY > segment.minY ? segment.minY : _minY;
-      _maxX = _maxX < segment.maxX ? segment.maxX : _maxX;
-      _maxY = _maxY < segment.maxY ? segment.maxY : _maxY;
-    }
+    _path.segments.forEach(_updateBoundsForMesh);
   }
 
   void _updateBoundsForStroke() {
     var stroke = _stroke ?? new GraphicsStroke(_path, _command);
-    for(var segment in stroke.segments) {
-      _minX = _minX > segment.minX ? segment.minX : _minX;
-      _minY = _minY > segment.minY ? segment.minY : _minY;
-      _maxX = _maxX < segment.maxX ? segment.maxX : _maxX;
-      _maxY = _maxY < segment.maxY ? segment.maxY : _maxY;
-    }
+    stroke.segments.forEach(_updateBoundsForMesh);
+  }
+
+  void _updateBoundsForMesh(GraphicsMesh mesh) {
+    _minX = _minX > mesh.minX ? mesh.minX : _minX;
+    _minY = _minY > mesh.minY ? mesh.minY : _minY;
+    _maxX = _maxX < mesh.maxX ? mesh.maxX : _maxX;
+    _maxY = _maxY < mesh.maxY ? mesh.maxY : _maxY;
   }
 
 }
