@@ -48,18 +48,17 @@ class GraphicsStrokeSegment extends GraphicsMesh {
   }
 
   //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void _calculateStroke() {
-
-    // TODO: implement full stroke logic!
-    // joint, currently always JointStyle.MITER
-    // caps, currently always CapsStyle.BUTT
-    // calculate correct miter limit (not infinite like now)
 
     var length = pathSegment.vertexCount;
     var closed = pathSegment.closed;
     var vertices = pathSegment._vertexBuffer;
+
     var width = stroke.command.width;
+    var jointStyle = stroke.command.jointStyle;
+    var capsStyle = stroke.command.capsStyle;
 
     var v1x = 0.0, v1y = 0.0;
     var n1x = 0.0, n1y = 0.0;
@@ -82,18 +81,11 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
       // calculate vertices
       if (i == 0 && closed == false) {
-        this.addVertex(v1x + n2x, v1y + n2y);
-        this.addVertex(v1x - n2x, v1y - n2y);
+        _addCapsStart(v1x, v1y, n2x, n2y, capsStyle);
       } else if (i == length - 1 && closed == false) {
-        this.addVertex(v1x + n1x, v1y + n1y);
-        this.addVertex(v1x - n1x, v1y - n1y);
+        _addCapsEnd(v1x, v1y, n1x, n1y, capsStyle);
       } else if (i >= 0 && (i < length || closed)) {
-        num id = (n2x * n1y - n2y * n1x);
-        num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
-        num ix = n1x - it * n1y;
-        num iy = n1y + it * n1x;
-        this.addVertex(v1x + ix, v1y + iy);
-        this.addVertex(v1x - ix, v1y - iy);
+        _addJoint(v1x, v1y, n1x, n1y, n2x, n2y, jointStyle);
       }
 
       // add indices
@@ -108,5 +100,58 @@ class GraphicsStrokeSegment extends GraphicsMesh {
       n1x = n2x; n1y = n2y;
     }
   }
+
+  //---------------------------------------------------------------------------
+
+  void _addCapsStart(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
+
+    // TODO: add support for CapsStyle.ROUND
+
+    if (capsStyle == CapsStyle.SQUARE) {
+      this.addVertex(vx + nx - ny, vy + ny + nx);
+      this.addVertex(vx - nx - ny, vy - ny + nx);
+    } else if (capsStyle == CapsStyle.ROUND) {
+      this.addVertex(vx + nx, vy + ny);
+      this.addVertex(vx - nx, vy - ny);
+    } else {
+      this.addVertex(vx + nx, vy + ny);
+      this.addVertex(vx - nx, vy - ny);
+    }
+  }
+
+  //---------------------------------------------------------------------------
+
+  void _addCapsEnd(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
+
+    // TODO: add support for CapsStyle.ROUND
+
+    if (capsStyle == CapsStyle.SQUARE) {
+      this.addVertex(vx + nx + ny, vy + ny - nx);
+      this.addVertex(vx - nx + ny, vy - ny - nx);
+    } else if (capsStyle == CapsStyle.ROUND) {
+      this.addVertex(vx + nx, vy + ny);
+      this.addVertex(vx - nx, vy - ny);
+    } else {
+      this.addVertex(vx + nx, vy + ny);
+      this.addVertex(vx - nx, vy - ny);
+    }
+  }
+
+  //---------------------------------------------------------------------------
+
+  void _addJoint(num vx, num vy, num n1x, num n1y, num n2x, num n2y, JointStyle jointStyle) {
+
+    // TODO: add support for JointStyle.ROUND
+    // TODO: add support for JointStyle.BEVEL
+    // TODO: calculate correct miter limit
+
+    num id = (n2x * n1y - n2y * n1x);
+    num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
+    num ix = n1x - it * n1y;
+    num iy = n1y + it * n1x;
+    this.addVertex(vx + ix, vy + iy);
+    this.addVertex(vx - ix, vy - iy);
+  }
+
 
 }
