@@ -19,8 +19,6 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
   bool hitTest(double px, double py) {
 
-    // TODO: stroke hitTest could be optimized
-
     for (int i = 0; i < _indexCount - 2; i += 3) {
 
       var o1 = _indexBuffer[i + 0] * 2;
@@ -28,11 +26,16 @@ class GraphicsStrokeSegment extends GraphicsMesh {
       var o3 = _indexBuffer[i + 2] * 2;
 
       var x1 = _vertexBuffer[o1 + 0] - px;
-      var y1 = _vertexBuffer[o1 + 1] - py;
       var x2 = _vertexBuffer[o2 + 0] - px;
-      var y2 = _vertexBuffer[o2 + 1] - py;
       var x3 = _vertexBuffer[o3 + 0] - px;
+      if (x1 > 0 && x2 > 0 && x3 > 0) continue;
+      if (x1 < 0 && x2 < 0 && x3 < 0) continue;
+
+      var y1 = _vertexBuffer[o1 + 1] - py;
+      var y2 = _vertexBuffer[o2 + 1] - py;
       var y3 = _vertexBuffer[o3 + 1] - py;
+      if (y1 > 0 && y2 > 0 && y3 > 0) continue;
+      if (y1 < 0 && y2 < 0 && y3 < 0) continue;
 
       var ab = x1 * y2 - x2 * y1;
       var bc = x2 * y3 - x3 * y2;
