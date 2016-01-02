@@ -19,13 +19,14 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
   bool hitTest(double px, double py) {
 
-    // TODO: stroke hitTest should be optimized
+    // TODO: stroke hitTest could be optimized
 
-    for(int o = 0; o < _indexCount - 2; o += 3) {
+    for (int o = 0; o < _indexCount - 2; o += 3) {
 
       var i1 = _indexBuffer[o + 0];
       var i2 = _indexBuffer[o + 1];
       var i3 = _indexBuffer[o + 2];
+
       var ax = _vertexBuffer[i1 * 2 + 0];
       var ay = _vertexBuffer[i1 * 2 + 1];
       var bx = _vertexBuffer[i2 * 2 + 0];
@@ -33,23 +34,11 @@ class GraphicsStrokeSegment extends GraphicsMesh {
       var cx = _vertexBuffer[i3 * 2 + 0];
       var cy = _vertexBuffer[i3 * 2 + 1];
 
-      num v0x = cx - ax;
-      num v0y = cy - ay;
-      num v1x = bx - ax;
-      num v1y = by - ay;
-      num v2x = px - ax;
-      num v2y = py - ay;
-
-      num dot00 = v0x * v0x + v0y * v0y;
-      num dot01 = v0x * v1x + v0y * v1y;
-      num dot02 = v0x * v2x + v0y * v2y;
-      num dot11 = v1x * v1x + v1y * v1y;
-      num dot12 = v1x * v2x + v1y * v2y;
-
-      num invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-      num u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-      num v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-      if ((u >= 0) && (v >= 0) && (u + v < 1)) return true;
+      var ab = (ax - px) * (by - py) - (bx - px) * (ay - py);
+      var bc = (bx - px) * (cy - py) - (cx - px) * (by - py);
+      var ca = (cx - px) * (ay - py) - (ax - px) * (cy - py);
+      if (ab > 0 && bc > 0 && ca > 0) return true;
+      if (ab < 0 && bc < 0 && ca < 0) return true;
     }
 
     return false;
