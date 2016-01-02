@@ -23,7 +23,10 @@ class GraphicsStroke {
   }
 
   bool hitTest(double x, double y) {
-    // TODO: hitTest for strokes
+    for (var segment in _segments) {
+      if (segment.checkBounds(x, y) == false) continue;
+      if (segment.hitTest(x, y)) return true;
+    }
     return false;
   }
 

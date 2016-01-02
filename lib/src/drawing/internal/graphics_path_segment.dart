@@ -127,7 +127,7 @@ class GraphicsPathSegment extends GraphicsMesh {
       }
 
       if (earFound) {
-        addTriangle(i0, i1, i2);
+        addIndices(i0, i1, i2);
         available.removeAt((index + 1) % available.length);
         index = 0;
       } else if (index++ > 3 * available.length) {
@@ -135,7 +135,7 @@ class GraphicsPathSegment extends GraphicsMesh {
       }
     }
 
-    addTriangle(available[0], available[1], available[2]);
+    addIndices(available[0], available[1], available[2]);
   }
 
   //---------------------------------------------------------------------------

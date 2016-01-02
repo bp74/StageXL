@@ -55,6 +55,12 @@ class GraphicsMesh {
 
   //---------------------------------------------------------------------------
 
+  bool checkBounds(num x, num y) {
+    return x >= _minX && x <= _maxX && y >= _minY && y <= _maxY;
+  }
+
+  //---------------------------------------------------------------------------
+
   void addVertex(double x, double y) {
 
     var offset = _vertexCount * 2;
@@ -78,7 +84,7 @@ class GraphicsMesh {
 
   //---------------------------------------------------------------------------
 
-  void addTriangle(int index1, int index2, int index3) {
+  void addIndices(int index1, int index2, int index3) {
 
     var offset = _indexCount;
     var length = _indexBuffer.length;

@@ -10,11 +10,6 @@ class GraphicsStrokeSegment extends GraphicsMesh {
         this.pathSegment = pathSegment,
         super(pathSegment.vertexCount * 2, pathSegment.vertexCount * 6) {
 
-    // TODO: implement full stroke logic!
-    // joint, currently always JointStyle.MITER
-    // caps, currently always CapsStyle.BUTT
-    // calculate correct miter limit (not infinite like now)
-
     if (pathSegment.vertexCount >= 2) {
       _calculateStroke();
     }
@@ -22,7 +17,52 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
   //---------------------------------------------------------------------------
 
+  bool hitTest(double px, double py) {
+
+    // TODO: stroke hitTest should be optimized
+
+    for(int o = 0; o < _indexCount - 2; o += 3) {
+
+      var i1 = _indexBuffer[o + 0];
+      var i2 = _indexBuffer[o + 1];
+      var i3 = _indexBuffer[o + 2];
+      var ax = _vertexBuffer[i1 * 2 + 0];
+      var ay = _vertexBuffer[i1 * 2 + 1];
+      var bx = _vertexBuffer[i2 * 2 + 0];
+      var by = _vertexBuffer[i2 * 2 + 1];
+      var cx = _vertexBuffer[i3 * 2 + 0];
+      var cy = _vertexBuffer[i3 * 2 + 1];
+
+      num v0x = cx - ax;
+      num v0y = cy - ay;
+      num v1x = bx - ax;
+      num v1y = by - ay;
+      num v2x = px - ax;
+      num v2y = py - ay;
+
+      num dot00 = v0x * v0x + v0y * v0y;
+      num dot01 = v0x * v1x + v0y * v1y;
+      num dot02 = v0x * v2x + v0y * v2y;
+      num dot11 = v1x * v1x + v1y * v1y;
+      num dot12 = v1x * v2x + v1y * v2y;
+
+      num invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+      num u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+      num v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+      if ((u >= 0) && (v >= 0) && (u + v < 1)) return true;
+    }
+
+    return false;
+  }
+
+  //---------------------------------------------------------------------------
+
   void _calculateStroke() {
+
+    // TODO: implement full stroke logic!
+    // joint, currently always JointStyle.MITER
+    // caps, currently always CapsStyle.BUTT
+    // calculate correct miter limit (not infinite like now)
 
     var length = pathSegment.vertexCount;
     var closed = pathSegment.closed;
@@ -50,25 +90,25 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
       // calculate vertices
       if (i == 0 && closed == false) {
-        addVertex(v1x + n2x, v1y + n2y);
-        addVertex(v1x - n2x, v1y - n2y);
+        this.addVertex(v1x + n2x, v1y + n2y);
+        this.addVertex(v1x - n2x, v1y - n2y);
       } else if (i == length - 1 && closed == false) {
-        addVertex(v1x + n1x, v1y + n1y);
-        addVertex(v1x - n1x, v1y - n1y);
+        this.addVertex(v1x + n1x, v1y + n1y);
+        this.addVertex(v1x - n1x, v1y - n1y);
       } else if (i >= 0 && (i < length || closed)) {
         num id = (n2x * n1y - n2y * n1x);
         num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
         num ix = n1x - it * n1y;
         num iy = n1y + it * n1x;
-        addVertex(v1x + ix, v1y + iy);
-        addVertex(v1x - ix, v1y - iy);
+        this.addVertex(v1x + ix, v1y + iy);
+        this.addVertex(v1x - ix, v1y - iy);
       }
 
       // add indices
       if (i > 0 && (i < length || closed)) {
         var vertexCount = this.vertexCount;
-        addTriangle(vertexCount - 4, vertexCount - 3, vertexCount - 2);
-        addTriangle(vertexCount - 3, vertexCount - 2, vertexCount - 1);
+        this.addIndices(vertexCount - 4, vertexCount - 3, vertexCount - 2);
+        this.addIndices(vertexCount - 3, vertexCount - 2, vertexCount - 1);
       }
 
       // shift vertices and normals

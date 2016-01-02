@@ -47,12 +47,16 @@ class GraphicsContextHitTest extends GraphicsContext {
   //---------------------------------------------------------------------------
 
   void _updateHitForFill() {
-    _hit = _hit || _path.hitTest(_localX, _localY);
+    if (_hit == false) {
+      _hit = _path.hitTest(_localX, _localY);
+    }
   }
 
   void _updateHitForStroke() {
-    var stroke = _stroke ?? new GraphicsStroke(_path, _command);
-    _hit = _hit || stroke.hitTest(_localX, _localY);
+    if (_hit == false) {
+      var stroke = _stroke ?? new GraphicsStroke(_path, _command);
+      _hit = stroke.hitTest(_localX, _localY);
+    }
   }
 
 }

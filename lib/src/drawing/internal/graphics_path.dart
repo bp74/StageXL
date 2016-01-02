@@ -187,6 +187,7 @@ class GraphicsPath {
   bool hitTest(double x, double y) {
     int windingCount = 0;
     for (var segment in _segments) {
+      if (segment.checkBounds(x, y) == false) continue;
       if (segment.indexCount == 0) segment.calculateIndices();
       windingCount += segment.windingCountHitTest(x, y);
     }
