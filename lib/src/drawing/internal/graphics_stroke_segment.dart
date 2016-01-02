@@ -21,24 +21,24 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
     // TODO: stroke hitTest could be optimized
 
-    for (int o = 0; o < _indexCount - 2; o += 3) {
+    for (int i = 0; i < _indexCount - 2; i += 3) {
 
-      var i1 = _indexBuffer[o + 0];
-      var i2 = _indexBuffer[o + 1];
-      var i3 = _indexBuffer[o + 2];
+      var o1 = _indexBuffer[i + 0] * 2;
+      var o2 = _indexBuffer[i + 1] * 2;
+      var o3 = _indexBuffer[i + 2] * 2;
 
-      var ax = _vertexBuffer[i1 * 2 + 0];
-      var ay = _vertexBuffer[i1 * 2 + 1];
-      var bx = _vertexBuffer[i2 * 2 + 0];
-      var by = _vertexBuffer[i2 * 2 + 1];
-      var cx = _vertexBuffer[i3 * 2 + 0];
-      var cy = _vertexBuffer[i3 * 2 + 1];
+      var x1 = _vertexBuffer[o1 + 0] - px;
+      var y1 = _vertexBuffer[o1 + 1] - py;
+      var x2 = _vertexBuffer[o2 + 0] - px;
+      var y2 = _vertexBuffer[o2 + 1] - py;
+      var x3 = _vertexBuffer[o3 + 0] - px;
+      var y3 = _vertexBuffer[o3 + 1] - py;
 
-      var ab = (ax - px) * (by - py) - (bx - px) * (ay - py);
-      var bc = (bx - px) * (cy - py) - (cx - px) * (by - py);
-      var ca = (cx - px) * (ay - py) - (ax - px) * (cy - py);
-      if (ab > 0 && bc > 0 && ca > 0) return true;
-      if (ab < 0 && bc < 0 && ca < 0) return true;
+      var ab = x1 * y2 - x2 * y1;
+      var bc = x2 * y3 - x3 * y2;
+      var ca = x3 * y1 - x1 * y3;
+      if (ab >= 0 && bc >= 0 && ca >= 0) return true;
+      if (ab <= 0 && bc <= 0 && ca <= 0) return true;
     }
 
     return false;
