@@ -188,11 +188,11 @@ class GraphicsStrokeSegment extends GraphicsMesh {
     this.addVertex(vx + nx, vy + ny);
     this.addVertex(vx - nx, vy - ny);
 
-    for (int s = 0; s < steps - 1; s++) {
+    for (int s = 1; s < steps; s++) {
       var bx = ax * cosR - ay * sinR + tx;
       var by = ax * sinR + ay * cosR + ty;
       this.addVertex(ax = bx, ay = by);
-      this.addIndices(count + s + 1, count + s + 2, count);
+      this.addIndices(count + s, count + s + 1, count);
     }
   }
 
