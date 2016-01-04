@@ -88,9 +88,9 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
       // calculate vertices
       if (i == 0 && closed == false) {
-        _addCapsStart(v1x, v1y, n2x, n2y, capsStyle);
+        _addCaps(v1x, v1y, 0.0 - n2x, 0.0 - n2y, n2x, n2y, capsStyle);
       } else if (i == length - 1 && closed == false) {
-        _addCapsEnd(v1x, v1y, n1x, n1y, capsStyle);
+        _addCaps(v1x, v1y, 0.0 + n1x, 0.0 + n1y, n1x, n1y, capsStyle);
       } else if (i >= 0 && (i < length || closed)) {
         _addJoint(v1x, v1y, n1x, n1y, n2x, n2y, jointStyle);
       }
@@ -103,33 +103,19 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
   //---------------------------------------------------------------------------
 
-  void _addCapsStart(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
+  void _addCaps(num vx, num vy, num ax, num ay, num bx, num by, CapsStyle capsStyle) {
     if (capsStyle == CapsStyle.SQUARE) {
-      this.addVertex(vx + nx - ny, vy + ny + nx);
-      this.addVertex(vx - nx - ny, vy - ny + nx);
+      this.addVertex(vx + bx - ay, vy + by + ax);
+      this.addVertex(vx - bx - ay, vy - by + ax);
     } else if (capsStyle == CapsStyle.ROUND) {
-      _addArc(vx, vy, nx, ny, 0.0 - math.PI);
-      this.addVertex(vx + nx, vy + ny);
-      this.addVertex(vx - nx, vy - ny);
+      this.addVertex(vx + ax, vy + ay);
+      this.addVertex(vx - ax, vy - ay);
+      _addArc(vx, vy, ax, ay, math.PI);
+      this.addVertex(vx + bx, vy + by);
+      this.addVertex(vx - bx, vy - by);
     } else {
-      this.addVertex(vx + nx, vy + ny);
-      this.addVertex(vx - nx, vy - ny);
-    }
-  }
-
-  //---------------------------------------------------------------------------
-
-  void _addCapsEnd(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
-    if (capsStyle == CapsStyle.SQUARE) {
-      this.addVertex(vx + nx + ny, vy + ny - nx);
-      this.addVertex(vx - nx + ny, vy - ny - nx);
-    } else if (capsStyle == CapsStyle.ROUND) {
-      _addArc(vx, vy, nx, ny, math.PI);
-      this.addVertex(vx + nx, vy + ny);
-      this.addVertex(vx - nx, vy - ny);
-    } else {
-      this.addVertex(vx + nx, vy + ny);
-      this.addVertex(vx - nx, vy - ny);
+      this.addVertex(vx + bx, vy + by);
+      this.addVertex(vx - bx, vy - by);
     }
   }
 
@@ -171,22 +157,18 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
   //---------------------------------------------------------------------------
 
-  void _addArc(num vx, num vy, num nx, num ny, num angle) {
+  void _addArc(num cx, num cy, num nx, num ny, num angle) {
 
     // TODO: adjust steps
-
     int steps = (10 * angle / math.PI).abs().ceil();
-    int count = this.vertexCount;
+    int count = this.vertexCount - 2;
 
     num cosR = math.cos(angle / steps);
     num sinR = math.sin(angle / steps);
-    num tx = vx - vx * cosR + vy * sinR;
-    num ty = vy - vx * sinR - vy * cosR;
-    num ax = vx - nx;
-    num ay = vy - ny;
-
-    this.addVertex(vx + nx, vy + ny);
-    this.addVertex(vx - nx, vy - ny);
+    num tx = cx - cx * cosR + cy * sinR;
+    num ty = cy - cx * sinR - cy * cosR;
+    num ax = cx - nx;
+    num ay = cy - ny;
 
     for (int s = 1; s < steps; s++) {
       var bx = ax * cosR - ay * sinR + tx;
