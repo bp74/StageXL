@@ -138,15 +138,35 @@ class GraphicsStrokeSegment extends GraphicsMesh {
   void _addJoint(num vx, num vy, num n1x, num n1y, num n2x, num n2y, JointStyle jointStyle) {
 
     // TODO: add support for JointStyle.ROUND
-    // TODO: add support for JointStyle.BEVEL
     // TODO: calculate correct miter limit
 
     num id = (n2x * n1y - n2y * n1x);
     num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
     num ix = n1x - it * n1y;
     num iy = n1y + it * n1x;
-    this.addVertex(vx + ix, vy + iy);
-    this.addVertex(vx - ix, vy - iy);
+    int count = this.vertexCount;
+
+    if (jointStyle == JointStyle.BEVEL && it > 0.0) {
+      this.addIndices(count + 1, count + 2, count + 3);
+      this.addVertex(vx + ix, vy + iy);
+      this.addVertex(vx - n1x, vy - n1y);
+      this.addVertex(vx + ix, vy + iy);
+      this.addVertex(vx - n2x, vy - n2y);
+    } else if (jointStyle == JointStyle.BEVEL) {
+      this.addIndices(count + 0, count + 1, count + 2);
+      this.addVertex(vx + n1x, vy + n1y);
+      this.addVertex(vx - ix, vy - iy);
+      this.addVertex(vx + n2x, vy + n2y);
+      this.addVertex(vx - ix, vy - iy);
+    } else if (jointStyle == JointStyle.ROUND) {
+      this.addVertex(vx + ix, vy + iy);
+      this.addVertex(vx - ix, vy - iy);
+    } else if (jointStyle == JointStyle.MITER) {
+      this.addVertex(vx + ix, vy + iy);
+      this.addVertex(vx - ix, vy - iy);
+    }
+
+    if (count == 0) _indexCount = 0;
   }
 
   //---------------------------------------------------------------------------
