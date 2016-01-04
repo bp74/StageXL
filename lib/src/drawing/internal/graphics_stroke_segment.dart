@@ -88,9 +88,9 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
       // calculate vertices
       if (i == 0 && closed == false) {
-        _addCaps(v1x, v1y, 0.0 - n2x, 0.0 - n2y, n2x, n2y, capsStyle);
+        _addCap(v1x, v1y, 0.0 - n2x, 0.0 - n2y, n2x, n2y, capsStyle);
       } else if (i == length - 1 && closed == false) {
-        _addCaps(v1x, v1y, 0.0 + n1x, 0.0 + n1y, n1x, n1y, capsStyle);
+        _addCap(v1x, v1y, 0.0 + n1x, 0.0 + n1y, n1x, n1y, capsStyle);
       } else if (i >= 0 && (i < length || closed)) {
         _addJoint(v1x, v1y, n1x, n1y, n2x, n2y, jointStyle);
       }
@@ -103,10 +103,10 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
   //---------------------------------------------------------------------------
 
-  void _addCaps(num vx, num vy, num ax, num ay, num bx, num by, CapsStyle capsStyle) {
+  void _addCap(num vx, num vy, num ax, num ay, num bx, num by, CapsStyle capsStyle) {
     if (capsStyle == CapsStyle.SQUARE) {
-      this.addVertex(vx + bx - ay, vy + by + ax);
-      this.addVertex(vx - bx - ay, vy - by + ax);
+      this.addVertex(vx + bx + ay, vy + by - ax);
+      this.addVertex(vx - bx + ay, vy - by - ax);
     } else if (capsStyle == CapsStyle.ROUND) {
       this.addVertex(vx + ax, vy + ay);
       this.addVertex(vx - ax, vy - ay);
