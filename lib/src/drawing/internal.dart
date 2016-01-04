@@ -24,4 +24,4 @@ part 'internal/graphics_stroke.dart';
 part 'internal/graphics_stroke_segment.dart';
 
 enum JointStyle { MITER, ROUND, BEVEL }
-enum CapsStyle { BUTT, ROUND, SQUARE }
+enum CapsStyle { NONE, ROUND, SQUARE }

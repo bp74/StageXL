@@ -103,7 +103,6 @@ class GraphicsContextCanvas extends GraphicsContext {
 
   @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-
     _canvasContext.strokeStyle = color2rgba(color);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
@@ -150,7 +149,7 @@ class GraphicsContextCanvas extends GraphicsContext {
 
   String _getLineCap(CapsStyle capsStyle) {
     var lineCap = "round";
-    if (capsStyle == CapsStyle.BUTT) lineCap = "butt";
+    if (capsStyle == CapsStyle.NONE) lineCap = "butt";
     if (capsStyle == CapsStyle.SQUARE) lineCap = "square";
     return lineCap;
   }
