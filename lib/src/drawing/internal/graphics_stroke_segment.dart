@@ -74,10 +74,17 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
       // calculate next normal
       num vx = v2x - v1x;
-      num vy = v2y - v1y;
+      num vy = v1y - v2y;
       num vl = math.sqrt(vx * vx + vy * vy);
-      n2x = 0.0 - (width / 2.0) * (vy / vl);
-      n2y = 0.0 + (width / 2.0) * (vx / vl);
+      n2x = 0.5 * width * vy / vl;
+      n2y = 0.5 * width * vx / vl;
+
+      // add indices
+      if (i > 0 && (i < length || closed)) {
+        var vertexCount = this.vertexCount;
+        this.addIndices(vertexCount - 2, vertexCount - 1, vertexCount + 0);
+        this.addIndices(vertexCount - 1, vertexCount + 0, vertexCount + 1);
+      }
 
       // calculate vertices
       if (i == 0 && closed == false) {
@@ -86,13 +93,6 @@ class GraphicsStrokeSegment extends GraphicsMesh {
         _addCapsEnd(v1x, v1y, n1x, n1y, capsStyle);
       } else if (i >= 0 && (i < length || closed)) {
         _addJoint(v1x, v1y, n1x, n1y, n2x, n2y, jointStyle);
-      }
-
-      // add indices
-      if (i > 0 && (i < length || closed)) {
-        var vertexCount = this.vertexCount;
-        this.addIndices(vertexCount - 4, vertexCount - 3, vertexCount - 2);
-        this.addIndices(vertexCount - 3, vertexCount - 2, vertexCount - 1);
       }
 
       // shift vertices and normals
@@ -104,13 +104,11 @@ class GraphicsStrokeSegment extends GraphicsMesh {
   //---------------------------------------------------------------------------
 
   void _addCapsStart(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
-
-    // TODO: add support for CapsStyle.ROUND
-
     if (capsStyle == CapsStyle.SQUARE) {
       this.addVertex(vx + nx - ny, vy + ny + nx);
       this.addVertex(vx - nx - ny, vy - ny + nx);
     } else if (capsStyle == CapsStyle.ROUND) {
+      _addArc(vx, vy, nx, ny, 0.0 - math.PI);
       this.addVertex(vx + nx, vy + ny);
       this.addVertex(vx - nx, vy - ny);
     } else {
@@ -122,13 +120,11 @@ class GraphicsStrokeSegment extends GraphicsMesh {
   //---------------------------------------------------------------------------
 
   void _addCapsEnd(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
-
-    // TODO: add support for CapsStyle.ROUND
-
     if (capsStyle == CapsStyle.SQUARE) {
       this.addVertex(vx + nx + ny, vy + ny - nx);
       this.addVertex(vx - nx + ny, vy - ny - nx);
     } else if (capsStyle == CapsStyle.ROUND) {
+      _addArc(vx, vy, nx, ny, math.PI);
       this.addVertex(vx + nx, vy + ny);
       this.addVertex(vx - nx, vy - ny);
     } else {
@@ -153,5 +149,31 @@ class GraphicsStrokeSegment extends GraphicsMesh {
     this.addVertex(vx - ix, vy - iy);
   }
 
+  //---------------------------------------------------------------------------
+
+  void _addArc(num vx, num vy, num nx, num ny, num angle) {
+
+    // TODO: adjust steps
+
+    int steps = (10 * angle / math.PI).abs().ceil();
+    int count = this.vertexCount;
+
+    num cosR = math.cos(angle / steps);
+    num sinR = math.sin(angle / steps);
+    num tx = vx - vx * cosR + vy * sinR;
+    num ty = vy - vx * sinR - vy * cosR;
+    num ax = vx - nx;
+    num ay = vy - ny;
+
+    this.addVertex(vx + nx, vy + ny);
+    this.addVertex(vx - nx, vy - ny);
+
+    for (int s = 0; s < steps - 1; s++) {
+      var bx = ax * cosR - ay * sinR + tx;
+      var by = ax * sinR + ay * cosR + ty;
+      this.addVertex(ax = bx, ay = by);
+      this.addIndices(count + s + 1, count + s + 2, count);
+    }
+  }
 
 }
