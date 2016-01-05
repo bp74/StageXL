@@ -3,14 +3,14 @@ part of stagexl.drawing.internal;
 class GraphicsStrokeSegment extends GraphicsMesh {
 
   final GraphicsStroke stroke;
-  final GraphicsPathSegment pathSegment;
+  final Float32List vertices;
+  final bool closed;
 
-  GraphicsStrokeSegment(GraphicsStroke stroke, GraphicsPathSegment pathSegment)
-      : this.stroke = stroke,
-        this.pathSegment = pathSegment,
-        super(pathSegment.vertexCount * 2, pathSegment.vertexCount * 6) {
+  GraphicsStrokeSegment(this.stroke, this.closed, Float32List vertices)
+      : this.vertices = vertices,
+        super(vertices.length * 2, vertices.length * 3) {
 
-    if (pathSegment.vertexCount >= 2) {
+    if (this.vertices.length >= 4) {
       _calculateStroke();
     }
   }
@@ -52,13 +52,10 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
   void _calculateStroke() {
 
-    var length = pathSegment.vertexCount;
-    var closed = pathSegment.closed;
-    var vertices = pathSegment._vertexBuffer;
-
     var width = stroke.command.width;
     var jointStyle = stroke.command.jointStyle;
     var capsStyle = stroke.command.capsStyle;
+    var length = this.vertices.length ~/ 2;
 
     var v1x = 0.0, v1y = 0.0;
     var n1x = 0.0, n1y = 0.0;
