@@ -131,6 +131,11 @@ class GraphicsStrokeSegment extends GraphicsMesh {
     num ix = n1x - it * n1y;
     num iy = n1y + it * n1x;
 
+    if (jointStyle != JointStyle.MITER && it > -0.1 && it < 0.1) {
+      // overrule jointStyle in case of very flat joints
+      jointStyle = JointStyle.MITER;
+    }
+
     if (jointStyle == JointStyle.BEVEL && it > 0.0) {
       this.addIndices(count + 1, count + 2, count + 3);
       this.addVertex(vx + ix, vy + iy);
@@ -143,7 +148,7 @@ class GraphicsStrokeSegment extends GraphicsMesh {
       this.addVertex(vx - ix, vy - iy);
       this.addVertex(vx + n2x, vy + n2y);
       this.addVertex(vx - ix, vy - iy);
-    } else if (jointStyle == JointStyle.ROUND && it > 0) {
+    } else if (jointStyle == JointStyle.ROUND && it > 0.0) {
       this.addVertex(vx + ix, vy + iy);
       this.addVertex(vx - n1x, vy - n1y);
       var angle = atan2(n2y, n2x) - atan2(n1y, n1x);
