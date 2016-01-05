@@ -49,26 +49,26 @@ class GraphicsPath {
 
       num v1x = controlX - _currentSegment.lastVertexX;
       num v1y = controlY - _currentSegment.lastVertexY;
-      num v1l = math.sqrt(v1x * v1x + v1y * v1y);
-      num v1a = math.atan2(v1y, v1x);
+      num v1l = sqrt(v1x * v1x + v1y * v1y);
+      num v1a = atan2(v1y, v1x);
 
       num v2x = endX - controlX;
       num v2y = endY - controlY;
-      num v2l = math.sqrt(v2x * v2x + v2y * v2y);
-      num v2a = math.atan2(v2y, v2x);
+      num v2l = sqrt(v2x * v2x + v2y * v2y);
+      num v2a = atan2(v2y, v2x);
 
-      num tan = math.tan((v1a - v2a) / 2.0);
-      num len = tan > 0.0 ? radius : 0.0 - radius;
-      num point1x = controlX - tan * len * v1x / v1l;
-      num point1y = controlY - tan * len * v1y / v1l;
-      num point2x = controlX + tan * len * v2x / v2l;
-      num point2y = controlY + tan * len * v2y / v2l;
-      num centerX = point1x + len * v1y / v1l;
-      num centerY = point1y - len * v1x / v1l;
+      num t = tan((v1a - v2a) / 2.0);
+      num l = t > 0.0 ? radius : 0.0 - radius;
+      num point1x = controlX - t * l * v1x / v1l;
+      num point1y = controlY - t * l * v1y / v1l;
+      num point2x = controlX + t * l * v2x / v2l;
+      num point2y = controlY + t * l * v2y / v2l;
+      num centerX = point1x + l * v1y / v1l;
+      num centerY = point1y - l * v1x / v1l;
 
-      num angle1 = math.atan2(point1y - centerY, point1x - centerX);
-      num angle2 = math.atan2(point2y - centerY, point2x - centerX);
-      this.arc(centerX, centerY, radius, angle1, angle2, tan > 0.0);
+      num angle1 = atan2(point1y - centerY, point1x - centerX);
+      num angle2 = atan2(point2y - centerY, point2x - centerX);
+      this.arc(centerX, centerY, radius, angle1, angle2, t > 0.0);
     }
   }
 
@@ -138,7 +138,7 @@ class GraphicsPath {
 
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
 
-    num tau = 2.0 * math.PI;
+    num tau = 2.0 * PI;
     num start = (startAngle % tau);
     num delta = (endAngle % tau) - start;
 
@@ -157,12 +157,12 @@ class GraphicsPath {
     }
 
     int steps = (60 * delta / tau).abs().ceil();
-    var cosR = math.cos(delta / steps);
-    var sinR = math.sin(delta / steps);
+    var cosR = cos(delta / steps);
+    var sinR = sin(delta / steps);
     var tx = x - x * cosR + y * sinR;
     var ty = y - x * sinR - y * cosR;
-    var ax = x + math.cos(start) * radius;
-    var ay = y + math.sin(start) * radius;
+    var ax = x + cos(start) * radius;
+    var ay = y + sin(start) * radius;
 
     this.lineTo(ax, ay);
 

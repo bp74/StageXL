@@ -75,7 +75,7 @@ class GraphicsStrokeSegment extends GraphicsMesh {
       // calculate next normal
       num vx = v2x - v1x;
       num vy = v1y - v2y;
-      num vl = math.sqrt(vx * vx + vy * vy);
+      num vl = sqrt(vx * vx + vy * vy);
       n2x = 0.5 * width * vy / vl;
       n2y = 0.5 * width * vx / vl;
 
@@ -110,7 +110,7 @@ class GraphicsStrokeSegment extends GraphicsMesh {
     } else if (capsStyle == CapsStyle.ROUND) {
       this.addVertex(vx + ax, vy + ay);
       this.addVertex(vx - ax, vy - ay);
-      _addArc(vx, vy, ax, ay, math.PI);
+      _addArc(vx, vy, ax, ay, PI);
       this.addVertex(vx + bx, vy + by);
       this.addVertex(vx - bx, vy - by);
     } else {
@@ -123,14 +123,13 @@ class GraphicsStrokeSegment extends GraphicsMesh {
 
   void _addJoint(num vx, num vy, num n1x, num n1y, num n2x, num n2y, JointStyle jointStyle) {
 
-    // TODO: add support for JointStyle.ROUND
     // TODO: calculate correct miter limit
 
+    int count = this.vertexCount;
     num id = (n2x * n1y - n2y * n1x);
     num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
     num ix = n1x - it * n1y;
     num iy = n1y + it * n1x;
-    int count = this.vertexCount;
 
     if (jointStyle == JointStyle.BEVEL && it > 0.0) {
       this.addIndices(count + 1, count + 2, count + 3);
@@ -144,8 +143,20 @@ class GraphicsStrokeSegment extends GraphicsMesh {
       this.addVertex(vx - ix, vy - iy);
       this.addVertex(vx + n2x, vy + n2y);
       this.addVertex(vx - ix, vy - iy);
-    } else if (jointStyle == JointStyle.ROUND) {
+    } else if (jointStyle == JointStyle.ROUND && it > 0) {
       this.addVertex(vx + ix, vy + iy);
+      this.addVertex(vx - n1x, vy - n1y);
+      var angle = atan2(n2y, n2x) - atan2(n1y, n1x);
+      _addArc(vx, vy, n1x, n1y, angle % (2 * PI));
+      this.addVertex(vx + ix, vy + iy);
+      this.addVertex(vx - n2x, vy - n2y);
+    } else if (jointStyle == JointStyle.ROUND) {
+      this.addVertex(vx + n1x, vy + n1y);
+      this.addVertex(vx - ix, vy - iy);
+      this.addVertex(vx + n1x, vy + n1y);
+      var angle = atan2(n1y, n1x) - atan2(n2y, n2x);
+      _addArc(vx, vy, 0.0 - n1x, 0.0 - n1y, 0.0 - angle % (2 * PI));
+      this.addVertex(vx + n2x, vy + n2y);
       this.addVertex(vx - ix, vy - iy);
     } else if (jointStyle == JointStyle.MITER) {
       this.addVertex(vx + ix, vy + iy);
@@ -160,21 +171,21 @@ class GraphicsStrokeSegment extends GraphicsMesh {
   void _addArc(num cx, num cy, num nx, num ny, num angle) {
 
     // TODO: adjust steps
-    int steps = (10 * angle / math.PI).abs().ceil();
-    int count = this.vertexCount - 2;
+    int steps = (10 * angle / PI).abs().ceil();
+    int count = this.vertexCount;
 
-    num cosR = math.cos(angle / steps);
-    num sinR = math.sin(angle / steps);
+    num cosR = cos(angle / steps);
+    num sinR = sin(angle / steps);
     num tx = cx - cx * cosR + cy * sinR;
     num ty = cy - cx * sinR - cy * cosR;
     num ax = cx - nx;
     num ay = cy - ny;
 
-    for (int s = 1; s < steps; s++) {
+    for (int s = 0; s < steps; s++) {
       var bx = ax * cosR - ay * sinR + tx;
       var by = ax * sinR + ay * cosR + ty;
       this.addVertex(ax = bx, ay = by);
-      this.addIndices(count + s, count + s + 1, count);
+      this.addIndices(count + s - 1, count + s, count - 2);
     }
   }
 
