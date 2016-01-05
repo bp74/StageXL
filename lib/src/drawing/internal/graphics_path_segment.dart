@@ -30,6 +30,12 @@ class GraphicsPathSegment extends GraphicsMesh {
   //---------------------------------------------------------------------------
 
   void addVertex(double x, double y) {
+    var vertexCount = _vertexCount;
+    if (vertexCount > 0) {
+      var lastX = _vertexBuffer[vertexCount * 2 - 2];
+      var lastY = _vertexBuffer[vertexCount * 2 - 1];
+      if (lastX == x && lastY == y) return;
+    }
     _indexCount = 0;
     _clockwise = null;
     super.addVertex(x, y);

@@ -35,5 +35,6 @@ class GraphicsCommandEllipse extends GraphicsCommand {
     context.bezierCurveTo(xm + ox, y1, x2, ym - oy, x2, ym);
     context.bezierCurveTo(x2, ym + oy, xm + ox, y2, xm, y2);
     context.bezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym);
+    context.closePath();
   }
 }

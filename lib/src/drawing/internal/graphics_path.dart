@@ -134,6 +134,7 @@ class GraphicsPath {
     this.lineTo(x + width, y);
     this.lineTo(x + width, y + height);
     this.lineTo(x, y + height);
+    this.close();
   }
 
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {

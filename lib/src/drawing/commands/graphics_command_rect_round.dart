@@ -33,5 +33,6 @@ class GraphicsCommandRectRound extends GraphicsCommand {
     context.quadraticCurveTo(x, y + height, x, y + height - ellipseHeight);
     context.lineTo(x, y + ellipseHeight);
     context.quadraticCurveTo(x, y, x + ellipseWidth, y);
+    context.closePath();
   }
 }
