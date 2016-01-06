@@ -10,43 +10,43 @@ class GraphicsContextCompiler extends GraphicsContext {
 
   @override
   void fillColor(int color) {
-    _addCommandsForFill();
+    _compileCommandForFill();
   }
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    _addCommandsForFill();
+    _compileCommandForFill();
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-    _addCommandsForFill();
+    _compileCommandForFill();
   }
 
   @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _addCommandsForStroke();
+    _compileCommandForStroke();
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _addCommandsForStroke();
+    _compileCommandForStroke();
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _addCommandsForStroke();
+    _compileCommandForStroke();
   }
 
   //---------------------------------------------------------------------------
 
-  void _addCommandsForFill() {
+  void _compileCommandForFill() {
     GraphicsCommandFill command = _command;
     command.mesh = new GraphicsPath.clone(_path);
     this.commands.add(command);
   }
 
-  void _addCommandsForStroke() {
+  void _compileCommandForStroke() {
     GraphicsCommandStroke command = _command;
     command.mesh = new GraphicsStroke(_path, _command);
     this.commands.add(command);
