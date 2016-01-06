@@ -41,19 +41,15 @@ class GraphicsContextCompiler extends GraphicsContext {
   //---------------------------------------------------------------------------
 
   void _addCommandsForFill() {
-    var path = new GraphicsPath.clone(_path);
-    var pathCommand = new GraphicsCommandSetPath(path);
-    var drawCommand = _command;
-    this.commands.add(pathCommand);
-    this.commands.add(drawCommand);
+    GraphicsCommandFill command = _command;
+    command.mesh = new GraphicsPath.clone(_path);
+    this.commands.add(command);
   }
 
   void _addCommandsForStroke() {
-    var stroke = new GraphicsStroke(_path, _command);
-    var strokeCommand = new GraphicsCommandSetStroke(stroke);
-    var drawCommand = _command;
-    this.commands.add(strokeCommand);
-    this.commands.add(drawCommand);
+    GraphicsCommandStroke command = _command;
+    command.mesh = new GraphicsStroke(_path, _command);
+    this.commands.add(command);
   }
 
 }

@@ -1,8 +1,7 @@
 part of stagexl.drawing.internal;
 
-class GraphicsPath {
+class GraphicsPath extends GraphicsMesh {
 
-  List<GraphicsPathSegment> _segments = new List<GraphicsPathSegment>();
   GraphicsPathSegment _currentSegment = null;
 
   GraphicsPath();
@@ -10,11 +9,9 @@ class GraphicsPath {
   GraphicsPath.clone(GraphicsPath path) {
     for (var segment in path.segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
-      _segments.add(new GraphicsPathSegment.clone(segment));
+      segments.add(new GraphicsPathSegment.clone(segment));
     }
   }
-
-  Iterable<GraphicsPathSegment> get segments => _segments;
 
   //---------------------------------------------------------------------------
 
@@ -28,7 +25,7 @@ class GraphicsPath {
   void moveTo(double x, double y) {
     _currentSegment = new GraphicsPathSegment();
     _currentSegment.addVertex(x, y);
-    _segments.add(_currentSegment);
+    segments.add(_currentSegment);
   }
 
   void lineTo(double x, double y) {
@@ -179,7 +176,7 @@ class GraphicsPath {
 
   void fillColor(RenderState renderState, int color) {
     // TODO: non-zero winding rule
-    for (var segment in _segments) {
+    for (GraphicsPathSegment segment in segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
       segment.fillColor(renderState, color);
     }
@@ -187,7 +184,7 @@ class GraphicsPath {
 
   bool hitTest(double x, double y) {
     int windingCount = 0;
-    for (var segment in _segments) {
+    for (GraphicsPathSegment segment in segments) {
       if (segment.checkBounds(x, y) == false) continue;
       if (segment.indexCount == 0) segment.calculateIndices();
       windingCount += segment.windingCountHitTest(x, y);

@@ -2,9 +2,8 @@ part of stagexl.drawing.internal;
 
 abstract class GraphicsContext {
 
-  GraphicsPath _path = new GraphicsPath();
-  GraphicsStroke _stroke = null;
   GraphicsCommand _command = null;
+  GraphicsPath _path = new GraphicsPath();
 
   void applyGraphicsCommands(List<GraphicsCommand> commands) {
     for(int i = 0; i < commands.length; i++) {
@@ -21,14 +20,6 @@ abstract class GraphicsContext {
 
   void closePath() {
     _path.close();
-  }
-
-  void setPath(GraphicsPath path) {
-    _path = path;
-  }
-
-  void setStroke(GraphicsStroke stroke) {
-    _stroke = stroke;
   }
 
   //---------------------------------------------------------------------------

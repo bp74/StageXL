@@ -9,7 +9,9 @@ class GraphicsContextRender extends GraphicsContext {
 
   @override
   void fillColor(int color) {
-    _path.fillColor(renderState, color);
+    GraphicsCommandFill command = _command;
+    GraphicsMesh mesh = command.mesh ?? _path;
+    mesh.fillColor(renderState, color);
   }
 
   @override
@@ -26,8 +28,9 @@ class GraphicsContextRender extends GraphicsContext {
 
   @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    var stroke = _stroke ?? new GraphicsStroke(_path, _command);
-    stroke.fillColor(renderState, color);
+    GraphicsCommandStroke command = _command;
+    GraphicsMesh mesh = command.mesh ?? new GraphicsStroke(_path, _command);
+    mesh.fillColor(renderState, color);
   }
 
   @override
@@ -50,17 +53,19 @@ class GraphicsContextRenderMask extends GraphicsContextRender {
 
   @override
   void fillColor(int color) {
-    _path.fillColor(renderState, 0xFFFF00FF);
+    GraphicsCommandFill command = _command;
+    GraphicsMesh mesh = command.mesh ?? _path;
+    mesh.fillColor(renderState, 0xFFFF00FF);
   }
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    _path.fillColor(renderState, 0xFFFF00FF);
+    this.fillColor(0xFFFF00FF);
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-    _path.fillColor(renderState, 0xFFFF00FF);
+    this.fillColor(0xFFFF00FF);
   }
 
   @override

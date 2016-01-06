@@ -27,11 +27,6 @@ class GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.closePath();
   }
 
-  @override
-  void setPath(GraphicsPath path) {
-    throw new UnsupportedError("Setting the path is not supported.");
-  }
-
   //---------------------------------------------------------------------------
 
   @override

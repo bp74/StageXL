@@ -16,47 +16,46 @@ class GraphicsContextHitTest extends GraphicsContext {
 
   @override
   void fillColor(int color) {
-    _updateHitForFill();
+    _hit = _hit || _getHitForFill();
   }
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    _updateHitForFill();
+    _hit = _hit || _getHitForFill();
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-    _updateHitForFill();
+    _hit = _hit || _getHitForFill();
   }
 
   @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _updateHitForStroke();
+    _hit = _hit || _getHitForStroke();
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _updateHitForStroke();
+    _hit = _hit || _getHitForStroke();
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _updateHitForStroke();
+    _hit = _hit || _getHitForStroke();
   }
 
   //---------------------------------------------------------------------------
 
-  void _updateHitForFill() {
-    if (_hit == false) {
-      _hit = _path.hitTest(_localX, _localY);
-    }
+  bool _getHitForFill() {
+    GraphicsCommandFill command = _command;
+    GraphicsMesh mesh = command.mesh ?? _path;
+    return mesh.hitTest(_localX, _localY);
   }
 
-  void _updateHitForStroke() {
-    if (_hit == false) {
-      var stroke = _stroke ?? new GraphicsStroke(_path, _command);
-      _hit = stroke.hitTest(_localX, _localY);
-    }
+  bool _getHitForStroke() {
+    GraphicsCommandStroke command = _command;
+    GraphicsMesh mesh = command.mesh ?? new GraphicsStroke(_path, _command);
+    return mesh.hitTest(_localX, _localY);
   }
 
 }

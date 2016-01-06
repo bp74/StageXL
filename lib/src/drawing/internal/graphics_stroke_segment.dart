@@ -1,6 +1,6 @@
 part of stagexl.drawing.internal;
 
-class GraphicsStrokeSegment extends GraphicsMesh {
+class GraphicsStrokeSegment extends GraphicsMeshSegment {
 
   final GraphicsStroke stroke;
 

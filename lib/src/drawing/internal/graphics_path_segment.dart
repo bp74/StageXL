@@ -1,6 +1,6 @@
 part of stagexl.drawing.internal;
 
-class GraphicsPathSegment extends GraphicsMesh {
+class GraphicsPathSegment extends GraphicsMeshSegment {
 
   bool _clockwise = null;
   bool _closed = false;

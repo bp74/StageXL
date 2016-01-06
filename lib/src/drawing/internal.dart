@@ -17,6 +17,7 @@ part 'internal/graphics_context_hittest.dart';
 part 'internal/graphics_context_render.dart';
 part 'internal/graphics_gradient.dart';
 part 'internal/graphics_mesh.dart';
+part 'internal/graphics_mesh_segment.dart';
 part 'internal/graphics_path.dart';
 part 'internal/graphics_path_segment.dart';
 part 'internal/graphics_pattern.dart';
