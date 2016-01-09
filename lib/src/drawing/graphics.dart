@@ -27,6 +27,16 @@ class Graphics {
 
   //---------------------------------------------------------------------------
 
+  /// Add a custom GraphicsCommand
+
+  void addCommand(GraphicsCommand command) {
+    _originalCommands.add(command);
+    _compiledCommands.clear();
+    _bounds = null;
+  }
+
+  //---------------------------------------------------------------------------
+
   /// Clear all previously added graphics commands.
   void clear() {
     _originalCommands.clear();
@@ -36,14 +46,14 @@ class Graphics {
   /// Start drawing a freeform path.
   GraphicsCommandBeginPath beginPath() {
     var command = new GraphicsCommandBeginPath();
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// Stop drawing a freeform path.
   GraphicsCommandClosePath closePath() {
     var command = new GraphicsCommandClosePath();
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
@@ -52,35 +62,35 @@ class Graphics {
   /// Moves the next point in the path to [x] and [y]
   GraphicsCommandMoveTo moveTo(num x, num y) {
     var command = new GraphicsCommandMoveTo(x, y);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// From the current point in the path, draw a line to [x] and [y]
   GraphicsCommandLineTo lineTo(num x, num y) {
     var command = new GraphicsCommandLineTo(x, y);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// From the current point in the path, draw an arc to [endX] and [endY]
   GraphicsCommandArcTo arcTo(num controlX, num controlY, num endX, num endY, num radius) {
     var command = new GraphicsCommandArcTo(controlX, controlY, endX, endY, radius);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
   GraphicsCommandQuadraticCurveTo quadraticCurveTo(num controlX, num controlY, num endX, num endY) {
     var command = new GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// From the current point in the path, draw a bezier curve to [endX] and [endY]
   GraphicsCommandBezierCurveTo bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
     var command = new GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
@@ -89,35 +99,35 @@ class Graphics {
   /// Draw a rectangle at [x] and [y]
   GraphicsCommandRect rect(num x, num y, num width, num height) {
     var command = new GraphicsCommandRect(x, y, width, height);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// Draw a rounded rectangle at [x] and [y].
   GraphicsCommandRectRound rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
     var command = new GraphicsCommandRectRound(x, y, width, height, ellipseWidth, ellipseHeight);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// Draw an arc at [x] and [y].
   GraphicsCommandArc arc(num x, num y, num radius, num startAngle, num endAngle, [bool antiClockwise = false]) {
     var command = new GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// Draw a circle at [x] and [y]
   GraphicsCommandCircle circle(num x, num y, num radius, [bool antiClockwise = false]) {
     var command = new GraphicsCommandCircle(x, y, radius, antiClockwise);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// Draw an ellipse at [x] and [y]
   GraphicsCommandEllipse ellipse(num x, num y, num width, num height) {
     var command = new GraphicsCommandEllipse(x, y, width, height);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
@@ -126,21 +136,21 @@ class Graphics {
   /// Apply a fill color to the **previously drawn** vector object.
   GraphicsCommandFillColor fillColor(int color) {
     var command = new GraphicsCommandFillColor(color);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// Apply a fill gradient to the **previously drawn** vector object.
   GraphicsGradient fillGradient(GraphicsGradient gradient) {
     var command = new GraphicsCommandFillGradient(gradient);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
   /// Apply a fill pattern to the **previously drawn** vector object.
   GraphicsPattern fillPattern(GraphicsPattern pattern) {
     var command = new GraphicsCommandFillPattern(pattern);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
@@ -153,7 +163,7 @@ class Graphics {
       CapsStyle capsStyle = CapsStyle.NONE]) {
 
     var command = new GraphicsCommandStrokeColor(color, width, jointStyle, capsStyle);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
@@ -164,7 +174,7 @@ class Graphics {
       CapsStyle capsStyle = CapsStyle.NONE]) {
 
     var command = new GraphicsCommandStrokeGradient(gradient, width, jointStyle, capsStyle);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
@@ -175,7 +185,7 @@ class Graphics {
       CapsStyle capsStyle = CapsStyle.NONE]) {
 
     var command = new GraphicsCommandStrokePattern(pattern, width, jointStyle, capsStyle);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
@@ -183,7 +193,7 @@ class Graphics {
 
   GraphicsCommandDecode decode(String text) {
     var command = new GraphicsCommandDecode(text);
-    _addCommand(command);
+    this.addCommand(command);
     return command;
   }
 
@@ -236,12 +246,6 @@ class Graphics {
   }
 
   //---------------------------------------------------------------------------
-
-  void _addCommand(GraphicsCommand command) {
-    _originalCommands.add(command);
-    _compiledCommands.clear();
-    _bounds = null;
-  }
 
   List<GraphicsCommand> _getCommands(bool useCompiled) {
     if (useCompiled && _compiledCommands.length == 0) {
