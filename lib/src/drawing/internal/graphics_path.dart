@@ -174,6 +174,7 @@ class GraphicsPath extends GraphicsMesh {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
+  @override
   void fillColor(RenderState renderState, int color) {
     // TODO: non-zero winding rule
     for (GraphicsPathSegment segment in segments) {
@@ -182,6 +183,7 @@ class GraphicsPath extends GraphicsMesh {
     }
   }
 
+  @override
   bool hitTest(double x, double y) {
     int windingCount = 0;
     for (GraphicsPathSegment segment in segments) {

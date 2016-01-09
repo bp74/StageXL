@@ -16,7 +16,7 @@ class GraphicsContextHitTest extends GraphicsContextBase {
 
   @override
   void fillColor(int color) {
-    GraphicsMesh mesh = new GraphicsPath.clone(_path);
+    GraphicsMesh mesh = _path;
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 

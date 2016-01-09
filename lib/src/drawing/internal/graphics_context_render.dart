@@ -9,7 +9,7 @@ class GraphicsContextRender extends GraphicsContextBase {
 
   @override
   void fillColor(int color) {
-    GraphicsMesh mesh = new GraphicsPath.clone(_path);
+    GraphicsMesh mesh = _path;
     mesh.fillColor(renderState, color);
   }
 

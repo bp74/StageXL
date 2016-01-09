@@ -14,12 +14,14 @@ class GraphicsStroke extends GraphicsMesh {
 
   //---------------------------------------------------------------------------
 
+  @override
   void fillColor(RenderState renderState, int color) {
     for (GraphicsStrokeSegment segment in segments) {
       segment.fillColor(renderState, color);
     }
   }
 
+  @override
   bool hitTest(double x, double y) {
     for (GraphicsStrokeSegment segment in segments) {
       if (segment.checkBounds(x, y) == false) continue;
