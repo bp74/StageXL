@@ -34,119 +34,157 @@ class Graphics {
   }
 
   /// Start drawing a freeform path.
-  void beginPath() {
-    _addCommand(new GraphicsCommandBeginPath());
+  GraphicsCommandBeginPath beginPath() {
+    var command = new GraphicsCommandBeginPath();
+    _addCommand(command);
+    return command;
   }
 
   /// Stop drawing a freeform path.
-  void closePath() {
-    _addCommand(new GraphicsCommandClosePath());
+  GraphicsCommandClosePath closePath() {
+    var command = new GraphicsCommandClosePath();
+    _addCommand(command);
+    return command;
   }
 
   //---------------------------------------------------------------------------
 
   /// Moves the next point in the path to [x] and [y]
-  void moveTo(num x, num y) {
-    _addCommand(new GraphicsCommandMoveTo(x, y));
+  GraphicsCommandMoveTo moveTo(num x, num y) {
+    var command = new GraphicsCommandMoveTo(x, y);
+    _addCommand(command);
+    return command;
   }
 
   /// From the current point in the path, draw a line to [x] and [y]
-  void lineTo(num x, num y) {
-    _addCommand(new GraphicsCommandLineTo(x, y));
+  GraphicsCommandLineTo lineTo(num x, num y) {
+    var command = new GraphicsCommandLineTo(x, y);
+    _addCommand(command);
+    return command;
   }
 
   /// From the current point in the path, draw an arc to [endX] and [endY]
-  void arcTo(num controlX, num controlY, num endX, num endY, num radius) {
-    _addCommand(new GraphicsCommandArcTo(controlX, controlY, endX, endY, radius));
+  GraphicsCommandArcTo arcTo(num controlX, num controlY, num endX, num endY, num radius) {
+    var command = new GraphicsCommandArcTo(controlX, controlY, endX, endY, radius);
+    _addCommand(command);
+    return command;
   }
 
   /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
-  void quadraticCurveTo(num controlX, num controlY, num endX, num endY) {
-    _addCommand(new GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY));
+  GraphicsCommandQuadraticCurveTo quadraticCurveTo(num controlX, num controlY, num endX, num endY) {
+    var command = new GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY);
+    _addCommand(command);
+    return command;
   }
 
   /// From the current point in the path, draw a bezier curve to [endX] and [endY]
-  void bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
-    _addCommand(new GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY));
+  GraphicsCommandBezierCurveTo bezierCurveTo(num controlX1, num controlY1, num controlX2, num controlY2, num endX, num endY) {
+    var command = new GraphicsCommandBezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
+    _addCommand(command);
+    return command;
   }
 
   //---------------------------------------------------------------------------
 
   /// Draw a rectangle at [x] and [y]
-  void rect(num x, num y, num width, num height) {
-    _addCommand(new GraphicsCommandRect(x, y, width, height));
+  GraphicsCommandRect rect(num x, num y, num width, num height) {
+    var command = new GraphicsCommandRect(x, y, width, height);
+    _addCommand(command);
+    return command;
   }
 
   /// Draw a rounded rectangle at [x] and [y].
-  void rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
-    _addCommand(new GraphicsCommandRectRound(x, y, width, height, ellipseWidth, ellipseHeight));
+  GraphicsCommandRectRound rectRound(num x, num y, num width, num height, num ellipseWidth, num ellipseHeight) {
+    var command = new GraphicsCommandRectRound(x, y, width, height, ellipseWidth, ellipseHeight);
+    _addCommand(command);
+    return command;
   }
 
   /// Draw an arc at [x] and [y].
-  void arc(num x, num y, num radius, num startAngle, num endAngle, [bool antiClockwise = false]) {
-    _addCommand(new GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise));
+  GraphicsCommandArc arc(num x, num y, num radius, num startAngle, num endAngle, [bool antiClockwise = false]) {
+    var command = new GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise);
+    _addCommand(command);
+    return command;
   }
 
   /// Draw a circle at [x] and [y]
-  void circle(num x, num y, num radius, [bool antiClockwise = false]) {
-    _addCommand(new GraphicsCommandCircle(x, y, radius, antiClockwise));
+  GraphicsCommandCircle circle(num x, num y, num radius, [bool antiClockwise = false]) {
+    var command = new GraphicsCommandCircle(x, y, radius, antiClockwise);
+    _addCommand(command);
+    return command;
   }
 
   /// Draw an ellipse at [x] and [y]
-  void ellipse(num x, num y, num width, num height) {
-    _addCommand(new GraphicsCommandEllipse(x, y, width, height));
+  GraphicsCommandEllipse ellipse(num x, num y, num width, num height) {
+    var command = new GraphicsCommandEllipse(x, y, width, height);
+    _addCommand(command);
+    return command;
   }
 
   //---------------------------------------------------------------------------
 
   /// Apply a fill color to the **previously drawn** vector object.
-  void fillColor(int color) {
-    _addCommand(new GraphicsCommandFillColor(color));
+  GraphicsCommandFillColor fillColor(int color) {
+    var command = new GraphicsCommandFillColor(color);
+    _addCommand(command);
+    return command;
   }
 
   /// Apply a fill gradient to the **previously drawn** vector object.
-  void fillGradient(GraphicsGradient gradient) {
-    _addCommand(new GraphicsCommandFillGradient(gradient));
+  GraphicsGradient fillGradient(GraphicsGradient gradient) {
+    var command = new GraphicsCommandFillGradient(gradient);
+    _addCommand(command);
+    return command;
   }
 
   /// Apply a fill pattern to the **previously drawn** vector object.
-  void fillPattern(GraphicsPattern pattern) {
-    _addCommand(new GraphicsCommandFillPattern(pattern));
+  GraphicsPattern fillPattern(GraphicsPattern pattern) {
+    var command = new GraphicsCommandFillPattern(pattern);
+    _addCommand(command);
+    return command;
   }
 
   //---------------------------------------------------------------------------
 
   /// Apply a stroke color to the **previously drawn** vector object.
-  void strokeColor(int color, [
+  GraphicsCommandStrokeColor strokeColor(int color, [
       num width = 1.0,
       JointStyle jointStyle = JointStyle.MITER,
       CapsStyle capsStyle = CapsStyle.NONE]) {
 
-    _addCommand(new GraphicsCommandStrokeColor(color, width, jointStyle, capsStyle));
+    var command = new GraphicsCommandStrokeColor(color, width, jointStyle, capsStyle);
+    _addCommand(command);
+    return command;
   }
 
   /// Apply a stroke color to the **previously drawn** vector object.
-  void strokeGradient(GraphicsGradient gradient, [
+  GraphicsCommandStrokeGradient strokeGradient(GraphicsGradient gradient, [
       num width = 1.0,
       JointStyle jointStyle = JointStyle.MITER,
       CapsStyle capsStyle = CapsStyle.NONE]) {
 
-    _addCommand(new GraphicsCommandStrokeGradient(gradient, width, jointStyle, capsStyle));
+    var command = new GraphicsCommandStrokeGradient(gradient, width, jointStyle, capsStyle);
+    _addCommand(command);
+    return command;
   }
 
   /// Apply a stroke pattern to the **previously drawn** vector object.
-  void strokePattern(GraphicsPattern pattern, [
+  GraphicsCommandStrokePattern strokePattern(GraphicsPattern pattern, [
       num width = 1.0,
       JointStyle jointStyle = JointStyle.MITER,
       CapsStyle capsStyle = CapsStyle.NONE]) {
 
-    _addCommand(new GraphicsCommandStrokePattern(pattern, width, jointStyle, capsStyle));
+    var command = new GraphicsCommandStrokePattern(pattern, width, jointStyle, capsStyle);
+    _addCommand(command);
+    return command;
   }
 
   //---------------------------------------------------------------------------
 
-  void decode(String text) {
-    _addCommand(new GraphicsCommandDecode(text));
+  GraphicsCommandDecode decode(String text) {
+    var command = new GraphicsCommandDecode(text);
+    _addCommand(command);
+    return command;
   }
 
   //---------------------------------------------------------------------------
