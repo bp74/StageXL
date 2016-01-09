@@ -4,24 +4,17 @@ class GraphicsPattern {
 
   final RenderTextureQuad renderTextureQuad;
   final Matrix matrix;
-  final String repeatOption;
+  final String kind;
 
   GraphicsPattern.repeat(this.renderTextureQuad, [this.matrix])
-      : repeatOption = "repeat";
+      : this.kind = "repeat";
 
   GraphicsPattern.repeatX(this.renderTextureQuad, [this.matrix])
-      : repeatOption = "repeat-x";
+      : this.kind = "repeat-x";
 
   GraphicsPattern.repeatY(this.renderTextureQuad, [this.matrix])
-      : repeatOption = "repeat-y";
+      : this.kind = "repeat-y";
 
   GraphicsPattern.noRepeat(this.renderTextureQuad, [this.matrix])
-      : repeatOption = "no-repeat";
-
-  //---------------------------------------------------------------------------
-
-  CanvasPattern getCanvasPattern(CanvasRenderingContext2D context) {
-    var renderTexture = renderTextureQuad.renderTexture;
-    return context.createPattern(renderTexture.source, repeatOption);
-  }
+      : this.kind = "no-repeat";
 }

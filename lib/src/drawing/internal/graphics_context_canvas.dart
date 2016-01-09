@@ -74,14 +74,14 @@ class GraphicsContextCanvas extends GraphicsContext {
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    _canvasContext.fillStyle = gradient.getCanvasGradient(_canvasContext);
+    _canvasContext.fillStyle = _getCanvasGradient(gradient);
     _canvasContext.fill();
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
 
-    _canvasContext.fillStyle = pattern.getCanvasPattern(_canvasContext);
+    _canvasContext.fillStyle = _getCanvasPattern(pattern);
 
     var matrix = pattern.matrix;
     if (matrix != null) {
@@ -107,7 +107,7 @@ class GraphicsContextCanvas extends GraphicsContext {
 
   @override
   void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _canvasContext.strokeStyle = gradient.getCanvasGradient(_canvasContext);
+    _canvasContext.strokeStyle = _getCanvasGradient(gradient);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
     _canvasContext.lineCap = _getLineCap(capsStyle);
@@ -117,7 +117,7 @@ class GraphicsContextCanvas extends GraphicsContext {
   @override
   void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
 
-    _canvasContext.strokeStyle = pattern.getCanvasPattern(_canvasContext);
+    _canvasContext.strokeStyle = _getCanvasPattern(pattern);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
     _canvasContext.lineCap = _getLineCap(capsStyle);;
@@ -149,6 +149,40 @@ class GraphicsContextCanvas extends GraphicsContext {
     return lineCap;
   }
 
+  CanvasPattern _getCanvasPattern(GraphicsPattern pattern) {
+    var renderTexture = pattern.renderTextureQuad.renderTexture;
+    var repeatOption = pattern.kind;
+    return _canvasContext.createPattern(renderTexture.source, repeatOption);
+  }
+
+  CanvasGradient _getCanvasGradient(GraphicsGradient gradient) {
+
+    var context = _canvasContext;
+    var sx = gradient.startX;
+    var sy = gradient.startY;
+    var sr = gradient.startRadius;
+    var ex = gradient.endX;
+    var ey = gradient.endY;
+    var er = gradient.endRadius;
+
+    CanvasGradient canvasGradient;
+
+    if (gradient.kind == "linear") {
+      canvasGradient = context.createLinearGradient(sx, sy, ex, ey);
+    } else if (gradient.kind == "radial") {
+      canvasGradient = context.createRadialGradient(sx, sy, sr, ex, ey, er);
+    } else {
+      throw new ArgumentError("Unknown gradient kind");
+    }
+
+    for (var colorStop in gradient.colorStops) {
+      var offset = colorStop.offset;
+      var color = color2rgba(colorStop.color);
+      canvasGradient.addColorStop(offset, color);
+    }
+
+    return canvasGradient;
+  }
 }
 
 //-----------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 library stagexl.text;
 
 import 'dart:html' as html;
-import 'dart:html' show CanvasElement, CanvasRenderingContext2D, Element;
+import 'dart:html' show CanvasElement, CanvasRenderingContext2D, CanvasGradient;
 import 'dart:math' hide Point, Rectangle;
 
 import 'display.dart';

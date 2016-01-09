@@ -1,65 +1,38 @@
 part of stagexl.drawing.base;
 
+class GraphicsGradientColorStop {
+  final num offset;
+  final int color;
+  GraphicsGradientColorStop(this.offset, this.color);
+}
+
 class GraphicsGradient {
 
-  String _kind;
-  num _startX;
-  num _startY;
-  num _startRadius;
-  num _endX;
-  num _endY;
-  num _endRadius;
-  List _colorStops;
+  final num startX;
+  final num startY;
+  final num startRadius;
+  final num endX;
+  final num endY;
+  final num endRadius;
 
-  GraphicsGradient.linear(num startX, num startY, num endX, num endY) {
-     _kind = "linear";
-     _startX = startX;
-     _startY = startY;
-     _endX = endX;
-     _endY = endY;
-     _colorStops = new List();
-  }
+  final List<GraphicsGradientColorStop> colorStops;
+  final String kind;
 
-  GraphicsGradient.radial(num startX, num startY, num startRadius, num endX, num endY, num endRadius) {
-    _kind = "radial";
-    _startX = startX;
-    _startY = startY;
-    _startRadius = startRadius;
-    _endX = endX;
-    _endY = endY;
-    _endRadius = endRadius;
-    _colorStops = new List();
-  }
+  GraphicsGradient.linear(this.startX, this.startY, this.endX, this.endY) :
+      this.startRadius = 0.0,
+      this.endRadius = 0.0,
+      this.kind = "linear",
+      this.colorStops = new List<GraphicsGradientColorStop>();
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  GraphicsGradient.radial(this.startX, this.startY, this.startRadius, this.endX, this.endY, this.endRadius) :
+      this.kind = "radial",
+      this.colorStops = new List<GraphicsGradientColorStop>();
+
+  //---------------------------------------------------------------------------
 
   void addColorStop(num offset, int color) {
-    _colorStops.add({"offset" : offset, "color" : color2rgba(color)});
+    var colorStop = new GraphicsGradientColorStop(offset, color);
+    this.colorStops.add(colorStop);
   }
-
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
-
-  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
-
-    // ToDo: Maybe we should cache the CanvasGradient for a given context.
-    // This could improve performance!
-
-    CanvasGradient canvasGradient;
-
-    if (_kind == "linear") {
-      canvasGradient = context.createLinearGradient(_startX, _startY, _endX, _endY);
-    }
-    if (_kind == "radial") {
-      canvasGradient = context.createRadialGradient(_startX, _startY, _startRadius, _endX, _endY, _endRadius);
-    }
-    for (var colorStop in _colorStops) {
-     canvasGradient.addColorStop(colorStop["offset"], colorStop["color"]);
-    }
-
-    return canvasGradient;
-  }
-
 
 }

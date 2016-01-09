@@ -572,7 +572,7 @@ class TextField extends InteractiveObject {
     context.lineWidth = lineWidth;
     context.strokeStyle = color2rgb(textFormat.color);
     context.fillStyle = textFormat.fillGradient != null
-        ? textFormat.fillGradient.getCanvasGradient(context)
+        ? _getCanvasGradient(context, textFormat.fillGradient)
         : color2rgb(textFormat.color);
 
     for(int i = 0; i < _textLineMetrics.length; i++) {
@@ -609,6 +609,36 @@ class TextField extends InteractiveObject {
       newText = "$newText$_passwordChar";
     }
     return newText;
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
+  CanvasGradient _getCanvasGradient(CanvasRenderingContext2D context, GraphicsGradient gradient) {
+
+    var sx = gradient.startX;
+    var sy = gradient.startY;
+    var sr = gradient.startRadius;
+    var ex = gradient.endX;
+    var ey = gradient.endY;
+    var er = gradient.endRadius;
+
+    CanvasGradient canvasGradient;
+
+    if (gradient.kind == "linear") {
+      canvasGradient = context.createLinearGradient(sx, sy, ex, ey);
+    } else if (gradient.kind == "radial") {
+      canvasGradient = context.createRadialGradient(sx, sy, sr, ex, ey, er);
+    } else {
+      throw new ArgumentError("Unknown gradient kind");
+    }
+
+    for (var colorStop in gradient.colorStops) {
+      var offset = colorStop.offset;
+      var color = color2rgba(colorStop.color);
+      canvasGradient.addColorStop(offset, color);
+    }
+
+    return canvasGradient;
   }
 
   //-------------------------------------------------------------------------------------------------
