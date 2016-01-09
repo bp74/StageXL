@@ -27,28 +27,30 @@ class GraphicsContextBounds extends GraphicsContextBase {
   @override
   void fillColor(int color) {
     GraphicsMesh mesh = _path;
-    mesh.segments.forEach(_updateBoundsForMesh);
+    _updateBoundsForMesh(mesh);
   }
 
   @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     GraphicsMesh mesh = new GraphicsStroke(_path, width, jointStyle, capsStyle);
-    mesh.segments.forEach(_updateBoundsForMesh);
+    _updateBoundsForMesh(mesh);
   }
 
   @override
   void meshColor(GraphicsCommandMeshColor command) {
     GraphicsMesh mesh = command.mesh;
-    mesh.segments.forEach(_updateBoundsForMesh);
+    _updateBoundsForMesh(mesh);
   }
 
   //---------------------------------------------------------------------------
 
-  void _updateBoundsForMesh(GraphicsMeshSegment mesh) {
-    _minX = _minX > mesh.minX ? mesh.minX : _minX;
-    _minY = _minY > mesh.minY ? mesh.minY : _minY;
-    _maxX = _maxX < mesh.maxX ? mesh.maxX : _maxX;
-    _maxY = _maxY < mesh.maxY ? mesh.maxY : _maxY;
+  void _updateBoundsForMesh(GraphicsMesh mesh) {
+    for(var meshSegment in mesh.segments) {
+      _minX = _minX > meshSegment.minX ? meshSegment.minX : _minX;
+      _minY = _minY > meshSegment.minY ? meshSegment.minY : _minY;
+      _maxX = _maxX < meshSegment.maxX ? meshSegment.maxX : _maxX;
+      _maxY = _maxY < meshSegment.maxY ? meshSegment.maxY : _maxY;
+    }
   }
 
 }

@@ -199,7 +199,7 @@ class Graphics {
     if (_bounds == null) {
       var commands = _getCommands(true);
       var context = new GraphicsContextBounds();
-      commands.forEach((c) => c.updateContext(context));
+      _updateContext(context, commands);
       _bounds = context.bounds;
     }
     return _bounds;
@@ -209,7 +209,7 @@ class Graphics {
     if (this.bounds.contains(localX, localY)) {
       var commands = _getCommands(true);
       var context = new GraphicsContextHitTest(localX, localY);
-      commands.forEach((c) => c.updateContext(context));
+      _updateContext(context, commands);
       return context.hit;
     } else {
       return false;
@@ -220,11 +220,11 @@ class Graphics {
     if (renderState.renderContext is RenderContextCanvas) {
       var commands = _getCommands(false);
       var context = new GraphicsContextCanvas(renderState);
-      commands.forEach((c) => c.updateContext(context));
+      _updateContext(context, commands);
     } else {
       var commands = _getCommands(true);
       var context = new GraphicsContextRender(renderState);
-      commands.forEach((c) => c.updateContext(context));
+      _updateContext(context, commands);
     }
   }
 
@@ -232,11 +232,11 @@ class Graphics {
     if (renderState.renderContext is RenderContextCanvas) {
       var commands = _getCommands(false);
       var context = new GraphicsContextCanvasMask(renderState);
-      commands.forEach((c) => c.updateContext(context));
+      _updateContext(context, commands);
     } else {
       var commands = _getCommands(true);
       var context = new GraphicsContextRenderMask(renderState);
-      commands.forEach((c) => c.updateContext(context));
+      _updateContext(context, commands);
     }
   }
 
@@ -248,6 +248,12 @@ class Graphics {
       _originalCommands.forEach((c) => c.updateContext(context));
     }
     return useCompiled ? _compiledCommands : _originalCommands;
+  }
+
+  void _updateContext(GraphicsContext context, List<GraphicsCommand> commands) {
+    for (int i = 0; i < commands.length; i++) {
+      commands[i].updateContext(context);
+    }
   }
 
 }

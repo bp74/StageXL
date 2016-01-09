@@ -1,9 +1,5 @@
 part of stagexl.drawing.internal;
 
-
-
-//-----------------------------------------------------------------------------
-
 abstract class GraphicsContextBase extends GraphicsContext {
 
   GraphicsPath _path = new GraphicsPath();
@@ -57,11 +53,13 @@ abstract class GraphicsContextBase extends GraphicsContext {
 
   @override
   void fillGradient(GraphicsGradient gradient) {
+    // TODO: Currently fillGradient is only supported in Canvas2D
     this.fillColor(0xFFFF00FF);
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
+    // TODO: Currently fillPattern is only supported in Canvas2D
     this.fillColor(0xFFFF00FF);
   }
 
@@ -69,11 +67,13 @@ abstract class GraphicsContextBase extends GraphicsContext {
 
   @override
   void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
+    // TODO: Currently strokeGradient is only supported in Canvas2D
     this.strokeColor(0xFFFF00FF, width, jointStyle, capsStyle);
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
+    // TODO: Currently strokePattern is only supported in Canvas2D
     this.strokeColor(0xFFFF00FF, width, jointStyle, capsStyle);
   }
 
