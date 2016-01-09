@@ -1,6 +1,6 @@
 part of stagexl.drawing.internal;
 
-class GraphicsContextRender extends GraphicsContext {
+class GraphicsContextRender extends GraphicsContextBase {
 
   final RenderState renderState;
   GraphicsContextRender(this.renderState);
@@ -9,38 +9,20 @@ class GraphicsContextRender extends GraphicsContext {
 
   @override
   void fillColor(int color) {
-    GraphicsCommandFill command = _command;
-    GraphicsMesh mesh = command.mesh ?? _path;
+    GraphicsMesh mesh = new GraphicsPath.clone(_path);
     mesh.fillColor(renderState, color);
   }
-
-  @override
-  void fillGradient(GraphicsGradient gradient) {
-    this.fillColor(0xFFFF00FF);
-  }
-
-  @override
-  void fillPattern(GraphicsPattern pattern) {
-    this.fillColor(0xFFFF00FF);
-  }
-
-  //---------------------------------------------------------------------------
 
   @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    GraphicsCommandStroke command = _command;
-    GraphicsMesh mesh = command.mesh ?? new GraphicsStroke(_path, _command);
+    GraphicsMesh mesh = new GraphicsStroke(_path, width, jointStyle, capsStyle);
     mesh.fillColor(renderState, color);
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    this.strokeColor(0xFFFF00FF, width, jointStyle, capsStyle);
-  }
-
-  @override
-  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    this.strokeColor(0xFFFF00FF, width, jointStyle, capsStyle);
+  void meshColor(GraphicsCommandMeshColor command) {
+    GraphicsMesh mesh = command.mesh;
+    mesh.fillColor(renderState, command.color);
   }
 }
 
@@ -53,19 +35,8 @@ class GraphicsContextRenderMask extends GraphicsContextRender {
 
   @override
   void fillColor(int color) {
-    GraphicsCommandFill command = _command;
-    GraphicsMesh mesh = command.mesh ?? _path;
+    GraphicsMesh mesh = new GraphicsPath.clone(_path);
     mesh.fillColor(renderState, 0xFFFF00FF);
-  }
-
-  @override
-  void fillGradient(GraphicsGradient gradient) {
-    this.fillColor(0xFFFF00FF);
-  }
-
-  @override
-  void fillPattern(GraphicsPattern pattern) {
-    this.fillColor(0xFFFF00FF);
   }
 
   @override
@@ -74,13 +45,11 @@ class GraphicsContextRenderMask extends GraphicsContextRender {
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
-    // do nothing
+  void meshColor(GraphicsCommandMeshColor command) {
+    GraphicsMesh mesh = command.mesh;
+    if (mesh is GraphicsStroke) return;
+    mesh.fillColor(renderState, 0xFFFF00FF);
   }
 
-  @override
-  void strokePattern(GraphicsPattern pattern, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
-    // do nothing
-  }
 }
 

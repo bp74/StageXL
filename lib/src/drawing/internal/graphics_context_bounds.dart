@@ -1,6 +1,6 @@
 part of stagexl.drawing.internal;
 
-class GraphicsContextBounds extends GraphicsContext {
+class GraphicsContextBounds extends GraphicsContextBase {
 
   double _minX = 0.0 + double.MAX_FINITE;
   double _minY = 0.0 + double.MAX_FINITE;
@@ -26,47 +26,23 @@ class GraphicsContextBounds extends GraphicsContext {
 
   @override
   void fillColor(int color) {
-    _updateBoundsForFill();
-  }
-
-  @override
-  void fillGradient(GraphicsGradient gradient) {
-    _updateBoundsForFill();
-  }
-
-  @override
-  void fillPattern(GraphicsPattern pattern) {
-    _updateBoundsForFill();
+    GraphicsMesh mesh = new GraphicsPath.clone(_path);
+    mesh.segments.forEach(_updateBoundsForMesh);
   }
 
   @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _updateBoundsForStroke();
+    GraphicsMesh mesh = new GraphicsStroke(_path, width, jointStyle, capsStyle);
+    mesh.segments.forEach(_updateBoundsForMesh);
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _updateBoundsForStroke();
-  }
-
-  @override
-  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _updateBoundsForStroke();
+  void meshColor(GraphicsCommandMeshColor command) {
+    GraphicsMesh mesh = command.mesh;
+    mesh.segments.forEach(_updateBoundsForMesh);
   }
 
   //---------------------------------------------------------------------------
-
-  void _updateBoundsForFill() {
-    GraphicsCommandFill command = _command;
-    GraphicsMesh mesh = command.mesh ?? _path;
-    mesh.segments.forEach(_updateBoundsForMesh);
-  }
-
-  void _updateBoundsForStroke() {
-    GraphicsCommandStroke command = _command;
-    GraphicsMesh mesh = command.mesh ?? new GraphicsStroke(_path, _command);
-    mesh.segments.forEach(_updateBoundsForMesh);
-  }
 
   void _updateBoundsForMesh(GraphicsMeshSegment mesh) {
     _minX = _minX > mesh.minX ? mesh.minX : _minX;

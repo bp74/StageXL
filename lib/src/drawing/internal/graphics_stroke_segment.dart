@@ -47,9 +47,9 @@ class GraphicsStrokeSegment extends GraphicsMeshSegment {
 
   void _calculateStroke(GraphicsPathSegment pathSegment) {
 
-    var width = stroke.command.width;
-    var jointStyle = stroke.command.jointStyle;
-    var capsStyle = stroke.command.capsStyle;
+    var width = stroke.width;
+    var jointStyle = stroke.jointStyle;
+    var capsStyle = stroke.capsStyle;
 
     var vertices = pathSegment._vertexBuffer;
     var length = pathSegment.vertexCount;

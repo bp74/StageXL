@@ -200,9 +200,9 @@ class Graphics {
   Rectangle<num> get bounds {
     if (_bounds == null) {
       var commands = _getCommands(true);
-      var graphicsContext = new GraphicsContextBounds();
-      graphicsContext.applyGraphicsCommands(commands);
-      _bounds = graphicsContext.bounds;
+      var context = new GraphicsContextBounds();
+      commands.forEach((c) => c.updateContext(context));
+      _bounds = context.bounds;
     }
     return _bounds;
   }
@@ -210,9 +210,9 @@ class Graphics {
   bool hitTest(num localX, num localY) {
     if (this.bounds.contains(localX, localY)) {
       var commands = _getCommands(true);
-      var graphicsContext = new GraphicsContextHitTest(localX, localY);
-      graphicsContext.applyGraphicsCommands(commands);
-      return graphicsContext.hit;
+      var context = new GraphicsContextHitTest(localX, localY);
+      commands.forEach((c) => c.updateContext(context));
+      return context.hit;
     } else {
       return false;
     }
@@ -221,24 +221,24 @@ class Graphics {
   void render(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
       var commands = _getCommands(false);
-      var graphicsContext = new GraphicsContextCanvas(renderState);
-      graphicsContext.applyGraphicsCommands(commands);
+      var context = new GraphicsContextCanvas(renderState);
+      commands.forEach((c) => c.updateContext(context));
     } else {
       var commands = _getCommands(true);
-      var graphicsContext = new GraphicsContextRender(renderState);
-      graphicsContext.applyGraphicsCommands(commands);
+      var context = new GraphicsContextRender(renderState);
+      commands.forEach((c) => c.updateContext(context));
     }
   }
 
   void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
       var commands = _getCommands(false);
-      var graphicsContext = new GraphicsContextCanvasMask(renderState);
-      graphicsContext.applyGraphicsCommands(commands);
+      var context = new GraphicsContextCanvasMask(renderState);
+      commands.forEach((c) => c.updateContext(context));
     } else {
       var commands = _getCommands(true);
-      var graphicsContext = new GraphicsContextRenderMask(renderState);
-      graphicsContext.applyGraphicsCommands(commands);
+      var context = new GraphicsContextRenderMask(renderState);
+      commands.forEach((c) => c.updateContext(context));
     }
   }
 
@@ -252,8 +252,8 @@ class Graphics {
 
   List<GraphicsCommand> _getCommands(bool useCompiled) {
     if (useCompiled && _compiledCommands.length == 0) {
-      var graphicsContext = new GraphicsContextCompiler(_compiledCommands);
-      graphicsContext.applyGraphicsCommands(_originalCommands);
+      var context = new GraphicsContextCompiler(_compiledCommands);
+      _originalCommands.forEach((c) => c.updateContext(context));
     }
     return useCompiled ? _compiledCommands : _originalCommands;
   }

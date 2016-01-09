@@ -2,9 +2,11 @@ part of stagexl.drawing.internal;
 
 class GraphicsStroke extends GraphicsMesh {
 
-  final GraphicsCommandStroke command;
+  final double width;
+  final JointStyle jointStyle;
+  final CapsStyle capsStyle;
 
-  GraphicsStroke(GraphicsPath path, this.command) {
+  GraphicsStroke(GraphicsPath path, this.width, this.jointStyle, this.capsStyle) {
     for (var pathSegment in path.segments) {
       segments.add(new GraphicsStrokeSegment(this, pathSegment));
     }

@@ -10,6 +10,7 @@ import '../geom.dart';
 
 part 'internal/graphics_command.dart';
 part 'internal/graphics_context.dart';
+part 'internal/graphics_context_base.dart';
 part 'internal/graphics_context_bounds.dart';
 part 'internal/graphics_context_canvas.dart';
 part 'internal/graphics_context_compiler.dart';
