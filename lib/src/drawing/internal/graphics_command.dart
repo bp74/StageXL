@@ -10,7 +10,6 @@ abstract class GraphicsCommand {
 /// The base class for all graphics fill commands
 
 abstract class GraphicsCommandFill extends GraphicsCommand {
-  GraphicsMesh mesh = null;
   GraphicsCommandFill();
 }
 
@@ -20,7 +19,6 @@ abstract class GraphicsCommandStroke extends GraphicsCommand {
   final double width;
   final JointStyle jointStyle;
   final CapsStyle capsStyle;
-  GraphicsMesh mesh = null;
   GraphicsCommandStroke(this.width, this.jointStyle, this.capsStyle);
 }
 
