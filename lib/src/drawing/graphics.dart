@@ -202,7 +202,7 @@ class Graphics {
       _updateContext(context, commands);
       _bounds = context.bounds;
     }
-    return _bounds;
+    return _bounds.clone();
   }
 
   bool hitTest(num localX, num localY) {
