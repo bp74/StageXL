@@ -1,6 +1,6 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-class GraphicsContextBounds extends GraphicsContextBase {
+class _GraphicsContextBounds extends _GraphicsContextBase {
 
   double _minX = 0.0 + double.MAX_FINITE;
   double _minY = 0.0 + double.MAX_FINITE;
@@ -26,25 +26,25 @@ class GraphicsContextBounds extends GraphicsContextBase {
 
   @override
   void fillColor(int color) {
-    GraphicsMesh mesh = _path;
+    _GraphicsMesh mesh = _path;
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    GraphicsMesh mesh = new GraphicsStroke(_path, width, jointStyle, capsStyle);
+    _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _updateBoundsForMesh(mesh);
   }
 
   @override
-  void meshColor(GraphicsCommandMeshColor command) {
-    GraphicsMesh mesh = command.mesh;
+  void meshColor(_GraphicsCommandMeshColor command) {
+    _GraphicsMesh mesh = command.mesh;
     _updateBoundsForMesh(mesh);
   }
 
   //---------------------------------------------------------------------------
 
-  void _updateBoundsForMesh(GraphicsMesh mesh) {
+  void _updateBoundsForMesh(_GraphicsMesh mesh) {
     for(var meshSegment in mesh.segments) {
       _minX = _minX > meshSegment.minX ? meshSegment.minX : _minX;
       _minY = _minY > meshSegment.minY ? meshSegment.minY : _minY;

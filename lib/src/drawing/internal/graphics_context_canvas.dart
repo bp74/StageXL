@@ -1,12 +1,12 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-class GraphicsContextCanvas extends GraphicsContext {
+class _GraphicsContextCanvas extends GraphicsContext {
 
   final RenderState renderState;
   final RenderContextCanvas _renderContext;
   final CanvasRenderingContext2D _canvasContext;
 
-  GraphicsContextCanvas(RenderState renderState) :
+  _GraphicsContextCanvas(RenderState renderState) :
      renderState = renderState,
     _renderContext = renderState.renderContext,
     _canvasContext = (renderState.renderContext as RenderContextCanvas).rawContext {
@@ -188,9 +188,9 @@ class GraphicsContextCanvas extends GraphicsContext {
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class GraphicsContextCanvasMask extends GraphicsContextCanvas {
+class _GraphicsContextCanvasMask extends _GraphicsContextCanvas {
 
-  GraphicsContextCanvasMask(RenderState renderState) : super(renderState);
+  _GraphicsContextCanvasMask(RenderState renderState) : super(renderState);
 
   @override
   void fillColor(int color) {

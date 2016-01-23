@@ -1,4 +1,4 @@
-part of stagexl.drawing.commands;
+part of stagexl.drawing;
 
 class GraphicsCommandCircle extends GraphicsCommand {
 
@@ -20,7 +20,7 @@ class GraphicsCommandCircle extends GraphicsCommand {
   @override
   void updateContext(GraphicsContext context) {
     context.moveTo(x + radius, y);
-    context.arc(x, y, radius, 0.0, 2 * math.PI, antiClockwise);
+    context.arc(x, y, radius, 0.0, 2 * PI, antiClockwise);
     context.closePath();
   }
 }

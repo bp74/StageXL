@@ -25,7 +25,14 @@ class Graphics {
   /// Add a custom GraphicsCommand
 
   void addCommand(GraphicsCommand command) {
+    if (command.graphics != null) throw new ArgumentError("command");
+    command._graphics = this;
     _originalCommands.add(command);
+    _compiledCommands.clear();
+    _bounds = null;
+  }
+
+  void invalidate(GraphicsCommand command) {
     _compiledCommands.clear();
     _bounds = null;
   }
@@ -34,8 +41,10 @@ class Graphics {
 
   /// Clear all previously added graphics commands.
   void clear() {
+    _originalCommands.forEach((c) => c._graphics = null);
     _originalCommands.clear();
     _compiledCommands.clear();
+    _bounds = null;
   }
 
   /// Start drawing a freeform path.
@@ -198,7 +207,7 @@ class Graphics {
   Rectangle<num> get bounds {
     if (_bounds == null) {
       var commands = _getCommands(true);
-      var context = new GraphicsContextBounds();
+      var context = new _GraphicsContextBounds();
       _updateContext(context, commands);
       _bounds = context.bounds;
     }
@@ -208,7 +217,7 @@ class Graphics {
   bool hitTest(num localX, num localY) {
     if (this.bounds.contains(localX, localY)) {
       var commands = _getCommands(true);
-      var context = new GraphicsContextHitTest(localX, localY);
+      var context = new _GraphicsContextHitTest(localX, localY);
       _updateContext(context, commands);
       return context.hit;
     } else {
@@ -219,11 +228,11 @@ class Graphics {
   void render(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
       var commands = _getCommands(false);
-      var context = new GraphicsContextCanvas(renderState);
+      var context = new _GraphicsContextCanvas(renderState);
       _updateContext(context, commands);
     } else {
       var commands = _getCommands(true);
-      var context = new GraphicsContextRender(renderState);
+      var context = new _GraphicsContextRender(renderState);
       _updateContext(context, commands);
     }
   }
@@ -231,7 +240,7 @@ class Graphics {
   void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
       var commands = _getCommands(false);
-      var context = new GraphicsContextCanvasMask(renderState);
+      var context = new _GraphicsContextCanvasMask(renderState);
       _updateContext(context, commands);
     } else {
       var commands = _getCommands(true);
@@ -244,7 +253,7 @@ class Graphics {
 
   List<GraphicsCommand> _getCommands(bool useCompiled) {
     if (useCompiled && _compiledCommands.length == 0) {
-      var context = new GraphicsContextCompiler(_compiledCommands);
+      var context = new _GraphicsContextCompiler(_compiledCommands);
       _originalCommands.forEach((c) => c.updateContext(context));
     }
     return useCompiled ? _compiledCommands : _originalCommands;

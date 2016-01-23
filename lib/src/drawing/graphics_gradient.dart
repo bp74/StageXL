@@ -1,4 +1,4 @@
-part of stagexl.drawing.base;
+part of stagexl.drawing;
 
 class GraphicsGradientColorStop {
   final num offset;

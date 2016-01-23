@@ -1,8 +1,8 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-abstract class GraphicsMesh {
+abstract class _GraphicsMesh {
 
-  final List<GraphicsMeshSegment> segments = new List<GraphicsMeshSegment>();
+  final List<_GraphicsMeshSegment> segments = new List<_GraphicsMeshSegment>();
 
   bool hitTest(double x, double y);
   void fillColor(RenderState renderState, int color);

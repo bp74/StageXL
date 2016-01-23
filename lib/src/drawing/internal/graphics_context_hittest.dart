@@ -1,12 +1,12 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-class GraphicsContextHitTest extends GraphicsContextBase {
+class _GraphicsContextHitTest extends _GraphicsContextBase {
 
   bool _hit = false;
   double _localX = 0.0;
   double _localY = 0.0;
 
-  GraphicsContextHitTest(num localX, num localY) :
+  _GraphicsContextHitTest(num localX, num localY) :
       _localX = localX.toDouble(),
       _localY = localY.toDouble();
 
@@ -16,19 +16,19 @@ class GraphicsContextHitTest extends GraphicsContextBase {
 
   @override
   void fillColor(int color) {
-    GraphicsMesh mesh = _path;
+    _GraphicsMesh mesh = _path;
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 
   @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    GraphicsMesh mesh = new GraphicsStroke(_path, width, jointStyle, capsStyle);
+    _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 
   @override
-  void meshColor(GraphicsCommandMeshColor command) {
-    GraphicsMesh mesh = command.mesh;
+  void meshColor(_GraphicsCommandMeshColor command) {
+    _GraphicsMesh mesh = command.mesh;
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 

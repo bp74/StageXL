@@ -1,4 +1,4 @@
-part of stagexl.drawing.commands;
+part of stagexl.drawing;
 
 class GraphicsCommandFillColor extends GraphicsCommandFill {
 

@@ -1,14 +1,14 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-class GraphicsCommandMeshColor extends GraphicsCommand {
+class _GraphicsCommandMeshColor extends GraphicsCommand {
 
-  final GraphicsMesh mesh;
+  final _GraphicsMesh mesh;
   final int color;
 
-  GraphicsCommandMeshColor(this.mesh, this.color);
+  _GraphicsCommandMeshColor(this.mesh, this.color);
 
   @override
-  void updateContext(GraphicsContextBase context) {
+  void updateContext(_GraphicsContextBase context) {
     context.meshColor(this);
   }
 }

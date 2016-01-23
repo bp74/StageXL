@@ -1,6 +1,6 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-abstract class GraphicsMeshSegment {
+abstract class _GraphicsMeshSegment {
 
   Float32List _vertexBuffer = null;
   Int16List _indexBuffer = null;
@@ -15,11 +15,11 @@ abstract class GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  GraphicsMeshSegment(int vertexBufferSize, int indexBufferSize) :
+  _GraphicsMeshSegment(int vertexBufferSize, int indexBufferSize) :
         _vertexBuffer = new Float32List(vertexBufferSize),
         _indexBuffer = new Int16List(indexBufferSize);
 
-  GraphicsMeshSegment.clone(GraphicsMeshSegment mesh) :
+  _GraphicsMeshSegment.clone(_GraphicsMeshSegment mesh) :
         _vertexBuffer = new Float32List(mesh.vertexCount * 2),
         _indexBuffer = new Int16List(mesh.indexCount) {
 

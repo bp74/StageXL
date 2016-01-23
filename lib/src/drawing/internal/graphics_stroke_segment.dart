@@ -1,10 +1,10 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-class GraphicsStrokeSegment extends GraphicsMeshSegment {
+class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
-  final GraphicsStroke stroke;
+  final _GraphicsStroke stroke;
 
-  GraphicsStrokeSegment(this.stroke, GraphicsPathSegment pathSegment)
+  _GraphicsStrokeSegment(this.stroke, _GraphicsPathSegment pathSegment)
       : super(pathSegment.vertexCount * 4, pathSegment.vertexCount * 6) {
 
     _calculateStroke(pathSegment);
@@ -45,7 +45,7 @@ class GraphicsStrokeSegment extends GraphicsMeshSegment {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  void _calculateStroke(GraphicsPathSegment pathSegment) {
+  void _calculateStroke(_GraphicsPathSegment pathSegment) {
 
     var width = stroke.width;
     var jointStyle = stroke.jointStyle;

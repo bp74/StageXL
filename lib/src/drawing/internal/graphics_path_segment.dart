@@ -1,13 +1,13 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-class GraphicsPathSegment extends GraphicsMeshSegment {
+class _GraphicsPathSegment extends _GraphicsMeshSegment {
 
   bool _clockwise = null;
   bool _closed = false;
 
-  GraphicsPathSegment() : super(16, 32);
+  _GraphicsPathSegment() : super(16, 32);
 
-  GraphicsPathSegment.clone(GraphicsPathSegment segment) : super.clone(segment) {
+  _GraphicsPathSegment.clone(_GraphicsPathSegment segment) : super.clone(segment) {
     _clockwise = segment.clockwise;
     _closed = segment.closed;
   }

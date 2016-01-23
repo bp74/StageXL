@@ -1,12 +1,12 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-abstract class GraphicsContextBase extends GraphicsContext {
+abstract class _GraphicsContextBase extends GraphicsContext {
 
-  GraphicsPath _path = new GraphicsPath();
+  _GraphicsPath _path = new _GraphicsPath();
 
   @override
   void beginPath() {
-    _path = new GraphicsPath();
+    _path = new _GraphicsPath();
   }
 
   @override
@@ -79,6 +79,6 @@ abstract class GraphicsContextBase extends GraphicsContext {
 
   //---------------------------------------------------------------------------
 
-  void meshColor(GraphicsCommandMeshColor command);
+  void meshColor(_GraphicsCommandMeshColor command);
 
 }

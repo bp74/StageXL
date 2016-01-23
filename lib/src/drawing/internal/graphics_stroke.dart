@@ -1,14 +1,14 @@
-part of stagexl.drawing.internal;
+part of stagexl.drawing;
 
-class GraphicsStroke extends GraphicsMesh {
+class _GraphicsStroke extends _GraphicsMesh {
 
   final double width;
   final JointStyle jointStyle;
   final CapsStyle capsStyle;
 
-  GraphicsStroke(GraphicsPath path, this.width, this.jointStyle, this.capsStyle) {
+  _GraphicsStroke(_GraphicsPath path, this.width, this.jointStyle, this.capsStyle) {
     for (var pathSegment in path.segments) {
-      segments.add(new GraphicsStrokeSegment(this, pathSegment));
+      segments.add(new _GraphicsStrokeSegment(this, pathSegment));
     }
   }
 
@@ -16,14 +16,14 @@ class GraphicsStroke extends GraphicsMesh {
 
   @override
   void fillColor(RenderState renderState, int color) {
-    for (GraphicsStrokeSegment segment in segments) {
+    for (_GraphicsStrokeSegment segment in segments) {
       segment.fillColor(renderState, color);
     }
   }
 
   @override
   bool hitTest(double x, double y) {
-    for (GraphicsStrokeSegment segment in segments) {
+    for (_GraphicsStrokeSegment segment in segments) {
       if (segment.checkBounds(x, y) == false) continue;
       if (segment.hitTest(x, y)) return true;
     }
