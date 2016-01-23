@@ -2,18 +2,47 @@ part of stagexl.drawing;
 
 class GraphicsCommandEllipse extends GraphicsCommand {
 
-  final double x;
-  final double y;
-  final double width;
-  final double height;
+  double _x;
+  double _y;
+  double _width;
+  double _height;
 
-  GraphicsCommandEllipse(
-      num x, num y, num width, num height) :
+  GraphicsCommandEllipse( num x, num y, num width, num height)
 
-      this.x = x.toDouble(),
-      this.y = y.toDouble(),
-      this.width = width.toDouble(),
-      this.height = height.toDouble();
+      : _x = x.toDouble(),
+        _y = y.toDouble(),
+        _width = width.toDouble(),
+        _height = height.toDouble();
+
+  //---------------------------------------------------------------------------
+
+  double get x => _x;
+
+  set x(double value) {
+    _x = value;
+    _invalidate();
+  }
+
+  double get y => _y;
+
+  set y(double value) {
+    _y = value;
+    _invalidate();
+  }
+
+  double get width => _width;
+
+  set width(double value) {
+    _width = value;
+    _invalidate();
+  }
+
+  double get height => _height;
+
+  set height(double value) {
+    _height = value;
+    _invalidate();
+  }
 
   //---------------------------------------------------------------------------
 
@@ -37,4 +66,5 @@ class GraphicsCommandEllipse extends GraphicsCommand {
     context.bezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym);
     context.closePath();
   }
+
 }

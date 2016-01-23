@@ -2,11 +2,22 @@ part of stagexl.drawing;
 
 class GraphicsCommandStrokePattern extends GraphicsCommandStroke {
 
-  final GraphicsPattern pattern;
+  GraphicsPattern _pattern;
 
-  GraphicsCommandStrokePattern(
-      this.pattern, num width, JointStyle jointStyle, CapsStyle capsStyle) :
-        super(width.toDouble(), jointStyle, capsStyle);
+  GraphicsCommandStrokePattern(GraphicsPattern pattern,
+      num width, JointStyle jointStyle, CapsStyle capsStyle)
+
+      : _pattern = pattern,
+        super(width, jointStyle, capsStyle);
+
+  //---------------------------------------------------------------------------
+
+  GraphicsPattern get pattern => _pattern;
+
+  set pattern(GraphicsPattern value) {
+    _pattern = value;
+    _invalidate();
+  }
 
   //---------------------------------------------------------------------------
 
@@ -14,4 +25,5 @@ class GraphicsCommandStrokePattern extends GraphicsCommandStroke {
   void updateContext(GraphicsContext context) {
     context.strokePattern(pattern, width, jointStyle, capsStyle);
   }
+
 }

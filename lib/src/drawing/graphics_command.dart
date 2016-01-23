@@ -6,10 +6,15 @@ abstract class GraphicsCommand {
 
   Graphics _graphics = null;
 
+  //---------------------------------------------------------------------------
+
   Graphics get graphics => _graphics;
 
   void updateContext(GraphicsContext context);
-  void invalidate() => _graphics?._invalidate();
+
+  void invalidate() => _invalidate();
+
+  //---------------------------------------------------------------------------
 
   void _setGraphics(Graphics graphics) {
     if (_graphics != null && graphics != null) {
@@ -18,5 +23,10 @@ abstract class GraphicsCommand {
       _graphics = graphics;
     }
   }
+
+  void _invalidate() {
+    _graphics?._invalidate();
+  }
+
 }
 

@@ -2,23 +2,67 @@ part of stagexl.drawing;
 
 class GraphicsCommandArc extends GraphicsCommand {
 
-  final double x;
-  final double y;
-  final double radius;
-  final double startAngle;
-  final double endAngle;
-  final bool antiClockwise;
+  double _x;
+  double _y;
+  double _radius;
+  double _startAngle;
+  double _endAngle;
+  bool _antiClockwise;
 
   GraphicsCommandArc(
       num x, num y, num radius,
-      num startAngle, num endAngle, bool antiClockwise) :
+      num startAngle, num endAngle, bool antiClockwise)
 
-      this.x = x.toDouble(),
-      this.y = y.toDouble(),
-      this.radius = radius.toDouble(),
-      this.startAngle = startAngle.toDouble(),
-      this.endAngle = endAngle.toDouble(),
-      this.antiClockwise = antiClockwise;
+      : _x = x.toDouble(),
+        _y = y.toDouble(),
+        _radius = radius.toDouble(),
+        _startAngle = startAngle.toDouble(),
+        _endAngle = endAngle.toDouble(),
+        _antiClockwise = antiClockwise;
+
+  //---------------------------------------------------------------------------
+
+  double get x => _x;
+
+  set x(double value) {
+    _x = value;
+    _invalidate();
+  }
+
+  double get y => _y;
+
+  set y(double value) {
+    _y = value;
+    _invalidate();
+  }
+
+  double get radius => _radius;
+
+  set radius(double value) {
+    _radius = value;
+    _invalidate();
+  }
+
+  double get startAngle => _startAngle;
+
+  set startAngle(double value) {
+    _startAngle = value;
+    _invalidate();
+  }
+
+  double get endAngle => _endAngle;
+
+  set endAngle(double value) {
+    _endAngle = value;
+    _invalidate();
+  }
+
+  bool get antiClockwise => _antiClockwise;
+
+  set antiClockwise(bool value) {
+    _antiClockwise = value;
+    _invalidate();
+  }
 
   //---------------------------------------------------------------------------
 

@@ -2,23 +2,67 @@ part of stagexl.drawing;
 
 class GraphicsCommandRectRound extends GraphicsCommand {
 
-  final double x;
-  final double y;
-  final double width;
-  final double height;
-  final double ellipseWidth;
-  final double ellipseHeight;
+  double _x;
+  double _y;
+  double _width;
+  double _height;
+  double _ellipseWidth;
+  double _ellipseHeight;
 
   GraphicsCommandRectRound(
       num x, num y, num width, num height,
-      num ellipseWidth, num ellipseHeight) :
+      num ellipseWidth, num ellipseHeight)
 
-      this.x = x.toDouble(),
-      this.y = y.toDouble(),
-      this.width = width.toDouble(),
-      this.height = height.toDouble(),
-      this.ellipseWidth = ellipseWidth.toDouble(),
-      this.ellipseHeight = ellipseHeight.toDouble();
+      : _x = x.toDouble(),
+        _y = y.toDouble(),
+        _width = width.toDouble(),
+        _height = height.toDouble(),
+        _ellipseWidth = ellipseWidth.toDouble(),
+        _ellipseHeight = ellipseHeight.toDouble();
+
+  //---------------------------------------------------------------------------
+
+  double get x => _x;
+
+  set x(double value) {
+    _x = value;
+    _invalidate();
+  }
+
+  double get y => _y;
+
+  set y(double value) {
+    _y = value;
+    _invalidate();
+  }
+
+  double get width => _width;
+
+  set width(double value) {
+    _width = value;
+    _invalidate();
+  }
+
+  double get height => _height;
+
+  set height(double value) {
+    _height = value;
+    _invalidate();
+  }
+
+  double get ellipseWidth => _ellipseWidth;
+
+  set ellipseWidth(double value) {
+    _ellipseWidth = value;
+    _invalidate();
+  }
+
+  double get ellipseHeight => _ellipseHeight;
+
+  set ellipseHeight(double value) {
+    _ellipseHeight = value;
+    _invalidate();
+  }
 
   //---------------------------------------------------------------------------
 
@@ -35,4 +79,5 @@ class GraphicsCommandRectRound extends GraphicsCommand {
     context.quadraticCurveTo(x, y, x + ellipseWidth, y);
     context.closePath();
   }
+
 }

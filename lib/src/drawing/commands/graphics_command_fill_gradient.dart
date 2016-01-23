@@ -2,9 +2,19 @@ part of stagexl.drawing;
 
 class GraphicsCommandFillGradient extends GraphicsCommandFill {
 
-  final GraphicsGradient gradient;
+  GraphicsGradient _gradient;
 
-  GraphicsCommandFillGradient(this.gradient);
+  GraphicsCommandFillGradient(GraphicsGradient gradient)
+      : _gradient = gradient;
+
+  //---------------------------------------------------------------------------
+
+  GraphicsGradient get gradient => _gradient;
+
+  set gradient(GraphicsGradient value) {
+    _gradient = value;
+    _invalidate();
+  }
 
   //---------------------------------------------------------------------------
 
@@ -12,4 +22,5 @@ class GraphicsCommandFillGradient extends GraphicsCommandFill {
   void updateContext(GraphicsContext context) {
     context.fillGradient(gradient);
   }
+
 }

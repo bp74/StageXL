@@ -2,25 +2,68 @@ part of stagexl.drawing;
 
 class GraphicsCommandBezierCurveTo extends GraphicsCommand {
 
-  final double controlX1;
-  final double controlY1;
-  final double controlX2;
-  final double controlY2;
-  final double endX;
-  final double endY;
+  double _controlX1;
+  double _controlY1;
+  double _controlX2;
+  double _controlY2;
+  double _endX;
+  double _endY;
 
   GraphicsCommandBezierCurveTo(
       num controlX1, num controlY1,
       num controlX2, num controlY2,
-      num endX, num endY) :
+      num endX, num endY)
 
-      this.controlX1 = controlX1.toDouble(),
-      this.controlY1 = controlY1.toDouble(),
-      this.controlX2 = controlX2.toDouble(),
-      this.controlY2 = controlY2.toDouble(),
-      this.endX = endX.toDouble(),
-      this.endY = endY.toDouble();
+      : _controlX1 = controlX1.toDouble(),
+        _controlY1 = controlY1.toDouble(),
+        _controlX2 = controlX2.toDouble(),
+        _controlY2 = controlY2.toDouble(),
+        _endX = endX.toDouble(),
+        _endY = endY.toDouble();
 
+  //---------------------------------------------------------------------------
+
+  double get controlX1 => _controlX1;
+
+  set controlX1(double value) {
+    _controlX1 = value;
+    _invalidate();
+  }
+
+  double get controlY1 => _controlY1;
+
+  set controlY1(double value) {
+    _controlY1 = value;
+    _invalidate();
+  }
+
+  double get controlX2 => _controlX2;
+
+  set controlX2(double value) {
+    _controlX2 = value;
+    _invalidate();
+  }
+
+  double get controlY2 => _controlY2;
+
+  set controlY2(double value) {
+    _controlY2 = value;
+    _invalidate();
+  }
+
+  double get endX => _endX;
+
+  set endX(double value) {
+    _endX = value;
+    _invalidate();
+  }
+
+  double get endY => _endY;
+
+  set endY(double value) {
+    _endY = value;
+    _invalidate();
+  }
 
   //---------------------------------------------------------------------------
 
@@ -29,63 +72,5 @@ class GraphicsCommandBezierCurveTo extends GraphicsCommand {
     context.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
 
-  /*
-
-  // first derivative root finding for cubic Bézier curves
-  // http://processingjs.nihongoresources.com/bezierinfo/
-  // http://processingjs.nihongoresources.com/bezierinfo/sketchsource.php?sketch=simpleQuadraticBezier
-
-  double _computeCubicBaseValue(double t, double a, double b, double c, double d) {
-    double mt = 1.0 - t;
-    return mt * mt * mt * a + 3.0 * mt * mt * t * b + 3.0 * mt * t * t * c + t * t * t * d;
-  }
-
-  List<double> _computeCubicFirstDerivativeRoots(double a, double b, double c, double d) {
-    double tl = -a + 2.0 * b - c;
-    double tr = -sqrt(a * (d - c) + b * b - b * (c + d) + c * c);
-    double dn = -a + 3.0 * b - 3.0 * c + d;
-    return dn != 0.0 ? <double>[(tl + tr) / dn, (tl - tr) / dn] : <double>[-1.0, -1.0];
-  }
-
-  @override
-  void updateBounds(GraphicsBounds bounds) {
-
-    if (bounds.hasCursor == false) {
-      bounds.updateCursor(controlX1, controlY1);
-    }
-
-    double sx = bounds.cursorX.toDouble();
-    double sy = bounds.cursorY.toDouble();
-    double ax = controlX1;
-    double ay = controlY1;
-    double bx = controlX2;
-    double by = controlY2;
-    double ex = endX;
-    double ey = endY;
-
-    // Workaround: if the control points have the same X or Y coordinate,
-    // the derivative root calculations returns [-1, -1].
-    //..moveTo(230, 150)..bezierCurveTo(250, 180, 320, 180, 340, 150)
-
-    if (ax == bx) ax += 0.0123;
-    if (ay == by) ay += 0.0123;
-
-    bounds.updatePath(sx, sy);
-
-    List<double> txs = _computeCubicFirstDerivativeRoots(sx, ax, bx, ex);
-    List<double> tys = _computeCubicFirstDerivativeRoots(sy, ay, by, ey);
-
-    for (int i = 0; i < 2; i++) {
-      double tx = txs[i];
-      double ty = tys[i];
-      double mx = (tx >= 0.0 && tx <= 1.0) ? _computeCubicBaseValue(tx, sx, ax, bx, ex) : sx;
-      double my = (ty >= 0.0 && ty <= 1.0) ? _computeCubicBaseValue(ty, sy, ay, by, ey) : sy;
-      bounds.updatePath(mx, my);
-    }
-
-    bounds.updatePath(ex, ey);
-    bounds.updateCursor(endX, endY);
-  }
-  */
 }
 

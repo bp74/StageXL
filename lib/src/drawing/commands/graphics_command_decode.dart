@@ -2,7 +2,7 @@ part of stagexl.drawing;
 
 class GraphicsCommandDecode extends GraphicsCommand {
 
-  final String text;
+  String _text;
 
   static const Map _BASE_64 = const {
     "A": 0,"B": 1,"C": 2,"D": 3,"E": 4,"F": 5,"G": 6,"H": 7,
@@ -14,7 +14,16 @@ class GraphicsCommandDecode extends GraphicsCommand {
     "w":48,"x":49,"y":50,"z":51,"0":52,"1":53,"2":54,"3":55,
     "4":56,"5":57,"6":58,"7":59,"8":60,"9":61,"+":62,"/":63};
 
-  GraphicsCommandDecode(this.text);
+  GraphicsCommandDecode(String text) : _text = text;
+
+  //---------------------------------------------------------------------------
+
+  String get text => _text;
+
+  set text(String value) {
+    _text = value;
+    _invalidate();
+  }
 
   //---------------------------------------------------------------------------
 
@@ -28,7 +37,8 @@ class GraphicsCommandDecode extends GraphicsCommand {
       context.lineTo,
       context.quadraticCurveTo,
       context.bezierCurveTo,
-      context.closePath];
+      context.closePath
+    ];
 
     List<int> paramCount = [2, 2, 4, 6, 0];
     List<num> params = new List<num>();
@@ -76,4 +86,5 @@ class GraphicsCommandDecode extends GraphicsCommand {
       Function.apply(f, params);
     }
   }
+
 }

@@ -2,13 +2,24 @@ part of stagexl.drawing;
 
 class GraphicsCommandFillColor extends GraphicsCommandFill {
 
-  final int color;
+  int _color;
 
-  GraphicsCommandFillColor(this.color);
+  GraphicsCommandFillColor(int color)
+      : _color = color;
+
+  //---------------------------------------------------------------------------
+
+  int get color => _color;
+
+  set color(int value) {
+    _color = value;
+    _invalidate();
+  }
 
   //---------------------------------------------------------------------------
 
   @override updateContext(GraphicsContext context) {
     context.fillColor(color);
   }
+
 }

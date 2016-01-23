@@ -4,15 +4,15 @@ part of stagexl.drawing;
 
 abstract class GraphicsCommandStroke extends GraphicsCommand {
 
-  double _width = 1.0;
-  JointStyle _jointStyle = JointStyle.MITER;
-  CapsStyle _capsStyle = CapsStyle.NONE;
+  double _width;
+  JointStyle _jointStyle;
+  CapsStyle _capsStyle;
 
-  GraphicsCommandStroke(double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _width = width;
-    _jointStyle = jointStyle;
-    _capsStyle = capsStyle;
-  }
+  GraphicsCommandStroke(num width, JointStyle jointStyle, CapsStyle capsStyle)
+
+      : _width = width.toDouble(),
+        _jointStyle = jointStyle,
+        _capsStyle = capsStyle;
 
   //---------------------------------------------------------------------------
 
@@ -20,20 +20,20 @@ abstract class GraphicsCommandStroke extends GraphicsCommand {
 
   set width(double value) {
     _width = value;
-    this.invalidate();
+    _invalidate();
   }
 
   JointStyle get jointStyle => _jointStyle;
 
   set jointStyle(JointStyle value) {
     _jointStyle = value;
-    this.invalidate();
+    _invalidate();
   }
 
   CapsStyle get capsStyle => _capsStyle;
 
   set capsStyle(CapsStyle value) {
     _capsStyle = value;
-    this.invalidate();
+    _invalidate();
   }
 }

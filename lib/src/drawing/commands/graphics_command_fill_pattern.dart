@@ -2,9 +2,19 @@ part of stagexl.drawing;
 
 class GraphicsCommandFillPattern extends GraphicsCommandFill {
 
-  final GraphicsPattern pattern;
+  GraphicsPattern _pattern;
 
-  GraphicsCommandFillPattern(this.pattern);
+  GraphicsCommandFillPattern(GraphicsPattern pattern)
+      : _pattern = pattern;
+
+  //---------------------------------------------------------------------------
+
+  GraphicsPattern get pattern => _pattern;
+
+  set pattern(GraphicsPattern value) {
+    _pattern = value;
+    _invalidate();
+  }
 
   //---------------------------------------------------------------------------
 
@@ -12,4 +22,5 @@ class GraphicsCommandFillPattern extends GraphicsCommandFill {
   void updateContext(GraphicsContext context) {
     context.fillPattern(pattern);
   }
+
 }
