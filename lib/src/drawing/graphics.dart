@@ -25,27 +25,20 @@ class Graphics {
   /// Add a custom GraphicsCommand
 
   void addCommand(GraphicsCommand command) {
-    if (command.graphics != null) throw new ArgumentError("command");
-    command._graphics = this;
+    command._setGraphics(this);
     _originalCommands.add(command);
-    _compiledCommands.clear();
-    _bounds = null;
+    _invalidate();
   }
 
-  void invalidate(GraphicsCommand command) {
-    _compiledCommands.clear();
-    _bounds = null;
+  /// Clear all previously added graphics commands.
+
+  void clear() {
+    _originalCommands.forEach((c) => c._setGraphics(null));
+    _originalCommands.clear();
+    _invalidate();
   }
 
   //---------------------------------------------------------------------------
-
-  /// Clear all previously added graphics commands.
-  void clear() {
-    _originalCommands.forEach((c) => c._graphics = null);
-    _originalCommands.clear();
-    _compiledCommands.clear();
-    _bounds = null;
-  }
 
   /// Start drawing a freeform path.
   GraphicsCommandBeginPath beginPath() {
@@ -263,6 +256,11 @@ class Graphics {
     for (int i = 0; i < commands.length; i++) {
       commands[i].updateContext(context);
     }
+  }
+
+  void _invalidate() {
+    _compiledCommands.clear();
+    _bounds = null;
   }
 
 }
