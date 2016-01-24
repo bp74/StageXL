@@ -1,5 +1,18 @@
 part of stagexl.display;
 
+/// A fast container for Bitmap instances.
+///
+/// This is a replacement for the DisplayObjectContainer (or Sprite) class
+/// which may be useful in certain use cases where lots of Bitmap instances
+/// are rendered. The BitmapContainer only takes Bitmap instances and also
+/// imposes some restrictions:
+///
+/// * No filters for the Bitmaps are rendered.
+/// * No hitTest and bounds calculation.
+/// * Adds an additional draw call in WebGL.
+///
+/// Possible use cases: tile maps, particle effects, bitmap fonts, ...
+
 class BitmapContainer extends DisplayObject implements DisplayObjectParent {
 
   final List<Bitmap> _children = new List<Bitmap>();
