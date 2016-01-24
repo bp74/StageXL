@@ -9,6 +9,7 @@ part of stagexl.display;
 ///
 /// * No filters for the Bitmaps are rendered.
 /// * No hitTest and bounds calculation.
+/// * No added or removed events are dispatched.
 /// * Adds an additional draw call in WebGL.
 ///
 /// Possible use cases: tile maps, particle effects, bitmap fonts, ...
