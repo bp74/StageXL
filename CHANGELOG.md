@@ -8,6 +8,9 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version NEXT
+  * Added BitmapContainer for extensive Bitmap rendering.
+
 #### Pub version 0.13.1
   * Added better support for vector graphics in WebGL.
   * Added DisplayObject.alignPivot method.
