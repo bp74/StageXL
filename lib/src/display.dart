@@ -34,6 +34,7 @@ import 'internal/image_loader.dart';
 import 'internal/environment.dart' as env;
 
 part 'display/bitmap.dart';
+part 'display/bitmap_container.dart';
 part 'display/bitmap_data.dart';
 part 'display/bitmap_data_channel.dart';
 part 'display/bitmap_data_update_batch.dart';
