@@ -24,6 +24,7 @@ of extension libraries is growing over time, here is a list of the most popular
 StageXL extension libraries.   
 
 * Bitmap Fonts: <https://github.com/bp74/StageXL_BitmapFont>
+* GAF Runtime: <https://github.com/bp74/StageXL_GAF>
 * Spine Runtime: <https://github.com/bp74/StageXL_Spine>
 * DragonBones Runtime: <https://github.com/bp74/StageXL_DragonBones>
 * Flump Runtime: <https://github.com/bp74/StageXL_Flump>
