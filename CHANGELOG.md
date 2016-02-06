@@ -10,6 +10,7 @@ announcements on the StageXL forum or use one of the support links below:
 
 #### Pub version NEXT
   * Added BitmapContainer for extensive Bitmap rendering.
+  * Fixed AlphaMaskFilter with better fragment shader code.
 
 #### Pub version 0.13.1
   * Added better support for vector graphics in WebGL.
