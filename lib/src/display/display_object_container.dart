@@ -73,7 +73,19 @@ abstract class DisplayObjectContainer
   /// other display object container.
 
   void addChild(DisplayObject child) {
-    addChildAt(child, _children.length);
+    List<DisplayObject> children = _children;
+    if (child.parent == this) {
+      DisplayObject oldChild = null;
+      DisplayObject newChild = child;
+      for (int i = children.length - 1; i >= 0; i--) {
+        oldChild = children[i];
+        children[i] = newChild;
+        newChild = oldChild;
+        if (identical(child, newChild)) break;
+      }
+    } else {
+      addChildAt(child, children.length);
+    }
   }
 
   /// Adds a child [DisplayObject] to this [DisplayObjectContainer] at the
