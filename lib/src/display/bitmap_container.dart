@@ -14,7 +14,8 @@ part of stagexl.display;
 ///
 /// Possible use cases: tile maps, particle effects, bitmap fonts, ...
 
-class BitmapContainer extends DisplayObject implements DisplayObjectParent {
+class BitmapContainer extends DisplayObject
+    implements DisplayObjectParent<Bitmap> {
 
   final List<Bitmap> _children = new List<Bitmap>();
   final Matrix3D _tmpMatrix1 = new Matrix3D.fromIdentity();
