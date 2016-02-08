@@ -73,18 +73,17 @@ abstract class DisplayObjectContainer
   /// other display object container.
 
   void addChild(DisplayObject child) {
-    List<DisplayObject> children = _children;
-    if (child.parent == this) {
-      DisplayObject oldChild = null;
-      DisplayObject newChild = child;
-      for (int i = children.length - 1; i >= 0; i--) {
-        oldChild = children[i];
-        children[i] = newChild;
-        newChild = oldChild;
-        if (identical(child, newChild)) break;
-      }
+    if (child is! DisplayObject) {
+      throw new ArgumentError("The object is not a display object.");
+    } else if (child == this) {
+      throw new ArgumentError("An object cannot be added as a child of itself.");
+    } else if (child.parent == this) {
+      _addLocalChild(child);
     } else {
-      addChildAt(child, children.length);
+      child.removeFromParent();
+      _throwIfAncestors(child);
+      _children.add(child);
+      _setChildParent(child);
     }
   }
 
@@ -99,36 +98,19 @@ abstract class DisplayObjectContainer
   /// other display object container.
 
   void addChildAt(DisplayObject child, int index) {
-
-    if (index < 0 || index > _children.length) {
+    if (child is! DisplayObject) {
+      throw new ArgumentError("The object is not a display object.");
+    } else if (index < 0 || index > _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
-    }
-
-    if (child == this) {
+    } else if (child == this) {
       throw new ArgumentError("An object cannot be added as a child of itself.");
-    }
-
-    if (child.parent == this) {
-
-      _children.remove(child);
-      if (index > _children.length) index -= 1;
-      _children.insert(index, child);
-
+    } else if (child.parent == this) {
+      _addLocalChildAt(child, index);
     } else {
-
       child.removeFromParent();
-
-      for (var ancestor = this; ancestor != null; ancestor = ancestor.parent) {
-        if (ancestor == child) {
-          throw new ArgumentError(
-              "An object cannot be added as a child to one of it's children "
-              "(or children's children, etc.).");
-        }
-      }
-
+      _throwIfAncestors(child);
       _children.insert(index, child);
-      child._parent = this;
-      _dispatchAddedEvents(child);
+      _setChildParent(child);
     }
   }
 
@@ -143,13 +125,13 @@ abstract class DisplayObjectContainer
   /// [DisplayObjectContainer] are decreased by 1.
 
   void removeChild(DisplayObject child) {
-
-    int childIndex = _children.indexOf(child);
-    if (childIndex == -1) {
+    if (child.parent != this) {
       throw new ArgumentError("The supplied DisplayObject must be a child of the caller.");
+    } else {
+      int index = _children.indexOf(child);
+      _clearChildParent(child);
+      _children.removeAt(index);
     }
-
-    removeChildAt(childIndex);
   }
 
   /// Removes the child [DisplayObject] from the specified [index] position in
@@ -161,15 +143,13 @@ abstract class DisplayObjectContainer
   /// [DisplayObjectContainer] are decreased by 1.
 
   void removeChildAt(int index) {
-
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
+    } else {
+      DisplayObject child = _children[index];
+      _clearChildParent(child);
+      _children.removeAt(index);
     }
-
-    DisplayObject child = _children[index];
-    _dispatchRemovedEvents(child);
-    child._parent = null;
-    _children.removeAt(index);
   }
 
   /// Removes all child [DisplayObject] instances from the child list of this
@@ -186,16 +166,15 @@ abstract class DisplayObjectContainer
     var length = _children.length;
     if (length == 0) return;
 
-    if (beginIndex == null) beginIndex = 0;
-    if (endIndex == null) endIndex = length - 1;
+    int index1 = beginIndex is int ? beginIndex : 0;
+    int index2 = endIndex is int ? endIndex : length - 1;
 
-    if (beginIndex < 0 || endIndex < 0 || beginIndex >= length || endIndex >= length) {
+    if (index1 < 0 || index1 >= length || index2 < 0 || index2 >= length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     }
 
-    for (int i = beginIndex; i <= endIndex; i++) {
-      if (beginIndex >= _children.length) break;
-      removeChildAt(beginIndex);
+    for (int i = index1; i <= index2 && index1 < _children.length; i++) {
+      removeChildAt(index1);
     }
   }
 
@@ -206,38 +185,20 @@ abstract class DisplayObjectContainer
   /// is garbage collected if no other references to the child exist.
 
   void replaceChildAt(DisplayObject child, int index) {
-
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
-    }
-
-    var oldChild = _children[index];
-    var newChild = child;
-
-    if (newChild == this) {
+    } else if (child == this) {
       throw new ArgumentError("An object cannot be added as a child of itself.");
+    } else if (child.parent == this) {
+      if (_children.indexOf(child) == index) return;
+      throw new ArgumentError("The display object is already a child of this container.");
+    } else {
+      child.removeFromParent();
+      _throwIfAncestors(child);
+      _clearChildParent(_children[index]);
+      _children[index] = child;
+      _setChildParent(child);
     }
-
-    if (newChild.parent == this) {
-      if (_children.indexOf(newChild) == index) return;
-      throw new ArgumentError(
-          "The display object is already a child of this container.");
-    }
-
-    newChild.removeFromParent();
-
-    for (var parent = this.parent; parent != null; parent = parent.parent) {
-      if (parent == newChild) throw new ArgumentError(
-          "An object cannot be added as a child to one of it's children "
-          "(or children's children, etc.).");
-    }
-
-    _dispatchRemovedEvents(oldChild);
-    oldChild._parent = null;
-    newChild._parent = this;
-    _children[index] = newChild;
-    _dispatchAddedEvents(newChild);
-
   }
 
   //----------------------------------------------------------------------------
@@ -245,11 +206,11 @@ abstract class DisplayObjectContainer
   /// Returns the child [DisplayObject] at the specified [index].
 
   DisplayObject getChildAt(int index) {
-
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
+    } else {
+      return _children[index];
     }
-    return _children[index];
   }
 
   /// Returns the child [DisplayObject] that exists with the specified name.
@@ -262,7 +223,6 @@ abstract class DisplayObjectContainer
   /// [getChildByName] method has to traverse a list to access a child.
 
   DisplayObject getChildByName(String name) {
-
     for (int i = 0; i < _children.length; i++) {
       DisplayObject child = _children[i];
       if (child.name == name) return child;
@@ -292,18 +252,13 @@ abstract class DisplayObjectContainer
   /// between will DECREASE by 1 for their index reference.
 
   void setChildIndex(DisplayObject child, int index) {
-
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
-    }
-
-    int oldIndex = getChildIndex(child);
-    if (oldIndex == -1) {
+    } else if (child.parent != this) {
       throw new ArgumentError("The supplied DisplayObject must be a child of the caller.");
+    } else {
+      _addLocalChildAt(child, index);
     }
-
-    _children.removeAt(oldIndex);
-    _children.insert(index, child);
   }
 
   /// Swaps the z-order (front-to-back order) of the two specified child objects.
@@ -312,15 +267,13 @@ abstract class DisplayObjectContainer
   /// index positions.
 
   void swapChildren(DisplayObject child1, DisplayObject child2) {
-
     int index1 = getChildIndex(child1);
     int index2 = getChildIndex(child2);
-
     if (index1 == -1 || index2 == -1) {
       throw new ArgumentError("The supplied DisplayObject must be a child of the caller.");
+    } else {
+      swapChildrenAt(index1, index2);
     }
-
-    swapChildrenAt(index1, index2);
   }
 
   /// Swaps the z-order (front-to-back order) of the child objects at the two
@@ -330,7 +283,6 @@ abstract class DisplayObjectContainer
   /// index positions.
 
   void swapChildrenAt(int index1, int index2) {
-
     DisplayObject child1 = getChildAt(index1);
     DisplayObject child2 = getChildAt(index2);
     _children[index1] = child2;
@@ -474,18 +426,43 @@ abstract class DisplayObjectContainer
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  void _dispatchAddedEvents(DisplayObject child) {
-    child.dispatchEvent(new Event(Event.ADDED, true));
-    if (this.stage != null) {
-      _dispatchStageEvents(child, Event.ADDED_TO_STAGE);
+  void _throwIfAncestors(DisplayObject child) {
+    for (DisplayObject a = this; a != null; a = a.parent) {
+      if (a == child) throw new ArgumentError(
+          "An object cannot be added as a child to one of it's children "
+          "(or children's children, etc.).");
     }
   }
 
-  void _dispatchRemovedEvents(DisplayObject child) {
-    child.dispatchEvent(new Event(Event.REMOVED, true));
-    if (this.stage != null) {
-      _dispatchStageEvents(child, Event.REMOVED_FROM_STAGE);
+  void _addLocalChild(DisplayObject child) {
+    List<DisplayObject> children = _children;
+    DisplayObject oldChild = null;
+    DisplayObject newChild = child;
+    for (int i = children.length - 1; i >= 0; i--) {
+      oldChild = children[i];
+      children[i] = newChild;
+      newChild = oldChild;
+      if (child == newChild) break;
     }
+  }
+
+  void _addLocalChildAt(DisplayObject child, int index) {
+    List<DisplayObject> children = _children;
+    children.remove(child);
+    if (index > _children.length) index -= 1;
+    children.insert(index, child);
+  }
+
+  void _setChildParent(DisplayObject child) {
+    child._parent = this;
+    child.dispatchEvent(new Event(Event.ADDED, true));
+    if (stage != null) _dispatchStageEvents(child, Event.ADDED_TO_STAGE);
+  }
+
+  void _clearChildParent(DisplayObject child) {
+    child.dispatchEvent(new Event(Event.REMOVED, true));
+    if (stage != null) _dispatchStageEvents(child, Event.REMOVED_FROM_STAGE);
+    child._parent = null;
   }
 
   //----------------------------------------------------------------------------
