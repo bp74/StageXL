@@ -162,19 +162,15 @@ abstract class DisplayObjectContainer
   /// objects are garbage collected if no other references to the children exist.
 
   void removeChildren([int beginIndex, int endIndex]) {
-
-    var length = _children.length;
-    if (length == 0) return;
-
-    int index1 = beginIndex is int ? beginIndex : 0;
-    int index2 = endIndex is int ? endIndex : length - 1;
-
-    if (index1 < 0 || index1 >= length || index2 < 0 || index2 >= length) {
+    int length = _children.length;
+    int i1 = beginIndex is int ? beginIndex : 0;
+    int i2 = endIndex is int ? endIndex : length - 1;
+    if (i1 > i2) {
+      // do nothing
+    } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
       throw new ArgumentError("The supplied index is out of bounds.");
-    }
-
-    for (int i = index1; i <= index2 && index1 < _children.length; i++) {
-      removeChildAt(index1);
+    } else for (int i = i1; i <= i2 && i1 < _children.length; i++) {
+      removeChildAt(i1);
     }
   }
 
@@ -185,7 +181,9 @@ abstract class DisplayObjectContainer
   /// is garbage collected if no other references to the child exist.
 
   void replaceChildAt(DisplayObject child, int index) {
-    if (index < 0 || index >= _children.length) {
+    if (child is! DisplayObject) {
+      throw new ArgumentError("The object is not a display object.");
+    } else if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     } else if (child == this) {
       throw new ArgumentError("An object cannot be added as a child of itself.");
