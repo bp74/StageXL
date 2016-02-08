@@ -7,7 +7,7 @@ environment:
   sdk: '>=1.13.0 <2.0.0'
 documentation: http://www.stagexl.org/docs/api/index.html
 dependencies:
-  browser: any
   xml: any
 dev_dependencies:
+  browser: any
   test: any
