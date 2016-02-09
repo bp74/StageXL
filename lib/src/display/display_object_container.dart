@@ -73,9 +73,7 @@ abstract class DisplayObjectContainer
   /// other display object container.
 
   void addChild(DisplayObject child) {
-    if (child is! DisplayObject) {
-      throw new ArgumentError("The object is not a display object.");
-    } else if (child == this) {
+    if (child == this) {
       throw new ArgumentError("An object cannot be added as a child of itself.");
     } else if (child.parent == this) {
       _addLocalChild(child);
@@ -98,9 +96,7 @@ abstract class DisplayObjectContainer
   /// other display object container.
 
   void addChildAt(DisplayObject child, int index) {
-    if (child is! DisplayObject) {
-      throw new ArgumentError("The object is not a display object.");
-    } else if (index < 0 || index > _children.length) {
+    if (index < 0 || index > _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     } else if (child == this) {
       throw new ArgumentError("An object cannot be added as a child of itself.");
@@ -181,9 +177,7 @@ abstract class DisplayObjectContainer
   /// is garbage collected if no other references to the child exist.
 
   void replaceChildAt(DisplayObject child, int index) {
-    if (child is! DisplayObject) {
-      throw new ArgumentError("The object is not a display object.");
-    } else if (index < 0 || index >= _children.length) {
+    if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     } else if (child == this) {
       throw new ArgumentError("An object cannot be added as a child of itself.");

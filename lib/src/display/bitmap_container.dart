@@ -48,9 +48,7 @@ class BitmapContainer extends DisplayObject
   }
 
   void addChild(Bitmap child) {
-    if (child is! Bitmap) {
-      throw new ArgumentError("Only Bitmap instances allowed.");
-    } else if (child.parent == this) {
+    if (child.parent == this) {
       _addLocalChild(child);
     } else {
       child.removeFromParent();
@@ -60,9 +58,7 @@ class BitmapContainer extends DisplayObject
   }
 
   void addChildAt(Bitmap child, int index) {
-    if (child is! Bitmap) {
-      throw new ArgumentError("Only Bitmap instances allowed.");
-    } else if (child.parent == this) {
+    if (child.parent == this) {
       _addLocalChildAt(child, index);
     } else {
       child.removeFromParent();
@@ -106,9 +102,7 @@ class BitmapContainer extends DisplayObject
   }
 
   void replaceChildAt(Bitmap child, int index) {
-    if (child is! Bitmap) {
-      throw new ArgumentError("Only Bitmap instances allowed.");
-    } if (index < 0 || index >= _children.length) {
+    if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     } else if (child.parent == this) {
       if (_children.indexOf(child) == index) return;
