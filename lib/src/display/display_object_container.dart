@@ -12,7 +12,7 @@ part of stagexl.display;
 
 abstract class DisplayObjectContainer
     extends InteractiveObject
-    implements DisplayObjectParent {
+    implements DisplayObjectParent<DisplayObject> {
 
   final List<DisplayObject> _children = new List<DisplayObject>();
   bool _mouseChildren = true;

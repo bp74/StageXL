@@ -5,6 +5,6 @@
 .pub/
 build/
 example/
-packages/
+packages
 pubspec.lock
 
