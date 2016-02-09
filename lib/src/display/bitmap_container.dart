@@ -58,7 +58,9 @@ class BitmapContainer extends DisplayObject
   }
 
   void addChildAt(Bitmap child, int index) {
-    if (child.parent == this) {
+    if (index < 0 || index > _children.length) {
+      throw new ArgumentError("The supplied index is out of bounds.");
+    } else if (child.parent == this) {
       _addLocalChildAt(child, index);
     } else {
       child.removeFromParent();
