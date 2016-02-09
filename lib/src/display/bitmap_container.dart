@@ -23,8 +23,8 @@ class BitmapContainer extends DisplayObject
 
   //---------------------------------------------------------------------------
 
-  DisplayObjectChildren get children {
-    return new DisplayObjectChildren._(this, _children);
+  DisplayObjectChildren<Bitmap> get children {
+    return new DisplayObjectChildren<Bitmap>._(this, _children);
   }
 
   int get numChildren => _children.length;

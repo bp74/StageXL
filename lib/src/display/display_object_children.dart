@@ -5,13 +5,13 @@ part of stagexl.display;
 /// It implements an [Iterable] of display objects and therefore allows
 /// an easy iteration over the children of a [DisplayObjectParent].
 
-class DisplayObjectChildren implements Iterable<DisplayObject> {
+class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
 
   // TODO: implements EfficientLengthIterable<DisplayObject> (Dart SDK 1.11)
   // TODO: Implement the rest of the List<DisplayObject> interface ?
 
   final DisplayObjectParent parent;
-  final List<DisplayObject> _children;
+  final List<T> _children;
 
   DisplayObjectChildren._(this.parent, this._children);
 
@@ -21,43 +21,43 @@ class DisplayObjectChildren implements Iterable<DisplayObject> {
     this.parent.removeChildren();
   }
 
-  void add(DisplayObject displayObject) {
+  void add(T displayObject) {
     this.parent.addChild(displayObject);
   }
 
-  void addAll(Iterable<DisplayObject> displayObjects) {
+  void addAll(Iterable<T> displayObjects) {
     for(var displayObject in displayObjects){
       this.parent.addChild(displayObject);
     }
   }
 
-  int indexOf(DisplayObject displayObject) {
+  int indexOf(T displayObject) {
     return _children.indexOf(displayObject);
   }
 
-  void insert(int index, DisplayObject displayObject) {
+  void insert(int index, T displayObject) {
     this.parent.addChildAt(displayObject, index);
   }
 
-  void insertAll(int index, Iterable<DisplayObject> displayObjects) {
+  void insertAll(int index, Iterable<T> displayObjects) {
     for(var displayObject in displayObjects) {
       this.parent.addChildAt(displayObject, index++);
     }
   }
 
-  bool remove(DisplayObject displayObject) {
+  bool remove(T displayObject) {
     var index = _children.indexOf(displayObject);
     if (index >= 0) this.parent.removeChildAt(index);
     return index >= 0;
   }
 
-  DisplayObject removeAt(int index) {
+  T removeAt(int index) {
     var displayObject = _children[index];
     this.parent.removeChildAt(index);
     return displayObject;
   }
 
-  DisplayObject removeLast() {
+  T removeLast() {
     return removeAt(_children.length - 1);
   }
 
@@ -65,51 +65,51 @@ class DisplayObjectChildren implements Iterable<DisplayObject> {
     return this.parent.removeChildren(start, end);
   }
 
-  DisplayObject operator[](int index) {
+  T operator[](int index) {
     return _children[index];
   }
 
-  void operator[]=(int index, DisplayObject displayObject) {
+  void operator[]=(int index, T displayObject) {
     this.parent.replaceChildAt(displayObject, index);
   }
 
-  Iterable<DisplayObject> get reversed {
+  Iterable<T> get reversed {
     return _children.reversed;
   }
 
   //---------------------------------------------------------------------------
 
-  bool any(bool test(DisplayObject element)) {
+  bool any(bool test(T element)) {
     return _children.any(test);
   }
 
   bool contains(Object element) => _children.contains(element);
 
-  DisplayObject elementAt(int index) {
+  T elementAt(int index) {
     return _children[index];
   }
 
-  bool every(bool test(DisplayObject element)) {
+  bool every(bool test(T element)) {
     return _children.every(test);
   }
 
-  Iterable expand(Iterable f(DisplayObject element)) {
+  Iterable expand(Iterable f(T element)) {
     return _children.expand(f);
   }
 
-  DisplayObject get first {
+  T get first {
     return _children.first;
   }
 
-  DisplayObject firstWhere(bool test(DisplayObject element), {DisplayObject orElse()}) {
+  T firstWhere(bool test(T element), {T orElse()}) {
     return _children.firstWhere(test, orElse: orElse);
   }
 
-  dynamic fold(initialValue, dynamic combine(previousValue, DisplayObject element)) {
+  dynamic fold(initialValue, dynamic combine(previousValue, T element)) {
     return _children.fold(initialValue, combine);
   }
 
-  void forEach(void f(DisplayObject element)) {
+  void forEach(void f(T element)) {
     _children.forEach(f);
   }
 
@@ -121,7 +121,7 @@ class DisplayObjectChildren implements Iterable<DisplayObject> {
     return _children.isNotEmpty;
   }
 
-  Iterator<DisplayObject> get iterator {
+  Iterator<T> get iterator {
     return _children.iterator;
   }
 
@@ -129,11 +129,11 @@ class DisplayObjectChildren implements Iterable<DisplayObject> {
     return _children.join(separator);
   }
 
-  DisplayObject get last {
+  T get last {
     return _children.last;
   }
 
-  DisplayObject lastWhere(bool test(DisplayObject element), {DisplayObject orElse()}) {
+  T lastWhere(bool test(T element), {T orElse()}) {
     return _children.lastWhere(test, orElse: orElse);
   }
 
@@ -141,47 +141,47 @@ class DisplayObjectChildren implements Iterable<DisplayObject> {
     return _children.length;
   }
 
-  Iterable map(f(DisplayObject element)) {
+  Iterable map(f(T element)) {
     return _children.map(f);
   }
 
-  DisplayObject reduce(DisplayObject combine(DisplayObject value, DisplayObject element)) {
+  T reduce(T combine(T value, T element)) {
     return _children.reduce(combine);
   }
 
-  DisplayObject get single {
+  T get single {
     return _children.single;
   }
 
-  DisplayObject singleWhere(bool test(DisplayObject element)) {
+  T singleWhere(bool test(T element)) {
     return _children.singleWhere(test);
   }
 
-  Iterable<DisplayObject> skip(int count) {
+  Iterable<T> skip(int count) {
     return _children.skip(count);
   }
 
-  Iterable<DisplayObject> skipWhile(bool test(DisplayObject value)) {
+  Iterable<T> skipWhile(bool test(T value)) {
     return _children.skipWhile(test);
   }
 
-  Iterable<DisplayObject> take(int count) {
+  Iterable<T> take(int count) {
     return _children.take(count);
   }
 
-  Iterable<DisplayObject> takeWhile(bool test(DisplayObject value)) {
+  Iterable<T> takeWhile(bool test(T value)) {
     return _children.takeWhile(test);
   }
 
-  List<DisplayObject> toList({bool growable: true}) {
+  List<T> toList({bool growable: true}) {
     return _children.toList(growable: growable);
   }
 
-  Set<DisplayObject> toSet() {
+  Set<T> toSet() {
     return _children.toSet();
   }
 
-  Iterable<DisplayObject> where(bool test(DisplayObject element)) {
+  Iterable<T> where(bool test(T element)) {
     return _children.where(test);
   }
 }

@@ -20,8 +20,8 @@ abstract class DisplayObjectContainer
 
   //----------------------------------------------------------------------------
 
-  DisplayObjectChildren get children {
-    return new DisplayObjectChildren._(this, _children);
+  DisplayObjectChildren<DisplayObject> get children {
+    return new DisplayObjectChildren<DisplayObject>._(this, _children);
   }
 
   /// The number of children of this container.

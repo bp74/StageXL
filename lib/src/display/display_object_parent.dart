@@ -9,7 +9,7 @@ part of stagexl.display;
 abstract class DisplayObjectParent<T extends DisplayObject>
     extends DisplayObject {
 
-  DisplayObjectChildren get children;
+  DisplayObjectChildren<T> get children;
 
   int get numChildren;
 
