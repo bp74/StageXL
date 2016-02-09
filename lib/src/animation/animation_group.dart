@@ -9,16 +9,16 @@ part of stagexl.animation;
 /// Examples:
 ///
 ///     var ag = new AnimationGroup();
-///     ag.add(new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700));
-///     ag.add(new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500));
+///     ag.add(new Tween(sprite, 2.0, Transition.easeOutBounce)..animate.x.to(700));
+///     ag.add(new Tween(sprite, 2.0, Transition.linear)..animate.y.to(500));
 ///     ag.delay = 1.0;
 ///     ag.onStart = () => print("start");
 ///     ag.onComplete = () => print("complete");
 ///     juggler.add(ag);
 ///
 ///     juggler.addGroup([
-///        new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
-///        new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
+///        new Tween(sprite, 2.0, Transition.easeOutBounce)..animate.x.to(700),
+///        new Tween(sprite, 2.0, Transition.linear)..animate.y.to(500)])
 ///        ..onComplete = () => print("complete");
 ///
 class AnimationGroup implements Animatable {

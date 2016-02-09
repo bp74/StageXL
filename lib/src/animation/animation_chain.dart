@@ -10,16 +10,16 @@ part of stagexl.animation;
 /// Examples:
 ///
 ///     var ac = new AnimationChain();
-///     ac.add(new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700));
-///     ac.add(new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500));
+///     ac.add(new Tween(sprite, 2.0, Transition.easeOutBounce)..animate.x.to(700));
+///     ac.add(new Tween(sprite, 2.0, Transition.linear)..animate.y.to(500));
 ///     ac.delay = 1.0;
 ///     ac.onStart = () => print("start");
 ///     ac.onComplete = () => print("complete");
 ///     juggler.add(ac);
 ///
 ///     juggler.addChain([
-///         new Tween(sprite, 2.0, TransitionFunction.easeOutBounce)..animate.x.to(700),
-///         new Tween(sprite, 2.0, TransitionFunction.linear)..animate.y.to(500)])
+///         new Tween(sprite, 2.0, Transition.easeOutBounce)..animate.x.to(700),
+///         new Tween(sprite, 2.0, Transition.linear)..animate.y.to(500)])
 ///        ..onComplete = () => print("complete");
 ///
 class AnimationChain implements Animatable {

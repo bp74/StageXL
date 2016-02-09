@@ -11,7 +11,7 @@ part of stagexl.animation;
 ///
 /// Examples:
 ///
-///     var tween = new Tween(mySprite, 1.0, TransitionFunction.easeInCubic);
+///     var tween = new Tween(mySprite, 1.0, Transition.easeInCubic);
 ///     tween.delay = 0.5;
 ///     tween.animate.alpha.to(0.0);  // target value = 0.0
 ///     tween.animate.x.by(10.0);     // delta value = 10.0;
@@ -23,7 +23,7 @@ part of stagexl.animation;
 ///     sawtooth.animate.y.to(10);
 ///     stage.juggler.add(sawtooth);
 ///
-///     stage.juggler.addTween(mySprite, 1.0, TransitionFunction.easeInCubic)
+///     stage.juggler.addTween(mySprite, 1.0, Transition.easeInCubic)
 ///       ..delay = 0.5
 ///       ..animate.alpha.to(0.0);
 
