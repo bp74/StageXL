@@ -138,14 +138,14 @@ class Graphics {
   }
 
   /// Apply a fill gradient to the **previously drawn** vector object.
-  GraphicsGradient fillGradient(GraphicsGradient gradient) {
+  GraphicsCommandFillGradient fillGradient(GraphicsGradient gradient) {
     var command = new GraphicsCommandFillGradient(gradient);
     this.addCommand(command);
     return command;
   }
 
   /// Apply a fill pattern to the **previously drawn** vector object.
-  GraphicsPattern fillPattern(GraphicsPattern pattern) {
+  GraphicsCommandFillPattern fillPattern(GraphicsPattern pattern) {
     var command = new GraphicsCommandFillPattern(pattern);
     this.addCommand(command);
     return command;
