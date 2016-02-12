@@ -517,37 +517,31 @@ abstract class DisplayObject
 
       var matrix = _transformationMatrix;
       num rotation = _rotation;
-      num scaleX = _scaleX;
-      num scaleY = _scaleY;
       num skewX = _skewX;
       num skewY = _skewY;
 
-      // ToDo: https://bugzilla.mozilla.org/show_bug.cgi?id=661452
-      if (scaleX > -0.0001 && scaleX < 0.0001) scaleX = (scaleX >= 0) ? 0.0001 : -0.0001;
-      if (scaleY > -0.0001 && scaleY < 0.0001) scaleY = (scaleY >= 0) ? 0.0001 : -0.0001;
-
       if (skewX != 0.0 || skewY != 0.0) {
-        num ma = scaleX * cos(skewY + rotation);
-        num mb = scaleX * sin(skewY + rotation);
-        num mc = - scaleY * sin(skewX + rotation);
-        num md = scaleY * cos(skewX + rotation);
+        num ma = _scaleX * cos(skewY + rotation);
+        num mb = _scaleX * sin(skewY + rotation);
+        num mc = - _scaleY * sin(skewX + rotation);
+        num md = _scaleY * cos(skewX + rotation);
         num mx = _x - _pivotX * ma - _pivotY * mc;
         num my = _y - _pivotX * mb - _pivotY * md;
         matrix.setTo(ma, mb, mc, md, mx, my);
       } else if (rotation != 0.0) {
         num cr = cos(rotation);
         num sr = sin(rotation);
-        num ma = scaleX * cr;
-        num mb = scaleX * sr;
-        num mc = - scaleY * sr;
-        num md = scaleY * cr;
+        num ma = _scaleX * cr;
+        num mb = _scaleX * sr;
+        num mc = - _scaleY * sr;
+        num md = _scaleY * cr;
         num mx = _x - _pivotX * ma - _pivotY * mc;
         num my = _y - _pivotX * mb - _pivotY * md;
         matrix.setTo(ma, mb, mc, md, mx, my);
       } else {
-        num mx = _x - _pivotX * scaleX;
-        num my = _y - _pivotY * scaleY;
-        matrix.setTo(scaleX, 0.0, 0.0, scaleY, mx, my);
+        num mx = _x - _pivotX * _scaleX;
+        num my = _y - _pivotY * _scaleY;
+        matrix.setTo(_scaleX, 0.0, 0.0, _scaleY, mx, my);
       }
     }
 
