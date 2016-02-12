@@ -177,33 +177,4 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     return new Rectangle<int>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 
-  //---------------------------------------------------------------------------
-  //---------------------------------------------------------------------------
-
-  /// Use [left] instead.
-  @deprecated
-  T get x => left;
-
-  @deprecated
-  void set x(T value) { left = value; }
-
-  /// Use [top] instead.
-  @deprecated
-  T get y => top;
-
-  @deprecated
-  void set y(T value) { top = value; }
-
-  /// Use [containsRectangle] instead.
-  @deprecated
-  bool containsRect(math.Rectangle<num> r) => this.containsRectangle(r);
-
-  /// Use [boundingBox] instead.
-  @deprecated
-  Rectangle<T> union(math.Rectangle<T> rect) => this.boundingBox(rect);
-
-  /// Use the == operator instead.
-  @deprecated
-  bool equals(math.Rectangle<num> other) => this == other;
-
 }

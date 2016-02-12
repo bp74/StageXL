@@ -22,7 +22,3 @@ part 'animation/tween.dart';
 part 'animation/tween_object.dart';
 part 'animation/tween_property.dart';
 part 'animation/tween_property_accessor.dart';
-
-/// Deprecated. Please use [TransitionFunction] instead.
-@deprecated
-typedef num EaseFunction(num ratio);

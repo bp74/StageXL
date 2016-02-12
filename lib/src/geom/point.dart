@@ -121,35 +121,4 @@ class Point<T extends num> implements math.Point<T> {
     return dx * dx + dy * dy;
   }
 
-  //---------------------------------------------------------------------------
-  //---------------------------------------------------------------------------
-
-  /// The distance from the origin (0, 0) coordinates to this Point.
-  ///
-  /// This property is deprecated. Please use [magnitude] instead.
-
-  @deprecated
-  num get length => magnitude;
-
-  /// Add [other] to `this`, as if both points were vectors.
-  ///
-  /// This method is deprecated. Please use the + operator instead.
-
-  @deprecated
-  Point<T> add(math.Point<T> other) => this + other;
-
-  /// Subtract [other] from `this`, as if both points were vectors.
-  ///
-  /// This method is deprecated. Please use the - operator instead.
-
-  @deprecated
-  Point<T> subtract(math.Point<T> other) => this - other;
-
-  /// A `Point` is only equal to another `Point` with the same coordinates.
-  ///
-  /// This method is deprecated. Please use the == operator instead.
-
-  @deprecated
-  bool equals(math.Point<T> other) => this == other;
-
 }
