@@ -108,12 +108,7 @@ class RenderContextCanvas extends RenderContext {
       context.globalCompositeOperation = blendMode.compositeOperation;
     }
 
-    if (matrix.det < 0.001 && matrix.det >= -0.001) {
-
-      // Workaround scaling issue on Firefox Linux
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=661452
-
-    } else if (rotation == 0) {
+    if (rotation == 0) {
 
       context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
