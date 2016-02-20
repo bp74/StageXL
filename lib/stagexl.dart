@@ -31,7 +31,6 @@ export 'src/geom.dart';
 export 'src/media.dart';
 export 'src/resources.dart';
 export 'src/text.dart';
-export 'src/toolkit.dart';
 export 'src/ui.dart';
 
 //-----------------------------------------------------------------------------

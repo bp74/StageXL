@@ -293,12 +293,11 @@ abstract class DisplayObject
 
   /// The availability and visibility of the display object.
   ///
-  /// Turning off a display object has the same effect as setting the
-  /// [visible] property. This property exists only for compatibility
-  /// reasons to the 'Toolkit for Dart' (a Dart/StageXL code generator
-  /// for Adobe Flash Professional).
-  ///
-  /// It's recommended that you use [visible] instead of this property.
+  /// Turning off a display object is similar to setting the [visible] property.
+  /// The [off] property is used by third party runtimes like StageXL_GAF and
+  /// StageXL_Toolkit to disable a DisplayObject without changing the [visible]
+  /// state or removing it from the container. It's recommended that users
+  /// do not use [off] but [visible] instead.
 
   bool get off => _off;
 
