@@ -26,6 +26,7 @@ StageXL extension libraries.
 * Bitmap Fonts: <https://github.com/bp74/StageXL_BitmapFont>
 * GAF Runtime: <https://github.com/bp74/StageXL_GAF>
 * Spine Runtime: <https://github.com/bp74/StageXL_Spine>
+* Toolkit Runtime: <https://github.com/bp74/StageXL_Toolkit>
 * DragonBones Runtime: <https://github.com/bp74/StageXL_DragonBones>
 * Flump Runtime: <https://github.com/bp74/StageXL_Flump>
 * Particle Emitter: <https://github.com/bp74/StageXL_Particle>
