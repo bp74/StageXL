@@ -2,36 +2,29 @@ part of stagexl.engine;
 
 class RenderFrameBuffer {
 
-  RenderContextWebGL _renderContext = null;
-  RenderStencilBuffer _renderStencilBuffer = null;
   RenderTexture _renderTexture = null;
+  RenderStencilBuffer _renderStencilBuffer = null;
+  RenderContextWebGL _renderContext = null;
 
   int _contextIdentifier = -1;
   gl.Framebuffer _framebuffer = null;
   gl.RenderingContext _renderingContext = null;
 
-  int _width = 0;
-  int _height = 0;
-
   RenderFrameBuffer.rawWebGL(int width, int height) {
-    _width = ensureInt(width);
-    _height = ensureInt(height);
     _renderTexture = new RenderTexture.rawWebGL(width, height);
     _renderStencilBuffer = new RenderStencilBuffer.rawWebGL(width, height);
   }
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  int get width => _width;
-  int get height => _height;
+  int get width => _renderTexture.width;
+  int get height => _renderTexture.height;
+  int get contextIdentifier => _contextIdentifier;
 
   RenderTexture get renderTexture => _renderTexture;
   RenderStencilBuffer get renderStencilBuffer => _renderStencilBuffer;
 
-  gl.Framebuffer get framebuffer => _framebuffer;
-  int get contextIdentifier => _contextIdentifier;
-
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   /// Call the dispose method to release memory allocated by WebGL.
 
@@ -47,18 +40,7 @@ class RenderFrameBuffer {
     _framebuffer = null;
   }
 
-  //-----------------------------------------------------------------------------------------------
-
-  void resize(int width, int height) {
-    if (_width != width || _height != height) {
-      _width = width;
-      _height = height;
-      _renderTexture.resize(width, height);
-      _renderStencilBuffer.resize(width, height);
-    }
-  }
-
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void activate(RenderContextWebGL renderContext) {
 

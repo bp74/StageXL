@@ -234,14 +234,14 @@ class RenderContextWebGL extends RenderContext {
 
     var filterRenderState = new RenderState(this);
     var filterProjectionMatrix = new Matrix3D.fromIdentity();
-    var filterRenderFrameBuffer = this.getRenderFrameBuffer();
+    var filterRenderFrameBuffer = this.getRenderFrameBuffer(boundsWidth, boundsHeight);
     var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
 
     filterProjectionMatrix.translate(-boundsLeft, -boundsTop, 0.0);
     filterProjectionMatrix.scale(2.0 / boundsWidth, 2.0 / boundsHeight, 1.0);
     filterProjectionMatrix.translate(-1.0, -1.0, 0.0);
 
-    filterRenderFrameBuffer.resize(boundsWidth, boundsHeight);
+    releaseRenderTexture(filterRenderFrameBuffer.renderTexture);
     filterRenderState.globalMatrix.scale(pixelRatio, pixelRatio);
     renderFrameBufferMap[0] = filterRenderFrameBuffer;
 
@@ -304,8 +304,7 @@ class RenderContextWebGL extends RenderContext {
           this.activateRenderFrameBuffer(filterRenderFrameBuffer);
           this.activateBlendMode(BlendMode.NORMAL);
         } else {
-          filterRenderFrameBuffer = this.getRenderFrameBuffer();
-          filterRenderFrameBuffer.resize(boundsWidth, boundsHeight);
+          filterRenderFrameBuffer = this.getRenderFrameBuffer(boundsWidth, boundsHeight);
           renderFrameBufferMap[renderPassTarget] = filterRenderFrameBuffer;
           this.activateRenderFrameBuffer(filterRenderFrameBuffer);
           this.activateBlendMode(BlendMode.NORMAL);
@@ -320,7 +319,6 @@ class RenderContextWebGL extends RenderContext {
 
         if (renderPassSources.skip(pass + 1).every((rps) => rps != renderPassSource)) {
           renderFrameBufferMap.remove(renderPassSource);
-          this.flush();
           this.releaseRenderFrameBuffer(sourceRenderFrameBuffer);
         }
       }
@@ -337,17 +335,40 @@ class RenderContextWebGL extends RenderContext {
     return _renderPrograms.putIfAbsent(name, ifAbsent);
   }
 
-  RenderFrameBuffer getRenderFrameBuffer() {
-    if (_renderFrameBufferPool.length > 0) {
-      return _renderFrameBufferPool.removeLast();
+  RenderFrameBuffer getRenderFrameBuffer(int width, int height) {
+    if (_renderFrameBufferPool.length == 0) {
+      return new RenderFrameBuffer.rawWebGL(width, height);
     } else {
-      return new RenderFrameBuffer.rawWebGL(1, 1);
+      var renderFrameBuffer = _renderFrameBufferPool.removeLast();
+      var renderTexture = renderFrameBuffer.renderTexture;
+      var renderStencilBuffer = renderFrameBuffer.renderStencilBuffer;
+      if (renderTexture.width != width || renderTexture.height != height) {
+        releaseRenderTexture(renderTexture);
+        renderTexture.resize(width, height);
+        renderStencilBuffer.resize(width, height);
+      }
+      return renderFrameBuffer;
     }
   }
 
   void releaseRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
     if (renderFrameBuffer is RenderFrameBuffer) {
+      _activeRenderProgram.flush();
       _renderFrameBufferPool.add(renderFrameBuffer);
+    }
+  }
+
+  void releaseRenderTexture(RenderTexture renderTexture) {
+    for (int i = 0; i < 8; i++) {
+      if (i == 0 && identical(renderTexture, _activeRenderTexture)) {
+        _activeRenderTexture = null;
+        _renderingContext.activeTexture(gl.TEXTURE0);
+        _renderingContext.bindTexture(gl.TEXTURE_2D, null);
+      } else if (i > 0 && identical(renderTexture, _activeRenderTextures[i])) {
+        _activeRenderTextures[i] = null;
+        _renderingContext.activeTexture(gl.TEXTURE0 + i);
+        _renderingContext.bindTexture(gl.TEXTURE_2D, null);
+      }
     }
   }
 
