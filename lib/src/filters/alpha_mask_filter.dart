@@ -108,16 +108,13 @@ class AlphaMaskFilterProgram extends RenderProgram {
     varying vec4 vMskLimit;
     varying float vAlpha;   
 
-    float insideLimit(vec2 v, vec2 bottomLeft, vec2 topRight) {
-      vec2 s = step(bottomLeft, v) - step(topRight, v);
-      return s.x * s.y;
-    }
-
     void main() {
       vec4 texColor = texture2D(uTexSampler, vTexCoord.xy);
       vec4 mskColor = texture2D(uMskSampler, vMskCoord.xy);
-      float t = insideLimit(vMskCoord, vMskLimit.xy, vMskLimit.zw);
-      gl_FragColor = texColor * vAlpha * mskColor.a * t;
+      vec2 s1 = step(vMskLimit.xy, vMskCoord.xy);
+      vec2 s2 = step(vMskCoord.xy, vMskLimit.zw);
+      float sAlpha = s1.x * s1.y * s2.x * s2.y;
+      gl_FragColor = texColor * (mskColor.a * vAlpha * sAlpha);
     }
     """;
 
