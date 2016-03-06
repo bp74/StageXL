@@ -7,9 +7,6 @@ part of stagexl.display;
 
 class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
 
-  // TODO: implements EfficientLengthIterable<DisplayObject> (Dart SDK 1.11)
-  // TODO: Implement the rest of the List<DisplayObject> interface ?
-
   final DisplayObjectParent parent;
   final List<T> _children;
 

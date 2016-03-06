@@ -15,7 +15,7 @@ class MockSound extends Sound {
   //-------------------------------------------------------------------------------------------------
 
   num get length {
-    // ToDo: We could load the WAV-file, parse the header and get the correct length!
+    // We could load the WAV-file, parse the header and get the correct length!
     return double.NAN;
   }
 

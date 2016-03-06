@@ -521,7 +521,11 @@ abstract class DisplayObject
       num skewX = _skewX;
       num skewY = _skewY;
 
-      // ToDo: https://bugzilla.mozilla.org/show_bug.cgi?id=661452
+      // Having a scale of 0 is bad, the matrix.det gets zero which causes
+      // infinite values on a inverted matrix. It also causes a bug on
+      // Firefox in some Linux distrubutions:
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=661452
+
       if (scaleX > -0.0001 && scaleX < 0.0001) scaleX = (scaleX >= 0) ? 0.0001 : -0.0001;
       if (scaleY > -0.0001 && scaleY < 0.0001) scaleY = (scaleY >= 0) ? 0.0001 : -0.0001;
 
