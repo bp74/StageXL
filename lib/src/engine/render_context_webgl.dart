@@ -8,7 +8,6 @@ class RenderContextWebGL extends RenderContext {
   gl.RenderingContext _renderingContext = null;
   Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
 
-  RenderTexture _activeRenderTexture = null;
   RenderProgram _activeRenderProgram = null;
   RenderFrameBuffer _activeRenderFrameBuffer = null;
   RenderStencilBuffer _activeRenderStencilBuffer = null;
@@ -29,8 +28,8 @@ class RenderContextWebGL extends RenderContext {
   final RenderBufferIndex renderBufferIndex = new RenderBufferIndex(16384);
   final RenderBufferVertex renderBufferVertex = new RenderBufferVertex(32768);
 
+  final List<RenderTexture> _activeRenderTextures = new  List<RenderTexture>(8);
   final List<RenderFrameBuffer> _renderFrameBufferPool = new List<RenderFrameBuffer>();
-  final Map<int, RenderTexture> _activeRenderTextures = new  Map<int, RenderTexture>();
   final Map<String, RenderProgram> _renderPrograms = new Map<String, RenderProgram>();
 
   //---------------------------------------------------------------------------
@@ -72,7 +71,7 @@ class RenderContextWebGL extends RenderContext {
   gl.RenderingContext get rawContext => _renderingContext;
   RenderEngine get renderEngine => RenderEngine.WebGL;
 
-  RenderTexture get activeRenderTexture => _activeRenderTexture;
+  RenderTexture get activeRenderTexture => _activeRenderTextures[0];
   RenderProgram get activeRenderProgram => _activeRenderProgram;
   RenderFrameBuffer get activeRenderFrameBuffer => _activeRenderFrameBuffer;
   Matrix3D get activeProjectionMatrix => _projectionMatrix;
@@ -359,12 +358,8 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void releaseRenderTexture(RenderTexture renderTexture) {
-    for (int i = 0; i < 8; i++) {
-      if (i == 0 && identical(renderTexture, _activeRenderTexture)) {
-        _activeRenderTexture = null;
-        _renderingContext.activeTexture(gl.TEXTURE0);
-        _renderingContext.bindTexture(gl.TEXTURE_2D, null);
-      } else if (i > 0 && identical(renderTexture, _activeRenderTextures[i])) {
+    for (int i = 0; i < _activeRenderTextures.length; i++) {
+      if (identical(renderTexture, _activeRenderTextures[i])) {
         _activeRenderTextures[i] = null;
         _renderingContext.activeTexture(gl.TEXTURE0 + i);
         _renderingContext.bindTexture(gl.TEXTURE_2D, null);
@@ -418,19 +413,15 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void activateRenderTexture(RenderTexture renderTexture) {
-    if (!identical(renderTexture, _activeRenderTexture)) {
+    if (!identical(renderTexture, _activeRenderTextures[0])) {
       _activeRenderProgram.flush();
-      _activeRenderTexture = renderTexture;
-      _activeRenderTexture.activate(this, gl.TEXTURE0);
+      _activeRenderTextures[0] = renderTexture;
+      renderTexture.activate(this, gl.TEXTURE0);
     }
   }
 
   void activateRenderTextureAt(RenderTexture renderTexture, int index) {
-    if (index < 0 || index > 7) {
-      throw new RangeError.range(index, 0, 7, "index");
-    } else if (index == 0) {
-      activateRenderTexture(renderTexture);
-    } else if (!identical(renderTexture, _activeRenderTextures[index])) {
+    if (!identical(renderTexture, _activeRenderTextures[index])) {
       _activeRenderProgram.flush();
       _activeRenderTextures[index] = renderTexture;
       renderTexture.activate(this, gl.TEXTURE0 + index);
