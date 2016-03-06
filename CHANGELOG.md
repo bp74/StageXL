@@ -8,6 +8,10 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 0.13.4
+  * Fixed an issue with filters caused by resizing of FrameBuffers. 
+  * Fixed AlphaMaskFilter with better fragment shader code (again).
+  
 #### Pub version 0.13.3
   * Moved the 'Toolkit for Dart' to a dedicated StageXL extension package.
   * Fixed Graphics.fillGradient and Graphics.fillPattern return types.
