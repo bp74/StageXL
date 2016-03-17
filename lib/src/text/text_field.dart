@@ -517,8 +517,6 @@ class TextField extends InteractiveObject {
 
     _refreshPending &= 255 - 2;
 
-    print("refresh: $pixelRatioGlobal, $pixelRatioCache");
-
     var width = max(1, _width * pixelRatioGlobal).ceil();
     var height =  max(1, _height * pixelRatioGlobal).ceil();
 
