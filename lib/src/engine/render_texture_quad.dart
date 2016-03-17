@@ -283,7 +283,7 @@ class RenderTextureQuad {
   /// [pixelRatio] into account. Please read more about HiDpi textures to
   /// learn more about this topic.
 
-  RenderTextureQuad clip(Rectangle<int> rectangle) {
+  RenderTextureQuad clip(Rectangle<num> rectangle) {
     int rL = (rectangle.left * pixelRatio).round();
     int rT = (rectangle.top * pixelRatio).round();
     int rR = (rectangle.right * pixelRatio).round();
@@ -303,7 +303,7 @@ class RenderTextureQuad {
   /// [pixelRatio] into account. Please read more about HiDpi textures to
   /// learn more about this topic.
 
-  RenderTextureQuad cut(Rectangle<int> rectangle) {
+  RenderTextureQuad cut(Rectangle<num> rectangle) {
     int rL = (rectangle.left * pixelRatio).round();
     int rT = (rectangle.top * pixelRatio).round();
     int rR = (rectangle.right * pixelRatio).round();

@@ -26,7 +26,7 @@ class NormalMapFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
     // TODO: implement NormalMapFilter for BitmapDatas.
   }
 

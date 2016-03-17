@@ -8,7 +8,7 @@ abstract class BitmapFilter extends RenderFilter {
   List<int> get renderPassSources => const [0];
   List<int> get renderPassTargets => const [1];
 
-  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
   }
 
   void renderFilter(

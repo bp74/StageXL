@@ -31,7 +31,7 @@ class BitmapData implements BitmapDrawable {
 
   //----------------------------------------------------------------------------
 
-  factory BitmapData(int width, int height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
+  factory BitmapData(num width, num height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
     int textureWidth = (width * pixelRatio).round();
     int textureHeight = (height * pixelRatio).round();
     var renderTexture = new RenderTexture(textureWidth, textureHeight, fillColor);
@@ -51,7 +51,7 @@ class BitmapData implements BitmapDrawable {
     return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  factory BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<int> rectangle) {
+  factory BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<num> rectangle) {
     var renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
     return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
@@ -94,7 +94,7 @@ class BitmapData implements BitmapDrawable {
   BitmapData clone([num pixelRatio]) {
     if (pixelRatio == null) pixelRatio = renderTextureQuad.pixelRatio;
     var bitmapData = new BitmapData(width, height, Color.Transparent, pixelRatio);
-    bitmapData.drawPixels(this, this.rectangle, new Point<int>(0, 0));
+    bitmapData.drawPixels(this, this.rectangle, new Point<num>(0, 0));
     return bitmapData;
   }
 
@@ -118,8 +118,8 @@ class BitmapData implements BitmapDrawable {
   /// additional margin for each frame, you can specify this with the spacing or
   /// margin parameter (in pixel).
 
-  List<BitmapData> sliceIntoFrames(int frameWidth, int frameHeight, {
-    int frameCount: null, int frameSpacing: 0, int frameMargin: 0 }) {
+  List<BitmapData> sliceIntoFrames(num frameWidth, num frameHeight, {
+    int frameCount: null, num frameSpacing: 0, num frameMargin: 0 }) {
 
     var cols = (width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
     var rows = (height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
@@ -132,7 +132,7 @@ class BitmapData implements BitmapDrawable {
       var y = f ~/ cols;
       var frameLeft = frameMargin + x * (frameWidth + frameSpacing);
       var frameTop = frameMargin + y * (frameHeight + frameSpacing);
-      var rectangle = new Rectangle<int>(frameLeft, frameTop, frameWidth, frameHeight);
+      var rectangle = new Rectangle<num>(frameLeft, frameTop, frameWidth, frameHeight);
       var bitmapData = new BitmapData.fromBitmapData(this, rectangle);
       frames.add(bitmapData);
     }
@@ -148,13 +148,13 @@ class BitmapData implements BitmapDrawable {
 
   //----------------------------------------------------------------------------
 
-  void applyFilter(BitmapFilter filter, [Rectangle<int> rectangle]) {
+  void applyFilter(BitmapFilter filter, [Rectangle<num> rectangle]) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.applyFilter(filter, rectangle);
     updateBatch.update();
   }
 
-  void colorTransform(Rectangle<int> rect, ColorTransform transform) {
+  void colorTransform(Rectangle<num> rect, ColorTransform transform) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.colorTransform(rect, transform);
     updateBatch.update();
@@ -168,9 +168,9 @@ class BitmapData implements BitmapDrawable {
     updateBatch.update();
   }
 
-  void fillRect(Rectangle<int> rect, int color) {
+  void fillRect(Rectangle<num> rectangle, int color) {
     var updateBatch = new BitmapDataUpdateBatch(this);
-    updateBatch.fillRect(rect, color);
+    updateBatch.fillRect(rectangle, color);
     updateBatch.update();
   }
 
@@ -187,7 +187,7 @@ class BitmapData implements BitmapDrawable {
   ///
   /// NOTE: [drawPixels] is more performant.
 
-  void copyPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint) {
+  void copyPixels(BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.copyPixels(source, sourceRect, destPoint);
     updateBatch.update();
@@ -199,7 +199,7 @@ class BitmapData implements BitmapDrawable {
   /// BitmapData may be visible if pixels from [source] are transparent. Select a [blendMode]
   /// to customize how two pixels are blended.
 
-  void drawPixels(BitmapData source, Rectangle<int> sourceRect, Point<int> destPoint, [BlendMode blendMode]) {
+  void drawPixels(BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint, [BlendMode blendMode]) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.drawPixels(source, sourceRect, destPoint, blendMode);
     updateBatch.update();
@@ -209,14 +209,14 @@ class BitmapData implements BitmapDrawable {
 
   /// Get a single RGB pixel
 
-  int getPixel(int x, int y) {
+  int getPixel(num x, num y) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     return updateBatch.getPixel32(x, y) & 0x00FFFFFF;
   }
 
   /// Get a single RGBA pixel
 
-  int getPixel32(int x, int y) {
+  int getPixel32(num x, num y) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     return updateBatch.getPixel32(x, y);
   }
@@ -226,7 +226,7 @@ class BitmapData implements BitmapDrawable {
   /// setPixel updates the underlying texture. If you need to make multiple calls,
   /// use [BitmapDataUpdateBatch] instead.
 
-  void setPixel(int x, int y, int color) {
+  void setPixel(num x, num y, int color) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.setPixel32(x, y, color | 0xFF000000);
     updateBatch.update();
@@ -237,7 +237,7 @@ class BitmapData implements BitmapDrawable {
   /// setPixel32 updates the underlying texture. If you need to make multiple calls,
   /// use [BitmapDataUpdateBatch] instead.
 
-  void setPixel32(int x, int y, int color) {
+  void setPixel32(num x, num y, int color) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.setPixel32(x, y, color);
     updateBatch.update();

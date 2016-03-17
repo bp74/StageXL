@@ -27,7 +27,7 @@ class TintFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     bool isLittleEndianSystem = env.isLittleEndianSystem;
 

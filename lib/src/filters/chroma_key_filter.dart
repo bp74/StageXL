@@ -82,7 +82,7 @@ class ChromaKeyFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  void apply(BitmapData bitmapData, [Rectangle<int> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
