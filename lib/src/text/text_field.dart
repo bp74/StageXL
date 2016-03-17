@@ -264,10 +264,9 @@ class TextField extends InteractiveObject {
 
   @override
   void renderFiltered(RenderState renderState) {
-
     if (_type == TextFieldType.INPUT) {
       super.renderFiltered(renderState);
-    } if (renderState.renderContext is RenderContextWebGL || _cacheAsBitmap) {
+    } else if (renderState.renderContext is RenderContextWebGL || _cacheAsBitmap) {
       _refreshTextLineMetrics();
       _refreshCache(renderState.globalMatrix);
       renderState.renderTextureQuadFiltered(_renderTextureQuad, this.filters);
@@ -510,22 +509,25 @@ class TextField extends InteractiveObject {
 
   _refreshCache(Matrix globalMatrix) {
 
-    if ((_refreshPending & 2) == 0) {
-      return;
-    } else {
-      _refreshPending &= 255 - 2;
-    }
+    var pixelRatioGlobal = sqrt(globalMatrix.det.abs());
+    var pixelRatioCache = _renderTextureQuad?.pixelRatio ?? 0.0;
+    if (pixelRatioCache < pixelRatioGlobal * 0.80) _refreshPending |= 2;
+    if (pixelRatioCache > pixelRatioGlobal * 1.25) _refreshPending |= 2;
+    if ((_refreshPending & 2) == 0) return;
 
-    var pixelRatio = sqrt(globalMatrix.det.abs());
-    var width = max(1, _width * pixelRatio).ceil();
-    var height =  max(1, _height * pixelRatio).ceil();
+    _refreshPending &= 255 - 2;
+
+    print("refresh: $pixelRatioGlobal, $pixelRatioCache");
+
+    var width = max(1, _width * pixelRatioGlobal).ceil();
+    var height =  max(1, _height * pixelRatioGlobal).ceil();
 
     if (_renderTexture == null) {
       _renderTexture = new RenderTexture(width, height, Color.Transparent);
-      _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
+      _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatioGlobal);
     } else {
       _renderTexture.resize(width, height);
-      _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatio);
+      _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatioGlobal);
     }
 
     var matrix = _renderTextureQuad.drawMatrix;
