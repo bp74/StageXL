@@ -38,7 +38,7 @@ class RenderBufferIndex {
       _renderingContext = renderContext.rawContext;
       _buffer = _renderingContext.createBuffer();
       _renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _buffer);
-      _renderingContext.bufferDataTyped(gl.ELEMENT_ARRAY_BUFFER, data, usage);
+      _renderingContext.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, usage);
     }
 
     _renderingContext.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, _buffer);
@@ -46,7 +46,7 @@ class RenderBufferIndex {
 
   void update() {
     var update = new Int16List.view(data.buffer, 0, this.position);
-    _renderingContext.bufferSubDataTyped(gl.ELEMENT_ARRAY_BUFFER, 0, update);
+    _renderingContext.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, update);
   }
 
 }

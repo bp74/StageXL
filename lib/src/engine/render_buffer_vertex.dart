@@ -38,7 +38,7 @@ class RenderBufferVertex {
       _renderingContext = renderContext.rawContext;
       _buffer = _renderingContext.createBuffer();
       _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _buffer);
-      _renderingContext.bufferDataTyped(gl.ARRAY_BUFFER, data, usage);
+      _renderingContext.bufferData(gl.ARRAY_BUFFER, data, usage);
     }
 
     _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _buffer);
@@ -46,7 +46,7 @@ class RenderBufferVertex {
 
   void update() {
     var update = new Float32List.view(data.buffer, 0, this.position);
-    _renderingContext.bufferSubDataTyped(gl.ARRAY_BUFFER, 0, update);
+    _renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, update);
   }
 
   void bindAttribute(int index, int size, int stride, int offset) {
