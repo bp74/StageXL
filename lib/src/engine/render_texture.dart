@@ -186,7 +186,7 @@ class RenderTexture {
     if (_textureSourceWorkaround) {
       _canvas.context2D.drawImage(_source, 0, 0);
       _renderContext.activateRenderTexture(this);
-      _renderingContext.texImage2DCanvas(target, 0, rgba, rgba, type, _canvas);
+      _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _canvas);
     } else {
       _renderContext.activateRenderTexture(this);
       _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _source);
@@ -222,7 +222,7 @@ class RenderTexture {
         // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
         _canvas = new CanvasElement(width: width, height: height);
         _canvas.context2D.drawImage(_source, 0, 0);
-        _renderingContext.texImage2DCanvas(target, 0, rgba, rgba, type, _canvas);
+        _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _canvas);
       }
 
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
