@@ -55,11 +55,11 @@ class HtmlObject extends DisplayObject {
 
   //-----------------------------------------------------------------------------------------------
 
-  _hideElement() {
+  void _hideElement() {
     _style.visibility = _styleVisibility = "hidden";
   }
 
-  _onRemovedFromStage(Event e) {
+  void _onRemovedFromStage(Event e) {
     _hideElement();
   }
 

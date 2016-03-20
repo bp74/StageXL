@@ -283,7 +283,7 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  _throwStageException() {
+  void _throwStageException() {
     throw new UnsupportedError(
         "The Stage class does not implement this property or method.");
   }
@@ -315,7 +315,7 @@ class Stage extends DisplayObjectContainer {
   /// the next frame will be rendered by the render loop. To receive the render
   /// event attach a listener to [DisplayObject.onRender].
 
-  invalidate() {
+  void invalidate() {
     if (_renderLoop != null) {
       _renderLoop.invalidate();
     }

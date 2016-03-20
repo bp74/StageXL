@@ -121,7 +121,7 @@ class AudioElementSoundChannel extends SoundChannel {
 
   //---------------------------------------------------------------------------
 
-  _onAudioElement(AudioElement audioElement) {
+  void _onAudioElement(AudioElement audioElement) {
 
     var mixer = SoundMixer._audioElementMixer;
 

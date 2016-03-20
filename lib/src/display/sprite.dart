@@ -152,7 +152,7 @@ class Sprite extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
 
   @override
-  render(RenderState renderState) {
+  void render(RenderState renderState) {
     if (_graphics != null) _graphics.render(renderState);
     super.render(renderState);
   }

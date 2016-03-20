@@ -14,7 +14,7 @@ class ResourceManager {
     return _resources.containsKey(key);
   }
 
-  _addResource(String kind, String name, String url, Future loader) {
+  void _addResource(String kind, String name, String url, Future loader) {
 
     var key = "$kind.$name";
     var resource = new ResourceManagerResource(kind, name, url, loader);

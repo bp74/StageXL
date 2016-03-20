@@ -56,7 +56,7 @@ final List<EventStreamSubscription> _enterFrameSubscriptions = [];
 final List<EventStreamSubscription> _exitFrameSubscriptions = [];
 final List<EventStreamSubscription> _renderSubscriptions = [];
 
-_dispatchBroadcastEvent(BroadcastEvent broadcastEvent,
+void _dispatchBroadcastEvent(BroadcastEvent broadcastEvent,
     List<EventStreamSubscription> subscriptions) {
 
   // Dispatch event to current subscriptions.

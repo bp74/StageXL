@@ -5,7 +5,7 @@
 library stagexl.internal.jenkins_hash;
 
 
-/**
+/*
  * This is the [Jenkins hash function][1] but using masking to keep
  * values in SMI range.
  *
