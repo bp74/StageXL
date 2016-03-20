@@ -18,7 +18,7 @@ class Graphics {
   final List<GraphicsCommand> _originalCommands = new List<GraphicsCommand>();
   final List<GraphicsCommand> _compiledCommands = new List<GraphicsCommand>();
 
-  Rectangle<num> _bounds = null;
+  Rectangle<num> _bounds;
 
   //---------------------------------------------------------------------------
 

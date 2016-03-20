@@ -3,8 +3,8 @@ part of stagexl.engine;
 abstract class RenderProgram {
 
   int _contextIdentifier = -1;
-  gl.RenderingContext _renderingContext = null;
-  gl.Program _program = null;
+  gl.RenderingContext _renderingContext ;
+  gl.Program _program ;
 
   Map<String, int> _attributes;
   Map<String, gl.UniformLocation> _uniforms;

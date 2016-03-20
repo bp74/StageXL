@@ -45,8 +45,8 @@ class Event {
   String _type;
   bool _bubbles;
   EventPhase _eventPhase = EventPhase.AT_TARGET;
-  EventDispatcher _target = null;
-  EventDispatcher _currentTarget = null;
+  EventDispatcher _target ;
+  EventDispatcher _currentTarget ;
   bool _isPropagationStopped = false;
   bool _isImmediatePropagationStopped = false;
 

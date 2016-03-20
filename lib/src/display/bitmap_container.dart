@@ -144,7 +144,7 @@ class BitmapContainer extends DisplayObject
 
   void _addLocalChild(Bitmap child) {
     List<Bitmap> children = _children;
-    Bitmap oldChild = null;
+    Bitmap oldChild;
     Bitmap newChild = child;
     for (int i = children.length - 1; i >= 0; i--) {
       oldChild = children[i];
@@ -209,7 +209,7 @@ class BitmapContainer extends DisplayObject
 
 class _BitmapContainerRenderState extends RenderState {
 
-  Bitmap bitmap = null;
+  Bitmap bitmap;
   final BlendMode blendMode;
   final double alpha;
 

@@ -11,8 +11,8 @@ class RenderTextureQuad {
   final Int16List ixListQuad = new Int16List(6);
   final Float32List vxListQuad = new Float32List(16);
 
-  Int16List _ixList = null;
-  Float32List _vxList = null;
+  Int16List _ixList ;
+  Float32List _vxList ;
   bool _hasCustomVertices = false;
 
   //---------------------------------------------------------------------------

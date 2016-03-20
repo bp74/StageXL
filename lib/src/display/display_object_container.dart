@@ -363,7 +363,7 @@ abstract class DisplayObjectContainer
     localX = localX.toDouble();
     localY = localY.toDouble();
 
-    DisplayObject hit = null;
+    DisplayObject hit;
 
     for (int i = _children.length - 1; i >= 0; i--) {
       var child = _children[i];
@@ -428,7 +428,7 @@ abstract class DisplayObjectContainer
 
   void _addLocalChild(DisplayObject child) {
     List<DisplayObject> children = _children;
-    DisplayObject oldChild = null;
+    DisplayObject oldChild;
     DisplayObject newChild = child;
     for (int i = children.length - 1; i >= 0; i--) {
       oldChild = children[i];

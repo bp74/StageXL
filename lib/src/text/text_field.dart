@@ -3,7 +3,7 @@ part of stagexl.text;
 class TextField extends InteractiveObject {
 
   String _text = "";
-  TextFormat _defaultTextFormat = null;
+  TextFormat _defaultTextFormat;
 
   String _autoSize = TextFieldAutoSize.NONE;
   String _type = TextFieldType.DYNAMIC;

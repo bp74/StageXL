@@ -20,7 +20,7 @@ class TextureAtlasFrame {
   final Float32List vxList;
   final Int16List ixList;
 
-  BitmapData _bitmapData = null;
+  BitmapData _bitmapData;
 
   //---------------------------------------------------------------------------
 

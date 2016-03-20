@@ -2,7 +2,7 @@ part of stagexl.drawing;
 
 class _GraphicsPathSegment extends _GraphicsMeshSegment {
 
-  bool _clockwise = null;
+  bool _clockwise;
   bool _closed = false;
 
   _GraphicsPathSegment() : super(16, 32);

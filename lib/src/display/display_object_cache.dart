@@ -8,8 +8,8 @@ class _DisplayObjectCache {
   bool debugBorder = true;
 
   Rectangle bounds = new Rectangle<int>(0, 0, 256, 256);
-  RenderTexture renderTexture = null;
-  RenderTextureQuad renderTextureQuad = null;
+  RenderTexture renderTexture;
+  RenderTextureQuad renderTextureQuad;
 
   _DisplayObjectCache(this.displayObject);
 

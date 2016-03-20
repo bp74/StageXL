@@ -5,13 +5,13 @@ class RenderContextWebGL extends RenderContext {
   static int _globalContextIdentifier = 0;
   final CanvasElement _canvasElement;
 
-  gl.RenderingContext _renderingContext = null;
+  gl.RenderingContext _renderingContext;
   Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
 
-  RenderProgram _activeRenderProgram = null;
-  RenderFrameBuffer _activeRenderFrameBuffer = null;
-  RenderStencilBuffer _activeRenderStencilBuffer = null;
-  BlendMode _activeBlendMode = null;
+  RenderProgram _activeRenderProgram;
+  RenderFrameBuffer _activeRenderFrameBuffer;
+  RenderStencilBuffer _activeRenderStencilBuffer;
+  BlendMode _activeBlendMode;
 
   bool _contextValid = true;
   int _contextIdentifier = 0;
@@ -263,8 +263,8 @@ class RenderContextWebGL extends RenderContext {
 
     for (int i = 0; i < filters.length; i++) {
 
-      RenderTextureQuad sourceRenderTextureQuad = null;
-      RenderFrameBuffer sourceRenderFrameBuffer = null;
+      RenderTextureQuad sourceRenderTextureQuad;
+      RenderFrameBuffer sourceRenderFrameBuffer;
       RenderFilter filter = filters[i];
 
       List<int> renderPassSources = filter.renderPassSources;

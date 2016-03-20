@@ -7,7 +7,7 @@ class _MouseButton {
   final String mouseClickEventType;
   final String mouseDoubleClickEventType;
 
-  InteractiveObject target = null;
+  InteractiveObject target;
   bool buttonDown = false;
   int clickTime = 0;
   int clickCount = 0;

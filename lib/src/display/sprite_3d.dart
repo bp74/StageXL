@@ -15,7 +15,7 @@ part of stagexl.display;
 ///
 class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
-  Graphics _graphics = null;
+  Graphics _graphics;
 
   /// Specifies the Graphics object that belongs to this sprite where vector
   /// drawing commands can occur.
@@ -33,7 +33,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// Specifies the display object over which the sprite is being dragged, or on
   /// which the sprite was dropped.
 
-  DisplayObject dropTarget = null;
+  DisplayObject dropTarget;
 
   /// Lets the user drag this sprite with the mouse or the current touch point.
   ///
@@ -115,14 +115,14 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// because the sprite designated as the hit area receives the user input
   /// events instead of your sprite button.
 
-  Sprite hitArea = null;
+  Sprite hitArea;
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
 
     var hitArea = this.hitArea;
     var graphics = _graphics;
-    var target = null;
+    var target;
 
     if (hitArea != null) {
       var point = new Point<num>(localX, localY);

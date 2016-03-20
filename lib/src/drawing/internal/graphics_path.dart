@@ -2,7 +2,7 @@ part of stagexl.drawing;
 
 class _GraphicsPath extends _GraphicsMesh {
 
-  _GraphicsPathSegment _currentSegment = null;
+  _GraphicsPathSegment _currentSegment;
 
   _GraphicsPath();
 

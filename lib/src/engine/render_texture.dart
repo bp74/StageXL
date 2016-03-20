@@ -8,12 +8,12 @@ class RenderTexture {
   CanvasImageSource _source;
   CanvasElement _canvas;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
-  RenderContextWebGL _renderContext = null;
+  RenderContextWebGL _renderContext;
 
   int _contextIdentifier = -1;
   bool _textureSourceWorkaround = false;
-  gl.RenderingContext _renderingContext = null;
-  gl.Texture _texture = null;
+  gl.RenderingContext _renderingContext;
+  gl.Texture _texture;
 
   //-----------------------------------------------------------------------------------------------
 
