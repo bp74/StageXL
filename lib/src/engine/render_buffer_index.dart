@@ -9,8 +9,8 @@ class RenderBufferIndex {
   int count = 0;      // count of indices
 
   int _contextIdentifier = -1;
-  gl.Buffer _buffer = null;
-  gl.RenderingContext _renderingContext = null;
+  gl.Buffer _buffer;
+  gl.RenderingContext _renderingContext;
 
   //---------------------------------------------------------------------------
 

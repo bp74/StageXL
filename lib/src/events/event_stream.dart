@@ -138,7 +138,7 @@ class EventStream<T extends Event> extends Stream<T> {
 
   //----------------------------------------------------------------------------
 
-  _unsubscribe(EventListener eventListener, bool captures) {
+  void _unsubscribe(EventListener eventListener, bool captures) {
 
     var subscriptions = _subscriptions;
 
@@ -152,7 +152,7 @@ class EventStream<T extends Event> extends Stream<T> {
 
   //----------------------------------------------------------------------------
 
-  _cancelSubscription(EventStreamSubscription eventStreamSubscription) {
+  void _cancelSubscription(EventStreamSubscription eventStreamSubscription) {
 
     eventStreamSubscription._canceled = true;
 
@@ -178,7 +178,7 @@ class EventStream<T extends Event> extends Stream<T> {
 
   //----------------------------------------------------------------------------
 
-  _dispatchEventInternal(T event, EventDispatcher target, EventPhase eventPhase)  {
+  void _dispatchEventInternal(T event, EventDispatcher target, EventPhase eventPhase)  {
 
     var subscriptions = _subscriptions;
     var isCapturing = eventPhase == EventPhase.CAPTURING_PHASE;

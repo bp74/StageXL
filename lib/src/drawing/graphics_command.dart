@@ -4,7 +4,7 @@ part of stagexl.drawing;
 
 abstract class GraphicsCommand {
 
-  Graphics _graphics = null;
+  Graphics _graphics;
 
   //---------------------------------------------------------------------------
 

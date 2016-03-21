@@ -11,7 +11,7 @@ class _ContextState {
 
   _ContextState(this.previousContextState);
 
-  _ContextState _nextContextState = null;
+  _ContextState _nextContextState;
   _ContextState get nextContextState {
     return _nextContextState ??= new _ContextState(this);
   }

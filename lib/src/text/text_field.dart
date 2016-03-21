@@ -3,7 +3,7 @@ part of stagexl.text;
 class TextField extends InteractiveObject {
 
   String _text = "";
-  TextFormat _defaultTextFormat = null;
+  TextFormat _defaultTextFormat;
 
   String _autoSize = TextFieldAutoSize.NONE;
   String _type = TextFieldType.DYNAMIC;
@@ -278,7 +278,7 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  _refreshTextLineMetrics() {
+  void _refreshTextLineMetrics() {
 
     if ((_refreshPending & 1) == 0) {
       return;
@@ -507,7 +507,7 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  _refreshCache(Matrix globalMatrix) {
+  void _refreshCache(Matrix globalMatrix) {
 
     var pixelRatioGlobal = sqrt(globalMatrix.det.abs());
     var pixelRatioCache = _renderTextureQuad?.pixelRatio ?? 0.0;
@@ -539,7 +539,7 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  _renderText(CanvasRenderingContext2D context) {
+  void _renderText(CanvasRenderingContext2D context) {
 
     var textFormat = _defaultTextFormat;
     var lineWidth = (textFormat.bold ? textFormat.size / 10 : textFormat.size / 20).ceil();
@@ -644,7 +644,7 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  _onKeyDown(KeyboardEvent keyboardEvent) {
+  void _onKeyDown(KeyboardEvent keyboardEvent) {
 
     if (_type == TextFieldType.INPUT) {
 
@@ -736,7 +736,7 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  _onTextInput(TextEvent textEvent) {
+  void _onTextInput(TextEvent textEvent) {
 
     if (_type == TextFieldType.INPUT) {
 
@@ -760,7 +760,7 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  _onMouseDown(MouseEvent mouseEvent) {
+  void _onMouseDown(MouseEvent mouseEvent) {
 
     var mouseX = mouseEvent.localX.toDouble();
     var mouseY = mouseEvent.localY.toDouble();

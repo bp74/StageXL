@@ -5,13 +5,13 @@ class RenderContextWebGL extends RenderContext {
   static int _globalContextIdentifier = 0;
   final CanvasElement _canvasElement;
 
-  gl.RenderingContext _renderingContext = null;
+  gl.RenderingContext _renderingContext;
   Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
 
-  RenderProgram _activeRenderProgram = null;
-  RenderFrameBuffer _activeRenderFrameBuffer = null;
-  RenderStencilBuffer _activeRenderStencilBuffer = null;
-  BlendMode _activeBlendMode = null;
+  RenderProgram _activeRenderProgram;
+  RenderFrameBuffer _activeRenderFrameBuffer;
+  RenderStencilBuffer _activeRenderStencilBuffer;
+  BlendMode _activeBlendMode;
 
   bool _contextValid = true;
   int _contextIdentifier = 0;
@@ -263,8 +263,8 @@ class RenderContextWebGL extends RenderContext {
 
     for (int i = 0; i < filters.length; i++) {
 
-      RenderTextureQuad sourceRenderTextureQuad = null;
-      RenderFrameBuffer sourceRenderFrameBuffer = null;
+      RenderTextureQuad sourceRenderTextureQuad;
+      RenderFrameBuffer sourceRenderFrameBuffer;
       RenderFilter filter = filters[i];
 
       List<int> renderPassSources = filter.renderPassSources;
@@ -460,13 +460,13 @@ class RenderContextWebGL extends RenderContext {
 
   //---------------------------------------------------------------------------
 
-  _onContextLost(gl.ContextEvent contextEvent) {
+  void _onContextLost(gl.ContextEvent contextEvent) {
     contextEvent.preventDefault();
     _contextValid = false;
     _contextLostEvent.add(new RenderContextEvent());
   }
 
-  _onContextRestored(gl.ContextEvent contextEvent) {
+  void _onContextRestored(gl.ContextEvent contextEvent) {
     _contextValid = true;
     _contextIdentifier = ++_globalContextIdentifier;
     _contextRestoredEvent.add(new RenderContextEvent());
@@ -474,7 +474,7 @@ class RenderContextWebGL extends RenderContext {
 
   //---------------------------------------------------------------------------
 
-  _updateStencilDepth(int stencilDepth) {
+  void _updateStencilDepth(int stencilDepth) {
     if (_activeRenderFrameBuffer is RenderFrameBuffer) {
       _activeRenderFrameBuffer.renderStencilBuffer.depth = stencilDepth;
       _updateStencilTest(stencilDepth);
@@ -484,7 +484,7 @@ class RenderContextWebGL extends RenderContext {
     }
   }
 
-  _updateStencilTest(int stencilDepth) {
+  void _updateStencilTest(int stencilDepth) {
     if (stencilDepth == 0) {
       _renderingContext.disable(gl.STENCIL_TEST);
     } else {

@@ -2,8 +2,8 @@ part of stagexl.drawing;
 
 abstract class _GraphicsMeshSegment {
 
-  Float32List _vertexBuffer = null;
-  Int16List _indexBuffer = null;
+  Float32List _vertexBuffer;
+  Int16List _indexBuffer;
 
   int _vertexCount = 0;
   int _indexCount = 0;

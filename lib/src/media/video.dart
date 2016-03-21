@@ -101,8 +101,8 @@ class Video {
 
     VideoElement videoElement = this.videoElement.clone(true);
     Completer<Video> completer = new Completer<Video>();
-    StreamSubscription onCanPlaySubscription = null;
-    StreamSubscription onErrorSubscription = null;
+    StreamSubscription onCanPlaySubscription;
+    StreamSubscription onErrorSubscription;
 
     void onCanPlay(html.Event e) {
       var video = new Video._(videoElement);

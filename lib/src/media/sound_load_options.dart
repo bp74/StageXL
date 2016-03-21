@@ -34,7 +34,7 @@ class SoundLoadOptions {
   /// browser. If this value is null, the alternative urls are calcualted
   /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
 
-  List<String> alternativeUrls = null;
+  List<String> alternativeUrls;
 
   /// Ignore loading errors and use a silent audio sample instead.
 

@@ -39,7 +39,7 @@ class CanvasShadowWrapper extends DisplayObject {
 
   //-----------------------------------------------------------------------------------------------
 
-  _throwUnsupportedError() {
+  void _throwUnsupportedError() {
     throw new UnsupportedError("CanvasShadowWrapper does not implement this property or method.");
   }
 

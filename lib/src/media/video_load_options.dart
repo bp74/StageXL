@@ -26,7 +26,7 @@ class VideoLoadOptions {
   /// browser. If this value is null, the alternative urls are calcualted
   /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
 
-  List<String> alternativeUrls = null;
+  List<String> alternativeUrls;
 
   /// Do not stream the video but download the video file as a whole.
   /// A DataUrl string will be used for the VideoElement source.

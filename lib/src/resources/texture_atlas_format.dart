@@ -68,8 +68,8 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     int frameWidth = ensureInt(frameMap["frame"][rotation == 0 ? "w" : "h"]);
     int frameHeight = ensureInt(frameMap["frame"][rotation == 0 ? "h" : "w"]);
 
-    Float32List vxList = null;
-    Int16List ixList = null;
+    Float32List vxList;
+    Int16List ixList;
 
     if (frameMap.containsKey("vertices")) {
 
@@ -123,7 +123,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
     var lines = source.split(splitRexExp);
     var lineIndex = 0;
     var imageBlock = true;
-    var renderTextureQuad = null;
+    var renderTextureQuad;
 
     //-----------------------------------------------------
 

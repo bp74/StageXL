@@ -50,9 +50,9 @@ class Stage extends DisplayObjectContainer {
 
   static StageOptions defaultOptions = new StageOptions();
 
-  CanvasElement _canvas = null;
-  RenderContext _renderContext = null;
-  RenderLoop _renderLoop = null;
+  CanvasElement _canvas;
+  RenderContext _renderContext;
+  RenderLoop _renderLoop;
 
   int _sourceWidth = 0;
   int _sourceHeight = 0;
@@ -64,7 +64,7 @@ class Stage extends DisplayObjectContainer {
   Matrix _clientTransformation = new Matrix.fromIdentity();
   Matrix _stageTransformation = new Matrix.fromIdentity();
 
-  RenderState _renderState = null;
+  RenderState _renderState;
   InputEventMode _inputEventMode = InputEventMode.MouseOnly;
   StageRenderMode _stageRenderMode = StageRenderMode.AUTO;
   StageScaleMode _stageScaleMode = StageScaleMode.SHOW_ALL;
@@ -72,7 +72,7 @@ class Stage extends DisplayObjectContainer {
 
   String _mouseCursor = MouseCursor.DEFAULT;
   Point<num> _mousePosition = new Point<num>(0.0, 0.0);
-  InteractiveObject _mouseTarget = null;
+  InteractiveObject _mouseTarget;
 
   List<_Drag> _drags = new List<_Drag>();
   Map<int, _TouchPoint> _touchPoints = new Map<int, _TouchPoint>();
@@ -88,7 +88,7 @@ class Stage extends DisplayObjectContainer {
 
   /// The interactive object with keyboard focus or null if focus is not set.
 
-  InteractiveObject focus = null;
+  InteractiveObject focus;
 
   /// Gets and sets the background color of this Stage.
 
@@ -283,7 +283,7 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  _throwStageException() {
+  void _throwStageException() {
     throw new UnsupportedError(
         "The Stage class does not implement this property or method.");
   }
@@ -315,7 +315,7 @@ class Stage extends DisplayObjectContainer {
   /// the next frame will be rendered by the render loop. To receive the render
   /// event attach a listener to [DisplayObject.onRender].
 
-  invalidate() {
+  void invalidate() {
     if (_renderLoop != null) {
       _renderLoop.invalidate();
     }
@@ -540,7 +540,7 @@ class Stage extends DisplayObjectContainer {
     int time = new DateTime.now().millisecondsSinceEpoch;
     int button = event.button;
 
-    InteractiveObject target = null;
+    InteractiveObject target;
     var stagePoint = _clientTransformation.transformPoint(event.client);
     var localPoint = new Point<num>(0.0, 0.0);
 
@@ -626,7 +626,7 @@ class Stage extends DisplayObjectContainer {
 
     //-----------------------------------------------------------------
 
-    String mouseEventType = null;
+    String mouseEventType;
     bool isClick = false;
     bool isDoubleClick = false;
 
@@ -827,7 +827,7 @@ class Stage extends DisplayObjectContainer {
 
     //-----------------------------------------------------------------
 
-    String touchEventType = null;
+    String touchEventType;
     bool isTap = false;
 
     if (eventType == "touchstart") {

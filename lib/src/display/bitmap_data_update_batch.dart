@@ -20,7 +20,7 @@ class BitmapDataUpdateBatch {
 
   /// Update the underlying rendering surface.
 
-  update() => this.bitmapData.renderTexture.update();
+  void update() => this.bitmapData.renderTexture.update();
 
   //---------------------------------------------------------------------------
 

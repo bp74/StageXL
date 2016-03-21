@@ -110,7 +110,7 @@ class Scale9Bitmap extends Bitmap {
 
   //---------------------------------------------------------------------------
 
-  _updateRenderTextureQuads() {
+  void _updateRenderTextureQuads() {
 
     var rtq = bitmapData.renderTextureQuad;
 

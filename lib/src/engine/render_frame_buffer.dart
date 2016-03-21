@@ -2,13 +2,13 @@ part of stagexl.engine;
 
 class RenderFrameBuffer {
 
-  RenderTexture _renderTexture = null;
-  RenderStencilBuffer _renderStencilBuffer = null;
-  RenderContextWebGL _renderContext = null;
+  RenderTexture _renderTexture;
+  RenderStencilBuffer _renderStencilBuffer;
+  RenderContextWebGL _renderContext;
 
   int _contextIdentifier = -1;
-  gl.Framebuffer _framebuffer = null;
-  gl.RenderingContext _renderingContext = null;
+  gl.Framebuffer _framebuffer;
+  gl.RenderingContext _renderingContext;
 
   RenderFrameBuffer.rawWebGL(int width, int height) {
     _renderTexture = new RenderTexture.rawWebGL(width, height);

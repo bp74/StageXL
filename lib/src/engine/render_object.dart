@@ -39,11 +39,13 @@ class _RenderTextureQuadObject implements RenderObject {
   final List<RenderFilter> filters;
   final Matrix transformationMatrix = new Matrix.fromIdentity();
   final BlendMode blendMode = BlendMode.NORMAL;
-  final RenderTextureQuad cache = null;
-  final RenderMask mask = null;
+  final RenderTextureQuad cache;
+  final RenderMask mask;
   final num alpha = 1.0;
 
-  _RenderTextureQuadObject(this.renderTextureQuad, this.filters);
+  _RenderTextureQuadObject(this.renderTextureQuad, this.filters)
+      : mask = null,
+        cache = null;
 
   Rectangle<num> get bounds {
     num w = renderTextureQuad.targetWidth;

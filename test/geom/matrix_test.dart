@@ -147,7 +147,7 @@ void main() {
 
 }
 
-verifyMatrix(Matrix m, num a, num b, num c, num d, num tx, num ty) {
+void verifyMatrix(Matrix m, num a, num b, num c, num d, num tx, num ty) {
   expect(m.a, closeTo(a, 0.00001));
   expect(m.b, closeTo(b, 0.00001));
   expect(m.c, closeTo(c, 0.00001));

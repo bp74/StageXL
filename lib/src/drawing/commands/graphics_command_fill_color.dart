@@ -18,7 +18,8 @@ class GraphicsCommandFillColor extends GraphicsCommandFill {
 
   //---------------------------------------------------------------------------
 
-  @override updateContext(GraphicsContext context) {
+  @override
+  void updateContext(GraphicsContext context) {
     context.fillColor(color);
   }
 

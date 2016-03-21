@@ -49,13 +49,13 @@ abstract class DisplayObject
   bool _visible = true;
   bool _off = false;
 
-  Mask _mask = null;
-  BlendMode _blendMode = null;
-  List<BitmapFilter> _filters = [];
-  _DisplayObjectCache _cache = null;
+  Mask _mask;
+  BlendMode _blendMode;
+  List<BitmapFilter> _filters = <BitmapFilter>[];
+  _DisplayObjectCache _cache;
 
   String _name = "";
-  DisplayObjectParent _parent = null;
+  DisplayObjectParent _parent;
 
   final Matrix _transformationMatrix = new Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
@@ -156,7 +156,7 @@ abstract class DisplayObject
 
   /// The user-defined data associated with this display object.
 
-  dynamic userData = null;
+  dynamic userData;
 
   /// The x-coordinate of is display object relative to the
   /// local coordinates of the parent [DisplayObjectContainer].
