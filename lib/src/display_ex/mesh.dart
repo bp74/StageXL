@@ -119,8 +119,8 @@ class Mesh extends DisplayObject {
 
   void setVertexUV(int vertex, num u, num v) {
     var offset = vertex << 2;
-    vxList[offset + 0] = u.toDouble();
-    vxList[offset + 1] = v.toDouble();
+    vxList[offset + 2] = u.toDouble();
+    vxList[offset + 3] = v.toDouble();
   }
 
   /// Set the corresponding vertex for an index.
