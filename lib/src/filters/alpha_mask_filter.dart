@@ -164,28 +164,24 @@ class AlphaMaskFilterProgram extends RenderProgram {
     mskMatrix.invertAndConcat(alphaMaskFilter.matrix);
     mskMatrix.invert();
 
-    // Check if the index and vertex buffer are valid and if
-    // we need to flush the render program to free the buffers.
+    // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData == null) return;
-    if (ixData.length < ixPosition + indexCount) flush();
+    if (ixPosition + indexCount >= ixData.length) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData == null) return;
-    if (vxData.length < vxPosition + vertexCount * 11) flush();
+    if (vxPosition + vertexCount * 11 >= vxData.length) flush();
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
-    var vxCount = renderBufferVertex.count;
-
     for(var i = 0; i < indexCount; i++) {
-      if (ixIndex > ixData.length - 1) break;
-      ixData[ixIndex] = vxCount + ixList[i];
-      ixIndex += 1;
+      ixData[ixIndex + i] = vxCount + ixList[i];
     }
 
     renderBufferIndex.position += indexCount;
@@ -193,15 +189,9 @@ class AlphaMaskFilterProgram extends RenderProgram {
 
     // copy vertex list
 
-    var vxIndex = renderBufferVertex.position;
-
     for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
-
-      if (o > vxList.length - 4) break;
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-
-      if (vxIndex > vxData.length - 11) break;
       vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
       vxData[vxIndex + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
       vxData[vxIndex + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;

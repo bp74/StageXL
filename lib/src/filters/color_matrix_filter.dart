@@ -320,35 +320,24 @@ class ColorMatrixFilterProgram extends RenderProgram {
     var colorMatrixList = colorMatrixFilter._colorMatrixList;
     var colorOffsetList = colorMatrixFilter._colorOffsetList;
 
-    var ma = matrix.a;
-    var mb = matrix.b;
-    var mc = matrix.c;
-    var md = matrix.d;
-    var mx = matrix.tx;
-    var my = matrix.ty;
-
-    // The following code contains dart2js_hints to keep
-    // the generated JavaScript code clean and fast!
+    // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData == null) return;
-    if (ixData.length < ixPosition + indexCount) flush();
+    if (ixPosition + indexCount >= ixData.length) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData == null) return;
-    if (vxData.length < vxPosition + vertexCount * 24) flush();
+    if (vxPosition + vertexCount * 24 >= vxData.length) flush();
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
-    var vxCount = renderBufferVertex.count;
-
     for(var i = 0; i < indexCount; i++) {
-      if (ixIndex > ixData.length - 1) break;
-      ixData[ixIndex] = vxCount + ixList[i];
-      ixIndex += 1;
+      ixData[ixIndex + i] = vxCount + ixList[i];
     }
 
     renderBufferIndex.position += indexCount;
@@ -356,21 +345,20 @@ class ColorMatrixFilterProgram extends RenderProgram {
 
     // copy vertex list
 
-    var vxIndex = renderBufferVertex.position;
+    var ma = matrix.a;
+    var mb = matrix.b;
+    var mc = matrix.c;
+    var md = matrix.d;
+    var mx = matrix.tx;
+    var my = matrix.ty;
 
     for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
-
-      if (o > vxList.length - 4) break;
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-      num u = vxList[o + 2];
-      num v = vxList[o + 3];
-
-      if (vxIndex > vxData.length - 24) break;
       vxData[vxIndex + 00] = mx + ma * x + mc * y;
       vxData[vxIndex + 01] = my + mb * x + md * y;
-      vxData[vxIndex + 02] = u;
-      vxData[vxIndex + 03] = v;
+      vxData[vxIndex + 02] = vxList[o + 2];
+      vxData[vxIndex + 03] = vxList[o + 3];
       vxData[vxIndex + 04] = colorMatrixList[00];
       vxData[vxIndex + 05] = colorMatrixList[01];
       vxData[vxIndex + 06] = colorMatrixList[02];

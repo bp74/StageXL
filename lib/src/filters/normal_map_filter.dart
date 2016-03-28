@@ -191,28 +191,24 @@ class NormalMapFilterProgram extends RenderProgram {
     num lightZ =  math.sqrt(texMatrix.det) * normalMapFilter.lightZ;
     num lightRadius = math.sqrt(texMatrix.det) * normalMapFilter.lightRadius;
 
-    // The following code contains dart2js_hints to keep
-    // the generated JavaScript code clean and fast!
+    // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData == null) return;
-    if (ixData.length < ixPosition + indexCount) flush();
+    if (ixPosition + indexCount >= ixData.length) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData == null) return;
-    if (vxData.length < vxPosition + vertexCount * 19) flush();
+    if (vxPosition + vertexCount * 19 >= vxData.length) flush();
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
-    var vxCount = renderBufferVertex.count;
-
     for(var i = 0; i < indexCount; i++) {
-      if (ixIndex > ixData.length - 1) break;
-      ixData[ixIndex] = vxCount + ixList[i];
-      ixIndex += 1;
+      ixData[ixIndex + i] = vxCount + ixList[i];
     }
 
     renderBufferIndex.position += indexCount;
@@ -220,15 +216,9 @@ class NormalMapFilterProgram extends RenderProgram {
 
     // copy vertex list
 
-    var vxIndex = renderBufferVertex.position;
-
     for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
-
-      if (o > vxList.length - 4) break;
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-
-      if (vxIndex > vxData.length - 19) break;
       vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
       vxData[vxIndex + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
       vxData[vxIndex + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
