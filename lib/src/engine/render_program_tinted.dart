@@ -53,6 +53,107 @@ class RenderProgramTinted extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
+  void renderTextureQuad(
+      RenderState renderState,
+      RenderTextureQuad renderTextureQuad,
+      num r, num g, num b, num a) {
+
+    if (renderTextureQuad.hasCustomVertices) {
+      var ixList = renderTextureQuad.ixList;
+      var vxList = renderTextureQuad.vxList;
+      this.renderTextureMesh(renderState, ixList, vxList, r, g, b, a);
+      return;
+    }
+
+    var alpha = renderState.globalAlpha;
+    var matrix = renderState.globalMatrix;
+    var vxList = renderTextureQuad.vxListQuad;
+    var ixListCount = 6;
+    var vxListCount = 4;
+
+    // The following code contains dart2js_hints to keep
+    // the generated JavaScript code clean and fast!
+
+    var ixData = renderBufferIndex.data;
+    var ixPosition = renderBufferIndex.position;
+    if (ixData.length < ixPosition + ixListCount) flush();
+
+    var vxData = renderBufferVertex.data;
+    var vxPosition = renderBufferVertex.position;
+    if (vxData.length < vxPosition + vxListCount * 8) flush();
+
+    // copy index list
+
+    var ixIndex = renderBufferIndex.position;
+    var vxOffset = renderBufferVertex.count;
+
+    if (ixIndex > ixData.length - 6) return;
+    ixData[ixIndex + 0] = vxOffset + 0;
+    ixData[ixIndex + 1] = vxOffset + 1;
+    ixData[ixIndex + 2] = vxOffset + 2;
+    ixData[ixIndex + 3] = vxOffset + 0;
+    ixData[ixIndex + 4] = vxOffset + 2;
+    ixData[ixIndex + 5] = vxOffset + 3;
+
+    renderBufferIndex.position += ixListCount;
+    renderBufferIndex.count += ixListCount;
+
+    // copy vertex list
+
+    var ma1 = vxList[0] * matrix.a + matrix.tx;
+    var ma2 = vxList[8] * matrix.a + matrix.tx;
+    var mb1 = vxList[0] * matrix.b + matrix.ty;
+    var mb2 = vxList[8] * matrix.b + matrix.ty;
+    var mc1 = vxList[1] * matrix.c;
+    var mc2 = vxList[9] * matrix.c;
+    var md1 = vxList[1] * matrix.d;
+    var md2 = vxList[9] * matrix.d;
+
+    var vxIndex = renderBufferVertex.position;
+    if (vxIndex > vxData.length - 32) return;
+
+    vxData[vxIndex + 00] = ma1 + mc1;
+    vxData[vxIndex + 01] = mb1 + md1;
+    vxData[vxIndex + 02] = vxList[2];
+    vxData[vxIndex + 03] = vxList[3];
+    vxData[vxIndex + 04] = r;
+    vxData[vxIndex + 05] = g;
+    vxData[vxIndex + 06] = b;
+    vxData[vxIndex + 07] = a * alpha;
+
+    vxData[vxIndex + 08] = ma2 + mc1;
+    vxData[vxIndex + 09] = mb2 + md1;
+    vxData[vxIndex + 10] = vxList[6];
+    vxData[vxIndex + 11] = vxList[7];
+    vxData[vxIndex + 12] = r;
+    vxData[vxIndex + 13] = g;
+    vxData[vxIndex + 14] = b;
+    vxData[vxIndex + 15] = a * alpha;
+
+    vxData[vxIndex + 16] = ma2 + mc2;
+    vxData[vxIndex + 17] = mb2 + md2;
+    vxData[vxIndex + 18] = vxList[10];
+    vxData[vxIndex + 19] = vxList[11];
+    vxData[vxIndex + 20] = r;
+    vxData[vxIndex + 21] = g;
+    vxData[vxIndex + 22] = b;
+    vxData[vxIndex + 23] = a * alpha;
+
+    vxData[vxIndex + 24] = ma1 + mc2;
+    vxData[vxIndex + 25] = mb1 + md2;
+    vxData[vxIndex + 26] = vxList[14];
+    vxData[vxIndex + 27] = vxList[15];
+    vxData[vxIndex + 28] = r;
+    vxData[vxIndex + 29] = g;
+    vxData[vxIndex + 30] = b;
+    vxData[vxIndex + 31] = a * alpha;
+
+    renderBufferVertex.position += vxListCount * 8;
+    renderBufferVertex.count += vxListCount;
+  }
+
+  //---------------------------------------------------------------------------
+
   void renderTextureMesh(
       RenderState renderState,
       Int16List ixList, Float32List vxList,
