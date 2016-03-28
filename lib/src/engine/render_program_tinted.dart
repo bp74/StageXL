@@ -32,8 +32,7 @@ class RenderProgramTinted extends RenderProgram {
     varying vec4 vColor; 
 
     void main() {
-      vec4 color = texture2D(uSampler, vTextCoord);
-      gl_FragColor = vec4(color.rgb * vColor.rgb * vColor.a, color.a * vColor.a);
+      gl_FragColor = texture2D(uSampler, vTextCoord) * vColor;
     }
     """;
 
@@ -70,6 +69,11 @@ class RenderProgramTinted extends RenderProgram {
     var vxList = renderTextureQuad.vxListQuad;
     var ixListCount = 6;
     var vxListCount = 4;
+
+    var ta = a * alpha;
+    var tr = r * ta;
+    var tg = g * ta;
+    var tb = b * ta;
 
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
@@ -116,37 +120,37 @@ class RenderProgramTinted extends RenderProgram {
     vxData[vxIndex + 01] = mb1 + md1;
     vxData[vxIndex + 02] = vxList[2];
     vxData[vxIndex + 03] = vxList[3];
-    vxData[vxIndex + 04] = r;
-    vxData[vxIndex + 05] = g;
-    vxData[vxIndex + 06] = b;
-    vxData[vxIndex + 07] = a * alpha;
+    vxData[vxIndex + 04] = tr;
+    vxData[vxIndex + 05] = tg;
+    vxData[vxIndex + 06] = tb;
+    vxData[vxIndex + 07] = ta;
 
     vxData[vxIndex + 08] = ma2 + mc1;
     vxData[vxIndex + 09] = mb2 + md1;
     vxData[vxIndex + 10] = vxList[6];
     vxData[vxIndex + 11] = vxList[7];
-    vxData[vxIndex + 12] = r;
-    vxData[vxIndex + 13] = g;
-    vxData[vxIndex + 14] = b;
-    vxData[vxIndex + 15] = a * alpha;
+    vxData[vxIndex + 12] = tr;
+    vxData[vxIndex + 13] = tg;
+    vxData[vxIndex + 14] = tb;
+    vxData[vxIndex + 15] = ta;
 
     vxData[vxIndex + 16] = ma2 + mc2;
     vxData[vxIndex + 17] = mb2 + md2;
     vxData[vxIndex + 18] = vxList[10];
     vxData[vxIndex + 19] = vxList[11];
-    vxData[vxIndex + 20] = r;
-    vxData[vxIndex + 21] = g;
-    vxData[vxIndex + 22] = b;
-    vxData[vxIndex + 23] = a * alpha;
+    vxData[vxIndex + 20] = tr;
+    vxData[vxIndex + 21] = tg;
+    vxData[vxIndex + 22] = tb;
+    vxData[vxIndex + 23] = ta;
 
     vxData[vxIndex + 24] = ma1 + mc2;
     vxData[vxIndex + 25] = mb1 + md2;
     vxData[vxIndex + 26] = vxList[14];
     vxData[vxIndex + 27] = vxList[15];
-    vxData[vxIndex + 28] = r;
-    vxData[vxIndex + 29] = g;
-    vxData[vxIndex + 30] = b;
-    vxData[vxIndex + 31] = a * alpha;
+    vxData[vxIndex + 28] = tr;
+    vxData[vxIndex + 29] = tg;
+    vxData[vxIndex + 30] = tb;
+    vxData[vxIndex + 31] = ta;
 
     renderBufferVertex.position += vxListCount * 8;
     renderBufferVertex.count += vxListCount;
@@ -163,6 +167,11 @@ class RenderProgramTinted extends RenderProgram {
     var alpha = renderState.globalAlpha;
     var ixListCount = ixList.length;
     var vxListCount = vxList.length >> 2;
+
+    var ta = a * alpha;
+    var tr = r * ta;
+    var tg = g * ta;
+    var tb = b * ta;
 
     // The following code contains dart2js_hints to keep
     // the generated JavaScript code clean and fast!
@@ -214,10 +223,10 @@ class RenderProgramTinted extends RenderProgram {
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = u;
       vxData[vxIndex + 3] = v;
-      vxData[vxIndex + 4] = r;
-      vxData[vxIndex + 5] = g;
-      vxData[vxIndex + 6] = b;
-      vxData[vxIndex + 7] = a * alpha;
+      vxData[vxIndex + 4] = tr;
+      vxData[vxIndex + 5] = tg;
+      vxData[vxIndex + 6] = tb;
+      vxData[vxIndex + 7] = ta;
       vxIndex += 8;
     }
 
