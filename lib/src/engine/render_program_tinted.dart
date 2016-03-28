@@ -9,11 +9,9 @@ class RenderProgramTinted extends RenderProgram {
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
-
     attribute vec2 aVertexPosition;
     attribute vec2 aVertexTextCoord;
     attribute vec4 aVertexColor;
-
     varying vec2 vTextCoord;
     varying vec4 vColor; 
 
@@ -75,29 +73,28 @@ class RenderProgramTinted extends RenderProgram {
     var tg = g * ta;
     var tb = b * ta;
 
-    // The following code contains dart2js_hints to keep
-    // the generated JavaScript code clean and fast!
+    // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData.length < ixPosition + ixListCount) flush();
+    if (ixPosition + ixListCount >= ixData.length) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData.length < vxPosition + vxListCount * 8) flush();
+    if (vxPosition + vxListCount * 8 >= vxData.length) flush();
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
-    var vxOffset = renderBufferVertex.count;
-
-    if (ixIndex > ixData.length - 6) return;
-    ixData[ixIndex + 0] = vxOffset + 0;
-    ixData[ixIndex + 1] = vxOffset + 1;
-    ixData[ixIndex + 2] = vxOffset + 2;
-    ixData[ixIndex + 3] = vxOffset + 0;
-    ixData[ixIndex + 4] = vxOffset + 2;
-    ixData[ixIndex + 5] = vxOffset + 3;
+    ixData[ixIndex + 0] = vxCount + 0;
+    ixData[ixIndex + 1] = vxCount + 1;
+    ixData[ixIndex + 2] = vxCount + 2;
+    ixData[ixIndex + 3] = vxCount + 0;
+    ixData[ixIndex + 4] = vxCount + 2;
+    ixData[ixIndex + 5] = vxCount + 3;
 
     renderBufferIndex.position += ixListCount;
     renderBufferIndex.count += ixListCount;
@@ -112,9 +109,6 @@ class RenderProgramTinted extends RenderProgram {
     var mc2 = vxList[9] * matrix.c;
     var md1 = vxList[1] * matrix.d;
     var md2 = vxList[9] * matrix.d;
-
-    var vxIndex = renderBufferVertex.position;
-    if (vxIndex > vxData.length - 32) return;
 
     vxData[vxIndex + 00] = ma1 + mc1;
     vxData[vxIndex + 01] = mb1 + md1;
@@ -173,26 +167,24 @@ class RenderProgramTinted extends RenderProgram {
     var tg = g * ta;
     var tb = b * ta;
 
-    // The following code contains dart2js_hints to keep
-    // the generated JavaScript code clean and fast!
+    // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData.length < ixPosition + ixListCount) flush();
+    if (ixPosition + ixListCount >= ixData.length) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData.length < vxPosition + vxListCount * 8) flush();
+    if (vxPosition + vxListCount * 8 >= vxData.length) flush();
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
-    var vxOffset = renderBufferVertex.count;
-
-    for(var i = 0; i < ixListCount; i++) {
-      if (ixIndex > ixData.length - 1) break;
-      ixData[ixIndex] = vxOffset + ixList[i];
-      ixIndex += 1;
+    for (var i = 0; i < ixListCount; i++) {
+      ixData[ixIndex + i] = vxCount + ixList[i];
     }
 
     renderBufferIndex.position += ixListCount;
@@ -207,22 +199,13 @@ class RenderProgramTinted extends RenderProgram {
     var mx = matrix.tx;
     var my = matrix.ty;
 
-    var vxIndex = renderBufferVertex.position;
-
-    for(var i = 0, o = 0; i < vxListCount; i++, o += 4) {
-
-      if (vxIndex > vxData.length - 8) break;
-      if (o > vxList.length - 4) break;
-
+    for (var i = 0, o = 0; i < vxListCount; i++, o += 4) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-      num u = vxList[o + 2];
-      num v = vxList[o + 3];
-
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
-      vxData[vxIndex + 2] = u;
-      vxData[vxIndex + 3] = v;
+      vxData[vxIndex + 2] = vxList[o + 2];
+      vxData[vxIndex + 3] = vxList[o + 3];
       vxData[vxIndex + 4] = tr;
       vxData[vxIndex + 5] = tg;
       vxData[vxIndex + 6] = tb;

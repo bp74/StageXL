@@ -9,11 +9,9 @@ class RenderProgramSimple extends RenderProgram {
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
-
     attribute vec2 aVertexPosition;
     attribute vec2 aVertexTextCoord;
     attribute float aVertexAlpha;
-
     varying vec2 vTextCoord;
     varying float vAlpha;
 
@@ -27,9 +25,7 @@ class RenderProgramSimple extends RenderProgram {
   String get fragmentShaderSource => """
 
     precision mediump float;
-
     uniform sampler2D uSampler;
-
     varying vec2 vTextCoord;
     varying float vAlpha;
 
@@ -71,29 +67,28 @@ class RenderProgramSimple extends RenderProgram {
     var ixListCount = 6;
     var vxListCount = 4;
 
-    // The following code contains dart2js_hints to keep
-    // the generated JavaScript code clean and fast!
+    // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData.length < ixPosition + ixListCount) flush();
+    if (ixPosition + ixListCount >= ixData.length) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData.length < vxPosition + vxListCount * 5) flush();
+    if (vxPosition + vxListCount * 5 >= vxData.length) flush();
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
-    var vxOffset = renderBufferVertex.count;
-
-    if (ixIndex > ixData.length - 6) return;
-    ixData[ixIndex + 0] = vxOffset + 0;
-    ixData[ixIndex + 1] = vxOffset + 1;
-    ixData[ixIndex + 2] = vxOffset + 2;
-    ixData[ixIndex + 3] = vxOffset + 0;
-    ixData[ixIndex + 4] = vxOffset + 2;
-    ixData[ixIndex + 5] = vxOffset + 3;
+    ixData[ixIndex + 0] = vxCount + 0;
+    ixData[ixIndex + 1] = vxCount + 1;
+    ixData[ixIndex + 2] = vxCount + 2;
+    ixData[ixIndex + 3] = vxCount + 0;
+    ixData[ixIndex + 4] = vxCount + 2;
+    ixData[ixIndex + 5] = vxCount + 3;
 
     renderBufferIndex.position += ixListCount;
     renderBufferIndex.count += ixListCount;
@@ -109,24 +104,24 @@ class RenderProgramSimple extends RenderProgram {
     var md1 = vxList[1] * matrix.d;
     var md2 = vxList[9] * matrix.d;
 
-    var vxIndex = renderBufferVertex.position;
-    if (vxIndex > vxData.length - 20) return;
-
     vxData[vxIndex + 00] = ma1 + mc1;
     vxData[vxIndex + 01] = mb1 + md1;
     vxData[vxIndex + 02] = vxList[2];
     vxData[vxIndex + 03] = vxList[3];
     vxData[vxIndex + 04] = alpha;
+
     vxData[vxIndex + 05] = ma2 + mc1;
     vxData[vxIndex + 06] = mb2 + md1;
     vxData[vxIndex + 07] = vxList[6];
     vxData[vxIndex + 08] = vxList[7];
     vxData[vxIndex + 09] = alpha;
+
     vxData[vxIndex + 10] = ma2 + mc2;
     vxData[vxIndex + 11] = mb2 + md2;
     vxData[vxIndex + 12] = vxList[10];
     vxData[vxIndex + 13] = vxList[11];
     vxData[vxIndex + 14] = alpha;
+
     vxData[vxIndex + 15] = ma1 + mc2;
     vxData[vxIndex + 16] = mb1 + md2;
     vxData[vxIndex + 17] = vxList[14];
@@ -148,26 +143,24 @@ class RenderProgramSimple extends RenderProgram {
     var ixListCount = ixList.length;
     var vxListCount = vxList.length >> 2;
 
-    // The following code contains dart2js_hints to keep
-    // the generated JavaScript code clean and fast!
+    // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData.length < ixPosition + ixListCount) flush();
+    if (ixPosition + ixListCount >= ixData.length) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData.length < vxPosition + vxListCount * 5) flush();
+    if (vxPosition + vxListCount * 5 >= vxData.length) flush();
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
-    var vxCount = renderBufferVertex.count;
-
-    for(var i = 0; i < ixListCount; i++) {
-      if (ixIndex > ixData.length - 1) break;
-      ixData[ixIndex] = vxCount + ixList[i];
-      ixIndex += 1;
+    for (var i = 0; i < ixListCount; i++) {
+      ixData[ixIndex + i] = vxCount + ixList[i];
     }
 
     renderBufferIndex.position += ixListCount;
@@ -182,21 +175,13 @@ class RenderProgramSimple extends RenderProgram {
     var mx = matrix.tx;
     var my = matrix.ty;
 
-    var vxIndex = renderBufferVertex.position;
-
-    for(var i = 0, o = 0; i < vxListCount; i++, o += 4) {
-
-      if (o > vxList.length - 4) break;
+    for (var i = 0, o = 0; i < vxListCount; i++, o += 4) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-      num u = vxList[o + 2];
-      num v = vxList[o + 3];
-
-      if (vxIndex > vxData.length - 5) break;
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
-      vxData[vxIndex + 2] = u;
-      vxData[vxIndex + 3] = v;
+      vxData[vxIndex + 2] = vxList[o + 2];
+      vxData[vxIndex + 3] = vxList[o + 3];
       vxData[vxIndex + 4] = alpha;
       vxIndex += 5;
     }

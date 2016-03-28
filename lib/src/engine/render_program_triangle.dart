@@ -55,25 +55,22 @@ class RenderProgramTriangle extends RenderProgram {
     var colorG = colorGetG(color) / 255.0;
     var colorB = colorGetB(color) / 255.0;
 
-    // The following code contains dart2js_hints to keep
-    // the generated JavaScript code clean and fast!
+    // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData == null) return;
-    if (ixData.length < ixPosition + indexCount) flush();
+    if (ixPosition + indexCount >= ixData.length) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData == null) return;
-    if (vxData.length < vxPosition + vertexCount * 6) flush();
+    if (vxPosition + vertexCount * 6 >= vxData.length) flush();
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
 
     // fill index buffer
 
-    var ixIndex = renderBufferIndex.position;
-    var vxCount = renderBufferVertex.count;
-
-    if (ixIndex > ixData.length - 3) return;
     ixData[ixIndex + 0] = vxCount + 0;
     ixData[ixIndex + 1] = vxCount + 1;
     ixData[ixIndex + 2] = vxCount + 2;
@@ -90,21 +87,20 @@ class RenderProgramTriangle extends RenderProgram {
     var tx = matrix.tx;
     var ty = matrix.ty;
 
-    var vxIndex = renderBufferVertex.position;
-    if (vxIndex > vxData.length - 18) return;
-
     vxData[vxIndex + 00] = x1 * a + y1 * c + tx;
     vxData[vxIndex + 01] = x1 * b + y1 * d + ty;
     vxData[vxIndex + 02] = colorR;
     vxData[vxIndex + 03] = colorG;
     vxData[vxIndex + 04] = colorB;
     vxData[vxIndex + 05] = colorA;
+
     vxData[vxIndex + 06] = x2 * a + y2 * c + tx;
     vxData[vxIndex + 07] = x2 * b + y2 * d + ty;
     vxData[vxIndex + 08] = colorR;
     vxData[vxIndex + 09] = colorG;
     vxData[vxIndex + 10] = colorB;
     vxData[vxIndex + 11] = colorA;
+
     vxData[vxIndex + 12] = x3 * a + y3 * c + tx;
     vxData[vxIndex + 13] = x3 * b + y3 * d + ty;
     vxData[vxIndex + 14] = colorR;
@@ -132,26 +128,24 @@ class RenderProgramTriangle extends RenderProgram {
     var colorG = colorGetG(color) / 255.0;
     var colorB = colorGetB(color) / 255.0;
 
-    // The following code contains dart2js_hints to keep
-    // the generated JavaScript code clean and fast!
+    // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
     var ixPosition = renderBufferIndex.position;
-    if (ixData.length < ixPosition + ixListCount) flush();
+    if (ixPosition + ixListCount >= ixData.length) flush();
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxData.length < vxPosition + vxListCount * 6) flush();
+    if (vxPosition + vxListCount * 6 >= vxData.length) flush();
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxOffset = renderBufferVertex.count;
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
-    var vxOffset = renderBufferVertex.count;
-
-    for(var i = 0; i < ixListCount; i++) {
-      if (ixIndex > ixData.length - 1) break;
-      ixData[ixIndex] = vxOffset + ixList[i];
-      ixIndex += 1;
+    for (var i = 0; i < ixListCount; i++) {
+      ixData[ixIndex + i] = vxOffset + ixList[i];
     }
 
     renderBufferIndex.position += ixListCount;
@@ -166,16 +160,9 @@ class RenderProgramTriangle extends RenderProgram {
     var mx = matrix.tx;
     var my = matrix.ty;
 
-    var vxIndex = renderBufferVertex.position;
-
-    for(var i = 0, o = 0 ; i < vxListCount; i++, o += 2) {
-
-      if (vxIndex > vxData.length - 6) break;
-      if (o > vxList.length - 2) break;
-
+    for (var i = 0, o = 0 ; i < vxListCount; i++, o += 2) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = colorR;
