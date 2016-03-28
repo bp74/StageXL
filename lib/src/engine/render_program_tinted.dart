@@ -68,11 +68,6 @@ class RenderProgramTinted extends RenderProgram {
     var ixListCount = 6;
     var vxListCount = 4;
 
-    var ta = a * alpha;
-    var tr = r * ta;
-    var tg = g * ta;
-    var tb = b * ta;
-
     // check buffer sizes and flush if necessary
 
     var ixData = renderBufferIndex.data;
@@ -110,41 +105,46 @@ class RenderProgramTinted extends RenderProgram {
     var md1 = vxList[1] * matrix.d;
     var md2 = vxList[9] * matrix.d;
 
+    var colorA = a * alpha;
+    var colorR = r * colorA;
+    var colorG = g * colorA;
+    var colorB = b * colorA;
+
     vxData[vxIndex + 00] = ma1 + mc1;
     vxData[vxIndex + 01] = mb1 + md1;
     vxData[vxIndex + 02] = vxList[2];
     vxData[vxIndex + 03] = vxList[3];
-    vxData[vxIndex + 04] = tr;
-    vxData[vxIndex + 05] = tg;
-    vxData[vxIndex + 06] = tb;
-    vxData[vxIndex + 07] = ta;
+    vxData[vxIndex + 04] = colorR;
+    vxData[vxIndex + 05] = colorG;
+    vxData[vxIndex + 06] = colorB;
+    vxData[vxIndex + 07] = colorA;
 
     vxData[vxIndex + 08] = ma2 + mc1;
     vxData[vxIndex + 09] = mb2 + md1;
     vxData[vxIndex + 10] = vxList[6];
     vxData[vxIndex + 11] = vxList[7];
-    vxData[vxIndex + 12] = tr;
-    vxData[vxIndex + 13] = tg;
-    vxData[vxIndex + 14] = tb;
-    vxData[vxIndex + 15] = ta;
+    vxData[vxIndex + 12] = colorR;
+    vxData[vxIndex + 13] = colorG;
+    vxData[vxIndex + 14] = colorB;
+    vxData[vxIndex + 15] = colorA;
 
     vxData[vxIndex + 16] = ma2 + mc2;
     vxData[vxIndex + 17] = mb2 + md2;
     vxData[vxIndex + 18] = vxList[10];
     vxData[vxIndex + 19] = vxList[11];
-    vxData[vxIndex + 20] = tr;
-    vxData[vxIndex + 21] = tg;
-    vxData[vxIndex + 22] = tb;
-    vxData[vxIndex + 23] = ta;
+    vxData[vxIndex + 20] = colorR;
+    vxData[vxIndex + 21] = colorG;
+    vxData[vxIndex + 22] = colorB;
+    vxData[vxIndex + 23] = colorA;
 
     vxData[vxIndex + 24] = ma1 + mc2;
     vxData[vxIndex + 25] = mb1 + md2;
     vxData[vxIndex + 26] = vxList[14];
     vxData[vxIndex + 27] = vxList[15];
-    vxData[vxIndex + 28] = tr;
-    vxData[vxIndex + 29] = tg;
-    vxData[vxIndex + 30] = tb;
-    vxData[vxIndex + 31] = ta;
+    vxData[vxIndex + 28] = colorR;
+    vxData[vxIndex + 29] = colorG;
+    vxData[vxIndex + 30] = colorB;
+    vxData[vxIndex + 31] = colorA;
 
     renderBufferVertex.position += vxListCount * 8;
     renderBufferVertex.count += vxListCount;
@@ -161,11 +161,6 @@ class RenderProgramTinted extends RenderProgram {
     var alpha = renderState.globalAlpha;
     var ixListCount = ixList.length;
     var vxListCount = vxList.length >> 2;
-
-    var ta = a * alpha;
-    var tr = r * ta;
-    var tg = g * ta;
-    var tb = b * ta;
 
     // check buffer sizes and flush if necessary
 
@@ -199,6 +194,11 @@ class RenderProgramTinted extends RenderProgram {
     var mx = matrix.tx;
     var my = matrix.ty;
 
+    var colorA = a * alpha;
+    var colorR = r * colorA;
+    var colorG = g * colorA;
+    var colorB = b * colorA;
+
     for (var i = 0, o = 0; i < vxListCount; i++, o += 4) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
@@ -206,10 +206,10 @@ class RenderProgramTinted extends RenderProgram {
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = vxList[o + 2];
       vxData[vxIndex + 3] = vxList[o + 3];
-      vxData[vxIndex + 4] = tr;
-      vxData[vxIndex + 5] = tg;
-      vxData[vxIndex + 6] = tb;
-      vxData[vxIndex + 7] = ta;
+      vxData[vxIndex + 4] = colorR;
+      vxData[vxIndex + 5] = colorG;
+      vxData[vxIndex + 6] = colorB;
+      vxData[vxIndex + 7] = colorA;
       vxIndex += 8;
     }
 

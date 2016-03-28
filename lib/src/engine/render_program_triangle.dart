@@ -24,7 +24,7 @@ class RenderProgramTriangle extends RenderProgram {
     varying vec4 vColor;
 
     void main() {
-      gl_FragColor = vec4(vColor.rgb * vColor.a, vColor.a);
+      gl_FragColor = vColor;
     }
     """;
 
@@ -49,11 +49,6 @@ class RenderProgramTriangle extends RenderProgram {
     var alpha = renderState.globalAlpha;
     var indexCount = 3;
     var vertexCount = 3;
-
-    var colorA = colorGetA(color) / 255.0 * alpha;
-    var colorR = colorGetR(color) / 255.0;
-    var colorG = colorGetG(color) / 255.0;
-    var colorB = colorGetB(color) / 255.0;
 
     // check buffer sizes and flush if necessary
 
@@ -80,29 +75,35 @@ class RenderProgramTriangle extends RenderProgram {
 
     // fill vertex buffer
 
-    var a = matrix.a;
-    var b = matrix.b;
-    var c = matrix.c;
-    var d = matrix.d;
-    var tx = matrix.tx;
-    var ty = matrix.ty;
+    var ma = matrix.a;
+    var mb = matrix.b;
+    var mc = matrix.c;
+    var md = matrix.d;
+    var mx = matrix.tx;
+    var my = matrix.ty;
 
-    vxData[vxIndex + 00] = x1 * a + y1 * c + tx;
-    vxData[vxIndex + 01] = x1 * b + y1 * d + ty;
+    var colorScale = 1 / 255.0;
+    var colorA = colorScale * colorGetA(color) * alpha;
+    var colorR = colorScale * colorGetR(color) * colorA;
+    var colorG = colorScale * colorGetG(color) * colorA;
+    var colorB = colorScale * colorGetB(color) * colorA;
+
+    vxData[vxIndex + 00] = x1 * ma + y1 * mc + mx;
+    vxData[vxIndex + 01] = x1 * mb + y1 * md + my;
     vxData[vxIndex + 02] = colorR;
     vxData[vxIndex + 03] = colorG;
     vxData[vxIndex + 04] = colorB;
     vxData[vxIndex + 05] = colorA;
 
-    vxData[vxIndex + 06] = x2 * a + y2 * c + tx;
-    vxData[vxIndex + 07] = x2 * b + y2 * d + ty;
+    vxData[vxIndex + 06] = x2 * ma + y2 * mc + mx;
+    vxData[vxIndex + 07] = x2 * mb + y2 * md + my;
     vxData[vxIndex + 08] = colorR;
     vxData[vxIndex + 09] = colorG;
     vxData[vxIndex + 10] = colorB;
     vxData[vxIndex + 11] = colorA;
 
-    vxData[vxIndex + 12] = x3 * a + y3 * c + tx;
-    vxData[vxIndex + 13] = x3 * b + y3 * d + ty;
+    vxData[vxIndex + 12] = x3 * ma + y3 * mc + mx;
+    vxData[vxIndex + 13] = x3 * mb + y3 * md + my;
     vxData[vxIndex + 14] = colorR;
     vxData[vxIndex + 15] = colorG;
     vxData[vxIndex + 16] = colorB;
@@ -122,11 +123,6 @@ class RenderProgramTriangle extends RenderProgram {
     var alpha = renderState.globalAlpha;
     var ixListCount = ixList.length;
     var vxListCount = vxList.length >> 1;
-
-    var colorA = colorGetA(color) / 255.0 * alpha;
-    var colorR = colorGetR(color) / 255.0;
-    var colorG = colorGetG(color) / 255.0;
-    var colorB = colorGetB(color) / 255.0;
 
     // check buffer sizes and flush if necessary
 
@@ -159,6 +155,12 @@ class RenderProgramTriangle extends RenderProgram {
     var md = matrix.d;
     var mx = matrix.tx;
     var my = matrix.ty;
+
+    var colorScale = 1 / 255.0;
+    var colorA = colorScale * colorGetA(color) * alpha;
+    var colorR = colorScale * colorGetR(color) * colorA;
+    var colorG = colorScale * colorGetG(color) * colorA;
+    var colorB = colorScale * colorGetB(color) * colorA;
 
     for (var i = 0, o = 0 ; i < vxListCount; i++, o += 2) {
       num x = vxList[o + 0];
