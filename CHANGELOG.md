@@ -8,6 +8,13 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 0.13.6
+  * Added support for Starling JSON texture atlas format.
+  * Allow all number types in DisplayObject.applyCache.
+  * Fixed ColorMatrixClass for some use cases.
+  * Fixed Mesh.setVertexUV method.
+  * Simplified TintFilter
+  
 #### Pub version 0.13.5
   * Fixed TextField cache update on scale changes. 
   * Fixed int/num type ambiguity in BitmapData. 
