@@ -169,27 +169,27 @@ class ColorMatrixFilter extends BitmapFilter {
 
     bool isLittleEndianSystem = env.isLittleEndianSystem;
 
-    int d0c0 = (_colorMatrixList[isLittleEndianSystem ? 00 : 15] * 65536).round();
-    int d0c1 = (_colorMatrixList[isLittleEndianSystem ? 01 : 14] * 65536).round();
-    int d0c2 = (_colorMatrixList[isLittleEndianSystem ? 02 : 13] * 65536).round();
-    int d0c3 = (_colorMatrixList[isLittleEndianSystem ? 03 : 12] * 65536).round();
-    int d1c0 = (_colorMatrixList[isLittleEndianSystem ? 04 : 11] * 65536).round();
-    int d1c1 = (_colorMatrixList[isLittleEndianSystem ? 05 : 10] * 65536).round();
-    int d1c2 = (_colorMatrixList[isLittleEndianSystem ? 06 : 09] * 65536).round();
-    int d1c3 = (_colorMatrixList[isLittleEndianSystem ? 07 : 08] * 65536).round();
-    int d2c0 = (_colorMatrixList[isLittleEndianSystem ? 08 : 07] * 65536).round();
-    int d2c1 = (_colorMatrixList[isLittleEndianSystem ? 09 : 06] * 65536).round();
-    int d2c2 = (_colorMatrixList[isLittleEndianSystem ? 10 : 05] * 65536).round();
-    int d2c3 = (_colorMatrixList[isLittleEndianSystem ? 11 : 04] * 65536).round();
-    int d3c0 = (_colorMatrixList[isLittleEndianSystem ? 12 : 03] * 65536).round();
-    int d3c1 = (_colorMatrixList[isLittleEndianSystem ? 13 : 02] * 65536).round();
-    int d3c2 = (_colorMatrixList[isLittleEndianSystem ? 14 : 01] * 65536).round();
-    int d3c3 = (_colorMatrixList[isLittleEndianSystem ? 15 : 00] * 65536).round();
+    num m00 = _colorMatrixList[isLittleEndianSystem ? 00 : 15];
+    num m01 = _colorMatrixList[isLittleEndianSystem ? 01 : 14];
+    num m02 = _colorMatrixList[isLittleEndianSystem ? 02 : 13];
+    num m03 = _colorMatrixList[isLittleEndianSystem ? 03 : 12];
+    num m10 = _colorMatrixList[isLittleEndianSystem ? 04 : 11];
+    num m11 = _colorMatrixList[isLittleEndianSystem ? 05 : 10];
+    num m12 = _colorMatrixList[isLittleEndianSystem ? 06 : 09];
+    num m13 = _colorMatrixList[isLittleEndianSystem ? 07 : 08];
+    num m20 = _colorMatrixList[isLittleEndianSystem ? 08 : 07];
+    num m21 = _colorMatrixList[isLittleEndianSystem ? 09 : 06];
+    num m22 = _colorMatrixList[isLittleEndianSystem ? 10 : 05];
+    num m23 = _colorMatrixList[isLittleEndianSystem ? 11 : 04];
+    num m30 = _colorMatrixList[isLittleEndianSystem ? 12 : 03];
+    num m31 = _colorMatrixList[isLittleEndianSystem ? 13 : 02];
+    num m32 = _colorMatrixList[isLittleEndianSystem ? 14 : 01];
+    num m33 = _colorMatrixList[isLittleEndianSystem ? 15 : 00];
 
-    int d0cc = (_colorOffsetList[isLittleEndianSystem ? 00 : 03] * 65536).round();
-    int d1cc = (_colorOffsetList[isLittleEndianSystem ? 01 : 02] * 65536).round();
-    int d2cc = (_colorOffsetList[isLittleEndianSystem ? 02 : 01] * 65536).round();
-    int d3cc = (_colorOffsetList[isLittleEndianSystem ? 03 : 00] * 65536).round();
+    num o0 = _colorOffsetList[isLittleEndianSystem ? 00 : 03];
+    num o1 = _colorOffsetList[isLittleEndianSystem ? 01 : 02];
+    num o2 = _colorOffsetList[isLittleEndianSystem ? 02 : 01];
+    num o3 = _colorOffsetList[isLittleEndianSystem ? 03 : 00];
 
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
@@ -198,15 +198,15 @@ class ColorMatrixFilter extends BitmapFilter {
     ImageData imageData = renderTextureQuad.getImageData();
     List<int> data = imageData.data;
 
-    for(int index = 0 ; index <= data.length - 4; index += 4) {
-      int c0 = data[index + 0];
-      int c1 = data[index + 1];
-      int c2 = data[index + 2];
-      int c3 = data[index + 3];
-      data[index + 0] = ((d0c0 * c0 + d0c1 * c1 + d0c2 * c2 + d0c3 * c3 + d0cc) | 0) >> 16;
-      data[index + 1] = ((d1c0 * c0 + d1c1 * c1 + d1c2 * c2 + d1c3 * c3 + d1cc) | 0) >> 16;
-      data[index + 2] = ((d2c0 * c0 + d2c1 * c1 + d2c2 * c2 + d2c3 * c3 + d2cc) | 0) >> 16;
-      data[index + 3] = ((d3c0 * c0 + d3c1 * c1 + d3c2 * c2 + d3c3 * c3 + d3cc) | 0) >> 16;
+    for(int i = 0 ; i <= data.length - 4; i += 4) {
+      int c0 = data[i + 0];
+      int c1 = data[i + 1];
+      int c2 = data[i + 2];
+      int c3 = data[i + 3];
+      data[i + 0] = (m00 * c0 + m01 * c1 + m02 * c2 + m03 * c3 + o0).round();
+      data[i + 1] = (m10 * c0 + m11 * c1 + m12 * c2 + m13 * c3 + o1).round();
+      data[i + 2] = (m20 * c0 + m21 * c1 + m22 * c2 + m23 * c3 + o2).round();
+      data[i + 3] = (m30 * c0 + m31 * c1 + m32 * c2 + m33 * c3 + o3).round();
     }
 
     renderTextureQuad.putImageData(imageData);
