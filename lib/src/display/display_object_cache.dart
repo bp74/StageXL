@@ -7,7 +7,7 @@ class _DisplayObjectCache {
   num pixelRatio = 1.0;
   bool debugBorder = true;
 
-  Rectangle bounds = new Rectangle<int>(0, 0, 256, 256);
+  Rectangle<num> bounds = new Rectangle<num>(0, 0, 256, 256);
   RenderTexture renderTexture;
   RenderTextureQuad renderTextureQuad;
 

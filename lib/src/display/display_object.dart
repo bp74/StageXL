@@ -891,13 +891,13 @@ abstract class DisplayObject
   /// a [Graphics] vector object. If the cached area changes, the cache must be
   /// refreshed using [refreshCache] or removed using [removeCache].
 
-  void applyCache(int x, int y, int width, int height, {
+  void applyCache(num x, num y, num width, num height, {
       bool debugBorder: false, num pixelRatio: 1.0}) {
 
     _cache = _cache != null ? _cache : new _DisplayObjectCache(this);
     _cache.debugBorder = debugBorder;
     _cache.pixelRatio = pixelRatio;
-    _cache.bounds = new Rectangle<int>(x, y, width, height);
+    _cache.bounds = new Rectangle<num>(x, y, width, height);
     _cache.update();
   }
 
