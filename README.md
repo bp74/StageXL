@@ -63,9 +63,8 @@ Please send us your ideas and requests to make those things a reality you
 care about most. Some of the things we will tackle in the near future are:
 
 * Getting closer to version 1.0.
-* Runtime support for GAF Converter.
 * Runtime support for Tiled Map Editor.
-* Support for Sky (native runtime environment for Android).
+* Support for Flutter (native runtime environment for Android).
 * A new StageXL homepage with more articles / blog posts.
 
 ## Adobe Flash heritage
