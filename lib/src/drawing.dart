@@ -1,7 +1,7 @@
 library stagexl.drawing;
 
 import 'dart:typed_data';
-import 'dart:math' show PI, sqrt, sin, cos, tan, atan, atan2;
+import 'dart:math' show PI, sqrt, sin, cos, tan, atan2;
 import 'dart:html' show CanvasRenderingContext2D, CanvasGradient, CanvasPattern;
 
 import 'geom.dart';
@@ -50,7 +50,3 @@ part 'drawing/internal/graphics_path.dart';
 part 'drawing/internal/graphics_path_segment.dart';
 part 'drawing/internal/graphics_stroke.dart';
 part 'drawing/internal/graphics_stroke_segment.dart';
-
-
-
-
