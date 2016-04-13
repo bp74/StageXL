@@ -15,8 +15,11 @@ abstract class SoundChannel extends EventDispatcher {
   num get position;
   Sound get sound;
 
-  bool paused;
-  SoundTransform soundTransform;
+  bool get paused;
+  set paused(bool value);
+
+  SoundTransform get soundTransform;
+  set soundTransform(SoundTransform value);
 
   //---------------------------------------------------------------------------
 
