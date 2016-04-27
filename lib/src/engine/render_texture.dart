@@ -153,7 +153,7 @@ class RenderTexture {
       var type = gl.UNSIGNED_BYTE;
 
       _renderContext.activateRenderTexture(this);
-      _renderingContext.texImage2DTyped(target, 0, rgba, _width, _height, 0, rgba, type, null);
+      _renderingContext.texImage2D(target, 0, rgba, _width, _height, 0, rgba, type, null);
 
     } else {
 
@@ -186,10 +186,10 @@ class RenderTexture {
     if (_textureSourceWorkaround) {
       _canvas.context2D.drawImage(_source, 0, 0);
       _renderContext.activateRenderTexture(this);
-      _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _canvas);
+      _renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
     } else {
       _renderContext.activateRenderTexture(this);
-      _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _source);
+      _renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
     }
   }
 
@@ -212,17 +212,17 @@ class RenderTexture {
       _renderingContext.bindTexture(target, _texture);
 
       if (_source != null) {
-        _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _source);
+        _renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
         _textureSourceWorkaround = _renderingContext.getError() == gl.INVALID_VALUE;
       } else {
-        _renderingContext.texImage2DTyped(target, 0, rgba, width, height, 0, rgba, type, null);
+        _renderingContext.texImage2D(target, 0, rgba, width, height, 0, rgba, type, null);
       }
 
       if (_textureSourceWorkaround) {
         // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
         _canvas = new CanvasElement(width: width, height: height);
         _canvas.context2D.drawImage(_source, 0, 0);
-        _renderingContext.texImage2DUntyped(target, 0, rgba, rgba, type, _canvas);
+        _renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
       }
 
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
