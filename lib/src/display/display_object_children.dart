@@ -101,8 +101,8 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
     return _children.firstWhere(test, orElse: orElse);
   }
 
-  dynamic/*=S*/ fold/*<S>*/(var/*=S*/ initialValue,
-    dynamic/*=S*/ combine(var/*=S*/ previousValue, T element)) =>
+  dynamic/*=S*/ fold/*<S>*/(dynamic/*=S*/ initialValue,
+    dynamic/*=S*/ combine(dynamic/*=S*/ previousValue, T element)) =>
       _children.fold(initialValue, combine);
 
   void forEach(void f(T element)) {

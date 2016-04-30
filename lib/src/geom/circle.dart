@@ -17,7 +17,7 @@ class Circle<T extends num> {
 
   //---------------------------------------------------------------------------
 
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     return other is Circle &&
         this.x == other.x &&
         this.y == other.y &&

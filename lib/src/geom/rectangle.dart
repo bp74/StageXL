@@ -27,7 +27,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     return other is math.Rectangle &&
         this.left == other.left &&
         this.top == other.top &&

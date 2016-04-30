@@ -36,7 +36,7 @@ class Point<T extends num> implements math.Point<T> {
   /// This point is equal to `other` if, and only if, `other` is a `Point`
   /// with [x] equal to `other.x` and [y] equal to `other.y`.
 
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     return other is math.Point && this.x == other.x && this.y == other.y;
   }
 
