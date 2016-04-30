@@ -201,15 +201,15 @@ class Tween implements Animatable {
   ///
   /// This happens after the specified [delay].
 
-  void set onStart(void function()) { _onStart = function; }
+  set onStart(void function()) { _onStart = function; }
 
   /// The function that is called every time this [Tween] updates the
   /// properties of the [TweenObject].
 
-  void set onUpdate(void function()) { _onUpdate = function; }
+  set onUpdate(void function()) { _onUpdate = function; }
 
   /// The function that is called when this [Tween] is completed.
 
-  void set onComplete(void function()) { _onComplete = function; }
+  set onComplete(void function()) { _onComplete = function; }
 }
 

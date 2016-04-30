@@ -75,26 +75,30 @@ class TimeGauge extends Gauge implements Animatable {
   bool get isStarted => _isStarted;
 
   bool get alarmsEnabled => _alarmsEnabled;
-  void set alarmsEnabled(bool value) {
+
+  set alarmsEnabled(bool value) {
     _alarmsEnabled = value;
   }
 
   num get restTime => ratio * totalTime;
-  void set restTime(num value) {
+
+  set restTime(num value) {
     ratio = value / totalTime;
   }
 
   num get elapsedTime => totalTime - restTime;
-  void set elapsedTime(num value) {
+
+  set elapsedTime(num value) {
     restTime = totalTime - value;
   }
 
   num get elapsedRatio => 1.0 - ratio;
-  void set elapsedRatio(num value) {
+
+  set elapsedRatio(num value) {
     ratio = 1.0 - value;
   }
 
-  void set ratio(num value) {
+  set ratio(num value) {
 
     num oldRatio = ratio;
     super.ratio = value;

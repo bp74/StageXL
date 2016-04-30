@@ -79,87 +79,87 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  void set width(num value) {
+  set width(num value) {
     _width = value.toDouble();
     _refreshPending |= 3;
   }
 
-  void set height(num value) {
+  set height(num value) {
     _height = value.toDouble();
     _refreshPending |= 3;
   }
 
-  void set text(String value) {
+  set text(String value) {
     _text = value;
     _caretIndex = _text.length;
     _refreshPending |= 3;
   }
 
-  void set textColor(int value) {
+  set textColor(int value) {
     _defaultTextFormat.color = value;
     _refreshPending |= 2;
   }
 
-  void set defaultTextFormat(TextFormat value) {
+  set defaultTextFormat(TextFormat value) {
     _defaultTextFormat = value.clone();
     _refreshPending |= 3;
   }
 
-  void set autoSize(String value) {
+  set autoSize(String value) {
     _autoSize = value;
     _refreshPending |= 3;
   }
 
-  void set type(String value) {
+  set type(String value) {
     _type = value;
     _refreshPending |= 3;
   }
 
-  void set wordWrap(bool value) {
+  set wordWrap(bool value) {
     _wordWrap = value;
     _refreshPending |= 3;
   }
 
-  void set multiline(bool value) {
+  set multiline(bool value) {
     _multiline = value;
     _refreshPending |= 3;
   }
 
-  void set displayAsPassword(bool value) {
+  set displayAsPassword(bool value) {
     _displayAsPassword = value;
     _refreshPending |= 3;
   }
 
-  void set passwordChar(String value) {
+  set passwordChar(String value) {
     _passwordChar = value[0];
     _refreshPending |= 3;
   }
 
-  void set background(bool value) {
+  set background(bool value) {
     _background = value;
     _refreshPending |= 2;
   }
 
-  void set backgroundColor(int value) {
+  set backgroundColor(int value) {
     _backgroundColor = value;
     _refreshPending |= 2;
   }
 
-  void set border(bool value) {
+  set border(bool value) {
     _border = value;
     _refreshPending |= 2;
   }
 
-  void set borderColor(int value) {
+  set borderColor(int value) {
     _borderColor = value;
     _refreshPending |= 2;
   }
 
-  void set maxChars(int value) {
+  set maxChars(int value) {
     _maxChars = value;
   }
 
-  void set cacheAsBitmap(bool value) {
+  set cacheAsBitmap(bool value) {
     if (value) _refreshPending |= 2;
     _cacheAsBitmap = value;
   }

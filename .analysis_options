@@ -6,7 +6,7 @@ linter:
     #- annotate_overrides
     - avoid_empty_else
     - avoid_init_to_null
-    #- avoid_return_types_on_setters
+    - avoid_return_types_on_setters
     #- camel_case_types
     #- constant_identifier_names
     - empty_constructor_bodies

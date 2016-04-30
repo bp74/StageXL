@@ -51,7 +51,7 @@ class Mouse {
 
   static String get cursor => _cursorName;
 
-  static void set cursor(String cursorName) {
+  static set cursor(String cursorName) {
     _cursorName = cursorName;
     _cursorChangedEvent.add(cursorName);
   }

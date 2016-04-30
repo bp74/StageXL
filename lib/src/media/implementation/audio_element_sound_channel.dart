@@ -61,7 +61,7 @@ class AudioElementSoundChannel extends SoundChannel {
   }
 
   @override
-  void set paused(bool value) {
+  set paused(bool value) {
     if (_paused == value) {
       // nothing has changed
     } else if (_audioElement == null || _stopped) {
@@ -85,7 +85,7 @@ class AudioElementSoundChannel extends SoundChannel {
   }
 
   @override
-  void set soundTransform(SoundTransform value) {
+  set soundTransform(SoundTransform value) {
     _soundTransform = value != null ? value : new SoundTransform();
     if (_audioElement == null) {
       // we can't set the audio element

@@ -24,7 +24,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
     return _graphics != null ? _graphics : _graphics = new Graphics();
   }
 
-  void set graphics(Graphics value) {
+  set graphics(Graphics value) {
     _graphics = value;
   }
 

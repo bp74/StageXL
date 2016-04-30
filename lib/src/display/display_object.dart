@@ -473,7 +473,7 @@ abstract class DisplayObject
 
   num get width => this.boundsTransformed.width;
 
-  void set width(num value) {
+  set width(num value) {
     this.scaleX = 1.0;
     num normalWidth = this.width;
     this.scaleX = (normalWidth != 0.0) ? value / normalWidth : 1.0;
@@ -487,7 +487,7 @@ abstract class DisplayObject
 
   num get height => this.boundsTransformed.height;
 
-  void set height(num value) {
+  set height(num value) {
     this.scaleY = 1.0;
     num normalHeight = this.height;
     this.scaleY = (normalHeight != 0.0) ? value / normalHeight : 1.0;

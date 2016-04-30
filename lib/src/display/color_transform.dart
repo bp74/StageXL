@@ -28,42 +28,50 @@ class ColorTransform {
   //---------------------------------------------------------------------------
 
   num get redMultiplier => multipliers[0];
-  void set redMultiplier(num value) {
+
+  set redMultiplier(num value) {
     multipliers[0] = value.toDouble();
   }
 
   num get greenMultiplier => multipliers[1];
-  void set greenMultiplier(num value) {
+
+  set greenMultiplier(num value) {
     multipliers[1] = value.toDouble();
   }
 
   num get blueMultiplier => multipliers[2];
-  void set blueMultiplier(num value) {
+
+  set blueMultiplier(num value) {
     multipliers[2] = value.toDouble();
   }
 
   num get alphaMultiplier => multipliers[3];
-  void set alphaMultiplier(num value) {
+
+  set alphaMultiplier(num value) {
     multipliers[3] = value.toDouble();
   }
 
   int get redOffset => offsets[0];
-  void set redOffset(int value) {
+
+  set redOffset(int value) {
     offsets[0] = value;
   }
 
   int get greenOffset => offsets[1];
-  void set greenOffset(int value) {
+
+  set greenOffset(int value) {
     offsets[1] = value;
   }
 
   int get blueOffset => offsets[2];
-  void set blueOffset(int value) {
+
+  set blueOffset(int value) {
     offsets[2] = value;
   }
 
   int get alphaOffset => offsets[3];
-  void set alphaOffset(int value) {
+
+  set alphaOffset(int value) {
     offsets[3] = value;
   }
 
@@ -71,7 +79,7 @@ class ColorTransform {
 
   int get color => (redOffset << 16) + (greenOffset << 8) + (blueOffset << 0);
 
-  void set color(int value) {
+  set color(int value) {
 
     value = ensureInt(value);
 

@@ -57,18 +57,18 @@ class ChromaKeyFilter extends BitmapFilter {
   int get solidThreshold => _solidThreshold;
   int get invisibleThreshold => _invisibleThreshold;
 
-  void set backgroundColor (int backgroundColor) {
+  set backgroundColor (int backgroundColor) {
     _backgroundColor = backgroundColor;
   }
 
-  void set solidThreshold (int solidThreshold) {
+  set solidThreshold (int solidThreshold) {
     if (solidThreshold < _invisibleThreshold) {
       throw new ArgumentError("solidThreshold cannot be lower than _invisibleThreshold");
     }
     _solidThreshold = solidThreshold;
   }
 
-  void set invisibleThreshold (int invisibleThreshold) {
+  set invisibleThreshold (int invisibleThreshold) {
     if (invisibleThreshold < 0) {
       throw new ArgumentError("The minimum solidThreshold is 0.");
     }

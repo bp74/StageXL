@@ -105,7 +105,7 @@ class StageXL {
     return Stage.defaultOptions;
   }
 
-  static void set stageOptions(StageOptions options) {
+  static set stageOptions(StageOptions options) {
     Stage.defaultOptions = options;
   }
 
@@ -119,7 +119,7 @@ class StageXL {
     return BitmapData.defaultLoadOptions;
   }
 
-  static void set bitmapDataLoadOptions(BitmapDataLoadOptions options) {
+  static set bitmapDataLoadOptions(BitmapDataLoadOptions options) {
     BitmapData.defaultLoadOptions = options;
   }
 
@@ -133,7 +133,7 @@ class StageXL {
     return Sound.defaultLoadOptions;
   }
 
-  static void set soundLoadOptions(SoundLoadOptions options) {
+  static set soundLoadOptions(SoundLoadOptions options) {
     Sound.defaultLoadOptions = options;
   }
 
@@ -147,7 +147,7 @@ class StageXL {
     return Video.defaultLoadOptions;
   }
 
-  static void set videoLoadOptions(VideoLoadOptions options) {
+  static set videoLoadOptions(VideoLoadOptions options) {
     Video.defaultLoadOptions = options;
   }
 

@@ -47,7 +47,7 @@ class MockSoundChannel extends SoundChannel {
   }
 
   @override
-  void set paused(bool value) {
+  set paused(bool value) {
     _paused = _stopped || value;
   }
 
@@ -57,7 +57,7 @@ class MockSoundChannel extends SoundChannel {
   }
 
   @override
-  void set soundTransform(SoundTransform value) {
+  set soundTransform(SoundTransform value) {
     _soundTransform = value;
   }
 

@@ -33,7 +33,7 @@ abstract class RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void set projectionMatrix(Matrix3D matrix) {
+  set projectionMatrix(Matrix3D matrix) {
     var location = uniforms["uProjectionMatrix"];
     renderingContext.uniformMatrix4fv(location, false, matrix.data);
   }

@@ -43,17 +43,17 @@ class CanvasShadowWrapper extends DisplayObject {
     throw new UnsupportedError("CanvasShadowWrapper does not implement this property or method.");
   }
 
-  void set x(num value) { _throwUnsupportedError(); }
-  void set y(num value) { _throwUnsupportedError(); }
-  void set pivotX(num value) { _throwUnsupportedError(); }
-  void set pivotY(num value) { _throwUnsupportedError(); }
-  void set scaleX(num value) { _throwUnsupportedError(); }
-  void set scaleY(num value) { _throwUnsupportedError(); }
-  void set skewX(num value) { _throwUnsupportedError(); }
-  void set skewY(num value) { _throwUnsupportedError(); }
-  void set rotation(num value) { _throwUnsupportedError(); }
-  void set alpha(num value) { _throwUnsupportedError(); }
-  void set mask(Mask mask) { _throwUnsupportedError(); }
+  set x(num value) { _throwUnsupportedError(); }
+  set y(num value) { _throwUnsupportedError(); }
+  set pivotX(num value) { _throwUnsupportedError(); }
+  set pivotY(num value) { _throwUnsupportedError(); }
+  set scaleX(num value) { _throwUnsupportedError(); }
+  set scaleY(num value) { _throwUnsupportedError(); }
+  set skewX(num value) { _throwUnsupportedError(); }
+  set skewY(num value) { _throwUnsupportedError(); }
+  set rotation(num value) { _throwUnsupportedError(); }
+  set alpha(num value) { _throwUnsupportedError(); }
+  set mask(Mask mask) { _throwUnsupportedError(); }
 
   //-----------------------------------------------------------------------------------------------
 

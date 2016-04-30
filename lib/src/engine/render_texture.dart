@@ -96,7 +96,7 @@ class RenderTexture {
 
   RenderTextureFiltering get filtering => _filtering;
 
-  void set filtering(RenderTextureFiltering filtering) {
+  set filtering(RenderTextureFiltering filtering) {
 
     if (_filtering == filtering) return;
 

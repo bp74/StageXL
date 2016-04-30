@@ -82,17 +82,20 @@ class VideoObject extends InteractiveObject {
   }
 
   bool get muted => video.muted;
-  void set muted(muted) {
+
+  set muted(muted) {
     video.muted = muted;
   }
 
   bool get loop => video.loop;
-  void set loop(loop) {
+
+  set loop(loop) {
     video.loop = loop;
   }
 
   num get volume => video.volume;
-  void set volume(volume) {
+
+  set volume(volume) {
     video.volume = volume;
   }
 

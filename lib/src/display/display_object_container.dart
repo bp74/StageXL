@@ -50,7 +50,7 @@ abstract class DisplayObjectContainer
 
   bool get mouseChildren => _mouseChildren;
 
-  void set mouseChildren(bool value) { _mouseChildren = value; }
+  set mouseChildren(bool value) { _mouseChildren = value; }
 
   /// Determines whether the children of this container are tab enabled.
   ///
@@ -58,7 +58,7 @@ abstract class DisplayObjectContainer
 
   bool get tabChildren => _tabChildren;
 
-  void set tabChildren(bool value) { _tabChildren = value; }
+  set tabChildren(bool value) { _tabChildren = value; }
 
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------

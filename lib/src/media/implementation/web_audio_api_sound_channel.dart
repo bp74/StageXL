@@ -65,7 +65,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
   }
 
   @override
-  void set paused(bool value) {
+  set paused(bool value) {
     if (_paused == value) {
       // nothing has changed
     } else if (_stopped) {
@@ -104,7 +104,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
   }
 
   @override
-  void set soundTransform(SoundTransform value) {
+  set soundTransform(SoundTransform value) {
     _soundTransform = value != null ? value : new SoundTransform();
     _webAudioApiMixer.applySoundTransform(value);
   }

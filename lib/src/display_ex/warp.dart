@@ -15,7 +15,7 @@ class Warp extends DisplayObjectContainer {
 
   Matrix get matrix => _matrix;
 
-  void set matrix(Matrix value) {
+  set matrix(Matrix value) {
     _matrix = value;
   }
 }
