@@ -16,7 +16,7 @@ class Point<T extends num> implements math.Point<T> {
 
   Point<T> clone() => new Point<T>(x, y);
 
-  String toString() => "Point<$T> [x=${x}, y=${y}]";
+  String toString() => "Point<$T> [x=$x, y=$y]";
 
   //---------------------------------------------------------------------------
 
