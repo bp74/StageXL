@@ -1,7 +1,7 @@
 part of stagexl.media;
 
 /// The SoundLoadOptions class contains different options to configure
-/// how videos are loaded from the server.
+/// how audio files are loaded from the server.
 ///
 /// The [Sound.defaultLoadOptions] object is the default for all
 /// loading operations if no SoundLoadOptions are provided to the
@@ -40,8 +40,8 @@ class SoundLoadOptions {
 
   bool ignoreErrors = true;
 
-  /// Use CORS to download the video. This is often necessary when you have
-  /// to download video from a third party server.
+  /// Use CORS to download the audio file. This is often necessary when you have
+  /// to download audio files from a third party server.
 
   bool corsEnabled = false;
 
