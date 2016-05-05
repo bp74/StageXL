@@ -21,6 +21,10 @@ class SoundLoadOptions {
 
   bool ogg = true;
 
+  /// The application provides *opus* files as an option to load audio files.
+
+  bool opus = true;
+
   /// The application provides *ac3* files as an option to load audio files.
 
   bool ac3 = true;
@@ -32,7 +36,7 @@ class SoundLoadOptions {
   /// A list of alternative urls for sound samples in the case where the
   /// primary url does not work or the file type is not supported by the
   /// browser. If this value is null, the alternative urls are calculated
-  /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
+  /// automatically based on the mp3, mp4, ogg, opus, ac3 and wav properties.
 
   List<String> alternativeUrls;
 
@@ -55,6 +59,7 @@ class SoundLoadOptions {
     options.mp3 = this.mp3;
     options.mp4 = this.mp4;
     options.ogg = this.ogg;
+    options.opus = this.opus;
     options.ac3 = this.ac3;
     options.wav = this.wav;
     options.alternativeUrls = urls == null ? null : urls.toList();
@@ -74,6 +79,7 @@ class SoundLoadOptions {
     if (!this.mp3) availableTypes.remove("mp3");
     if (!this.mp4) availableTypes.remove("mp4");
     if (!this.ogg) availableTypes.remove("ogg");
+    if (!this.opus) availableTypes.remove("opus");
     if (!this.ac3) availableTypes.remove("ac3");
     if (!this.wav) availableTypes.remove("wav");
 
