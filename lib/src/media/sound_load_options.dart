@@ -31,7 +31,7 @@ class SoundLoadOptions {
 
   /// A list of alternative urls for sound samples in the case where the
   /// primary url does not work or the file type is not supported by the
-  /// browser. If this value is null, the alternative urls are calcualted
+  /// browser. If this value is null, the alternative urls are calculated
   /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
 
   List<String> alternativeUrls;
@@ -65,7 +65,7 @@ class SoundLoadOptions {
 
   //---------------------------------------------------------------------------
 
-  /// Determine which audio files is the most likely to play smoothly,
+  /// Determine which audio files are the most likely to play smoothly,
   /// based on the supported types and formats available.
 
   List<String> getOptimalAudioUrls(String primaryUrl) {
