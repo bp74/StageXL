@@ -1,7 +1,7 @@
 part of stagexl.media;
 
 /// The SoundLoadOptions class contains different options to configure
-/// how videos are loaded from the server.
+/// how audio files are loaded from the server.
 ///
 /// The [Sound.defaultLoadOptions] object is the default for all
 /// loading operations if no SoundLoadOptions are provided to the
@@ -34,7 +34,7 @@ class SoundLoadOptions {
 
   /// A list of alternative urls for sound samples in the case where the
   /// primary url does not work or the file type is not supported by the
-  /// browser. If this value is null, the alternative urls are calcualted
+  /// browser. If this value is null, the alternative urls are calculated
   /// automatically based on the mp3, mp4, ogg, opus, ac3 and wav properties.
 
   List<String> alternativeUrls;
@@ -43,8 +43,8 @@ class SoundLoadOptions {
 
   bool ignoreErrors = true;
 
-  /// Use CORS to download the video. This is often necessary when you have
-  /// to download video from a third party server.
+  /// Use CORS to download the audo file. This is often necessary when you have
+  /// to download audio files from a third party server.
 
   bool corsEnabled = false;
 
@@ -69,7 +69,7 @@ class SoundLoadOptions {
 
   //---------------------------------------------------------------------------
 
-  /// Determine which audio files is the most likely to play smoothly,
+  /// Determine which audio files are the most likely to play smoothly,
   /// based on the supported types and formats available.
 
   List<String> getOptimalAudioUrls(String primaryUrl) {
