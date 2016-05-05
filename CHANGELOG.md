@@ -8,6 +8,10 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 0.13.7
+  * Replaced deprecated WebGL methods
+  * Updated SDK dependency to Dart 1.16
+  
 #### Pub version 0.13.6
   * Added support for Starling JSON texture atlas format.
   * Allow all number types in DisplayObject.applyCache.

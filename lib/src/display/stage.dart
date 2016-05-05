@@ -227,7 +227,7 @@ class Stage extends DisplayObjectContainer {
 
   int get sourceWidth => _sourceWidth;
 
-  void set sourceWidth(int value) {
+  set sourceWidth(int value) {
     _sourceWidth = ensureInt(value);
     _updateCanvasSize();
   }
@@ -238,7 +238,7 @@ class Stage extends DisplayObjectContainer {
 
   int get sourceHeight => _sourceHeight;
 
-  void set sourceHeight(int value) {
+  set sourceHeight(int value) {
     _sourceHeight = ensureInt(value);
     _updateCanvasSize();
   }
@@ -247,7 +247,7 @@ class Stage extends DisplayObjectContainer {
 
   num get pixelRatio => _pixelRatio;
 
-  void set pixelRatio(num value) {
+  set pixelRatio(num value) {
     _pixelRatio = ensureNum(value);
     _updateCanvasSize();
   }
@@ -257,7 +257,7 @@ class Stage extends DisplayObjectContainer {
 
   StageRenderMode get renderMode => _stageRenderMode;
 
-  void set renderMode(StageRenderMode value) {
+  set renderMode(StageRenderMode value) {
     _stageRenderMode = value;
   }
 
@@ -266,7 +266,7 @@ class Stage extends DisplayObjectContainer {
 
   StageScaleMode get scaleMode => _stageScaleMode;
 
-  void set scaleMode(StageScaleMode value) {
+  set scaleMode(StageScaleMode value) {
     _stageScaleMode = value;
     _updateCanvasSize();
   }
@@ -276,7 +276,7 @@ class Stage extends DisplayObjectContainer {
 
   StageAlign get align => _stageAlign;
 
-  void set align(StageAlign value) {
+  set align(StageAlign value) {
     _stageAlign = value;
     _updateCanvasSize();
   }
@@ -288,18 +288,18 @@ class Stage extends DisplayObjectContainer {
         "The Stage class does not implement this property or method.");
   }
 
-  void set x(num value) { _throwStageException(); }
-  void set y(num value) { _throwStageException(); }
-  void set pivotX(num value) { _throwStageException(); }
-  void set pivotY(num value) { _throwStageException(); }
-  void set scaleX(num value) { _throwStageException(); }
-  void set scaleY(num value) { _throwStageException(); }
-  void set skewX(num value) { _throwStageException(); }
-  void set skewY(num value) { _throwStageException(); }
-  void set rotation(num value) { _throwStageException(); }
-  void set alpha(num value) { _throwStageException(); }
-  void set width(num value) { _throwStageException(); }
-  void set height(num value) { _throwStageException(); }
+  set x(num value) { _throwStageException(); }
+  set y(num value) { _throwStageException(); }
+  set pivotX(num value) { _throwStageException(); }
+  set pivotY(num value) { _throwStageException(); }
+  set scaleX(num value) { _throwStageException(); }
+  set scaleY(num value) { _throwStageException(); }
+  set skewX(num value) { _throwStageException(); }
+  set skewY(num value) { _throwStageException(); }
+  set rotation(num value) { _throwStageException(); }
+  set alpha(num value) { _throwStageException(); }
+  set width(num value) { _throwStageException(); }
+  set height(num value) { _throwStageException(); }
 
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------

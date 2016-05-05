@@ -65,7 +65,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
   }
 
   @override
-  void set paused(bool value) {
+  set paused(bool value) {
     if (_paused == value) {
       // nothing has changed
     } else if (_stopped) {
@@ -104,7 +104,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
   }
 
   @override
-  void set soundTransform(SoundTransform value) {
+  set soundTransform(SoundTransform value) {
     _soundTransform = value != null ? value : new SoundTransform();
     _webAudioApiMixer.applySoundTransform(value);
   }
@@ -126,6 +126,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
     // This is a workaround for the broken onEnded event :(
     // Replace the timer with the onEnded event as soon as possible.
     // https://code.google.com/p/chromium/issues/detail?id=349543
+    // Bug was fixed in Chrome 50, waiting for Dartium to catch up.
     time = time.clamp(0.0, _duration) * 1000.0;
     var duration = new Duration(milliseconds: time.toInt());
     _completeTimer = new Timer(duration, _onCompleteTimer);

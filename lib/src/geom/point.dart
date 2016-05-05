@@ -16,7 +16,7 @@ class Point<T extends num> implements math.Point<T> {
 
   Point<T> clone() => new Point<T>(x, y);
 
-  String toString() => "Point<$T> [x=${x}, y=${y}]";
+  String toString() => "Point<$T> [x=$x, y=$y]";
 
   //---------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ class Point<T extends num> implements math.Point<T> {
   /// This point is equal to `other` if, and only if, `other` is a `Point`
   /// with [x] equal to `other.x` and [y] equal to `other.y`.
 
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     return other is math.Point && this.x == other.x && this.y == other.y;
   }
 

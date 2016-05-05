@@ -17,7 +17,7 @@ class Vector {
 
   Vector clone() => new Vector(x, y);
 
-  String toString() => "Vector [x=${x}, y=${y}]";
+  String toString() => "Vector [x=$x, y=$y]";
 
   //-----------------------------------------------------------------------------------------------
   // Operators

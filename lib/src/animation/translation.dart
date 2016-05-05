@@ -127,11 +127,11 @@ class Translation implements Animatable {
   /// The function that is called when this [Translation] starts.
   ///
   /// This happens after the specified [delay].
-  void set onStart(void function()) { _onStart = function; }
+  set onStart(void function()) { _onStart = function; }
 
   /// The function that is called every time this [Translation] updates the value.
-  void set onUpdate(void function(num value)) { _onUpdate = function; }
+  set onUpdate(void function(num value)) { _onUpdate = function; }
 
   /// The function that is called when this [Translation] is completed.
-  void set onComplete(void function()) { _onComplete = function; }
+  set onComplete(void function()) { _onComplete = function; }
 }

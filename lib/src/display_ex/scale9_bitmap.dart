@@ -7,7 +7,6 @@ part of stagexl.display_ex;
 
 class Scale9Bitmap extends Bitmap {
 
-  BitmapData _bitmapData;
   Rectangle<num> _grid;
   num _width = 0.0;
   num _height = 0.0;
@@ -15,7 +14,6 @@ class Scale9Bitmap extends Bitmap {
   final List<RenderTextureQuad> _slices = new List<RenderTextureQuad>(9);
 
   Scale9Bitmap(BitmapData bitmapData, Rectangle<num> grid) : super(bitmapData) {
-    _bitmapData = bitmapData;
     _grid = grid;
     _width = ensureNum(bitmapData.width);
     _height = ensureNum(bitmapData.height);
@@ -29,7 +27,7 @@ class Scale9Bitmap extends Bitmap {
 
   num get width => _width;
 
-  void set width(num value) {
+  set width(num value) {
     _width = ensureNum(value);
   }
 
@@ -38,7 +36,7 @@ class Scale9Bitmap extends Bitmap {
 
   num get height => _height;
 
-  void set height(num value) {
+  set height(num value) {
     _height = ensureNum(value);
   }
 
@@ -46,17 +44,15 @@ class Scale9Bitmap extends Bitmap {
 
   Rectangle<num> get grid => _grid;
 
-  void set grid(Rectangle<num> value) {
+  set grid(Rectangle<num> value) {
     _grid = value;
     _updateRenderTextureQuads();
   }
 
   /// Gets and sets the BitmapData of this Scale9Bitmap.
 
-  BitmapData get bitmapData => _bitmapData;
-
-  void set bitmapData(BitmapData value) {
-    _bitmapData = value;
+  set bitmapData(BitmapData value) {
+    super.bitmapData = value;
     _updateRenderTextureQuads();
   }
 

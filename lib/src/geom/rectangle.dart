@@ -27,7 +27,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     return other is math.Rectangle &&
         this.left == other.left &&
         this.top == other.top &&
@@ -51,19 +51,19 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   T get right => left + width;
 
-  void set right(T value) {
+  set right(T value) {
     width = value - left;
   }
 
   T get bottom => top + height;
 
-  void set bottom(T value) {
+  set bottom(T value) {
     height = value - top;
   }
 
   Point<T> get topLeft => new Point<T>(left, top);
 
-  void set topLeft(Point<T> point) {
+  set topLeft(Point<T> point) {
     width = width + left - point.x;
     height = height + top - point.y;
     left = point.x;
@@ -72,7 +72,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   Point<T> get topRight => new Point<T>(right, top);
 
-  void set topRight(Point<T> point) {
+  set topRight(Point<T> point) {
     width = point.x - left;
     height = height + top - point.y;
     top = point.y;
@@ -80,7 +80,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   Point<T> get bottomLeft => new Point<T>(left, bottom);
 
-  void set bottomLeft(Point<T> point) {
+  set bottomLeft(Point<T> point) {
     width = width + left - point.x;
     height = point.y - top;
     left = point.x;
@@ -88,14 +88,14 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   Point<T> get bottomRight => new Point<T>(right, bottom);
 
-  void set bottomRight(Point<T> point) {
+  set bottomRight(Point<T> point) {
     width = point.x - left;
     height = point.y - top;
   }
 
   Point<T> get size => new Point<T>(width, height);
 
-  void set size(Point<T> point) {
+  set size(Point<T> point) {
     width = point.x;
     height = point.y;
   }

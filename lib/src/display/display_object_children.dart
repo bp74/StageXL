@@ -90,9 +90,8 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
     return _children.every(test);
   }
 
-  Iterable expand(Iterable f(T element)) {
-    return _children.expand(f);
-  }
+  Iterable/*<S>*/ expand/*<S>*/(Iterable/*<S>*/ f(T element)) =>
+      _children.expand(f);
 
   T get first {
     return _children.first;
@@ -102,9 +101,9 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
     return _children.firstWhere(test, orElse: orElse);
   }
 
-  dynamic fold(initialValue, dynamic combine(previousValue, T element)) {
-    return _children.fold(initialValue, combine);
-  }
+  dynamic/*=S*/ fold/*<S>*/(dynamic/*=S*/ initialValue,
+    dynamic/*=S*/ combine(dynamic/*=S*/ previousValue, T element)) =>
+      _children.fold(initialValue, combine);
 
   void forEach(void f(T element)) {
     _children.forEach(f);
@@ -138,9 +137,7 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
     return _children.length;
   }
 
-  Iterable map(f(T element)) {
-    return _children.map(f);
-  }
+  Iterable/*<S>*/ map/*<S>*/(/*=S*/ f(T e)) => _children.map(f);
 
   T reduce(T combine(T value, T element)) {
     return _children.reduce(combine);

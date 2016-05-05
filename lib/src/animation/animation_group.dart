@@ -93,12 +93,12 @@ class AnimationGroup implements Animatable {
   /// The function that is called when an [AnimationGroup] starts.
   ///
   /// This happens after the specified [delay].
-  void set onStart(void function()) {
+  set onStart(void function()) {
     _onStart = function;
   }
 
   /// The function that is called when a [AnimationGroup] is completed.
-  void set onComplete(void function()) {
+  set onComplete(void function()) {
     _onComplete = function;
   }
 }

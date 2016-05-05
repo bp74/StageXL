@@ -147,21 +147,24 @@ class Video {
   /// Get or set if the video is muted.
 
   bool get muted => videoElement.muted;
-  void set muted(bool muted) {
+
+  set muted(bool muted) {
     videoElement.muted = muted;
   }
 
   /// Get or set the volume of the video.
 
   num get volume => videoElement.volume;
-  void set volume(num volume) {
+
+  set volume(num volume) {
     videoElement.volume = volume;
   }
 
   /// Get or set the current time (playback position) of the video.
 
   num get currentTime => videoElement.currentTime;
-  void set currentTime(num value) {
+
+  set currentTime(num value) {
     videoElement.currentTime = value;
   }
 

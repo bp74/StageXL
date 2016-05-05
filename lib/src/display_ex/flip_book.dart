@@ -46,7 +46,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   int get totalFrames => _bitmapDatas.length;
 
   bool get loop => _loop;
-  void set loop(bool value) { _loop = value; }
+  set loop(bool value) { _loop = value; }
 
   bool get playing => _play;
 

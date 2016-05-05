@@ -27,7 +27,7 @@ class RenderStencilBuffer {
   gl.Renderbuffer get renderbuffer => _renderbuffer;
   int get contextIdentifier => _contextIdentifier;
 
-  void set depth(int value) {
+  set depth(int value) {
     _depth = ensureInt(value);
   }
 

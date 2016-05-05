@@ -23,7 +23,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
     return _closed;
   }
 
-  void set closed(bool value) {
+  set closed(bool value) {
     _closed = value;
   }
 

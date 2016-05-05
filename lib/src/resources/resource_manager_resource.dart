@@ -20,9 +20,10 @@ class ResourceManagerResource {
     });
   }
 
-  String toString() => "ResourceManagerResource [kind=${kind}, name=${name}, url = ${url}]";
+  String toString() =>
+      "ResourceManagerResource [kind=$kind, name=$name, url = $url]";
 
-  //-----------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   dynamic get value => _value;
   dynamic get error => _error;

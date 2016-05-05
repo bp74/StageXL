@@ -52,8 +52,8 @@ class TextFormat {
   //-------------------------------------------------------------------------------------------------
 
   String get _cssFontStyle {
-    var fontStyle = "${weight} ${size}px ${font}";
-    if (bold) fontStyle = "bold ${size}px ${font}";
+    var fontStyle = "$weight ${size}px $font";
+    if (bold) fontStyle = "bold ${size}px $font";
     if (italic) fontStyle = "italic $fontStyle";
     return fontStyle;
   }

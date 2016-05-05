@@ -39,12 +39,12 @@ class JenkinsHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 
-  static int hash2(a, b) =>
+  static int hash2(int a, int b) =>
       finish(combine(combine(0, a), b));
 
-  static int hash3(a, b, c) =>
+  static int hash3(int a, int b, int c) =>
       finish(combine(combine(combine(0, a), b), c));
 
-  static int hash4(a, b, c, d) =>
+  static int hash4(int a, int b, int c, int d) =>
       finish(combine(combine(combine(combine(0, a), b), c), d));
 }
