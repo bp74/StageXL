@@ -1,7 +1,7 @@
 part of stagexl.media;
 
 /// The SoundLoadOptions class contains different options to configure
-/// how audio files are loaded from the server.
+/// how videos are loaded from the server.
 ///
 /// The [Sound.defaultLoadOptions] object is the default for all
 /// loading operations if no SoundLoadOptions are provided to the
@@ -21,6 +21,9 @@ class SoundLoadOptions {
 
   bool ogg = true;
 
+  /// The application provides *opus* files as an option to load audio files.
+  bool opus = true;
+
   /// The application provides *ac3* files as an option to load audio files.
 
   bool ac3 = true;
@@ -31,8 +34,8 @@ class SoundLoadOptions {
 
   /// A list of alternative urls for sound samples in the case where the
   /// primary url does not work or the file type is not supported by the
-  /// browser. If this value is null, the alternative urls are calculated
-  /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
+  /// browser. If this value is null, the alternative urls are calcualted
+  /// automatically based on the mp3, mp4, ogg, opus, ac3 and wav properties.
 
   List<String> alternativeUrls;
 
@@ -40,8 +43,8 @@ class SoundLoadOptions {
 
   bool ignoreErrors = true;
 
-  /// Use CORS to download the audio file. This is often necessary when you have
-  /// to download audio files from a third party server.
+  /// Use CORS to download the video. This is often necessary when you have
+  /// to download video from a third party server.
 
   bool corsEnabled = false;
 
@@ -55,6 +58,7 @@ class SoundLoadOptions {
     options.mp3 = this.mp3;
     options.mp4 = this.mp4;
     options.ogg = this.ogg;
+    options.opus = this.opus;
     options.ac3 = this.ac3;
     options.wav = this.wav;
     options.alternativeUrls = urls == null ? null : urls.toList();
@@ -65,7 +69,7 @@ class SoundLoadOptions {
 
   //---------------------------------------------------------------------------
 
-  /// Determine which audio files are the most likely to play smoothly,
+  /// Determine which audio files is the most likely to play smoothly,
   /// based on the supported types and formats available.
 
   List<String> getOptimalAudioUrls(String primaryUrl) {
@@ -74,6 +78,7 @@ class SoundLoadOptions {
     if (!this.mp3) availableTypes.remove("mp3");
     if (!this.mp4) availableTypes.remove("mp4");
     if (!this.ogg) availableTypes.remove("ogg");
+    if (!this.opus) availableTypes.remove("opus");
     if (!this.ac3) availableTypes.remove("ac3");
     if (!this.wav) availableTypes.remove("wav");
 
