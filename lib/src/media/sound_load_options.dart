@@ -8,6 +8,10 @@ part of stagexl.media;
 /// [Sound.load] function.
 
 class SoundLoadOptions {
+  
+  /// The application provides *opus* files as an option to load audio files.
+
+  bool opus = false;
 
   /// The application provides *mp3* files as an option to load audio files.
 
@@ -20,10 +24,6 @@ class SoundLoadOptions {
   /// The application provides *ogg* files as an option to load audio files.
 
   bool ogg = true;
-
-  /// The application provides *opus* files as an option to load audio files.
-
-  bool opus = false;
 
   /// The application provides *ac3* files as an option to load audio files.
 
