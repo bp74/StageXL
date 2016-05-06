@@ -23,7 +23,7 @@ class SoundLoadOptions {
 
   /// The application provides *opus* files as an option to load audio files.
 
-  bool opus = true;
+  bool opus = false;
 
   /// The application provides *ac3* files as an option to load audio files.
 
