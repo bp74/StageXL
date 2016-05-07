@@ -8,7 +8,7 @@ Arron Washington <https://github.com/radicaled>
 Bernhard Pichler <https://github.com/bp74>  
 Kevin Moore <https://github.com/kevmoo>  
 Marco Jakob <https://github.com/marcojakob>  
-Mark Nnordine <https://github.com/mnordine>  
+Mark Nordine <https://github.com/mnordine>  
 Michael Randolph <https://github.com/mrand01>  
 Nils Döhring <https://github.com/nilsdoehring>  
 Philippe Elsass <https://github.com/elsassph>  
