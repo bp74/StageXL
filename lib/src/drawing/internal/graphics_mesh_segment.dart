@@ -68,7 +68,10 @@ abstract class _GraphicsMeshSegment {
     var buffer = _vertexBuffer;
 
     if (offset + 2 > length) {
-      _vertexBuffer = new Float32List(length + minInt(length, 256));
+      var extend = length;
+      if (extend < 16) extend = 16;
+      if (extend > 256) extend = 256;
+      _vertexBuffer = new Float32List(length + extend);
       _vertexBuffer.setAll(0, buffer);
     }
 
@@ -91,7 +94,10 @@ abstract class _GraphicsMeshSegment {
     var buffer = _indexBuffer;
 
     if (offset + 3 > length) {
-      _indexBuffer = new Int16List(length + minInt(length, 256));
+      var extend = length;
+      if (extend < 32) extend = 32;
+      if (extend > 256) extend = 256;
+      _indexBuffer = new Int16List(length + extend);
       _indexBuffer.setAll(0, buffer);
     }
 

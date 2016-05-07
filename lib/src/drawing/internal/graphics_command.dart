@@ -8,8 +8,10 @@ class _GraphicsCommandMeshColor extends GraphicsCommand {
   _GraphicsCommandMeshColor(this.mesh, this.color);
 
   @override
-  void updateContext(_GraphicsContextBase context) {
-    context.meshColor(this);
+  void updateContext(GraphicsContext context) {
+    if (context is _GraphicsContextBase) {
+      context.meshColor(this);
+    }
   }
 }
 
