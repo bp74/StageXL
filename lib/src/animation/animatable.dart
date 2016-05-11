@@ -11,6 +11,8 @@ part of stagexl.animation;
 ///       num _totalTime = 0.0;
 ///       bool advanceTime(num time) {
 ///         _totalTime += time;
+///         // animate something based on _totalTime
+///         return true; // true = continue animation
 ///       }
 ///     }
 ///
