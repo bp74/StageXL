@@ -1,5 +1,16 @@
 part of stagexl.resources;
 
+/// A SoundSprite combines multiple audio files into a single audio file.
+///
+/// iOS, Windows Phone and some Android phones have very limited HTML5 audio
+/// support. They only support playing single file at a time and loading in
+/// new files requires user interaction and has a big latency. To overcome
+/// this there is a technique to combine all audio into single file and only
+/// play/loop certain parts of that file
+///
+/// To generate SoundSprites, please check this GitHub repository:
+/// https://github.com/realbluesky/soundsprite
+
 class SoundSprite {
 
   final List<SoundSpriteSegment> _segments = new List<SoundSpriteSegment>();
@@ -38,7 +49,7 @@ class SoundSprite {
 
       soundLoadOptions.alternativeUrls = soundUrls.skip(1).toList();
 
-      Sound.load(soundUrl, soundLoadOptions).then((Sound sound) {
+      Sound.load(soundUrls[0], soundLoadOptions).then((Sound sound) {
         soundSprite._sound = sound;
         completer.complete(soundSprite);
       }).catchError((error) {
