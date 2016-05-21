@@ -70,8 +70,10 @@ class Point<T extends num> implements math.Point<T> {
   /// called it, passing in a double [factor] on a `Point<int>` _causes_ _a_
   /// _runtime_ _error_ in checked mode.
 
-  Point<T> operator *(num factor) {
-    return new Point<T>(x * factor, y * factor);
+  Point<T> operator *(num/*T|int*/ factor) {
+    dynamic/*=T*/ xf = x * factor;
+    dynamic/*=T*/ yf = y * factor;
+    return new Point<T>(xf, yf);
   }
 
   //-------------------------------------------------------------------------------------------------
