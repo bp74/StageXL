@@ -2,14 +2,12 @@ library stagexl.internal.environment;
 
 import 'dart:async';
 import 'dart:html';
-import 'dart:js';
 import 'dart:typed_data';
 
 final bool autoHiDPI = _checkAutoHiDPI();
 final num devicePixelRatio = _checkDevicePixelRatio();
 final Future<bool> isWebpSupported = _checkWebpSupport();
 final bool isMobileDevice = _checkMobileDevice();
-final bool isCocoonJS = _checkCocoonJS();
 final bool isLittleEndianSystem = _checkLittleEndianSystem();
 final bool isTouchEventSupported = _checkTouchEventSupport();
 
@@ -31,12 +29,6 @@ bool _checkMobileDevice() {
 
 //-------------------------------------------------------------------------------------
 
-bool _checkCocoonJS() {
-  return context["navigator"]["isCocoonJS"] == true;
-}
-
-//-------------------------------------------------------------------------------------
-
 bool _checkLittleEndianSystem() {
   var wordList = new Int32List(1);
   var byteList = wordList.buffer.asUint8List();
@@ -53,7 +45,7 @@ bool _checkAutoHiDPI() {
 
   // only recent devices (> iPhone4) and hi-dpi desktops
 
-  if (isMobileDevice && !isCocoonJS && screen != null) {
+  if (isMobileDevice && screen != null) {
     autoHiDPI = autoHiDPI && (screen.width > 480 || screen.height > 480);
   }
 

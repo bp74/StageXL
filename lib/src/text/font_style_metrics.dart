@@ -16,20 +16,6 @@ class _FontStyleMetrics {
   int height = 0;
 
   _FontStyleMetrics(TextFormat textFormat) {
-    if (env.isCocoonJS) {
-      _fromEstimation(textFormat);
-    } else {
-      _fromHtml(textFormat);
-    }
-  }
-
-  void _fromEstimation(TextFormat textFormat) {
-    this.height = textFormat.size;
-    this.ascent = textFormat.size * 7 ~/ 8;
-    this.descent = textFormat.size * 2 ~/ 8;
-  }
-
-  void _fromHtml(TextFormat textFormat) {
 
     var fontStyle = textFormat._cssFontStyle;
     var text = new html.Element.tag("span");
@@ -53,7 +39,9 @@ class _FontStyleMetrics {
       this.height = block.offsetTop - text.offsetTop;
       this.descent = height - ascent;
     } catch (e) {
-      _fromEstimation(textFormat);
+      this.height = textFormat.size;
+      this.ascent = textFormat.size * 7 ~/ 8;
+      this.descent = textFormat.size * 2 ~/ 8;
     } finally {
       div.remove();
     }

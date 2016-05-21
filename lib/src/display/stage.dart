@@ -392,18 +392,11 @@ class Stage extends DisplayObjectContainer {
     int sourceWidth = _sourceWidth;
     int sourceHeight = _sourceHeight;
 
-    if (env.isCocoonJS) {
-      clientLeft = 0;
-      clientTop = 0;
-      clientWidth = html.window.innerWidth;
-      clientHeight = html.window.innerHeight;
-    } else {
-      var clientRectangle = _canvas.getBoundingClientRect();
-      clientLeft = _canvas.clientLeft + clientRectangle.left.round();
-      clientTop = _canvas.clientTop + clientRectangle.top.round();
-      clientWidth = _canvas.clientWidth;
-      clientHeight = _canvas.clientHeight;
-    }
+    var clientRectangle = _canvas.getBoundingClientRect();
+    clientLeft = _canvas.clientLeft + clientRectangle.left.round();
+    clientTop = _canvas.clientTop + clientRectangle.top.round();
+    clientWidth = _canvas.clientWidth;
+    clientHeight = _canvas.clientHeight;
 
     if (clientWidth is! num) throw "dart2js_hint";
     if (clientHeight is! num) throw "dart2js_hint";
@@ -558,6 +551,7 @@ class Stage extends DisplayObjectContainer {
     }
 
     //-----------------------------------------------------------------
+    // MOUSE_OUT, ROLL_OUT, ROLL_OVER, MOUSE_OVER
 
     if (_mouseTarget != target) {
 
@@ -620,11 +614,10 @@ class Stage extends DisplayObjectContainer {
       _mouseTarget = newTarget;
     }
 
-    //-----------------------------------------------------------------
-
     _updateMouseCursor();
 
     //-----------------------------------------------------------------
+    // MOUSE_DOWN, MOUSE_MOVE, MOUSE_UP, CLICK, DOUBLE_CLICK
 
     String mouseEventType;
     bool isClick = false;
@@ -716,152 +709,128 @@ class Stage extends DisplayObjectContainer {
 
   void _onTouchEvent(html.TouchEvent event) {
 
-    if (env.isCocoonJS) {
+    if (preventDefaultOnTouch) event.preventDefault();
 
-      var jsEvent = new JsObject.fromBrowserObject(event);
-      var jsChangedTouches = new JsArray.from(jsEvent["changedTouches"]);
-      var eventType = ensureString(jsEvent["type"]);
+    var eventType = event.type;
+    var altKey = event.altKey;
+    var ctrlKey = event.ctrlKey;
+    var shiftKey = event.shiftKey;
 
-      if (preventDefaultOnTouch) jsEvent.callMethod("preventDefault");
+    for (var changedTouch in event.changedTouches) {
 
-      for(var changedTouch in jsChangedTouches) {
-        var jsChangedTouch = new JsObject.fromBrowserObject(changedTouch);
-        var identifier = ensureInt(jsChangedTouch["identifier"]);
-        var clientX = ensureNum(jsChangedTouch["clientX"]);
-        var clientY = ensureNum(jsChangedTouch["clientY"]);
-        var client = new math.Point(clientX, clientY);
-        _onTouchEventProcessor(eventType, identifier, client, false, false, false);
+      var identifier = changedTouch.identifier;
+      var clientPoint = changedTouch.client;
+      var stagePoint = _clientTransformation.transformPoint(clientPoint);
+      var localPoint = new Point<num>(0.0, 0.0);
+      var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
+
+      var touchPoint = _touchPoints.putIfAbsent(identifier,
+          () => new _TouchPoint(target, _touchPoints.isEmpty));
+
+      var touchPointID = touchPoint.touchPointID;
+      var primaryTouchPoint = touchPoint.primaryTouchPoint;
+
+      _drags.forEach((d) => d.update(touchPointID, stagePoint));
+
+      //---------------------------------------------------------------
+      // TOUCH_OUT, TOUCH_ROLL_OUT, TOUCH_ROLL_OVER, TOUCH_OVER
+
+      if (touchPoint.currentTarget != target) {
+
+        DisplayObject oldTarget = touchPoint.currentTarget;
+        DisplayObject newTarget = target;
+        List oldTargetList = [];
+        List newTargetList = [];
+        int commonCount = 0;
+
+        for(DisplayObject p = oldTarget; p != null; p = p.parent) {
+          oldTargetList.add(p);
+        }
+
+        for(DisplayObject p = newTarget; p != null; p = p.parent) {
+          newTargetList.add(p);
+        }
+
+        for (;;commonCount++) {
+          if (commonCount == oldTargetList.length) break;
+          if (commonCount == newTargetList.length) break;
+          var ot = oldTargetList[oldTargetList.length - commonCount - 1];
+          var nt = newTargetList[newTargetList.length - commonCount - 1];
+          if (ot != nt) break;
+        }
+
+        if (oldTarget != null) {
+          oldTarget.globalToLocal(stagePoint, localPoint);
+          oldTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true,
+              localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+              altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
+        }
+
+        for (int i = 0; i < oldTargetList.length - commonCount; i++) {
+          DisplayObject target = oldTargetList[i];
+          target.globalToLocal(stagePoint, localPoint);
+          target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OUT, false,
+              localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+              altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
+        }
+
+        for (int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
+          DisplayObject target = newTargetList[i];
+          target.globalToLocal(stagePoint, localPoint);
+          target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OVER, false,
+              localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+              altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
+        }
+
+        if (newTarget != null) {
+          newTarget.globalToLocal(stagePoint, localPoint);
+          newTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true,
+              localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+              altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
+        }
+
+        touchPoint.currentTarget = newTarget;
       }
 
-    } else {
+      //---------------------------------------------------------------
+      // TOUCH_BEGIN, TOUCH_MOVE, TOUCH_END, TOUCH_CANCEL, TOUCH_TAP
 
-      if (preventDefaultOnTouch) event.preventDefault();
+      String touchEventType;
+      bool isTap = false;
 
-      var eventType = event.type;
-      var altKey = event.altKey;
-      var ctrlKey = event.ctrlKey;
-      var shiftKey = event.shiftKey;
-
-      for(var changedTouch in event.changedTouches) {
-        var identifier = changedTouch.identifier;
-        var client = changedTouch.client;
-        _onTouchEventProcessor(eventType, identifier, client, altKey, ctrlKey, shiftKey);
-      }
-    }
-  }
-
-  //----------------------------------------------------------------------------
-
-  void _onTouchEventProcessor(
-      String eventType, int identifier, math.Point client,
-      bool altKey, bool ctrlKey, bool shiftKey) {
-
-    var stagePoint = _clientTransformation.transformPoint(client);
-    var localPoint = new Point<num>(0.0, 0.0);
-    var target = hitTestInput(stagePoint.x, stagePoint.y) as InteractiveObject;
-
-    var touchPoint = _touchPoints.putIfAbsent(identifier, () =>
-        new _TouchPoint(target, _touchPoints.isEmpty));
-
-    var touchPointID = touchPoint.touchPointID;
-    var primaryTouchPoint = touchPoint.primaryTouchPoint;
-
-    _drags.forEach((d) => d.update(touchPointID, stagePoint));
-
-    if (touchPoint.currentTarget != target) {
-
-      DisplayObject oldTarget = touchPoint.currentTarget;
-      DisplayObject newTarget = target;
-      List oldTargetList = [];
-      List newTargetList = [];
-      int commonCount = 0;
-
-      for(DisplayObject p = oldTarget; p != null; p = p.parent) {
-        oldTargetList.add(p);
+      if (eventType == "touchstart") {
+        _canvas.focus();
+        _touchPoints[identifier] = touchPoint;
+        touchEventType = TouchEvent.TOUCH_BEGIN;
       }
 
-      for(DisplayObject p = newTarget; p != null; p = p.parent) {
-        newTargetList.add(p);
+      if (eventType == "touchend") {
+        _touchPoints.remove(identifier);
+        touchEventType = TouchEvent.TOUCH_END;
+        isTap = (touchPoint.target == target);
       }
 
-      for(;;commonCount++) {
-        if (commonCount == oldTargetList.length) break;
-        if (commonCount == newTargetList.length) break;
-        var ot = oldTargetList[oldTargetList.length - commonCount - 1];
-        var nt = newTargetList[newTargetList.length - commonCount - 1];
-        if (ot != nt) break;
+      if (eventType == "touchcancel") {
+        _touchPoints.remove(identifier);
+        touchEventType = TouchEvent.TOUCH_CANCEL;
       }
 
-      if (oldTarget != null) {
-        oldTarget.globalToLocal(stagePoint, localPoint);
-        oldTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OUT, true,
-            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
+      if (eventType == "touchmove") {
+        touchEventType = TouchEvent.TOUCH_MOVE;
       }
 
-      for(int i = 0; i < oldTargetList.length - commonCount; i++) {
-        DisplayObject target = oldTargetList[i];
+      if (touchEventType != null && target != null) {
+
         target.globalToLocal(stagePoint, localPoint);
-        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OUT, false,
+        target.dispatchEvent(new TouchEvent(touchEventType, true,
             localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
             altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
-      }
 
-      for(int i = newTargetList.length - commonCount - 1; i >= 0; i--) {
-        DisplayObject target = newTargetList[i];
-        target.globalToLocal(stagePoint, localPoint);
-        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_ROLL_OVER, false,
-            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
-      }
-
-      if (newTarget != null) {
-        newTarget.globalToLocal(stagePoint, localPoint);
-        newTarget.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_OVER, true,
-            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
-      }
-
-      touchPoint.currentTarget = newTarget;
-    }
-
-    //-----------------------------------------------------------------
-
-    String touchEventType;
-    bool isTap = false;
-
-    if (eventType == "touchstart") {
-      _canvas.focus();
-      _touchPoints[identifier] = touchPoint;
-      touchEventType = TouchEvent.TOUCH_BEGIN;
-    }
-
-    if (eventType == "touchend") {
-      _touchPoints.remove(identifier);
-      touchEventType = TouchEvent.TOUCH_END;
-      isTap = (touchPoint.target == target);
-    }
-
-    if (eventType == "touchcancel") {
-      _touchPoints.remove(identifier);
-      touchEventType = TouchEvent.TOUCH_CANCEL;
-    }
-
-    if (eventType == "touchmove") {
-      touchEventType = TouchEvent.TOUCH_MOVE;
-    }
-
-    if (touchEventType != null && target != null) {
-
-      target.globalToLocal(stagePoint, localPoint);
-      target.dispatchEvent(new TouchEvent(touchEventType, true,
-          localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-          altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
-
-      if (isTap) {
-        target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_TAP, true,
-            localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
-            altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
+        if (isTap) {
+          target.dispatchEvent(new TouchEvent(TouchEvent.TOUCH_TAP, true,
+              localPoint.x, localPoint.y, stagePoint.x, stagePoint.y,
+              altKey, ctrlKey, shiftKey, touchPointID, primaryTouchPoint));
+        }
       }
     }
   }

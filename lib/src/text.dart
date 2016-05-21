@@ -18,7 +18,6 @@ import 'engine.dart';
 import 'events.dart';
 import 'geom.dart';
 import 'ui.dart';
-import 'internal/environment.dart' as env;
 import 'internal/tools.dart';
 
 part 'text/font_style_metrics.dart';
