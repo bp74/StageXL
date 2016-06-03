@@ -63,9 +63,13 @@ class _GraphicsPath extends _GraphicsMesh {
       num centerX = point1x + l * v1y / v1l;
       num centerY = point1y - l * v1x / v1l;
 
-      num angle1 = atan2(point1y - centerY, point1x - centerX);
-      num angle2 = atan2(point2y - centerY, point2x - centerX);
-      this.arc(centerX, centerY, radius, angle1, angle2, t > 0.0);
+      if (centerX.isNaN || centerY.isNaN) {
+        this.lineTo(controlX, controlY);
+      } else {
+        num angle1 = atan2(point1y - centerY, point1x - centerX);
+        num angle2 = atan2(point2y - centerY, point2x - centerX);
+        this.arc(centerX, centerY, radius, angle1, angle2, t > 0.0);
+      }
     }
   }
 
