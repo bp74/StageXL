@@ -71,9 +71,7 @@ class Point<T extends num> implements math.Point<T> {
   /// _runtime_ _error_ in checked mode.
 
   Point<T> operator *(num/*T|int*/ factor) {
-    dynamic/*=T*/ xf = x * factor;
-    dynamic/*=T*/ yf = y * factor;
-    return new Point<T>(xf, yf);
+    return new Point<T>(x * factor as T, y * factor as T);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -106,10 +104,12 @@ class Point<T extends num> implements math.Point<T> {
     y += dy;
   }
 
-  /// Calculates the distance from this Point to another Point.
+  /// Returns the distance between `this` and [other].
 
-  double distanceTo(math.Point<T> point) {
-    return sqrt(squaredDistanceTo(point));
+  double distanceTo(math.Point<T> other) {
+    var dx = x - other.x;
+    var dy = y - other.y;
+    return sqrt(dx * dx + dy * dy);
   }
 
   /// Returns the squared distance between `this` and [other].
