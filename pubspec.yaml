@@ -4,7 +4,7 @@ author: Bernhard Pichler <support@stagexl.org>
 description: A fast and universal 2D rendering engine for HTML5 and Dart.
 homepage: http://www.stagexl.org
 environment:
-  sdk: '>=1.16.0 <2.0.0'
+  sdk: '>=1.17.0 <2.0.0'
 documentation: http://www.stagexl.org/docs/api/index.html
 dependencies:
   xml: any
