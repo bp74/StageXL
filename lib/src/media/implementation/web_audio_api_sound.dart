@@ -41,7 +41,7 @@ class WebAudioApiSound extends Sound {
     soundLoadOptions ??= Sound.defaultLoadOptions;
 
     var audioContext = WebAudioApiMixer.audioContext;
-    var decoder = new Base64Decoder();
+    var decoder = const Base64Decoder();
     var start = dataUrl.indexOf(',') + 1;
     var bytes = decoder.convert(dataUrl, start) as Uint8List;
 
