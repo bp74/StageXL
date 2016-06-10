@@ -10,9 +10,7 @@ class WebAudioApiSound extends Sound {
 
   static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions]) async {
 
-    if (soundLoadOptions == null) {
-      soundLoadOptions = Sound.defaultLoadOptions;
-    }
+    soundLoadOptions ??= Sound.defaultLoadOptions;
 
     var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
@@ -29,8 +27,6 @@ class WebAudioApiSound extends Sound {
     }
 
     if (soundLoadOptions.ignoreErrors) {
-      // dartanalyzer --strong known issues
-      // https://github.com/dart-lang/dev_compiler/issues/316
       return MockSound.load(url, soundLoadOptions);
     } else {
       throw new StateError("Failed to load audio.");
@@ -39,22 +35,26 @@ class WebAudioApiSound extends Sound {
 
   //---------------------------------------------------------------------------
 
-  static Future<Sound> loadDataUrl(String dataUrl) async {
+  static Future<Sound> loadDataUrl(
+      String dataUrl, [SoundLoadOptions soundLoadOptions]) async {
+
+    soundLoadOptions ??= Sound.defaultLoadOptions;
 
     var audioContext = WebAudioApiMixer.audioContext;
-    var byteString = html.window.atob(dataUrl.split(',')[1]);
-    var bytes = new Uint8List(byteString.length);
-
-    for (int i = 0; i < byteString.length; i++) {
-      bytes[i] = byteString.codeUnitAt(i);
-    }
+    var decoder = new Base64Decoder();
+    var start = dataUrl.indexOf(',') + 1;
+    var bytes = decoder.convert(dataUrl, start) as Uint8List;
 
     try {
       var audioData = bytes.buffer;
       var audioBuffer = await audioContext.decodeAudioData(audioData);
       return new WebAudioApiSound._(audioBuffer);
     } catch (e) {
-      throw new StateError("Failed to load audio.");
+      if (soundLoadOptions.ignoreErrors) {
+        return new MockSound._();
+      } else {
+        throw new StateError("Failed to load audio.");
+      }
     }
   }
 

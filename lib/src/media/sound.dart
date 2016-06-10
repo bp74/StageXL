@@ -43,11 +43,16 @@ abstract class Sound {
   ///     var future = Sound.loadDataUrl("data:audio/mpeg;base64,<data>");
   ///     future.then((Sound sound) => sound.play());
 
-  static Future<Sound> loadDataUrl(String dataUrl) {
+  static Future<Sound> loadDataUrl(
+      String dataUrl, [SoundLoadOptions soundLoadOptions]) {
+
     switch(SoundMixer.engine) {
-      case "WebAudioApi" : return WebAudioApiSound.loadDataUrl(dataUrl);
-      case "AudioElement": return AudioElementSound.loadDataUrl(dataUrl);
-      default            : return new Future<Sound>.value(new MockSound._());
+      case "WebAudioApi" :
+        return WebAudioApiSound.loadDataUrl(dataUrl, soundLoadOptions);
+      case "AudioElement":
+        return AudioElementSound.loadDataUrl(dataUrl, soundLoadOptions);
+      default            :
+        return new Future<Sound>.value(new MockSound._());
     }
   }
 

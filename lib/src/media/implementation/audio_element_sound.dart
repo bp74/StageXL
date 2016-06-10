@@ -18,9 +18,7 @@ class AudioElementSound extends Sound {
   static Future<Sound> load(String url, [
     SoundLoadOptions soundLoadOptions]) async {
 
-    if (soundLoadOptions == null) {
-      soundLoadOptions = Sound.defaultLoadOptions;
-    }
+    soundLoadOptions ??= Sound.defaultLoadOptions;
 
     var loadData = false;
     var corsEnabled = soundLoadOptions.corsEnabled;
@@ -32,8 +30,6 @@ class AudioElementSound extends Sound {
       return new AudioElementSound._(audioElement);
     } catch (e) {
       if (soundLoadOptions.ignoreErrors) {
-        // dartanalyzer --strong known issues
-        // https://github.com/dart-lang/dev_compiler/issues/316
         return MockSound.load(url, soundLoadOptions);
       } else {
         throw new StateError("Failed to load audio.");
@@ -41,7 +37,10 @@ class AudioElementSound extends Sound {
     }
   }
 
-  static Future<Sound> loadDataUrl(String dataUrl) async {
+  static Future<Sound> loadDataUrl(
+      String dataUrl, [SoundLoadOptions soundLoadOptions]) async {
+
+    soundLoadOptions ??= Sound.defaultLoadOptions;
 
     var audioUrls = <String>[dataUrl];
     var loadData = false;
@@ -52,7 +51,11 @@ class AudioElementSound extends Sound {
       var audioElement = await audioLoader.done;
       return new AudioElementSound._(audioElement);
     } catch (e) {
-      throw new StateError("Failed to load audio.");
+      if (soundLoadOptions.ignoreErrors) {
+        return new MockSound._();
+      } else {
+        throw new StateError("Failed to load audio.");
+      }
     }
   }
 

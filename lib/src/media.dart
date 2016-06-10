@@ -23,6 +23,7 @@ library stagexl.media;
 
 import 'dart:async';
 import 'dart:math';
+import 'dart:convert';
 import 'dart:html' as html;
 import 'dart:html' show HttpRequest, AudioElement, VideoElement;
 import 'dart:typed_data';
