@@ -29,9 +29,12 @@ abstract class Sound {
 
   static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions]) {
     switch(SoundMixer.engine) {
-      case "WebAudioApi" : return WebAudioApiSound.load(url, soundLoadOptions);
-      case "AudioElement": return AudioElementSound.load(url, soundLoadOptions);
-      default            : return MockSound.load(url, soundLoadOptions);
+      case "WebAudioApi" :
+        return WebAudioApiSound.load(url, soundLoadOptions);
+      case "AudioElement":
+        return AudioElementSound.load(url, soundLoadOptions);
+      default :
+        return MockSound.load(url, soundLoadOptions);
     }
   }
 
@@ -51,8 +54,8 @@ abstract class Sound {
         return WebAudioApiSound.loadDataUrl(dataUrl, soundLoadOptions);
       case "AudioElement":
         return AudioElementSound.loadDataUrl(dataUrl, soundLoadOptions);
-      default            :
-        return new Future<Sound>.value(new MockSound._());
+      default :
+        return MockSound.loadDataUrl(dataUrl, soundLoadOptions);
     }
   }
 

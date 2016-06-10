@@ -51,7 +51,7 @@ class WebAudioApiSound extends Sound {
       return new WebAudioApiSound._(audioBuffer);
     } catch (e) {
       if (soundLoadOptions.ignoreErrors) {
-        return new MockSound._();
+        return MockSound.loadDataUrl(dataUrl, soundLoadOptions);
       } else {
         throw new StateError("Failed to load audio.");
       }

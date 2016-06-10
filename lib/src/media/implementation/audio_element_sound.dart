@@ -52,7 +52,7 @@ class AudioElementSound extends Sound {
       return new AudioElementSound._(audioElement);
     } catch (e) {
       if (soundLoadOptions.ignoreErrors) {
-        return new MockSound._();
+        return MockSound.loadDataUrl(dataUrl, soundLoadOptions);
       } else {
         throw new StateError("Failed to load audio.");
       }

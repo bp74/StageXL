@@ -11,6 +11,10 @@ class MockSound extends Sound {
     return new Future<Sound>.value(new MockSound._());
   }
 
+  static Future<Sound> loadDataUrl(String dataUrl, [SoundLoadOptions soundLoadOptions]) {
+    return new Future<Sound>.value(new MockSound._());
+  }
+
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
