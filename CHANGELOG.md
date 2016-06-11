@@ -8,6 +8,14 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 0.13.8
+  * Added support for opus audio codec.
+  * Added support for SoundLoadOptions in Sound.loadDataUrl.
+  * Fixes and optimizations in graphics methods.
+  * Removed support for legacy CocoonJS workarounds.
+  * Enabled analysis options for strong mode.
+  * Updated SDK dependency to Dart 1.17 
+
 #### Pub version 0.13.7
   * Replaced deprecated WebGL methods
   * Updated SDK dependency to Dart 1.16
