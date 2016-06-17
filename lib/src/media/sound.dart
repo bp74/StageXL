@@ -3,6 +3,7 @@ part of stagexl.media;
 abstract class Sound {
 
   Sound() {
+    SoundMixer.engine = Sound.defaultLoadOptions.soundEngine;
     SoundMixer._initEngine();
   }
 
@@ -29,9 +30,9 @@ abstract class Sound {
 
   static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions]) {
     switch(SoundMixer.engine) {
-      case "WebAudioApi" :
+      case SoundEngines.WebAudioApi :
         return WebAudioApiSound.load(url, soundLoadOptions);
-      case "AudioElement":
+      case SoundEngines.AudioElement:
         return AudioElementSound.load(url, soundLoadOptions);
       default :
         return MockSound.load(url, soundLoadOptions);
@@ -46,13 +47,12 @@ abstract class Sound {
   ///     var future = Sound.loadDataUrl("data:audio/mpeg;base64,<data>");
   ///     future.then((Sound sound) => sound.play());
 
-  static Future<Sound> loadDataUrl(
-      String dataUrl, [SoundLoadOptions soundLoadOptions]) {
+  static Future<Sound> loadDataUrl(String dataUrl, [SoundLoadOptions soundLoadOptions]) {
 
     switch(SoundMixer.engine) {
-      case "WebAudioApi" :
+      case SoundEngines.WebAudioApi:
         return WebAudioApiSound.loadDataUrl(dataUrl, soundLoadOptions);
-      case "AudioElement":
+      case SoundEngines.AudioElement:
         return AudioElementSound.loadDataUrl(dataUrl, soundLoadOptions);
       default :
         return MockSound.loadDataUrl(dataUrl, soundLoadOptions);

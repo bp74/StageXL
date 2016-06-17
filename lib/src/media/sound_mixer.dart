@@ -3,6 +3,7 @@ part of stagexl.media;
 class SoundMixer {
 
   static String _engine;
+  static String _engineOverride;
 
   static WebAudioApiMixer _webAudioApiMixer;
   static AudioElementMixer _audioElementMixer;
@@ -14,6 +15,15 @@ class SoundMixer {
   static String get engine {
     _initEngine();
     return _engine;
+  }
+
+  /// Overrides audio engine detection logic with given value.  Valid values can be found in [SoundEngines]
+  static set engine(String value)
+  {
+    if(_engine != null || value == null) return;
+
+    _engineOverride = value;
+    _initEngine();
   }
 
   //---------------------------------------------------------------------------
@@ -49,7 +59,7 @@ class SoundMixer {
   ///     });
 
   static void unlockMobileAudio() {
-    if (engine == "WebAudioApi") {
+    if (engine == SoundEngines.WebAudioApi) {
       try {
         var context = WebAudioApiMixer.audioContext;
         var source = context.createBufferSource();
@@ -71,12 +81,34 @@ class SoundMixer {
       return;
     }
 
-    _engine = "AudioElement";
+    _engine = SoundEngines.AudioElement;
     _audioElementMixer = new AudioElementMixer();
 
-    if (AudioContext.supported) {
-      _engine = "WebAudioApi";
-      _webAudioApiMixer = new WebAudioApiMixer();
+    if(_engineOverride != null)
+    {
+      if(_engineOverride != SoundEngines.AudioElement)
+      {
+        _engine = _engineOverride;
+
+        switch(_engine)
+        {
+          case SoundEngines.WebAudioApi:
+            _webAudioApiMixer = new WebAudioApiMixer();
+            break;
+
+          case SoundEngines.AudioElement:
+          default:
+            // do nothing;
+            break;
+        }
+      }
+    }
+    else
+    {
+      if (AudioContext.supported) {
+        _engine = SoundEngines.WebAudioApi;
+        _webAudioApiMixer = new WebAudioApiMixer();
+      }
     }
 
     var ua = html.window.navigator.userAgent;
