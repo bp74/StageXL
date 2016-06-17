@@ -34,7 +34,7 @@ abstract class Sound {
         return WebAudioApiSound.load(url, options);
       case SoundEngine.AudioElement:
         return AudioElementSound.load(url, options);
-      case SoundEngine.Mockup:
+      default:
         return MockSound.load(url, options);
     }
   }
@@ -56,7 +56,7 @@ abstract class Sound {
         return WebAudioApiSound.loadDataUrl(dataUrl, options);
       case SoundEngine.AudioElement:
         return AudioElementSound.loadDataUrl(dataUrl, options);
-      case SoundEngine.Mockup:
+      default:
         return MockSound.loadDataUrl(dataUrl, options);
     }
   }
