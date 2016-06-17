@@ -5,8 +5,8 @@ In alphabetical order:
 Alex Gann <https://github.com/alexgann>  
 Andrew Gerard <https://github.com/kinetifex>  
 Arron Washington <https://github.com/radicaled>  
-Bernhard Pichler <https://github.com/bp74>
-Josh Brown <https://github.com/joshwritescode>
+Bernhard Pichler <https://github.com/bp74>  
+Josh Brown <https://github.com/joshwritescode>  
 Kevin Moore <https://github.com/kevmoo>  
 Marco Jakob <https://github.com/marcojakob>  
 Mark Nordine <https://github.com/mnordine>  
