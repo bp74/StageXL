@@ -49,6 +49,10 @@ class SoundLoadOptions {
 
   bool corsEnabled = false;
 
+  /// Ignore the [SoundMixer.engine] and use this sound engine instead.
+
+  SoundEngine engine;
+
   //---------------------------------------------------------------------------
 
   /// Create a deep clone of this [SoundLoadOptions].
@@ -62,6 +66,7 @@ class SoundLoadOptions {
     options.opus = this.opus;
     options.ac3 = this.ac3;
     options.wav = this.wav;
+    options.engine = this.engine;
     options.alternativeUrls = urls == null ? null : urls.toList();
     options.ignoreErrors = this.ignoreErrors;
     options.corsEnabled = this.corsEnabled;

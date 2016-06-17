@@ -24,17 +24,18 @@ abstract class Sound {
   /// playback, the file extension will be replaced with 'ogg' or 'ac3'. You
   /// can customize this behavior by changing the [soundLoadOptions].
   ///
-  ///     var future = Sound.load("assets/audio/hello.mp3");
-  ///     future.then((Sound sound) => sound.play());
+  ///     var sound = await Sound.load("assets/audio/hello.mp3");
+  ///     sound.play();
 
   static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions]) {
-    switch(SoundMixer.engine) {
-      case "WebAudioApi" :
-        return WebAudioApiSound.load(url, soundLoadOptions);
-      case "AudioElement":
-        return AudioElementSound.load(url, soundLoadOptions);
-      default :
-        return MockSound.load(url, soundLoadOptions);
+    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
+    switch (options.engine ?? SoundMixer.engine) {
+      case SoundEngine.WebAudioApi:
+        return WebAudioApiSound.load(url, options);
+      case SoundEngine.AudioElement:
+        return AudioElementSound.load(url, options);
+      case SoundEngine.Mockup:
+        return MockSound.load(url, options);
     }
   }
 
@@ -43,23 +44,26 @@ abstract class Sound {
   /// Please be aware that browsers do support different kinds of audio types.
   /// You can get a list of supported types here: [Sound.supportedTypes]
   ///
-  ///     var future = Sound.loadDataUrl("data:audio/mpeg;base64,<data>");
-  ///     future.then((Sound sound) => sound.play());
+  ///     var sound = await Sound.loadDataUrl("data:audio/mpeg;base64,<data>");
+  ///     sound.play();
 
   static Future<Sound> loadDataUrl(
       String dataUrl, [SoundLoadOptions soundLoadOptions]) {
 
-    switch(SoundMixer.engine) {
-      case "WebAudioApi" :
-        return WebAudioApiSound.loadDataUrl(dataUrl, soundLoadOptions);
-      case "AudioElement":
-        return AudioElementSound.loadDataUrl(dataUrl, soundLoadOptions);
-      default :
-        return MockSound.loadDataUrl(dataUrl, soundLoadOptions);
+    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
+    switch (options.engine ?? SoundMixer.engine) {
+      case SoundEngine.WebAudioApi:
+        return WebAudioApiSound.loadDataUrl(dataUrl, options);
+      case SoundEngine.AudioElement:
+        return AudioElementSound.loadDataUrl(dataUrl, options);
+      case SoundEngine.Mockup:
+        return MockSound.loadDataUrl(dataUrl, options);
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  SoundEngine get engine;
 
   num get length;
 

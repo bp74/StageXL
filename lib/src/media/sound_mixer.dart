@@ -2,18 +2,30 @@ part of stagexl.media;
 
 class SoundMixer {
 
-  static String _engine;
+  static SoundEngine _engineDetected;
+  static SoundEngine _engineOverride;
+  static SoundTransform _soundTransform = new SoundTransform();
 
   static WebAudioApiMixer _webAudioApiMixer;
   static AudioElementMixer _audioElementMixer;
 
-  static SoundTransform _soundTransform = new SoundTransform();
-
   //---------------------------------------------------------------------------
 
-  static String get engine {
+  /// Get or set the [SoundEngine] that is used to load and play sounds.
+  ///
+  /// The engine is automatically detected based on the best engine supported
+  /// by the browser. It is possible to override the detected engine with a
+  /// different one. Setting the engine to `null` will switch back to the
+  /// automatically detected engine.
+
+  static SoundEngine get engine {
     _initEngine();
-    return _engine;
+    return _engineOverride ?? _engineDetected;
+  }
+
+  static set engine(SoundEngine value) {
+    _engineOverride = value;
+    _initEngine();
   }
 
   //---------------------------------------------------------------------------
@@ -23,17 +35,10 @@ class SoundMixer {
   }
 
   static set soundTransform(SoundTransform value) {
-
     _initEngine();
-    _soundTransform =  value != null ? value : new SoundTransform();
-
-    if (_webAudioApiMixer != null) {
-      _webAudioApiMixer.applySoundTransform(_soundTransform);
-    }
-
-    if (_audioElementMixer != null) {
-      _audioElementMixer.applySoundTransform(_soundTransform);
-    }
+    _soundTransform = value ?? new SoundTransform();
+    _webAudioApiMixer?.applySoundTransform(_soundTransform);
+    _audioElementMixer?.applySoundTransform(_soundTransform);
   }
 
   //---------------------------------------------------------------------------
@@ -49,7 +54,7 @@ class SoundMixer {
   ///     });
 
   static void unlockMobileAudio() {
-    if (engine == "WebAudioApi") {
+    if (engine == SoundEngine.WebAudioApi) {
       try {
         var context = WebAudioApiMixer.audioContext;
         var source = context.createBufferSource();
@@ -67,15 +72,13 @@ class SoundMixer {
 
   static void _initEngine() {
 
-    if (_engine != null) {
-      return;
-    }
+    if (_engineDetected != null) return;
 
-    _engine = "AudioElement";
+    _engineDetected = SoundEngine.AudioElement;
     _audioElementMixer = new AudioElementMixer();
 
     if (AudioContext.supported) {
-      _engine = "WebAudioApi";
+      _engineDetected = SoundEngine.WebAudioApi;
       _webAudioApiMixer = new WebAudioApiMixer();
     }
 
@@ -83,21 +86,21 @@ class SoundMixer {
 
     if (ua.contains("IEMobile")) {
       if (ua.contains("9.0")) {
-        _engine = "Mock";
+        _engineDetected = SoundEngine.Mockup;
       }
     }
 
     if (ua.contains("iPhone") || ua.contains("iPad") || ua.contains("iPod")) {
       if (ua.contains("OS 3") || ua.contains("OS 4") || ua.contains("OS 5")) {
-        _engine = "Mock";
+        _engineDetected = SoundEngine.Mockup;
       }
     }
 
     if (AudioLoader.supportedTypes.length == 0) {
-      _engine = "Mock";
+      _engineDetected = SoundEngine.Mockup;
     }
 
-    print("StageXL audio engine  : $engine");
+    print("StageXL sound engine  : $engine");
   }
 
 }

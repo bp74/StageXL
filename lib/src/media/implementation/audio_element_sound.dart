@@ -16,21 +16,20 @@ class AudioElementSound extends Sound {
   //---------------------------------------------------------------------------
 
   static Future<Sound> load(String url, [
-    SoundLoadOptions soundLoadOptions]) async {
+      SoundLoadOptions soundLoadOptions]) async {
 
-    soundLoadOptions ??= Sound.defaultLoadOptions;
-
+    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
+    var audioUrls = options.getOptimalAudioUrls(url);
+    var corsEnabled = options.corsEnabled;
     var loadData = false;
-    var corsEnabled = soundLoadOptions.corsEnabled;
-    var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
 
     try {
       var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
       var audioElement = await audioLoader.done;
       return new AudioElementSound._(audioElement);
     } catch (e) {
-      if (soundLoadOptions.ignoreErrors) {
-        return MockSound.load(url, soundLoadOptions);
+      if (options.ignoreErrors) {
+        return MockSound.load(url, options);
       } else {
         throw new StateError("Failed to load audio.");
       }
@@ -40,8 +39,7 @@ class AudioElementSound extends Sound {
   static Future<Sound> loadDataUrl(
       String dataUrl, [SoundLoadOptions soundLoadOptions]) async {
 
-    soundLoadOptions ??= Sound.defaultLoadOptions;
-
+    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     var audioUrls = <String>[dataUrl];
     var loadData = false;
     var corsEnabled = false;
@@ -51,8 +49,8 @@ class AudioElementSound extends Sound {
       var audioElement = await audioLoader.done;
       return new AudioElementSound._(audioElement);
     } catch (e) {
-      if (soundLoadOptions.ignoreErrors) {
-        return MockSound.loadDataUrl(dataUrl, soundLoadOptions);
+      if (options.ignoreErrors) {
+        return MockSound.loadDataUrl(dataUrl, options);
       } else {
         throw new StateError("Failed to load audio.");
       }
@@ -60,6 +58,8 @@ class AudioElementSound extends Sound {
   }
 
   //---------------------------------------------------------------------------
+
+  SoundEngine get engine => SoundEngine.AudioElement;
 
   num get length => _audioElement.duration;
 

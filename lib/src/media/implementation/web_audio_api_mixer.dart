@@ -8,7 +8,7 @@ class WebAudioApiMixer {
   GainNode _volumeNode;
 
   WebAudioApiMixer([AudioNode inputNode]) {
-    _inputNode = (inputNode != null) ? inputNode : audioContext.destination;
+    _inputNode = inputNode ?? audioContext.destination;
     _volumeNode = audioContext.createGain();
     _volumeNode.connectNode(_inputNode);
   }

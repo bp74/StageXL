@@ -35,6 +35,7 @@ import 'internal/video_loader.dart';
 
 part 'media/sound.dart';
 part 'media/sound_channel.dart';
+part 'media/sound_engine.dart';
 part 'media/sound_load_options.dart';
 part 'media/sound_mixer.dart';
 part 'media/sound_transform.dart';

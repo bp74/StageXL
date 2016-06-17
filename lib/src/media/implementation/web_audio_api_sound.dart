@@ -10,9 +10,8 @@ class WebAudioApiSound extends Sound {
 
   static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions]) async {
 
-    soundLoadOptions ??= Sound.defaultLoadOptions;
-
-    var audioUrls = soundLoadOptions.getOptimalAudioUrls(url);
+    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
+    var audioUrls = options.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
 
     for(var audioUrl in audioUrls) {
@@ -26,8 +25,8 @@ class WebAudioApiSound extends Sound {
       }
     }
 
-    if (soundLoadOptions.ignoreErrors) {
-      return MockSound.load(url, soundLoadOptions);
+    if (options.ignoreErrors) {
+      return MockSound.load(url, options);
     } else {
       throw new StateError("Failed to load audio.");
     }
@@ -38,8 +37,7 @@ class WebAudioApiSound extends Sound {
   static Future<Sound> loadDataUrl(
       String dataUrl, [SoundLoadOptions soundLoadOptions]) async {
 
-    soundLoadOptions ??= Sound.defaultLoadOptions;
-
+    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     var audioContext = WebAudioApiMixer.audioContext;
     var start = dataUrl.indexOf(',') + 1;
     var bytes = BASE64.decoder.convert(dataUrl, start) as Uint8List;
@@ -49,8 +47,8 @@ class WebAudioApiSound extends Sound {
       var audioBuffer = await audioContext.decodeAudioData(audioData);
       return new WebAudioApiSound._(audioBuffer);
     } catch (e) {
-      if (soundLoadOptions.ignoreErrors) {
-        return MockSound.loadDataUrl(dataUrl, soundLoadOptions);
+      if (options.ignoreErrors) {
+        return MockSound.loadDataUrl(dataUrl, options);
       } else {
         throw new StateError("Failed to load audio.");
       }
@@ -58,6 +56,8 @@ class WebAudioApiSound extends Sound {
   }
 
   //---------------------------------------------------------------------------
+
+  SoundEngine get engine => SoundEngine.WebAudioApi;
 
   num get length => _audioBuffer.duration;
 

@@ -76,9 +76,11 @@ export 'src/ui.dart';
 ///     StageXL.soundLoadOptions.ogg = true;
 ///     StageXL.soundLoadOptions.ac3 = true;
 ///     StageXL.soundLoadOptions.wav = true;
+///     StageXL.soundLoadOptions.opus = false;
 ///     StageXL.soundLoadOptions.alternativeUrls = null;
 ///     StageXL.soundLoadOptions.ignoreErrors = true;
 ///     StageXL.soundLoadOptions.corsEnabled = false;
+///     StageXL.soundLoadOptions.engine = null;
 ///
 /// The default [VideoLoadOptions] used by [Video.load]:
 ///

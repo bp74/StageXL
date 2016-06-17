@@ -18,6 +18,8 @@ class MockSound extends Sound {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  SoundEngine get engine => SoundEngine.Mockup;
+
   num get length {
     // We could load the WAV-file, parse the header and get the correct length!
     return double.NAN;
