@@ -8,6 +8,12 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 0.13.9
+  * Added SoundEngine enum.
+  * Added SoundMixer.engine setter to overrule the detected engine.
+  * Added SoundLoadOptions.engine to load with a specific engine.
+  * Added Sound.engine to get the underlying engine.
+  
 #### Pub version 0.13.8
   * Added support for opus audio codec.
   * Added support for SoundLoadOptions in Sound.loadDataUrl.
