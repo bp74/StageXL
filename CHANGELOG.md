@@ -8,6 +8,9 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 0.13.8+1
+  * Added support for specifying the sound engine in StageXL.soundLoadOptions.
+
 #### Pub version 0.13.8
   * Added support for opus audio codec.
   * Added support for SoundLoadOptions in Sound.loadDataUrl.
