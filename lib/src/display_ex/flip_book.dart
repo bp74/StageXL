@@ -187,7 +187,7 @@ class FlipBook extends InteractiveObject implements Animatable {
         }
 
         // dispatch complete event only on last frame
-        if (!loop && nextFrame == lastFrame) {
+        if (!loop && nextFrame == lastFrame && nextFrame != prevFrame) {
           this.dispatchEvent(_completeEvent);
           if (_currentFrame != nextFrame) return true;
         }
