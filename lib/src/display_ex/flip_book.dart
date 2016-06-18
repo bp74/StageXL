@@ -1,7 +1,9 @@
 part of stagexl.display_ex;
 
-/// A display object to play sprite sheet animations. Sprite sheet animations
-/// are a set of images to simulate a moving/animated body.
+/// A display object to play sprite sheet animations.
+///
+/// Sprite sheet animations are a set of images to simulate a
+/// moving/animated body.
 
 class FlipBook extends InteractiveObject implements Animatable {
 
@@ -16,9 +18,10 @@ class FlipBook extends InteractiveObject implements Animatable {
   Event _progressEvent;
   Event _completeEvent;
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  FlipBook(List<BitmapData> bitmapDatas, [int frameRate = 30, bool loop = true]) {
+  FlipBook(List<BitmapData> bitmapDatas, [
+      int frameRate = 30, bool loop = true]) {
 
     _bitmapDatas = bitmapDatas;
     _frameDurations = new List.filled(_bitmapDatas.length, 1.0 / frameRate);
@@ -31,16 +34,19 @@ class FlipBook extends InteractiveObject implements Animatable {
     _completeEvent = new Event(Event.COMPLETE);
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
-  static const EventStreamProvider<Event> progressEvent = const EventStreamProvider<Event>(Event.PROGRESS);
-  static const EventStreamProvider<Event> completeEvent = const EventStreamProvider<Event>(Event.COMPLETE);
+  static const EventStreamProvider<Event> progressEvent =
+      const EventStreamProvider<Event>(Event.PROGRESS);
+
+  static const EventStreamProvider<Event> completeEvent =
+      const EventStreamProvider<Event>(Event.COMPLETE);
 
   EventStream<Event> get onProgress => FlipBook.progressEvent.forTarget(this);
   EventStream<Event> get onComplete => FlipBook.completeEvent.forTarget(this);
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   int get currentFrame => _currentFrame;
   int get totalFrames => _bitmapDatas.length;
@@ -58,46 +64,97 @@ class FlipBook extends InteractiveObject implements Animatable {
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   void gotoAndPlay(int frame) {
     _currentFrame = min(max(frame, 0), totalFrames - 1);
-    _play = true;
-    _frameTime = null;
+    this.play();
   }
 
   void gotoAndStop(int frame) {
     _currentFrame = min(max(frame, 0), totalFrames - 1);
-    _play = false;
-    _frameTime = null;
+    this.stop();
   }
 
   void play() {
-    _play = true;
-    _frameTime = null;
+    if (_play == false) {
+      _play = true;
+      _frameTime = null;
+    }
   }
 
   void stop() {
-    _play = false;
-    _frameTime = null;
+    if (_play == true) {
+      _play = false;
+      _frameTime = null;
+      this.dispatchEvent(_completeEvent);
+    }
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+
+  /// Play the animation with the [juggler].
+  ///
+  /// If the optional [gotoFrame] argument is specified, the animation will
+  /// start at the given frame number, otherwise the animation will start at
+  /// the current frame.
+  ///
+  /// If the optional [stopFrame] argument is specified, the animation will
+  /// stop at the given frame number, otherwise the animation will continue
+  /// to run depending on the [loop] configuration.
+  ///
+  /// The returned future is completed on the first occurrence of:
+  ///
+  ///  * the animation does not loop and the last frame was reached.
+  ///  * the optionally specified argument [stopFrame] was reached.
+  ///  * the [stop] method was called.
+
+  Future playWith(Juggler juggler, {int gotoFrame, int stopFrame}) {
+
+    _play = true;
+    _frameTime = null;
+    _currentFrame = gotoFrame ?? currentFrame;
+
+    var completed = this.onComplete.first;
+    var currentTime = juggler.elapsedTime;
+    var subscription = juggler.onElapsedTimeChange.listen((elapsedTime) {
+      advanceTime(elapsedTime - currentTime);
+      currentTime = elapsedTime;
+      if (currentFrame == stopFrame) this.stop();
+    });
+
+    completed.then((_) => subscription.cancel());
+    return completed;
+  }
+
+  //---------------------------------------------------------------------------
 
   void nextFrame() {
-    _currentFrame = _loop ? (_currentFrame + 1) % totalFrames : max(_currentFrame + 1, totalFrames - 1);
+
+    var lastFrame = totalFrames - 1;
+    var nextFrame = currentFrame + 1;
+    if (nextFrame > lastFrame && loop) nextFrame = 0;
+    if (nextFrame > lastFrame) nextFrame = lastFrame;
+
     _play = false;
     _frameTime = null;
+    _currentFrame = nextFrame;
   }
 
   void prevFrame() {
-    _currentFrame = _loop ? (_currentFrame - 1) % totalFrames : min(_currentFrame - 1, 0);
+
+    var lastFrame = totalFrames - 1;
+    var prevFrame = currentFrame - 1;
+    if (prevFrame < 0 && loop) prevFrame = lastFrame;
+    if (prevFrame < 0) prevFrame = 0;
+
     _play = false;
     _frameTime = null;
+    _currentFrame = prevFrame;
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   bool advanceTime(num time) {
 
@@ -115,22 +172,25 @@ class FlipBook extends InteractiveObject implements Animatable {
       while (_play) {
 
         var frameDuration = _frameDurations[_currentFrame];
-        var lastFrame = _currentFrame;
-        var nextFrame = _loop ? (lastFrame + 1) % totalFrames : min(lastFrame + 1, totalFrames - 1);
+        if (frameDuration > _frameTime) break;
 
-        if (_frameTime < frameDuration) break;
+        var lastFrame = this.totalFrames - 1;
+        var prevFrame = _currentFrame;
+        var nextFrame = _currentFrame + 1;
+        if (nextFrame > lastFrame && loop) nextFrame = 0;
+        if (nextFrame > lastFrame) nextFrame = lastFrame;
 
         _currentFrame = nextFrame;
         _frameTime -= frameDuration;
 
         // dispatch progress event on every new frame
-        if (lastFrame != nextFrame) {
+        if (nextFrame != prevFrame) {
           this.dispatchEvent(_progressEvent);
           if (_currentFrame != nextFrame) return true;
         }
 
         // dispatch complete event only on last frame
-        if (lastFrame != nextFrame && nextFrame == totalFrames - 1 && _loop == false) {
+        if (!loop && nextFrame == lastFrame) {
           this.dispatchEvent(_completeEvent);
           if (_currentFrame != nextFrame) return true;
         }
@@ -140,7 +200,7 @@ class FlipBook extends InteractiveObject implements Animatable {
     return true;
   }
 
-  //-------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
 
   @override
   Rectangle<num> get bounds {
