@@ -133,8 +133,7 @@ class FlipBook extends InteractiveObject implements Animatable {
 
     var lastFrame = totalFrames - 1;
     var nextFrame = currentFrame + 1;
-    if (nextFrame > lastFrame && loop) nextFrame = 0;
-    if (nextFrame > lastFrame) nextFrame = lastFrame;
+    if (nextFrame > lastFrame) nextFrame = loop ? 0 : lastFrame;
 
     _play = false;
     _frameTime = null;
@@ -145,8 +144,7 @@ class FlipBook extends InteractiveObject implements Animatable {
 
     var lastFrame = totalFrames - 1;
     var prevFrame = currentFrame - 1;
-    if (prevFrame < 0 && loop) prevFrame = lastFrame;
-    if (prevFrame < 0) prevFrame = 0;
+    if (prevFrame < 0) prevFrame = loop ? lastFrame : 0;
 
     _play = false;
     _frameTime = null;
@@ -177,8 +175,7 @@ class FlipBook extends InteractiveObject implements Animatable {
         var lastFrame = this.totalFrames - 1;
         var prevFrame = _currentFrame;
         var nextFrame = _currentFrame + 1;
-        if (nextFrame > lastFrame && loop) nextFrame = 0;
-        if (nextFrame > lastFrame) nextFrame = lastFrame;
+        if (nextFrame > lastFrame) nextFrame = loop ? 0 : lastFrame;
 
         _currentFrame = nextFrame;
         _frameTime -= frameDuration;
