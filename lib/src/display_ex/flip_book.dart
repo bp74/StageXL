@@ -72,9 +72,11 @@ class FlipBook extends InteractiveObject implements Animatable {
     _frameTime = null;
   }
 
-  void play() {
+  Future<Event> play() {
     _play = true;
     _frameTime = null;
+    
+    return _completeEvent.first;
   }
 
   void stop() {
