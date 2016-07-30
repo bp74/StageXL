@@ -134,41 +134,52 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     int count = this.vertexCount;
     num id = (n2x * n1y - n2y * n1x);
     num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
+    num itAbs = it.abs();
 
-    // is this a perfectly flat joint?
-    if (it.isNaN) it = 0.0;
+    if (it.isNaN) {
+      // a perfectly flat joint
+      it = itAbs = 0.0;
+    }
 
-    num ix = n1x - it * n1y;
-    num iy = n1y + it * n1x;
-
-    if (jointStyle != JointStyle.MITER && (it > -0.10 && it < 0.10)) {
+    if (jointStyle != JointStyle.MITER && itAbs < 0.10) {
       // overrule jointStyle in case of very flat joints
       jointStyle = JointStyle.MITER;
     }
 
-    if (jointStyle == JointStyle.MITER && (it < -10.0 || it > 10.0)) {
+    if (jointStyle == JointStyle.MITER && itAbs > 10.0) {
       // miter limit exceeded
       jointStyle = JointStyle.BEVEL;
     }
 
-    bool overlap = it.abs() > l1 || it.abs() > l2;
-    num i1x = overlap ? n1x : ix;
-    num i1y = overlap ? n1y : iy;
-    num i2x = overlap ? n2x : ix;
-    num i2y = overlap ? n2y : iy;
+    bool overlap = itAbs > l1 || itAbs > l2;
+    num vmx = n1x - it * n1y; // miter-x
+    num vmy = n1y + it * n1x; // miter-y
 
-    if (jointStyle == JointStyle.MITER && overlap == false) {
-      this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - ix, vy - iy);
+    if (overlap) {
+      this.addVertex(vx + n1x, vy + n1y);
+      this.addVertex(vx - n1x, vy - n1y);
+    } else if (jointStyle == JointStyle.MITER) {
+      this.addVertex(vx + vmx, vy + vmy);
+      this.addVertex(vx - vmx, vy - vmy);
     } else if (it > 0.0) {
-      this.addVertex(vx + i1x, vy + i1y);
+      this.addVertex(vx + vmx, vy + vmy);
       this.addVertex(vx - n1x, vy - n1y);
     } else {
       this.addVertex(vx + n1x, vy + n1y);
-      this.addVertex(vx - i1x, vy - i1y);
+      this.addVertex(vx - vmx, vy - vmy);
     }
 
-    if (jointStyle == JointStyle.BEVEL && it > 0.0) {
+    if (jointStyle == JointStyle.MITER && overlap == false) {
+      // no additional vertices needed
+    } else if (jointStyle == JointStyle.MITER && it > 0.0) {
+      this.addIndices(count + 0, count + 1, count + 2);
+      this.addIndices(count + 0, count + 2, count + 4);
+      this.addVertex(vx - vmx, vy - vmy);
+    } else if (jointStyle == JointStyle.MITER) {
+      this.addIndices(count + 0, count + 1, count + 2);
+      this.addIndices(count + 1, count + 2, count + 3);
+      this.addVertex(vx + vmx, vy + vmy);
+    } else if (jointStyle == JointStyle.BEVEL && it > 0.0) {
       this.addIndices(count + 0, count + 1, count + 3);
     } else if (jointStyle == JointStyle.BEVEL) {
       this.addIndices(count + 0, count + 1, count + 2);
@@ -179,24 +190,19 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       this.addVertex(vx + n1x, vy + n1y);
       var angle = atan2(n1y, n1x) - atan2(n2y, n2x);
       _addArc(vx, vy, 0.0 - n1x, 0.0 - n1y, 0.0 - angle % (2 * PI));
-    } else if (jointStyle == JointStyle.MITER && overlap && it > 0.0) {
-      this.addIndices(count + 0, count + 1, count + 2);
-      this.addIndices(count + 0, count + 2, count + 4);
-      this.addVertex(vx - ix, vy - iy);
-    } else if (jointStyle == JointStyle.MITER && overlap) {
-      this.addIndices(count + 0, count + 1, count + 2);
-      this.addIndices(count + 1, count + 2, count + 3);
-      this.addVertex(vx + ix, vy + iy);
     }
 
-    if (jointStyle == JointStyle.MITER && overlap == false) {
+    if (overlap) {
+      this.addVertex(vx + n2x, vy + n2y);
+      this.addVertex(vx - n2x, vy - n2y);
+    } else if (jointStyle == JointStyle.MITER) {
       // no additional vertices needed
     } else if (it > 0.0) {
-      this.addVertex(vx + i2x, vy + i2y);
+      this.addVertex(vx + vmx, vy + vmy);
       this.addVertex(vx - n2x, vy - n2y);
     } else {
       this.addVertex(vx + n2x, vy + n2y);
-      this.addVertex(vx - i2x, vy - i2y);
+      this.addVertex(vx - vmx, vy - vmy);
     }
 
     if (count == 0) _indexCount = 0;
