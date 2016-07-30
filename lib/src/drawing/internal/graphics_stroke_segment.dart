@@ -128,17 +128,21 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   void _addJoint(num vx, num vy, num n1x, num n1y, num n2x, num n2y, JointStyle jointStyle) {
 
-    // TODO: calculate correct miter limit
-
     int count = this.vertexCount;
     num id = (n2x * n1y - n2y * n1x);
     num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
+
     num ix = n1x - it * n1y;
     num iy = n1y + it * n1x;
 
-    if (jointStyle != JointStyle.MITER && it > -0.1 && it < 0.1) {
+    if (jointStyle != JointStyle.MITER && (it > -0.10 && it < 0.10)) {
       // overrule jointStyle in case of very flat joints
       jointStyle = JointStyle.MITER;
+    }
+
+    if (jointStyle == JointStyle.MITER && (it < -10.0 || it > 10.0)) {
+      // miter limit exceeded
+      jointStyle = JointStyle.BEVEL;
     }
 
     if (jointStyle == JointStyle.BEVEL && it > 0.0) {
