@@ -65,9 +65,9 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
     if (length <= 1) return;
 
-    var v1x = 0.0, v1y = 0.0;
+    var v1x = 0.0, v1y = 0.0, v1l = 0.0;
     var n1x = 0.0, n1y = 0.0;
-    var v2x = 0.0, v2y = 0.0;
+    var v2x = 0.0, v2y = 0.0, v2l = 0.0;
     var n2x = 0.0, n2y = 0.0;
 
     for (var i = -2; i <= length; i++) {
@@ -80,9 +80,9 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       // calculate next normal
       num vx = v2x - v1x;
       num vy = v1y - v2y;
-      num vl = sqrt(vx * vx + vy * vy);
-      n2x = 0.5 * width * vy / vl;
-      n2y = 0.5 * width * vx / vl;
+      v2l = sqrt(vx * vx + vy * vy) / (0.5 * width);
+      n2x = vy / v2l;
+      n2y = vx / v2l;
 
       // add indices
       if (i > 0 && (i < length || closed)) {
@@ -97,11 +97,11 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       } else if (i == length - 1 && closed == false) {
         _addCap(v1x, v1y, 0.0 + n1x, 0.0 + n1y, n1x, n1y, capsStyle);
       } else if (i >= 0 && (i < length || closed)) {
-        _addJoint(v1x, v1y, n1x, n1y, n2x, n2y, jointStyle);
+        _addJoint(v1x, v1y, v1l, v2l, n1x, n1y, n2x, n2y, jointStyle);
       }
 
       // shift vertices and normals
-      v1x = v2x; v1y = v2y;
+      v1x = v2x; v1y = v2y; v1l = v2l;
       n1x = n2x; n1y = n2y;
     }
   }
@@ -126,7 +126,10 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  void _addJoint(num vx, num vy, num n1x, num n1y, num n2x, num n2y, JointStyle jointStyle) {
+  void _addJoint(
+      num vx, num vy, num l1, num l2,
+      num n1x, num n1y, num n2x, num n2y,
+      JointStyle jointStyle) {
 
     int count = this.vertexCount;
     num id = (n2x * n1y - n2y * n1x);
@@ -148,36 +151,52 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       jointStyle = JointStyle.BEVEL;
     }
 
-    if (jointStyle == JointStyle.BEVEL && it > 0.0) {
-      this.addIndices(count + 1, count + 2, count + 3);
+    bool overlap = it.abs() > l1 || it.abs() > l2;
+    num i1x = overlap ? n1x : ix;
+    num i1y = overlap ? n1y : iy;
+    num i2x = overlap ? n2x : ix;
+    num i2y = overlap ? n2y : iy;
+
+    if (jointStyle == JointStyle.MITER && overlap == false) {
       this.addVertex(vx + ix, vy + iy);
+      this.addVertex(vx - ix, vy - iy);
+    } else if (it > 0.0) {
+      this.addVertex(vx + i1x, vy + i1y);
       this.addVertex(vx - n1x, vy - n1y);
-      this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - n2x, vy - n2y);
+    } else {
+      this.addVertex(vx + n1x, vy + n1y);
+      this.addVertex(vx - i1x, vy - i1y);
+    }
+
+    if (jointStyle == JointStyle.BEVEL && it > 0.0) {
+      this.addIndices(count + 0, count + 1, count + 3);
     } else if (jointStyle == JointStyle.BEVEL) {
       this.addIndices(count + 0, count + 1, count + 2);
-      this.addVertex(vx + n1x, vy + n1y);
-      this.addVertex(vx - ix, vy - iy);
-      this.addVertex(vx + n2x, vy + n2y);
-      this.addVertex(vx - ix, vy - iy);
     } else if (jointStyle == JointStyle.ROUND && it > 0.0) {
-      this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - n1x, vy - n1y);
       var angle = atan2(n2y, n2x) - atan2(n1y, n1x);
       _addArc(vx, vy, n1x, n1y, angle % (2 * PI));
-      this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - n2x, vy - n2y);
     } else if (jointStyle == JointStyle.ROUND) {
-      this.addVertex(vx + n1x, vy + n1y);
-      this.addVertex(vx - ix, vy - iy);
       this.addVertex(vx + n1x, vy + n1y);
       var angle = atan2(n1y, n1x) - atan2(n2y, n2x);
       _addArc(vx, vy, 0.0 - n1x, 0.0 - n1y, 0.0 - angle % (2 * PI));
-      this.addVertex(vx + n2x, vy + n2y);
+    } else if (jointStyle == JointStyle.MITER && overlap && it > 0.0) {
+      this.addIndices(count + 0, count + 1, count + 2);
+      this.addIndices(count + 0, count + 2, count + 4);
       this.addVertex(vx - ix, vy - iy);
-    } else if (jointStyle == JointStyle.MITER) {
+    } else if (jointStyle == JointStyle.MITER && overlap) {
+      this.addIndices(count + 0, count + 1, count + 2);
+      this.addIndices(count + 1, count + 2, count + 3);
       this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - ix, vy - iy);
+    }
+
+    if (jointStyle == JointStyle.MITER && overlap == false) {
+      // no additional vertices needed
+    } else if (it > 0.0) {
+      this.addVertex(vx + i2x, vy + i2y);
+      this.addVertex(vx - n2x, vy - n2y);
+    } else {
+      this.addVertex(vx + n2x, vy + n2y);
+      this.addVertex(vx - i2x, vy - i2y);
     }
 
     if (count == 0) _indexCount = 0;
