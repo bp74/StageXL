@@ -38,6 +38,15 @@ class Graphics {
     _invalidate();
   }
 
+  /// Undo last GraphicsCommand
+
+  void undo() {
+    if (_originalCommands.length > 0) {
+      _originalCommands.removeLast();
+      _invalidate();
+    }
+  }
+
   //---------------------------------------------------------------------------
 
   /// Start drawing a freeform path.
