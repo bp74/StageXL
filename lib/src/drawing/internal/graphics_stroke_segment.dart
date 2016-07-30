@@ -132,6 +132,9 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     num id = (n2x * n1y - n2y * n1x);
     num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
 
+    // is this a perfectly flat joint?
+    if (it.isNaN) it = 0.0;
+
     num ix = n1x - it * n1y;
     num iy = n1y + it * n1x;
 
