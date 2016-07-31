@@ -88,9 +88,9 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
       // calculate vertices
       if (i == 0 && closed == false) {
-        _addCapStart(v1x, v1y, 0.0 - n2x, 0.0 - n2y, n2x, n2y, capsStyle);
+        _addCapStart(v1x, v1y, n2x, n2y, capsStyle);
       } else if (i == length - 1 && closed == false) {
-        _addCapEnd(v1x, v1y, 0.0 + n1x, 0.0 + n1y, n1x, n1y, capsStyle);
+        _addCapEnd(v1x, v1y, n1x, n1y, capsStyle);
       } else if (i >= 0 && (i < length || closed)) {
         _addJoint(v1x, v1y, v1l, v2l, n1x, n1y, n2x, n2y, jointStyle);
       }
@@ -103,48 +103,37 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  void _addCapStart(
-      num vx, num vy, num ax, num ay, num bx, num by,
-      CapsStyle capsStyle) {
-
+  void _addCapStart(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
     if (capsStyle == CapsStyle.SQUARE) {
-      _jointIndex1 = this.addVertex(vx + bx + ay, vy + by - ax);
-      _jointIndex2 = this.addVertex(vx - bx + ay, vy - by - ax);
+      _jointIndex1 = this.addVertex(vx + nx - ny, vy + ny + nx);
+      _jointIndex2 = this.addVertex(vx - nx - ny, vy - ny + nx);
     } else if (capsStyle == CapsStyle.ROUND) {
-      _jointIndex1 = this.addVertex(vx - ax, vy - ay);
-      _jointIndex2 = this.addVertex(vx + ax, vy + ay);
-      _addArc(vx, vy, ax, ay, -ax, -ay, _jointIndex1, _jointIndex2, true);
+      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
+      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
+      _addArc(vx, vy, -nx, -ny, nx, ny, _jointIndex1, _jointIndex2, true);
     } else {
-      _jointIndex1 = this.addVertex(vx + bx, vy + by);
-      _jointIndex2 = this.addVertex(vx - bx, vy - by);
+      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
+      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
     }
   }
 
   //---------------------------------------------------------------------------
 
-  void _addCapEnd(
-      num vx, num vy, num ax, num ay, num bx, num by,
-      CapsStyle capsStyle) {
-
-    int i1 = 0, i2 = 0;
-
+  void _addCapEnd(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
+    int i1 = _jointIndex1, i2 = _jointIndex2;
     if (capsStyle == CapsStyle.SQUARE) {
-      i1 = this.addVertex(vx + bx + ay, vy + by - ax);
-      i2 = this.addVertex(vx - bx + ay, vy - by - ax);
+      _jointIndex1 = this.addVertex(vx + nx + ny, vy + ny - nx);
+      _jointIndex2 = this.addVertex(vx - nx + ny, vy - ny - nx);
     } else if (capsStyle == CapsStyle.ROUND) {
-      i1 = this.addVertex(vx + ax, vy + ay);
-      i2 = this.addVertex(vx - ax, vy - ay);
-      _addArc(vx, vy, ax, ay, -ax, -ay, i2, i1, true);
+      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
+      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
+      _addArc(vx, vy, nx, ny, -nx, -ny, _jointIndex2, _jointIndex1, true);
     } else {
-      i1 = this.addVertex(vx + bx, vy + by);
-      i2 = this.addVertex(vx - bx, vy - by);
+      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
+      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
     }
-
-    this.addIndices(_jointIndex1, _jointIndex2, i1);
-    this.addIndices(_jointIndex2, i1, i2);
-
-    _jointIndex1 = i1;
-    _jointIndex2 = i2;
+    this.addIndices(i1, i2, _jointIndex1);
+    this.addIndices(i2, _jointIndex1, _jointIndex2);
   }
 
   //---------------------------------------------------------------------------
