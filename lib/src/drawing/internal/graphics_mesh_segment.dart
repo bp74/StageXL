@@ -61,7 +61,7 @@ abstract class _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  void addVertex(double x, double y) {
+  int addVertex(double x, double y) {
 
     var offset = _vertexCount * 2;
     var length = _vertexBuffer.length;
@@ -82,7 +82,7 @@ abstract class _GraphicsMeshSegment {
 
     _vertexBuffer[offset + 0] = x;
     _vertexBuffer[offset + 1] = y;
-    _vertexCount += 1;
+    return _vertexCount++;
   }
 
   //---------------------------------------------------------------------------
