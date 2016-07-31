@@ -88,9 +88,9 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
       // calculate vertices
       if (i == 0 && closed == false) {
-        _addCap(v1x, v1y, 0.0 - n2x, 0.0 - n2y, n2x, n2y, capsStyle);
+        _addCapStart(v1x, v1y, 0.0 - n2x, 0.0 - n2y, n2x, n2y, capsStyle);
       } else if (i == length - 1 && closed == false) {
-        _addCap(v1x, v1y, 0.0 + n1x, 0.0 + n1y, n1x, n1y, capsStyle);
+        _addCapEnd(v1x, v1y, 0.0 + n1x, 0.0 + n1y, n1x, n1y, capsStyle);
       } else if (i >= 0 && (i < length || closed)) {
         _addJoint(v1x, v1y, v1l, v2l, n1x, n1y, n2x, n2y, jointStyle);
       }
@@ -103,18 +103,34 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  void _addCap(
-      num vx, num vy, num ax, num ay, num bx, num by, CapsStyle capsStyle) {
+  void _addCapStart(
+      num vx, num vy, num ax, num ay, num bx, num by,
+      CapsStyle capsStyle) {
+
+    if (capsStyle == CapsStyle.SQUARE) {
+      _jointIndex1 = this.addVertex(vx + bx + ay, vy + by - ax);
+      _jointIndex2 = this.addVertex(vx - bx + ay, vy - by - ax);
+    } else if (capsStyle == CapsStyle.ROUND) {
+      _jointIndex1 = this.addVertex(vx - ax, vy - ay);
+      _jointIndex2 = this.addVertex(vx + ax, vy + ay);
+      _addArc(vx, vy, ax, ay, -ax, -ay, _jointIndex1, _jointIndex2, true);
+    } else {
+      _jointIndex1 = this.addVertex(vx + bx, vy + by);
+      _jointIndex2 = this.addVertex(vx - bx, vy - by);
+    }
+  }
+
+  //---------------------------------------------------------------------------
+
+  void _addCapEnd(
+      num vx, num vy, num ax, num ay, num bx, num by,
+      CapsStyle capsStyle) {
 
     int i1 = 0, i2 = 0;
 
     if (capsStyle == CapsStyle.SQUARE) {
       i1 = this.addVertex(vx + bx + ay, vy + by - ax);
       i2 = this.addVertex(vx - bx + ay, vy - by - ax);
-    } else if (capsStyle == CapsStyle.ROUND && _jointIndex1 < 0) {
-      i1 = this.addVertex(vx - ax, vy - ay);
-      i2 = this.addVertex(vx + ax, vy + ay);
-      _addArc(vx, vy, ax, ay, -ax, -ay, i1, i2, true);
     } else if (capsStyle == CapsStyle.ROUND) {
       i1 = this.addVertex(vx + ax, vy + ay);
       i2 = this.addVertex(vx - ax, vy - ay);
@@ -124,11 +140,8 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       i2 = this.addVertex(vx - bx, vy - by);
     }
 
-    if (_jointIndex1 >= 0) {
-      // this is a line ending
-      this.addIndices(_jointIndex1, _jointIndex2, i1);
-      this.addIndices(_jointIndex2, i1, i2);
-    }
+    this.addIndices(_jointIndex1, _jointIndex2, i1);
+    this.addIndices(_jointIndex2, i1, i2);
 
     _jointIndex1 = i1;
     _jointIndex2 = i2;
@@ -260,7 +273,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   int _addArc(
       num vx, num vy, num n1x, num n1y, n2x, n2y,
-      int i3, int i4, bool antiClockwise) {
+      int index1, int index2, bool antiClockwise) {
 
     num tau = 2.0 * PI;
     num startAngle = atan2(n1y, n1x);
@@ -279,7 +292,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     }
 
     int steps = (10 * delta / PI).abs().ceil();
-    int i5 = i4;
+    int index3 = index2;
 
     num cosR = cos(delta / steps);
     num sinR = sin(delta / steps);
@@ -289,14 +302,14 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     num ay = vy + n1y;
 
     for (int s = 0; s < steps; s++) {
-      var bx = ax * cosR - ay * sinR + tx;
-      var by = ax * sinR + ay * cosR + ty;
+      num bx = ax * cosR - ay * sinR + tx;
+      num by = ax * sinR + ay * cosR + ty;
       int index = this.addVertex(ax = bx, ay = by);
-      this.addIndices(i3, i5, index);
-      i5 = index;
+      this.addIndices(index1, index3, index);
+      index3 = index;
     }
 
-    return i5;
+    return index3;
   }
 
 }
