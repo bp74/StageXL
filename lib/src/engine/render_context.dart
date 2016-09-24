@@ -12,6 +12,8 @@ class RenderContextEvent { }
 
 abstract class RenderContext {
 
+  final RenderStatistics renderStatistics = new RenderStatistics();
+
   final _contextLostEvent = new StreamController<RenderContextEvent>.broadcast();
   final _contextRestoredEvent = new StreamController<RenderContextEvent>.broadcast();
 

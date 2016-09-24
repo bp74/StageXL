@@ -10,12 +10,14 @@ abstract class RenderProgram {
   Map<String, gl.UniformLocation> _uniforms;
   RenderBufferIndex _renderBufferIndex;
   RenderBufferVertex _renderBufferVertex;
+  RenderStatistics _renderStatistics;
 
   RenderProgram()
       : _attributes = new Map<String, int>(),
         _uniforms = new Map<String, gl.UniformLocation>(),
         _renderBufferIndex = new RenderBufferIndex(0),
-        _renderBufferVertex = new RenderBufferVertex(0);
+        _renderBufferVertex = new RenderBufferVertex(0),
+        _renderStatistics = new RenderStatistics();
 
   //---------------------------------------------------------------------------
 
@@ -25,6 +27,7 @@ abstract class RenderProgram {
   int get contextIdentifier => _contextIdentifier;
   RenderBufferIndex get renderBufferIndex => _renderBufferIndex;
   RenderBufferVertex get renderBufferVertex => _renderBufferVertex;
+  RenderStatistics get renderStatistics => _renderStatistics;
   gl.RenderingContext get renderingContext => _renderingContext;
   gl.Program get program => _program;
 
@@ -45,6 +48,7 @@ abstract class RenderProgram {
     if (this.contextIdentifier != renderContext.contextIdentifier) {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
+      _renderStatistics = renderContext.renderStatistics;
       _renderBufferIndex = renderContext.renderBufferIndex;
       _renderBufferVertex = renderContext.renderBufferVertex;
       _renderBufferIndex.activate(renderContext);
@@ -69,6 +73,7 @@ abstract class RenderProgram {
       renderBufferVertex.position = 0;
       renderBufferVertex.count = 0;
       renderingContext.drawElements(gl.TRIANGLES, count, gl.UNSIGNED_SHORT, 0);
+      renderStatistics.drawCount += 1;
     }
   }
 
