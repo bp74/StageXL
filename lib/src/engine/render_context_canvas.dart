@@ -146,11 +146,11 @@ class RenderContextCanvas extends RenderContext {
 
     var context = _renderingContext;
     var source = renderTexture.source;
-    var sourceWidth = renderTexture.width;
-    var sourceHeight = renderTexture.height;
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
     var blendMode = renderState.globalBlendMode;
+    var iw = 1.0 / renderTexture.width;
+    var ih = 1.0 / renderTexture.height;
 
     if (_activeAlpha != alpha) {
       _activeAlpha = alpha;
@@ -165,23 +165,25 @@ class RenderContextCanvas extends RenderContext {
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
 
     for (int i = 0; i < ixList.length - 2; i += 3) {
+
       int i1 = ixList[i + 0] << 2;
+      int i2 = ixList[i + 1] << 2;
+      int i3 = ixList[i + 2] << 2;
+
       num x1 = vxList[i1 + 0];
       num y1 = vxList[i1 + 1];
-      num u1 = vxList[i1 + 2] * sourceWidth;
-      num v1 = vxList[i1 + 3] * sourceHeight;
+      num u1 = vxList[i1 + 2];
+      num v1 = vxList[i1 + 3];
 
-      int i2 = ixList[i + 1] << 2;
       num x2 = vxList[i2 + 0];
       num y2 = vxList[i2 + 1];
-      num u2 = vxList[i2 + 2] * sourceWidth;
-      num v2 = vxList[i2 + 3] * sourceHeight;
+      num u2 = vxList[i2 + 2];
+      num v2 = vxList[i2 + 3];
 
-      int i3 = ixList[i + 2] << 2;
       num x3 = vxList[i3 + 0];
       num y3 = vxList[i3 + 1];
-      num u3 = vxList[i3 + 2] * sourceWidth;
-      num v3 = vxList[i3 + 3] * sourceHeight;
+      num u3 = vxList[i3 + 2];
+      num v3 = vxList[i3 + 3];
 
       context.save();
       context.beginPath();
@@ -204,7 +206,7 @@ class RenderContextCanvas extends RenderContext {
       num mx = x1 - ma * u1 - mc * v1;
       num my = y1 - mb * u1 - md * v1;
 
-      context.transform(ma, mb, mc, md, mx, my);
+      context.transform(ma * iw, mb * iw, mc * ih, md * ih, mx, my);
       context.drawImage(source, 0, 0);
       context.restore();
     }
