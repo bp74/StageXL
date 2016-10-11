@@ -103,7 +103,7 @@ class ColorMatrixFilter extends BitmapFilter {
     num v = min(max(value, -1), 1) + 1;
     num o = 128 * (1 - v);
 
-    _concat([v, 0, 0, 0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0, v], [o, o, o, 0]);
+    _concat([v, 0, 0, 0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0, 1], [o, o, o, 0]);
   }
 
   void adjustBrightness(num value) {

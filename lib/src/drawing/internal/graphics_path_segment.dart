@@ -29,13 +29,15 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  void addVertex(double x, double y) {
+  int addVertex(double x, double y) {
     var offset = _vertexCount * 2;
     var buffer = _vertexBuffer;
     if (offset == 0 || buffer[offset - 2] != x || buffer[offset - 1] != y) {
       _indexCount = 0;
       _clockwise = null;
-      super.addVertex(x, y);
+      return super.addVertex(x, y);
+    } else {
+      return this.vertexCount - 1;
     }
   }
 

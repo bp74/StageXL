@@ -335,6 +335,7 @@ class Stage extends DisplayObjectContainer {
       _updateCanvasSize();
 
       _renderContext.reset();
+      _renderContext.renderStatistics.reset();
       _renderContext.clear(backgroundColor);
 
       _renderState.reset(_stageTransformation);

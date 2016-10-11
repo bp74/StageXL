@@ -3,6 +3,8 @@ part of stagexl.drawing;
 class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   final _GraphicsStroke stroke;
+  int _jointIndex1 = -1;
+  int _jointIndex2 = -1;
 
   _GraphicsStrokeSegment(this.stroke, _GraphicsPathSegment pathSegment)
       : super(pathSegment.vertexCount * 4, pathSegment.vertexCount * 6) {
@@ -65,9 +67,9 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
     if (length <= 1) return;
 
-    var v1x = 0.0, v1y = 0.0;
+    var v1x = 0.0, v1y = 0.0, v1l = 0.0;
     var n1x = 0.0, n1y = 0.0;
-    var v2x = 0.0, v2y = 0.0;
+    var v2x = 0.0, v2y = 0.0, v2l = 0.0;
     var n2x = 0.0, n2y = 0.0;
 
     for (var i = -2; i <= length; i++) {
@@ -80,123 +82,223 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       // calculate next normal
       num vx = v2x - v1x;
       num vy = v1y - v2y;
-      num vl = sqrt(vx * vx + vy * vy);
-      n2x = 0.5 * width * vy / vl;
-      n2y = 0.5 * width * vx / vl;
-
-      // add indices
-      if (i > 0 && (i < length || closed)) {
-        var vertexCount = this.vertexCount;
-        this.addIndices(vertexCount - 2, vertexCount - 1, vertexCount + 0);
-        this.addIndices(vertexCount - 1, vertexCount + 0, vertexCount + 1);
-      }
+      v2l = sqrt(vx * vx + vy * vy) / (0.5 * width);
+      n2x = vy / v2l;
+      n2y = vx / v2l;
 
       // calculate vertices
       if (i == 0 && closed == false) {
-        _addCap(v1x, v1y, 0.0 - n2x, 0.0 - n2y, n2x, n2y, capsStyle);
+        _addCapStart(v1x, v1y, n2x, n2y, capsStyle);
       } else if (i == length - 1 && closed == false) {
-        _addCap(v1x, v1y, 0.0 + n1x, 0.0 + n1y, n1x, n1y, capsStyle);
+        _addCapEnd(v1x, v1y, n1x, n1y, capsStyle);
       } else if (i >= 0 && (i < length || closed)) {
-        _addJoint(v1x, v1y, n1x, n1y, n2x, n2y, jointStyle);
+        _addJoint(v1x, v1y, v1l, v2l, n1x, n1y, n2x, n2y, jointStyle);
       }
 
       // shift vertices and normals
-      v1x = v2x; v1y = v2y;
+      v1x = v2x; v1y = v2y; v1l = v2l;
       n1x = n2x; n1y = n2y;
     }
   }
 
   //---------------------------------------------------------------------------
 
-  void _addCap(num vx, num vy, num ax, num ay, num bx, num by, CapsStyle capsStyle) {
+  void _addCapStart(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
     if (capsStyle == CapsStyle.SQUARE) {
-      this.addVertex(vx + bx + ay, vy + by - ax);
-      this.addVertex(vx - bx + ay, vy - by - ax);
+      _jointIndex1 = this.addVertex(vx + nx - ny, vy + ny + nx);
+      _jointIndex2 = this.addVertex(vx - nx - ny, vy - ny + nx);
     } else if (capsStyle == CapsStyle.ROUND) {
-      this.addVertex(vx + ax, vy + ay);
-      this.addVertex(vx - ax, vy - ay);
-      _addArc(vx, vy, ax, ay, PI);
-      this.addVertex(vx + bx, vy + by);
-      this.addVertex(vx - bx, vy - by);
+      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
+      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
+      _addArc(vx, vy, -nx, -ny, nx, ny, _jointIndex1, _jointIndex2, true);
     } else {
-      this.addVertex(vx + bx, vy + by);
-      this.addVertex(vx - bx, vy - by);
+      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
+      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
     }
   }
 
   //---------------------------------------------------------------------------
 
-  void _addJoint(num vx, num vy, num n1x, num n1y, num n2x, num n2y, JointStyle jointStyle) {
+  void _addCapEnd(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
+    int i1 = _jointIndex1, i2 = _jointIndex2;
+    if (capsStyle == CapsStyle.SQUARE) {
+      _jointIndex1 = this.addVertex(vx + nx + ny, vy + ny - nx);
+      _jointIndex2 = this.addVertex(vx - nx + ny, vy - ny - nx);
+    } else if (capsStyle == CapsStyle.ROUND) {
+      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
+      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
+      _addArc(vx, vy, nx, ny, -nx, -ny, _jointIndex2, _jointIndex1, true);
+    } else {
+      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
+      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
+    }
+    this.addIndices(i1, i2, _jointIndex1);
+    this.addIndices(i2, _jointIndex1, _jointIndex2);
+  }
 
-    // TODO: calculate correct miter limit
+  //---------------------------------------------------------------------------
 
-    int count = this.vertexCount;
-    num id = (n2x * n1y - n2y * n1x);
-    num it = (n2x * (n1x - n2x) + n2y * (n1y - n2y)) / id;
-    num ix = n1x - it * n1y;
-    num iy = n1y + it * n1x;
+  void _addJoint(
+      num vx, num vy, num al, num bl, num ax, num ay, num bx, num by,
+      JointStyle jointStyle) {
 
-    if (jointStyle != JointStyle.MITER && it > -0.1 && it < 0.1) {
+    num id = (bx * ay - by * ax);
+    num it = (bx * (ax - bx) + by * (ay - by)) / id;
+    num itAbs = it.abs();
+
+    if (it.isNaN) {
+      // a perfectly flat joint
+      it = itAbs = 0.0;
+    }
+
+    if (jointStyle != JointStyle.MITER && itAbs < 0.10) {
       // overrule jointStyle in case of very flat joints
       jointStyle = JointStyle.MITER;
     }
 
-    if (jointStyle == JointStyle.BEVEL && it > 0.0) {
-      this.addIndices(count + 1, count + 2, count + 3);
-      this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - n1x, vy - n1y);
-      this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - n2x, vy - n2y);
-    } else if (jointStyle == JointStyle.BEVEL) {
-      this.addIndices(count + 0, count + 1, count + 2);
-      this.addVertex(vx + n1x, vy + n1y);
-      this.addVertex(vx - ix, vy - iy);
-      this.addVertex(vx + n2x, vy + n2y);
-      this.addVertex(vx - ix, vy - iy);
-    } else if (jointStyle == JointStyle.ROUND && it > 0.0) {
-      this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - n1x, vy - n1y);
-      var angle = atan2(n2y, n2x) - atan2(n1y, n1x);
-      _addArc(vx, vy, n1x, n1y, angle % (2 * PI));
-      this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - n2x, vy - n2y);
-    } else if (jointStyle == JointStyle.ROUND) {
-      this.addVertex(vx + n1x, vy + n1y);
-      this.addVertex(vx - ix, vy - iy);
-      this.addVertex(vx + n1x, vy + n1y);
-      var angle = atan2(n1y, n1x) - atan2(n2y, n2x);
-      _addArc(vx, vy, 0.0 - n1x, 0.0 - n1y, 0.0 - angle % (2 * PI));
-      this.addVertex(vx + n2x, vy + n2y);
-      this.addVertex(vx - ix, vy - iy);
-    } else if (jointStyle == JointStyle.MITER) {
-      this.addVertex(vx + ix, vy + iy);
-      this.addVertex(vx - ix, vy - iy);
+    if (jointStyle == JointStyle.MITER && itAbs > 10.0) {
+      // miter limit exceeded
+      jointStyle = JointStyle.BEVEL;
     }
 
-    if (count == 0) _indexCount = 0;
+    num vmx = ax - it * ay; // miter-x
+    num vmy = ay + it * ax; // miter-y
+    bool isOverlap = itAbs > al || itAbs > bl;
+    bool isCloseJoint = _jointIndex1 < 0;
+
+    int i1 = it >= 0.0 ? _jointIndex1 : _jointIndex2;
+    int i2 = it >= 0.0 ? _jointIndex2 : _jointIndex1;
+    int i3 = 0, i4 = 0, i5 = 0;
+
+    if (jointStyle == JointStyle.MITER) {
+
+      if (isOverlap == false) {
+        i3 = _jointIndex2;
+        i4 = _jointIndex1 = this.addVertex(vx + vmx, vy + vmy);
+        i5 = _jointIndex2 = this.addVertex(vx - vmx, vy - vmy);
+      } else if (it >= 0.0) {
+        i3 = this.addVertex(vx + ax, vy + ay);
+        i4 = this.addVertex(vx - vmx, vy - vmy);
+        i5 = _jointIndex2 = this.addVertex(vx - bx, vy - by);
+        _jointIndex1 = this.addVertex(vx + bx, vy + by);
+        this.addIndices(i1, i3, i4);
+      } else {
+        i3 = this.addVertex(vx - ax, vy - ay);
+        i4 = this.addVertex(vx + vmx, vy + vmy);
+        i5 = _jointIndex1 = this.addVertex(vx + bx, vy + by);
+        _jointIndex2 = this.addVertex(vx - bx, vy - by);
+        this.addIndices(i1, i3, i4);
+      }
+
+      this.addIndices(i1, i2, i4);
+      this.addIndices(i3, i4, i5);
+
+    } else if (jointStyle == JointStyle.BEVEL) {
+
+      if (isOverlap == false && it >= 0.0) {
+        i3 = _jointIndex1 = this.addVertex(vx + vmx, vy + vmy);
+        i4 = this.addVertex(vx - ax, vy - ay);
+        i5 = _jointIndex2 = this.addVertex(vx - bx, vy - by);
+      } else if (isOverlap == false) {
+        i3 = _jointIndex2 = this.addVertex(vx - vmx, vy - vmy);
+        i4 = this.addVertex(vx + ax, vy + ay);
+        i5 = _jointIndex1 = this.addVertex(vx + bx, vy + by);
+      } else if (it >= 0.0) {
+        i3 = this.addVertex(vx + ax, vy + ay);
+        i4 = this.addVertex(vx - ax, vy - ay);
+        i5 = _jointIndex2 = this.addVertex(vx - bx, vy - by);
+        _jointIndex1 = this.addVertex(vx + bx, vy + by);
+      } else {
+        i3 = this.addVertex(vx - ax, vy - ay);
+        i4 = this.addVertex(vx + ax, vy + ay);
+        i5 = _jointIndex1 = this.addVertex(vx + bx, vy + by);
+        _jointIndex2 = this.addVertex(vx - bx, vy - by);
+      }
+
+      this.addIndices(i1, i2, i3);
+      this.addIndices(i2, i3, i4);
+      this.addIndices(i3, i4, i5);
+
+    } else if (jointStyle == JointStyle.ROUND) {
+
+      if (isOverlap == false && it >= 0.0) {
+        i3 = _jointIndex1 = this.addVertex(vx + vmx, vy + vmy);
+        i4 = this.addVertex(vx - ax, vy - ay);
+        _jointIndex2 = _addArc(vx, vy, -ax, -ay, -bx, -by, i3, i4, false);
+      } else if (isOverlap == false) {
+        i3 = _jointIndex2 = this.addVertex(vx - vmx, vy - vmy);
+        i4 = this.addVertex(vx + ax, vy + ay);
+        _jointIndex1 = _addArc(vx, vy, ax, ay, bx, by, i3, i4, true);
+      } else if (it >= 0.0) {
+        i3 = this.addVertex(vx + ax, vy + ay);
+        i4 = this.addVertex(vx - ax, vy - ay);
+        _jointIndex1 = this.addVertex(vx + bx, vy + by);
+        _jointIndex2 = _addArc(vx, vy, -ax, -ay, -bx, -by, i3, i4, false);
+      } else {
+        i3 = this.addVertex(vx - ax, vy - ay);
+        i4 = this.addVertex(vx + ax, vy + ay);
+        _jointIndex2 = this.addVertex(vx - bx, vy - by);
+        _jointIndex1 = _addArc(vx, vy, ax, ay, bx, by, i3, i4, true);
+      }
+
+      this.addIndices(i1, i2, i3);
+      this.addIndices(i2, i3, i4);
+
+    }
+
+    if (isCloseJoint) {
+      num x1 = _vertexBuffer[_jointIndex1 * 2 + 0];
+      num y1 = _vertexBuffer[_jointIndex1 * 2 + 1];
+      num x2 = _vertexBuffer[_jointIndex2 * 2 + 0];
+      num y2 = _vertexBuffer[_jointIndex2 * 2 + 1];
+      _vertexCount = 0;
+      _indexCount = 0;
+      _jointIndex1 = this.addVertex(x1, y1);
+      _jointIndex2 = this.addVertex(x2, y2);
+    }
   }
 
   //---------------------------------------------------------------------------
 
-  void _addArc(num cx, num cy, num nx, num ny, num angle) {
+  int _addArc(
+      num vx, num vy, num n1x, num n1y, n2x, n2y,
+      int index1, int index2, bool antiClockwise) {
 
-    // TODO: adjust steps
-    int steps = (10 * angle / PI).abs().ceil();
-    int count = this.vertexCount;
+    num tau = 2.0 * PI;
+    num startAngle = atan2(n1y, n1x);
+    num endAngle = atan2(n2y, n2x);
+    num start = (startAngle % tau);
+    num delta = (endAngle % tau) - start;
 
-    num cosR = cos(angle / steps);
-    num sinR = sin(angle / steps);
-    num tx = cx - cx * cosR + cy * sinR;
-    num ty = cy - cx * sinR - cy * cosR;
-    num ax = cx - nx;
-    num ay = cy - ny;
+    if (antiClockwise && endAngle > startAngle) {
+      if (delta >= 0.0) delta -= tau;
+    } else if (antiClockwise) {
+      delta = (delta % tau) - tau;
+    } else if (endAngle < startAngle) {
+      if (delta <= 0.0) delta += tau;
+    } else {
+      delta %= tau;
+    }
+
+    int steps = (10 * delta / PI).abs().ceil();
+    int index3 = index2;
+
+    num cosR = cos(delta / steps);
+    num sinR = sin(delta / steps);
+    num tx = vx - vx * cosR + vy * sinR;
+    num ty = vy - vx * sinR - vy * cosR;
+    num ax = vx + n1x;
+    num ay = vy + n1y;
 
     for (int s = 0; s < steps; s++) {
-      var bx = ax * cosR - ay * sinR + tx;
-      var by = ax * sinR + ay * cosR + ty;
-      this.addVertex(ax = bx, ay = by);
-      this.addIndices(count + s - 1, count + s, count - 2);
+      num bx = ax * cosR - ay * sinR + tx;
+      num by = ax * sinR + ay * cosR + ty;
+      int index = this.addVertex(ax = bx, ay = by);
+      this.addIndices(index1, index3, index);
+      index3 = index;
     }
+
+    return index3;
   }
 
 }

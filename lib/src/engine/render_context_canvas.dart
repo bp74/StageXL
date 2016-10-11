@@ -146,11 +146,11 @@ class RenderContextCanvas extends RenderContext {
 
     var context = _renderingContext;
     var source = renderTexture.source;
-    var sourceWidth = renderTexture.width;
-    var sourceHeight = renderTexture.height;
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
     var blendMode = renderState.globalBlendMode;
+    var iw = 1.0 / renderTexture.width;
+    var ih = 1.0 / renderTexture.height;
 
     if (_activeAlpha != alpha) {
       _activeAlpha = alpha;
@@ -164,41 +164,49 @@ class RenderContextCanvas extends RenderContext {
 
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
 
-    for(int i = 0; i < ixList.length - 2; i += 3) {
+    for (int i = 0; i < ixList.length - 2; i += 3) {
 
       int i1 = ixList[i + 0] << 2;
+      int i2 = ixList[i + 1] << 2;
+      int i3 = ixList[i + 2] << 2;
+
       num x1 = vxList[i1 + 0];
       num y1 = vxList[i1 + 1];
-      num u1 = vxList[i1 + 2] * sourceWidth;
-      num v1 = vxList[i1 + 3] * sourceHeight;
+      num u1 = vxList[i1 + 2];
+      num v1 = vxList[i1 + 3];
 
-      int i2 = ixList[i + 1] << 2;
       num x2 = vxList[i2 + 0];
       num y2 = vxList[i2 + 1];
-      num u2 = vxList[i2 + 2] * sourceWidth;
-      num v2 = vxList[i2 + 3] * sourceHeight;
+      num u2 = vxList[i2 + 2];
+      num v2 = vxList[i2 + 3];
 
-      int i3 = ixList[i + 2] << 2;
       num x3 = vxList[i3 + 0];
       num y3 = vxList[i3 + 1];
-      num u3 = vxList[i3 + 2] * sourceWidth;
-      num v3 = vxList[i3 + 3] * sourceHeight;
-
-      num mm = v1 * (u3 - u2) + v2 * (u1 - u3) + v3 * (u2 - u1);
-      num ma = x1 * (v2 - v3) + x2 * (v3 - v1) + x3 * (v1 - v2);
-      num mb = y1 * (v2 - v3) + y2 * (v3 - v1) + y3 * (v1 - v2);
-      num mc = x1 * (u3 - u2) + x2 * (u1 - u3) + x3 * (u2 - u1);
-      num md = y1 * (u3 - u2) + y2 * (u1 - u3) + y3 * (u2 - u1);
-      num mx = x1 * (v3 * u2 - v2 * u3) + x2 * (v1 * u3 - v3 * u1) + x3 * (v2 * u1 - v1 * u2);
-      num my = y1 * (v3 * u2 - v2 * u3) + y2 * (v1 * u3 - v3 * u1) + y3 * (v2 * u1 - v1 * u2);
+      num u3 = vxList[i3 + 2];
+      num v3 = vxList[i3 + 3];
 
       context.save();
       context.beginPath();
       context.moveTo(x1, y1);
       context.lineTo(x2, y2);
       context.lineTo(x3, y3);
+      context.closePath();
       context.clip();
-      context.transform(ma / mm, mb / mm, mc / mm, md / mm, mx / mm, my / mm);
+
+      x2 -= x1; y2 -= y1;
+      x3 -= x1; y3 -= y1;
+      u2 -= u1; v2 -= v1;
+      u3 -= u1; v3 -= v1;
+
+      num id = 1.0 / (u2 * v3 - u3 * v2);
+      num ma = id * (v3 * x2 - v2 * x3);
+      num mb = id * (v3 * y2 - v2 * y3);
+      num mc = id * (u2 * x3 - u3 * x2);
+      num md = id * (u2 * y3 - u3 * y2);
+      num mx = x1 - ma * u1 - mc * v1;
+      num my = y1 - mb * u1 - md * v1;
+
+      context.transform(ma * iw, mb * iw, mc * ih, md * ih, mx, my);
       context.drawImage(source, 0, 0);
       context.restore();
     }

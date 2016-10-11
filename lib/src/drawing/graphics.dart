@@ -22,12 +22,21 @@ class Graphics {
 
   //---------------------------------------------------------------------------
 
-  /// Add a custom GraphicsCommand
+  /// Add a custom graphics command
 
   void addCommand(GraphicsCommand command) {
     command._setGraphics(this);
     _originalCommands.add(command);
     _invalidate();
+  }
+
+  /// Undo last graphics command
+
+  void undoCommand() {
+    if (_originalCommands.length > 0) {
+      _originalCommands.removeLast();
+      _invalidate();
+    }
   }
 
   /// Clear all previously added graphics commands.

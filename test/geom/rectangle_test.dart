@@ -132,39 +132,44 @@ void main() {
     testRectangle(rect, x: 1, y: 2, width: 10, height: 10);
   });
 
-  List<List> containsPointMatches = [
-    [0, 0, isFalse],
-    [1, 0, isFalse],
-    [2, 0, isFalse],
-    [3, 0, isFalse],
-    [0, 1, isFalse],
-    [1, 1, isTrue],
-    [2, 1, isTrue],
-    [3, 1, isFalse],
-    [0, 2, isFalse],
-    [1, 2, isTrue],
-    [2, 2, isTrue],
-    [3, 2, isFalse],
-    [0, 3, isFalse],
-    [1, 3, isFalse],
-    [2, 3, isFalse],
-    [3, 3, isFalse]
-  ];
-
   test('#contains', () {
     Rectangle rect = new Rectangle(1, 1, 2, 2);
-
-    for (List args in containsPointMatches) {
-      expect(rect.contains(args[0], args[1]), args[2]);
-    }
+    expect(rect.contains(0, 0), false);
+    expect(rect.contains(1, 0), false);
+    expect(rect.contains(2, 0), false);
+    expect(rect.contains(3, 0), false);
+    expect(rect.contains(0, 1), false);
+    expect(rect.contains(1, 1), true);
+    expect(rect.contains(2, 1), true);
+    expect(rect.contains(3, 1), false);
+    expect(rect.contains(0, 2), false);
+    expect(rect.contains(1, 2), true);
+    expect(rect.contains(2, 2), true);
+    expect(rect.contains(3, 2), false);
+    expect(rect.contains(0, 3), false);
+    expect(rect.contains(1, 3), false);
+    expect(rect.contains(2, 3), false);
+    expect(rect.contains(3, 3), false);
   });
 
   test('#containsPoint', () {
     Rectangle rect = new Rectangle(1, 1, 2, 2);
-
-    for (List args in containsPointMatches) {
-      expect(rect.containsPoint(new Point(args[0], args[1])), args[2]);
-    }
+    expect(rect.containsPoint(new Point(0, 0)), false);
+    expect(rect.containsPoint(new Point(1, 0)), false);
+    expect(rect.containsPoint(new Point(2, 0)), false);
+    expect(rect.containsPoint(new Point(3, 0)), false);
+    expect(rect.containsPoint(new Point(0, 1)), false);
+    expect(rect.containsPoint(new Point(1, 1)), true);
+    expect(rect.containsPoint(new Point(2, 1)), true);
+    expect(rect.containsPoint(new Point(3, 1)), false);
+    expect(rect.containsPoint(new Point(0, 2)), false);
+    expect(rect.containsPoint(new Point(1, 2)), true);
+    expect(rect.containsPoint(new Point(2, 2)), true);
+    expect(rect.containsPoint(new Point(3, 2)), false);
+    expect(rect.containsPoint(new Point(0, 3)), false);
+    expect(rect.containsPoint(new Point(1, 3)), false);
+    expect(rect.containsPoint(new Point(2, 3)), false);
+    expect(rect.containsPoint(new Point(3, 3)), false);
   });
 
   test('#containsRect', () {

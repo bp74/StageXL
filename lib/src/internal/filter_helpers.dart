@@ -13,16 +13,20 @@ void premultiplyAlpha(List<int> data) {
   if (env.isLittleEndianSystem) {
     for(int i = 0; i <= data.length - 4; i += 4) {
       int alpha = data[i + 3];
-      data[i + 0] = (data[i + 0] * alpha) ~/ 255;
-      data[i + 1] = (data[i + 1] * alpha) ~/ 255;
-      data[i + 2] = (data[i + 2] * alpha) ~/ 255;
+      if (alpha > 0 && alpha < 255) {
+        data[i + 0] = (data[i + 0] * alpha & 65535) ~/ 255;
+        data[i + 1] = (data[i + 1] * alpha & 65535) ~/ 255;
+        data[i + 2] = (data[i + 2] * alpha & 65535) ~/ 255;
+      }
     }
   } else {
     for(int i = 0; i <= data.length - 4; i += 4) {
       int alpha = data[i + 0];
-      data[i + 1] = (data[i + 1] * alpha) ~/ 255;
-      data[i + 2] = (data[i + 2] * alpha) ~/ 255;
-      data[i + 3] = (data[i + 3] * alpha) ~/ 255;
+      if (alpha > 0 && alpha < 255) {
+        data[i + 1] = (data[i + 1] * alpha & 65535) ~/ 255;
+        data[i + 2] = (data[i + 2] * alpha & 65535) ~/ 255;
+        data[i + 3] = (data[i + 3] * alpha & 65535) ~/ 255;
+      }
     }
   }
 }
@@ -34,19 +38,19 @@ void unpremultiplyAlpha(List<int> data) {
   if (env.isLittleEndianSystem) {
     for(int i = 0; i <= data.length - 4; i += 4) {
       int alpha = data[i + 3];
-      if (alpha > 0) {
-        data[i + 0] = (data[i + 0] * 255) ~/ alpha;
-        data[i + 1] = (data[i + 1] * 255) ~/ alpha;
-        data[i + 2] = (data[i + 2] * 255) ~/ alpha;
+      if (alpha > 0 && alpha < 255) {
+        data[i + 0] = (data[i + 0] * 255 & 65535) ~/ alpha;
+        data[i + 1] = (data[i + 1] * 255 & 65535) ~/ alpha;
+        data[i + 2] = (data[i + 2] * 255 & 65535) ~/ alpha;
       }
     }
   } else {
     for(int i = 0; i <= data.length - 4; i += 4) {
       int alpha = data[i + 0];
-      if (alpha > 0) {
-        data[i + 1] = (data[i + 1] * 255) ~/ alpha;
-        data[i + 2] = (data[i + 2] * 255) ~/ alpha;
-        data[i + 3] = (data[i + 3] * 255) ~/ alpha;
+      if (alpha > 0 && alpha < 255) {
+        data[i + 1] = (data[i + 1] * 255 & 65535) ~/ alpha;
+        data[i + 2] = (data[i + 2] * 255 & 65535) ~/ alpha;
+        data[i + 3] = (data[i + 3] * 255 & 65535) ~/ alpha;
       }
     }
   }
