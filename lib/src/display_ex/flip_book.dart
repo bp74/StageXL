@@ -20,7 +20,8 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   //---------------------------------------------------------------------------
 
-  FlipBook(List<BitmapData> bitmapDatas, {int frameRate: 30, bool loop: true}) {
+  FlipBook(List<BitmapData> bitmapDatas, [
+      int frameRate = 30, bool loop = true]) {
 
     _bitmapDatas = bitmapDatas;
     _frameDurations = new List.filled(_bitmapDatas.length, 1.0 / frameRate);

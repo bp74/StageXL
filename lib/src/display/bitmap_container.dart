@@ -177,10 +177,12 @@ class BitmapContainer extends DisplayObject
 
     for (int i = 0; i < _children.length; i++) {
       var bitmap = _children[i];
-      var bitmapData = bitmap.bitmapData;
-      if (bitmapData != null) {
-        localState.bitmap = bitmap;
-        context.renderTextureQuad(localState, bitmapData.renderTextureQuad);
+      if (bitmap.visible) {
+        var bitmapData = bitmap.bitmapData;
+        if (bitmapData != null) {
+          localState.bitmap = bitmap;
+          context.renderTextureQuad(localState, bitmapData.renderTextureQuad);
+        }
       }
     }
 
@@ -193,12 +195,14 @@ class BitmapContainer extends DisplayObject
 
     for(int i = 0; i < _children.length; i++) {
       var bitmap = _children[i];
-      var bitmapData = bitmap.bitmapData;
-      if (bitmapData != null) {
-        var matrix = bitmap.transformationMatrix;
-        renderState.push(matrix, bitmap.alpha, bitmap.blendMode);
-        context.renderTextureQuad(renderState, bitmapData.renderTextureQuad);
-        renderState.pop();
+      if (bitmap.visible) {
+        var bitmapData = bitmap.bitmapData;
+        if (bitmapData != null) {
+          var matrix = bitmap.transformationMatrix;
+          renderState.push(matrix, bitmap.alpha, bitmap.blendMode);
+          context.renderTextureQuad(renderState, bitmapData.renderTextureQuad);
+          renderState.pop();
+        }
       }
     }
   }
