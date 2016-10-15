@@ -8,6 +8,17 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 0.13.11
+  * Added ResourceManager.remove(BitmapData/Sound/...) methods.
+  * Added ResourceManager.dispose method to unload all resources.
+  * Added RenderContext.renderStatistics to measure WebGL operations.
+  * Improved graphics stroke rendering in WebGL mode.
+  * Improved renderTextureMesh in Canvas2D mode.
+  * Improved BlurFilter in Canvas2D mode.
+  * Fixed bug in ColorMatrixFilter.
+  * Fixed bug in BitmapContainer.
+  * Updated SDK dependency to Dart 1.19 
+
 #### Pub version 0.13.10
   * Fixed joints of strokes in graphics.
   * Added graphics.undoCommand method.
