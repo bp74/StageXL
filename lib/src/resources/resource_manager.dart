@@ -2,7 +2,8 @@ part of stagexl.resources;
 
 class ResourceManager {
 
-  final Map<String, ResourceManagerResource> _resources = new Map<String, ResourceManagerResource>();
+  final Map<String, ResourceManagerResource> _resourceMap =
+      new Map<String, ResourceManagerResource>();
 
   final _progressEvent = new StreamController<num>.broadcast();
   Stream<num> get onProgress => _progressEvent.stream;
@@ -11,7 +12,12 @@ class ResourceManager {
 
   bool _containsResource(String kind, String name) {
     var key = "$kind.$name";
-    return _resources.containsKey(key);
+    return _resourceMap.containsKey(key);
+  }
+
+  ResourceManagerResource _removeResource(String kind, String name) {
+    var key = "$kind.$name";
+    return _resourceMap.remove(key);
   }
 
   void _addResource(String kind, String name, String url, Future loader) {
@@ -19,15 +25,15 @@ class ResourceManager {
     var key = "$kind.$name";
     var resource = new ResourceManagerResource(kind, name, url, loader);
 
-    if (_resources.containsKey(key)) {
+    if (_resourceMap.containsKey(key)) {
       throw new StateError("ResourceManager already contains a resource called '$name'");
     } else {
-      _resources[key] = resource;
+      _resourceMap[key] = resource;
     }
 
     resource.complete.then((_) {
-      var finished = _resources.values.where((r) => r.value != null).length;
-      var progress = finished / _resources.length;
+      var finished = this.finishedResources.length;
+      var progress = finished / _resourceMap.length;
       _progressEvent.add(progress);
     });
   }
@@ -35,7 +41,7 @@ class ResourceManager {
   dynamic _getResourceValue(String kind, String name) {
 
     var key = "$kind.$name";
-    var resource = _resources[key];
+    var resource = _resourceMap[key];
 
     if (resource == null) {
       throw new StateError("Resource '$name' does not exist.");
@@ -52,9 +58,7 @@ class ResourceManager {
   //-----------------------------------------------------------------------------------------------
 
   Future<ResourceManager> load() async {
-
     var futures = this.pendingResources.map((r) => r.complete);
-
     await Future.wait(futures);
     var errors = this.failedResources.length;
     if (errors > 0) {
@@ -64,22 +68,32 @@ class ResourceManager {
     }
   }
 
+  void dispose() {
+    for (var resource in _resourceMap.values.toList(growable: false)) {
+      if (resource.kind == "BitmapData") {
+        this.removeBitmapData(resource.name, dispose: true);
+      } else {
+        _removeResource(resource.kind, resource.name);
+      }
+    }
+  }
+
   //-----------------------------------------------------------------------------------------------
 
   List<ResourceManagerResource> get finishedResources {
-    return _resources.values.where((r) => r.value != null).toList();
+    return _resourceMap.values.where((r) => r.value != null).toList();
   }
 
   List<ResourceManagerResource> get pendingResources {
-    return _resources.values.where((r) => r.value == null && r.error == null).toList();
+    return _resourceMap.values.where((r) => r.value == null && r.error == null).toList();
   }
 
   List<ResourceManagerResource> get failedResources {
-    return _resources.values.where((r) => r.error != null).toList();
+    return _resourceMap.values.where((r) => r.error != null).toList();
   }
 
   List<ResourceManagerResource> get resources {
-    return _resources.values.toList();
+    return _resourceMap.values.toList();
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -132,6 +146,44 @@ class ResourceManager {
 
   void addCustomObject(String name, Future loader) {
     _addResource("CustomObject", name, "", loader);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  void removeBitmapData(String name, {bool dispose:true}) {
+    var resourceManagerResource = _removeResource("BitmapData", name);
+    var bitmapData = resourceManagerResource?.value;
+    if (bitmapData is BitmapData && dispose) {
+      bitmapData.renderTexture.dispose();
+    }
+  }
+
+  void removeSound(String name) {
+    _removeResource("Sound", name);
+  }
+
+  void removeVideo(String name) {
+    _removeResource("Video", name);
+  }
+
+  void removeSoundSprite(String name) {
+    _removeResource("SoundSprite", name);
+  }
+
+  void removeTextureAtlas(String name) {
+    _removeResource("TextureAtlas", name);
+  }
+
+  void removeTextFile(String name) {
+    _removeResource("TextFile", name);
+  }
+
+  void removeText(String name) {
+    _removeResource("Text", name);
+  }
+
+  void removeCustomObject(String name) {
+    _removeResource("CustomObject", name);
   }
 
   //-----------------------------------------------------------------------------------------------
