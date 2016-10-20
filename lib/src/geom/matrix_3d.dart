@@ -33,22 +33,22 @@ class Matrix3D {
 
   Float32List get data => _data;
 
-  num get m00 => _data[00];
-  num get m10 => _data[01];
-  num get m20 => _data[02];
-  num get m30 => _data[03];
-  num get m01 => _data[04];
-  num get m11 => _data[05];
-  num get m21 => _data[06];
-  num get m31 => _data[07];
-  num get m02 => _data[08];
-  num get m12 => _data[09];
-  num get m22 => _data[10];
-  num get m32 => _data[11];
-  num get m03 => _data[12];
-  num get m13 => _data[13];
-  num get m23 => _data[14];
-  num get m33 => _data[15];
+  double get m00 => _data[00];
+  double get m10 => _data[01];
+  double get m20 => _data[02];
+  double get m30 => _data[03];
+  double get m01 => _data[04];
+  double get m11 => _data[05];
+  double get m21 => _data[06];
+  double get m31 => _data[07];
+  double get m02 => _data[08];
+  double get m12 => _data[09];
+  double get m22 => _data[10];
+  double get m32 => _data[11];
+  double get m03 => _data[12];
+  double get m13 => _data[13];
+  double get m23 => _data[14];
+  double get m33 => _data[15];
 
   //-----------------------------------------------------------------------------------------------
 
@@ -200,16 +200,16 @@ class Matrix3D {
 
   void rotateX(num angle) {
 
-    num cos = math.cos(angle);
-    num sin = math.sin(angle);
-    num m01 = this.m01;
-    num m11 = this.m11;
-    num m21 = this.m21;
-    num m31 = this.m31;
-    num m02 = this.m02;
-    num m12 = this.m12;
-    num m22 = this.m22;
-    num m32 = this.m32;
+    var cos = math.cos(angle);
+    var sin = math.sin(angle);
+    var m01 = this.m01;
+    var m11 = this.m11;
+    var m21 = this.m21;
+    var m31 = this.m31;
+    var m02 = this.m02;
+    var m12 = this.m12;
+    var m22 = this.m22;
+    var m32 = this.m32;
 
     _data[04] = m01 * cos + m02 * sin;
     _data[05] = m11 * cos + m12 * sin;
@@ -223,16 +223,16 @@ class Matrix3D {
 
   void rotateY(num angle) {
 
-    num cos = math.cos(angle);
-    num sin = math.sin(angle);
-    num m00 = this.m00;
-    num m10 = this.m10;
-    num m20 = this.m20;
-    num m30 = this.m30;
-    num m02 = this.m02;
-    num m12 = this.m12;
-    num m22 = this.m22;
-    num m32 = this.m32;
+    var cos = math.cos(angle);
+    var sin = math.sin(angle);
+    var m00 = this.m00;
+    var m10 = this.m10;
+    var m20 = this.m20;
+    var m30 = this.m30;
+    var m02 = this.m02;
+    var m12 = this.m12;
+    var m22 = this.m22;
+    var m32 = this.m32;
 
     _data[00] = m00 * cos + m02 * sin;
     _data[01] = m10 * cos + m12 * sin;
@@ -246,16 +246,16 @@ class Matrix3D {
 
   void rotateZ(num angle) {
 
-    num cos = math.cos(angle);
-    num sin = math.sin(angle);
-    num m00 = this.m00;
-    num m10 = this.m10;
-    num m20 = this.m20;
-    num m30 = this.m30;
-    num m01 = this.m01;
-    num m11 = this.m11;
-    num m21 = this.m21;
-    num m31 = this.m31;
+    var cos = math.cos(angle);
+    var sin = math.sin(angle);
+    var m00 = this.m00;
+    var m10 = this.m10;
+    var m20 = this.m20;
+    var m30 = this.m30;
+    var m01 = this.m01;
+    var m11 = this.m11;
+    var m21 = this.m21;
+    var m31 = this.m31;
 
     _data[00] = m00 * cos + m01 * sin;
     _data[01] = m10 * cos + m11 * sin;
@@ -379,18 +379,18 @@ class Matrix3D {
 
   void concat2D(Matrix matrix) {
 
-    num m00 = this.m00;
-    num m10 = this.m10;
-    num m20 = this.m20;
-    num m30 = this.m30;
-    num m01 = this.m01;
-    num m11 = this.m11;
-    num m21 = this.m21;
-    num m31 = this.m31;
-    num m03 = this.m03;
-    num m13 = this.m13;
-    num m23 = this.m23;
-    num m33 = this.m33;
+    var m00 = this.m00;
+    var m10 = this.m10;
+    var m20 = this.m20;
+    var m30 = this.m30;
+    var m01 = this.m01;
+    var m11 = this.m11;
+    var m21 = this.m21;
+    var m31 = this.m31;
+    var m03 = this.m03;
+    var m13 = this.m13;
+    var m23 = this.m23;
+    var m33 = this.m33;
 
     num n00 = matrix.a;
     num n10 = matrix.c;
@@ -411,18 +411,18 @@ class Matrix3D {
 
   void concatInverse2D(Matrix matrix) {
 
-    num m00 = this.m00;
-    num m10 = this.m10;
-    num m20 = this.m20;
-    num m30 = this.m30;
-    num m01 = this.m01;
-    num m11 = this.m11;
-    num m21 = this.m21;
-    num m31 = this.m31;
-    num m03 = this.m03;
-    num m13 = this.m13;
-    num m23 = this.m23;
-    num m33 = this.m33;
+    var m00 = this.m00;
+    var m10 = this.m10;
+    var m20 = this.m20;
+    var m30 = this.m30;
+    var m01 = this.m01;
+    var m11 = this.m11;
+    var m21 = this.m21;
+    var m31 = this.m31;
+    var m03 = this.m03;
+    var m13 = this.m13;
+    var m23 = this.m23;
+    var m33 = this.m33;
 
     num n00 = 0.0 + matrix.d / matrix.det;
     num n10 = 0.0 - matrix.c / matrix.det;
@@ -450,18 +450,18 @@ class Matrix3D {
     num m11 = matrix.d;
     num m31 = matrix.ty;
 
-    num n00 = this.m00;
-    num n10 = this.m10;
-    num n30 = this.m30;
-    num n01 = this.m01;
-    num n11 = this.m11;
-    num n31 = this.m31;
-    num n02 = this.m02;
-    num n12 = this.m12;
-    num n32 = this.m32;
-    num n03 = this.m03;
-    num n13 = this.m13;
-    num n33 = this.m33;
+    var n00 = this.m00;
+    var n10 = this.m10;
+    var n30 = this.m30;
+    var n01 = this.m01;
+    var n11 = this.m11;
+    var n31 = this.m31;
+    var n02 = this.m02;
+    var n12 = this.m12;
+    var n32 = this.m32;
+    var n03 = this.m03;
+    var n13 = this.m13;
+    var n33 = this.m33;
 
     _data[00] = m00 * n00 + m01 * n10;
     _data[01] = m10 * n00 + m11 * n10;
