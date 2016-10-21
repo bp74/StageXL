@@ -23,7 +23,7 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
   }
 
   void addAll(Iterable<T> displayObjects) {
-    for(var displayObject in displayObjects){
+    for (var displayObject in displayObjects) {
       this.parent.addChild(displayObject);
     }
   }
@@ -37,7 +37,7 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
   }
 
   void insertAll(int index, Iterable<T> displayObjects) {
-    for(var displayObject in displayObjects) {
+    for (var displayObject in displayObjects) {
       this.parent.addChildAt(displayObject, index++);
     }
   }
@@ -62,11 +62,11 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
     return this.parent.removeChildren(start, end);
   }
 
-  T operator[](int index) {
+  T operator [](int index) {
     return _children[index];
   }
 
-  void operator[]=(int index, T displayObject) {
+  void operator []=(int index, T displayObject) {
     this.parent.replaceChildAt(displayObject, index);
   }
 
@@ -90,8 +90,7 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
     return _children.every(test);
   }
 
-  Iterable/*<S>*/ expand/*<S>*/(Iterable/*<S>*/ f(T element)) =>
-      _children.expand(f);
+  Iterable/*<S>*/ expand/*<S>*/(Iterable/*<S>*/ f(T element)) => _children.expand(f);
 
   T get first {
     return _children.first;
@@ -101,8 +100,8 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
     return _children.firstWhere(test, orElse: orElse);
   }
 
-  dynamic/*=S*/ fold/*<S>*/(dynamic/*=S*/ initialValue,
-    dynamic/*=S*/ combine(dynamic/*=S*/ previousValue, T element)) =>
+  dynamic/*=S*/ fold/*<S>*/(
+          dynamic/*=S*/ initialValue, dynamic/*=S*/ combine(dynamic/*=S*/ previousValue, T element)) =>
       _children.fold(initialValue, combine);
 
   void forEach(void f(T element)) {

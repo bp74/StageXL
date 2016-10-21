@@ -144,11 +144,7 @@ class ResourceManager {
     _removeResource("Sound", name);
   }
 
-  Sound getSound(String name) {
-    var value = _getResourceValue("Sound", name);
-    if (value is! Sound) throw "dart2js_hint";
-    return value;
-  }
+  Sound getSound(String name) => _getResourceValue("Sound", name) as Sound;
 
   //----------------------------------------------------------------------------
 
@@ -165,11 +161,7 @@ class ResourceManager {
     _removeResource("SoundSprite", name);
   }
 
-  SoundSprite getSoundSprite(String name) {
-    var value = _getResourceValue("SoundSprite", name);
-    if (value is! SoundSprite) throw "dart2js_hint";
-    return value;
-  }
+  SoundSprite getSoundSprite(String name) => _getResourceValue("SoundSprite", name) as SoundSprite;
 
   //----------------------------------------------------------------------------
 

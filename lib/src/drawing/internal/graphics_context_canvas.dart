@@ -101,7 +101,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.strokeStyle = color2rgba(color);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
-    _canvasContext.lineCap = _getLineCap(capsStyle);;
+    _canvasContext.lineCap = _getLineCap(capsStyle);
     _canvasContext.stroke();
   }
 
@@ -120,7 +120,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.strokeStyle = _getCanvasPattern(pattern);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
-    _canvasContext.lineCap = _getLineCap(capsStyle);;
+    _canvasContext.lineCap = _getLineCap(capsStyle);
 
     var matrix = pattern.matrix;
     if (matrix != null) {

@@ -54,7 +54,7 @@ class AnimationGroup implements Animatable {
       }
     }
 
-    for (int i = 0; i < _animatables.length; ) {
+    for (int i = 0; i < _animatables.length;) {
       if (_animatables[i].advanceTime(time) == false) {
         _animatables.removeAt(i);
       } else {

@@ -87,7 +87,7 @@ class _GraphicsPath extends _GraphicsMesh {
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
 
-      for(int s = 1; s <= steps; s++) {
+      for (int s = 1; s <= steps; s++) {
         num t0 = s / steps;
         num t1 = 1.0 - t0;
         num b0 = t1 * t1;
@@ -114,7 +114,7 @@ class _GraphicsPath extends _GraphicsMesh {
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
 
-      for(int s = 1; s <= steps; s++) {
+      for (int s = 1; s <= steps; s++) {
         num t0 = s / steps;
         num t1 = 1.0 - t0;
         num b0 = t1 * t1 * t1;

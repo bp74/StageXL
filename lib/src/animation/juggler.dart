@@ -80,7 +80,7 @@ class Juggler implements Animatable {
 
   Future delay(num time) async {
     var nextTime = this.elapsedTime + time;
-    await for(var elapsedTime in this.onElapsedTimeChange) {
+    await for (var elapsedTime in this.onElapsedTimeChange) {
       if (elapsedTime >= nextTime) break;
     }
   }
@@ -103,7 +103,7 @@ class Juggler implements Animatable {
   Stream<int> interval(num time) async* {
     var count = 0;
     var nextTime = this.elapsedTime + time;
-    await for(var elapsedTime in this.onElapsedTimeChange) {
+    await for (var elapsedTime in this.onElapsedTimeChange) {
       while (elapsedTime >= nextTime) {
         yield ++count;
         nextTime = nextTime + time;
@@ -128,7 +128,7 @@ class Juggler implements Animatable {
 
   Stream<num> timespan(num time) async* {
     var startTime = this.elapsedTime;
-    await for(var elapsedTime in this.onElapsedTimeChange) {
+    await for (var elapsedTime in this.onElapsedTimeChange) {
       var currentTime = elapsedTime - startTime;
       var clampedTime = currentTime < time ? currentTime : time;
       yield clampedTime;
@@ -155,7 +155,7 @@ class Juggler implements Animatable {
 
     var startTime = this.elapsedTime;
     var deltaValue = targetValue - startValue;
-    await for(var elapsedTime in this.onElapsedTimeChange) {
+    await for (var elapsedTime in this.onElapsedTimeChange) {
       var currentTime = elapsedTime - startTime;
       var clampedTime = currentTime < time ? currentTime : time;
       yield startValue + deltaValue * transition(clampedTime / time);
@@ -176,8 +176,7 @@ class Juggler implements Animatable {
   void add(Animatable animatable) {
 
     if (animatable is! Animatable) {
-      throw new ArgumentError(
-          "The supplied animatable does not extend type Animatable.");
+      throw new ArgumentError("The supplied animatable does not extend type Animatable.");
     }
 
     if (this.contains(animatable) == false) {

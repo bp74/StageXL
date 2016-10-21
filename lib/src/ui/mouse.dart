@@ -90,7 +90,7 @@ class Mouse {
       style = "url('$cursorDataUrl') $cursorDataX $cursorDataY, $style";
     }
 
-    return _cursorHidden ? "none": style;
+    return _cursorHidden ? "none" : style;
   }
 
 }

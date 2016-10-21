@@ -165,8 +165,10 @@ abstract class DisplayObjectContainer
       // do nothing
     } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
       throw new ArgumentError("The supplied index is out of bounds.");
-    } else for (int i = i1; i <= i2 && i1 < _children.length; i++) {
-      removeChildAt(i1);
+    } else {
+      for (int i = i1; i <= i2 && i1 < _children.length; i++) {
+        removeChildAt(i1);
+      }
     }
   }
 
@@ -318,7 +320,7 @@ abstract class DisplayObjectContainer
     var result = new List<DisplayObject>();
     var temp = new Point<num>(0.0, 0.0);
 
-    for(var child in _children) {
+    for (var child in _children) {
       child.parentToLocal(point, temp);
       if (child is DisplayObjectContainer) {
         result.addAll(child.getObjectsUnderPoint(temp));
@@ -468,7 +470,7 @@ abstract class DisplayObjectContainer
     // only if necessary.
 
     var captured = false;
-    for(var obj = this; obj != null && captured == false; obj = obj.parent) {
+    for (var obj = this; obj != null && captured == false; obj = obj.parent) {
       if (obj.hasEventListener(eventType, useCapture: true)) captured = true;
     }
 
@@ -485,7 +487,7 @@ abstract class DisplayObjectContainer
       captured = captured ||
         displayObject.hasEventListener(event.type, useCapture: true);
       var children = displayObject._children;
-      for(int i = 0; i < children.length; i++) {
+      for (int i = 0; i < children.length; i++) {
         _dispatchStageEventsRecursion(children[i], event, captured);
       }
     }

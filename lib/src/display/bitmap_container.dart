@@ -98,8 +98,10 @@ class BitmapContainer extends DisplayObject
       // do nothing
     } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
       throw new ArgumentError("The supplied index is out of bounds.");
-    } else for (int i = i1; i <= i2 && i1 < _children.length; i++) {
-      removeChildAt(i1);
+    } else {
+      for (int i = i1; i <= i2 && i1 < _children.length; i++) {
+        removeChildAt(i1);
+      }
     }
   }
 
@@ -193,7 +195,7 @@ class BitmapContainer extends DisplayObject
 
     RenderContextCanvas context = renderState.renderContext;
 
-    for(int i = 0; i < _children.length; i++) {
+    for (int i = 0; i < _children.length; i++) {
       var bitmap = _children[i];
       if (bitmap.visible) {
         var bitmapData = bitmap.bitmapData;

@@ -103,7 +103,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  void _addCapStart(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
+  void _addCapStart(double vx, double vy, num nx, num ny, CapsStyle capsStyle) {
     if (capsStyle == CapsStyle.SQUARE) {
       _jointIndex1 = this.addVertex(vx + nx - ny, vy + ny + nx);
       _jointIndex2 = this.addVertex(vx - nx - ny, vy - ny + nx);
@@ -119,7 +119,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  void _addCapEnd(num vx, num vy, num nx, num ny, CapsStyle capsStyle) {
+  void _addCapEnd(double vx, double vy, num nx, num ny, CapsStyle capsStyle) {
     int i1 = _jointIndex1, i2 = _jointIndex2;
     if (capsStyle == CapsStyle.SQUARE) {
       _jointIndex1 = this.addVertex(vx + nx + ny, vy + ny - nx);
@@ -139,7 +139,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   void _addJoint(
-      num vx, num vy, num al, num bl, num ax, num ay, num bx, num by,
+      double vx, double vy, num al, num bl, num ax, num ay, num bx, num by,
       JointStyle jointStyle) {
 
     num id = (bx * ay - by * ax);
@@ -161,8 +161,8 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       jointStyle = JointStyle.BEVEL;
     }
 
-    num vmx = ax - it * ay; // miter-x
-    num vmy = ay + it * ax; // miter-y
+    var vmx = ax - it * ay; // miter-x
+    var vmy = ay + it * ax; // miter-y
     bool isOverlap = itAbs > al || itAbs > bl;
     bool isCloseJoint = _jointIndex1 < 0;
 

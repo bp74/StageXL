@@ -14,5 +14,3 @@ class _GraphicsCommandMeshColor extends GraphicsCommand {
     }
   }
 }
-
-
