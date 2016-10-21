@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsPath extends _GraphicsMesh {
+class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   _GraphicsPathSegment _currentSegment;
 

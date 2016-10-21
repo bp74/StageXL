@@ -98,11 +98,7 @@ class ResourceManager {
     }
   }
 
-  TextureAtlas getTextureAtlas(String name) {
-    var value = _getResourceValue("TextureAtlas", name);
-    if (value is! TextureAtlas) throw "dart2js_hint";
-    return value;
-  }
+  TextureAtlas getTextureAtlas(String name) => _getResourceValue("TextureAtlas", name) as TextureAtlas;
 
   //----------------------------------------------------------------------------
 
@@ -121,11 +117,7 @@ class ResourceManager {
     _removeResource("Video", name);
   }
 
-  Video getVideo(String name) {
-    var value = _getResourceValue("Video", name);
-    if (value is! Video) throw "dart2js_hint";
-    return value;
-  }
+  Video getVideo(String name) => _getResourceValue("Video", name) as Video;
 
   //----------------------------------------------------------------------------
 
@@ -177,11 +169,7 @@ class ResourceManager {
     _removeResource("Text", name);
   }
 
-  String getText(String name) {
-    var value = _getResourceValue("Text", name);
-    if (value is! String) throw "dart2js_hint";
-    return value;
-  }
+  String getText(String name) => _getResourceValue("Text", name) as String;
 
   //----------------------------------------------------------------------------
 
@@ -200,11 +188,7 @@ class ResourceManager {
     _removeResource("TextFile", name);
   }
 
-  String getTextFile(String name) {
-    var value = _getResourceValue("TextFile", name);
-    if (value is! String) throw "dart2js_hint";
-    return value;
-  }
+  String getTextFile(String name) => _getResourceValue("TextFile", name) as String;
 
   //----------------------------------------------------------------------------
 

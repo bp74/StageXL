@@ -17,7 +17,7 @@ class WebAudioApiSound extends Sound {
     for(var audioUrl in audioUrls) {
       try {
         var httpRequest = await HttpRequest.request(audioUrl, responseType: 'arraybuffer');
-        var audioData = httpRequest.response;
+        var audioData = httpRequest.response as ByteBuffer;
         var audioBuffer = await audioContext.decodeAudioData(audioData);
         return new WebAudioApiSound._(audioBuffer);
       } catch (e) {

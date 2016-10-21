@@ -739,7 +739,7 @@ class Stage extends DisplayObjectContainer {
       if (touchPoint.currentTarget != target) {
 
         DisplayObject oldTarget = touchPoint.currentTarget;
-        DisplayObject newTarget = target;
+        var newTarget = target;
         var oldTargetList = <DisplayObject>[];
         var newTargetList = <DisplayObject>[];
         int commonCount = 0;

@@ -167,7 +167,7 @@ class BitmapContainer extends DisplayObject
 
   void _renderWebGL(RenderState renderState) {
 
-    RenderContextWebGL context = renderState.renderContext;
+    var context = renderState.renderContext as RenderContextWebGL;
     var projectionMatrix = context.activeProjectionMatrix;
     var globalMatrix = renderState.globalMatrix;
     var localState = new _BitmapContainerRenderState(renderState);
@@ -193,7 +193,7 @@ class BitmapContainer extends DisplayObject
 
   void _renderCanvas2D(RenderState renderState) {
 
-    RenderContextCanvas context = renderState.renderContext;
+    var context = renderState.renderContext as RenderContextCanvas;
 
     for (int i = 0; i < _children.length; i++) {
       var bitmap = _children[i];

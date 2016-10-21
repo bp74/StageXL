@@ -37,7 +37,7 @@ class SoundSprite {
 
     if (segments is Map) {
       for (String segment in segments.keys) {
-        var segmentList = segments[segment];
+        var segmentList = segments[segment] as List;
         var startTime = ensureNum(segmentList[0]);
         var duration = ensureNum(segmentList[1]);
         var loop = ensureBool(segmentList.length > 2 && segmentList[2]);
@@ -47,7 +47,7 @@ class SoundSprite {
     }
 
     if (urls is List) {
-      soundUrls.addAll(urls.map((u) => replaceFilename(url, u)));
+      soundUrls.addAll(urls.map((String u) => replaceFilename(url, u)));
     }
 
     soundLoadOptions = (soundLoadOptions == null) ? Sound.defaultLoadOptions.clone() : soundLoadOptions.clone();

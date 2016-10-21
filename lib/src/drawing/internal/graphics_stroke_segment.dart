@@ -247,10 +247,10 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     }
 
     if (isCloseJoint) {
-      num x1 = _vertexBuffer[_jointIndex1 * 2 + 0];
-      num y1 = _vertexBuffer[_jointIndex1 * 2 + 1];
-      num x2 = _vertexBuffer[_jointIndex2 * 2 + 0];
-      num y2 = _vertexBuffer[_jointIndex2 * 2 + 1];
+      var x1 = _vertexBuffer[_jointIndex1 * 2 + 0];
+      var y1 = _vertexBuffer[_jointIndex1 * 2 + 1];
+      var x2 = _vertexBuffer[_jointIndex2 * 2 + 0];
+      var y2 = _vertexBuffer[_jointIndex2 * 2 + 1];
       _vertexCount = 0;
       _indexCount = 0;
       _jointIndex1 = this.addVertex(x1, y1);
@@ -261,7 +261,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   int _addArc(
-      num vx, num vy, num n1x, num n1y, n2x, n2y,
+      num vx, num vy, num n1x, num n1y, num n2x, num n2y,
       int index1, int index2, bool antiClockwise) {
 
     num tau = 2.0 * PI;
@@ -283,12 +283,12 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     int steps = (10 * delta / PI).abs().ceil();
     int index3 = index2;
 
-    num cosR = cos(delta / steps);
-    num sinR = sin(delta / steps);
-    num tx = vx - vx * cosR + vy * sinR;
-    num ty = vy - vx * sinR - vy * cosR;
-    num ax = vx + n1x;
-    num ay = vy + n1y;
+    var cosR = cos(delta / steps);
+    var sinR = sin(delta / steps);
+    var tx = vx - vx * cosR + vy * sinR;
+    var ty = vy - vx * sinR - vy * cosR;
+    var ax = vx + n1x;
+    var ay = vy + n1y;
 
     for (int s = 0; s < steps; s++) {
       num bx = ax * cosR - ay * sinR + tx;

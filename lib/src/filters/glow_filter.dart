@@ -147,7 +147,7 @@ class GlowFilter extends BitmapFilter {
   void renderFilter(RenderState renderState,
                     RenderTextureQuad renderTextureQuad, int pass) {
 
-    RenderContextWebGL renderContext = renderState.renderContext;
+    var renderContext = renderState.renderContext as RenderContextWebGL;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     int passCount = _renderPassSources.length;
     num passScale = pow(0.5, pass >> 1);
@@ -162,7 +162,7 @@ class GlowFilter extends BitmapFilter {
 
     } else {
 
-      GlowFilterProgram renderProgram = renderContext.getRenderProgram(
+      var renderProgram = renderContext.getRenderProgram(
           r"$GlowFilterProgram", () => new GlowFilterProgram());
 
       renderContext.activateRenderProgram(renderProgram);

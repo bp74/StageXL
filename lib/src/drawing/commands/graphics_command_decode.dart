@@ -4,7 +4,7 @@ class GraphicsCommandDecode extends GraphicsCommand {
 
   String _text;
 
-  static const Map _BASE_64 = const {
+  static const Map<String, int> _BASE_64 = const <String, int>{
     "A": 0,"B": 1,"C": 2,"D": 3,"E": 4,"F": 5,"G": 6,"H": 7,
     "I": 8,"J": 9,"K":10,"L":11,"M":12,"N":13,"O":14,"P":15,
     "Q":16,"R":17,"S":18,"T":19,"U":20,"V":21,"W":22,"X":23,
@@ -30,8 +30,6 @@ class GraphicsCommandDecode extends GraphicsCommand {
   @override
   void updateContext(GraphicsContext context) {
 
-    var base64 = _BASE_64;
-
     var instructions = [
       context.moveTo,
       context.lineTo,
@@ -48,7 +46,7 @@ class GraphicsCommandDecode extends GraphicsCommand {
     while (i < l) {
 
       var c = text[i];
-      var n = base64[c];
+      var n = _BASE_64[c];
 
       // highest order bits 1-3 code for operation.
       var fi = n >> 3;
@@ -73,10 +71,10 @@ class GraphicsCommandDecode extends GraphicsCommand {
       var charCount = (n >> 2 & 1) + 2;
 
       for (var p = 0; p < pl; p++) {
-        var v = base64[text[i]];
+        var v = _BASE_64[text[i]];
         var sign = (v >> 5) > 0 ? -1 : 1;
-        v = ((v & 31) << 6) | (base64[text[i + 1]]);
-        if (charCount == 3) v = (v << 6) | (base64[text[i + 2]]);
+        v = ((v & 31) << 6) | (_BASE_64[text[i + 1]]);
+        if (charCount == 3) v = (v << 6) | (_BASE_64[text[i + 2]]);
         var w = sign * v / 10;
         if (p % 2 > 0) x = (w += x); else y = (w += y);
         params.add(w);

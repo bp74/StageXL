@@ -317,7 +317,7 @@ class RenderContextCanvas extends RenderContext {
         matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
   }
 
-  void setAlpha(num alpha) {
+  void setAlpha(double alpha) {
     _activeAlpha = alpha;
     _renderingContext.globalAlpha = alpha;
   }

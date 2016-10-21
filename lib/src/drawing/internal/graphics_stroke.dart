@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsStroke extends _GraphicsMesh {
+class _GraphicsStroke extends _GraphicsMesh<_GraphicsStrokeSegment> {
 
   final double width;
   final JointStyle jointStyle;
@@ -16,7 +16,7 @@ class _GraphicsStroke extends _GraphicsMesh {
 
   @override
   void fillColor(RenderState renderState, int color) {
-    for (_GraphicsStrokeSegment segment in segments) {
+    for (var segment in segments) {
       segment.fillColor(renderState, color);
     }
   }

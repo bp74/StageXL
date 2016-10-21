@@ -328,8 +328,8 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  RenderProgram getRenderProgram(String name, RenderProgram ifAbsent()) {
-    return _renderPrograms.putIfAbsent(name, ifAbsent);
+  RenderProgram /*=T*/ getRenderProgram/*<T extends RenderProgram>*/(String name, RenderProgram /*=T*/ ifAbsent()) {
+    return _renderPrograms.putIfAbsent(name, ifAbsent) as RenderProgram/*=T*/;
   }
 
   RenderFrameBuffer getRenderFrameBuffer(int width, int height) {

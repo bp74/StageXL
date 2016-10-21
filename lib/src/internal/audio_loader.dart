@@ -61,10 +61,10 @@ class AudioLoader {
   void _loadAudioData(String url) {
     HttpRequest.request(url, responseType: 'blob').then((request) {
       var reader = new FileReader();
-      reader.readAsDataUrl(request.response);
+      reader.readAsDataUrl(request.response as Blob);
       reader.onLoadEnd.first.then((e) {
         if(reader.readyState == FileReader.DONE) {
-          _loadAudioSource(reader.result);
+          _loadAudioSource(reader.result as String);
         } else {
           _loadFailed();
         }

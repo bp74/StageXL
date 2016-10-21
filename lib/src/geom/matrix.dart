@@ -248,15 +248,15 @@ class Matrix {
 
   void rotate(num rotation) {
 
-    num cosR = cos(rotation);
-    num sinR = sin(rotation);
+    var cosR = cos(rotation);
+    var sinR = sin(rotation);
 
-    num a =  this.a;
-    num b =  this.b;
-    num c =  this.c;
-    num d =  this.d;
-    num tx = this.tx;
-    num ty = this.ty;
+    var a =  this.a;
+    var b =  this.b;
+    var c =  this.c;
+    var d =  this.d;
+    var tx = this.tx;
+    var ty = this.ty;
 
     _data[0] = a * cosR - b * sinR;
     _data[1] = a * sinR + b * cosR;
@@ -270,17 +270,17 @@ class Matrix {
 
   void skew(num skewX, num skewY) {
 
-    num sinX = sin(skewX);
-    num cosX = cos(skewX);
-    num sinY = sin(skewY);
-    num cosY = cos(skewY);
+    var sinX = sin(skewX);
+    var cosX = cos(skewX);
+    var sinY = sin(skewY);
+    var cosY = cos(skewY);
 
-    num a =  this.a;
-    num b =  this.b;
-    num c =  this.c;
-    num d =  this.d;
-    num tx = this.tx;
-    num ty = this.ty;
+    var a =  this.a;
+    var b =  this.b;
+    var c =  this.c;
+    var d =  this.d;
+    var tx = this.tx;
+    var ty = this.ty;
 
     _data[0] = a * cosY - b * sinX;
     _data[1] = a * sinY + b * cosX;
@@ -347,19 +347,19 @@ class Matrix {
 
   void copyFromAndConcat(Matrix copyMatrix, Matrix concatMatrix) {
 
-    num a1 =  copyMatrix.a;
-    num b1 =  copyMatrix.b;
-    num c1 =  copyMatrix.c;
-    num d1 =  copyMatrix.d;
-    num tx1 = copyMatrix.tx;
-    num ty1 = copyMatrix.ty;
+    var a1 =  copyMatrix.a;
+    var b1 =  copyMatrix.b;
+    var c1 =  copyMatrix.c;
+    var d1 =  copyMatrix.d;
+    var tx1 = copyMatrix.tx;
+    var ty1 = copyMatrix.ty;
 
-    num a2 =  concatMatrix.a;
-    num b2 =  concatMatrix.b;
-    num c2 =  concatMatrix.c;
-    num d2 =  concatMatrix.d;
-    num tx2 = concatMatrix.tx;
-    num ty2 = concatMatrix.ty;
+    var a2 =  concatMatrix.a;
+    var b2 =  concatMatrix.b;
+    var c2 =  concatMatrix.c;
+    var d2 =  concatMatrix.d;
+    var tx2 = concatMatrix.tx;
+    var ty2 = concatMatrix.ty;
 
     _data[0] = a1 * a2 + b1 * c2;
     _data[1] = a1 * b2 + b1 * d2;
@@ -373,20 +373,20 @@ class Matrix {
 
   void invertAndConcat(Matrix concatMatrix) {
 
-    num det =   this.det;
-    num a1 =    this.d / det;
-    num b1 =  - this.b / det;
-    num c1 =  - this.c / det;
-    num d1 =    this.a / det;
-    num tx1 = - this.tx * a1 - this.ty * c1;
-    num ty1 = - this.tx * b1 - this.ty * d1;
+    var det =   this.det;
+    var a1 =    this.d / det;
+    var b1 =  - this.b / det;
+    var c1 =  - this.c / det;
+    var d1 =    this.a / det;
+    var tx1 = - this.tx * a1 - this.ty * c1;
+    var ty1 = - this.tx * b1 - this.ty * d1;
 
-    num a2 =  concatMatrix.a;
-    num b2 =  concatMatrix.b;
-    num c2 =  concatMatrix.c;
-    num d2 =  concatMatrix.d;
-    num tx2 = concatMatrix.tx;
-    num ty2 = concatMatrix.ty;
+    var a2 =  concatMatrix.a;
+    var b2 =  concatMatrix.b;
+    var c2 =  concatMatrix.c;
+    var d2 =  concatMatrix.d;
+    var tx2 = concatMatrix.tx;
+    var ty2 = concatMatrix.ty;
 
     _data[0] = a1 * a2 + b1 * c2;
     _data[1] = a1 * b2 + b1 * d2;
@@ -400,13 +400,13 @@ class Matrix {
 
   void copyFromAndInvert(Matrix matrix) {
 
-    num a =   matrix.a;
-    num b =   matrix.b;
-    num c =   matrix.c;
-    num d =   matrix.d;
-    num tx =  matrix.tx;
-    num ty =  matrix.ty;
-    num det = matrix.det;
+    var a =   matrix.a;
+    var b =   matrix.b;
+    var c =   matrix.c;
+    var d =   matrix.d;
+    var tx =  matrix.tx;
+    var ty =  matrix.ty;
+    var det = matrix.det;
 
     _data[0] =   d / det;
     _data[1] = - b / det;

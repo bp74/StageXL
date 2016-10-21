@@ -470,7 +470,7 @@ abstract class DisplayObjectContainer
     // only if necessary.
 
     var captured = false;
-    for (var obj = this; obj != null && captured == false; obj = obj.parent) {
+    for (DisplayObject obj = this; obj != null && captured == false; obj = obj.parent) {
       if (obj.hasEventListener(eventType, useCapture: true)) captured = true;
     }
 

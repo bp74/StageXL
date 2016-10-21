@@ -102,10 +102,10 @@ class DisplacementMapFilter extends BitmapFilter {
 
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
-    RenderContextWebGL renderContext = renderState.renderContext;
+    var renderContext = renderState.renderContext as RenderContextWebGL;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
-    DisplacementMapFilterProgram renderProgram = renderContext.getRenderProgram(
+    var renderProgram = renderContext.getRenderProgram(
         r"$DisplacementMapFilterProgram", () => new DisplacementMapFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);

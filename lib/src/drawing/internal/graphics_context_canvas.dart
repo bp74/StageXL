@@ -8,7 +8,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
 
   _GraphicsContextCanvas(RenderState renderState) :
      renderState = renderState,
-    _renderContext = renderState.renderContext,
+    _renderContext = renderState.renderContext as RenderContextCanvas,
     _canvasContext = (renderState.renderContext as RenderContextCanvas).rawContext {
     _renderContext.setTransform(renderState.globalMatrix);
     _renderContext.setAlpha(renderState.globalAlpha);
