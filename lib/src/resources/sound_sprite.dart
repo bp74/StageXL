@@ -16,20 +16,14 @@ class SoundSprite {
   final List<SoundSpriteSegment> _segments = new List<SoundSpriteSegment>();
   Sound _sound;
 
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
-  static Future<SoundSprite> load(String url, [SoundLoadOptions soundLoadOptions = null]) async {
+  static Future<SoundSprite> load(
+      String url, [SoundLoadOptions soundLoadOptions]) async {
 
     SoundSprite soundSprite = new SoundSprite();
 
-    String soundSpriteJson;
-    try {
-      soundSpriteJson = await HttpRequest.getString(url);
-    } catch (e) {
-      // https://github.com/bp74/StageXL/issues/254
-      throw new StateError("Failed to load json file.");
-    }
-
+    var soundSpriteJson = await HttpRequest.getString(url);
     var data = JSON.decode(soundSpriteJson);
     var urls = data['urls'] as List;
     var segments = data["sprite"];
@@ -46,46 +40,37 @@ class SoundSprite {
       }
     }
 
-    if (urls is List) {
-      soundUrls.addAll(urls.map((String u) => replaceFilename(url, u)));
-    }
-
-    soundLoadOptions = (soundLoadOptions == null) ? Sound.defaultLoadOptions.clone() : soundLoadOptions.clone();
-
+    soundUrls.addAll(urls.map((String u) => replaceFilename(url, u)));
+    soundLoadOptions = (soundLoadOptions ?? Sound.defaultLoadOptions).clone();
     soundLoadOptions.alternativeUrls = soundUrls.skip(1).toList();
-
-    try {
-      soundSprite._sound = await Sound.load(soundUrls[0], soundLoadOptions);
-    } catch (e) {
-      // https://github.com/bp74/StageXL/issues/254
-      throw new StateError("Failed to load sound.");
-    }
-
+    soundSprite._sound = await Sound.load(soundUrls[0], soundLoadOptions);
     return soundSprite;
   }
 
-  //-------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
 
   Sound get sound => _sound;
 
-  List<SoundSpriteSegment> get segments => _segments.toList(growable: false);
-  List<String> get segmentNames => _segments.map((s) => s.name).toList(growable: false);
+  List<SoundSpriteSegment> get segments {
+    return _segments.toList(growable: false);
+  }
 
-  //-------------------------------------------------------------------------------------------------
+  List<String> get segmentNames {
+    return _segments.map((s) => s.name).toList(growable: false);
+  }
+
+  //----------------------------------------------------------------------------
 
   SoundSpriteSegment getSegment(String name) {
-
-    for (int i = 0; i < _segments.length; i++) {
-      var s = _segments[i];
-      if (s.name == name) return s;
+    var segment = _segments.firstWhere((s) => s.name == name, orElse: null);
+    if (segment == null) {
+      throw new ArgumentError("SoundSpriteSegment not found: '$name'");
+    } else {
+      return segment;
     }
-
-    throw new ArgumentError("SoundSpriteSegment not found: '$name'");
   }
 
   SoundChannel play(String name, [bool loop, SoundTransform soundTransform]) {
     return this.getSegment(name).play(loop, soundTransform);
   }
-
 }
