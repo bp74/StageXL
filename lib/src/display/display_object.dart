@@ -532,7 +532,7 @@ abstract class DisplayObject
       if (skewX != 0.0 || skewY != 0.0) {
         num ma = scaleX * cos(skewY + rotation);
         num mb = scaleX * sin(skewY + rotation);
-        num mc = - scaleY * sin(skewX + rotation);
+        num mc = -scaleY * sin(skewX + rotation);
         num md = scaleY * cos(skewX + rotation);
         num mx = _x - _pivotX * ma - _pivotY * mc;
         num my = _y - _pivotX * mb - _pivotY * md;
@@ -542,7 +542,7 @@ abstract class DisplayObject
         num sr = sin(rotation);
         num ma = scaleX * cr;
         num mb = scaleX * sr;
-        num mc = - scaleY * sr;
+        num mc = -scaleY * sr;
         num md = scaleY * cr;
         num mx = _x - _pivotX * ma - _pivotY * mc;
         num my = _y - _pivotX * mb - _pivotY * md;
@@ -619,7 +619,7 @@ abstract class DisplayObject
     var ancestor = _getCommonAncestor(targetSpace);
     if (ancestor == null) return null;
 
-    var resultMatrix  = new Matrix.fromIdentity();
+    var resultMatrix = new Matrix.fromIdentity();
     for (var obj = this; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         throw new StateError("Can't calculate 2D matrix for 3D display object.");
@@ -629,7 +629,7 @@ abstract class DisplayObject
 
     if (identical(targetSpace, ancestor)) return resultMatrix;
 
-    var targetMatrix  = new Matrix.fromIdentity();
+    var targetMatrix = new Matrix.fromIdentity();
     for (var obj = targetSpace; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         throw new StateError("Can't calculate 2D matrix for 3D display object.");
@@ -657,7 +657,7 @@ abstract class DisplayObject
     var ancestor = _getCommonAncestor(targetSpace);
     if (ancestor == null) return null;
 
-    var resultMatrix  = new Matrix3D.fromIdentity();
+    var resultMatrix = new Matrix3D.fromIdentity();
     for (var obj = this; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         resultMatrix.concat(obj.projectionMatrix3D);
@@ -667,7 +667,7 @@ abstract class DisplayObject
 
     if (identical(targetSpace, ancestor)) return resultMatrix;
 
-    var targetMatrix  = new Matrix3D.fromIdentity();
+    var targetMatrix = new Matrix3D.fromIdentity();
     for (var obj = targetSpace; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         targetMatrix.concat(obj.projectionMatrix3D);

@@ -53,7 +53,7 @@ class RenderProgramTinted extends RenderProgram {
   void renderTextureQuad(
       RenderState renderState,
       RenderTextureQuad renderTextureQuad,
-      num r, num g, num b, num a) {
+      double r, double g, num b, num a) {
 
     if (renderTextureQuad.hasCustomVertices) {
       var ixList = renderTextureQuad.ixList;

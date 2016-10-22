@@ -49,15 +49,15 @@ class GraphicsCommandEllipse extends GraphicsCommand {
   @override
   void updateContext(GraphicsContext context) {
 
-    num kappa = 0.5522848;
-    num ox = (width / 2) * kappa;
-    num oy = (height / 2) * kappa;
-    num x1 = x - width / 2;
-    num y1 = y - height / 2;
-    num x2 = x + width / 2;
-    num y2 = y + height / 2;
-    num xm = x;
-    num ym = y;
+    const kappa = 0.5522848;
+    var ox = (_width / 2) * kappa;
+    var oy = (_height / 2) * kappa;
+    var x1 = _x - _width / 2;
+    var y1 = _y - _height / 2;
+    var x2 = _x + _width / 2;
+    var y2 = _y + _height / 2;
+    var xm = _x;
+    var ym = _y;
 
     context.moveTo(x1, ym);
     context.bezierCurveTo(x1, ym - oy, xm - ox, y1, xm, y1);

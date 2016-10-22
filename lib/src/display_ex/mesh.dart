@@ -72,7 +72,7 @@ class Mesh extends DisplayObject {
     }
 
     for (int r = 0, triangle = 0; r < rows; r++) {
-      for(int c = 0; c < columns; c++) {
+      for (int c = 0; c < columns; c++) {
         var v0 = (r + 0) * (columns + 1) + c + 0;
         var v1 = (r + 0) * (columns + 1) + c + 1;
         var v2 = (r + 1) * (columns + 1) + c + 1;
@@ -150,8 +150,8 @@ class Mesh extends DisplayObject {
 
     for (int i = 0; i < ixList.length; i++) {
       int index = ixList[i + 0];
-      num vertexX = vxList[(index << 2) + 0];
-      num vertexY = vxList[(index << 2) + 1];
+      var vertexX = vxList[(index << 2) + 0];
+      var vertexY = vxList[(index << 2) + 1];
       if (left > vertexX) left = vertexX;
       if (right < vertexX) right = vertexX;
       if (top > vertexY) top = vertexY;

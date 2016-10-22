@@ -557,9 +557,9 @@ class Stage extends DisplayObjectContainer {
     if (_mouseTarget != target) {
 
       DisplayObject oldTarget = _mouseTarget;
-      DisplayObject newTarget = target;
-      List oldTargetList = [];
-      List newTargetList = [];
+      InteractiveObject newTarget = target;
+      var oldTargetList = <DisplayObject>[];
+      var newTargetList = <DisplayObject>[];
       int commonCount = 0;
 
       for (DisplayObject p = oldTarget; p != null; p = p.parent) {
@@ -739,9 +739,9 @@ class Stage extends DisplayObjectContainer {
       if (touchPoint.currentTarget != target) {
 
         DisplayObject oldTarget = touchPoint.currentTarget;
-        DisplayObject newTarget = target;
-        List oldTargetList = [];
-        List newTargetList = [];
+        var newTarget = target;
+        var oldTargetList = <DisplayObject>[];
+        var newTargetList = <DisplayObject>[];
         int commonCount = 0;
 
         for(DisplayObject p = oldTarget; p != null; p = p.parent) {

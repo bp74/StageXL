@@ -40,8 +40,7 @@ class EventDispatcher {
   ///     sprite.onAddedToStage.listen(_onAddedToStage);
   ///     sprite.onMouseClick.capture(_onMouseClick);
   ///     sprite.on("CustomEvent").listen(_onCustomEvent);
-
-  EventStream<Event> on(String eventType) {
+  EventStream<Event> /*=EventStream<T>*/ on/*<T extends Event>*/(String eventType) {
 
     var eventStreams = _eventStreams;
     if (eventStreams == null) {
@@ -51,7 +50,7 @@ class EventDispatcher {
 
     var eventStream = eventStreams[eventType];
     if (eventStream == null) {
-      eventStream = new EventStream._(this, eventType);
+      eventStream = new EventStream/*<T>*/._(this, eventType);
       eventStreams[eventType] = eventStream;
     }
 

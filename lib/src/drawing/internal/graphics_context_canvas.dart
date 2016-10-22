@@ -8,7 +8,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
 
   _GraphicsContextCanvas(RenderState renderState) :
      renderState = renderState,
-    _renderContext = renderState.renderContext,
+    _renderContext = renderState.renderContext as RenderContextCanvas,
     _canvasContext = (renderState.renderContext as RenderContextCanvas).rawContext {
     _renderContext.setTransform(renderState.globalMatrix);
     _renderContext.setAlpha(renderState.globalAlpha);
@@ -101,7 +101,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.strokeStyle = color2rgba(color);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
-    _canvasContext.lineCap = _getLineCap(capsStyle);;
+    _canvasContext.lineCap = _getLineCap(capsStyle);
     _canvasContext.stroke();
   }
 
@@ -120,7 +120,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.strokeStyle = _getCanvasPattern(pattern);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
-    _canvasContext.lineCap = _getLineCap(capsStyle);;
+    _canvasContext.lineCap = _getLineCap(capsStyle);
 
     var matrix = pattern.matrix;
     if (matrix != null) {

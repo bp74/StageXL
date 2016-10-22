@@ -6,7 +6,7 @@ class GraphicsCommandMoveTo extends GraphicsCommand {
   double _y;
 
   GraphicsCommandMoveTo(num x, num y)
-      : _x= x.toDouble(),
+      : _x = x.toDouble(),
         _y = y.toDouble();
 
   //---------------------------------------------------------------------------

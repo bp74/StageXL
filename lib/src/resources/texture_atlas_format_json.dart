@@ -9,8 +9,8 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     var source = await loader.getSource();
     var json = JSON.decode(source);
     var frames = json["frames"];
-    var meta = json["meta"];
-    var image = meta["image"];
+    var meta = json["meta"] as Map;
+    var image = meta["image"] as String;
 
     var textureAtlas = new TextureAtlas();
     var renderTextureQuad = await loader.getRenderTextureQuad(image);
@@ -42,7 +42,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
       RenderTextureQuad renderTextureQuad,
       String frameName, Map frameMap, Map metaMap) {
 
-    int rotation = ensureBool(frameMap["rotated"]) ? 1 : 0;
+    int rotation = ensureBool(frameMap["rotated"] as bool) ? 1 : 0;
     int offsetX = ensureInt(frameMap["spriteSourceSize"]["x"]);
     int offsetY = ensureInt(frameMap["spriteSourceSize"]["y"]);
     int originalWidth = ensureInt(frameMap["sourceSize"]["w"]);

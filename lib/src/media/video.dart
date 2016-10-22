@@ -99,7 +99,7 @@ class Video {
 
   Future <Video> clone() {
 
-    VideoElement videoElement = this.videoElement.clone(true);
+    var videoElement = this.videoElement.clone(true) as VideoElement;
     Completer<Video> completer = new Completer<Video>();
     StreamSubscription onCanPlaySubscription;
     StreamSubscription onErrorSubscription;

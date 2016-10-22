@@ -98,8 +98,10 @@ class BitmapContainer extends DisplayObject
       // do nothing
     } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
       throw new ArgumentError("The supplied index is out of bounds.");
-    } else for (int i = i1; i <= i2 && i1 < _children.length; i++) {
-      removeChildAt(i1);
+    } else {
+      for (int i = i1; i <= i2 && i1 < _children.length; i++) {
+        removeChildAt(i1);
+      }
     }
   }
 
@@ -165,7 +167,7 @@ class BitmapContainer extends DisplayObject
 
   void _renderWebGL(RenderState renderState) {
 
-    RenderContextWebGL context = renderState.renderContext;
+    var context = renderState.renderContext as RenderContextWebGL;
     var projectionMatrix = context.activeProjectionMatrix;
     var globalMatrix = renderState.globalMatrix;
     var localState = new _BitmapContainerRenderState(renderState);
@@ -191,9 +193,9 @@ class BitmapContainer extends DisplayObject
 
   void _renderCanvas2D(RenderState renderState) {
 
-    RenderContextCanvas context = renderState.renderContext;
+    var context = renderState.renderContext as RenderContextCanvas;
 
-    for(int i = 0; i < _children.length; i++) {
+    for (int i = 0; i < _children.length; i++) {
       var bitmap = _children[i];
       if (bitmap.visible) {
         var bitmapData = bitmap.bitmapData;

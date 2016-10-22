@@ -130,7 +130,7 @@ class Sprite extends DisplayObjectContainer {
 
     var hitArea = this.hitArea;
     var graphics = _graphics;
-    var target;
+    DisplayObject target;
 
     if (hitArea != null) {
       var point = new Point<num>(localX, localY);

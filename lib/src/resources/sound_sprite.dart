@@ -18,51 +18,50 @@ class SoundSprite {
 
   //-------------------------------------------------------------------------------------------------
 
-  static Future<SoundSprite> load(String url, [SoundLoadOptions soundLoadOptions = null]) {
+  static Future<SoundSprite> load(String url, [SoundLoadOptions soundLoadOptions = null]) async {
 
-    Completer<SoundSprite> completer = new Completer<SoundSprite>();
     SoundSprite soundSprite = new SoundSprite();
 
-    HttpRequest.getString(url).then((soundSpriteJson) {
+    String soundSpriteJson;
+    try {
+      soundSpriteJson = await HttpRequest.getString(url);
+    } catch (e) {
+      // https://github.com/bp74/StageXL/issues/254
+      throw new StateError("Failed to load json file.");
+    }
 
-      var data = JSON.decode(soundSpriteJson);
-      var urls = data['urls'];
-      var segments = data["sprite"];
-      var soundUrls = new List<String>();
+    var data = JSON.decode(soundSpriteJson);
+    var urls = data['urls'] as List;
+    var segments = data["sprite"];
+    var soundUrls = new List<String>();
 
-      if (segments is Map<String, List>) {
-        for (String segment in segments.keys) {
-          var segmentList = segments[segment];
-          var startTime = ensureNum(segmentList[0]);
-          var duration = ensureNum(segmentList[1]);
-          var loop = ensureBool(segmentList.length > 2 && segmentList[2]);
-          var sss = new SoundSpriteSegment(soundSprite, segment, startTime, duration, loop);
-          soundSprite._segments.add(sss);
-        }
+    if (segments is Map) {
+      for (String segment in segments.keys) {
+        var segmentList = segments[segment] as List;
+        var startTime = ensureNum(segmentList[0]);
+        var duration = ensureNum(segmentList[1]);
+        var loop = ensureBool(segmentList.length > 2 && segmentList[2]);
+        var sss = new SoundSpriteSegment(soundSprite, segment, startTime, duration, loop);
+        soundSprite._segments.add(sss);
       }
+    }
 
-      if (urls is List<String>) {
-        soundUrls.addAll(urls.map((u) => replaceFilename(url, u)));
-      }
+    if (urls is List) {
+      soundUrls.addAll(urls.map((String u) => replaceFilename(url, u)));
+    }
 
-      soundLoadOptions = (soundLoadOptions == null)
-          ? Sound.defaultLoadOptions.clone()
-          : soundLoadOptions.clone();
+    soundLoadOptions = (soundLoadOptions == null) ? Sound.defaultLoadOptions.clone() : soundLoadOptions.clone();
 
-      soundLoadOptions.alternativeUrls = soundUrls.skip(1).toList();
+    soundLoadOptions.alternativeUrls = soundUrls.skip(1).toList();
 
-      Sound.load(soundUrls[0], soundLoadOptions).then((Sound sound) {
-        soundSprite._sound = sound;
-        completer.complete(soundSprite);
-      }).catchError((error) {
-        completer.completeError(new StateError("Failed to load sound."));
-      });
+    try {
+      soundSprite._sound = await Sound.load(soundUrls[0], soundLoadOptions);
+    } catch (e) {
+      // https://github.com/bp74/StageXL/issues/254
+      throw new StateError("Failed to load sound.");
+    }
 
-    }).catchError((error) {
-      completer.completeError(new StateError("Failed to load json file."));
-    });
-
-    return completer.future;
+    return soundSprite;
   }
 
   //-------------------------------------------------------------------------------------------------
