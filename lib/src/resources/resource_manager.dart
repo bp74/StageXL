@@ -53,10 +53,8 @@ class ResourceManager {
     return _containsResource("BitmapData", name);
   }
 
-  void addBitmapData(String name, String url, [
-      BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
-
-    var loader = BitmapData.load(url, bitmapDataLoadOptions);
+  void addBitmapData(String name, String url, [BitmapDataLoadOptions options]) {
+    var loader = BitmapData.load(url, options);
     _addResource("BitmapData", name, url, loader);
   }
 
@@ -82,9 +80,9 @@ class ResourceManager {
 
   void addTextureAtlas(String name, String url, [
       TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-      BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
+      BitmapDataLoadOptions options = null]) {
 
-    var loader = TextureAtlas.load(url, textureAtlasFormat, bitmapDataLoadOptions);
+    var loader = TextureAtlas.load(url, textureAtlasFormat, options);
     _addResource("TextureAtlas", name, url, loader);
   }
 
@@ -98,7 +96,9 @@ class ResourceManager {
     }
   }
 
-  TextureAtlas getTextureAtlas(String name) => _getResourceValue("TextureAtlas", name) as TextureAtlas;
+  TextureAtlas getTextureAtlas(String name) {
+    return _getResourceValue("TextureAtlas", name) as TextureAtlas;
+  }
 
   //----------------------------------------------------------------------------
 
@@ -106,10 +106,8 @@ class ResourceManager {
     return _containsResource("Video", name);
   }
 
-  void addVideo(String name, String url, [
-      VideoLoadOptions videoLoadOptions = null]) {
-
-    var loader = Video.load(url, videoLoadOptions);
+  void addVideo(String name, String url, [VideoLoadOptions options]) {
+    var loader = Video.load(url, options);
     _addResource("Video", name, url, loader);
   }
 
@@ -117,7 +115,9 @@ class ResourceManager {
     _removeResource("Video", name);
   }
 
-  Video getVideo(String name) => _getResourceValue("Video", name) as Video;
+  Video getVideo(String name) {
+    return _getResourceValue("Video", name) as Video;
+  }
 
   //----------------------------------------------------------------------------
 
@@ -125,10 +125,8 @@ class ResourceManager {
     return _containsResource("Sound", name);
   }
 
-  void addSound(String name, String url, [
-      SoundLoadOptions soundLoadOptions = null]) {
-
-    var loader = Sound.load(url, soundLoadOptions);
+  void addSound(String name, String url, [SoundLoadOptions options]) {
+    var loader = Sound.load(url, options);
     _addResource("Sound", name, url, loader);
   }
 
@@ -136,7 +134,9 @@ class ResourceManager {
     _removeResource("Sound", name);
   }
 
-  Sound getSound(String name) => _getResourceValue("Sound", name) as Sound;
+  Sound getSound(String name) {
+    return _getResourceValue("Sound", name) as Sound;
+  }
 
   //----------------------------------------------------------------------------
 
@@ -144,8 +144,8 @@ class ResourceManager {
     return _containsResource("SoundSprite", name);
   }
 
-  void addSoundSprite(String name, String url) {
-    var loader = SoundSprite.load(url);
+  void addSoundSprite(String name, String url, [SoundLoadOptions options]) {
+    var loader = SoundSprite.load(url, options);
     _addResource("SoundSprite", name, url, loader);
   }
 
@@ -153,7 +153,9 @@ class ResourceManager {
     _removeResource("SoundSprite", name);
   }
 
-  SoundSprite getSoundSprite(String name) => _getResourceValue("SoundSprite", name) as SoundSprite;
+  SoundSprite getSoundSprite(String name) {
+    return _getResourceValue("SoundSprite", name) as SoundSprite;
+  }
 
   //----------------------------------------------------------------------------
 
@@ -169,7 +171,9 @@ class ResourceManager {
     _removeResource("Text", name);
   }
 
-  String getText(String name) => _getResourceValue("Text", name) as String;
+  String getText(String name) {
+    return _getResourceValue("Text", name) as String;
+  }
 
   //----------------------------------------------------------------------------
 
@@ -188,7 +192,9 @@ class ResourceManager {
     _removeResource("TextFile", name);
   }
 
-  String getTextFile(String name) => _getResourceValue("TextFile", name) as String;
+  String getTextFile(String name) {
+    return _getResourceValue("TextFile", name) as String;
+  }
 
   //----------------------------------------------------------------------------
 
