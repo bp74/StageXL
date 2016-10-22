@@ -76,12 +76,12 @@ class FxaaFilterProgram extends RenderProgramSimple {
     varying float vAlpha;
 
     void main() {
-	    vTextCoordXY = aVertexTextCoord;
-	    vTextCoordTL = aVertexTextCoord + vec2(-1.0, -1.0) * uTexel;
-	    vTextCoordTR = aVertexTextCoord + vec2( 1.0, -1.0) * uTexel;
-	    vTextCoordBL = aVertexTextCoord + vec2(-1.0,  1.0) * uTexel;
-	    vTextCoordBR = aVertexTextCoord + vec2( 1.0,  1.0) * uTexel;
-	    vAlpha = aVertexAlpha;
+      vTextCoordXY = aVertexTextCoord;
+      vTextCoordTL = aVertexTextCoord + vec2(-1.0, -1.0) * uTexel;
+      vTextCoordTR = aVertexTextCoord + vec2( 1.0, -1.0) * uTexel;
+      vTextCoordBL = aVertexTextCoord + vec2(-1.0,  1.0) * uTexel;
+      vTextCoordBR = aVertexTextCoord + vec2( 1.0,  1.0) * uTexel;
+      vAlpha = aVertexAlpha;
       gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
     }
     """;
