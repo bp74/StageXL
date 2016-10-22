@@ -31,7 +31,7 @@ class AudioElementSound extends Sound {
       if (options.ignoreErrors) {
         return MockSound.load(url, options);
       } else {
-        throw new StateError("Failed to load audio.");
+        rethrow;
       }
     }
   }

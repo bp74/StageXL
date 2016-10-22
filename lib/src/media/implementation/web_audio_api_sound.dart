@@ -13,6 +13,7 @@ class WebAudioApiSound extends Sound {
     var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     var audioUrls = options.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
+    var aggregateError = new AggregateError("Error loading sound.");
 
     for(var audioUrl in audioUrls) {
       try {
@@ -21,14 +22,15 @@ class WebAudioApiSound extends Sound {
         var audioBuffer = await audioContext.decodeAudioData(audioData);
         return new WebAudioApiSound._(audioBuffer);
       } catch (e) {
-        // ignore error
+        var loadError = new LoadError("Failed to load $audioUrl", e);
+        aggregateError.errors.add(loadError);
       }
     }
 
     if (options.ignoreErrors) {
       return MockSound.load(url, options);
     } else {
-      throw new StateError("Failed to load audio.");
+      throw aggregateError;
     }
   }
 
@@ -50,7 +52,7 @@ class WebAudioApiSound extends Sound {
       if (options.ignoreErrors) {
         return MockSound.loadDataUrl(dataUrl, options);
       } else {
-        throw new StateError("Failed to load audio.");
+        throw new LoadError("Failed to load sound.", e);
       }
     }
   }

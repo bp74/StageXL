@@ -3,18 +3,20 @@ library stagexl.internal.audio_loader;
 import 'dart:async';
 import 'dart:html';
 
+import '../errors.dart';
+
 class AudioLoader {
 
   static final List<String> supportedTypes = _getSupportedTypes();
 
   final AudioElement audio = new AudioElement();
+  final AggregateError aggregateError = new AggregateError("Error loading sound.");
   final Completer<AudioElement> _completer = new Completer<AudioElement>();
-
-  List<String> _urls = new List<String>();
-  bool _loadData = false;
 
   StreamSubscription _onCanPlaySubscription;
   StreamSubscription _onErrorSubscription;
+  List<String> _urls = new List<String>();
+  bool _loadData = false;
 
   AudioLoader(List<String> urls, bool loadData, bool corsEnabled) {
 
@@ -27,14 +29,27 @@ class AudioLoader {
 
     _urls.addAll(urls);
     _loadData = loadData;
-    _onCanPlaySubscription = audio.onCanPlay.listen((e) => _loadDone());
-    _onErrorSubscription = audio.onError.listen((e) => _loadNextUrl());
+    _onCanPlaySubscription = audio.onCanPlay.listen(_onAudioCanPlay);
+    _onErrorSubscription = audio.onError.listen(_onAudioError);
     _loadNextUrl();
   }
 
   Future<AudioElement> get done => _completer.future;
 
   //---------------------------------------------------------------------------
+
+  void _onAudioCanPlay(Event event) {
+    _onCanPlaySubscription.cancel();
+    _onErrorSubscription.cancel();
+    _completer.complete(audio);
+  }
+
+  void _onAudioError(Event event) {
+    var ae = event.target as AudioElement;
+    var loadError = new LoadError("Failed to load ${ae.src}.", ae.error);
+    aggregateError.errors.add(loadError);
+    _loadNextUrl();
+  }
 
   void _loadNextUrl() {
     if (_urls.length == 0) {
@@ -49,27 +64,21 @@ class AudioLoader {
   void _loadFailed() {
     _onCanPlaySubscription.cancel();
     _onErrorSubscription.cancel();
-    _completer.completeError(new StateError("Failed to load audio."));
-  }
-
-  void _loadDone() {
-    _onCanPlaySubscription.cancel();
-    _onErrorSubscription.cancel();
-    _completer.complete(audio);
+    if (this.aggregateError.errors.length == 0) {
+      var loadError = new LoadError("No configured audio type is supported.");
+      this.aggregateError.errors.add(loadError);
+    }
+    _completer.completeError(this.aggregateError);
   }
 
   void _loadAudioData(String url) {
     HttpRequest.request(url, responseType: 'blob').then((request) {
       var reader = new FileReader();
       reader.readAsDataUrl(request.response as Blob);
-      reader.onLoadEnd.first.then((e) {
-        if(reader.readyState == FileReader.DONE) {
-          _loadAudioSource(reader.result as String);
-        } else {
-          _loadFailed();
-        }
-      });
+      reader.onLoadEnd.first.then((e) => _loadAudioSource(reader.result));
     }).catchError((error) {
+      var loadError = new LoadError("Failed to load $url.", error);
+      this.aggregateError.errors.add(loadError);
       _loadNextUrl();
     });
   }
