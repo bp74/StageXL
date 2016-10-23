@@ -125,8 +125,8 @@ class FxaaFilterProgram extends RenderProgramSimple {
 
       vec2 dir = vec2(lumaBL + lumaBR - lumaTL - lumaTR, lumaTL + lumaBL - lumaTR - lumaBR);
       float dirReduce = max((lumaTL + lumaTR + lumaBL + lumaBR) * (0.25 * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);
-      float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);
-      dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX), max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * rcpDirMin)) * uTexel;
+      float dirMin = min(abs(dir.x), abs(dir.y)) + dirReduce;
+      dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX), max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir / dirMin)) * uTexel;
       vec3 rgbA = 0.50 * (texture2D(uSampler, vTextCoordXY - dir * 0.16666).xyz + texture2D(uSampler, vTextCoordXY + dir * 0.16666).xyz);
       vec3 rgbB = 0.25 * (texture2D(uSampler, vTextCoordXY - dir * 0.50000).xyz + texture2D(uSampler, vTextCoordXY + dir * 0.50000).xyz) + rgbA * 0.5;
 
