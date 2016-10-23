@@ -134,9 +134,7 @@ class FxaaFilterProgram extends RenderProgramSimple {
       float conditionLT = max(sign(lumaMin - lumaB), 0.0);     // (lumaB < lumaMin)
       float conditionGT = max(sign(lumaB - lumaMax), 0.0);     // (lumaB > lumaMax)
       float conditionOR = min(conditionLT + conditionGT, 1.0); // OR
-      vec4 colorA = vec4(rgbA, color.a) * vAlpha * (0.0 + conditionOR);
-      vec4 colorB = vec4(rgbB, color.a) * vAlpha * (1.0 - conditionOR);
-      gl_FragColor = colorA + colorB;
+      gl_FragColor = vec4((rgbA - rgbB) * conditionOR + rgbB, color.a) * vAlpha;
     }
     """;
 
