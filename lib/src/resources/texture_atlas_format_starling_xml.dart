@@ -4,6 +4,7 @@ class _TextureAtlasFormatStarlingXml  extends TextureAtlasFormat {
 
   const _TextureAtlasFormatStarlingXml();
 
+  @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
 
     var source = await loader.getSource();

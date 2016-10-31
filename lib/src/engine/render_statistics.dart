@@ -12,6 +12,7 @@ class RenderStatistics {
     this.indexCount = 0;
   }
 
+  @override
   String toString() {
     return "RenderStatistics: $drawCount draws, $vertexCount verices, $indexCount indices";
   }

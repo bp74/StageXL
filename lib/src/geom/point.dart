@@ -7,7 +7,10 @@ import '../internal/jenkins_hash.dart';
 
 class Point<T extends num> implements math.Point<T> {
 
+  @override
   T x;
+
+  @override
   T y;
 
   Point(this.x, this.y);
@@ -16,6 +19,7 @@ class Point<T extends num> implements math.Point<T> {
 
   Point<T> clone() => new Point<T>(x, y);
 
+  @override
   String toString() => "Point<$T> [x=$x, y=$y]";
 
   //---------------------------------------------------------------------------
@@ -36,10 +40,12 @@ class Point<T extends num> implements math.Point<T> {
   /// This point is equal to `other` if, and only if, `other` is a `Point`
   /// with [x] equal to `other.x` and [y] equal to `other.y`.
 
+  @override
   bool operator ==(Object other) {
     return other is math.Point && this.x == other.x && this.y == other.y;
   }
 
+  @override
   int get hashCode {
     int a = this.x.hashCode;
     int b = this.y.hashCode;
@@ -50,6 +56,7 @@ class Point<T extends num> implements math.Point<T> {
   ///
   /// Returns the resulting "vector" as a Point.
 
+  @override
   Point<T> operator +(math.Point<T> other) {
     return new Point<T>(x + other.x, y + other.y);
   }
@@ -58,6 +65,7 @@ class Point<T extends num> implements math.Point<T> {
   ///
   /// Returns the resulting "vector" as a Point.
 
+  @override
   Point<T> operator -(math.Point<T> other) {
     return new Point<T>(x - other.x, y - other.y);
   }
@@ -70,6 +78,7 @@ class Point<T extends num> implements math.Point<T> {
   /// called it, passing in a double [factor] on a `Point<int>` _causes_ _a_
   /// _runtime_ _error_ in checked mode.
 
+  @override
   Point<T> operator *(num/*T|int*/ factor) {
     return new Point<T>(x * factor as T, y * factor as T);
   }
@@ -79,6 +88,7 @@ class Point<T extends num> implements math.Point<T> {
   /// Get the straight line (Euclidean) distance between the
   /// origin (0, 0) and this point.
 
+  @override
   double get magnitude => sqrt(x * x + y * y);
 
   //-------------------------------------------------------------------------------------------------
@@ -106,6 +116,7 @@ class Point<T extends num> implements math.Point<T> {
 
   /// Returns the distance between `this` and [other].
 
+  @override
   double distanceTo(math.Point<T> other) {
     var dx = x - other.x;
     var dy = y - other.y;
@@ -117,10 +128,10 @@ class Point<T extends num> implements math.Point<T> {
   /// Squared distances can be used for comparisons when the actual
   /// value is not required.
 
+  @override
   T squaredDistanceTo(math.Point<T> other) {
     var dx = x - other.x;
     var dy = y - other.y;
     return dx * dx + dy * dy;
   }
-
 }

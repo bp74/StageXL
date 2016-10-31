@@ -165,8 +165,10 @@ abstract class DisplayObject
   /// transformations, it is in the local coordinate system of the enclosing
   /// [DisplayObjectContainer].
 
+  @override
   num get x => _x;
 
+  @override
   set x(num value) {
     if (value is num) _x = value;
     _transformationMatrixRefresh = true;
@@ -179,8 +181,10 @@ abstract class DisplayObject
   /// transformations, it is in the local coordinate system of the enclosing
   /// [DisplayObjectContainer].
 
+  @override
   num get y => _y;
 
+  @override
   set y(num value) {
     if (value is num) _y = value;
     _transformationMatrixRefresh = true;
@@ -194,8 +198,10 @@ abstract class DisplayObject
   ///
   /// The default pivot point is (0,0).
 
+  @override
   num get pivotX => _pivotX;
 
+  @override
   set pivotX(num value) {
     if (value is num) _pivotX = value;
     _transformationMatrixRefresh = true;
@@ -209,8 +215,10 @@ abstract class DisplayObject
   ///
   /// The default pivot point is (0,0).
 
+  @override
   num get pivotY => _pivotY;
 
+  @override
   set pivotY(num value) {
     if (value is num) _pivotY = value;
     _transformationMatrixRefresh = true;
@@ -224,8 +232,10 @@ abstract class DisplayObject
   /// Scaling the local coordinate system changes the x and y property values,
   /// which are defined in whole pixels.
 
+  @override
   num get scaleX => _scaleX;
 
+  @override
   set scaleX(num value) {
     if (value is num) _scaleX = value;
     _transformationMatrixRefresh = true;
@@ -239,8 +249,10 @@ abstract class DisplayObject
   /// Scaling the local coordinate system changes the x and y property values,
   /// which are defined in whole pixels.
 
+  @override
   num get scaleY => _scaleY;
 
+  @override
   set scaleY(num value) {
     if (value is num) _scaleY = value;
     _transformationMatrixRefresh = true;
@@ -248,8 +260,10 @@ abstract class DisplayObject
 
   /// The horizontal skew of this object.
 
+  @override
   num get skewX => _skewX;
 
+  @override
   set skewX(num value) {
     if (value is num) _skewX = value;
     _transformationMatrixRefresh = true;
@@ -257,8 +271,10 @@ abstract class DisplayObject
 
   /// The vertical skew of this object.
 
+  @override
   num get skewY => _skewY;
 
+  @override
   set skewY(num value) {
     if (value is num) _skewY = value;
     _transformationMatrixRefresh = true;
@@ -273,8 +289,10 @@ abstract class DisplayObject
   ///     // Convert from radians to degrees.
   ///     num degrees = this.rotation * 180 / math.PI;
 
+  @override
   num get rotation => _rotation;
 
+  @override
   set rotation(num value) {
     if (value is num) _rotation = value;
     _transformationMatrixRefresh = true;
@@ -311,8 +329,10 @@ abstract class DisplayObject
   /// value is 1. Display objects with alpha set to 0 are active, even though
   /// they are invisible.
 
+  @override
   num get alpha => _alpha;
 
+  @override
   set alpha(num value) {
     if (value is num) {
       // Clamp values and convert possible integers to double.
@@ -328,6 +348,7 @@ abstract class DisplayObject
   /// [Mask.relativeToParent] is set to true, the [Mask] is applied relative
   /// to the parent display object.
 
+  @override
   Mask get mask => _mask;
 
   set mask(Mask value) {
@@ -336,6 +357,7 @@ abstract class DisplayObject
 
   /// The filters currently associated with this display object.
 
+  @override
   List<BitmapFilter> get filters => _filters;
 
   set filters(List<BitmapFilter> value) {
@@ -350,6 +372,7 @@ abstract class DisplayObject
   /// each constituent color of one pixel with the corresponding color of the
   /// pixel in the background.
 
+  @override
   BlendMode get blendMode => _blendMode;
 
   set blendMode(BlendMode value) {
@@ -373,6 +396,7 @@ abstract class DisplayObject
   ///
   /// See also [applyCache], [refreshCache] and [removeCache].
 
+  @override
   RenderTextureQuad get cache {
     return _cache != null ? _cache.renderTextureQuad : null;
   }
@@ -502,6 +526,7 @@ abstract class DisplayObject
   /// properties of this display object: [x], [y], [pivotX], [pivotY],
   /// [rotation], [scaleX], [scaleY], [skewX] and [skewY]
 
+  @override
   Matrix get transformationMatrix {
 
     // _transformationMatrix.identity();
@@ -701,6 +726,7 @@ abstract class DisplayObject
   /// Returns a rectangle that defines the area of this display object in
   /// this display object's local coordinates.
 
+  @override
   Rectangle<num> get bounds {
     return new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
   }
@@ -944,6 +970,7 @@ abstract class DisplayObject
   /// Renders this display object with the given [renderState].
   /// The display object is rendered without its filters.
 
+  @override
   void render(RenderState renderState) {
     // implement in derived class.
   }
@@ -955,6 +982,7 @@ abstract class DisplayObject
   /// class since the [render] method will be used by default.
   /// Only implement this method for performance optimizations.
 
+  @override
   void renderFiltered(RenderState renderState) {
     renderState.renderObjectFiltered(this);
   }

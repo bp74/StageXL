@@ -76,104 +76,133 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
 
   //---------------------------------------------------------------------------
 
+  @override
   bool any(bool test(T element)) {
     return _children.any(test);
   }
 
-  bool contains(Object element) => _children.contains(element);
+  @override
+  bool contains(Object element) {
+    return _children.contains(element);
+  }
 
+  @override
   T elementAt(int index) {
     return _children[index];
   }
 
+  @override
   bool every(bool test(T element)) {
     return _children.every(test);
   }
 
+  @override
   Iterable/*<S>*/ expand/*<S>*/(Iterable/*<S>*/ f(T element)) => _children.expand(f);
 
+  @override
   T get first {
     return _children.first;
   }
 
+  @override
   T firstWhere(bool test(T element), {T orElse()}) {
     return _children.firstWhere(test, orElse: orElse);
   }
 
+  @override
   dynamic/*=S*/ fold/*<S>*/(
           dynamic/*=S*/ initialValue, dynamic/*=S*/ combine(dynamic/*=S*/ previousValue, T element)) =>
       _children.fold(initialValue, combine);
 
+  @override
   void forEach(void f(T element)) {
     _children.forEach(f);
   }
 
+  @override
   bool get isEmpty {
     return _children.isEmpty;
   }
 
+  @override
   bool get isNotEmpty {
     return _children.isNotEmpty;
   }
 
+  @override
   Iterator<T> get iterator {
     return _children.iterator;
   }
 
+  @override
   String join([String separator = ""]) {
     return _children.join(separator);
   }
 
+  @override
   T get last {
     return _children.last;
   }
 
+  @override
   T lastWhere(bool test(T element), {T orElse()}) {
     return _children.lastWhere(test, orElse: orElse);
   }
 
+  @override
   int get length {
     return _children.length;
   }
 
+  @override
   Iterable/*<S>*/ map/*<S>*/(/*=S*/ f(T e)) => _children.map(f);
 
+  @override
   T reduce(T combine(T value, T element)) {
     return _children.reduce(combine);
   }
 
+  @override
   T get single {
     return _children.single;
   }
 
+  @override
   T singleWhere(bool test(T element)) {
     return _children.singleWhere(test);
   }
 
+  @override
   Iterable<T> skip(int count) {
     return _children.skip(count);
   }
 
+  @override
   Iterable<T> skipWhile(bool test(T value)) {
     return _children.skipWhile(test);
   }
 
+  @override
   Iterable<T> take(int count) {
     return _children.take(count);
   }
 
+  @override
   Iterable<T> takeWhile(bool test(T value)) {
     return _children.takeWhile(test);
   }
 
+  @override
   List<T> toList({bool growable: true}) {
     return _children.toList(growable: growable);
   }
 
+  @override
   Set<T> toSet() {
     return _children.toSet();
   }
 
+  @override
   Iterable<T> where(bool test(T element)) {
     return _children.where(test);
   }

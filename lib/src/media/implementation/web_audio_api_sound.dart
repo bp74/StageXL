@@ -59,10 +59,13 @@ class WebAudioApiSound extends Sound {
 
   //---------------------------------------------------------------------------
 
+  @override
   SoundEngine get engine => SoundEngine.WebAudioApi;
 
+  @override
   num get length => _audioBuffer.duration;
 
+  @override
   SoundChannel play([
     bool loop = false, SoundTransform soundTransform]) {
 
@@ -70,6 +73,7 @@ class WebAudioApiSound extends Sound {
         this, 0, this.length, loop, soundTransform);
   }
 
+  @override
   SoundChannel playSegment(num startTime, num duration, [
     bool loop = false, SoundTransform soundTransform]) {
 

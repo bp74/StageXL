@@ -25,15 +25,23 @@ abstract class Mask implements RenderMask {
   /// parent. The default value is `false` and therefore the mask is
   /// placed relative to the DisplayObject where it is applied to.
 
+  @override
   bool relativeToParent = false;
 
+  @override
   bool border = false;
+
+  @override
   int borderColor = 0xFF000000;
+
+  @override
   int borderWidth = 1;
 
   Mask();
 
   bool hitTest(num x, num y);
+
+  @override
   void renderMask(RenderState renderState);
 
   //---------------------------------------------------------------------------

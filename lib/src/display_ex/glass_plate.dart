@@ -11,7 +11,10 @@ part of stagexl.display_ex;
 
 class GlassPlate extends InteractiveObject {
 
+  @override
   num width;
+
+  @override
   num height;
 
   GlassPlate(this.width, this.height);

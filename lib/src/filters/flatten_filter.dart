@@ -17,5 +17,6 @@ import '../display.dart';
 ///     sprite.filters = [new FlattenFilter()];
 
 class FlattenFilter extends BitmapFilter {
+  @override
   BitmapFilter clone() => new FlattenFilter();
 }

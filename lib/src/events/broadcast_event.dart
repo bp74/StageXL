@@ -10,8 +10,12 @@ part of stagexl.events;
 /// and there is no bubbling and capturing phase.
 
 abstract class BroadcastEvent extends Event {
+
   BroadcastEvent(String type) : super(type, false);
+
+  @override
   bool get captures => false;
+
   void dispatch();
 }
 
@@ -22,6 +26,8 @@ abstract class BroadcastEvent extends Event {
 class EnterFrameEvent extends BroadcastEvent {
   num passedTime;
   EnterFrameEvent(this.passedTime) : super(Event.ENTER_FRAME);
+
+  @override
   void dispatch() => _dispatchBroadcastEvent(this, _enterFrameSubscriptions);
 }
 
@@ -31,6 +37,8 @@ class EnterFrameEvent extends BroadcastEvent {
 /// by all [DisplayObject]s with a listener registered for this event.
 class ExitFrameEvent extends BroadcastEvent {
   ExitFrameEvent() : super(Event.EXIT_FRAME);
+
+  @override
   void dispatch() => _dispatchBroadcastEvent(this, _exitFrameSubscriptions);
 }
 
@@ -46,6 +54,8 @@ class ExitFrameEvent extends BroadcastEvent {
 /// by all [DisplayObject]s with a listener registered for this event.
 class RenderEvent extends BroadcastEvent {
   RenderEvent() : super(Event.RENDER);
+
+  @override
   void dispatch() => _dispatchBroadcastEvent(this, _renderSubscriptions);
 }
 

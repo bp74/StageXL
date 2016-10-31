@@ -37,15 +37,20 @@ class GlowFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
+  @override
   BitmapFilter clone() {
     return new GlowFilter(color, blurX, blurY, quality, knockout,  hideObject);
   }
 
+  @override
   Rectangle<int> get overlap {
     return new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
   }
 
+  @override
   List<int> get renderPassSources => _renderPassSources;
+
+  @override
   List<int> get renderPassTargets => _renderPassTargets;
 
   //---------------------------------------------------------------------------
@@ -103,6 +108,7 @@ class GlowFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
@@ -144,6 +150,7 @@ class GlowFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderFilter(RenderState renderState,
                     RenderTextureQuad renderTextureQuad, int pass) {
 

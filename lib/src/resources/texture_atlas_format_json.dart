@@ -4,6 +4,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
 
   const _TextureAtlasFormatJson();
 
+  @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
 
     var source = await loader.getSource();

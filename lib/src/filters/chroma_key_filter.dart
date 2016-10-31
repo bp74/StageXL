@@ -75,6 +75,7 @@ class ChromaKeyFilter extends BitmapFilter {
     _invisibleThreshold = invisibleThreshold;
   }
 
+  @override
   BitmapFilter clone() => new ChromaKeyFilter(
       backgroundColor: _backgroundColor,
       solidThreshold: _solidThreshold,
@@ -82,6 +83,7 @@ class ChromaKeyFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
@@ -95,6 +97,7 @@ class ChromaKeyFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
     RenderContextWebGL renderContext = renderState.renderContext;

@@ -32,6 +32,7 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
+  @override
   String toString() => "Matrix [a=$a, b=$b, c=$c, d=$d, tx=$tx, ty=$ty]";
 
   Matrix clone() => new Matrix(a, b, c, d, tx, ty);

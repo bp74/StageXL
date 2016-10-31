@@ -63,11 +63,13 @@ class HtmlObject extends DisplayObject {
     _hideElement();
   }
 
+  @override
   set visible(bool value) {
     super.visible = value;
     if (value == false) _hideElement();
   }
 
+  @override
   set off(bool value) {
     super.off = value;
     if (value) _hideElement();
@@ -75,6 +77,7 @@ class HtmlObject extends DisplayObject {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void render(RenderState renderState) {
 
     var globalMatrix = renderState.globalMatrix;

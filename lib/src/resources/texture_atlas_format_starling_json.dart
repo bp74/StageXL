@@ -4,6 +4,7 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
 
   const _TextureAtlasFormatStarlingJson();
 
+  @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
 
     var source = await loader.getSource();

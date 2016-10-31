@@ -15,10 +15,12 @@ class AlphaMaskFilter extends BitmapFilter {
   AlphaMaskFilter(this.bitmapData, [Matrix matrix = null]):
     matrix = matrix != null ? matrix : new Matrix.fromIdentity();
 
+  @override
   BitmapFilter clone() => new AlphaMaskFilter(bitmapData, matrix.clone());
 
   //---------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
@@ -44,6 +46,7 @@ class AlphaMaskFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
     var renderContext = renderState.renderContext as RenderContextWebGL;

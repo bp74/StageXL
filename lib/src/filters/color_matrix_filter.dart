@@ -59,6 +59,7 @@ class ColorMatrixFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
 
+  @override
   BitmapFilter clone() => new ColorMatrixFilter(_colorMatrixList, _colorOffsetList);
 
   //-----------------------------------------------------------------------------------------------
@@ -160,6 +161,7 @@ class ColorMatrixFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     //dstR = (m[ 0] * srcR) + (m[ 1] * srcG) + (m[ 2] * srcB) + (m[ 3] * srcA) + o[0]
@@ -214,6 +216,7 @@ class ColorMatrixFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
     RenderContextWebGL renderContext = renderState.renderContext;

@@ -56,10 +56,13 @@ class AudioElementSound extends Sound {
 
   //---------------------------------------------------------------------------
 
+  @override
   SoundEngine get engine => SoundEngine.AudioElement;
 
+  @override
   num get length => _audioElement.duration;
 
+  @override
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
     var startTime = 0.0;
     var duration = _audioElement.duration;
@@ -68,6 +71,7 @@ class AudioElementSound extends Sound {
         this, startTime, duration, loop, soundTransform);
   }
 
+  @override
   SoundChannel playSegment(num startTime, num duration, [
     bool loop = false, SoundTransform soundTransform]) {
     return new AudioElementSoundChannel(

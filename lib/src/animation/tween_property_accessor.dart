@@ -31,6 +31,7 @@ class TweenPropertyAccessor2D implements TweenPropertyAccessor {
   TweenProperty get rotation => _tween._createTweenProperty(this, 8);
   TweenProperty get alpha => _tween._createTweenProperty(this, 9);
 
+  @override
   num _getValue(int propertyID) {
     switch(propertyID) {
       case 0: return _tweenObject.x;
@@ -47,6 +48,7 @@ class TweenPropertyAccessor2D implements TweenPropertyAccessor {
     }
   }
 
+  @override
   void _setValue(int propertyID, num value) {
     switch(propertyID) {
       case 0: _tweenObject.x = value; break;
@@ -81,6 +83,7 @@ class TweenPropertyAccessor3D implements TweenPropertyAccessor {
   TweenProperty get rotationY => _tween._createTweenProperty(this, 4);
   TweenProperty get rotationZ => _tween._createTweenProperty(this, 5);
 
+  @override
   num _getValue(int propertyID) {
     switch(propertyID) {
       case 0: return _tweenObject.offsetX;
@@ -93,6 +96,7 @@ class TweenPropertyAccessor3D implements TweenPropertyAccessor {
     }
   }
 
+  @override
   void _setValue(int propertyID, num value) {
     switch(propertyID) {
       case 0: _tweenObject.offsetX = value; break;

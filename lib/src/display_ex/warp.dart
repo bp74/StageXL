@@ -11,6 +11,7 @@ class Warp extends DisplayObjectContainer {
 
   Matrix _matrix = new Matrix.fromIdentity();
 
+  @override
   Matrix get transformationMatrix => _matrix;
 
   Matrix get matrix => _matrix;

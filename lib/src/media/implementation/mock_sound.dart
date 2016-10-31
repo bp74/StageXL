@@ -18,19 +18,23 @@ class MockSound extends Sound {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
+  @override
   SoundEngine get engine => SoundEngine.Mockup;
 
+  @override
   num get length {
     // We could load the WAV-file, parse the header and get the correct length!
     return double.NAN;
   }
 
+  @override
   SoundChannel play([
     bool loop = false, SoundTransform soundTransform]) {
 
     return new MockSoundChannel(this, 0, this.length, loop, soundTransform);
   }
 
+  @override
   SoundChannel playSegment(num startTime, num duration, [
     bool loop = false, SoundTransform soundTransform]) {
 

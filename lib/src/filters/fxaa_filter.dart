@@ -21,16 +21,19 @@ import '../geom.dart';
 
 class FxaaFilter extends BitmapFilter {
 
+  @override
   BitmapFilter clone() => new FxaaFilter();
 
   //----------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
     // not supported with BitmapDatas
   }
 
   //----------------------------------------------------------------------------
 
+  @override
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
     RenderContextWebGL renderContext = renderState.renderContext;

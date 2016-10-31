@@ -17,6 +17,7 @@ class Vector {
 
   Vector clone() => new Vector(x, y);
 
+  @override
   String toString() => "Vector [x=$x, y=$y]";
 
   //-----------------------------------------------------------------------------------------------
@@ -29,10 +30,12 @@ class Vector {
 
   Vector operator -() => new Vector(-x, -y);
 
+  @override
   bool operator ==(Object other) {
     return other is Vector && this.x == other.x && this.y == other.y;
   }
 
+  @override
   int get hashCode {
     int a = this.x.hashCode;
     int b = this.y.hashCode;

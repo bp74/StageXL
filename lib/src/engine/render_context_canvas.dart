@@ -19,16 +19,20 @@ class RenderContextCanvas extends RenderContext {
   //---------------------------------------------------------------------------
 
   CanvasRenderingContext2D get rawContext => _renderingContext;
+
+  @override
   RenderEngine get renderEngine => RenderEngine.Canvas2D;
 
   //---------------------------------------------------------------------------
 
+  @override
   void reset() {
     setTransform(_identityMatrix);
     setBlendMode(BlendMode.NORMAL);
     setAlpha(1.0);
   }
 
+  @override
   void clear(int color) {
 
     setTransform(_identityMatrix);
@@ -47,12 +51,14 @@ class RenderContextCanvas extends RenderContext {
     }
   }
 
+  @override
   void flush() {
-
+    // nothing to do
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   void beginRenderMask(RenderState renderState, RenderMask mask) {
     var matrix = renderState.globalMatrix;
     _renderingContext.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
@@ -62,6 +68,7 @@ class RenderContextCanvas extends RenderContext {
     _renderingContext.clip();
   }
 
+  @override
   void endRenderMask(RenderState renderState, RenderMask mask) {
     _renderingContext.restore();
     _renderingContext.globalAlpha = _activeAlpha;
@@ -77,6 +84,7 @@ class RenderContextCanvas extends RenderContext {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderTextureQuad(
       RenderState renderState,
       RenderTextureQuad renderTextureQuad) {
@@ -109,28 +117,21 @@ class RenderContextCanvas extends RenderContext {
     }
 
     if (rotation == 0) {
-
       context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
           sourceRect.left, sourceRect.top, sourceRect.width, sourceRect.height,
           vxList[0], vxList[1], vxList[8] - vxList[0], vxList[9] - vxList[1]);
-
     } else if (rotation == 1) {
-
       context.setTransform(-matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
           sourceRect.left, sourceRect.top, sourceRect.width, sourceRect.height,
           0.0 - vxList[13], vxList[12], vxList[9] - vxList[1], vxList[8] - vxList[0]);
-
     } else if (rotation == 2) {
-
       context.setTransform(-matrix.a, -matrix.b, -matrix.c, -matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
           sourceRect.left, sourceRect.top, sourceRect.width, sourceRect.height,
           0.0 - vxList[8], 0.0 - vxList[9], vxList[8] - vxList[0], vxList[9] - vxList[1]);
-
     } else if (rotation == 3) {
-
       context.setTransform(matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(source,
           sourceRect.left, sourceRect.top, sourceRect.width, sourceRect.height,
@@ -140,6 +141,7 @@ class RenderContextCanvas extends RenderContext {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderTextureMesh(
       RenderState renderState, RenderTexture renderTexture,
       Int16List ixList, Float32List vxList) {
@@ -214,6 +216,7 @@ class RenderContextCanvas extends RenderContext {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderTriangle(
       RenderState renderState,
       num x1, num y1, num x2, num y2, num x3, num y3, int color) {
@@ -246,6 +249,7 @@ class RenderContextCanvas extends RenderContext {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderTriangleMesh(
       RenderState renderState,
       Int16List ixList, Float32List vxList, int color) {
@@ -289,23 +293,21 @@ class RenderContextCanvas extends RenderContext {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderTextureQuadFiltered(
       RenderState renderState, RenderTextureQuad renderTextureQuad,
       List<RenderFilter> renderFilters) {
-
     // It would be to slow to render filters in real time using the
     // Canvas2D context. This is only feasible with the WebGL context.
-
     this.renderTextureQuad(renderState, renderTextureQuad);
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderObjectFiltered(RenderState renderState, RenderObject renderObject) {
-
     // It would be to slow to render filters in real time using the
     // Canvas2D context. This is only feasible with the WebGL context.
-
     renderObject.render(renderState);
   }
 
