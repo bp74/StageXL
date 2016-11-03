@@ -8,6 +8,11 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 0.13.12
+  * Added FxaaFilter.
+  * More strong mode fixes.
+  * Improved error handling for image, sound and video loader.
+  
 #### Pub version 0.13.11
   * Added ResourceManager.remove(BitmapData/Sound/...) methods.
   * Added ResourceManager.dispose method to unload all resources.
