@@ -29,6 +29,7 @@ import 'dart:html' show HttpRequest, AudioElement, VideoElement;
 import 'dart:typed_data';
 import 'dart:web_audio';
 
+import 'errors.dart';
 import 'events.dart';
 import 'internal/audio_loader.dart';
 import 'internal/video_loader.dart';

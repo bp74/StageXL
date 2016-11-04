@@ -4,6 +4,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
 
   const _TextureAtlasFormatLibGDX();
 
+  @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
 
     RegExp splitRexExp = new RegExp(r"\r\n|\r|\n");
@@ -14,7 +15,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
     var lines = source.split(splitRexExp);
     var lineIndex = 0;
     var imageBlock = true;
-    var renderTextureQuad;
+    RenderTextureQuad renderTextureQuad;
 
     //-----------------------------------------------------
 

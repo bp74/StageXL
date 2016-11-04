@@ -1,10 +1,10 @@
 name: stagexl
-version: 0.13.11+1
+version: 0.13.12
 author: Bernhard Pichler <support@stagexl.org>
 description: A fast and universal 2D rendering engine for HTML5 and Dart.
 homepage: http://www.stagexl.org
 environment:
-  sdk: '>=1.19.0 <2.0.0'
+  sdk: '>=1.20.0 <2.0.0'
 documentation: http://www.stagexl.org/docs/api/index.html
 dependencies:
   xml: any

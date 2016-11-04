@@ -15,15 +15,18 @@ part of stagexl.display;
 ///
 class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
+  @override
   Graphics _graphics;
 
   /// Specifies the Graphics object that belongs to this sprite where vector
   /// drawing commands can occur.
 
+  @override
   Graphics get graphics {
-    return _graphics != null ? _graphics : _graphics = new Graphics();
+    return _graphics ??= new Graphics();
   }
 
+  @override
   set graphics(Graphics value) {
     _graphics = value;
   }
@@ -33,6 +36,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// Specifies the display object over which the sprite is being dragged, or on
   /// which the sprite was dropped.
 
+  @override
   DisplayObject dropTarget;
 
   /// Lets the user drag this sprite with the mouse or the current touch point.
@@ -52,6 +56,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// [bounds] is the value relative to the coordinates of the Sprite's
   /// parent that specify a constraint rectangle for the Sprite.
 
+  @override
   void startDrag([bool lockCenter = false, Rectangle<num> bounds = null]) {
 
     var stage = this.stage;
@@ -84,6 +89,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// draggable until a [stopDrag] method is added or the sprite was dragged
   /// with a different touch point.
 
+  @override
   void stopDrag() {
     var stage = this.stage;
     if (stage != null) stage._stopDrag(this);
@@ -115,6 +121,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// because the sprite designated as the hit area receives the user input
   /// events instead of your sprite button.
 
+  @override
   Sprite hitArea;
 
   @override
@@ -122,7 +129,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
     var hitArea = this.hitArea;
     var graphics = _graphics;
-    var target;
+    DisplayObject target;
 
     if (hitArea != null) {
       var point = new Point<num>(localX, localY);

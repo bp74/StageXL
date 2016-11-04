@@ -18,10 +18,8 @@ import 'dart:math' as math;
 import 'dart:web_gl' as gl;
 import 'dart:typed_data';
 
-import 'dart:html' show window,
-    ImageElement, CanvasElement, CanvasRenderingContext2D,
-    CanvasImageSource, ImageData,
-    VideoElement;
+import 'dart:html'
+    show window, ImageElement, CanvasElement, CanvasRenderingContext2D, CanvasImageSource, ImageData, VideoElement;
 
 import 'geom/matrix.dart';
 import 'geom/matrix_3d.dart';
@@ -49,4 +47,3 @@ part 'engine/render_stencil_buffer.dart';
 part 'engine/render_texture.dart';
 part 'engine/render_texture_filtering.dart';
 part 'engine/render_texture_quad.dart';
-

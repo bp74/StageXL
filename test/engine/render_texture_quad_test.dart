@@ -8,8 +8,8 @@ import 'package:stagexl/stagexl.dart';
 //-----------------------------------------------------------------------------
 
 Matcher equalsFloats(List<num> values) {
-  values = values.map((v) => v.toDouble()).toList();
-  return equals(new Float32List.fromList(values));
+  var doubles = values.map((v) => v.toDouble()).toList();
+  return equals(new Float32List.fromList(doubles));
 }
 
 void main() {

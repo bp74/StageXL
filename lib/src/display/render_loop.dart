@@ -42,6 +42,7 @@ class RenderLoop extends RenderLoopBase {
 
   //-------------------------------------------------------------------------------------------------
 
+  @override
   void advanceTime(num deltaTime) {
 
     _currentTime += deltaTime;

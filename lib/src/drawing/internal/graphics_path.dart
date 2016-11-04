@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-class _GraphicsPath extends _GraphicsMesh {
+class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   _GraphicsPathSegment _currentSegment;
 
@@ -44,30 +44,30 @@ class _GraphicsPath extends _GraphicsMesh {
 
     } else {
 
-      num v1x = controlX - _currentSegment.lastVertexX;
-      num v1y = controlY - _currentSegment.lastVertexY;
-      num v1l = sqrt(v1x * v1x + v1y * v1y);
-      num v1a = atan2(v1y, v1x);
+      var v1x = controlX - _currentSegment.lastVertexX;
+      var v1y = controlY - _currentSegment.lastVertexY;
+      var v1l = sqrt(v1x * v1x + v1y * v1y);
+      var v1a = atan2(v1y, v1x);
 
-      num v2x = endX - controlX;
-      num v2y = endY - controlY;
-      num v2l = sqrt(v2x * v2x + v2y * v2y);
-      num v2a = atan2(v2y, v2x);
+      var v2x = endX - controlX;
+      var v2y = endY - controlY;
+      var v2l = sqrt(v2x * v2x + v2y * v2y);
+      var v2a = atan2(v2y, v2x);
 
-      num t = tan((v1a - v2a) / 2.0);
-      num l = t > 0.0 ? radius : 0.0 - radius;
-      num point1x = controlX - t * l * v1x / v1l;
-      num point1y = controlY - t * l * v1y / v1l;
-      num point2x = controlX + t * l * v2x / v2l;
-      num point2y = controlY + t * l * v2y / v2l;
-      num centerX = point1x + l * v1y / v1l;
-      num centerY = point1y - l * v1x / v1l;
+      var t = tan((v1a - v2a) / 2.0);
+      var l = t > 0.0 ? radius : 0.0 - radius;
+      var point1x = controlX - t * l * v1x / v1l;
+      var point1y = controlY - t * l * v1y / v1l;
+      var point2x = controlX + t * l * v2x / v2l;
+      var point2y = controlY + t * l * v2y / v2l;
+      var centerX = point1x + l * v1y / v1l;
+      var centerY = point1y - l * v1x / v1l;
 
       if (centerX.isNaN || centerY.isNaN) {
         this.lineTo(controlX, controlY);
       } else {
-        num angle1 = atan2(point1y - centerY, point1x - centerX);
-        num angle2 = atan2(point2y - centerY, point2x - centerX);
+        var angle1 = atan2(point1y - centerY, point1x - centerX);
+        var angle2 = atan2(point2y - centerY, point2x - centerX);
         this.arc(centerX, centerY, radius, angle1, angle2, t > 0.0);
       }
     }
@@ -87,7 +87,7 @@ class _GraphicsPath extends _GraphicsMesh {
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
 
-      for(int s = 1; s <= steps; s++) {
+      for (int s = 1; s <= steps; s++) {
         num t0 = s / steps;
         num t1 = 1.0 - t0;
         num b0 = t1 * t1;
@@ -114,7 +114,7 @@ class _GraphicsPath extends _GraphicsMesh {
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
 
-      for(int s = 1; s <= steps; s++) {
+      for (int s = 1; s <= steps; s++) {
         num t0 = s / steps;
         num t1 = 1.0 - t0;
         num b0 = t1 * t1 * t1;

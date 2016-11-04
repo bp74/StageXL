@@ -43,20 +43,42 @@ class CanvasShadowWrapper extends DisplayObject {
     throw new UnsupportedError("CanvasShadowWrapper does not implement this property or method.");
   }
 
+  @override
   set x(num value) { _throwUnsupportedError(); }
+
+  @override
   set y(num value) { _throwUnsupportedError(); }
+
+  @override
   set pivotX(num value) { _throwUnsupportedError(); }
+
+  @override
   set pivotY(num value) { _throwUnsupportedError(); }
+
+  @override
   set scaleX(num value) { _throwUnsupportedError(); }
+
+  @override
   set scaleY(num value) { _throwUnsupportedError(); }
+
+  @override
   set skewX(num value) { _throwUnsupportedError(); }
+
+  @override
   set skewY(num value) { _throwUnsupportedError(); }
+
+  @override
   set rotation(num value) { _throwUnsupportedError(); }
+
+  @override
   set alpha(num value) { _throwUnsupportedError(); }
+
+  @override
   set mask(Mask mask) { _throwUnsupportedError(); }
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   DisplayObject hitTestInput(num localX, num localY) {
     var matrix = this.displayObject.transformationMatrix;
     num deltaX = localX - matrix.tx;
@@ -68,14 +90,12 @@ class CanvasShadowWrapper extends DisplayObject {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void render(RenderState renderState) {
-
     var renderContext = renderState.renderContext;
     if (renderContext is RenderContextCanvas) {
-
       CanvasRenderingContext2D rawContext = renderContext.rawContext;
       Matrix shadowMatrix = renderState.globalMatrix;
-
       rawContext.save();
       rawContext.shadowColor = color2rgba(shadowColor);
       rawContext.shadowBlur = sqrt(shadowMatrix.det) * shadowBlur;
@@ -83,11 +103,8 @@ class CanvasShadowWrapper extends DisplayObject {
       rawContext.shadowOffsetY = shadowOffsetX * shadowMatrix.b + shadowOffsetY * shadowMatrix.d;
       renderState.renderObject(this.displayObject);
       rawContext.restore();
-
     } else {
-
       renderState.renderObject(this.displayObject);
     }
   }
 }
-

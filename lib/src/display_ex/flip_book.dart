@@ -154,6 +154,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
+  @override
   bool advanceTime(num time) {
 
     if (_play == false) return true;

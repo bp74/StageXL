@@ -29,6 +29,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
+  @override
   int addVertex(double x, double y) {
     var offset = _vertexCount * 2;
     var buffer = _vertexBuffer;

@@ -28,6 +28,7 @@ class TimeGauge extends Gauge implements Animatable {
 
   //-------------------------------------------------------------------------------------------------
 
+  @override
   bool advanceTime(num time) {
     if (_isStarted && ratio > 0.0) {
       ratio = ratio - time / totalTime;
@@ -98,11 +99,10 @@ class TimeGauge extends Gauge implements Animatable {
     ratio = 1.0 - value;
   }
 
+  @override
   set ratio(num value) {
-
     num oldRatio = ratio;
     super.ratio = value;
-
     if (_alarmsEnabled) {
       _alarms.forEach((alarmName, alarmRatio) {
         if (alarmRatio < oldRatio && alarmRatio >= ratio) {

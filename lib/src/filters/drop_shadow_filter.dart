@@ -42,11 +42,13 @@ class DropShadowFilter extends BitmapFilter {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
+  @override
   BitmapFilter clone() {
     return new DropShadowFilter(
       distance, angle, color, blurX, blurY, quality, knockout, hideObject);
   }
 
+  @override
   Rectangle<int> get overlap {
     int shiftX = (this.distance * cos(this.angle)).round();
     int shiftY = (this.distance * sin(this.angle)).round();
@@ -55,7 +57,10 @@ class DropShadowFilter extends BitmapFilter {
     return sRect.boundingBox(dRect);
   }
 
+  @override
   List<int> get renderPassSources => _renderPassSources;
+
+  @override
   List<int> get renderPassTargets => _renderPassTargets;
 
   //---------------------------------------------------------------------------
@@ -129,6 +134,7 @@ class DropShadowFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
@@ -174,6 +180,7 @@ class DropShadowFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderFilter(RenderState renderState,
                     RenderTextureQuad renderTextureQuad, int pass) {
 

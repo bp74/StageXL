@@ -76,22 +76,13 @@ class Video {
   /// for the ResourceManager.addVideo method.
 
   static Future<Video> load(String url, [VideoLoadOptions videoLoadOptions]) async {
-
-    if (videoLoadOptions == null) {
-      videoLoadOptions = Video.defaultLoadOptions;
-    }
-
-    var loadData = videoLoadOptions.loadData;
-    var corsEnabled = videoLoadOptions.corsEnabled;
-    var videoUrls = videoLoadOptions.getOptimalVideoUrls(url);
-
-    try {
-      var videoLoader = new VideoLoader(videoUrls, loadData, corsEnabled);
-      var videoElement = await videoLoader.done;
-      return new Video._(videoElement);
-    } catch (e) {
-      throw new StateError("Failed to load video.");
-    }
+    var options = videoLoadOptions ?? Video.defaultLoadOptions;
+    var loadData = options.loadData;
+    var corsEnabled = options.corsEnabled;
+    var videoUrls = options.getOptimalVideoUrls(url);
+    var videoLoader = new VideoLoader(videoUrls, loadData, corsEnabled);
+    var videoElement = await videoLoader.done;
+    return new Video._(videoElement);
   }
 
   /// Clone this video instance and the underlying HTML VideoElement to play
@@ -99,7 +90,7 @@ class Video {
 
   Future <Video> clone() {
 
-    VideoElement videoElement = this.videoElement.clone(true);
+    var videoElement = this.videoElement.clone(true) as VideoElement;
     Completer<Video> completer = new Completer<Video>();
     StreamSubscription onCanPlaySubscription;
     StreamSubscription onErrorSubscription;
@@ -116,7 +107,9 @@ class Video {
     void onError(html.Event e) {
       onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
-      completer.completeError(e);
+      var error = videoElement.error;
+      var loadError = new LoadError("Failed to clone video.", error);
+      completer.completeError(loadError);
     }
 
     onCanPlaySubscription = videoElement.onCanPlay.listen(onCanPlay);

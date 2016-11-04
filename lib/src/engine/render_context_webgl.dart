@@ -69,6 +69,8 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
 
   gl.RenderingContext get rawContext => _renderingContext;
+
+  @override
   RenderEngine get renderEngine => RenderEngine.WebGL;
 
   RenderTexture get activeRenderTexture => _activeRenderTextures[0];
@@ -82,45 +84,44 @@ class RenderContextWebGL extends RenderContext {
 
   //---------------------------------------------------------------------------
 
+  @override
   void reset() {
-
     _viewportWidth = _canvasElement.width;
     _viewportHeight = _canvasElement.height;
-
     _activeRenderFrameBuffer = null;
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, _viewportWidth, _viewportHeight);
-
     _projectionMatrix.setIdentity();
     _projectionMatrix.scale(2.0 / _viewportWidth, - 2.0 / _viewportHeight, 1.0);
     _projectionMatrix.translate(-1.0, 1.0, 0.0);
-
     _activeRenderProgram.projectionMatrix = _projectionMatrix;
   }
 
+  @override
   void clear(int color) {
-
     num r = colorGetR(color) / 255.0;
     num g = colorGetG(color) / 255.0;
     num b = colorGetB(color) / 255.0;
     num a = colorGetA(color) / 255.0;
-
     _renderingContext.colorMask(true, true, true, true);
     _renderingContext.clearColor(r * a, g * a, b * a, a);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
     _updateStencilDepth(0);
   }
 
+  @override
   void flush() {
     _activeRenderProgram.flush();
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   void beginRenderMask(RenderState renderState, RenderMask mask) {
     _renderMask(renderState, mask, 1);
   }
 
+  @override
   void endRenderMask(RenderState renderState, RenderMask mask) {
     _renderMask(renderState, mask, -1);
   }
@@ -128,6 +129,7 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
+  @override
   void renderTextureQuad(
       RenderState renderState,
       RenderTextureQuad renderTextureQuad) {
@@ -135,13 +137,12 @@ class RenderContextWebGL extends RenderContext {
     activateRenderProgram(renderProgramSimple);
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(renderTextureQuad.renderTexture);
-
-    renderProgramSimple.renderTextureQuad(
-        renderState, renderTextureQuad);
+    renderProgramSimple.renderTextureQuad(renderState, renderTextureQuad);
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderTextureMesh(
       RenderState renderState, RenderTexture renderTexture,
       Int16List ixList, Float32List vxList) {
@@ -149,39 +150,37 @@ class RenderContextWebGL extends RenderContext {
     activateRenderProgram(renderProgramSimple);
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(renderTexture);
-
-    renderProgramSimple.renderTextureMesh(
-        renderState, ixList, vxList);
+    renderProgramSimple.renderTextureMesh(renderState, ixList, vxList);
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderTriangle(
     RenderState renderState,
     num x1, num y1, num x2, num y2, num x3, num y3, int color) {
 
     activateRenderProgram(renderProgramTriangle);
     activateBlendMode(renderState.globalBlendMode);
-
     renderProgramTriangle.renderTriangle(
         renderState, x1, y1, x2, y2, x3, y3, color);
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderTriangleMesh(
       RenderState renderState,
       Int16List ixList, Float32List vxList, int color) {
 
     activateRenderProgram(renderProgramTriangle);
     activateBlendMode(renderState.globalBlendMode);
-
-    renderProgramTriangle.renderTriangleMesh(
-        renderState, ixList, vxList, color);
+    renderProgramTriangle.renderTriangleMesh(renderState, ixList, vxList, color);
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderTextureQuadFiltered(
       RenderState renderState,
       RenderTextureQuad renderTextureQuad,
@@ -201,6 +200,7 @@ class RenderContextWebGL extends RenderContext {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderObjectFiltered(RenderState renderState, RenderObject renderObject) {
 
     var bounds = renderObject.bounds;
@@ -328,8 +328,8 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  RenderProgram getRenderProgram(String name, RenderProgram ifAbsent()) {
-    return _renderPrograms.putIfAbsent(name, ifAbsent);
+  RenderProgram /*=T*/ getRenderProgram/*<T extends RenderProgram>*/(String name, RenderProgram /*=T*/ ifAbsent()) {
+    return _renderPrograms.putIfAbsent(name, ifAbsent) as RenderProgram/*=T*/;
   }
 
   RenderFrameBuffer getRenderFrameBuffer(int width, int height) {

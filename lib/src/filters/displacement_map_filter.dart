@@ -25,8 +25,12 @@ class DisplacementMapFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
-  BitmapFilter clone() => new DisplacementMapFilter(bitmapData, matrix.clone(), scaleX, scaleY);
+  @override
+  BitmapFilter clone(){
+    return new DisplacementMapFilter(bitmapData, matrix.clone(), scaleX, scaleY);
+  }
 
+  @override
   Rectangle<int> get overlap {
     int x = (0.5 * scaleX).abs().ceil();
     int y = (0.5 * scaleY).abs().ceil();
@@ -35,6 +39,7 @@ class DisplacementMapFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
@@ -100,12 +105,13 @@ class DisplacementMapFilter extends BitmapFilter {
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
-    RenderContextWebGL renderContext = renderState.renderContext;
+    var renderContext = renderState.renderContext as RenderContextWebGL;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
-    DisplacementMapFilterProgram renderProgram = renderContext.getRenderProgram(
+    var renderProgram = renderContext.getRenderProgram(
         r"$DisplacementMapFilterProgram", () => new DisplacementMapFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);

@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:html';
 
 import 'environment.dart' as env;
+import '../errors.dart';
 
 class ImageLoader {
 
@@ -54,6 +55,6 @@ class ImageLoader {
   void _onImageError(Event event) {
     _onLoadSubscription.cancel();
     _onErrorSubscription.cancel();
-    _completer.completeError(new StateError("Failed to load image."));
+    _completer.completeError(new LoadError("Failed to load ${image.src}."));
   }
 }

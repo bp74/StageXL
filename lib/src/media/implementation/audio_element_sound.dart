@@ -15,23 +15,23 @@ class AudioElementSound extends Sound {
 
   //---------------------------------------------------------------------------
 
-  static Future<Sound> load(String url, [
-      SoundLoadOptions soundLoadOptions]) async {
-
-    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
-    var audioUrls = options.getOptimalAudioUrls(url);
-    var corsEnabled = options.corsEnabled;
-    var loadData = false;
+  static Future<Sound> load(
+      String url, [SoundLoadOptions soundLoadOptions]) async {
 
     try {
+      var options = soundLoadOptions ?? Sound.defaultLoadOptions;
+      var audioUrls = options.getOptimalAudioUrls(url);
+      var corsEnabled = options.corsEnabled;
+      var loadData = false; // options.loadData;
       var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
       var audioElement = await audioLoader.done;
       return new AudioElementSound._(audioElement);
     } catch (e) {
+      var options = soundLoadOptions ?? Sound.defaultLoadOptions;
       if (options.ignoreErrors) {
         return MockSound.load(url, options);
       } else {
-        throw new StateError("Failed to load audio.");
+        rethrow;
       }
     }
   }
@@ -39,30 +39,30 @@ class AudioElementSound extends Sound {
   static Future<Sound> loadDataUrl(
       String dataUrl, [SoundLoadOptions soundLoadOptions]) async {
 
-    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
-    var audioUrls = <String>[dataUrl];
-    var loadData = false;
-    var corsEnabled = false;
-
     try {
-      var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
+      var audioUrls = <String>[dataUrl];
+      var audioLoader = new AudioLoader(audioUrls, false, false);
       var audioElement = await audioLoader.done;
       return new AudioElementSound._(audioElement);
     } catch (e) {
+      var options = soundLoadOptions ?? Sound.defaultLoadOptions;
       if (options.ignoreErrors) {
         return MockSound.loadDataUrl(dataUrl, options);
       } else {
-        throw new StateError("Failed to load audio.");
+        rethrow;
       }
     }
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   SoundEngine get engine => SoundEngine.AudioElement;
 
+  @override
   num get length => _audioElement.duration;
 
+  @override
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
     var startTime = 0.0;
     var duration = _audioElement.duration;
@@ -71,6 +71,7 @@ class AudioElementSound extends Sound {
         this, startTime, duration, loop, soundTransform);
   }
 
+  @override
   SoundChannel playSegment(num startTime, num duration, [
     bool loop = false, SoundTransform soundTransform]) {
     return new AudioElementSoundChannel(

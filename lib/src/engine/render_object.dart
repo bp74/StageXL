@@ -26,6 +26,7 @@ abstract class RenderObject {
 /// will implement this class.
 
 abstract class RenderObject3D extends RenderObject {
+  Matrix3D get transformationMatrix3D;
   Matrix3D get projectionMatrix3D;
 }
 
@@ -36,27 +37,42 @@ abstract class RenderObject3D extends RenderObject {
 class _RenderTextureQuadObject implements RenderObject {
 
   final RenderTextureQuad renderTextureQuad;
+
+  @override
   final List<RenderFilter> filters;
+
+  @override
   final Matrix transformationMatrix = new Matrix.fromIdentity();
+
+  @override
   final BlendMode blendMode = BlendMode.NORMAL;
+
+  @override
   final RenderTextureQuad cache;
+
+  @override
   final RenderMask mask;
+
+  @override
   final num alpha = 1.0;
 
   _RenderTextureQuadObject(this.renderTextureQuad, this.filters)
       : mask = null,
         cache = null;
 
+  @override
   Rectangle<num> get bounds {
     num w = renderTextureQuad.targetWidth;
     num h = renderTextureQuad.targetHeight;
     return new Rectangle<num>(0.0, 0.0, w, h);
   }
 
+  @override
   void render(RenderState renderState) {
     renderState.renderTextureQuad(this.renderTextureQuad);
   }
 
+  @override
   void renderFiltered(RenderState renderState) {
     renderState.renderTextureQuad(this.renderTextureQuad);
   }

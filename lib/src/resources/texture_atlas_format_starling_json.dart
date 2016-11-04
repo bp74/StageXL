@@ -4,16 +4,17 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
 
   const _TextureAtlasFormatStarlingJson();
 
+  @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
 
     var source = await loader.getSource();
-    var json = JSON.decode(source);
+    var json = JSON.decode(source) as Map;
     var textureAtlas = new TextureAtlas();
 
     var imagePath = _getString(json, "imagePath", "");
     var renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
 
-    for(var subTextureMap in json["SubTexture"]) {
+    for(Map subTextureMap in json["SubTexture"]) {
 
       var name = _getString(subTextureMap, "name", "");
       var rotation = _getBool(subTextureMap, "rotated", false) ? 1 : 0;

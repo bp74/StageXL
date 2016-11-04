@@ -232,12 +232,12 @@ class Transition {
   static num easeInElastic(num ratio) {
     if (ratio == 0.0 || ratio == 1.0) return ratio;
     ratio = ratio - 1.0;
-    return - pow(2.0, 10.0 * ratio) * sin((ratio - 0.3 / 4.0) * (2.0 * PI) / 0.3) ;
+    return -pow(2.0, 10.0 * ratio) * sin((ratio - 0.3 / 4.0) * (2.0 * PI) / 0.3);
   }
 
   static num easeOutElastic(num ratio) {
     if (ratio == 0.0 || ratio == 1.0) return ratio;
-    return pow(2.0, - 10.0 * ratio) * sin((ratio - 0.3 / 4.0) * (2.0 * PI) / 0.3) + 1;
+    return pow(2.0, -10.0 * ratio) * sin((ratio - 0.3 / 4.0) * (2.0 * PI) / 0.3) + 1;
   }
 
   static num easeInOutElastic(num ratio) {

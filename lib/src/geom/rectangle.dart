@@ -8,9 +8,16 @@ import '../internal/jenkins_hash.dart';
 
 class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
+  @override
   T left;
+
+  @override
   T top;
+
+  @override
   T width;
+
+  @override
   T height;
 
   Rectangle(this.left, this.top, this.width, this.height);
@@ -21,12 +28,14 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   Rectangle<T> clone() =>
       new Rectangle<T>(left, top, width, height);
 
+  @override
   String toString() =>
       "Rectangle<$T> [left=$left, top=$top, width=$width, height=$height]";
 
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
+  @override
   bool operator ==(Object other) {
     return other is math.Rectangle &&
         this.left == other.left &&
@@ -35,6 +44,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
         this.height == other.height;
   }
 
+  @override
   int get hashCode {
     int a = this.left.hashCode;
     int b = this.top.hashCode;
@@ -49,18 +59,21 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   bool get isEmpty => width <= 0 || height <= 0;
 
+  @override
   T get right => left + width;
 
   set right(T value) {
     width = value - left;
   }
 
+  @override
   T get bottom => top + height;
 
   set bottom(T value) {
     height = value - top;
   }
 
+  @override
   Point<T> get topLeft => new Point<T>(left, top);
 
   set topLeft(Point<T> point) {
@@ -70,6 +83,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     top = point.y;
   }
 
+  @override
   Point<T> get topRight => new Point<T>(right, top);
 
   set topRight(Point<T> point) {
@@ -78,6 +92,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     top = point.y;
   }
 
+  @override
   Point<T> get bottomLeft => new Point<T>(left, bottom);
 
   set bottomLeft(Point<T> point) {
@@ -86,6 +101,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     left = point.x;
   }
 
+  @override
   Point<T> get bottomRight => new Point<T>(right, bottom);
 
   set bottomRight(Point<T> point) {
@@ -106,16 +122,19 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     return left <= px && top <= py && right > px && bottom > py;
   }
 
+  @override
   bool containsPoint(math.Point<num> p) {
     return contains(p.x, p.y);
   }
 
+  @override
   bool intersects(math.Rectangle<num> r) {
     return left < r.right && right > r.left && top < r.bottom && bottom > r.top;
   }
 
   /// Returns a new rectangle which completely contains `this` and [other].
 
+  @override
   Rectangle<T> boundingBox(math.Rectangle<T> other) {
     T rLeft = min(left, other.left);
     T rTop = min(top, other.top);
@@ -126,6 +145,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   /// Tests whether `this` entirely contains [another].
 
+  @override
   bool containsRectangle(math.Rectangle<num> r) {
     return left <= r.left && top <= r.top && right >= r.right && bottom >= r.bottom;
   }
@@ -161,6 +181,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     height = rheight;
   }
 
+  @override
   Rectangle<T> intersection(math.Rectangle<T> rect) {
     T rLeft = max(left, rect.left);
     T rTop = max(top, rect.top);

@@ -22,16 +22,19 @@ class NormalMapFilter extends BitmapFilter {
 
   NormalMapFilter(this.bitmapData);
 
+  @override
   BitmapFilter clone() => new NormalMapFilter(bitmapData);
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
     // TODO: implement NormalMapFilter for BitmapDatas.
   }
 
   //-----------------------------------------------------------------------------------------------
 
+  @override
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
     RenderContextWebGL renderContext = renderState.renderContext;

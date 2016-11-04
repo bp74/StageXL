@@ -82,7 +82,7 @@ int ensureInt(int value) {
   }
 }
 
-num ensureNum(num value) {
+num ensureNum(Object value) {
   if (value is num) {
     return value;
   } else {
@@ -90,7 +90,7 @@ num ensureNum(num value) {
   }
 }
 
-String ensureString(String value) {
+String ensureString(Object value) {
   if (value is String) {
     return value;
   } else {

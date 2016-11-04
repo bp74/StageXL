@@ -13,10 +13,12 @@ class Circle<T extends num> {
 
   Circle clone() => new Circle(x, y, radius);
 
+  @override
   String toString() => "Circle<$T> [x=$x, y=$y, radius=$radius]";
 
   //---------------------------------------------------------------------------
 
+  @override
   bool operator ==(Object other) {
     return other is Circle &&
         this.x == other.x &&
@@ -24,6 +26,7 @@ class Circle<T extends num> {
         this.radius == other.radius;
   }
 
+  @override
   int get hashCode {
     int a = this.x.hashCode;
     int b = this.y.hashCode;

@@ -77,11 +77,13 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
+  @override
   set width(num value) {
     _width = value.toDouble();
     _refreshPending |= 3;
   }
 
+  @override
   set height(num value) {
     _height = value.toDouble();
     _refreshPending |= 3;
@@ -164,16 +166,19 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
+  @override
   num get x {
     _refreshTextLineMetrics();
     return super.x;
   }
 
+  @override
   num get width {
     _refreshTextLineMetrics();
     return _width;
   }
 
+  @override
   num get height {
     _refreshTextLineMetrics();
     return _height;
@@ -207,6 +212,7 @@ class TextField extends InteractiveObject {
     return getLineText(lineIndex).length;
   }
 
+  @override
   Matrix get transformationMatrix {
     _refreshTextLineMetrics();
     return super.transformationMatrix;
@@ -236,7 +242,7 @@ class TextField extends InteractiveObject {
       _refreshCache(renderState.globalMatrix);
       renderState.renderTextureQuad(_renderTextureQuad);
     } else if (renderState.renderContext is RenderContextCanvas) {
-      RenderContextCanvas renderContextCanvas = renderState.renderContext;
+      var renderContextCanvas = renderState.renderContext as RenderContextCanvas;
       renderContextCanvas.setTransform(renderState.globalMatrix);
       renderContextCanvas.setAlpha(renderState.globalAlpha);
       _renderText(renderContextCanvas.rawContext);

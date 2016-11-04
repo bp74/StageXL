@@ -127,7 +127,7 @@ class BitmapData implements BitmapDrawable {
 
     frameCount = (frameCount == null) ? rows * cols : min(frameCount, rows * cols);
 
-    for(var f = 0; f < frameCount; f++) {
+    for (var f = 0; f < frameCount; f++) {
       var x = f % cols;
       var y = f ~/ cols;
       var frameLeft = frameMargin + x * (frameWidth + frameSpacing);
@@ -245,6 +245,7 @@ class BitmapData implements BitmapDrawable {
 
   //----------------------------------------------------------------------------
 
+  @override
   void render(RenderState renderState) {
     renderState.renderTextureQuad(renderTextureQuad);
   }

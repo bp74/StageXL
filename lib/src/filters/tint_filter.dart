@@ -23,10 +23,12 @@ class TintFilter extends BitmapFilter {
     this.factorB = colorGetB(color) / 255.0,
     this.factorA = colorGetA(color) / 255.0;
 
+  @override
   BitmapFilter clone() => new TintFilter(factorR, factorG, factorB, factorA);
 
   //---------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     bool isLittleEndianSystem = env.isLittleEndianSystem;
@@ -59,10 +61,11 @@ class TintFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
-    RenderContextWebGL renderContext = renderState.renderContext;
+    var renderContext = renderState.renderContext as RenderContextWebGL;
     RenderProgramTinted renderProgram = renderContext.renderProgramTinted;
 
     renderContext.activateRenderProgram(renderProgram);

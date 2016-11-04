@@ -5,6 +5,7 @@ class RenderProgramTriangle extends RenderProgram {
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexAlpha:      Float32(r), Float32(g), Float32(b), Float32(a)
 
+  @override
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
@@ -18,6 +19,7 @@ class RenderProgramTriangle extends RenderProgram {
     }
     """;
 
+  @override
   String get fragmentShaderSource => """
 
     precision mediump float;

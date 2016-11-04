@@ -28,8 +28,10 @@ abstract class DisplayObjectContainer3D
 
   /// The offset to the x-axis for all children in 3D space.
 
+  @override
   num get offsetX => _offsetX;
 
+  @override
   set offsetX(num value) {
     if (value is num) _offsetX = value;
     _transformationMatrix3DRefresh = true;
@@ -37,8 +39,10 @@ abstract class DisplayObjectContainer3D
 
   /// The offset to the y-axis for all children in 3D space.
 
+  @override
   num get offsetY => _offsetY;
 
+  @override
   set offsetY(num value) {
     if (value is num) _offsetY = value;
     _transformationMatrix3DRefresh = true;
@@ -46,8 +50,10 @@ abstract class DisplayObjectContainer3D
 
   /// The offset to the z-axis for all children in 3D space.
 
+  @override
   num get offsetZ => _offsetZ;
 
+  @override
   set offsetZ(num value) {
     if (value is num) _offsetZ = value;
     _transformationMatrix3DRefresh = true;
@@ -55,8 +61,10 @@ abstract class DisplayObjectContainer3D
 
   /// The x-axis rotation in 3D space.
 
+  @override
   num get rotationX => _rotationX;
 
+  @override
   set rotationX(num value) {
     if (value is num) _rotationX = value;
     _transformationMatrix3DRefresh = true;
@@ -64,8 +72,10 @@ abstract class DisplayObjectContainer3D
 
   /// The y-axis rotation in 3D space.
 
+  @override
   num get rotationY => _rotationY;
 
+  @override
   set rotationY(num value) {
     if (value is num) _rotationY = value;
     _transformationMatrix3DRefresh = true;
@@ -73,8 +83,10 @@ abstract class DisplayObjectContainer3D
 
   /// The z-axis rotation in 3D space.
 
+  @override
   num get rotationZ => _rotationZ;
 
+  @override
   set rotationZ(num value) {
     if (value is num) _rotationZ = value;
     _transformationMatrix3DRefresh = true;
@@ -82,6 +94,7 @@ abstract class DisplayObjectContainer3D
 
   //---------------------------------------------------------------------------
 
+  @override
   Matrix3D get transformationMatrix3D {
 
     if (_transformationMatrix3DRefresh) {
@@ -98,6 +111,7 @@ abstract class DisplayObjectContainer3D
 
   //---------------------------------------------------------------------------
 
+  @override
   Matrix3D get projectionMatrix3D {
     _calculateProjectionMatrix(_identityMatrix);
     return _projectionMatrix3D;

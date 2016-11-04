@@ -20,12 +20,14 @@ abstract class DisplayObjectContainer
 
   //----------------------------------------------------------------------------
 
+  @override
   DisplayObjectChildren<DisplayObject> get children {
     return new DisplayObjectChildren<DisplayObject>._(this, _children);
   }
 
   /// The number of children of this container.
 
+  @override
   int get numChildren => _children.length;
 
   /// Determines whether or not the children of the object are mouse, or user
@@ -72,6 +74,7 @@ abstract class DisplayObjectContainer
   /// container as a parent, the object is removed from the child list of the
   /// other display object container.
 
+  @override
   void addChild(DisplayObject child) {
     if (child == this) {
       throw new ArgumentError("An object cannot be added as a child of itself.");
@@ -95,6 +98,7 @@ abstract class DisplayObjectContainer
   /// container as a parent, the object is removed from the child list of the
   /// other display object container.
 
+  @override
   void addChildAt(DisplayObject child, int index) {
     if (index < 0 || index > _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -120,6 +124,7 @@ abstract class DisplayObjectContainer
   /// positions of any display objects above the child in the
   /// [DisplayObjectContainer] are decreased by 1.
 
+  @override
   void removeChild(DisplayObject child) {
     if (child.parent != this) {
       throw new ArgumentError("The supplied DisplayObject must be a child of the caller.");
@@ -138,6 +143,7 @@ abstract class DisplayObjectContainer
   /// positions of any display objects above the child in the
   /// [DisplayObjectContainer] are decreased by 1.
 
+  @override
   void removeChildAt(int index) {
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -157,6 +163,7 @@ abstract class DisplayObjectContainer
   /// The parent property of the removed children is set to null, and the
   /// objects are garbage collected if no other references to the children exist.
 
+  @override
   void removeChildren([int beginIndex, int endIndex]) {
     int length = _children.length;
     int i1 = beginIndex is int ? beginIndex : 0;
@@ -165,8 +172,10 @@ abstract class DisplayObjectContainer
       // do nothing
     } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
       throw new ArgumentError("The supplied index is out of bounds.");
-    } else for (int i = i1; i <= i2 && i1 < _children.length; i++) {
-      removeChildAt(i1);
+    } else {
+      for (int i = i1; i <= i2 && i1 < _children.length; i++) {
+        removeChildAt(i1);
+      }
     }
   }
 
@@ -176,6 +185,7 @@ abstract class DisplayObjectContainer
   /// The parent property of the removed child is set to null, and the object
   /// is garbage collected if no other references to the child exist.
 
+  @override
   void replaceChildAt(DisplayObject child, int index) {
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -197,6 +207,7 @@ abstract class DisplayObjectContainer
 
   /// Returns the child [DisplayObject] at the specified [index].
 
+  @override
   DisplayObject getChildAt(int index) {
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -214,6 +225,7 @@ abstract class DisplayObjectContainer
   /// [getChildAt] method accesses a child from a cached array, whereas the
   /// [getChildByName] method has to traverse a list to access a child.
 
+  @override
   DisplayObject getChildByName(String name) {
     for (int i = 0; i < _children.length; i++) {
       DisplayObject child = _children[i];
@@ -224,6 +236,7 @@ abstract class DisplayObjectContainer
 
   /// Returns the index position of a child [DisplayObject].
 
+  @override
   int getChildIndex(DisplayObject child) {
     return _children.indexOf(child);
   }
@@ -318,7 +331,7 @@ abstract class DisplayObjectContainer
     var result = new List<DisplayObject>();
     var temp = new Point<num>(0.0, 0.0);
 
-    for(var child in _children) {
+    for (var child in _children) {
       child.parentToLocal(point, temp);
       if (child is DisplayObjectContainer) {
         result.addAll(child.getObjectsUnderPoint(temp));
@@ -468,7 +481,7 @@ abstract class DisplayObjectContainer
     // only if necessary.
 
     var captured = false;
-    for(var obj = this; obj != null && captured == false; obj = obj.parent) {
+    for (DisplayObject obj = this; obj != null && captured == false; obj = obj.parent) {
       if (obj.hasEventListener(eventType, useCapture: true)) captured = true;
     }
 
@@ -485,7 +498,7 @@ abstract class DisplayObjectContainer
       captured = captured ||
         displayObject.hasEventListener(event.type, useCapture: true);
       var children = displayObject._children;
-      for(int i = 0; i < children.length; i++) {
+      for (int i = 0; i < children.length; i++) {
         _dispatchStageEventsRecursion(children[i], event, captured);
       }
     }

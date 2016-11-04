@@ -39,11 +39,3 @@ abstract class GraphicsContext {
   void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle);
 
 }
-
-
-
-
-
-
-
-

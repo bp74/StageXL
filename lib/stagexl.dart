@@ -25,6 +25,7 @@ export 'src/display.dart';
 export 'src/display_ex.dart';
 export 'src/drawing.dart';
 export 'src/engine.dart';
+export 'src/errors.dart';
 export 'src/events.dart';
 export 'src/filters.dart';
 export 'src/geom.dart';

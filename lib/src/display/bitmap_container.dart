@@ -23,18 +23,22 @@ class BitmapContainer extends DisplayObject
 
   //---------------------------------------------------------------------------
 
+  @override
   DisplayObjectChildren<Bitmap> get children {
     return new DisplayObjectChildren<Bitmap>._(this, _children);
   }
 
+  @override
   int get numChildren => _children.length;
 
   //---------------------------------------------------------------------------
 
+  @override
   Bitmap getChildAt(int index) {
     return _children[index];
   }
 
+  @override
   Bitmap getChildByName(String name) {
     for (int i = 0; i < _children.length; i++) {
       Bitmap child = _children[i];
@@ -43,10 +47,12 @@ class BitmapContainer extends DisplayObject
     return null;
   }
 
+  @override
   int getChildIndex(Bitmap child) {
     return _children.indexOf(child);
   }
 
+  @override
   void addChild(Bitmap child) {
     if (child.parent == this) {
       _addLocalChild(child);
@@ -57,6 +63,7 @@ class BitmapContainer extends DisplayObject
     }
   }
 
+  @override
   void addChildAt(Bitmap child, int index) {
     if (index < 0 || index > _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -69,6 +76,7 @@ class BitmapContainer extends DisplayObject
     }
   }
 
+  @override
   void removeChild(Bitmap child) {
     if (child.parent != this) {
       throw new ArgumentError("The supplied Bitmap must be a child of the caller.");
@@ -79,6 +87,7 @@ class BitmapContainer extends DisplayObject
     }
   }
 
+  @override
   void removeChildAt(int index) {
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -87,9 +96,9 @@ class BitmapContainer extends DisplayObject
       child._parent = null;
       _children.removeAt(index);
     }
-
   }
 
+  @override
   void removeChildren([int beginIndex, int endIndex]) {
     int length = _children.length;
     int i1 = beginIndex is int ? beginIndex : 0;
@@ -98,11 +107,14 @@ class BitmapContainer extends DisplayObject
       // do nothing
     } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
       throw new ArgumentError("The supplied index is out of bounds.");
-    } else for (int i = i1; i <= i2 && i1 < _children.length; i++) {
-      removeChildAt(i1);
+    } else {
+      for (int i = i1; i <= i2 && i1 < _children.length; i++) {
+        removeChildAt(i1);
+      }
     }
   }
 
+  @override
   void replaceChildAt(Bitmap child, int index) {
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
@@ -165,7 +177,7 @@ class BitmapContainer extends DisplayObject
 
   void _renderWebGL(RenderState renderState) {
 
-    RenderContextWebGL context = renderState.renderContext;
+    var context = renderState.renderContext as RenderContextWebGL;
     var projectionMatrix = context.activeProjectionMatrix;
     var globalMatrix = renderState.globalMatrix;
     var localState = new _BitmapContainerRenderState(renderState);
@@ -191,9 +203,9 @@ class BitmapContainer extends DisplayObject
 
   void _renderCanvas2D(RenderState renderState) {
 
-    RenderContextCanvas context = renderState.renderContext;
+    var context = renderState.renderContext as RenderContextCanvas;
 
-    for(int i = 0; i < _children.length; i++) {
+    for (int i = 0; i < _children.length; i++) {
       var bitmap = _children[i];
       if (bitmap.visible) {
         var bitmapData = bitmap.bitmapData;
@@ -228,28 +240,38 @@ class _BitmapContainerRenderState extends RenderState {
 
   //---------------------------------------------------------------------------
 
+  @override
   Matrix get globalMatrix => bitmap.transformationMatrix;
+
+  @override
   double get globalAlpha => bitmap.alpha * this.alpha;
+
+  @override
   BlendMode get globalBlendMode => bitmap.blendMode ?? this.blendMode;
 
   //---------------------------------------------------------------------------
 
+  @override
   void reset([Matrix matrix, num alpha, BlendMode blendMode]) {
     throw new StateError("Not supported");
   }
 
+  @override
   void copyFrom(RenderState renderState) {
     throw new StateError("Not supported");
   }
 
+  @override
   void renderObject(RenderObject renderObject) {
     throw new StateError("Not supported");
   }
 
+  @override
   void push(Matrix matrix, num alpha, BlendMode blendMode) {
     throw new StateError("Not supported");
   }
 
+  @override
   void pop() {
     throw new StateError("Not supported");
   }

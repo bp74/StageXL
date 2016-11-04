@@ -25,8 +25,10 @@ class Scale9Bitmap extends Bitmap {
   /// Gets and sets the width of this Scale9Bitmap. In contrast to other
   /// display objects, this does not affect the scaleX factor.
 
+  @override
   num get width => _width;
 
+  @override
   set width(num value) {
     _width = ensureNum(value);
   }
@@ -34,8 +36,10 @@ class Scale9Bitmap extends Bitmap {
   /// Gets and sets the height of this Scale9Bitmap. In contrast to other
   /// display objects, this does not affect the scaleY factor.
 
+  @override
   num get height => _height;
 
+  @override
   set height(num value) {
     _height = ensureNum(value);
   }
@@ -51,6 +55,7 @@ class Scale9Bitmap extends Bitmap {
 
   /// Gets and sets the BitmapData of this Scale9Bitmap.
 
+  @override
   set bitmapData(BitmapData value) {
     super.bitmapData = value;
     _updateRenderTextureQuads();

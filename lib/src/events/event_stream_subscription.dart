@@ -27,8 +27,11 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
 
   int get priority => _priority;
 
+  @override
   bool get isPaused => _pauseCount > 0;
+
   bool get isCanceled => _canceled;
+
   bool get isCapturing => _captures;
 
   EventStream<T> get eventStream => _eventStream;

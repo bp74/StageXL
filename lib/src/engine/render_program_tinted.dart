@@ -6,6 +6,7 @@ class RenderProgramTinted extends RenderProgram {
   // aVertexTextCoord:  Float32(u), Float32(v)
   // aVertextColor:     Float32(r), Float32(g), Float32(b), Float32(a)
 
+  @override
   String get vertexShaderSource => """
 
     uniform mat4 uProjectionMatrix;
@@ -22,6 +23,7 @@ class RenderProgramTinted extends RenderProgram {
     }
     """;
 
+  @override
   String get fragmentShaderSource => """
 
     precision mediump float;
@@ -53,7 +55,7 @@ class RenderProgramTinted extends RenderProgram {
   void renderTextureQuad(
       RenderState renderState,
       RenderTextureQuad renderTextureQuad,
-      num r, num g, num b, num a) {
+      double r, double g, num b, num a) {
 
     if (renderTextureQuad.hasCustomVertices) {
       var ixList = renderTextureQuad.ixList;

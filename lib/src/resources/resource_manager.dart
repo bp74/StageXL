@@ -53,10 +53,8 @@ class ResourceManager {
     return _containsResource("BitmapData", name);
   }
 
-  void addBitmapData(String name, String url, [
-      BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
-
-    var loader = BitmapData.load(url, bitmapDataLoadOptions);
+  void addBitmapData(String name, String url, [BitmapDataLoadOptions options]) {
+    var loader = BitmapData.load(url, options);
     _addResource("BitmapData", name, url, loader);
   }
 
@@ -82,9 +80,9 @@ class ResourceManager {
 
   void addTextureAtlas(String name, String url, [
       TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-      BitmapDataLoadOptions bitmapDataLoadOptions = null]) {
+      BitmapDataLoadOptions options = null]) {
 
-    var loader = TextureAtlas.load(url, textureAtlasFormat, bitmapDataLoadOptions);
+    var loader = TextureAtlas.load(url, textureAtlasFormat, options);
     _addResource("TextureAtlas", name, url, loader);
   }
 
@@ -99,9 +97,7 @@ class ResourceManager {
   }
 
   TextureAtlas getTextureAtlas(String name) {
-    var value = _getResourceValue("TextureAtlas", name);
-    if (value is! TextureAtlas) throw "dart2js_hint";
-    return value;
+    return _getResourceValue("TextureAtlas", name) as TextureAtlas;
   }
 
   //----------------------------------------------------------------------------
@@ -110,10 +106,8 @@ class ResourceManager {
     return _containsResource("Video", name);
   }
 
-  void addVideo(String name, String url, [
-      VideoLoadOptions videoLoadOptions = null]) {
-
-    var loader = Video.load(url, videoLoadOptions);
+  void addVideo(String name, String url, [VideoLoadOptions options]) {
+    var loader = Video.load(url, options);
     _addResource("Video", name, url, loader);
   }
 
@@ -122,9 +116,7 @@ class ResourceManager {
   }
 
   Video getVideo(String name) {
-    var value = _getResourceValue("Video", name);
-    if (value is! Video) throw "dart2js_hint";
-    return value;
+    return _getResourceValue("Video", name) as Video;
   }
 
   //----------------------------------------------------------------------------
@@ -133,10 +125,8 @@ class ResourceManager {
     return _containsResource("Sound", name);
   }
 
-  void addSound(String name, String url, [
-      SoundLoadOptions soundLoadOptions = null]) {
-
-    var loader = Sound.load(url, soundLoadOptions);
+  void addSound(String name, String url, [SoundLoadOptions options]) {
+    var loader = Sound.load(url, options);
     _addResource("Sound", name, url, loader);
   }
 
@@ -145,9 +135,7 @@ class ResourceManager {
   }
 
   Sound getSound(String name) {
-    var value = _getResourceValue("Sound", name);
-    if (value is! Sound) throw "dart2js_hint";
-    return value;
+    return _getResourceValue("Sound", name) as Sound;
   }
 
   //----------------------------------------------------------------------------
@@ -156,8 +144,8 @@ class ResourceManager {
     return _containsResource("SoundSprite", name);
   }
 
-  void addSoundSprite(String name, String url) {
-    var loader = SoundSprite.load(url);
+  void addSoundSprite(String name, String url, [SoundLoadOptions options]) {
+    var loader = SoundSprite.load(url, options);
     _addResource("SoundSprite", name, url, loader);
   }
 
@@ -166,9 +154,7 @@ class ResourceManager {
   }
 
   SoundSprite getSoundSprite(String name) {
-    var value = _getResourceValue("SoundSprite", name);
-    if (value is! SoundSprite) throw "dart2js_hint";
-    return value;
+    return _getResourceValue("SoundSprite", name) as SoundSprite;
   }
 
   //----------------------------------------------------------------------------
@@ -186,9 +172,7 @@ class ResourceManager {
   }
 
   String getText(String name) {
-    var value = _getResourceValue("Text", name);
-    if (value is! String) throw "dart2js_hint";
-    return value;
+    return _getResourceValue("Text", name) as String;
   }
 
   //----------------------------------------------------------------------------
@@ -209,9 +193,7 @@ class ResourceManager {
   }
 
   String getTextFile(String name) {
-    var value = _getResourceValue("TextFile", name);
-    if (value is! String) throw "dart2js_hint";
-    return value;
+    return _getResourceValue("TextFile", name) as String;
   }
 
   //----------------------------------------------------------------------------

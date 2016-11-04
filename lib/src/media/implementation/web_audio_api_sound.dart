@@ -13,22 +13,24 @@ class WebAudioApiSound extends Sound {
     var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     var audioUrls = options.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
+    var aggregateError = new AggregateError("Error loading sound.");
 
     for(var audioUrl in audioUrls) {
       try {
         var httpRequest = await HttpRequest.request(audioUrl, responseType: 'arraybuffer');
-        var audioData = httpRequest.response;
+        var audioData = httpRequest.response as ByteBuffer;
         var audioBuffer = await audioContext.decodeAudioData(audioData);
         return new WebAudioApiSound._(audioBuffer);
       } catch (e) {
-        // ignore error
+        var loadError = new LoadError("Failed to load $audioUrl", e);
+        aggregateError.errors.add(loadError);
       }
     }
 
     if (options.ignoreErrors) {
       return MockSound.load(url, options);
     } else {
-      throw new StateError("Failed to load audio.");
+      throw aggregateError;
     }
   }
 
@@ -50,17 +52,20 @@ class WebAudioApiSound extends Sound {
       if (options.ignoreErrors) {
         return MockSound.loadDataUrl(dataUrl, options);
       } else {
-        throw new StateError("Failed to load audio.");
+        throw new LoadError("Failed to load sound.", e);
       }
     }
   }
 
   //---------------------------------------------------------------------------
 
+  @override
   SoundEngine get engine => SoundEngine.WebAudioApi;
 
+  @override
   num get length => _audioBuffer.duration;
 
+  @override
   SoundChannel play([
     bool loop = false, SoundTransform soundTransform]) {
 
@@ -68,6 +73,7 @@ class WebAudioApiSound extends Sound {
         this, 0, this.length, loop, soundTransform);
   }
 
+  @override
   SoundChannel playSegment(num startTime, num duration, [
     bool loop = false, SoundTransform soundTransform]) {
 

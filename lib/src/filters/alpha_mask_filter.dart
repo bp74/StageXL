@@ -15,10 +15,12 @@ class AlphaMaskFilter extends BitmapFilter {
   AlphaMaskFilter(this.bitmapData, [Matrix matrix = null]):
     matrix = matrix != null ? matrix : new Matrix.fromIdentity();
 
+  @override
   BitmapFilter clone() => new AlphaMaskFilter(bitmapData, matrix.clone());
 
   //---------------------------------------------------------------------------
 
+  @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
 
     RenderTextureQuad renderTextureQuad = rectangle == null
@@ -44,9 +46,10 @@ class AlphaMaskFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
+  @override
   void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
 
-    RenderContextWebGL renderContext = renderState.renderContext;
+    var renderContext = renderState.renderContext as RenderContextWebGL;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
     AlphaMaskFilterProgram renderProgram = renderContext.getRenderProgram(
@@ -190,8 +193,8 @@ class AlphaMaskFilterProgram extends RenderProgram {
     // copy vertex list
 
     for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
-      num x = vxList[o + 0];
-      num y = vxList[o + 1];
+      var x = vxList[o + 0];
+      var y = vxList[o + 1];
       vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
       vxData[vxIndex + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
       vxData[vxIndex + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
