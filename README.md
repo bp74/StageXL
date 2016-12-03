@@ -62,10 +62,9 @@ as possible, we are always thinking about new features we want to add next.
 Please send us your ideas and requests to make those things a reality you
 care about most. Some of the things we will tackle in the near future are:
 
-* Getting closer to version 1.0.
-* Runtime support for Tiled Map Editor.
-* Support for Flutter (native runtime environment for Android).
+* Support for Flutter (native runtime environment for Android and iOS).
 * A new StageXL homepage with more articles / blog posts.
+* Runtime support for Tiled Map Editor.
 
 ## Adobe Flash heritage
 
@@ -75,6 +74,6 @@ may have used in Flash for many years. Furthermore the Dart programming
 language is easy to use for everyone who is familiar with ActionScript. 
 
 * Toolkit for Dart: <http://toolkitfordart.github.io>
-* ActionScript to Dart converter: <https://github.com/blockforest/stagexl-converter-pubrun>
+* ActionScript to Dart converter: <https://github.com/blockforest/stagexl-converter-pubglobal>
 * ActionScript to Dart comparison: <http://www.stagexl.org/docs/actionscript-dart.html>
- 
+
