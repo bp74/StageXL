@@ -97,7 +97,7 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
   }
 
   @override
-  Iterable/*<S>*/ expand/*<S>*/(Iterable/*<S>*/ f(T element)) => _children.expand(f);
+  Iterable<S> expand<S>(Iterable<S> f(T element)) => _children.expand(f);
 
   @override
   T get first {
@@ -110,9 +110,9 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
   }
 
   @override
-  dynamic/*=S*/ fold/*<S>*/(
-          dynamic/*=S*/ initialValue, dynamic/*=S*/ combine(dynamic/*=S*/ previousValue, T element)) =>
-      _children.fold(initialValue, combine);
+  S fold<S>(S initialValue, S combine(S previousValue, T element)) {
+    return _children.fold(initialValue, combine);
+  }
 
   @override
   void forEach(void f(T element)) {
@@ -155,7 +155,9 @@ class DisplayObjectChildren<T extends DisplayObject> implements Iterable<T> {
   }
 
   @override
-  Iterable/*<S>*/ map/*<S>*/(/*=S*/ f(T e)) => _children.map(f);
+  Iterable<S> map<S>(S f(T e)) {
+    return _children.map(f);
+  }
 
   @override
   T reduce(T combine(T value, T element)) {
