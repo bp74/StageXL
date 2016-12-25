@@ -150,9 +150,9 @@ class Juggler implements Animatable {
   ///       print(value);
   ///     }
 
-  Stream<num> translation(num startValue, num targetValue, num time, [
-      TransitionFunction transition = Transition.linear]) async* {
 
+  Stream<num> translation(num startValue, num targetValue, num time,
+      [TransitionFunction transition = Transition.linear]) async* {
     var startTime = this.elapsedTime;
     var deltaValue = targetValue - startValue;
     await for (var elapsedTime in this.onElapsedTimeChange) {
