@@ -6,13 +6,16 @@ int _globalFrameCallbackId = -1;
 
 void _globalFrameRequest() {
   if (_globalFrameCallbackId == -1) {
-    _globalFrameCallbackId = window.requestAnimationFrame((frameTime) {
-      var currentFrameTime = ensureNum(frameTime) / 1000.0;
+    _globalFrameCallbackId = window.requestAnimationFrame((num frameTime) {
+      var currentFrameTime = frameTime / 1000.0;
       var deltaTime = currentFrameTime - _globalFrameTime;
       _globalFrameTime = currentFrameTime;
       _globalFrameCallbackId = -1;
       _globalFrameRequest();
-      _globalFrameListeners.toList().forEach((f) => f(deltaTime));
+
+      for (var f in _globalFrameListeners.toList()) {
+        f(deltaTime);
+      }
     });
   }
 }

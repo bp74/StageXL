@@ -42,7 +42,9 @@ class Graphics {
   /// Clear all previously added graphics commands.
 
   void clear() {
-    _originalCommands.forEach((c) => c._setGraphics(null));
+    for (var c in _originalCommands) {
+      c._setGraphics(null);
+    }
     _originalCommands.clear();
     _invalidate();
   }
@@ -254,9 +256,11 @@ class Graphics {
   //---------------------------------------------------------------------------
 
   List<GraphicsCommand> _getCommands(bool useCompiled) {
-    if (useCompiled && _compiledCommands.length == 0) {
+    if (useCompiled && _compiledCommands.isEmpty) {
       var context = new _GraphicsContextCompiler(_compiledCommands);
-      _originalCommands.forEach((c) => c.updateContext(context));
+      for (var c in _originalCommands) {
+        c.updateContext(context);
+      }
     }
     return useCompiled ? _compiledCommands : _originalCommands;
   }
