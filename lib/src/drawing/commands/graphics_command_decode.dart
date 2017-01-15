@@ -125,21 +125,23 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
   @override
   void _decodePath() {
 
-    var cx = 0.0;
-    var cy = 0.0;
-    var startPointX = 0.0;
-    var startPointY = 0.0;
-    var startPointValid = false;
-    var path = this.path.replaceAll(_lineBreakRegExp, " ");
+    double cx = 0.0;
+    double cy = 0.0;
+    double startPointX = 0.0;
+    double startPointY = 0.0;
+    bool startPointValid = false;
+    String path = this.path.replaceAll(_lineBreakRegExp, " ");
+    List<double> p = new List<double>();
 
     for (var commandMatch in _commandRegExp.allMatches(path)) {
 
       var command = commandMatch.group(1);
       var parameter = commandMatch.group(2);
 
-      var p = _parameterRegExp.allMatches(parameter)
-          .map((m) => double.parse(m.group(0)))
-          .toList();
+      p.clear();
+      for (var parameterMatch in _parameterRegExp.allMatches(parameter)) {
+        p.add(double.parse(parameterMatch.group(0)));
+      }
 
       switch (command) {
 
