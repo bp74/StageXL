@@ -288,23 +288,22 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
       var cosRotation = cos(rotation);
       var sinRotation = sin(rotation);
-      var rx = radiusX.abs(), rxSqr = rx * rx;
-      var ry = radiusY.abs(), rySqr = ry * ry;
-      var mx = (startX + endX) / 2.0, sx = (startX - mx);
-      var my = (startY + endY) / 2.0, sy = (startY - my);
-      var ux = cosRotation * sx + sinRotation * sy, uxSqr = ux * ux;
-      var uy = cosRotation * sy - sinRotation * sx, uySqr = uy * uy;
+      var rx = radiusX.abs();
+      var ry = radiusY.abs();
+      var mx = (startX + endX) / 2.0;
+      var my = (startY + endY) / 2.0;
+      var sx = (startX - endX) / 2.0;
+      var sy = (startY - endY) / 2.0;
+      var ux = cosRotation * sx + sinRotation * sy;
+      var uy = cosRotation * sy - sinRotation * sx;
 
-      var lambda = sqrt(uxSqr / rxSqr + uySqr / rySqr);
-      if (lambda > 1.0) {
-        rx = rx * lambda; rxSqr = rx * rx;
-        ry = ry * lambda; rySqr = ry * ry;
-      }
+      var lambda = sqrt((ux * ux) / (rx * rx) + (uy * uy) / (ry * ry));
+      if (lambda > 1.0) { rx *= lambda; ry *= lambda; }
 
-      var b = rxSqr * uySqr + rySqr * uxSqr;
-      var t = rxSqr * rySqr - b;
-
+      var b = rx * rx * uy * uy + ry * ry * ux * ux;
       if (b > -0.00001 && b < 0.00001) b = 0.0;
+
+      var t = rx * rx * ry * ry - b;
       if (t > -0.00001 && t < 0.00001) t = 0.0;
 
       var factor = sqrt(t / b);
