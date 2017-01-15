@@ -144,123 +144,159 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       switch (command) {
 
         case "l": // l dx dy
-          _addCommand("lt", [cx += p[0], cy += p[1]]);
+          for (int i = 0; i <= p.length - 2; i += 2) {
+            _addCommand("lt", [cx += p[i + 0], cy += p[i + 1]]);
+          }
           break;
 
         case "L": // L x y
-          _addCommand("lt", [cx = p[0], cy = p[1]]);
+          for (int i = 0; i <= p.length - 2; i += 2) {
+            _addCommand("lt", [cx = p[i + 0], cy = p[i + 1]]);
+          }
           break;
 
         case 'm': // m dx dy
-          _addCommand("mt", [cx += p[0], cy += p[1]]);
-          startPointX = startPointValid ? startPointX : cx;
-          startPointY = startPointValid ? startPointY : cy;
-          startPointValid = true;
+          for (int i = 0; i <= p.length - 2; i += 2) {
+            _addCommand("mt", [cx += p[i + 0], cy += p[i + 1]]);
+            startPointX = startPointValid ? startPointX : cx;
+            startPointY = startPointValid ? startPointY : cy;
+            startPointValid = true;
+          }
           break;
 
         case 'M': // M x y
-          _addCommand("mt", [cx = p[0], cy = p[1]]);
-          startPointX = startPointValid ? startPointX : cx;
-          startPointY = startPointValid ? startPointY : cy;
-          startPointValid = true;
+          for (int i = 0; i <= p.length - 2; i += 2) {
+            _addCommand("mt", [cx = p[i + 0], cy = p[i + 1]]);
+            startPointX = startPointValid ? startPointX : cx;
+            startPointY = startPointValid ? startPointY : cy;
+            startPointValid = true;
+          }
           break;
 
         case 'h': // h dx
-          _addCommand("lt", [cx += p[0], cy]);
+          for (int i = 0; i <= p.length - 1; i += 1) {
+            _addCommand("lt", [cx += p[i + 0], cy]);
+          }
           break;
 
         case 'H': // H x
-          _addCommand("lt", [cx = p[0], cy]);
+          for (int i = 0; i <= p.length - 1; i += 1) {
+            _addCommand("lt", [cx = p[i + 0], cy]);
+          }
           break;
 
         case 'v': // v dy
-          _addCommand("lt", [cx, cy += p[0]]);
+          for (int i = 0; i <= p.length - 1; i += 1) {
+            _addCommand("lt", [cx, cy += p[i + 0]]);
+          }
           break;
 
         case 'V': // V y
-          _addCommand("lt", [cx, cy = p[0]]);
+          for (int i = 0; i <= p.length - 1; i += 1) {
+            _addCommand("lt", [cx, cy = p[i + 0]]);
+          }
           break;
 
         case 'c': // c dx1 dy1, dx2 dy2, dx dy
-          var x1 = cx + p[0];
-          var y1 = cy + p[1];
-          var x2 = cx + p[2];
-          var y2 = cy + p[3];
-          _addCommand("bc", [x1, y1, x2, y2, cx += p[4], cy += p[5]]);
+          for (int i = 0; i <= p.length - 6; i += 6) {
+            var x1 = cx + p[i + 0];
+            var y1 = cy + p[i + 1];
+            var x2 = cx + p[i + 2];
+            var y2 = cy + p[i + 3];
+            _addCommand("bc", [x1, y1, x2, y2, cx += p[i + 4], cy += p[i + 5]]);
+          }
           break;
 
         case 'C': // C x1 y1, x2 y2, x y
-          var x1 = p[0];
-          var y1 = p[1];
-          var x2 = p[2];
-          var y2 = p[3];
-          _addCommand("bc", [x1, y1, x2, y2, cx = p[4], cy = p[5]]);
+          for (int i = 0; i <= p.length - 6; i += 6) {
+            var x1 = p[i + 0];
+            var y1 = p[i + 1];
+            var x2 = p[i + 2];
+            var y2 = p[i + 3];
+            _addCommand("bc", [x1, y1, x2, y2, cx = p[i + 4], cy = p[i + 5]]);
+          }
           break;
 
         case 's': // s dx2 dy2, dx dy
-          var last = _commands.isNotEmpty ? _commands.last : null;
-          var isbc = last != null && last.method == 'bc';
-          var x1 = cx + (isbc ? (cx - last.parameters[2]) : 0.0);
-          var y1 = cy + (isbc ? (cy - last.parameters[3]) : 0.0);
-          var x2 = p[2];
-          var y2 = p[3];
-          _addCommand("bc", [x1, y1, x2, y2, cx += p[2], cy += p[3]]);
+          for (int i = 0; i <= p.length - 4; i += 4) {
+            var last = _commands.isNotEmpty ? _commands.last : null;
+            var isbc = last != null && last.method == 'bc';
+            var x1 = cx + (isbc ? (cx - last.parameters[2]) : 0.0);
+            var y1 = cy + (isbc ? (cy - last.parameters[3]) : 0.0);
+            var x2 = p[i + 0];
+            var y2 = p[i + 1];
+            _addCommand("bc",[x1, y1, x2, y2, cx += p[i + 2], cy += p[i + 3]]);
+          }
           break;
 
         case 'S': // S x2 y2, x y
-          var last = _commands.isNotEmpty ? _commands.last : null;
-          var isbc = last != null && last.method == 'bc';
-          var x1 = cx + (isbc ? (cx - last.parameters[2]) : 0.0);
-          var y1 = cy + (isbc ? (cy - last.parameters[3]) : 0.0);
-          var x2 = p[2];
-          var y2 = p[3];
-          _addCommand("bc", [x1, y1, x2, y2, cx = p[2], cy = p[3]]);
+          for (int i = 0; i <= p.length - 4; i += 4) {
+            var last = _commands.isNotEmpty ? _commands.last : null;
+            var isbc = last != null && last.method == 'bc';
+            var x1 = cx + (isbc ? (cx - last.parameters[2]) : 0.0);
+            var y1 = cy + (isbc ? (cy - last.parameters[3]) : 0.0);
+            var x2 = p[i + 0];
+            var y2 = p[i + 1];
+            _addCommand("bc", [x1, y1, x2, y2, cx = p[i + 2], cy = p[i + 3]]);
+          }
           break;
 
         case 'q': // q dx1 dy1, dx dy
-          var x1 = cx + p[0];
-          var y1 = cy + p[1];
-          _addCommand("qc", [x1, y1, cx += p[2], cy += p[3]]);
+          for (int i = 0; i <= p.length - 4; i += 4) {
+            var x1 = cx + p[i + 0];
+            var y1 = cy + p[i + 1];
+            _addCommand("qc", [x1, y1, cx += p[i + 2], cy += p[i + 3]]);
+          }
           break;
 
         case 'Q': // Q x1 y1, x y
-          var x1 = p[0];
-          var y1 = p[1];
-          _addCommand("qc", [x1, y1, cx = p[2], cy = p[3]]);
+          for (int i = 0; i <= p.length - 4; i += 4) {
+            var x1 = p[i + 0];
+            var y1 = p[i + 1];
+            _addCommand("qc", [x1, y1, cx = p[i + 2], cy = p[i + 3]]);
+          }
           break;
 
         case 't': // t dx dy
-          var last = _commands.isNotEmpty ? _commands.last : null;
-          var isqc = last != null && last.method == 'qc';
-          var x1 = cx + (isqc ? (cx - last.parameters[0]) : 0.0);
-          var y1 = cy + (isqc ? (cy - last.parameters[1]) : 0.0);
-          _addCommand("qc", [x1, y1, cx += p[0], cy += p[1]]);
+          for (int i = 0; i <= p.length - 2; i += 2) {
+            var last = _commands.isNotEmpty ? _commands.last : null;
+            var isqc = last != null && last.method == 'qc';
+            var x1 = cx + (isqc ? (cx - last.parameters[0]) : 0.0);
+            var y1 = cy + (isqc ? (cy - last.parameters[1]) : 0.0);
+            _addCommand("qc", [x1, y1, cx += p[i + 0], cy += p[i + 1]]);
+          }
           break;
 
         case 'T': // T x y
-          var last = _commands.isNotEmpty ? _commands.last : null;
-          var isqc = last != null && last.method == 'qc';
-          var x1 = cx + (isqc ? (cx - last.parameters[0]) : 0.0);
-          var y1 = cy + (isqc ? (cy - last.parameters[1]) : 0.0);
-          _addCommand("qc", [x1, y1, cx = p[0], cy = p[1]]);
+          for (int i = 0; i <= p.length - 2; i += 2) {
+            var last = _commands.isNotEmpty ? _commands.last : null;
+            var isqc = last != null && last.method == 'qc';
+            var x1 = cx + (isqc ? (cx - last.parameters[0]) : 0.0);
+            var y1 = cy + (isqc ? (cy - last.parameters[1]) : 0.0);
+            _addCommand("qc", [x1, y1, cx = p[i + 0], cy = p[i + 1]]);
+          }
           break;
 
         case 'a': // a rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
-          var rx = p[0];
-          var ry = p[1];
-          var ra = p[2] * PI / 180.0;
-          var fa = p[3] != 0.0;
-          var fs = p[4] != 0.0;
-          _arcElliptical(cx, cy, rx, ry, ra, fa, fs, cx += p[5], cy += p[6]);
+          for (int i = 0; i <= p.length - 7; i += 7) {
+            var rx = p[i + 0];
+            var ry = p[i + 1];
+            var ra = p[i + 2] * PI / 180.0;
+            var fa = p[i + 3] != 0.0;
+            var fs = p[i + 4] != 0.0;
+            _arcElliptical(cx, cy, rx, ry, ra, fa, fs, cx += p[i + 5], cy += p[i + 6]);
+          }
           break;
 
         case 'A': // A rx ry x-axis-rotation large-arc-flag sweep-flag x y
-          var rx = p[0];
-          var ry = p[1];
-          var ra = p[2] * PI / 180.0;
-          var fa = p[3] != 0.0;
-          var fs = p[4] != 0.0;
-          _arcElliptical(cx, cy, rx, ry, ra, fa, fs, cx = p[5], cy = p[6]);
+          for (int i = 0; i <= p.length - 7; i += 7) {
+            var rx = p[i + 0];
+            var ry = p[i + 1];
+            var ra = p[i + 2] * PI / 180.0;
+            var fa = p[i + 3] != 0.0;
+            var fs = p[i + 4] != 0.0;
+            _arcElliptical(cx, cy, rx, ry, ra, fa, fs, cx = p[i + 5], cy = p[i + 6]);
+          }
           break;
 
         case 'z': // z
