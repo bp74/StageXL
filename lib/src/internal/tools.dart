@@ -100,6 +100,12 @@ String ensureString(Object value) {
 
 //-----------------------------------------------------------------------------
 
+bool similar(num a, num b, [num epsilon = 0.0001]) {
+  return (a - epsilon < b) && (a + epsilon > b);
+}
+
+//-----------------------------------------------------------------------------
+
 String getFilenameWithoutExtension(String filename) {
   RegExp regex = new RegExp(r"(.+?)(\.[^.]*$|$)");
   Match match = regex.firstMatch(filename);

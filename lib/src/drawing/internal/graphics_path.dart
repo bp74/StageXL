@@ -171,7 +171,37 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
       double x, double y, double radiusX, double radiusY, double rotation,
       double startAngle, double endAngle, bool antiClockwise) {
 
-    // TODO: implement arcElliptical
+    num tau = 2.0 * PI;
+    num start = (startAngle % tau);
+    num delta = (endAngle % tau) - start;
+
+    if (antiClockwise && endAngle > startAngle) {
+      if (delta >= 0.0) delta -= tau;
+    } else if (antiClockwise && startAngle - endAngle >= tau) {
+      delta = 0.0 - tau;
+    } else if (antiClockwise) {
+      delta = (delta % tau) - tau;
+    } else if (endAngle < startAngle) {
+      if (delta <= 0.0) delta += tau;
+    } else if (endAngle - startAngle >= tau) {
+      delta = 0.0 + tau;
+    } else {
+      delta %= tau;
+    }
+
+    int steps = (60 * delta / tau).abs().ceil();
+    double sinRotation = sin(rotation);
+    double cosRotation = cos(rotation);
+
+    // TODO: Optimize arcElliptical calculation
+
+    for (int s = 0; s <= steps; s++) {
+      var cx = cos(startAngle + s * delta / steps) * radiusX;
+      var cy = sin(startAngle + s * delta / steps) * radiusY;
+      var rx = x + cx * cosRotation - cy * sinRotation;
+      var ry = y + cx * sinRotation + cy * cosRotation;
+      this.lineTo(rx, ry);
+    }
   }
 
   //---------------------------------------------------------------------------
