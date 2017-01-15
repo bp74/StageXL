@@ -113,6 +113,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
   static final RegExp _commandRegExp = new RegExp(r"([a-zA-Z])([^a-zA-Z]+|$)");
   static final RegExp _parameterRegExp = new RegExp(r"\-*\d+(\.\d+)?");
+  static final RegExp _lineBreakRegExp = new RegExp(r"\r\n|\r|\n");
 
   // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
   // https://svgwg.org/svg2-draft/paths.html
@@ -129,6 +130,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
     var startPointX = 0.0;
     var startPointY = 0.0;
     var startPointValid = false;
+    var path = this.path.replaceAll(_lineBreakRegExp, " ");
 
     for (var commandMatch in _commandRegExp.allMatches(path)) {
 
