@@ -151,18 +151,18 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     }
 
     int steps = (60 * delta / tau).abs().ceil();
-    var cosR = cos(delta / steps);
-    var sinR = sin(delta / steps);
-    var tx = x - x * cosR + y * sinR;
-    var ty = y - x * sinR - y * cosR;
-    var ax = x + cos(start) * radius;
-    var ay = y + sin(start) * radius;
+    num cosR = cos(delta / steps);
+    num sinR = sin(delta / steps);
+    num tx = x - x * cosR + y * sinR;
+    num ty = y - x * sinR - y * cosR;
+    num ax = x + cos(start) * radius;
+    num ay = y + sin(start) * radius;
 
     this.lineTo(ax, ay);
 
     for (int s = 1; s <= steps; s++) {
-      var bx = ax * cosR - ay * sinR + tx;
-      var by = ax * sinR + ay * cosR + ty;
+      num bx = ax * cosR - ay * sinR + tx;
+      num by = ax * sinR + ay * cosR + ty;
       _currentSegment.addVertex(ax = bx, ay = by);
     }
   }
@@ -190,16 +190,18 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     }
 
     int steps = (60 * delta / tau).abs().ceil();
-    double sinRotation = sin(rotation);
-    double cosRotation = cos(rotation);
+    num sinRotation = sin(rotation);
+    num cosRotation = cos(rotation);
+    num angleDelta = delta / steps;
+    num angle = startAngle;
 
     // TODO: Optimize arcElliptical calculation
 
-    for (int s = 0; s <= steps; s++) {
-      var cx = cos(startAngle + s * delta / steps) * radiusX;
-      var cy = sin(startAngle + s * delta / steps) * radiusY;
-      var rx = x + cx * cosRotation - cy * sinRotation;
-      var ry = y + cx * sinRotation + cy * cosRotation;
+    for (int s = 0; s <= steps; s++, angle += angleDelta) {
+      num cx = radiusX * cos(angle);
+      num cy = radiusY * sin(angle);
+      num rx = x + cx * cosRotation - cy * sinRotation;
+      num ry = y + cx * sinRotation + cy * cosRotation;
       this.lineTo(rx, ry);
     }
   }
