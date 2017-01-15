@@ -16,6 +16,7 @@ part 'drawing/graphics_gradient.dart';
 part 'drawing/graphics_pattern.dart';
 
 part 'drawing/commands/graphics_command_arc.dart';
+part 'drawing/commands/graphics_command_arc_elliptical.dart';
 part 'drawing/commands/graphics_command_arc_to.dart';
 part 'drawing/commands/graphics_command_begin_path.dart';
 part 'drawing/commands/graphics_command_bezier_curve_to.dart';

@@ -125,6 +125,16 @@ class Graphics {
     return command;
   }
 
+  /// Draw an arc at [x] and [y].
+  GraphicsCommandArcElliptical arcElliptical(
+      double x, double y, double radiusX, double radiusY, double rotation,
+      double startAngle, double endAngle, [bool antiClockwise = false]) {
+    var command = new GraphicsCommandArcElliptical(
+        x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
+    this.addCommand(command);
+    return command;
+  }
+
   /// Draw a circle at [x] and [y]
   GraphicsCommandCircle circle(num x, num y, num radius, [bool antiClockwise = false]) {
     var command = new GraphicsCommandCircle(x, y, radius, antiClockwise);
