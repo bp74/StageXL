@@ -242,7 +242,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           var isqc = last != null && last.method == 'qc';
           var x1 = cpx + (isqc ? (cpx - last.parameters[0]) : 0.0);
           var y1 = cpy + (isqc ? (cpy - last.parameters[1]) : 0.0);
-          _addCommand("qc", [x1, y1, cpx = p[9], cpy = p[1]]);
+          _addCommand("qc", [x1, y1, cpx = p[0], cpy = p[1]]);
           break;
 
         case 'a': // a rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
