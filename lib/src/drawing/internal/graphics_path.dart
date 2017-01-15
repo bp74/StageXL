@@ -130,14 +130,6 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   //---------------------------------------------------------------------------
 
-  void rect(double x, double y, double width, double height) {
-    this.moveTo(x, y);
-    this.lineTo(x + width, y);
-    this.lineTo(x + width, y + height);
-    this.lineTo(x, y + height);
-    this.close();
-  }
-
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
 
     num tau = 2.0 * PI;
@@ -173,6 +165,13 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
       var by = ax * sinR + ay * cosR + ty;
       _currentSegment.addVertex(ax = bx, ay = by);
     }
+  }
+
+  void arcElliptical(
+      double x, double y, double radiusX, double radiusY, double rotation,
+      double startAngle, double endAngle, bool antiClockwise) {
+
+    // TODO: implement arcElliptical
   }
 
   //---------------------------------------------------------------------------

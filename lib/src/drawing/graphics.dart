@@ -199,8 +199,25 @@ class Graphics {
 
   //---------------------------------------------------------------------------
 
+  /// Decode the path that is encoded in the EaselJS format.
+  /// Please use the new [decodePath] method.
+
+  @deprecated
   GraphicsCommandDecode decode(String text) {
-    var command = new GraphicsCommandDecode(text);
+    var command = new GraphicsCommandDecodeEaselJS(text);
+    this.addCommand(command);
+    return command;
+  }
+
+  GraphicsCommandDecode decodePath(String path, [PathEncoding pathEncoding = PathEncoding.SVG]) {
+    GraphicsCommandDecode command;
+    if (pathEncoding == PathEncoding.EaselJS) {
+      command = new GraphicsCommandDecodeEaselJS(path);
+    } else if (pathEncoding == PathEncoding.SVG) {
+      command = new GraphicsCommandDecodeSVG(path);
+    } else {
+      throw new ArgumentError("Unknown path encoding.");
+    }
     this.addCommand(command);
     return command;
   }

@@ -48,7 +48,11 @@ class GraphicsCommandRect extends GraphicsCommand {
 
   @override
   void updateContext(GraphicsContext context) {
-    context.rect(x, y, width, height);
+    context.moveTo(x, y);
+    context.lineTo(x + width, y);
+    context.lineTo(x + width, y + height);
+    context.lineTo(x, y + height);
+    context.closePath();
   }
 
 }
