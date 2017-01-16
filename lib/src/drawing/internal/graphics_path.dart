@@ -190,18 +190,18 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     }
 
     int steps = (60 * delta / tau).abs().ceil();
-    num sinRotation = sin(rotation);
-    num cosRotation = cos(rotation);
+    num sinRotationX = radiusX * sin(rotation);
+    num cosRotationX = radiusX * cos(rotation);
+    num sinRotationY = radiusY * sin(rotation);
+    num cosRotationY = radiusY * cos(rotation);
     num angleDelta = delta / steps;
     num angle = startAngle;
 
-    // TODO: Optimize arcElliptical calculation
-
     for (int s = 0; s <= steps; s++, angle += angleDelta) {
-      num cx = radiusX * cos(angle);
-      num cy = radiusY * sin(angle);
-      num rx = x + cx * cosRotation - cy * sinRotation;
-      num ry = y + cx * sinRotation + cy * cosRotation;
+      num cx = cos(angle);
+      num cy = sin(angle);
+      num rx = x + cx * cosRotationX - cy * sinRotationY;
+      num ry = y + cx * sinRotationX + cy * cosRotationY;
       this.lineTo(rx, ry);
     }
   }

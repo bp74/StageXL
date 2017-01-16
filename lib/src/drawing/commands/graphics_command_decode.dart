@@ -1,19 +1,11 @@
 part of stagexl.drawing;
 
-class _GraphicsCommandDecodeCommand {
-  final String method;
-  final Float32List parameters;
-  _GraphicsCommandDecodeCommand(this.method, this.parameters);
-}
-
 enum PathEncoding { SVG, EaselJS }
-
-//------------------------------------------------------------------------------
 
 abstract class GraphicsCommandDecode extends GraphicsCommand {
 
   String _path = "";
-  final List<_GraphicsCommandDecodeCommand> _commands = new List<_GraphicsCommandDecodeCommand>();
+  final List<GraphicsCommand> _commands = new List<GraphicsCommand>();
 
   String get path => _path;
 
@@ -27,23 +19,12 @@ abstract class GraphicsCommandDecode extends GraphicsCommand {
   @override
   void updateContext(GraphicsContext context) {
     for (int i = 0; i < _commands.length; i++) {
-      var command = _commands[i];
-      var p = command.parameters;
-      switch (command.method) {
-        case "mt": context.moveTo(p[0], p[1]); break;
-        case "lt": context.lineTo(p[0], p[1]); break;
-        case "qc": context.quadraticCurveTo(p[0], p[1], p[2], p[3]); break;
-        case "bc": context.bezierCurveTo(p[0], p[1], p[2], p[3], p[4], p[5]); break;
-        case "ac": context.arc(p[0], p[1], p[2], p[3], p[4], p[5] != 0.0); break;
-        case "ae": context.arcElliptical(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7] != 0.0); break;
-        case "cp": context.closePath(); break;
-      }
+      _commands[i].updateContext(context);
     }
   }
 
-  void _addCommand(String method, List<double> parameters) {
-    var p = new Float32List.fromList(parameters);
-    _commands.add(new _GraphicsCommandDecodeCommand(method, p));
+  void _add(GraphicsCommand command) {
+    _commands.add(command);
   }
 
   void _decodePath();
@@ -71,19 +52,16 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
   @override
   void _decodePath() {
 
-    var methodNames = ["mt", "lt", "qc", "bc", "cp"];
     var paramCounts = [2, 2, 4, 6, 0];
     var path = this.path;
     var x = 0.0;
     var y = 0.0;
 
     for (int i = 0; i < path.length; ) {
-
       var n = _BASE_64[path[i]];
       var m = (n >> 3);
       var l = (n >> 2 & 1) + 2;
 
-      var f = methodNames[m];
       var c = paramCounts[m];
       var p = new Float32List(c);
       i++;
@@ -93,15 +71,39 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
       for (var j = 0; j < c; j++) {
         var v = _BASE_64[path[i]];
         var s = (v >> 5) > 0 ? -1.0 : 1.0;
-        v = ((v & 31) << 6) | (_BASE_64[path[i + 1]]);
-        if (l == 3) v = (v << 6) | (_BASE_64[path[i + 2]]);
+        v = ((v & 31) << 6) | _BASE_64[path[i + 1]];
+        if (l == 3) v = (v << 6) | _BASE_64[path[i + 2]];
         var w = s * v / 10.0;
         if (j % 2 > 0) x = (w += x); else y = (w += y);
         p[j] = w.toDouble();
         i += l;
       }
 
-      _addCommand(f, p);
+      if (m == 0) {
+        num x = p[0];
+        num y = p[1];
+        _add(new GraphicsCommandMoveTo(x, y));
+      } else if (m == 1) {
+        num x = p[0];
+        num y = p[1];
+        _add(new GraphicsCommandLineTo(x, y));
+      } else if (m == 2) {
+        num cx = p[0];
+        num cy = p[1];
+        num ex = p[2];
+        num ey = p[3];
+        _add(new GraphicsCommandQuadraticCurveTo(cx, cy, ex, ey));
+      } else if (m == 3) {
+        num cx1 = p[0];
+        num cy1 = p[1];
+        num cx2 = p[2];
+        num cy2 = p[3];
+        num ex = p[4];
+        num ey = p[5];
+        _add(new GraphicsCommandBezierCurveTo(cx1, cy1, cx2, cy2, ex, ey));
+      } else if (m == 4) {
+        _add(new GraphicsCommandClosePath());
+      }
     }
   }
 }
@@ -147,19 +149,19 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
         case "l": // l dx dy
           for (int i = 0; i <= p.length - 2; i += 2) {
-            _addCommand("lt", [cx += p[i + 0], cy += p[i + 1]]);
+            _add(new GraphicsCommandLineTo(cx += p[i + 0], cy += p[i + 1]));
           }
           break;
 
         case "L": // L x y
           for (int i = 0; i <= p.length - 2; i += 2) {
-            _addCommand("lt", [cx = p[i + 0], cy = p[i + 1]]);
+            _add(new GraphicsCommandLineTo(cx = p[i + 0], cy = p[i + 1]));
           }
           break;
 
         case 'm': // m dx dy
           for (int i = 0; i <= p.length - 2; i += 2) {
-            _addCommand("mt", [cx += p[i + 0], cy += p[i + 1]]);
+            _add(new GraphicsCommandMoveTo(cx += p[i + 0], cy += p[i + 1]));
             startPointX = startPointValid ? startPointX : cx;
             startPointY = startPointValid ? startPointY : cy;
             startPointValid = true;
@@ -168,7 +170,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
         case 'M': // M x y
           for (int i = 0; i <= p.length - 2; i += 2) {
-            _addCommand("mt", [cx = p[i + 0], cy = p[i + 1]]);
+            _add(new GraphicsCommandMoveTo(cx = p[i + 0], cy = p[i + 1]));
             startPointX = startPointValid ? startPointX : cx;
             startPointY = startPointValid ? startPointY : cy;
             startPointValid = true;
@@ -177,25 +179,25 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
         case 'h': // h dx
           for (int i = 0; i <= p.length - 1; i += 1) {
-            _addCommand("lt", [cx += p[i + 0], cy]);
+            _add(new GraphicsCommandLineTo(cx += p[i], cy));
           }
           break;
 
         case 'H': // H x
           for (int i = 0; i <= p.length - 1; i += 1) {
-            _addCommand("lt", [cx = p[i + 0], cy]);
+            _add(new GraphicsCommandLineTo(cx = p[i], cy));
           }
           break;
 
         case 'v': // v dy
           for (int i = 0; i <= p.length - 1; i += 1) {
-            _addCommand("lt", [cx, cy += p[i + 0]]);
+            _add(new GraphicsCommandLineTo(cx, cy += p[i]));
           }
           break;
 
         case 'V': // V y
           for (int i = 0; i <= p.length - 1; i += 1) {
-            _addCommand("lt", [cx, cy = p[i + 0]]);
+            _add(new GraphicsCommandLineTo(cx, cy = p[i]));
           }
           break;
 
@@ -205,7 +207,9 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y1 = cy + p[i + 1];
             var x2 = cx + p[i + 2];
             var y2 = cy + p[i + 3];
-            _addCommand("bc", [x1, y1, x2, y2, cx += p[i + 4], cy += p[i + 5]]);
+            var ex = cx += p[i + 4];
+            var ey = cy += p[i + 5];
+            _add(new GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
           }
           break;
 
@@ -215,31 +219,39 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y1 = p[i + 1];
             var x2 = p[i + 2];
             var y2 = p[i + 3];
-            _addCommand("bc", [x1, y1, x2, y2, cx = p[i + 4], cy = p[i + 5]]);
+            var ex = cx = p[i + 4];
+            var ey = cy = p[i + 5];
+            _add(new GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
           }
           break;
 
         case 's': // s dx2 dy2, dx dy
           for (int i = 0; i <= p.length - 4; i += 4) {
-            var last = _commands.isNotEmpty ? _commands.last : null;
-            var isbc = last != null && last.method == 'bc';
-            var x1 = cx + (isbc ? (cx - last.parameters[2]) : 0.0);
-            var y1 = cy + (isbc ? (cy - last.parameters[3]) : 0.0);
-            var x2 = p[i + 0];
-            var y2 = p[i + 1];
-            _addCommand("bc",[x1, y1, x2, y2, cx += p[i + 2], cy += p[i + 3]]);
+            var l = _commands.isNotEmpty ? _commands.last : null;
+            var lx = l is GraphicsCommandBezierCurveTo ? cx - l.controlX2 : 0.0;
+            var ly = l is GraphicsCommandBezierCurveTo ? cy - l.controlX2 : 0.0;
+            var x1 = cx + lx;
+            var y1 = cy + ly;
+            var x2 = cx + p[i + 0];
+            var y2 = cy + p[i + 1];
+            var ex = cx += p[i + 2];
+            var ey = cy += p[i + 3];
+            _add(new GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
           }
           break;
 
         case 'S': // S x2 y2, x y
           for (int i = 0; i <= p.length - 4; i += 4) {
-            var last = _commands.isNotEmpty ? _commands.last : null;
-            var isbc = last != null && last.method == 'bc';
-            var x1 = cx + (isbc ? (cx - last.parameters[2]) : 0.0);
-            var y1 = cy + (isbc ? (cy - last.parameters[3]) : 0.0);
+            var l = _commands.isNotEmpty ? _commands.last : null;
+            var lx = l is GraphicsCommandBezierCurveTo ? cx - l.controlX2 : 0.0;
+            var ly = l is GraphicsCommandBezierCurveTo ? cy - l.controlX2 : 0.0;
+            var x1 = cx + lx;
+            var y1 = cy + ly;
             var x2 = p[i + 0];
             var y2 = p[i + 1];
-            _addCommand("bc", [x1, y1, x2, y2, cx = p[i + 2], cy = p[i + 3]]);
+            var ex = cx = p[i + 2];
+            var ey = cy = p[i + 3];
+            _add(new GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
           }
           break;
 
@@ -247,7 +259,9 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           for (int i = 0; i <= p.length - 4; i += 4) {
             var x1 = cx + p[i + 0];
             var y1 = cy + p[i + 1];
-            _addCommand("qc", [x1, y1, cx += p[i + 2], cy += p[i + 3]]);
+            var ex = cx += p[i + 2];
+            var ey = cy += p[i + 3];
+            _add(new GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
           }
           break;
 
@@ -255,49 +269,65 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           for (int i = 0; i <= p.length - 4; i += 4) {
             var x1 = p[i + 0];
             var y1 = p[i + 1];
-            _addCommand("qc", [x1, y1, cx = p[i + 2], cy = p[i + 3]]);
+            var ex = cx = p[i + 2];
+            var ey = cy = p[i + 3];
+            _add(new GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
           }
           break;
 
         case 't': // t dx dy
           for (int i = 0; i <= p.length - 2; i += 2) {
-            var last = _commands.isNotEmpty ? _commands.last : null;
-            var isqc = last != null && last.method == 'qc';
-            var x1 = cx + (isqc ? (cx - last.parameters[0]) : 0.0);
-            var y1 = cy + (isqc ? (cy - last.parameters[1]) : 0.0);
-            _addCommand("qc", [x1, y1, cx += p[i + 0], cy += p[i + 1]]);
+            var l = _commands.isNotEmpty ? _commands.last : null;
+            var lx = l is GraphicsCommandQuadraticCurveTo ? cx - l.controlX : 0.0;
+            var ly = l is GraphicsCommandQuadraticCurveTo ? cy - l.controlY : 0.0;
+            var x1 = cx + lx;
+            var y1 = cy + ly;
+            var ex = cx += p[i + 2];
+            var ey = cy += p[i + 3];
+            _add(new GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
           }
           break;
 
         case 'T': // T x y
           for (int i = 0; i <= p.length - 2; i += 2) {
-            var last = _commands.isNotEmpty ? _commands.last : null;
-            var isqc = last != null && last.method == 'qc';
-            var x1 = cx + (isqc ? (cx - last.parameters[0]) : 0.0);
-            var y1 = cy + (isqc ? (cy - last.parameters[1]) : 0.0);
-            _addCommand("qc", [x1, y1, cx = p[i + 0], cy = p[i + 1]]);
+            var l = _commands.isNotEmpty ? _commands.last : null;
+            var lx = l is GraphicsCommandQuadraticCurveTo ? cx - l.controlX : 0.0;
+            var ly = l is GraphicsCommandQuadraticCurveTo ? cy - l.controlY : 0.0;
+            var x1 = cx + lx;
+            var y1 = cy + ly;
+            var ex = cx = p[i + 2];
+            var ey = cy = p[i + 3];
+            _add(new GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
           }
           break;
 
         case 'a': // a rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
           for (int i = 0; i <= p.length - 7; i += 7) {
+            var sx = cx;
+            var sy = cy;
             var rx = p[i + 0];
             var ry = p[i + 1];
             var ra = p[i + 2] * PI / 180.0;
             var fa = p[i + 3] != 0.0;
             var fs = p[i + 4] != 0.0;
-            _arcElliptical(cx, cy, rx, ry, ra, fa, fs, cx += p[i + 5], cy += p[i + 6]);
+            var ex = cx += p[i + 5];
+            var ey = cy += p[i + 6];
+            _arcElliptical(sx, sy, rx, ry, ra, fa, fs, ex, ey);
           }
           break;
 
         case 'A': // A rx ry x-axis-rotation large-arc-flag sweep-flag x y
           for (int i = 0; i <= p.length - 7; i += 7) {
+            var sx = cx;
+            var sy = cy;
             var rx = p[i + 0];
             var ry = p[i + 1];
             var ra = p[i + 2] * PI / 180.0;
             var fa = p[i + 3] != 0.0;
             var fs = p[i + 4] != 0.0;
-            _arcElliptical(cx, cy, rx, ry, ra, fa, fs, cx = p[i + 5], cy = p[i + 6]);
+            var ex = cx = p[i + 5];
+            var ey = cy = p[i + 6];
+            _arcElliptical(sx, sy, rx, ry, ra, fa, fs, ex, ey);
           }
           break;
 
@@ -306,8 +336,8 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           cx = startPointValid ? startPointX : 0.0;
           cy = startPointValid ? startPointY : 0.0;
           startPointValid = false;
-          _addCommand("cp", []);
-          _addCommand("mt", [cx, cy]);
+          _add(new GraphicsCommandClosePath());
+          _add(new GraphicsCommandMoveTo(cx, cy));
           break;
       }
     }
@@ -320,7 +350,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
     if (radiusX == 0.0 || radiusY == 0.0) {
 
-      _addCommand("lt", [endX, endY]);
+      _add(new GraphicsCommandLineTo(endX, endY));
 
     } else {
 
@@ -353,9 +383,10 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       var cy = my + sinRotation * vx - cosRotation * vy;
       var a1 = atan2((uy + vy) * rx, (ux - vx) * ry);
       var a2 = atan2((vy - uy) * rx, (-ux - vx) * ry);
-      var antiClockwise = sweepFlag ? 0.0 : 1.0;
+      var antiClockwise = sweepFlag ? false : true;
 
-      _addCommand("ae", [cx, cy, rx, ry, rotation, a1, a2, antiClockwise]);
+      _add(new GraphicsCommandArcElliptical(
+          cx, cy, rx, ry, rotation, a1, a2, antiClockwise));
     }
   }
 }
