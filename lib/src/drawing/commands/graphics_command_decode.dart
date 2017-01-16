@@ -35,72 +35,57 @@ abstract class GraphicsCommandDecode extends GraphicsCommand {
 
 class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
 
-  static const Map<String, int> _BASE_64 = const <String, int>{
-    "A": 0,"B": 1,"C": 2,"D": 3,"E": 4,"F": 5,"G": 6,"H": 7,
-    "I": 8,"J": 9,"K":10,"L":11,"M":12,"N":13,"O":14,"P":15,
-    "Q":16,"R":17,"S":18,"T":19,"U":20,"V":21,"W":22,"X":23,
-    "Y":24,"Z":25,"a":26,"b":27,"c":28,"d":29,"e":30,"f":31,
-    "g":32,"h":33,"i":34,"j":35,"k":36,"l":37,"m":38,"n":39,
-    "o":40,"p":41,"q":42,"r":43,"s":44,"t":45,"u":46,"v":47,
-    "w":48,"x":49,"y":50,"z":51,"0":52,"1":53,"2":54,"3":55,
-    "4":56,"5":57,"6":58,"7":59,"8":60,"9":61,"+":62,"/":63};
-
   GraphicsCommandDecodeEaselJS(String path) {
     this.path = path;
+  }
+
+  int _base64(int codeUnit) {
+    if (codeUnit >= 0x41 && codeUnit <= 0x5A) return codeUnit - 0x41 + 0;
+    if (codeUnit >= 0x61 && codeUnit <= 0x7A) return codeUnit - 0x61 + 26;
+    if (codeUnit >= 0x30 && codeUnit <= 0x39) return codeUnit - 0x30 + 52;
+    if (codeUnit == 0x2B) return 62;
+    if (codeUnit == 0x2F) return 63;
+    return 0;
   }
 
   @override
   void _decodePath() {
 
     var paramCounts = [2, 2, 4, 6, 0];
+    var p = new Float32List(8);
     var path = this.path;
     var x = 0.0;
     var y = 0.0;
+    var w = 0.0;
 
     for (int i = 0; i < path.length; ) {
-      var n = _BASE_64[path[i]];
+
+      var n = _base64(path.codeUnitAt(i++));
       var m = (n >> 3);
       var l = (n >> 2 & 1) + 2;
-
-      var c = paramCounts[m];
-      var p = new Float32List(c);
-      i++;
+      var v = 0;
 
       if (m == 0) x = y = 0.0;
 
-      for (var j = 0; j < c; j++) {
-        var v = _BASE_64[path[i]];
-        var s = (v >> 5) > 0 ? -1.0 : 1.0;
-        v = ((v & 31) << 6) | _BASE_64[path[i + 1]];
-        if (l == 3) v = (v << 6) | _BASE_64[path[i + 2]];
-        var w = s * v / 10.0;
-        if (j % 2 > 0) x = (w += x); else y = (w += y);
-        p[j] = w.toDouble();
-        i += l;
+      for (var j = 0; j < paramCounts[m]; j++) {
+        n = _base64(path.codeUnitAt(i++));
+        v = n & 31;
+        v = (l >= 2) ? (v << 6) | _base64(path.codeUnitAt(i++)) : v;
+        v = (l >= 3) ? (v << 6) | _base64(path.codeUnitAt(i++)) : v;
+        w = (n < 32) ? v / 10.0 : 0.0 - v / 10.0;
+        x = (j & 1) == 0 ? w += x : x;
+        y = (j & 1) == 1 ? w += y : y;
+        p[j] = w;
       }
 
       if (m == 0) {
-        num x = p[0];
-        num y = p[1];
         _add(new GraphicsCommandMoveTo(x, y));
       } else if (m == 1) {
-        num x = p[0];
-        num y = p[1];
         _add(new GraphicsCommandLineTo(x, y));
       } else if (m == 2) {
-        num cx = p[0];
-        num cy = p[1];
-        num ex = p[2];
-        num ey = p[3];
-        _add(new GraphicsCommandQuadraticCurveTo(cx, cy, ex, ey));
+        _add(new GraphicsCommandQuadraticCurveTo(p[0], p[1], x, y));
       } else if (m == 3) {
-        num cx1 = p[0];
-        num cy1 = p[1];
-        num cx2 = p[2];
-        num cy2 = p[3];
-        num ex = p[4];
-        num ey = p[5];
-        _add(new GraphicsCommandBezierCurveTo(cx1, cy1, cx2, cy2, ex, ey));
+        _add(new GraphicsCommandBezierCurveTo(p[0], p[1], p[2], p[3], x, y));
       } else if (m == 4) {
         _add(new GraphicsCommandClosePath());
       }
