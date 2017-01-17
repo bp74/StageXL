@@ -350,13 +350,13 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       var ux = cosRotation * sx + sinRotation * sy;
       var uy = cosRotation * sy - sinRotation * sx;
 
-      var lambda = sqrt((ux * ux) / (rx * rx) + (uy * uy) / (ry * ry));
-      if (lambda > 1.0) { rx *= lambda; ry *= lambda; }
+      var l = sqrt(pow(ux / rx, 2) + pow(uy / ry, 2));
+      if (l > 1.0) { rx = rx * l; ry = ry * l; }
 
-      var b = rx * rx * uy * uy + ry * ry * ux * ux;
+      var b = pow(uy * rx, 2) + pow(ux * ry, 2);
       if (b > -0.00001 && b < 0.00001) b = 0.0;
 
-      var t = rx * rx * ry * ry - b;
+      var t = pow(rx * ry, 2) - b;
       if (t > -0.00001 && t < 0.00001) t = 0.0;
 
       var factor = sqrt(t / b);
