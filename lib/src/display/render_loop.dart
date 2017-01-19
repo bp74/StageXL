@@ -4,13 +4,13 @@ class RenderLoop extends RenderLoopBase {
 
   final Juggler juggler = new Juggler();
 
-  List<Stage> _stages = new List<Stage>();
-  bool _invalidate = false;
-  num _currentTime = 0.0;
+  List<Stage> stages = new List<Stage>();
+  bool bInvalidate = false;
+  num currentTime = 0.0;
 
-  EnterFrameEvent _enterFrameEvent = new EnterFrameEvent(0);
-  ExitFrameEvent _exitFrameEvent = new ExitFrameEvent();
-  RenderEvent _renderEvent = new RenderEvent();
+  EnterFrameEvent enterFrameEvent = new EnterFrameEvent(0);
+  ExitFrameEvent exitFrameEvent = new ExitFrameEvent();
+  RenderEvent renderEvent = new RenderEvent();
 
   RenderLoop() {
     this.start();
@@ -19,7 +19,7 @@ class RenderLoop extends RenderLoopBase {
   //-------------------------------------------------------------------------------------------------
 
   void invalidate() {
-    _invalidate = true;
+    bInvalidate = true;
   }
 
   void addStage(Stage stage) {
@@ -28,14 +28,14 @@ class RenderLoop extends RenderLoopBase {
       stage.renderLoop.removeStage(stage);
     }
 
-    _stages.add(stage);
+    stages.add(stage);
     stage._renderLoop = this;
   }
 
   void removeStage(Stage stage) {
 
     if (stage.renderLoop == this) {
-      _stages.remove(stage);
+      stages.remove(stage);
       stage._renderLoop = null;
     }
   }
@@ -45,26 +45,26 @@ class RenderLoop extends RenderLoopBase {
   @override
   void advanceTime(num deltaTime) {
 
-    _currentTime += deltaTime;
+    currentTime += deltaTime;
 
-    _enterFrameEvent.passedTime = deltaTime;
-    _enterFrameEvent.dispatch();
+    enterFrameEvent.passedTime = deltaTime;
+    enterFrameEvent.dispatch();
 
     juggler.advanceTime(deltaTime);
 
-    for (int i = 0; i < _stages.length; i++) {
-      _stages[i].juggler.advanceTime(deltaTime);
+    for (int i = 0; i < stages.length; i++) {
+      stages[i].juggler.advanceTime(deltaTime);
     }
 
-    if (_invalidate) {
-      _invalidate = false;
-      _renderEvent.dispatch();
+    if (bInvalidate) {
+      bInvalidate = false;
+      renderEvent.dispatch();
     }
 
-    for (int i = 0; i < _stages.length; i++) {
-      _stages[i].materialize(_currentTime, deltaTime);
+    for (int i = 0; i < stages.length; i++) {
+      stages[i].materialize(currentTime, deltaTime);
     }
 
-    _exitFrameEvent.dispatch();
+    exitFrameEvent.dispatch();
   }
 }

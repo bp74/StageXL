@@ -58,6 +58,10 @@ class Juggler implements Animatable {
 
   /// The elapsed time since the juggler has started.
 
+  bool get hasAnimatables => _firstAnimatableLink.animatable != null;
+
+  /// The elapsed time since the juggler has started.
+
   num get elapsedTime => _elapsedTime;
 
   /// A stream of [elapsedTime] changes.
