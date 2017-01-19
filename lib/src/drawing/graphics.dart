@@ -42,7 +42,9 @@ class Graphics {
   /// Clear all previously added graphics commands.
 
   void clear() {
-    _originalCommands.forEach((c) => c._setGraphics(null));
+    for (var c in _originalCommands) {
+      c._setGraphics(null);
+    }
     _originalCommands.clear();
     _invalidate();
   }
@@ -123,6 +125,16 @@ class Graphics {
     return command;
   }
 
+  /// Draw an arc at [x] and [y].
+  GraphicsCommandArcElliptical arcElliptical(
+      double x, double y, double radiusX, double radiusY, double rotation,
+      double startAngle, double endAngle, [bool antiClockwise = false]) {
+    var command = new GraphicsCommandArcElliptical(
+        x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
+    this.addCommand(command);
+    return command;
+  }
+
   /// Draw a circle at [x] and [y]
   GraphicsCommandCircle circle(num x, num y, num radius, [bool antiClockwise = false]) {
     var command = new GraphicsCommandCircle(x, y, radius, antiClockwise);
@@ -197,8 +209,25 @@ class Graphics {
 
   //---------------------------------------------------------------------------
 
+  /// Decode the path that is encoded in the EaselJS format.
+  /// Please use the new [decodePath] method.
+
+  @deprecated
   GraphicsCommandDecode decode(String text) {
-    var command = new GraphicsCommandDecode(text);
+    var command = new GraphicsCommandDecodeEaselJS(text);
+    this.addCommand(command);
+    return command;
+  }
+
+  GraphicsCommandDecode decodePath(String path, [PathEncoding pathEncoding = PathEncoding.SVG]) {
+    GraphicsCommandDecode command;
+    if (pathEncoding == PathEncoding.EaselJS) {
+      command = new GraphicsCommandDecodeEaselJS(path);
+    } else if (pathEncoding == PathEncoding.SVG) {
+      command = new GraphicsCommandDecodeSVG(path);
+    } else {
+      throw new ArgumentError("Unknown path encoding.");
+    }
     this.addCommand(command);
     return command;
   }
@@ -254,9 +283,11 @@ class Graphics {
   //---------------------------------------------------------------------------
 
   List<GraphicsCommand> _getCommands(bool useCompiled) {
-    if (useCompiled && _compiledCommands.length == 0) {
+    if (useCompiled && _compiledCommands.isEmpty) {
       var context = new _GraphicsContextCompiler(_compiledCommands);
-      _originalCommands.forEach((c) => c.updateContext(context));
+      for (var c in _originalCommands) {
+        c.updateContext(context);
+      }
     }
     return useCompiled ? _compiledCommands : _originalCommands;
   }

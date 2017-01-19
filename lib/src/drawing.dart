@@ -1,7 +1,7 @@
 library stagexl.drawing;
 
 import 'dart:typed_data';
-import 'dart:math' show PI, sqrt, sin, cos, tan, atan2;
+import 'dart:math' show PI, sqrt, sin, cos, tan, atan2, pow;
 import 'dart:html' show CanvasRenderingContext2D, CanvasGradient, CanvasPattern;
 
 import 'geom.dart';
@@ -16,6 +16,7 @@ part 'drawing/graphics_gradient.dart';
 part 'drawing/graphics_pattern.dart';
 
 part 'drawing/commands/graphics_command_arc.dart';
+part 'drawing/commands/graphics_command_arc_elliptical.dart';
 part 'drawing/commands/graphics_command_arc_to.dart';
 part 'drawing/commands/graphics_command_begin_path.dart';
 part 'drawing/commands/graphics_command_bezier_curve_to.dart';

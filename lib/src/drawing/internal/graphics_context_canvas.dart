@@ -55,13 +55,19 @@ class _GraphicsContextCanvas extends GraphicsContext {
   }
 
   @override
-  void rect(double x, double y, double width, double height) {
-    _canvasContext.rect(x, y, width, height);
+  void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
+    _canvasContext.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
 
   @override
-  void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
-    _canvasContext.arc(x, y, radius, startAngle, endAngle, antiClockwise);
+  void arcElliptical(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, bool antiClockwise) {
+    _canvasContext.translate(x, y);
+    _canvasContext.rotate(rotation);
+    _canvasContext.scale(radiusX, radiusY);
+    _canvasContext.arc(0.0, 0.0, 1.0, startAngle, endAngle, antiClockwise);
+    _canvasContext.scale(1.0 / radiusX, 1.0 / radiusY);
+    _canvasContext.rotate(0.0 - rotation);
+    _canvasContext.translate(0.0 - x, 0.0 - y);
   }
 
   //---------------------------------------------------------------------------

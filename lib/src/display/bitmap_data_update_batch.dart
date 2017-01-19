@@ -12,9 +12,10 @@ class BitmapDataUpdateBatch {
   final RenderContextCanvas _renderContext;
   final Matrix _drawMatrix;
 
-  BitmapDataUpdateBatch(BitmapData bitmapData) : bitmapData = bitmapData,
-    _renderContext = new RenderContextCanvas(bitmapData.renderTexture.canvas),
-    _drawMatrix = bitmapData.renderTextureQuad.drawMatrix;
+  BitmapDataUpdateBatch(BitmapData bitmapData)
+      : bitmapData = bitmapData,
+        _renderContext = new RenderContextCanvas(bitmapData.renderTexture.canvas),
+        _drawMatrix = bitmapData.renderTextureQuad.drawMatrix;
 
   //---------------------------------------------------------------------------
 
@@ -84,8 +85,7 @@ class BitmapDataUpdateBatch {
 
   void clear() {
     _renderContext.setTransform(_drawMatrix);
-    _renderContext.rawContext.clearRect(
-        0, 0, this.bitmapData.width, this.bitmapData.height);
+    _renderContext.rawContext.clearRect(0, 0, this.bitmapData.width, this.bitmapData.height);
   }
 
   //---------------------------------------------------------------------------
@@ -93,8 +93,7 @@ class BitmapDataUpdateBatch {
   void fillRect(Rectangle<num> rectangle, int color) {
     _renderContext.setTransform(_drawMatrix);
     _renderContext.rawContext.fillStyle = color2rgba(color);
-    _renderContext.rawContext.fillRect(
-        rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+    _renderContext.rawContext.fillRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
   }
 
   //---------------------------------------------------------------------------

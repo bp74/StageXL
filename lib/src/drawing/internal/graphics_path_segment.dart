@@ -31,9 +31,9 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
 
   @override
   int addVertex(double x, double y) {
-    var offset = _vertexCount * 2;
-    var buffer = _vertexBuffer;
-    if (offset == 0 || buffer[offset - 2] != x || buffer[offset - 1] != y) {
+    var buf = _vertexBuffer;
+    var ofs = _vertexCount * 2;
+    if (ofs == 0 || !similar(buf[ofs - 2], x) || !similar(buf[ofs - 1], y)) {
       _indexCount = 0;
       _clockwise = null;
       return super.addVertex(x, y);

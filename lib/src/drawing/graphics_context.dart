@@ -18,9 +18,9 @@ abstract class GraphicsContext {
 
   void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY);
 
-  void rect(double x, double y, double width, double height);
-
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise);
+
+  void arcElliptical(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, bool antiClockwise);
 
   //---------------------------------------------------------------------------
 

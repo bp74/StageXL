@@ -40,13 +40,16 @@ abstract class _GraphicsContextBase extends GraphicsContext {
   }
 
   @override
-  void rect(double x, double y, double width, double height) {
-    _path.rect(x, y, width, height);
+  void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
+    _path.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
 
   @override
-  void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
-    _path.arc(x, y, radius, startAngle, endAngle, antiClockwise);
+  void arcElliptical(
+      double x, double y, double radiusX, double radiusY, double rotation,
+      double startAngle, double endAngle, bool antiClockwise) {
+
+    _path.arcElliptical(x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
   }
 
   //---------------------------------------------------------------------------

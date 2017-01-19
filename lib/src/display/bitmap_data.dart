@@ -24,10 +24,10 @@ class BitmapData implements BitmapDrawable {
 
   static BitmapDataLoadOptions defaultLoadOptions = new BitmapDataLoadOptions();
 
-  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad) :
-    this.renderTextureQuad = renderTextureQuad,
-    this.width = renderTextureQuad.targetWidth,
-    this.height = renderTextureQuad.targetHeight;
+  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad)
+      : this.renderTextureQuad = renderTextureQuad,
+        this.width = renderTextureQuad.targetWidth,
+        this.height = renderTextureQuad.targetHeight;
 
   //----------------------------------------------------------------------------
 
@@ -118,9 +118,8 @@ class BitmapData implements BitmapDrawable {
   /// additional margin for each frame, you can specify this with the spacing or
   /// margin parameter (in pixel).
 
-  List<BitmapData> sliceIntoFrames(num frameWidth, num frameHeight, {
-    int frameCount: null, num frameSpacing: 0, num frameMargin: 0 }) {
-
+  List<BitmapData> sliceIntoFrames(num frameWidth, num frameHeight,
+      {int frameCount: null, num frameSpacing: 0, num frameMargin: 0}) {
     var cols = (width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
     var rows = (height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
     var frames = new List<BitmapData>();

@@ -130,14 +130,6 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   //---------------------------------------------------------------------------
 
-  void rect(double x, double y, double width, double height) {
-    this.moveTo(x, y);
-    this.lineTo(x + width, y);
-    this.lineTo(x + width, y + height);
-    this.lineTo(x, y + height);
-    this.close();
-  }
-
   void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
 
     num tau = 2.0 * PI;
@@ -159,19 +151,58 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     }
 
     int steps = (60 * delta / tau).abs().ceil();
-    var cosR = cos(delta / steps);
-    var sinR = sin(delta / steps);
-    var tx = x - x * cosR + y * sinR;
-    var ty = y - x * sinR - y * cosR;
-    var ax = x + cos(start) * radius;
-    var ay = y + sin(start) * radius;
+    num cosR = cos(delta / steps);
+    num sinR = sin(delta / steps);
+    num tx = x - x * cosR + y * sinR;
+    num ty = y - x * sinR - y * cosR;
+    num ax = x + cos(start) * radius;
+    num ay = y + sin(start) * radius;
 
     this.lineTo(ax, ay);
 
     for (int s = 1; s <= steps; s++) {
-      var bx = ax * cosR - ay * sinR + tx;
-      var by = ax * sinR + ay * cosR + ty;
+      num bx = ax * cosR - ay * sinR + tx;
+      num by = ax * sinR + ay * cosR + ty;
       _currentSegment.addVertex(ax = bx, ay = by);
+    }
+  }
+
+  void arcElliptical(
+      double x, double y, double radiusX, double radiusY, double rotation,
+      double startAngle, double endAngle, bool antiClockwise) {
+
+    num tau = 2.0 * PI;
+    num start = (startAngle % tau);
+    num delta = (endAngle % tau) - start;
+
+    if (antiClockwise && endAngle > startAngle) {
+      if (delta >= 0.0) delta -= tau;
+    } else if (antiClockwise && startAngle - endAngle >= tau) {
+      delta = 0.0 - tau;
+    } else if (antiClockwise) {
+      delta = (delta % tau) - tau;
+    } else if (endAngle < startAngle) {
+      if (delta <= 0.0) delta += tau;
+    } else if (endAngle - startAngle >= tau) {
+      delta = 0.0 + tau;
+    } else {
+      delta %= tau;
+    }
+
+    int steps = (60 * delta / tau).abs().ceil();
+    num sinRotationX = radiusX * sin(rotation);
+    num cosRotationX = radiusX * cos(rotation);
+    num sinRotationY = radiusY * sin(rotation);
+    num cosRotationY = radiusY * cos(rotation);
+    num angleDelta = delta / steps;
+    num angle = startAngle;
+
+    for (int s = 0; s <= steps; s++, angle += angleDelta) {
+      num cx = cos(angle);
+      num cy = sin(angle);
+      num rx = x + cx * cosRotationX - cy * sinRotationY;
+      num ry = y + cx * sinRotationX + cy * cosRotationY;
+      this.lineTo(rx, ry);
     }
   }
 

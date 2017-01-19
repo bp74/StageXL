@@ -37,13 +37,10 @@ class Translation implements Animatable {
   bool _started = false;
 
   /// Creates a new [Translation].
-  Translation(num startValue, num targetValue, num time, [
-              TransitionFunction transition = Transition.linear]) :
-
-    _startValue = startValue,
-    _targetValue = targetValue,
-    _transition = transition {
-
+  Translation(num startValue, num targetValue, num time, [TransitionFunction transition = Transition.linear])
+      : _startValue = startValue,
+        _targetValue = targetValue,
+        _transition = transition {
     _currentValue = startValue;
     _totalTime = max(0.0001, time);
   }

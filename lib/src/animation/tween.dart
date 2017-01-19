@@ -50,12 +50,9 @@ class Tween implements Animatable {
   /// additionally objects implements [TweenObject3D]. Therefore all
   /// display objects can be used with with tweens.
 
-  Tween(TweenObject tweenObject, num time, [
-        TransitionFunction transition = Transition.linear]) :
-
-    _tweenObject = tweenObject,
-    _transition = transition {
-
+  Tween(TweenObject tweenObject, num time, [TransitionFunction transition = Transition.linear])
+      : _tweenObject = tweenObject,
+        _transition = transition {
     if (_tweenObject is! TweenObject) {
       throw new ArgumentError("tweenObject");
     }
