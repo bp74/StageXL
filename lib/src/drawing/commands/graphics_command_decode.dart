@@ -214,7 +214,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           for (int i = 0; i <= p.length - 4; i += 4) {
             var l = _commands.isNotEmpty ? _commands.last : null;
             var lx = l is GraphicsCommandBezierCurveTo ? cx - l.controlX2 : 0.0;
-            var ly = l is GraphicsCommandBezierCurveTo ? cy - l.controlX2 : 0.0;
+            var ly = l is GraphicsCommandBezierCurveTo ? cy - l.controlY2 : 0.0;
             var x1 = cx + lx;
             var y1 = cy + ly;
             var x2 = cx + p[i + 0];
@@ -229,7 +229,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           for (int i = 0; i <= p.length - 4; i += 4) {
             var l = _commands.isNotEmpty ? _commands.last : null;
             var lx = l is GraphicsCommandBezierCurveTo ? cx - l.controlX2 : 0.0;
-            var ly = l is GraphicsCommandBezierCurveTo ? cy - l.controlX2 : 0.0;
+            var ly = l is GraphicsCommandBezierCurveTo ? cy - l.controlY2 : 0.0;
             var x1 = cx + lx;
             var y1 = cy + ly;
             var x2 = p[i + 0];
