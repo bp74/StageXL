@@ -8,6 +8,13 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 1.1.0
+  * Added Graphics.arcElliptical method.
+  * Added support for SVG encoded graphics paths.
+  * Optimized EaselJS encoded graphics paths.
+  * Updated to Dart 1.21 and use generic functions.
+  * Fixed bug in Sprite.bounds with Sprite.graphics.
+
 #### Pub version 1.0.0
   * Stable release
 
