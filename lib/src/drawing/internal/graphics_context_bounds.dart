@@ -16,9 +16,9 @@ class _GraphicsContextBounds extends _GraphicsContextBase {
 
   Rectangle<num> get bounds {
     if (minX < maxX && minY < maxY) {
-      return new Rectangle<double>(minX, minY, maxX - minX, maxY - minY);
+      return new Rectangle<num>(minX, minY, maxX - minX, maxY - minY);
     } else {
-      return new Rectangle<double>(0.0, 0.0, 0.0, 0.0);
+      return new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
     }
   }
 
