@@ -6,7 +6,8 @@ part of stagexl.display;
 enum StageRenderMode {
   AUTO,
   STOP,
-  ONCE
+  ONCE,
+  AUTO_DIRTY
 }
 
 /// The StageScaleMode defines how the Stage is scaled inside of the Canvas.
@@ -59,6 +60,7 @@ class Stage extends DisplayObjectContainer {
   int _stageWidth = 0;
   int _stageHeight = 0;
   num _pixelRatio = 1.0;
+  bool _dirty = true;
 
   Rectangle<num> _contentRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
   Matrix _clientTransformation = new Matrix.fromIdentity();
@@ -253,6 +255,12 @@ class Stage extends DisplayObjectContainer {
     _updateCanvasSize();
   }
 
+  /// Gets and sets the qualification of the Stage for rendering.
+  bool get dirty => _dirty;
+  set dirty(bool dirty){
+    _dirty = dirty;
+  }
+
   /// Gets and sets the render mode of this Stage. You can choose between
   /// three different modes defined in [StageRenderMode].
 
@@ -354,8 +362,7 @@ class Stage extends DisplayObjectContainer {
 
   void materialize(num currentTime, num deltaTime) {
 
-    if (_stageRenderMode == StageRenderMode.AUTO ||
-        _stageRenderMode == StageRenderMode.ONCE) {
+    if (_stageRenderMode != StageRenderMode.STOP) {
 
       _updateCanvasSize();
 
