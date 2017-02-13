@@ -7,6 +7,7 @@ class RenderLoop extends RenderLoopBase {
   List<Stage> _stages = new List<Stage>();
   bool _invalidate = false;
   num _currentTime = 0.0;
+  bool bMaterialized = false;
 
   EnterFrameEvent _enterFrameEvent = new EnterFrameEvent(0);
   ExitFrameEvent _exitFrameEvent = new ExitFrameEvent();
@@ -28,11 +29,22 @@ class RenderLoop extends RenderLoopBase {
       stage.renderLoop.removeStage(stage);
     }
 
+    if(stage.renderMode == StageRenderMode.AUTO_DIRTY){
+      stage.onMouseMove.capture((e) => stage.dirty = true);
+      stage.onTouchMove.capture((e) => stage.dirty = true);
+      stage.onMouseWheel.capture((e) => stage.dirty = true);
+    }
+
     _stages.add(stage);
     stage._renderLoop = this;
   }
 
   void removeStage(Stage stage) {
+    if(stage.renderMode == StageRenderMode.AUTO_DIRTY) {
+      stage.onMouseMove.cancelSubscriptions();
+      stage.onTouchMove.cancelSubscriptions();
+      stage.onMouseWheel.cancelSubscriptions();
+    }
 
     if (stage.renderLoop == this) {
       _stages.remove(stage);
@@ -62,7 +74,20 @@ class RenderLoop extends RenderLoopBase {
     }
 
     for (int i = 0; i < _stages.length; i++) {
-      _stages[i].materialize(_currentTime, deltaTime);
+      if(_stages[i].renderMode != StageRenderMode.AUTO_DIRTY || juggler.hasAnimatables || _stages[i].juggler.hasAnimatables || _stages[i].dirty){
+        if(!bMaterialized){
+          print("stage was dirty.");
+          bMaterialized = true;
+        }
+        _stages[i].materialize(_currentTime, deltaTime);
+        _stages[i].dirty = false;
+      }
+      else{
+        if(bMaterialized){
+          print("stage not dirty");
+          bMaterialized = false;
+        }
+      }
     }
 
     _exitFrameEvent.dispatch();
