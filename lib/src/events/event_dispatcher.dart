@@ -95,11 +95,12 @@ class EventDispatcher {
   ///     sprite.onMouseClick.capture(_onMouseClick);
   ///     sprite.on("CustomEvent").listen(_onCustomEvent);
 
-  StreamSubscription<Event> addEventListener(
-      String eventType, EventListener eventListener, {
-      bool useCapture: false, int priority: 0 }) {
+  StreamSubscription<T> addEventListener<T extends Event>(
+      String eventType, EventListener<T> eventListener,
+      { bool useCapture: false, int priority: 0 }) {
 
-    return this.on(eventType)._subscribe(eventListener, useCapture, priority);
+    var eventStream = this.on<T>(eventType);
+    return eventStream._subscribe(eventListener, useCapture, priority);
   }
 
   /// Removes an event listener to stop receiving events.
@@ -118,10 +119,12 @@ class EventDispatcher {
   ///     _onAddedToStageSubscription.cancel();
   ///     _onMouseClickSubscription.cancale();
 
-  void removeEventListener(String eventType, EventListener eventListener, {
-    bool useCapture: false }) {
+  void removeEventListener<T extends Event>(
+      String eventType, EventListener<T> eventListener,
+      { bool useCapture: false }) {
 
-    this.on(eventType)._unsubscribe(eventListener, useCapture);
+    var eventStream = this.on<T>(eventType);
+    eventStream._unsubscribe(eventListener, useCapture);
   }
 
   /// Removes all event listeners of a given event type.
