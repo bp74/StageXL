@@ -23,6 +23,7 @@ abstract class BroadcastEvent extends Event {
 ///
 /// This event is a [BroadcastEvent], which means that it is dispatched by all
 /// [DisplayObject]s with a listener registered for this event.
+
 class EnterFrameEvent extends BroadcastEvent {
   num passedTime;
   EnterFrameEvent(this.passedTime) : super(Event.ENTER_FRAME);
@@ -35,6 +36,7 @@ class EnterFrameEvent extends BroadcastEvent {
 ///
 /// This event is a [BroadcastEvent], which means that it is dispatched
 /// by all [DisplayObject]s with a listener registered for this event.
+
 class ExitFrameEvent extends BroadcastEvent {
   ExitFrameEvent() : super(Event.EXIT_FRAME);
 
@@ -45,13 +47,12 @@ class ExitFrameEvent extends BroadcastEvent {
 /// An event that is dispatched when the display list is about to be updated
 /// and rendered.
 ///
-/// This event provides the last opportunity for
-/// objects listening for this event to make changes before the display list is
-/// rendered. You must call the invalidate() method of the [Stage] object each
-/// time you want a [RenderEvent] to be dispatched.
+/// This event provides the last opportunity for objects listening for this
+/// event to make changes before the display list is rendered.
 ///
 /// This event is a [BroadcastEvent], which means that it is dispatched
 /// by all [DisplayObject]s with a listener registered for this event.
+
 class RenderEvent extends BroadcastEvent {
   RenderEvent() : super(Event.RENDER);
 

@@ -6,9 +6,7 @@ class RenderLoop extends RenderLoopBase {
   final List<Stage> _stages = new List<Stage>();
   final EnterFrameEvent _enterFrameEvent = new EnterFrameEvent(0);
   final ExitFrameEvent _exitFrameEvent = new ExitFrameEvent();
-  final RenderEvent _renderEvent = new RenderEvent();
 
-  bool _invalidate = false;
   num _currentTime = 0.0;
 
   RenderLoop() {
@@ -16,12 +14,6 @@ class RenderLoop extends RenderLoopBase {
   }
 
   Juggler get juggler => _juggler;
-
-  //-------------------------------------------------------------------------------------------------
-
-  void invalidate() {
-    _invalidate = true;
-  }
 
   void addStage(Stage stage) {
     stage._renderLoop?.removeStage(stage);
@@ -35,29 +27,14 @@ class RenderLoop extends RenderLoopBase {
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
-
   @override
   void advanceTime(num deltaTime) {
-
     _currentTime += deltaTime;
     _enterFrameEvent.passedTime = deltaTime;
     _enterFrameEvent.dispatch();
     _juggler.advanceTime(deltaTime);
-
-    for (int i = 0; i < _stages.length; i++) {
-      _stages[i].juggler.advanceTime(deltaTime);
-    }
-
-    if (_invalidate) {
-      _invalidate = false;
-      _renderEvent.dispatch();
-    }
-
-    for (int i = 0; i < _stages.length; i++) {
-      _stages[i].materialize(_currentTime, deltaTime);
-    }
-
+    _stages.forEach((s) => s.juggler.advanceTime(deltaTime));
+    _stages.forEach((s) => s.materialize(_currentTime, deltaTime));
     _exitFrameEvent.dispatch();
   }
 }
