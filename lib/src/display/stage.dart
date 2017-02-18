@@ -341,9 +341,7 @@ class Stage extends DisplayObjectContainer {
   /// event attach a listener to [DisplayObject.onRender].
 
   void invalidate() {
-    if (_renderLoop != null) {
-      _renderLoop.invalidate();
-    }
+    _renderLoop?.invalidate();
   }
 
   //----------------------------------------------------------------------------
