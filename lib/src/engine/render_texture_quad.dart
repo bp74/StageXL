@@ -170,6 +170,15 @@ class RenderTextureQuad {
 
   //---------------------------------------------------------------------------
 
+  bool get isEquivalentToSource {
+    return (renderTexture!=null) && (this.rotation == 0) && !_hasCustomVertices &&
+          ( sourceRectangle.left==0 && sourceRectangle.top==0 &&
+            sourceRectangle.width==renderTexture.width &&
+            sourceRectangle.height==renderTexture.height );
+  }
+
+  //---------------------------------------------------------------------------
+
   num get targetWidth => offsetRectangle.width / pixelRatio;
   num get targetHeight => offsetRectangle.height / pixelRatio;
 

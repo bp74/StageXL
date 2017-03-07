@@ -31,13 +31,49 @@ class _GraphicsContextBounds extends _GraphicsContextBase {
   }
 
   @override
+  void fillGradient(GraphicsGradient gradient) {
+    _GraphicsMesh mesh = _path;
+    _updateBoundsForMesh(mesh);
+  }
+
+  @override
+  void fillPattern(GraphicsPattern pattern) {
+    _GraphicsMesh mesh = _path;
+    _updateBoundsForMesh(mesh);
+  }
+
+  @override
   void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _updateBoundsForMesh(mesh);
   }
 
   @override
+  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
+    _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    _updateBoundsForMesh(mesh);
+  }
+
+  @override
+  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
+    _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    _updateBoundsForMesh(mesh);
+  }
+
+  @override
   void meshColor(_GraphicsCommandMeshColor command) {
+    _GraphicsMesh mesh = command.mesh;
+    _updateBoundsForMesh(mesh);
+  }
+
+  @override
+  void meshGradient(_GraphicsCommandMeshGradient command) {
+    _GraphicsMesh mesh = command.mesh;
+    _updateBoundsForMesh(mesh);
+  }
+
+  @override
+  void meshPattern(_GraphicsCommandMeshPattern command) {
     _GraphicsMesh mesh = command.mesh;
     _updateBoundsForMesh(mesh);
   }

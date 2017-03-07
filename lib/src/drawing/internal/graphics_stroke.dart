@@ -22,6 +22,20 @@ class _GraphicsStroke extends _GraphicsMesh<_GraphicsStrokeSegment> {
   }
 
   @override
+  void fillGradient(RenderState renderState, GraphicsGradient gradient) {
+    for (var segment in segments) {
+      segment.fillGradient(renderState, gradient);
+    }
+  }
+
+  @override
+  void fillPattern(RenderState renderState, GraphicsPattern pattern) {
+    for (var segment in segments) {
+      segment.fillPattern(renderState, pattern);
+    }
+  }
+
+  @override
   bool hitTest(double x, double y) {
     for (_GraphicsStrokeSegment segment in segments) {
       if (segment.checkBounds(x, y) == false) continue;

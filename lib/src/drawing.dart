@@ -2,9 +2,10 @@ library stagexl.drawing;
 
 import 'dart:typed_data';
 import 'dart:math' show PI, sqrt, sin, cos, tan, atan2, pow;
-import 'dart:html' show CanvasRenderingContext2D, CanvasGradient, CanvasPattern;
+import 'dart:html' show CanvasRenderingContext2D, CanvasElement, CanvasGradient, CanvasPattern;
 
 import 'geom.dart';
+import 'display.dart';
 import 'engine.dart';
 import 'internal/tools.dart';
 
