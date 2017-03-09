@@ -8,6 +8,7 @@ import 'geom.dart';
 import 'display.dart';
 import 'engine.dart';
 import 'internal/tools.dart';
+import 'internal/shared_cache.dart';
 
 part 'drawing/graphics.dart';
 part 'drawing/graphics_command.dart';

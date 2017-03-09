@@ -1,13 +1,21 @@
 part of stagexl.drawing;
 
+class CanvasPatternKey{
+  RenderTextureQuad _renderTextureQuad;
+  String _kind;
+  CanvasPatternKey(this._renderTextureQuad,this._kind);
+}
+
 class GraphicsPattern {
 
   /// cached by the canvas2D renderer
   CanvasPattern _canvasPattern;
+  static SharedCache<CanvasPatternKey,CanvasPattern>  _canvasPatternCache = new SharedCache<CanvasPatternKey,CanvasPattern>();
 
   /// cached by both the canvas2D and the webgl renderer
   RenderTexture _patternTexture;
   Matrix        _renderMatrix;
+  static SharedCache<RenderTextureQuad,RenderTexture>  _patternTextureCache = new SharedCache<RenderTextureQuad,RenderTexture>()..onObjectReleasedListen(releaseTexture);
 
 
   RenderTextureQuad _renderTextureQuad;
@@ -53,10 +61,11 @@ class GraphicsPattern {
   }
 
   void disposeCachedRenderObjects(bool patternTextureChanged) {
+    _canvasPatternCache.releaseObject(new CanvasPatternKey(_renderTextureQuad,_kind));
     _canvasPattern = null;
     if ( patternTextureChanged && _patternTexture != null ) {
       if ( _patternTexture != _renderTextureQuad.renderTexture ) {
-        _patternTexture.dispose();
+        _patternTextureCache.releaseObject(_renderTextureQuad);
       }
       _patternTexture = null;
     }
@@ -65,9 +74,15 @@ class GraphicsPattern {
   CanvasPattern  getCanvasPattern(CanvasRenderingContext2D context) {
     if ( _canvasPattern != null ) return _canvasPattern;
 
-    RenderTexture fillTexture = patternTexture;
-    if ( fillTexture != null ){
-      _canvasPattern = context.createPattern(fillTexture.source, _kind);
+    CanvasPatternKey cacheKey = new CanvasPatternKey(_renderTextureQuad,_kind);
+    _canvasPattern = _canvasPatternCache.getObject(cacheKey);
+
+    if ( _canvasPattern == null ) {
+      RenderTexture fillTexture = patternTexture;
+      if ( fillTexture != null ){
+        _canvasPattern = context.createPattern(fillTexture.source, _kind);
+        _canvasPatternCache.addObject(cacheKey,_canvasPattern);
+      }
     }
     return _canvasPattern;
   }
@@ -76,12 +91,18 @@ class GraphicsPattern {
     if ( _patternTexture != null ) return _patternTexture;
 
     if ( _renderTextureQuad != null ) {
-      if (_renderTextureQuad.isEquivalentToSource) {
-        _patternTexture = _renderTextureQuad.renderTexture;
-      } else {
-        BitmapData bitmapData = new BitmapData.fromRenderTextureQuad(_renderTextureQuad);
-        bitmapData = bitmapData.clone();
-        _patternTexture = bitmapData.renderTextureQuad.renderTexture;
+      _patternTexture = _patternTextureCache.getObject(_renderTextureQuad);
+
+      if ( _patternTexture == null ) {
+        if (_renderTextureQuad.isEquivalentToSource) {
+          _patternTexture = _renderTextureQuad.renderTexture;
+        } else {
+          BitmapData bitmapData = new BitmapData.fromRenderTextureQuad(
+              _renderTextureQuad);
+          bitmapData = bitmapData.clone();
+          _patternTexture = bitmapData.renderTextureQuad.renderTexture;
+          _patternTextureCache.addObject(_renderTextureQuad,_patternTexture);
+        }
       }
     }
 
@@ -96,6 +117,14 @@ class GraphicsPattern {
     if ( _renderMatrix != null ) return _renderMatrix;
     if ( _matrix != null ) _renderMatrix = _matrix.cloneInvert();
     return _renderMatrix;
+  }
+
+  static void releaseTexture(ObjectReleaseEvent event)
+  {
+    RenderTexture texture = event.object as RenderTexture;
+    if ( texture != null ) {
+      texture.dispose();
+    }
   }
 
 }
