@@ -1,7 +1,6 @@
 library stagexl.internal.shared_cache;
 
 import '../events.dart';
-import 'jenkins_hash.dart';
 
 
 class ObjectReleaseEvent extends Event {

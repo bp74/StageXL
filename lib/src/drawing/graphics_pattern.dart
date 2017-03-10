@@ -4,6 +4,16 @@ class CanvasPatternKey{
   RenderTextureQuad _renderTextureQuad;
   String _kind;
   CanvasPatternKey(this._renderTextureQuad,this._kind);
+
+  @override
+  int get hashCode {
+    return JenkinsHash.hash2(_renderTextureQuad.hashCode,_kind.hashCode);
+  }
+
+  @override
+  bool operator == (Object other){
+    return (other is CanvasPatternKey) && (this._renderTextureQuad == other._renderTextureQuad) && (this._kind == other._kind);
+  }
 }
 
 class GraphicsPattern {
