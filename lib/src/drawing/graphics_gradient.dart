@@ -199,7 +199,7 @@ class GraphicsGradient {
     key += _linear ? "" : "_" + _startRadius.toStringAsFixed(3);
 
     key += "_" + _endX.toStringAsFixed(3);
-    key += "_" + _endX.toStringAsFixed(3);
+    key += "_" + _endY.toStringAsFixed(3);
     key += _linear ? "" : "_" + _endRadius.toStringAsFixed(3);
 
     key += "_" + _colorStops.length.toString();
