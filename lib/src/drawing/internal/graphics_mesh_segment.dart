@@ -13,6 +13,8 @@ abstract class _GraphicsMeshSegment {
   double _maxX = 0.0 - double.MAX_FINITE;
   double _maxY = 0.0 - double.MAX_FINITE;
 
+  final Matrix _tmpMatrix = new Matrix.fromIdentity();
+
   //---------------------------------------------------------------------------
 
   _GraphicsMeshSegment(int vertexBufferSize, int indexBufferSize) :
@@ -126,9 +128,33 @@ abstract class _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   void fillPattern(RenderState renderState, GraphicsPattern pattern) {
+
+    if (pattern.matrix != null) {
+      _tmpMatrix.copyFromAndInvert(pattern.matrix);
+    } else {
+      _tmpMatrix.identity();
+    }
+
+    var patternMatrix = _tmpMatrix;
+    var patternTexture = pattern.patternTexture;
+
+    if (pattern.kind == GraphicsPatternKind.Repeat || pattern.kind == GraphicsPatternKind.RepeatX) {
+      patternTexture.wrappingX = RenderTextureWrapping.REPEAT;
+    } else {
+      patternTexture.wrappingX = RenderTextureWrapping.CLAMP;
+    }
+
+    if (pattern.kind == GraphicsPatternKind.Repeat || pattern.kind == GraphicsPatternKind.RepeatY) {
+      patternTexture.wrappingY = RenderTextureWrapping.REPEAT;
+    } else {
+      patternTexture.wrappingY = RenderTextureWrapping.CLAMP;
+    }
+
     var ixList = new Int16List.view(_indexBuffer.buffer, 0, _indexCount);
     var vxList = new Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
-    renderState.renderPatternMesh(ixList, vxList, pattern);
+
+    patternMatrix.scale(1.0 / patternTexture.width, 1.0 / patternTexture.width);
+    renderState.renderTextureMapping(patternTexture, patternMatrix, ixList, vxList);
   }
 
 }

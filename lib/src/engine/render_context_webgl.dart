@@ -132,19 +132,6 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
 
   @override
-  void renderTextureQuad(
-      RenderState renderState,
-      RenderTextureQuad renderTextureQuad) {
-
-    activateRenderProgram(renderProgramSimple);
-    activateBlendMode(renderState.globalBlendMode);
-    activateRenderTexture(renderTextureQuad.renderTexture);
-    renderProgramSimple.renderTextureQuad(renderState, renderTextureQuad);
-  }
-
-  //---------------------------------------------------------------------------
-
-  @override
   void renderGradientMesh(
       RenderState renderState,
       Int16List ixList, Float32List vxList, GraphicsGradient gradient)
@@ -168,29 +155,15 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
 
   @override
-  void renderPatternMesh(
+  void renderTextureQuad(
       RenderState renderState,
-      Int16List ixList, Float32List vxList, GraphicsPattern pattern) {
-
-    if (pattern.kind == "repeat" || pattern.kind == "repeat-x") {
-      pattern.patternTexture.wrappingX = RenderTextureWrapping.REPEAT;
-    } else {
-      pattern.patternTexture.wrappingX = RenderTextureWrapping.CLAMP;
-    }
-
-    if (pattern.kind == "repeat" || pattern.kind == "repeat-y") {
-      pattern.patternTexture.wrappingY = RenderTextureWrapping.REPEAT;
-    } else {
-      pattern.patternTexture.wrappingY = RenderTextureWrapping.CLAMP;
-    }
+      RenderTextureQuad renderTextureQuad) {
 
     activateRenderProgram(renderProgramSimple);
     activateBlendMode(renderState.globalBlendMode);
-    activateRenderTexture(pattern.patternTexture);
-    renderProgramSimple.renderPatternMesh(renderState, ixList, vxList, pattern);
+    activateRenderTexture(renderTextureQuad.renderTexture);
+    renderProgramSimple.renderTextureQuad(renderState, renderTextureQuad);
   }
-
-  //---------------------------------------------------------------------------
 
   @override
   void renderTextureMesh(
@@ -201,6 +174,18 @@ class RenderContextWebGL extends RenderContext {
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(renderTexture);
     renderProgramSimple.renderTextureMesh(renderState, ixList, vxList);
+  }
+
+  @override
+  void renderTextureMapping(
+      RenderState renderState,
+      RenderTexture renderTexture, Matrix mappingMatrix,
+      Int16List ixList, Float32List vxList) {
+
+    activateRenderProgram(renderProgramSimple);
+    activateBlendMode(renderState.globalBlendMode);
+    activateRenderTexture(renderTexture);
+    renderProgramSimple.renderTextureMapping(renderState, mappingMatrix, ixList, vxList);
   }
 
   //---------------------------------------------------------------------------

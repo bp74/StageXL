@@ -31,19 +31,20 @@ abstract class RenderContext {
 
   //---------------------------------------------------------------------------
 
-  void renderTextureQuad(
-     RenderState renderState, RenderTextureQuad renderTextureQuad);
-
   void renderGradientMesh(
       RenderState renderState,
       Int16List ixList, Float32List vxList, GraphicsGradient gradient);
 
-  void renderPatternMesh(
-      RenderState renderState,
-      Int16List ixList, Float32List vxList, GraphicsPattern pattern);
+  void renderTextureQuad(
+     RenderState renderState, RenderTextureQuad renderTextureQuad);
 
   void renderTextureMesh(
       RenderState renderState, RenderTexture renderTexture,
+      Int16List ixList, Float32List vxList);
+
+  void renderTextureMapping(
+      RenderState renderState,
+      RenderTexture renderTexture, Matrix mappingMatrix,
       Int16List ixList, Float32List vxList);
 
   void renderTriangle(
