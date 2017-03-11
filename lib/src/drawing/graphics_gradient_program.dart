@@ -2,6 +2,8 @@ part of stagexl.drawing;
 
 abstract class _GraphicsGradientProgram extends RenderProgram {
 
+  GraphicsGradient activeGradient;
+
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexAlpha:      Float32(alpha)
 
@@ -20,20 +22,6 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
       gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
     }
     """;
-
-  @override
-  String get fragmentShaderSource => """
-
-    precision mediump float;
-    varying vec2 vTextCoord;
-    varying float vAlpha;
-
-    void main() {
-      gl_FragColor = vec(1.0, 0.0, 1.0, 1.0) * vAlpha;
-    }
-    """;
-
-  GraphicsGradient activeGradient;
 
   //---------------------------------------------------------------------------
 
