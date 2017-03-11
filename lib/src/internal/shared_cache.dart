@@ -30,12 +30,12 @@ class SharedCache<K,E> extends EventDispatcher
 
   SharedCache( [bool autoReleaseUnusedObjects = true] ): _autoReleaseUnusedObjects=autoReleaseUnusedObjects;
 
-  void onObjectReleasedListen(Function listener) {
+  void onObjectReleasedListen(void listener(ObjectReleaseEvent e)) {
     onObjectReleased.listen(listener);
   }
 
   bool get autoReleaseUnusedObjects => _autoReleaseUnusedObjects;
-  void set autoReleaseUnusedObjects(bool value) {
+  set autoReleaseUnusedObjects(bool value) {
     if ( _autoReleaseUnusedObjects != value ) {
       _autoReleaseUnusedObjects = value;
       if ( _autoReleaseUnusedObjects ) {
@@ -66,7 +66,7 @@ class SharedCache<K,E> extends EventDispatcher
     if ( !containsObject(key) ) {
       _cachedObjects[key] = new SharedCacheNode<E>(value);
     } else {
-      throw ArgumentError("key-value already in cache!");
+      throw new ArgumentError("key-value already in cache!");
     }
   }
 

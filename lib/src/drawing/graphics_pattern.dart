@@ -45,14 +45,14 @@ class GraphicsPattern {
       : this._kind = "no-repeat";
 
 
-  void set kind(String value) {
+  set kind(String value) {
     if (value != "repeat" && value != "no-repeat" && value != "repeat-x" && value != "repeat-y") throw new ArgumentError("kind must be 'repeat', 'repeat-x', 'repeat-y', or 'no-repeat'");
     disposeCachedRenderObjects(false);
     _kind = value;
   }
   String get kind => _kind;
 
-  void set matrix(Matrix value){
+  set matrix(Matrix value){
     _renderMatrix = null;
     _matrix = value;
   }
@@ -61,7 +61,7 @@ class GraphicsPattern {
     return _matrix;
   }
 
-  void set renderTextureQuad(RenderTextureQuad texture){
+  set renderTextureQuad(RenderTextureQuad texture){
     disposeCachedRenderObjects(true);
     _renderTextureQuad = texture;
   }

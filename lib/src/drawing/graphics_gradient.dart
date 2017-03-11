@@ -39,7 +39,7 @@ class GraphicsGradient {
 
   //---------------------------------------------------------------------------
 
-  void set kind(String value) {
+  set kind(String value) {
     if (value != "linear" && value != "radial") throw new ArgumentError("kind must be 'linear' or 'radial'");
     disposeCachedRenderObjects(false);
     _linear = (value == "linear");
@@ -48,51 +48,50 @@ class GraphicsGradient {
 
   bool get isLinear => _linear;
 
-  void set startX(num value) {
+  set startX(num value) {
     disposeCachedRenderObjects(false);
     _startX = value;
   }
   num get startX => _startX;
 
-  void set startY(num value) {
+  set startY(num value) {
     disposeCachedRenderObjects(false);
     _startY = value;
   }
   num get startY => _startY;
 
-  void set startRadius(num value) {
+  set startRadius(num value) {
     disposeCachedRenderObjects(false);
     _startRadius = value;
   }
   num get startRadius => _startRadius;
 
-  void set endX(num value) {
+  set endX(num value) {
     disposeCachedRenderObjects(false);
     _endX = value;
   }
   num get endX => _endX;
 
-  void set endY(num value) {
+  set endY(num value) {
     disposeCachedRenderObjects(false);
     _endY = value;
   }
   num get endY => _endY;
 
-  void set endRadius(num value) {
+  set endRadius(num value) {
     disposeCachedRenderObjects(false);
     _endRadius = value;
   }
   num get endRadius => _endRadius;
 
-  void set colorStops(List<GraphicsGradientColorStop> value) {
+  set colorStops(List<GraphicsGradientColorStop> value) {
     if ( value != null ) {
       disposeCachedRenderObjects();
       _colorStops.clear();
       _colorStops.addAll(value);
     }
   }
-  List<GraphicsGradientColorStop> get colorStops
-  {
+  List<GraphicsGradientColorStop> get colorStops {
     disposeCachedRenderObjects();
     return _colorStops;
   }
