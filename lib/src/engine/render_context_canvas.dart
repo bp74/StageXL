@@ -142,6 +142,23 @@ class RenderContextCanvas extends RenderContext {
   //---------------------------------------------------------------------------
 
   @override
+  void renderGradientMesh(
+      RenderState renderState,
+      Int16List ixList, Float32List vxList, GraphicsGradient gradient)
+  {
+    // do nothing, this is used by webGL to implement canvas gradients
+  }
+  @override
+  void renderPatternMesh(
+      RenderState renderState,
+      Int16List ixList, Float32List vxList, GraphicsPattern pattern)
+  {
+    // do nothing, this is used by webGL to implement canvas patterns
+  }
+
+  //---------------------------------------------------------------------------
+
+  @override
   void renderTextureMesh(
       RenderState renderState, RenderTexture renderTexture,
       Int16List ixList, Float32List vxList) {

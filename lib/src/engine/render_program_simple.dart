@@ -192,4 +192,117 @@ class RenderProgramSimple extends RenderProgram {
     renderBufferVertex.count += vxListCount;
   }
 
+  //---------------------------------------------------------------------------
+
+  void setPatternRepeatMode(String kind)
+  {
+    switch(kind)
+    {
+      case "repeat":
+        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+        break;
+      case "repeat-x":
+        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        break;
+      case "repeat-y":
+        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+        break;
+      case "no-repeat":
+        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        break;
+    }
+  }
+
+  //---------------------------------------------------------------------------
+
+  void renderPatternMesh(
+      RenderState renderState,
+      Int16List ixList, Float32List vxList, GraphicsPattern pattern) {
+
+    setPatternRepeatMode(pattern.kind);
+
+    var alpha = renderState.globalAlpha;
+    var matrix = renderState.globalMatrix;
+    var ixListCount = ixList.length;
+    var vxListCount = vxList.length >> 1;
+
+    // check buffer sizes and flush if necessary
+
+    var ixData = renderBufferIndex.data;
+    var ixPosition = renderBufferIndex.position;
+    if (ixPosition + ixListCount >= ixData.length) flush();
+
+    var vxData = renderBufferVertex.data;
+    var vxPosition = renderBufferVertex.position;
+    if (vxPosition + vxListCount * 5 >= vxData.length) flush();
+
+    // copy index list
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
+
+    for (var i = 0; i < ixListCount; i++) {
+      ixData[ixIndex + i] = vxCount + ixList[i];
+    }
+
+    renderBufferIndex.position += ixListCount;
+    renderBufferIndex.count += ixListCount;
+
+    // copy vertex list
+    var ma = matrix.a;
+    var mb = matrix.b;
+    var mc = matrix.c;
+    var md = matrix.d;
+    var mx = matrix.tx;
+    var my = matrix.ty;
+
+    var ta = 1.0;
+    var tb = 0.0;
+    var tc = 0.0;
+    var td = 1.0;
+    var tx = 0.0;
+    var ty = 0.0;
+
+    Matrix textureMatrix = pattern.webGLRenderMatrix;
+    if ( textureMatrix != null )
+    {
+      ta = textureMatrix.a;
+      tb = textureMatrix.b;
+      tc = textureMatrix.c;
+      td = textureMatrix.d;
+      tx = textureMatrix.tx;
+      ty = textureMatrix.ty;
+    }
+
+    if ( pattern.patternTexture != null ) {
+      var imageWidth = pattern.patternTexture.width;
+      var imageHeight = pattern.patternTexture.height;
+      ta = ta / imageWidth;
+      tb = tb / imageWidth;
+      tc = tc / imageHeight;
+      td = td / imageHeight;
+      tx = tx / imageWidth;
+      ty = ty / imageHeight;
+    }
+
+    for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
+      num x = vxList[o + 0];
+      num y = vxList[o + 1];
+      vxData[vxIndex + 0] = mx + ma * x + mc * y;
+      vxData[vxIndex + 1] = my + mb * x + md * y;
+      vxData[vxIndex + 2] = tx + ta * x + tc * y;
+      vxData[vxIndex + 3] = ty + tb * x + td * y;
+      vxData[vxIndex + 4] = alpha;
+      vxIndex += 5;
+    }
+
+    renderBufferVertex.position += vxListCount * 5;
+    renderBufferVertex.count += vxListCount;
+  }
+
 }
