@@ -161,7 +161,7 @@ class GraphicsGradient {
   }
 
 
-  RenderTexture get webGLGradientTexture {
+  RenderTexture getRenderTexture() {
 
     if (_gradientTexture != null) return _gradientTexture;
 

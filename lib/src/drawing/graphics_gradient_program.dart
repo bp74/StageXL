@@ -1,6 +1,6 @@
 part of stagexl.drawing;
 
-abstract class GraphicsGradientProgram extends RenderProgram {
+abstract class _GraphicsGradientProgram extends RenderProgram {
 
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexAlpha:      Float32(alpha)
@@ -33,6 +33,8 @@ abstract class GraphicsGradientProgram extends RenderProgram {
     }
     """;
 
+  GraphicsGradient activeGradient;
+
   //---------------------------------------------------------------------------
 
   @override
@@ -63,7 +65,7 @@ abstract class GraphicsGradientProgram extends RenderProgram {
 
     var vxData = renderBufferVertex.data;
     var vxPosition = renderBufferVertex.position;
-    if (vxPosition + vxListCount * 5 >= vxData.length) flush();
+    if (vxPosition + vxListCount * 3 >= vxData.length) flush();
 
     // copy index list
 
@@ -104,7 +106,7 @@ abstract class GraphicsGradientProgram extends RenderProgram {
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-class LinearGraphicsGradientProgram extends GraphicsGradientProgram {
+class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
 
   @override
   String get fragmentShaderSource => """
@@ -113,6 +115,7 @@ class LinearGraphicsGradientProgram extends GraphicsGradientProgram {
     uniform sampler2D uSampler;
     uniform vec2 uvGradientStart;
     uniform vec2 uvGradientVector;
+
     varying vec2 vTextCoord;
     varying float vAlpha;
 
@@ -146,14 +149,13 @@ class LinearGraphicsGradientProgram extends GraphicsGradientProgram {
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-class RadialGraphicsGradientProgram extends GraphicsGradientProgram {
+class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
 
   @override
   String get fragmentShaderSource => """
 
     precision mediump float;
     uniform sampler2D uSampler;
-
     uniform vec2 uvA;
     uniform vec3 uvB;
     uniform vec3 uvC;
