@@ -2,49 +2,50 @@ library stagexl.internal.shared_cache;
 
 import '../events.dart';
 
-
-class ObjectReleaseEvent extends Event {
-  static const String OBJECT_RELEASE = "objectRelease";
-  final dynamic object;
-  /// Creates a new [ObjectReleaseEvent].
-  ObjectReleaseEvent(String type, bool bubbles, this.object) : super(type, bubbles);
+class ObjectReleaseEvent<E> extends Event {
+  final E object;
+  ObjectReleaseEvent(this.object) : super("objectRelease", false);
 }
 
-
-class SharedCacheNode<E>
-{
-  E   _cachedObject;
-  int _shareCount;
-
-  SharedCacheNode(this._cachedObject):_shareCount=1;
+class SharedCacheNode<E> {
+  E _cachedObject;
+  int _shareCount = 1;
+  SharedCacheNode(this._cachedObject);
 }
 
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-class SharedCache<K,E> extends EventDispatcher
-{
-  Map<K,SharedCacheNode<E>>  _cachedObjects = new Map<K,SharedCacheNode<E>>();
-  bool _autoReleaseUnusedObjects;
+class SharedCache<K, E> extends EventDispatcher {
 
-  static const EventStreamProvider<ObjectReleaseEvent> releaseObjectEvent = const EventStreamProvider<ObjectReleaseEvent>(ObjectReleaseEvent.OBJECT_RELEASE);
-  EventStream<ObjectReleaseEvent> get onObjectReleased => SharedCache.releaseObjectEvent.forTarget(this);
+  Map<K, SharedCacheNode<E>> _cachedObjects = new Map<K, SharedCacheNode<E>>();
+  bool _autoReleaseUnusedObjects = true;
 
-  SharedCache( [bool autoReleaseUnusedObjects = true] ): _autoReleaseUnusedObjects=autoReleaseUnusedObjects;
-
-  void onObjectReleasedListen(void listener(ObjectReleaseEvent e)) {
-    onObjectReleased.listen(listener);
+  SharedCache([bool autoReleaseUnusedObjects = true]) {
+    _autoReleaseUnusedObjects = autoReleaseUnusedObjects;
   }
 
+  EventStream<ObjectReleaseEvent<E>> get onObjectReleased {
+    return this.on<ObjectReleaseEvent<E>>("objectRelease");
+  }
+
+  //----------------------------------------------------------------------------
+
   bool get autoReleaseUnusedObjects => _autoReleaseUnusedObjects;
+
   set autoReleaseUnusedObjects(bool value) {
-    if ( _autoReleaseUnusedObjects != value ) {
+    if (_autoReleaseUnusedObjects != value) {
       _autoReleaseUnusedObjects = value;
-      if ( _autoReleaseUnusedObjects ) {
+      if (_autoReleaseUnusedObjects) {
         releaseUnusedObjects();
       }
     }
   }
+
   void releaseUnusedObjects() {
-    if ( _autoReleaseUnusedObjects ) return;// no unused objects should exist when auto-releasing
+
+    // no unused objects should exist when auto-releasing
+    if (_autoReleaseUnusedObjects) return;
 
     // copy the keys that map to unused nodes and then remove them from the map
     _cachedObjects.keys
@@ -62,8 +63,8 @@ class SharedCache<K,E> extends EventDispatcher
     return _cachedObjects.containsKey(key);
   }
 
-  void  addObject(K key, E value) {
-    if ( !containsObject(key) ) {
+  void addObject(K key, E value) {
+    if (!containsObject(key)) {
       _cachedObjects[key] = new SharedCacheNode<E>(value);
     } else {
       throw new ArgumentError("key-value already in cache!");
@@ -71,20 +72,19 @@ class SharedCache<K,E> extends EventDispatcher
   }
 
   E getObject(K key) {
-    SharedCacheNode<E> node = _cachedObjects[key];
-    if ( node != null ) {
-      ++node._shareCount;
+    var node = _cachedObjects[key];
+    if (node != null) {
+      node._shareCount += 1;
       return node._cachedObject;
     }
-
     return null;
   }
 
   void releaseObject(K key) {
-    SharedCacheNode<E> node = _cachedObjects[key];
-    if ( node != null ) {
-      --node._shareCount;
-      if ( node._shareCount == 0 && _autoReleaseUnusedObjects ) {
+    var node = _cachedObjects[key];
+    if (node != null) {
+      node._shareCount -= 1;
+      if (node._shareCount == 0 && _autoReleaseUnusedObjects) {
         _cachedObjects.remove(key);
         _finalReleaseObject(node._cachedObject);
       }
@@ -92,15 +92,14 @@ class SharedCache<K,E> extends EventDispatcher
   }
 
   void _releaseNode(K key) {
-    SharedCacheNode<E> node = _cachedObjects[key];
+    var node = _cachedObjects[key];
     _cachedObjects.remove(key);
-    if ( node != null ) {
-        _finalReleaseObject(node._cachedObject);
+    if (node != null) {
+      _finalReleaseObject(node._cachedObject);
     }
   }
 
-  void  _finalReleaseObject(E object) {
-    dispatchEvent(new ObjectReleaseEvent(ObjectReleaseEvent.OBJECT_RELEASE, false, object));
+  void _finalReleaseObject(E object) {
+    dispatchEvent(new ObjectReleaseEvent<E>(object));
   }
-
 }

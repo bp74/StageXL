@@ -8,20 +8,22 @@ class GraphicsGradientColorStop {
 
 class GraphicsGradient {
 
-  /// cached by the canvas2D renderer
-  CanvasGradient _canvasGradient;
-  String _canvasCacheKey;
+  static const int GRADIENT_TEXTURE_SIZE = 512;
+
   static SharedCache<String, CanvasGradient> _canvasGradientCache =
       new SharedCache<String, CanvasGradient>();
 
-  /// cached by the webgl renderer
-  RenderTexture _gradientTexture;
-  String _textureCacheKey;
   static SharedCache<String, RenderTexture> _gradientTextureCache =
       new SharedCache<String, RenderTexture>()
-        ..onObjectReleasedListen(releaseTexture);
+        ..onObjectReleased.listen((e) => e.object.dispose());
 
-  static const int GRADIENT_TEXTURE_SIZE = 512;
+  /// cached by the Canvas2D renderer
+  CanvasGradient _canvasGradient;
+  String _canvasCacheKey;
+
+  /// cached by the WebGL renderer
+  RenderTexture _gradientTexture;
+  String _textureCacheKey;
 
   num _startX;
   num _startY;
@@ -216,12 +218,5 @@ class GraphicsGradient {
       key += "_" + colorStop.color.toRadixString(16);
     }
     return key;
-  }
-
-  static void releaseTexture(ObjectReleaseEvent event) {
-    var renderTexture = event.object;
-    if (renderTexture is RenderTexture) {
-      renderTexture.dispose();
-    }
   }
 }
