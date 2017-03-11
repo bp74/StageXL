@@ -3,13 +3,22 @@ part of stagexl.drawing;
 class GraphicsPatternKind {
 
   final String value;
+  final RenderTextureWrapping wrappingX;
+  final RenderTextureWrapping wrappingY;
 
-  const GraphicsPatternKind(this.value);
+  const GraphicsPatternKind(this.value, this.wrappingX, this.wrappingY);
 
-  static const GraphicsPatternKind Repeat = const GraphicsPatternKind("repeat");
-  static const GraphicsPatternKind RepeatX  = const GraphicsPatternKind("repeat-x");
-  static const GraphicsPatternKind RepeatY  = const GraphicsPatternKind("repeat-y");
-  static const GraphicsPatternKind NoRepeat  = const GraphicsPatternKind("no-repeat");
+  static const GraphicsPatternKind Repeat =
+      const GraphicsPatternKind("repeat", RenderTextureWrapping.REPEAT, RenderTextureWrapping.REPEAT);
+
+  static const GraphicsPatternKind RepeatX  =
+      const GraphicsPatternKind("repeat-x", RenderTextureWrapping.REPEAT, RenderTextureWrapping.CLAMP);
+
+  static const GraphicsPatternKind RepeatY =
+      const GraphicsPatternKind("repeat-y", RenderTextureWrapping.CLAMP, RenderTextureWrapping.REPEAT);
+
+  static const GraphicsPatternKind NoRepeat =
+      const GraphicsPatternKind("no-repeat", RenderTextureWrapping.CLAMP, RenderTextureWrapping.CLAMP);
 }
 
 //------------------------------------------------------------------------------

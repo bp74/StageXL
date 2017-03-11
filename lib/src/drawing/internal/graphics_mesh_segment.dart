@@ -129,32 +129,24 @@ abstract class _GraphicsMeshSegment {
 
   void fillPattern(RenderState renderState, GraphicsPattern pattern) {
 
+    var matrix = _tmpMatrix;
+    var texture = pattern.patternTexture;
+    var invWidth = 1.0 / texture.width;
+    var invHeight = 1.0 / texture.height;
+
+    texture.wrappingX = pattern.kind.wrappingX;
+    texture.wrappingY = pattern.kind.wrappingY;
+
     if (pattern.matrix != null) {
-      _tmpMatrix.copyFromAndInvert(pattern.matrix);
+      matrix.copyFromAndInvert(pattern.matrix);
+      matrix.scale(invWidth, invHeight);
     } else {
-      _tmpMatrix.identity();
-    }
-
-    var patternMatrix = _tmpMatrix;
-    var patternTexture = pattern.patternTexture;
-
-    if (pattern.kind == GraphicsPatternKind.Repeat || pattern.kind == GraphicsPatternKind.RepeatX) {
-      patternTexture.wrappingX = RenderTextureWrapping.REPEAT;
-    } else {
-      patternTexture.wrappingX = RenderTextureWrapping.CLAMP;
-    }
-
-    if (pattern.kind == GraphicsPatternKind.Repeat || pattern.kind == GraphicsPatternKind.RepeatY) {
-      patternTexture.wrappingY = RenderTextureWrapping.REPEAT;
-    } else {
-      patternTexture.wrappingY = RenderTextureWrapping.CLAMP;
+      matrix.setTo(invWidth, 0.0, 0.0, invHeight, 0.0, 0.0);
     }
 
     var ixList = new Int16List.view(_indexBuffer.buffer, 0, _indexCount);
     var vxList = new Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
-
-    patternMatrix.scale(1.0 / patternTexture.width, 1.0 / patternTexture.width);
-    renderState.renderTextureMapping(patternTexture, patternMatrix, ixList, vxList);
+    renderState.renderTextureMapping(texture, matrix, ixList, vxList);
   }
 
 }
