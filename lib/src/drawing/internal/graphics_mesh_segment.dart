@@ -125,11 +125,18 @@ abstract class _GraphicsMeshSegment {
     var vxList = new Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
     var renderContext = renderState.renderContext as RenderContextWebGL;
     var renderTexture = gradient.getRenderTexture();
-    var linear = gradient.isLinear;
 
-    _GraphicsGradientProgram renderProgram = renderContext.getRenderProgram(
-        linear ? r"$LinearGraphicsGradientProgram" : r"$RadialGraphicsGradientProgram",
-        linear ? () => new _LinearGraphicsGradientProgram() : () => new _RadialGraphicsGradientProgram());
+    _GraphicsGradientProgram renderProgram;
+
+    if (gradient.kind == GraphicsGradientKind.Linear) {
+      renderProgram = renderContext.getRenderProgram(
+          r"$LinearGraphicsGradientProgram", () => new _LinearGraphicsGradientProgram());
+    }
+
+    if (gradient.kind == GraphicsGradientKind.Radial) {
+      renderProgram = renderContext.getRenderProgram(
+          r"$RadialGraphicsGradientProgram", () => new _RadialGraphicsGradientProgram());
+    }
 
     if (renderProgram.activeGradient != gradient) {
       renderProgram.activeGradient = gradient;

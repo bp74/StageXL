@@ -6,6 +6,11 @@ class GraphicsGradientColorStop {
   GraphicsGradientColorStop(this.offset, this.color);
 }
 
+enum GraphicsGradientKind {
+  Linear,
+  Radial
+}
+
 class GraphicsGradient {
 
   static const int GRADIENT_TEXTURE_SIZE = 512;
@@ -33,15 +38,17 @@ class GraphicsGradient {
   num _endRadius;
 
   List<GraphicsGradientColorStop> _colorStops;
-  bool _linear;
+  GraphicsGradientKind _kind;
 
   GraphicsGradient.linear(num startX, num startY, num endX, num endY)
       : _startX = startX,
         _startY = startY,
+        _startRadius = 0,
         _endX = endX,
         _endY = endY,
+        _endRadius = 0,
         _colorStops = new List<GraphicsGradientColorStop>(),
-        _linear = true;
+        _kind = GraphicsGradientKind.Linear;
 
   GraphicsGradient.radial(num startX, num startY, num startRadius, num endX, num endY, num endRadius)
       : _startX = startX,
@@ -51,21 +58,16 @@ class GraphicsGradient {
         _endY = endY,
         _endRadius = endRadius,
         _colorStops = new List<GraphicsGradientColorStop>(),
-        _linear = false;
+        _kind = GraphicsGradientKind.Radial;
 
   //---------------------------------------------------------------------------
 
-  set kind(String value) {
-    if (value != "linear" && value != "radial") {
-      throw new ArgumentError("kind must be 'linear' or 'radial'");
-    }
+  set kind(GraphicsGradientKind value) {
     disposeCachedRenderObjects(false);
-    _linear = (value == "linear");
+    _kind = value;
   }
 
-  String get kind => _linear ? "linear" : "radial";
-
-  bool get isLinear => _linear;
+  GraphicsGradientKind get kind => _kind;
 
   set startX(num value) {
     disposeCachedRenderObjects(false);
@@ -143,10 +145,14 @@ class GraphicsGradient {
       _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey);
     }
 
-    if (_canvasGradient == null) {
-      _canvasGradient = _linear
-          ? context.createLinearGradient(_startX, _startY, _endX, _endY)
-          : context.createRadialGradient(_startX, _startY, _startRadius, _endX, _endY, _endRadius);
+    if (_canvasGradient == null && _kind == GraphicsGradientKind.Linear) {
+      _canvasGradient = context.createLinearGradient(_startX, _startY, _endX, _endY);
+      _colorStops.forEach((cs) => _canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
+      _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
+    }
+
+    if (_canvasGradient == null && _kind == GraphicsGradientKind.Radial) {
+      _canvasGradient = context.createRadialGradient(_startX, _startY, _startRadius, _endX, _endY, _endRadius);
       _colorStops.forEach((cs) => _canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
       _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
     }
@@ -177,16 +183,28 @@ class GraphicsGradient {
 
   String _createCanvasCacheKey() {
 
-    var key = _linear ? "L" : "R";
-    key += "_" + _startX.toStringAsFixed(3);
-    key += "_" + _startY.toStringAsFixed(3);
-    key += _linear ? "" : "_" + _startRadius.toStringAsFixed(3);
+    var key = "";
 
-    key += "_" + _endX.toStringAsFixed(3);
-    key += "_" + _endY.toStringAsFixed(3);
-    key += _linear ? "" : "_" + _endRadius.toStringAsFixed(3);
+    if (_kind == GraphicsGradientKind.Linear) {
+      key += "L";
+      key += "_" + _startX.toStringAsFixed(3);
+      key += "_" + _startY.toStringAsFixed(3);
+      key += "_" + _endX.toStringAsFixed(3);
+      key += "_" + _endY.toStringAsFixed(3);
+    }
+
+    if (_kind == GraphicsGradientKind.Radial) {
+      key += "R";
+      key += "_" + _startX.toStringAsFixed(3);
+      key += "_" + _startY.toStringAsFixed(3);
+      key += "_" + _startRadius.toStringAsFixed(3);
+      key += "_" + _endX.toStringAsFixed(3);
+      key += "_" + _endY.toStringAsFixed(3);
+      key += "_" + _endRadius.toStringAsFixed(3);
+    }
 
     key += "_" + _colorStops.length.toString();
+
     for (var colorStop in _colorStops) {
       key += "_" + colorStop.offset.toStringAsPrecision(3);
       key += "_" + colorStop.color.toRadixString(16);
