@@ -8,6 +8,15 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version NEXT
+  * Added support for GraphicsGradient with WebGL renderer.
+  * Added support for GraphicsPattern with WebGL renderer.
+  * Added StageRenderMode.AUTO_INVALID for lower CPU/GPU load.
+  * Improved DisplayObject width and height setters.
+
+  Special thanks to John Talley for his work on the WebGL graphics
+  code to support gradient and pattern fills and strokes.
+
 #### Pub version 1.1.0
   * Added Graphics.arcElliptical method.
   * Added support for SVG encoded graphics paths.
