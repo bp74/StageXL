@@ -25,7 +25,6 @@ import 'geom/matrix.dart';
 import 'geom/matrix_3d.dart';
 import 'geom/rectangle.dart';
 import 'internal/tools.dart';
-import 'drawing.dart';
 
 part 'engine/blend_mode.dart';
 part 'engine/render_buffer_index.dart';
@@ -42,8 +41,6 @@ part 'engine/render_program.dart';
 part 'engine/render_program_tinted.dart';
 part 'engine/render_program_simple.dart';
 part 'engine/render_program_triangle.dart';
-part 'engine/render_program_linear_gradient.dart';
-part 'engine/render_program_radial_gradient.dart';
 part 'engine/render_state.dart';
 part 'engine/render_statistics.dart';
 part 'engine/render_stencil_buffer.dart';

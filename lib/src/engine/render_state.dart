@@ -91,10 +91,6 @@ class RenderState {
     _renderContext.renderTextureQuad(this, renderTextureQuad);
   }
 
-  void renderGradientMesh(Int16List ixList, Float32List vxList, GraphicsGradient gradient) {
-    _renderContext.renderGradientMesh(this, ixList, vxList, gradient);
-  }
-
   void renderTextureMapping(RenderTexture renderTexture, Matrix mappingMatrix, Int16List ixList, Float32List vxList) {
     _renderContext.renderTextureMapping(this, renderTexture, mappingMatrix, ixList, vxList);
   }

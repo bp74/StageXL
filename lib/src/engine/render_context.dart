@@ -31,10 +31,6 @@ abstract class RenderContext {
 
   //---------------------------------------------------------------------------
 
-  void renderGradientMesh(
-      RenderState renderState,
-      Int16List ixList, Float32List vxList, GraphicsGradient gradient);
-
   void renderTextureQuad(
      RenderState renderState, RenderTextureQuad renderTextureQuad);
 

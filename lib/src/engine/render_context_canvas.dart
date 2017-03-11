@@ -142,24 +142,6 @@ class RenderContextCanvas extends RenderContext {
   //---------------------------------------------------------------------------
 
   @override
-  void renderGradientMesh(
-      RenderState renderState,
-      Int16List ixList, Float32List vxList, GraphicsGradient gradient)
-  {
-    // do nothing, this is used by webGL to implement canvas gradients
-  }
-  @override
-  void renderTextureMapping(
-      RenderState renderState,
-      RenderTexture renderTexture, Matrix mappingMatrix,
-      Int16List ixList, Float32List vxList)
-  {
-    // do nothing, this is used by webGL to implement canvas patterns
-  }
-
-  //---------------------------------------------------------------------------
-
-  @override
   void renderTextureMesh(
       RenderState renderState, RenderTexture renderTexture,
       Int16List ixList, Float32List vxList) {
@@ -230,6 +212,17 @@ class RenderContextCanvas extends RenderContext {
       context.drawImage(source, 0, 0);
       context.restore();
     }
+  }
+
+  //---------------------------------------------------------------------------
+
+  @override
+  void renderTextureMapping(
+      RenderState renderState,
+      RenderTexture renderTexture, Matrix mappingMatrix,
+      Int16List ixList, Float32List vxList)
+  {
+    // do nothing, this is used by webGL to implement canvas patterns
   }
 
   //---------------------------------------------------------------------------
