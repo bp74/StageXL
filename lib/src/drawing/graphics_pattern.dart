@@ -1,18 +1,20 @@
 part of stagexl.drawing;
 
-class CanvasPatternKey{
+class CanvasPatternKey {
   RenderTextureQuad _renderTextureQuad;
   String _kind;
-  CanvasPatternKey(this._renderTextureQuad,this._kind);
+  CanvasPatternKey(this._renderTextureQuad, this._kind);
 
   @override
   int get hashCode {
-    return JenkinsHash.hash2(_renderTextureQuad.hashCode,_kind.hashCode);
+    return JenkinsHash.hash2(_renderTextureQuad.hashCode, _kind.hashCode);
   }
 
   @override
-  bool operator == (Object other){
-    return (other is CanvasPatternKey) && (this._renderTextureQuad == other._renderTextureQuad) && (this._kind == other._kind);
+  bool operator ==(Object other) {
+    return (other is CanvasPatternKey) &&
+        (this._renderTextureQuad == other._renderTextureQuad) &&
+        (this._kind == other._kind);
   }
 }
 
@@ -20,13 +22,15 @@ class GraphicsPattern {
 
   /// cached by the canvas2D renderer
   CanvasPattern _canvasPattern;
-  static SharedCache<CanvasPatternKey,CanvasPattern>  _canvasPatternCache = new SharedCache<CanvasPatternKey,CanvasPattern>();
+  static SharedCache<CanvasPatternKey, CanvasPattern> _canvasPatternCache =
+      new SharedCache<CanvasPatternKey, CanvasPattern>();
 
   /// cached by both the canvas2D and the webgl renderer
   RenderTexture _patternTexture;
-  Matrix        _renderMatrix;
-  static SharedCache<RenderTextureQuad,RenderTexture>  _patternTextureCache = new SharedCache<RenderTextureQuad,RenderTexture>()..onObjectReleasedListen(releaseTexture);
-
+  Matrix _renderMatrix;
+  static SharedCache<RenderTextureQuad, RenderTexture> _patternTextureCache =
+      new SharedCache<RenderTextureQuad, RenderTexture>()
+        ..onObjectReleasedListen(releaseTexture);
 
   RenderTextureQuad _renderTextureQuad;
   Matrix _matrix;
@@ -44,74 +48,80 @@ class GraphicsPattern {
   GraphicsPattern.noRepeat(this._renderTextureQuad, [this._matrix])
       : this._kind = "no-repeat";
 
-
   set kind(String value) {
-    if (value != "repeat" && value != "no-repeat" && value != "repeat-x" && value != "repeat-y") throw new ArgumentError("kind must be 'repeat', 'repeat-x', 'repeat-y', or 'no-repeat'");
+    if (value != "repeat" && value != "no-repeat" && value != "repeat-x" && value != "repeat-y") {
+      throw new ArgumentError("kind must be 'repeat', 'repeat-x', 'repeat-y', or 'no-repeat'");
+    }
     disposeCachedRenderObjects(false);
     _kind = value;
   }
+
   String get kind => _kind;
 
-  set matrix(Matrix value){
+  set matrix(Matrix value) {
     _renderMatrix = null;
     _matrix = value;
   }
+
   Matrix get matrix {
     _renderMatrix = null;
     return _matrix;
   }
 
-  set renderTextureQuad(RenderTextureQuad texture){
+  set renderTextureQuad(RenderTextureQuad texture) {
     disposeCachedRenderObjects(true);
     _renderTextureQuad = texture;
   }
+
   RenderTextureQuad get renderTextureQuad {
     disposeCachedRenderObjects(true);
     return _renderTextureQuad;
   }
 
   void disposeCachedRenderObjects(bool patternTextureChanged) {
-    _canvasPatternCache.releaseObject(new CanvasPatternKey(_renderTextureQuad,_kind));
+    _canvasPatternCache.releaseObject(new CanvasPatternKey(_renderTextureQuad, _kind));
     _canvasPattern = null;
-    if ( patternTextureChanged && _patternTexture != null ) {
-      if ( _patternTexture != _renderTextureQuad.renderTexture ) {
+    if (patternTextureChanged && _patternTexture != null) {
+      if (_patternTexture != _renderTextureQuad.renderTexture) {
         _patternTextureCache.releaseObject(_renderTextureQuad);
       }
       _patternTexture = null;
     }
   }
 
-  CanvasPattern  getCanvasPattern(CanvasRenderingContext2D context) {
-    if ( _canvasPattern != null ) return _canvasPattern;
+  CanvasPattern getCanvasPattern(CanvasRenderingContext2D context) {
 
-    CanvasPatternKey cacheKey = new CanvasPatternKey(_renderTextureQuad,_kind);
+    if (_canvasPattern != null) return _canvasPattern;
+
+    var cacheKey = new CanvasPatternKey(_renderTextureQuad, _kind);
     _canvasPattern = _canvasPatternCache.getObject(cacheKey);
 
-    if ( _canvasPattern == null ) {
-      RenderTexture fillTexture = patternTexture;
-      if ( fillTexture != null ){
+    if (_canvasPattern == null) {
+      var fillTexture = patternTexture;
+      if (fillTexture != null) {
         _canvasPattern = context.createPattern(fillTexture.source, _kind);
-        _canvasPatternCache.addObject(cacheKey,_canvasPattern);
+        _canvasPatternCache.addObject(cacheKey, _canvasPattern);
       }
     }
+
     return _canvasPattern;
   }
 
-  RenderTexture  get patternTexture {
-    if ( _patternTexture != null ) return _patternTexture;
+  RenderTexture get patternTexture {
 
-    if ( _renderTextureQuad != null ) {
+    if (_patternTexture != null) return _patternTexture;
+
+    if (_renderTextureQuad != null) {
       _patternTexture = _patternTextureCache.getObject(_renderTextureQuad);
 
-      if ( _patternTexture == null ) {
+      if (_patternTexture == null) {
         if (_renderTextureQuad.isEquivalentToSource) {
           _patternTexture = _renderTextureQuad.renderTexture;
         } else {
-          BitmapData bitmapData = new BitmapData.fromRenderTextureQuad(
-              _renderTextureQuad);
+          var bitmapData = new BitmapData.fromRenderTextureQuad(_renderTextureQuad);
           bitmapData = bitmapData.clone();
           _patternTexture = bitmapData.renderTextureQuad.renderTexture;
-          _patternTextureCache.addObject(_renderTextureQuad,_patternTexture);
+          _patternTextureCache.addObject(_renderTextureQuad, _patternTexture);
         }
       }
     }
@@ -119,22 +129,20 @@ class GraphicsPattern {
     return _patternTexture;
   }
 
-  Matrix  get _canvasRenderMatrix {
+  Matrix get _canvasRenderMatrix {
     return _matrix;
   }
 
-  Matrix  get webGLRenderMatrix {
-    if ( _renderMatrix != null ) return _renderMatrix;
-    if ( _matrix != null ) _renderMatrix = _matrix.cloneInvert();
+  Matrix get webGLRenderMatrix {
+    if (_renderMatrix != null) return _renderMatrix;
+    if (_matrix != null) _renderMatrix = _matrix.cloneInvert();
     return _renderMatrix;
   }
 
-  static void releaseTexture(ObjectReleaseEvent event)
-  {
-    RenderTexture texture = event.object as RenderTexture;
-    if ( texture != null ) {
-      texture.dispose();
+  static void releaseTexture(ObjectReleaseEvent event) {
+    var renderTexture = event.object;
+    if (renderTexture is RenderTexture) {
+      renderTexture.dispose();
     }
   }
-
 }
