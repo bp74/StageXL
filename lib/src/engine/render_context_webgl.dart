@@ -142,8 +142,6 @@ class RenderContextWebGL extends RenderContext {
     renderProgramSimple.renderTextureQuad(renderState, renderTextureQuad);
   }
 
-  //---------------------------------------------------------------------------
-
   @override
   void renderGradientMesh(
       RenderState renderState,
@@ -189,6 +187,18 @@ class RenderContextWebGL extends RenderContext {
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(renderTexture);
     renderProgramSimple.renderTextureMesh(renderState, ixList, vxList);
+  }
+
+  @override
+  void renderTextureMapping(
+      RenderState renderState,
+      RenderTexture renderTexture, Matrix mappingMatrix,
+      Int16List ixList, Float32List vxList) {
+
+    activateRenderProgram(renderProgramSimple);
+    activateBlendMode(renderState.globalBlendMode);
+    activateRenderTexture(renderTexture);
+    renderProgramSimple.renderTextureMapping(renderState, mappingMatrix, ixList, vxList);
   }
 
   //---------------------------------------------------------------------------

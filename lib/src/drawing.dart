@@ -16,6 +16,7 @@ part 'drawing/graphics_command.dart';
 part 'drawing/graphics_context.dart';
 part 'drawing/graphics_enums.dart';
 part 'drawing/graphics_gradient.dart';
+part 'drawing/graphics_gradient_program.dart';
 part 'drawing/graphics_pattern.dart';
 
 part 'drawing/commands/graphics_command_arc.dart';

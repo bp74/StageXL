@@ -194,39 +194,12 @@ class RenderProgramSimple extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void setPatternRepeatMode(String kind)
-  {
-    switch(kind)
-    {
-      case "repeat":
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-        break;
-      case "repeat-x":
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        break;
-      case "repeat-y":
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-        break;
-      case "no-repeat":
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        break;
-    }
-  }
-
-  //---------------------------------------------------------------------------
-
-  void renderPatternMesh(
-      RenderState renderState,
-      Int16List ixList, Float32List vxList, GraphicsPattern pattern) {
-
-    setPatternRepeatMode(pattern.kind);
+  void renderTextureMapping(
+      RenderState renderState, Matrix mappingMatrix,
+      Int16List ixList, Float32List vxList) {
 
     var alpha = renderState.globalAlpha;
-    var matrix = renderState.globalMatrix;
+    var globalMatrix = renderState.globalMatrix;
     var ixListCount = ixList.length;
     var vxListCount = vxList.length >> 1;
 
@@ -254,41 +227,20 @@ class RenderProgramSimple extends RenderProgram {
     renderBufferIndex.count += ixListCount;
 
     // copy vertex list
-    var ma = matrix.a;
-    var mb = matrix.b;
-    var mc = matrix.c;
-    var md = matrix.d;
-    var mx = matrix.tx;
-    var my = matrix.ty;
 
-    var ta = 1.0;
-    var tb = 0.0;
-    var tc = 0.0;
-    var td = 1.0;
-    var tx = 0.0;
-    var ty = 0.0;
+    var ma = globalMatrix.a;
+    var mb = globalMatrix.b;
+    var mc = globalMatrix.c;
+    var md = globalMatrix.d;
+    var mx = globalMatrix.tx;
+    var my = globalMatrix.ty;
 
-    Matrix textureMatrix = pattern.webGLRenderMatrix;
-    if ( textureMatrix != null )
-    {
-      ta = textureMatrix.a;
-      tb = textureMatrix.b;
-      tc = textureMatrix.c;
-      td = textureMatrix.d;
-      tx = textureMatrix.tx;
-      ty = textureMatrix.ty;
-    }
-
-    if ( pattern.patternTexture != null ) {
-      var imageWidth = pattern.patternTexture.width;
-      var imageHeight = pattern.patternTexture.height;
-      ta = ta / imageWidth;
-      tb = tb / imageWidth;
-      tc = tc / imageHeight;
-      td = td / imageHeight;
-      tx = tx / imageWidth;
-      ty = ty / imageHeight;
-    }
+    var ta = mappingMatrix.a;
+    var tb = mappingMatrix.b;
+    var tc = mappingMatrix.c;
+    var td = mappingMatrix.d;
+    var tx = mappingMatrix.tx;
+    var ty = mappingMatrix.ty;
 
     for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
       num x = vxList[o + 0];

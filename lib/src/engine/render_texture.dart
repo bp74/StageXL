@@ -8,6 +8,8 @@ class RenderTexture {
   CanvasImageSource _source;
   CanvasElement _canvas;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
+  RenderTextureWrapping _wrappingX = RenderTextureWrapping.CLAMP;
+  RenderTextureWrapping _wrappingY = RenderTextureWrapping.CLAMP;
   RenderContextWebGL _renderContext;
 
   int _contextIdentifier = -1;
@@ -99,7 +101,6 @@ class RenderTexture {
   set filtering(RenderTextureFiltering filtering) {
 
     if (_filtering == filtering) return;
-
     _filtering = filtering;
 
     if (_renderContext == null || _texture == null) return;
@@ -108,6 +109,38 @@ class RenderTexture {
     _renderContext.activateRenderTexture(this);
     _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
     _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  RenderTextureWrapping get wrappingX => _wrappingX;
+
+  set wrappingX(RenderTextureWrapping wrapping) {
+
+    if (_wrappingX == wrapping) return;
+    _wrappingX = wrapping;
+
+    if (_renderContext == null || _texture == null) return;
+    if (_renderContext.contextIdentifier != contextIdentifier) return;
+
+    _renderContext.activateRenderTexture(this);
+    _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, _wrappingX.value);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+
+  RenderTextureWrapping get wrappingY => _wrappingY;
+
+  set wrappingY(RenderTextureWrapping wrapping) {
+
+    if (_wrappingY == wrapping) return;
+    _wrappingY = wrapping;
+
+    if (_renderContext == null || _texture == null) return;
+    if (_renderContext.contextIdentifier != contextIdentifier) return;
+
+    _renderContext.activateRenderTexture(this);
+    _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, _wrappingY.value);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -225,8 +258,8 @@ class RenderTexture {
         _renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
       }
 
-      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, _wrappingX.value);
+      _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, _wrappingY.value);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
 

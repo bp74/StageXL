@@ -6,18 +6,29 @@ class GraphicsGradientColorStop {
   GraphicsGradientColorStop(this.offset, this.color);
 }
 
+enum GraphicsGradientKind {
+  Linear,
+  Radial
+}
 
 class GraphicsGradient {
 
-  /// cached by the canvas2D renderer
-  CanvasGradient  _canvasGradient;
-  String          _canvasCacheKey;
-  static SharedCache<String,CanvasGradient>  _canvasGradientCache = new SharedCache<String,CanvasGradient>();
+  static const int GRADIENT_TEXTURE_SIZE = 512;
 
-  /// cached by the webgl renderer
-  RenderTexture   _gradientTexture;
-  String          _textureCacheKey;
-  static SharedCache<String,RenderTexture>  _gradientTextureCache = new SharedCache<String,RenderTexture>()..onObjectReleasedListen(releaseTexture);
+  static SharedCache<String, CanvasGradient> _canvasGradientCache =
+      new SharedCache<String, CanvasGradient>();
+
+  static SharedCache<String, RenderTexture> _gradientTextureCache =
+      new SharedCache<String, RenderTexture>()
+        ..onObjectReleased.listen((e) => e.object.dispose());
+
+  /// cached by the Canvas2D renderer
+  CanvasGradient _canvasGradient;
+  String _canvasCacheKey;
+
+  /// cached by the WebGL renderer
+  RenderTexture _gradientTexture;
+  String _textureCacheKey;
 
   num _startX;
   num _startY;
@@ -27,72 +38,86 @@ class GraphicsGradient {
   num _endRadius;
 
   List<GraphicsGradientColorStop> _colorStops;
-  bool _linear;
+  GraphicsGradientKind _kind;
 
-  GraphicsGradient.linear(this._startX, this._startY, this._endX, this._endY) :
-      this._colorStops = new List<GraphicsGradientColorStop>(),
-      this._linear = true;
+  GraphicsGradient.linear(num startX, num startY, num endX, num endY)
+      : _startX = startX,
+        _startY = startY,
+        _startRadius = 0,
+        _endX = endX,
+        _endY = endY,
+        _endRadius = 0,
+        _colorStops = new List<GraphicsGradientColorStop>(),
+        _kind = GraphicsGradientKind.Linear;
 
-  GraphicsGradient.radial(this._startX, this._startY, this._startRadius, this._endX, this._endY, this._endRadius) :
-      this._colorStops = new List<GraphicsGradientColorStop>(),
-      this._linear = false;
+  GraphicsGradient.radial(num startX, num startY, num startRadius, num endX, num endY, num endRadius)
+      : _startX = startX,
+        _startY = startY,
+        _startRadius = startRadius,
+        _endX = endX,
+        _endY = endY,
+        _endRadius = endRadius,
+        _colorStops = new List<GraphicsGradientColorStop>(),
+        _kind = GraphicsGradientKind.Radial;
 
   //---------------------------------------------------------------------------
 
-  void set kind(String value) {
-    if (value != "linear" && value != "radial") throw new ArgumentError("kind must be 'linear' or 'radial'");
+  set kind(GraphicsGradientKind value) {
     disposeCachedRenderObjects(false);
-    _linear = (value == "linear");
+    _kind = value;
   }
-  String get kind => _linear ? "linear" : "radial";
 
-  bool get isLinear => _linear;
+  GraphicsGradientKind get kind => _kind;
 
-  void set startX(num value) {
+  set startX(num value) {
     disposeCachedRenderObjects(false);
     _startX = value;
   }
+
   num get startX => _startX;
 
-  void set startY(num value) {
+  set startY(num value) {
     disposeCachedRenderObjects(false);
     _startY = value;
   }
+
   num get startY => _startY;
 
-  void set startRadius(num value) {
+  set startRadius(num value) {
     disposeCachedRenderObjects(false);
     _startRadius = value;
   }
+
   num get startRadius => _startRadius;
 
-  void set endX(num value) {
+  set endX(num value) {
     disposeCachedRenderObjects(false);
     _endX = value;
   }
+
   num get endX => _endX;
 
-  void set endY(num value) {
+  set endY(num value) {
     disposeCachedRenderObjects(false);
     _endY = value;
   }
+
   num get endY => _endY;
 
-  void set endRadius(num value) {
+  set endRadius(num value) {
     disposeCachedRenderObjects(false);
     _endRadius = value;
   }
+
   num get endRadius => _endRadius;
 
-  void set colorStops(List<GraphicsGradientColorStop> value) {
-    if ( value != null ) {
-      disposeCachedRenderObjects();
-      _colorStops.clear();
-      _colorStops.addAll(value);
-    }
+  set colorStops(List<GraphicsGradientColorStop> value) {
+    disposeCachedRenderObjects();
+    _colorStops.clear();
+    _colorStops.addAll(value ?? <GraphicsGradientColorStop>[]);
   }
-  List<GraphicsGradientColorStop> get colorStops
-  {
+
+  List<GraphicsGradientColorStop> get colorStops {
     disposeCachedRenderObjects();
     return _colorStops;
   }
@@ -106,102 +131,94 @@ class GraphicsGradient {
     _canvasGradientCache.releaseObject(_canvasCacheKey);
     _canvasGradient = null;
     _canvasCacheKey = null;
-    if ( colorStopsChanged && _gradientTexture != null ) {
+    if (colorStopsChanged && _gradientTexture != null) {
       _gradientTextureCache.releaseObject(_textureCacheKey);
       _gradientTexture = null;
       _textureCacheKey = null;
     }
   }
 
-  CanvasGradient  getCanvasGradient(CanvasRenderingContext2D context)
-  {
-    if ( _canvasGradient != null ) return _canvasGradient;
+  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
 
-    _canvasCacheKey = _createCanvasCacheKey();
-    _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey);
+    if (_canvasGradient == null) {
+      _canvasCacheKey = _createCanvasCacheKey();
+      _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey);
+    }
 
-    if ( _canvasGradient == null ) {
+    if (_canvasGradient == null && _kind == GraphicsGradientKind.Linear) {
+      _canvasGradient = context.createLinearGradient(_startX, _startY, _endX, _endY);
+      _colorStops.forEach((cs) => _canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
+      _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
+    }
 
-      if ( _linear ) {
-        _canvasGradient = context.createLinearGradient(_startX, _startY, _endX, _endY);
-      } else {
-        _canvasGradient = context.createRadialGradient(_startX, _startY, _startRadius, _endX, _endY, _endRadius);
-      }
-
-      for (var colorStop in _colorStops) {
-        var offset = colorStop.offset;
-        var color = color2rgba(colorStop.color);
-        _canvasGradient.addColorStop(offset, color);
-      }
-
-      _canvasGradientCache.addObject(_canvasCacheKey,_canvasGradient);
+    if (_canvasGradient == null && _kind == GraphicsGradientKind.Radial) {
+      _canvasGradient = context.createRadialGradient(_startX, _startY, _startRadius, _endX, _endY, _endRadius);
+      _colorStops.forEach((cs) => _canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
+      _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
     }
 
     return _canvasGradient;
   }
 
-  static const int GRADIENT_TEXTURE_SIZE = 512;
-  RenderTexture  get webGLGradientTexture
-  {
-    if ( _gradientTexture != null ) return _gradientTexture;
 
-    _textureCacheKey = _createTextureCacheKey();
-    _gradientTexture = _gradientTextureCache.getObject(_textureCacheKey);
+  RenderTexture getRenderTexture() {
 
-    if ( _gradientTexture == null ) {
-      CanvasElement canvas = new CanvasElement( width: 1, height: GRADIENT_TEXTURE_SIZE);
+    if (_gradientTexture == null) {
+      _textureCacheKey = _createTextureCacheKey();
+      _gradientTexture = _gradientTextureCache.getObject(_textureCacheKey);
+    }
 
-      var context = canvas.context2D;
-      CanvasGradient canvasGradient = context.createLinearGradient(
-          0, 0, 0, GRADIENT_TEXTURE_SIZE);
-      for (var colorStop in _colorStops) {
-        var offset = colorStop.offset;
-        var color = color2rgba(colorStop.color);
-        canvasGradient.addColorStop(offset, color);
-      }
-      context.fillStyle = canvasGradient;
-      context.fillRect(0, 0, 1, GRADIENT_TEXTURE_SIZE);
-
+    if (_gradientTexture == null) {
+      var canvas = new CanvasElement(width: 1, height: GRADIENT_TEXTURE_SIZE);
+      var canvasGradient = canvas.context2D.createLinearGradient(0, 0, 0, GRADIENT_TEXTURE_SIZE);
+      _colorStops.forEach((cs) => canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
+      canvas.context2D.fillStyle = canvasGradient;
+      canvas.context2D.fillRect(0, 0, 1, GRADIENT_TEXTURE_SIZE);
       _gradientTexture = new RenderTexture.fromCanvasElement(canvas);
-
-      _gradientTextureCache.addObject(_textureCacheKey,_gradientTexture);
+      _gradientTextureCache.addObject(_textureCacheKey, _gradientTexture);
     }
 
     return _gradientTexture;
   }
 
-  String  _createCanvasCacheKey()
-  {
-    String key = _linear ? "L_" : "R_";
-    key += _startX.toStringAsFixed(3) + "_" + _startY.toStringAsFixed(3);
-    key += "_" + _endX.toStringAsFixed(3) + "_" + _endX.toStringAsFixed(3);
-    if ( !_linear )
-    {
-      key += "_" + _startRadius.toStringAsFixed(3) + "_" + _endRadius.toStringAsFixed(3);
+  String _createCanvasCacheKey() {
+
+    var key = "";
+
+    if (_kind == GraphicsGradientKind.Linear) {
+      key += "L";
+      key += "_" + _startX.toStringAsFixed(3);
+      key += "_" + _startY.toStringAsFixed(3);
+      key += "_" + _endX.toStringAsFixed(3);
+      key += "_" + _endY.toStringAsFixed(3);
+    }
+
+    if (_kind == GraphicsGradientKind.Radial) {
+      key += "R";
+      key += "_" + _startX.toStringAsFixed(3);
+      key += "_" + _startY.toStringAsFixed(3);
+      key += "_" + _startRadius.toStringAsFixed(3);
+      key += "_" + _endX.toStringAsFixed(3);
+      key += "_" + _endY.toStringAsFixed(3);
+      key += "_" + _endRadius.toStringAsFixed(3);
     }
 
     key += "_" + _colorStops.length.toString();
+
     for (var colorStop in _colorStops) {
-      key += "_" + colorStop.offset.toStringAsPrecision(3) + "_" + colorStop.color.toRadixString(16);
+      key += "_" + colorStop.offset.toStringAsPrecision(3);
+      key += "_" + colorStop.color.toRadixString(16);
     }
 
     return key;
   }
 
-  String  _createTextureCacheKey()
-  {
-    String key = _colorStops.length.toString();
+  String _createTextureCacheKey() {
+    var key = _colorStops.length.toString();
     for (var colorStop in _colorStops) {
-      key += "_" + colorStop.offset.toStringAsPrecision(3) + "_" + colorStop.color.toRadixString(16);
+      key += "_" + colorStop.offset.toStringAsPrecision(3);
+      key += "_" + colorStop.color.toRadixString(16);
     }
     return key;
-  }
-
-  static void releaseTexture(ObjectReleaseEvent event)
-  {
-    RenderTexture texture = event.object as RenderTexture;
-    if ( texture != null ) {
-      texture.dispose();
-    }
   }
 }
