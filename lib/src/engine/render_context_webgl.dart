@@ -172,6 +172,18 @@ class RenderContextWebGL extends RenderContext {
       RenderState renderState,
       Int16List ixList, Float32List vxList, GraphicsPattern pattern) {
 
+    if (pattern.kind == "repeat" || pattern.kind == "repeat-x") {
+      pattern.patternTexture.wrappingX = RenderTextureWrapping.REPEAT;
+    } else {
+      pattern.patternTexture.wrappingX = RenderTextureWrapping.CLAMP;
+    }
+
+    if (pattern.kind == "repeat" || pattern.kind == "repeat-y") {
+      pattern.patternTexture.wrappingY = RenderTextureWrapping.REPEAT;
+    } else {
+      pattern.patternTexture.wrappingY = RenderTextureWrapping.CLAMP;
+    }
+
     activateRenderProgram(renderProgramSimple);
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(pattern.patternTexture);

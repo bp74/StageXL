@@ -194,36 +194,9 @@ class RenderProgramSimple extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void setPatternRepeatMode(String kind)
-  {
-    switch(kind)
-    {
-      case "repeat":
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-        break;
-      case "repeat-x":
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        break;
-      case "repeat-y":
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-        break;
-      case "no-repeat":
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        break;
-    }
-  }
-
-  //---------------------------------------------------------------------------
-
   void renderPatternMesh(
       RenderState renderState,
       Int16List ixList, Float32List vxList, GraphicsPattern pattern) {
-
-    setPatternRepeatMode(pattern.kind);
 
     var alpha = renderState.globalAlpha;
     var matrix = renderState.globalMatrix;
