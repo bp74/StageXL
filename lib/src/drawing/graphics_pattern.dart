@@ -23,22 +23,22 @@ class GraphicsPatternKind {
 
 //------------------------------------------------------------------------------
 
-class CanvasPatternKey {
+class _CanvasPatternKey {
 
-  RenderTextureQuad _renderTextureQuad;
-  GraphicsPatternKind _kind;
-  CanvasPatternKey(this._renderTextureQuad, this._kind);
+  final RenderTextureQuad renderTextureQuad;
+  final GraphicsPatternKind kind;
+
+  _CanvasPatternKey(this.renderTextureQuad, this.kind);
 
   @override
   int get hashCode {
-    return JenkinsHash.hash2(_renderTextureQuad.hashCode, _kind.hashCode);
+    return JenkinsHash.hash2(renderTextureQuad.hashCode, kind.hashCode);
   }
 
   @override
   bool operator ==(Object other) {
-    return (other is CanvasPatternKey) &&
-        (this._renderTextureQuad == other._renderTextureQuad) &&
-        (this._kind == other._kind);
+    return other is _CanvasPatternKey &&
+        renderTextureQuad == other.renderTextureQuad && kind == other.kind;
   }
 }
 
@@ -46,8 +46,8 @@ class CanvasPatternKey {
 
 class GraphicsPattern {
 
-  static SharedCache<CanvasPatternKey, CanvasPattern> _canvasPatternCache =
-      new SharedCache<CanvasPatternKey, CanvasPattern>();
+  static SharedCache<_CanvasPatternKey, CanvasPattern> _canvasPatternCache =
+      new SharedCache<_CanvasPatternKey, CanvasPattern>();
 
   static SharedCache<RenderTextureQuad, RenderTexture> _patternTextureCache =
       new SharedCache<RenderTextureQuad, RenderTexture>()
@@ -112,7 +112,7 @@ class GraphicsPattern {
   //----------------------------------------------------------------------------
 
   void disposeCachedRenderObjects(bool patternTextureChanged) {
-    var cacheKey = new CanvasPatternKey(_renderTextureQuad, _kind);
+    var cacheKey = new _CanvasPatternKey(_renderTextureQuad, _kind);
     _canvasPatternCache.releaseObject(cacheKey);
     _canvasPattern = null;
     if (patternTextureChanged && _patternTexture != null) {
@@ -127,13 +127,13 @@ class GraphicsPattern {
 
     // try to get the canvasPattern from the cache
     if (_canvasPattern == null) {
-      var cacheKey = new CanvasPatternKey(_renderTextureQuad, _kind);
+      var cacheKey = new _CanvasPatternKey(_renderTextureQuad, _kind);
       _canvasPattern = _canvasPatternCache.getObject(cacheKey);
     }
 
     // create a new canvasPattern and add it to the cache
     if (_canvasPattern == null) {
-      var cacheKey = new CanvasPatternKey(_renderTextureQuad, _kind);
+      var cacheKey = new _CanvasPatternKey(_renderTextureQuad, _kind);
       _canvasPattern = context.createPattern(patternTexture.source, _kind.value);
       _canvasPatternCache.addObject(cacheKey, _canvasPattern);
     }
