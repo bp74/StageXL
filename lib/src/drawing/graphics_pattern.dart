@@ -109,21 +109,28 @@ class GraphicsPattern {
 
   RenderTexture get patternTexture {
 
-    if (_patternTexture != null) return _patternTexture;
-
-    if (_renderTextureQuad != null) {
+    // try to get the patternTexture from the texture cache
+    if (_patternTexture == null && _renderTextureQuad != null) {
       _patternTexture = _patternTextureCache.getObject(_renderTextureQuad);
+    }
 
-      if (_patternTexture == null) {
-        if (_renderTextureQuad.isEquivalentToSource) {
-          _patternTexture = _renderTextureQuad.renderTexture;
-        } else {
-          var bitmapData = new BitmapData.fromRenderTextureQuad(_renderTextureQuad);
-          bitmapData = bitmapData.clone();
-          _patternTexture = bitmapData.renderTextureQuad.renderTexture;
-          _patternTextureCache.addObject(_renderTextureQuad, _patternTexture);
-        }
-      }
+    // try to use the original texture as patternTexture
+    if (_patternTexture == null && _renderTextureQuad.isEquivalentToSource) {
+      _patternTexture = _renderTextureQuad.renderTexture;
+    }
+
+    // clone the original texture to get the patternTexture
+    if (_patternTexture == null) {
+      var pixelRatio = _renderTextureQuad.pixelRatio;
+      var textureWidth = _renderTextureQuad.offsetRectangle.width;
+      var textureHeight = _renderTextureQuad.offsetRectangle.height;
+      var renderTexture = new RenderTexture(textureWidth, textureHeight, 0);
+      var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
+      var renderContext = new RenderContextCanvas(renderTexture.canvas);
+      var renderState = new RenderState(renderContext, renderTextureQuad.drawMatrix);
+      renderState.renderTextureQuad(_renderTextureQuad);
+      _patternTexture = renderTexture;
+      _patternTextureCache.addObject(_renderTextureQuad, _patternTexture);
     }
 
     return _patternTexture;
