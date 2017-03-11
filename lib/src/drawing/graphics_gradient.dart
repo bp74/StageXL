@@ -110,11 +110,9 @@ class GraphicsGradient {
   num get endRadius => _endRadius;
 
   set colorStops(List<GraphicsGradientColorStop> value) {
-    if (value != null) {
-      disposeCachedRenderObjects();
-      _colorStops.clear();
-      _colorStops.addAll(value);
-    }
+    disposeCachedRenderObjects();
+    _colorStops.clear();
+    _colorStops.addAll(value ?? <GraphicsGradientColorStop>[]);
   }
 
   List<GraphicsGradientColorStop> get colorStops {
@@ -140,22 +138,16 @@ class GraphicsGradient {
 
   CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
 
-    if (_canvasGradient != null) return _canvasGradient;
-
-    _canvasCacheKey = _createCanvasCacheKey();
-    _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey);
+    if (_canvasGradient == null) {
+      _canvasCacheKey = _createCanvasCacheKey();
+      _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey);
+    }
 
     if (_canvasGradient == null) {
-
       _canvasGradient = _linear
           ? context.createLinearGradient(_startX, _startY, _endX, _endY)
           : context.createRadialGradient(_startX, _startY, _startRadius, _endX, _endY, _endRadius);
-
-      for (var colorStop in _colorStops) {
-        var color = color2rgba(colorStop.color);
-        _canvasGradient.addColorStop(colorStop.offset, color);
-      }
-
+      _colorStops.forEach((cs) => _canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
       _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
     }
 
@@ -165,25 +157,17 @@ class GraphicsGradient {
 
   RenderTexture getRenderTexture() {
 
-    if (_gradientTexture != null) return _gradientTexture;
-
-    _textureCacheKey = _createTextureCacheKey();
-    _gradientTexture = _gradientTextureCache.getObject(_textureCacheKey);
+    if (_gradientTexture == null) {
+      _textureCacheKey = _createTextureCacheKey();
+      _gradientTexture = _gradientTextureCache.getObject(_textureCacheKey);
+    }
 
     if (_gradientTexture == null) {
-
       var canvas = new CanvasElement(width: 1, height: GRADIENT_TEXTURE_SIZE);
-      var context = canvas.context2D;
-      var canvasGradient = context.createLinearGradient(0, 0, 0, GRADIENT_TEXTURE_SIZE);
-
-      for (var colorStop in _colorStops) {
-        var color = color2rgba(colorStop.color);
-        canvasGradient.addColorStop(colorStop.offset, color);
-      }
-
-      context.fillStyle = canvasGradient;
-      context.fillRect(0, 0, 1, GRADIENT_TEXTURE_SIZE);
-
+      var canvasGradient = canvas.context2D.createLinearGradient(0, 0, 0, GRADIENT_TEXTURE_SIZE);
+      _colorStops.forEach((cs) => canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
+      canvas.context2D.fillStyle = canvasGradient;
+      canvas.context2D.fillRect(0, 0, 1, GRADIENT_TEXTURE_SIZE);
       _gradientTexture = new RenderTexture.fromCanvasElement(canvas);
       _gradientTextureCache.addObject(_textureCacheKey, _gradientTexture);
     }
