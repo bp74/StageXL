@@ -89,7 +89,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
 
     _canvasContext.fillStyle = _getCanvasPattern(pattern);
 
-    var matrix = pattern._canvasRenderMatrix;
+    var matrix = pattern.matrix;
     if (matrix != null) {
       _canvasContext.save();
       _canvasContext.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
@@ -128,7 +128,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
     _canvasContext.lineCap = _getLineCap(capsStyle);
 
-    var matrix = pattern._canvasRenderMatrix;
+    var matrix = pattern.matrix;
     if (matrix != null) {
       _canvasContext.save();
       _canvasContext.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);

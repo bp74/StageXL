@@ -24,8 +24,6 @@ class RenderContextWebGL extends RenderContext {
   final RenderProgramSimple renderProgramSimple = new RenderProgramSimple();
   final RenderProgramTinted renderProgramTinted = new RenderProgramTinted();
   final RenderProgramTriangle renderProgramTriangle = new RenderProgramTriangle();
-  final RenderProgramLinearGradient renderProgramLinearGradient = new RenderProgramLinearGradient();
-  final RenderProgramRadialGradient renderProgramRadialGradient = new RenderProgramRadialGradient();
 
   final RenderBufferIndex renderBufferIndex = new RenderBufferIndex(16384);
   final RenderBufferVertex renderBufferVertex = new RenderBufferVertex(32768);
@@ -141,42 +139,6 @@ class RenderContextWebGL extends RenderContext {
     activateRenderTexture(renderTextureQuad.renderTexture);
     renderProgramSimple.renderTextureQuad(renderState, renderTextureQuad);
   }
-
-  @override
-  void renderGradientMesh(
-      RenderState renderState,
-      Int16List ixList, Float32List vxList, GraphicsGradient gradient)
-  {
-    if ( gradient.isLinear )
-    {
-      activateRenderProgram(renderProgramLinearGradient);
-      activateBlendMode(renderState.globalBlendMode);
-      activateRenderTexture(gradient.webGLGradientTexture);
-      renderProgramLinearGradient.renderMesh(renderState, ixList, vxList, gradient);
-    }
-    else
-    {
-      activateRenderProgram(renderProgramRadialGradient);
-      activateBlendMode(renderState.globalBlendMode);
-      activateRenderTexture(gradient.webGLGradientTexture);
-      renderProgramRadialGradient.renderMesh(renderState, ixList, vxList, gradient);
-    }
-  }
-
-  //---------------------------------------------------------------------------
-
-  @override
-  void renderPatternMesh(
-      RenderState renderState,
-      Int16List ixList, Float32List vxList, GraphicsPattern pattern) {
-
-    activateRenderProgram(renderProgramSimple);
-    activateBlendMode(renderState.globalBlendMode);
-    activateRenderTexture(pattern.patternTexture);
-    renderProgramSimple.renderPatternMesh(renderState, ixList, vxList, pattern);
-  }
-
-  //---------------------------------------------------------------------------
 
   @override
   void renderTextureMesh(
