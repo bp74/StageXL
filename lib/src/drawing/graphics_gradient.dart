@@ -191,9 +191,7 @@ class GraphicsGradient {
       key += "_" + _startY.toStringAsFixed(3);
       key += "_" + _endX.toStringAsFixed(3);
       key += "_" + _endY.toStringAsFixed(3);
-    }
-
-    if (_kind == GraphicsGradientKind.Radial) {
+    } else if (_kind == GraphicsGradientKind.Radial) {
       key += "R";
       key += "_" + _startX.toStringAsFixed(3);
       key += "_" + _startY.toStringAsFixed(3);
@@ -201,6 +199,8 @@ class GraphicsGradient {
       key += "_" + _endX.toStringAsFixed(3);
       key += "_" + _endY.toStringAsFixed(3);
       key += "_" + _endRadius.toStringAsFixed(3);
+    } else {
+      throw new StateError("Unknown gradient kind");
     }
 
     key += "_" + _colorStops.length.toString();
