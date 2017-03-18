@@ -1,24 +1,24 @@
 part of stagexl.drawing;
 
-class GraphicsPatternKind {
+class GraphicsPatternType {
 
   final String value;
   final RenderTextureWrapping wrappingX;
   final RenderTextureWrapping wrappingY;
 
-  const GraphicsPatternKind(this.value, this.wrappingX, this.wrappingY);
+  const GraphicsPatternType(this.value, this.wrappingX, this.wrappingY);
 
-  static const GraphicsPatternKind Repeat =
-      const GraphicsPatternKind("repeat", RenderTextureWrapping.REPEAT, RenderTextureWrapping.REPEAT);
+  static const GraphicsPatternType Repeat =
+      const GraphicsPatternType("repeat", RenderTextureWrapping.REPEAT, RenderTextureWrapping.REPEAT);
 
-  static const GraphicsPatternKind RepeatX  =
-      const GraphicsPatternKind("repeat-x", RenderTextureWrapping.REPEAT, RenderTextureWrapping.CLAMP);
+  static const GraphicsPatternType RepeatX  =
+      const GraphicsPatternType("repeat-x", RenderTextureWrapping.REPEAT, RenderTextureWrapping.CLAMP);
 
-  static const GraphicsPatternKind RepeatY =
-      const GraphicsPatternKind("repeat-y", RenderTextureWrapping.CLAMP, RenderTextureWrapping.REPEAT);
+  static const GraphicsPatternType RepeatY =
+      const GraphicsPatternType("repeat-y", RenderTextureWrapping.CLAMP, RenderTextureWrapping.REPEAT);
 
-  static const GraphicsPatternKind NoRepeat =
-      const GraphicsPatternKind("no-repeat", RenderTextureWrapping.CLAMP, RenderTextureWrapping.CLAMP);
+  static const GraphicsPatternType NoRepeat =
+      const GraphicsPatternType("no-repeat", RenderTextureWrapping.CLAMP, RenderTextureWrapping.CLAMP);
 }
 
 //------------------------------------------------------------------------------
@@ -26,19 +26,19 @@ class GraphicsPatternKind {
 class _CanvasPatternKey {
 
   final RenderTextureQuad renderTextureQuad;
-  final GraphicsPatternKind kind;
+  final GraphicsPatternType type;
 
-  _CanvasPatternKey(this.renderTextureQuad, this.kind);
+  _CanvasPatternKey(this.renderTextureQuad, this.type);
 
   @override
   int get hashCode {
-    return JenkinsHash.hash2(renderTextureQuad.hashCode, kind.hashCode);
+    return JenkinsHash.hash2(renderTextureQuad.hashCode, type.hashCode);
   }
 
   @override
   bool operator ==(Object other) {
     return other is _CanvasPatternKey &&
-        renderTextureQuad == other.renderTextureQuad && kind == other.kind;
+        renderTextureQuad == other.renderTextureQuad && type == other.type;
   }
 }
 
@@ -60,37 +60,37 @@ class GraphicsPattern {
   RenderTexture _patternTexture;
 
   RenderTextureQuad _renderTextureQuad;
-  GraphicsPatternKind _kind;
+  GraphicsPatternType _type;
   Matrix _matrix;
 
   GraphicsPattern(
       RenderTextureQuad renderTextureQuad,
-      GraphicsPatternKind kind, [Matrix matrix = null]) {
+      GraphicsPatternType type, [Matrix matrix = null]) {
 
     _renderTextureQuad = renderTextureQuad;
     _matrix = matrix;
-    _kind = kind;
+    _type = type;
   }
 
   GraphicsPattern.repeat(RenderTextureQuad renderTextureQuad, [Matrix matrix])
-      : this(renderTextureQuad, GraphicsPatternKind.Repeat, matrix);
+      : this(renderTextureQuad, GraphicsPatternType.Repeat, matrix);
 
   GraphicsPattern.repeatX(RenderTextureQuad renderTextureQuad, [Matrix matrix])
-      : this(renderTextureQuad, GraphicsPatternKind.RepeatX, matrix);
+      : this(renderTextureQuad, GraphicsPatternType.RepeatX, matrix);
 
   GraphicsPattern.repeatY(RenderTextureQuad renderTextureQuad, [Matrix matrix])
-      : this(renderTextureQuad, GraphicsPatternKind.RepeatY, matrix);
+      : this(renderTextureQuad, GraphicsPatternType.RepeatY, matrix);
 
   GraphicsPattern.noRepeat(RenderTextureQuad renderTextureQuad, [Matrix matrix])
-      : this(renderTextureQuad, GraphicsPatternKind.NoRepeat, matrix);
+      : this(renderTextureQuad, GraphicsPatternType.NoRepeat, matrix);
 
   //----------------------------------------------------------------------------
 
-  GraphicsPatternKind get kind => _kind;
+  GraphicsPatternType get type => _type;
 
-  set kind(GraphicsPatternKind value) {
+  set type(GraphicsPatternType value) {
     disposeCachedRenderObjects(false);
-    _kind = value;
+    _type = value;
   }
 
   Matrix get matrix => _matrix;
@@ -112,7 +112,7 @@ class GraphicsPattern {
   //----------------------------------------------------------------------------
 
   void disposeCachedRenderObjects(bool patternTextureChanged) {
-    var cacheKey = new _CanvasPatternKey(_renderTextureQuad, _kind);
+    var cacheKey = new _CanvasPatternKey(_renderTextureQuad, _type);
     _canvasPatternCache.releaseObject(cacheKey);
     _canvasPattern = null;
     if (patternTextureChanged && _patternTexture != null) {
@@ -127,14 +127,14 @@ class GraphicsPattern {
 
     // try to get the canvasPattern from the cache
     if (_canvasPattern == null) {
-      var cacheKey = new _CanvasPatternKey(_renderTextureQuad, _kind);
+      var cacheKey = new _CanvasPatternKey(_renderTextureQuad, _type);
       _canvasPattern = _canvasPatternCache.getObject(cacheKey);
     }
 
     // create a new canvasPattern and add it to the cache
     if (_canvasPattern == null) {
-      var cacheKey = new _CanvasPatternKey(_renderTextureQuad, _kind);
-      _canvasPattern = context.createPattern(patternTexture.source, _kind.value);
+      var cacheKey = new _CanvasPatternKey(_renderTextureQuad, _type);
+      _canvasPattern = context.createPattern(patternTexture.source, _type.value);
       _canvasPatternCache.addObject(cacheKey, _canvasPattern);
     }
 
