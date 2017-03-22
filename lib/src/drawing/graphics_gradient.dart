@@ -6,7 +6,7 @@ class GraphicsGradientColorStop {
   GraphicsGradientColorStop(this.offset, this.color);
 }
 
-enum GraphicsGradientKind {
+enum GraphicsGradientType {
   Linear,
   Radial
 }
@@ -38,7 +38,7 @@ class GraphicsGradient {
   num _endRadius;
 
   List<GraphicsGradientColorStop> _colorStops;
-  GraphicsGradientKind _kind;
+  GraphicsGradientType _type;
 
   GraphicsGradient.linear(num startX, num startY, num endX, num endY)
       : _startX = startX,
@@ -48,7 +48,7 @@ class GraphicsGradient {
         _endY = endY,
         _endRadius = 0,
         _colorStops = new List<GraphicsGradientColorStop>(),
-        _kind = GraphicsGradientKind.Linear;
+        _type = GraphicsGradientType.Linear;
 
   GraphicsGradient.radial(num startX, num startY, num startRadius, num endX, num endY, num endRadius)
       : _startX = startX,
@@ -58,16 +58,16 @@ class GraphicsGradient {
         _endY = endY,
         _endRadius = endRadius,
         _colorStops = new List<GraphicsGradientColorStop>(),
-        _kind = GraphicsGradientKind.Radial;
+        _type = GraphicsGradientType.Radial;
 
   //---------------------------------------------------------------------------
 
-  set kind(GraphicsGradientKind value) {
+  set type(GraphicsGradientType value) {
     disposeCachedRenderObjects(false);
-    _kind = value;
+    _type = value;
   }
 
-  GraphicsGradientKind get kind => _kind;
+  GraphicsGradientType get type => _type;
 
   set startX(num value) {
     disposeCachedRenderObjects(false);
@@ -145,13 +145,13 @@ class GraphicsGradient {
       _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey);
     }
 
-    if (_canvasGradient == null && _kind == GraphicsGradientKind.Linear) {
+    if (_canvasGradient == null && _type == GraphicsGradientType.Linear) {
       _canvasGradient = context.createLinearGradient(_startX, _startY, _endX, _endY);
       _colorStops.forEach((cs) => _canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
       _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
     }
 
-    if (_canvasGradient == null && _kind == GraphicsGradientKind.Radial) {
+    if (_canvasGradient == null && _type == GraphicsGradientType.Radial) {
       _canvasGradient = context.createRadialGradient(_startX, _startY, _startRadius, _endX, _endY, _endRadius);
       _colorStops.forEach((cs) => _canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
       _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
@@ -185,13 +185,13 @@ class GraphicsGradient {
 
     var key = "";
 
-    if (_kind == GraphicsGradientKind.Linear) {
+    if (_type == GraphicsGradientType.Linear) {
       key += "L";
       key += "_" + _startX.toStringAsFixed(3);
       key += "_" + _startY.toStringAsFixed(3);
       key += "_" + _endX.toStringAsFixed(3);
       key += "_" + _endY.toStringAsFixed(3);
-    } else if (_kind == GraphicsGradientKind.Radial) {
+    } else if (_type == GraphicsGradientType.Radial) {
       key += "R";
       key += "_" + _startX.toStringAsFixed(3);
       key += "_" + _startY.toStringAsFixed(3);

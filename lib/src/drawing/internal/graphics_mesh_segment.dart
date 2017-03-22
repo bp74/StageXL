@@ -128,12 +128,12 @@ abstract class _GraphicsMeshSegment {
 
     _GraphicsGradientProgram renderProgram;
 
-    if (gradient.kind == GraphicsGradientKind.Linear) {
+    if (gradient.type == GraphicsGradientType.Linear) {
       renderProgram = renderContext.getRenderProgram(
           r"$LinearGraphicsGradientProgram", () => new _LinearGraphicsGradientProgram());
     }
 
-    if (gradient.kind == GraphicsGradientKind.Radial) {
+    if (gradient.type == GraphicsGradientType.Radial) {
       renderProgram = renderContext.getRenderProgram(
           r"$RadialGraphicsGradientProgram", () => new _RadialGraphicsGradientProgram());
     }
@@ -159,8 +159,8 @@ abstract class _GraphicsMeshSegment {
     var invWidth = 1.0 / texture.width;
     var invHeight = 1.0 / texture.height;
 
-    texture.wrappingX = pattern.kind.wrappingX;
-    texture.wrappingY = pattern.kind.wrappingY;
+    texture.wrappingX = pattern.type.wrappingX;
+    texture.wrappingY = pattern.type.wrappingY;
 
     if (pattern.matrix != null) {
       matrix.copyFromAndInvert(pattern.matrix);

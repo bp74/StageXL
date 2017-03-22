@@ -642,9 +642,9 @@ class TextField extends InteractiveObject {
 
     CanvasGradient canvasGradient;
 
-    if (gradient.kind == GraphicsGradientKind.Linear) {
+    if (gradient.type == GraphicsGradientType.Linear) {
       canvasGradient = context.createLinearGradient(sx, sy, ex, ey);
-    } else if (gradient.kind == GraphicsGradientKind.Radial) {
+    } else if (gradient.type == GraphicsGradientType.Radial) {
       canvasGradient = context.createRadialGradient(sx, sy, sr, ex, ey, er);
     } else {
       throw new StateError("Unknown gradient kind");
