@@ -96,7 +96,9 @@ class Sprite extends DisplayObjectContainer {
 
   @override
   Rectangle<num> get bounds {
-    if (_graphics == null) {
+    if ( _scrollRect != null ) {
+      return _scrollRect.clone();
+    } else if (_graphics == null) {
       return super.bounds;
     } else if (numChildren == 0) {
       return _graphics.bounds;
@@ -128,6 +130,16 @@ class Sprite extends DisplayObjectContainer {
   @override
   DisplayObject hitTestInput(num localX, num localY) {
 
+    // need to use non-scroll-translated coords for calling super method
+    var superLocalX = localX;
+    var superLocalY = localY;
+
+    if ( _scrollRect != null ) {
+      if ( !this.bounds.contains(localX, localY) ) return null;
+      localX += _scrollRect.left;
+      localY += _scrollRect.top;
+    }
+
     var hitArea = this.hitArea;
     var graphics = _graphics;
     DisplayObject target;
@@ -140,7 +152,7 @@ class Sprite extends DisplayObjectContainer {
       return target != null ? this : null;
     }
 
-    target = super.hitTestInput(localX, localY);
+    target = super.hitTestInput(superLocalX, superLocalY);
 
     if (target == null && graphics != null) {
       target = graphics.hitTest(localX, localY) ? this : null;

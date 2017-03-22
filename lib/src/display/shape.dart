@@ -19,12 +19,18 @@ class Shape extends DisplayObject {
 
   @override
   Rectangle<num> get bounds {
+    if ( _scrollRect != null ) return _scrollRect.clone();
     return graphics != null ? graphics.bounds : super.bounds;
   }
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
     if (graphics == null) return null;
+    if ( _scrollRect != null ) {
+      if ( !this.bounds.contains(localX, localY) ) return null;
+      localX += _scrollRect.left;
+      localY += _scrollRect.top;
+    }
     if (graphics.hitTest(localX, localY)) return this;
     return null;
   }

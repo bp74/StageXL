@@ -372,6 +372,25 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
+  void copyFromAndPrependTranslation(Matrix copyMatrix, num tx, num ty) {
+
+    var a1 =  copyMatrix.a;
+    var b1 =  copyMatrix.b;
+    var c1 =  copyMatrix.c;
+    var d1 =  copyMatrix.d;
+    var tx1 = copyMatrix.tx;
+    var ty1 = copyMatrix.ty;
+
+    _data[0] = a1;
+    _data[1] = b1;
+    _data[2] = c1;
+    _data[3] = d1;
+    _data[4] = tx * a1 + ty * c1 + tx1;
+    _data[5] = tx * b1 + ty * d1 + ty1;
+  }
+
+  //-------------------------------------------------------------------------------------------------
+
   void invertAndConcat(Matrix concatMatrix) {
 
     var det =   this.det;

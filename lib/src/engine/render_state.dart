@@ -125,11 +125,15 @@ class RenderState {
     var filters = renderObject.filters;
     var cache = renderObject.cache;
     var mask = renderObject.mask;
+    var scrollMask = renderObject.scrollMask;
+    var scrollRect = renderObject.scrollRect;
 
     var cs1 = _currentContextState;
     var cs2 = _currentContextState.nextContextState;
     var maskBefore = mask != null && mask.relativeToParent == true;
     var maskAfter = mask != null && mask.relativeToParent == false;
+    var scrollMaskBefore = scrollMask != null && scrollMask.relativeToParent == true;
+    var scrollMaskAfter = scrollMask != null && scrollMask.relativeToParent == false;
 
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
     cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
@@ -137,6 +141,7 @@ class RenderState {
 
     //-----------
 
+    if (scrollMaskBefore) renderContext.beginRenderMask(this, scrollMask);
     if (maskBefore) renderContext.beginRenderMask(this, mask);
 
     if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
@@ -153,7 +158,18 @@ class RenderState {
 
     //-----------
 
+    if (scrollMaskAfter) renderContext.beginRenderMask(this, scrollMask);
     if (maskAfter) renderContext.beginRenderMask(this, mask);
+
+    if ( scrollRect != null ) {
+      var cs3 = _currentContextState.nextContextState;
+      var sx = -scrollRect.left;
+      var sy = -scrollRect.top;
+      cs3.matrix.copyFromAndPrependTranslation(cs2.matrix, sx, sy);
+      cs3.blendMode = cs2.blendMode;
+      cs3.alpha = cs2.alpha;
+      _currentContextState = cs3;
+    }
 
     if (cache != null) {
       this.renderTextureQuad(cache);
@@ -163,7 +179,10 @@ class RenderState {
       renderObject.render(this);
     }
 
+    if ( scrollRect != null ) _currentContextState = cs2;
+
     if (maskAfter) renderContext.endRenderMask(this, mask);
+    if (scrollMaskAfter) renderContext.endRenderMask(this, scrollMask);
 
     //-----------
 
@@ -175,6 +194,7 @@ class RenderState {
     }
 
     if (maskBefore) renderContext.endRenderMask(this, mask);
+    if (scrollMaskBefore) renderContext.endRenderMask(this, scrollMask);
   }
 
   //---------------------------------------------------------------------------
