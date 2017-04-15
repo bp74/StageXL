@@ -121,7 +121,7 @@ class RenderContextWebGL extends RenderContext {
 
     _activeRenderProgram.flush();
 
-    // try to set a scissor rectangle for this mask
+    // try to use the scissor rectangle for this mask
 
     if (mask is ScissorRenderMask) {
       var scissor = mask.getScissorRectangle(renderState);
@@ -139,17 +139,14 @@ class RenderContextWebGL extends RenderContext {
     var stencil = _getLastStencilValue() + 1;
 
     _renderingContext.enable(gl.STENCIL_TEST);
-    _renderingContext.stencilMask(0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
     _renderingContext.stencilFunc(gl.EQUAL, stencil - 1, 0xFF);
     _renderingContext.colorMask(false, false, false, false);
     mask.renderMask(renderState);
 
     _activeRenderProgram.flush();
-    _renderingContext.stencilMask(0x00);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
     _renderingContext.colorMask(true, true, true, true);
-
     _maskStates.add(new _StencilMaskState(mask, stencil));
     _updateStencilTest(stencil);
   }
@@ -160,7 +157,6 @@ class RenderContextWebGL extends RenderContext {
     _activeRenderProgram.flush();
 
     var maskState = _getMaskStates().removeLast();
-
     if (maskState is _ScissorMaskState) {
 
       _updateScissorTest(_getLastScissorValue());
@@ -168,14 +164,12 @@ class RenderContextWebGL extends RenderContext {
     } else if (maskState is _StencilMaskState) {
 
       _renderingContext.enable(gl.STENCIL_TEST);
-      _renderingContext.stencilMask(0xFF);
       _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
       _renderingContext.stencilFunc(gl.EQUAL, maskState.value, 0xFF);
       _renderingContext.colorMask(false, false, false, false);
       mask.renderMask(renderState);
 
       _activeRenderProgram.flush();
-      _renderingContext.stencilMask(0x00);
       _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
       _renderingContext.colorMask(true, true, true, true);
       _updateStencilTest(maskState.value - 1);
@@ -503,32 +497,23 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
 
   int _getViewportWidth() {
-    if (_activeRenderFrameBuffer is RenderFrameBuffer) {
-      return _activeRenderFrameBuffer.width;
-    } else {
-      return _canvasElement.width;
-    }
+    var rfb = _activeRenderFrameBuffer;
+    return rfb is RenderFrameBuffer ? rfb.width : _canvasElement.width;
   }
 
   int _getViewportHeight() {
-    if (_activeRenderFrameBuffer is RenderFrameBuffer) {
-      return _activeRenderFrameBuffer.height;
-    } else {
-      return _canvasElement.height;
-    }
+    var rfb = _activeRenderFrameBuffer;
+    return rfb is RenderFrameBuffer ? rfb.height : _canvasElement.height;
   }
 
   List<_MaskState> _getMaskStates() {
-    if (_activeRenderFrameBuffer is RenderFrameBuffer) {
-      return _activeRenderFrameBuffer._maskStates;
-    } else {
-      return _maskStates;
-    }
+    var rfb = _activeRenderFrameBuffer;
+    return rfb is RenderFrameBuffer ? rfb._maskStates : _maskStates;
   }
 
   int _getLastStencilValue() {
     var maskStates = _getMaskStates();
-    for(int i = maskStates.length - 1; i >= 0; i--) {
+    for (int i = maskStates.length - 1; i >= 0; i--) {
       var maskState = maskStates[i];
       if (maskState is _StencilMaskState) return maskState.value;
     }
@@ -537,7 +522,7 @@ class RenderContextWebGL extends RenderContext {
 
   Rectangle<num> _getLastScissorValue() {
     var maskStates = _getMaskStates();
-    for(int i = maskStates.length - 1; i >= 0; i--) {
+    for (int i = maskStates.length - 1; i >= 0; i--) {
       var maskState = maskStates[i];
       if (maskState is _ScissorMaskState) return maskState.value;
     }
