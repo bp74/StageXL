@@ -119,6 +119,8 @@ class RenderContextWebGL extends RenderContext {
   @override
   void beginRenderMask(RenderState renderState, RenderMask mask) {
 
+    _activeRenderProgram.flush();
+
     // try to set a scissor rectangle for this mask
 
     if (mask is ScissorRenderMask) {
@@ -136,7 +138,6 @@ class RenderContextWebGL extends RenderContext {
 
     var stencil = _getLastStencilValue() + 1;
 
-    _activeRenderProgram.flush();
     _renderingContext.enable(gl.STENCIL_TEST);
     _renderingContext.stencilMask(0xFF);
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
@@ -156,16 +157,16 @@ class RenderContextWebGL extends RenderContext {
   @override
   void endRenderMask(RenderState renderState, RenderMask mask) {
 
+    _activeRenderProgram.flush();
+
     var maskState = _getMaskStates().removeLast();
 
     if (maskState is _ScissorMaskState) {
 
-      _activeRenderProgram.flush();
       _updateScissorTest(_getLastScissorValue());
 
     } else if (maskState is _StencilMaskState) {
 
-      _activeRenderProgram.flush();
       _renderingContext.enable(gl.STENCIL_TEST);
       _renderingContext.stencilMask(0xFF);
       _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
