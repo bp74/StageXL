@@ -13,6 +13,7 @@ announcements on the StageXL forum or use one of the support links below:
   * Added support for GraphicsGradient with WebGL renderer.
   * Added support for GraphicsPattern with WebGL renderer.
   * Added StageRenderMode.AUTO_INVALID for lower CPU/GPU load.
+  * Optimized stage-aligned rectangular masks.
   * Improved DisplayObject width and height setters.
 
   Special thanks to John Talley for his work on the WebGL graphics
