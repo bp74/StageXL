@@ -11,7 +11,7 @@ class ViewportContainer extends DisplayObjectContainer {
   }
 
   set viewport(Rectangle<num> value) {
-    _viewportRectangle = value.clone();
+    _viewportRectangle = value?.clone();
     if (value != null) {
       _viewportMatrix.identity();
       _viewportMatrix.translate(0.0 - value.left, 0.0 - value.top);
