@@ -26,6 +26,7 @@ part 'display_ex/mesh.dart';
 part 'display_ex/scale9_bitmap.dart';
 part 'display_ex/time_gauge.dart';
 part 'display_ex/video_object.dart';
+part 'display_ex/viewport_container.dart';
 part 'display_ex/warp.dart';
 
 final Matrix _identityMatrix = new Matrix.fromIdentity();
