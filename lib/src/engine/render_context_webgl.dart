@@ -84,8 +84,8 @@ class RenderContextWebGL extends RenderContext {
 
   @override
   void reset() {
-    var viewportWidth = _getViewportWidth();
-    var viewportHeight = _getViewportHeight();
+    var viewportWidth = _canvasElement.width;
+    var viewportHeight = _canvasElement.height;
     _activeRenderFrameBuffer = null;
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, viewportWidth, viewportHeight);
