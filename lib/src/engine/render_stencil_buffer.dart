@@ -4,7 +4,6 @@ class RenderStencilBuffer {
 
   int _width = 0;
   int _height = 0;
-  int _depth = 0;
 
   RenderContextWebGL _renderContext;
 
@@ -15,21 +14,15 @@ class RenderStencilBuffer {
   RenderStencilBuffer.rawWebGL(int width, int height) {
     _width = ensureInt(width);
     _height = ensureInt(height);
-    _depth = 0;
   }
 
   //-----------------------------------------------------------------------------------------------
 
   int get width => _width;
   int get height => _height;
-  int get depth => _depth;
 
   gl.Renderbuffer get renderbuffer => _renderbuffer;
   int get contextIdentifier => _contextIdentifier;
-
-  set depth(int value) {
-    _depth = ensureInt(value);
-  }
 
   //-----------------------------------------------------------------------------------------------
 

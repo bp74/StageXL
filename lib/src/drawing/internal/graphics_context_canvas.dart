@@ -156,38 +156,11 @@ class _GraphicsContextCanvas extends GraphicsContext {
   }
 
   CanvasPattern _getCanvasPattern(GraphicsPattern pattern) {
-    var renderTexture = pattern.renderTextureQuad.renderTexture;
-    var repeatOption = pattern.kind;
-    return _canvasContext.createPattern(renderTexture.source, repeatOption);
+    return pattern.getCanvasPattern(_canvasContext);
   }
 
   CanvasGradient _getCanvasGradient(GraphicsGradient gradient) {
-
-    var context = _canvasContext;
-    var sx = gradient.startX;
-    var sy = gradient.startY;
-    var sr = gradient.startRadius;
-    var ex = gradient.endX;
-    var ey = gradient.endY;
-    var er = gradient.endRadius;
-
-    CanvasGradient canvasGradient;
-
-    if (gradient.kind == "linear") {
-      canvasGradient = context.createLinearGradient(sx, sy, ex, ey);
-    } else if (gradient.kind == "radial") {
-      canvasGradient = context.createRadialGradient(sx, sy, sr, ex, ey, er);
-    } else {
-      throw new ArgumentError("Unknown gradient kind");
-    }
-
-    for (var colorStop in gradient.colorStops) {
-      var offset = colorStop.offset;
-      var color = color2rgba(colorStop.color);
-      canvasGradient.addColorStop(offset, color);
-    }
-
-    return canvasGradient;
+    return gradient.getCanvasGradient(_canvasContext);
   }
 }
 

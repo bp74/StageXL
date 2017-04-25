@@ -2,69 +2,39 @@ part of stagexl.display;
 
 class RenderLoop extends RenderLoopBase {
 
-  final Juggler juggler = new Juggler();
+  final Juggler _juggler = new Juggler();
+  final List<Stage> _stages = new List<Stage>();
+  final EnterFrameEvent _enterFrameEvent = new EnterFrameEvent(0);
+  final ExitFrameEvent _exitFrameEvent = new ExitFrameEvent();
 
-  List<Stage> _stages = new List<Stage>();
-  bool _invalidate = false;
   num _currentTime = 0.0;
-
-  EnterFrameEvent _enterFrameEvent = new EnterFrameEvent(0);
-  ExitFrameEvent _exitFrameEvent = new ExitFrameEvent();
-  RenderEvent _renderEvent = new RenderEvent();
 
   RenderLoop() {
     this.start();
   }
 
-  //-------------------------------------------------------------------------------------------------
-
-  void invalidate() {
-    _invalidate = true;
-  }
+  Juggler get juggler => _juggler;
 
   void addStage(Stage stage) {
-
-    if (stage.renderLoop != null) {
-      stage.renderLoop.removeStage(stage);
-    }
-
-    _stages.add(stage);
+    stage._renderLoop?.removeStage(stage);
     stage._renderLoop = this;
+    _stages.add(stage);
   }
 
   void removeStage(Stage stage) {
-
-    if (stage.renderLoop == this) {
-      _stages.remove(stage);
+    if (_stages.remove(stage)) {
       stage._renderLoop = null;
     }
   }
 
-  //-------------------------------------------------------------------------------------------------
-
   @override
   void advanceTime(num deltaTime) {
-
     _currentTime += deltaTime;
-
     _enterFrameEvent.passedTime = deltaTime;
     _enterFrameEvent.dispatch();
-
-    juggler.advanceTime(deltaTime);
-
-    for (int i = 0; i < _stages.length; i++) {
-      _stages[i].juggler.advanceTime(deltaTime);
-    }
-
-    if (_invalidate) {
-      _invalidate = false;
-      _renderEvent.dispatch();
-    }
-
-    for (int i = 0; i < _stages.length; i++) {
-      _stages[i].materialize(_currentTime, deltaTime);
-    }
-
+    _juggler.advanceTime(deltaTime);
+    _stages.forEach((s) => s.juggler.advanceTime(deltaTime));
+    _stages.forEach((s) => s.materialize(_currentTime, deltaTime));
     _exitFrameEvent.dispatch();
   }
 }

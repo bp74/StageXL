@@ -6,6 +6,7 @@ Alex Gann <https://github.com/alexgann>
 Andrew Gerard <https://github.com/kinetifex>  
 Arron Washington <https://github.com/radicaled>  
 Bernhard Pichler <https://github.com/bp74>  
+John Talley <https://github.com/jwt-sgg>  
 Josh Brown <https://github.com/joshwritescode>  
 Kevin Moore <https://github.com/kevmoo>  
 Marco Jakob <https://github.com/marcojakob>  

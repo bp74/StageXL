@@ -6,7 +6,8 @@ class RenderContextWebGL extends RenderContext {
   final CanvasElement _canvasElement;
 
   gl.RenderingContext _renderingContext;
-  Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
+  final Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
+  final List<_MaskState> _maskStates = new List<_MaskState>();
 
   RenderProgram _activeRenderProgram;
   RenderFrameBuffer _activeRenderFrameBuffer;
@@ -15,9 +16,6 @@ class RenderContextWebGL extends RenderContext {
 
   bool _contextValid = true;
   int _contextIdentifier = 0;
-  int _stencilDepth = 0;
-  int _viewportWidth = 0;
-  int _viewportHeight = 0;
 
   //---------------------------------------------------------------------------
 
@@ -86,19 +84,22 @@ class RenderContextWebGL extends RenderContext {
 
   @override
   void reset() {
-    _viewportWidth = _canvasElement.width;
-    _viewportHeight = _canvasElement.height;
+    var viewportWidth = _canvasElement.width;
+    var viewportHeight = _canvasElement.height;
     _activeRenderFrameBuffer = null;
     _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
-    _renderingContext.viewport(0, 0, _viewportWidth, _viewportHeight);
+    _renderingContext.viewport(0, 0, viewportWidth, viewportHeight);
     _projectionMatrix.setIdentity();
-    _projectionMatrix.scale(2.0 / _viewportWidth, - 2.0 / _viewportHeight, 1.0);
+    _projectionMatrix.scale(2.0 / viewportWidth, - 2.0 / viewportHeight, 1.0);
     _projectionMatrix.translate(-1.0, 1.0, 0.0);
     _activeRenderProgram.projectionMatrix = _projectionMatrix;
   }
 
   @override
   void clear(int color) {
+    _getMaskStates().clear();
+    _updateScissorTest(null);
+    _updateStencilTest(0);
     num r = colorGetR(color) / 255.0;
     num g = colorGetG(color) / 255.0;
     num b = colorGetB(color) / 255.0;
@@ -106,7 +107,6 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(true, true, true, true);
     _renderingContext.clearColor(r * a, g * a, b * a, a);
     _renderingContext.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-    _updateStencilDepth(0);
   }
 
   @override
@@ -118,12 +118,62 @@ class RenderContextWebGL extends RenderContext {
 
   @override
   void beginRenderMask(RenderState renderState, RenderMask mask) {
-    _renderMask(renderState, mask, 1);
+
+    _activeRenderProgram.flush();
+
+    // try to use the scissor rectangle for this mask
+
+    if (mask is ScissorRenderMask) {
+      var scissor = mask.getScissorRectangle(renderState);
+      if (scissor != null) {
+        var last = _getLastScissorValue();
+        var next = last == null ? scissor : scissor.intersection(last);
+        _maskStates.add(new _ScissorMaskState(mask, next));
+        _updateScissorTest(next);
+        return;
+      }
+    }
+
+    // update the stencil buffer for this mask
+
+    var stencil = _getLastStencilValue() + 1;
+
+    _renderingContext.enable(gl.STENCIL_TEST);
+    _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
+    _renderingContext.stencilFunc(gl.EQUAL, stencil - 1, 0xFF);
+    _renderingContext.colorMask(false, false, false, false);
+    mask.renderMask(renderState);
+
+    _activeRenderProgram.flush();
+    _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+    _renderingContext.colorMask(true, true, true, true);
+    _maskStates.add(new _StencilMaskState(mask, stencil));
+    _updateStencilTest(stencil);
   }
 
   @override
   void endRenderMask(RenderState renderState, RenderMask mask) {
-    _renderMask(renderState, mask, -1);
+
+    _activeRenderProgram.flush();
+
+    var maskState = _getMaskStates().removeLast();
+    if (maskState is _ScissorMaskState) {
+
+      _updateScissorTest(_getLastScissorValue());
+
+    } else if (maskState is _StencilMaskState) {
+
+      _renderingContext.enable(gl.STENCIL_TEST);
+      _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.DECR);
+      _renderingContext.stencilFunc(gl.EQUAL, maskState.value, 0xFF);
+      _renderingContext.colorMask(false, false, false, false);
+      mask.renderMask(renderState);
+
+      _activeRenderProgram.flush();
+      _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
+      _renderingContext.colorMask(true, true, true, true);
+      _updateStencilTest(maskState.value - 1);
+    }
   }
 
   //---------------------------------------------------------------------------
@@ -140,8 +190,6 @@ class RenderContextWebGL extends RenderContext {
     renderProgramSimple.renderTextureQuad(renderState, renderTextureQuad);
   }
 
-  //---------------------------------------------------------------------------
-
   @override
   void renderTextureMesh(
       RenderState renderState, RenderTexture renderTexture,
@@ -151,6 +199,18 @@ class RenderContextWebGL extends RenderContext {
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(renderTexture);
     renderProgramSimple.renderTextureMesh(renderState, ixList, vxList);
+  }
+
+  @override
+  void renderTextureMapping(
+      RenderState renderState,
+      RenderTexture renderTexture, Matrix mappingMatrix,
+      Int16List ixList, Float32List vxList) {
+
+    activateRenderProgram(renderProgramSimple);
+    activateBlendMode(renderState.globalBlendMode);
+    activateRenderTexture(renderTexture);
+    renderProgramSimple.renderTextureMapping(renderState, mappingMatrix, ixList, vxList);
   }
 
   //---------------------------------------------------------------------------
@@ -373,15 +433,16 @@ class RenderContextWebGL extends RenderContext {
         _activeRenderProgram.flush();
         _activeRenderFrameBuffer = renderFrameBuffer;
         _activeRenderFrameBuffer.activate(this);
-        _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
-        _updateStencilTest(renderFrameBuffer.renderStencilBuffer.depth);
       } else {
         _activeRenderProgram.flush();
         _activeRenderFrameBuffer = null;
         _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
-        _renderingContext.viewport(0, 0, _viewportWidth, _viewportHeight);
-        _updateStencilTest(_stencilDepth);
       }
+      var viewportWidth = _getViewportWidth();
+      var viewportHeight = _getViewportHeight();
+      _renderingContext.viewport(0, 0, viewportWidth, viewportHeight);
+      _updateScissorTest(_getLastScissorValue());
+      _updateStencilTest(_getLastStencilValue());
     }
   }
 
@@ -435,27 +496,60 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  void _renderMask(RenderState renderState, RenderMask mask, int depthDelta) {
-
+  int _getViewportWidth() {
     var rfb = _activeRenderFrameBuffer;
-    var stencilDepth = rfb != null ? rfb.renderStencilBuffer.depth : _stencilDepth;
+    return rfb is RenderFrameBuffer ? rfb.width : _canvasElement.width;
+  }
 
-    _activeRenderProgram.flush();
-    _renderingContext.enable(gl.STENCIL_TEST);
-    _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
-    _renderingContext.stencilOp(gl.KEEP, gl.KEEP, depthDelta == 1 ? gl.INCR : gl.DECR);
-    _renderingContext.stencilMask(0xFF);
-    _renderingContext.colorMask(false, false, false, false);
+  int _getViewportHeight() {
+    var rfb = _activeRenderFrameBuffer;
+    return rfb is RenderFrameBuffer ? rfb.height : _canvasElement.height;
+  }
 
-    mask.renderMask(renderState);
+  List<_MaskState> _getMaskStates() {
+    var rfb = _activeRenderFrameBuffer;
+    return rfb is RenderFrameBuffer ? rfb._maskStates : _maskStates;
+  }
 
-    _activeRenderProgram.flush();
-    _renderingContext.stencilFunc(gl.EQUAL, stencilDepth + depthDelta, 0xFF);
-    _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
-    _renderingContext.stencilMask(0x00);
-    _renderingContext.colorMask(true, true, true, true);
+  int _getLastStencilValue() {
+    var maskStates = _getMaskStates();
+    for (int i = maskStates.length - 1; i >= 0; i--) {
+      var maskState = maskStates[i];
+      if (maskState is _StencilMaskState) return maskState.value;
+    }
+    return 0;
+  }
 
-    _updateStencilDepth(stencilDepth + depthDelta);
+  Rectangle<num> _getLastScissorValue() {
+    var maskStates = _getMaskStates();
+    for (int i = maskStates.length - 1; i >= 0; i--) {
+      var maskState = maskStates[i];
+      if (maskState is _ScissorMaskState) return maskState.value;
+    }
+    return null;
+  }
+
+  void _updateStencilTest(int value) {
+    if (value == 0) {
+      _renderingContext.disable(gl.STENCIL_TEST);
+    } else {
+      _renderingContext.enable(gl.STENCIL_TEST);
+      _renderingContext.stencilFunc(gl.EQUAL, value, 0xFF);
+    }
+  }
+
+  void _updateScissorTest(Rectangle<num> value) {
+    if (value == null) {
+      _renderingContext.disable(gl.SCISSOR_TEST);
+    } else {
+      int viewportHeight = _getViewportHeight();
+      int x1 = value.left.round();
+      int y1 = viewportHeight - value.bottom.round();
+      int x2 = value.right.round();
+      int y2 = viewportHeight - value.top.round();
+      _renderingContext.enable(gl.SCISSOR_TEST);
+      _renderingContext.scissor(x1, y1, maxInt(x2 - x1, 0), maxInt(y2 - y1, 0));
+    }
   }
 
   //---------------------------------------------------------------------------
@@ -471,26 +565,4 @@ class RenderContextWebGL extends RenderContext {
     _contextIdentifier = ++_globalContextIdentifier;
     _contextRestoredEvent.add(new RenderContextEvent());
   }
-
-  //---------------------------------------------------------------------------
-
-  void _updateStencilDepth(int stencilDepth) {
-    if (_activeRenderFrameBuffer is RenderFrameBuffer) {
-      _activeRenderFrameBuffer.renderStencilBuffer.depth = stencilDepth;
-      _updateStencilTest(stencilDepth);
-    } else {
-      _stencilDepth = stencilDepth;
-      _updateStencilTest(stencilDepth);
-    }
-  }
-
-  void _updateStencilTest(int stencilDepth) {
-    if (stencilDepth == 0) {
-      _renderingContext.disable(gl.STENCIL_TEST);
-    } else {
-      _renderingContext.enable(gl.STENCIL_TEST);
-      _renderingContext.stencilFunc(gl.EQUAL, stencilDepth, 0xFF);
-    }
-  }
-
 }

@@ -101,6 +101,7 @@ class EventStream<T extends Event> extends Stream<T> {
 
   EventStreamSubscription<T> _subscribe(
       EventListener<T> eventListener, bool captures, int priority) {
+
     var subscription = new EventStreamSubscription<T>._(
         this, eventListener, captures, priority);
 
@@ -138,7 +139,7 @@ class EventStream<T extends Event> extends Stream<T> {
 
   //----------------------------------------------------------------------------
 
-  void _unsubscribe(EventListener eventListener, bool captures) {
+  void _unsubscribe(EventListener<T> eventListener, bool captures) {
 
     var subscriptions = _subscriptions;
 

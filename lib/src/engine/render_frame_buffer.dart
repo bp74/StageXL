@@ -10,6 +10,8 @@ class RenderFrameBuffer {
   gl.Framebuffer _framebuffer;
   gl.RenderingContext _renderingContext;
 
+  final List<_MaskState> _maskStates = new List<_MaskState>();
+
   RenderFrameBuffer.rawWebGL(int width, int height) {
     _renderTexture = new RenderTexture.rawWebGL(width, height);
     _renderStencilBuffer = new RenderStencilBuffer.rawWebGL(width, height);

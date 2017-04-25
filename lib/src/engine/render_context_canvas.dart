@@ -217,6 +217,17 @@ class RenderContextCanvas extends RenderContext {
   //---------------------------------------------------------------------------
 
   @override
+  void renderTextureMapping(
+      RenderState renderState,
+      RenderTexture renderTexture, Matrix mappingMatrix,
+      Int16List ixList, Float32List vxList)
+  {
+    // do nothing, this is used by webGL to implement canvas patterns
+  }
+
+  //---------------------------------------------------------------------------
+
+  @override
   void renderTriangle(
       RenderState renderState,
       num x1, num y1, num x2, num y2, num x3, num y3, int color) {

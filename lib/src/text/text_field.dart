@@ -311,6 +311,7 @@ class TextField extends InteractiveObject {
     var textFormatIndent = ensureNum(textFormat.indent);
     var textFormatLeading = ensureNum(textFormat.leading);
     var textFormatAlign = ensureString(textFormat.align);
+    var textFormatVerticalAlign = ensureString(textFormat.verticalAlign);
 
     var fontStyle = textFormat._cssFontStyle;
     var fontStyleMetrics = _getFontStyleMetrics(textFormat);
@@ -443,6 +444,19 @@ class TextField extends InteractiveObject {
     availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
 
     //-----------------------------------
+    // calculate TextFormat verticalAlign
+
+    var heightOffset = textFormatStrokeWidth;
+    switch(textFormatVerticalAlign) {
+      case TextFormatVerticalAlign.CENTER:
+        heightOffset = (_height - _textHeight) / 2;
+        break;
+      case TextFormatVerticalAlign.BOTTOM:
+        heightOffset = (_height - _textHeight - textFormatStrokeWidth);
+        break;
+    }
+
+    //-----------------------------------
     // calculate TextFormat align
 
     for(int line = 0; line < _textLineMetrics.length; line++) {
@@ -463,7 +477,7 @@ class TextField extends InteractiveObject {
           textLineMetrics._x += textFormatStrokeWidth;
       }
 
-      textLineMetrics._y += textFormatStrokeWidth;
+      textLineMetrics._y += heightOffset;
     }
 
     //-----------------------------------
@@ -628,12 +642,12 @@ class TextField extends InteractiveObject {
 
     CanvasGradient canvasGradient;
 
-    if (gradient.kind == "linear") {
+    if (gradient.type == GraphicsGradientType.Linear) {
       canvasGradient = context.createLinearGradient(sx, sy, ex, ey);
-    } else if (gradient.kind == "radial") {
+    } else if (gradient.type == GraphicsGradientType.Radial) {
       canvasGradient = context.createRadialGradient(sx, sy, sr, ex, ey, er);
     } else {
-      throw new ArgumentError("Unknown gradient kind");
+      throw new StateError("Unknown gradient kind");
     }
 
     for (var colorStop in gradient.colorStops) {

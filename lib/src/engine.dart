@@ -47,3 +47,4 @@ part 'engine/render_stencil_buffer.dart';
 part 'engine/render_texture.dart';
 part 'engine/render_texture_filtering.dart';
 part 'engine/render_texture_quad.dart';
+part 'engine/render_texture_wrapping.dart';

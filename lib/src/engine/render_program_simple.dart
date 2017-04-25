@@ -192,4 +192,69 @@ class RenderProgramSimple extends RenderProgram {
     renderBufferVertex.count += vxListCount;
   }
 
+  //---------------------------------------------------------------------------
+
+  void renderTextureMapping(
+      RenderState renderState, Matrix mappingMatrix,
+      Int16List ixList, Float32List vxList) {
+
+    var alpha = renderState.globalAlpha;
+    var globalMatrix = renderState.globalMatrix;
+    var ixListCount = ixList.length;
+    var vxListCount = vxList.length >> 1;
+
+    // check buffer sizes and flush if necessary
+
+    var ixData = renderBufferIndex.data;
+    var ixPosition = renderBufferIndex.position;
+    if (ixPosition + ixListCount >= ixData.length) flush();
+
+    var vxData = renderBufferVertex.data;
+    var vxPosition = renderBufferVertex.position;
+    if (vxPosition + vxListCount * 5 >= vxData.length) flush();
+
+    // copy index list
+
+    var ixIndex = renderBufferIndex.position;
+    var vxIndex = renderBufferVertex.position;
+    var vxCount = renderBufferVertex.count;
+
+    for (var i = 0; i < ixListCount; i++) {
+      ixData[ixIndex + i] = vxCount + ixList[i];
+    }
+
+    renderBufferIndex.position += ixListCount;
+    renderBufferIndex.count += ixListCount;
+
+    // copy vertex list
+
+    var ma = globalMatrix.a;
+    var mb = globalMatrix.b;
+    var mc = globalMatrix.c;
+    var md = globalMatrix.d;
+    var mx = globalMatrix.tx;
+    var my = globalMatrix.ty;
+
+    var ta = mappingMatrix.a;
+    var tb = mappingMatrix.b;
+    var tc = mappingMatrix.c;
+    var td = mappingMatrix.d;
+    var tx = mappingMatrix.tx;
+    var ty = mappingMatrix.ty;
+
+    for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
+      num x = vxList[o + 0];
+      num y = vxList[o + 1];
+      vxData[vxIndex + 0] = mx + ma * x + mc * y;
+      vxData[vxIndex + 1] = my + mb * x + md * y;
+      vxData[vxIndex + 2] = tx + ta * x + tc * y;
+      vxData[vxIndex + 3] = ty + tb * x + td * y;
+      vxData[vxIndex + 4] = alpha;
+      vxIndex += 5;
+    }
+
+    renderBufferVertex.position += vxListCount * 5;
+    renderBufferVertex.count += vxListCount;
+  }
+
 }

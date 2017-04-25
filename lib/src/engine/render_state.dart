@@ -91,6 +91,10 @@ class RenderState {
     _renderContext.renderTextureQuad(this, renderTextureQuad);
   }
 
+  void renderTextureMapping(RenderTexture renderTexture, Matrix mappingMatrix, Int16List ixList, Float32List vxList) {
+    _renderContext.renderTextureMapping(this, renderTexture, mappingMatrix, ixList, vxList);
+  }
+
   void renderTextureMesh(RenderTexture renderTexture, Int16List ixList, Float32List vxList) {
     _renderContext.renderTextureMesh(this, renderTexture, ixList, vxList);
   }

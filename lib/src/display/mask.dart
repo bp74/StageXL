@@ -89,8 +89,6 @@ abstract class Mask implements RenderMask {
 
 abstract class _TransformedMask extends Mask {
 
-  final Matrix globalMatrixOriginal = new Matrix.fromIdentity();
-
   bool hitTestTransformed(num x, num y);
 
   @override
@@ -107,22 +105,30 @@ abstract class _TransformedMask extends Mask {
 
   @override
   void renderMask(RenderState renderState) {
-    var globalMatrix = renderState.globalMatrix;
-    globalMatrixOriginal.copyFrom(globalMatrix);
-    globalMatrix.prepend(this.transformationMatrix);
+    renderState.push(this.transformationMatrix, 1.0, null);
     renderMaskTransformed(renderState);
-    globalMatrix.copyFrom(globalMatrixOriginal);
+    renderState.pop();
   }
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-class _RectangleMask extends _TransformedMask {
+class _RectangleMask extends _TransformedMask implements ScissorRenderMask {
 
   final Rectangle<num> rectangle;
 
   _RectangleMask(this.rectangle);
+
+  @override
+  Rectangle<num> getScissorRectangle(RenderState renderState) {
+    renderState.push(this.transformationMatrix, 1.0, null);
+    var matrix = renderState.globalMatrix;
+    var aligned = similar(matrix.b, 0.0) && similar(matrix.c, 0.0);
+    var result = aligned ? matrix.transformRectangle(this.rectangle) : null;
+    renderState.pop();
+    return result;
+  }
 
   @override
   bool hitTestTransformed(num x, num y) {

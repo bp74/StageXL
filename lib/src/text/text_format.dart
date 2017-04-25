@@ -14,6 +14,7 @@ class TextFormat {
   bool italic;
   bool underline;
   String align;
+  String verticalAlign;
 
   num topMargin;
   num bottomMargin;
@@ -33,6 +34,7 @@ class TextFormat {
     this.italic       : false,
     this.underline    : false,
     this.align        : "left",
+    this.verticalAlign: "top",
     this.topMargin    : 0.0,
     this.bottomMargin : 0.0,
     this.leftMargin   : 0.0,
@@ -45,7 +47,7 @@ class TextFormat {
 
   TextFormat clone() => new TextFormat(font, size, color,
       strokeWidth: strokeWidth, strokeColor: strokeColor, fillGradient: fillGradient,
-      weight: weight, bold: bold, italic: italic, underline: underline, align: align,
+      weight: weight, bold: bold, italic: italic, underline: underline, align: align, verticalAlign: verticalAlign,
       topMargin: topMargin, bottomMargin: bottomMargin, leftMargin: leftMargin, rightMargin: rightMargin,
       indent: indent, leading: leading);
 

@@ -13,6 +13,8 @@ abstract class _GraphicsMeshSegment {
   double _maxX = 0.0 - double.MAX_FINITE;
   double _maxY = 0.0 - double.MAX_FINITE;
 
+  final Matrix _tmpMatrix = new Matrix.fromIdentity();
+
   //---------------------------------------------------------------------------
 
   _GraphicsMeshSegment(int vertexBufferSize, int indexBufferSize) :
@@ -113,6 +115,63 @@ abstract class _GraphicsMeshSegment {
     var ixList = new Int16List.view(_indexBuffer.buffer, 0, _indexCount);
     var vxList = new Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
     renderState.renderTriangleMesh(ixList, vxList, color);
+  }
+
+  //---------------------------------------------------------------------------
+
+  void fillGradient(RenderState renderState, GraphicsGradient gradient) {
+
+    var ixList = new Int16List.view(_indexBuffer.buffer, 0, _indexCount);
+    var vxList = new Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
+    var renderContext = renderState.renderContext as RenderContextWebGL;
+    var renderTexture = gradient.getRenderTexture();
+
+    _GraphicsGradientProgram renderProgram;
+
+    if (gradient.type == GraphicsGradientType.Linear) {
+      renderProgram = renderContext.getRenderProgram(
+          r"$LinearGraphicsGradientProgram", () => new _LinearGraphicsGradientProgram());
+    }
+
+    if (gradient.type == GraphicsGradientType.Radial) {
+      renderProgram = renderContext.getRenderProgram(
+          r"$RadialGraphicsGradientProgram", () => new _RadialGraphicsGradientProgram());
+    }
+
+    if (renderProgram.activeGradient != gradient) {
+      renderProgram.activeGradient = gradient;
+      renderProgram.flush();
+    }
+
+    renderContext.activateRenderProgram(renderProgram);
+    renderContext.activateBlendMode(renderState.globalBlendMode);
+    renderContext.activateRenderTexture(renderTexture);
+    renderProgram.configure(renderState, gradient);
+    renderProgram.renderGradient(renderState, ixList, vxList);
+  }
+
+  //---------------------------------------------------------------------------
+
+  void fillPattern(RenderState renderState, GraphicsPattern pattern) {
+
+    var matrix = _tmpMatrix;
+    var texture = pattern.patternTexture;
+    var invWidth = 1.0 / texture.width;
+    var invHeight = 1.0 / texture.height;
+
+    texture.wrappingX = pattern.type.wrappingX;
+    texture.wrappingY = pattern.type.wrappingY;
+
+    if (pattern.matrix != null) {
+      matrix.copyFromAndInvert(pattern.matrix);
+      matrix.scale(invWidth, invHeight);
+    } else {
+      matrix.setTo(invWidth, 0.0, 0.0, invHeight, 0.0, 0.0);
+    }
+
+    var ixList = new Int16List.view(_indexBuffer.buffer, 0, _indexCount);
+    var vxList = new Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
+    renderState.renderTextureMapping(texture, matrix, ixList, vxList);
   }
 
 }

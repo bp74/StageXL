@@ -4,9 +4,14 @@ part of stagexl.display;
 /// the [RenderLoop] where the Stage is attached to.
 
 enum StageRenderMode {
+  /// Render the stage automatically on each frame.
   AUTO,
-  STOP,
-  ONCE
+  /// Render the stage automatically after a stage invalidation.
+  AUTO_INVALID,
+  /// Render the stage once then change to ´STOP´.
+  ONCE,
+  /// Do not render the stage.
+  STOP
 }
 
 /// The StageScaleMode defines how the Stage is scaled inside of the Canvas.
@@ -59,10 +64,12 @@ class Stage extends DisplayObjectContainer {
   int _stageWidth = 0;
   int _stageHeight = 0;
   num _pixelRatio = 1.0;
+  bool _invalid = false;
 
   Rectangle<num> _contentRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
   Matrix _clientTransformation = new Matrix.fromIdentity();
   Matrix _stageTransformation = new Matrix.fromIdentity();
+  RenderEvent _renderEvent = new RenderEvent();
 
   RenderState _renderState;
   InputEventMode _inputEventMode = InputEventMode.MouseOnly;
@@ -336,14 +343,11 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  /// Calling this method will cause an [RenderEvent] to be fired right before
-  /// the next frame will be rendered by the render loop. To receive the render
-  /// event attach a listener to [DisplayObject.onRender].
+  /// Invalidate the content of the [Stage]. This will render the stage on the
+  /// next frame if the [renderMode] is set to [StageRenderMode.AUTO_INVALID].
 
   void invalidate() {
-    if (_renderLoop != null) {
-      _renderLoop.invalidate();
-    }
+    _invalid = true;
   }
 
   //----------------------------------------------------------------------------
@@ -355,23 +359,24 @@ class Stage extends DisplayObjectContainer {
   void materialize(num currentTime, num deltaTime) {
 
     if (_stageRenderMode == StageRenderMode.AUTO ||
+        _stageRenderMode == StageRenderMode.AUTO_INVALID && _invalid ||
         _stageRenderMode == StageRenderMode.ONCE) {
 
       _updateCanvasSize();
-
+      _renderEvent.dispatch();
       _renderContext.reset();
       _renderContext.renderStatistics.reset();
       _renderContext.clear(backgroundColor);
-
       _renderState.reset(_stageTransformation);
       _renderState.currentTime = ensureNum(currentTime);
       _renderState.deltaTime = ensureNum(deltaTime);
       _renderState.renderObject(this);
       _renderState.flush();
+      _invalid = false;
+    }
 
-      if (_stageRenderMode == StageRenderMode.ONCE) {
-        _stageRenderMode = StageRenderMode.STOP;
-      }
+    if (_stageRenderMode == StageRenderMode.ONCE) {
+      _stageRenderMode = StageRenderMode.STOP;
     }
   }
 

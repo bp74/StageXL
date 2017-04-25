@@ -219,6 +219,24 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
   }
 
   @override
+  void fillGradient(RenderState renderState, GraphicsGradient gradient) {
+    // TODO: non-zero winding rule
+    for (_GraphicsPathSegment segment in segments) {
+      if (segment.indexCount == 0) segment.calculateIndices();
+      segment.fillGradient(renderState, gradient);
+    }
+  }
+
+  @override
+  void fillPattern(RenderState renderState, GraphicsPattern pattern) {
+    // TODO: non-zero winding rule
+    for (_GraphicsPathSegment segment in segments) {
+      if (segment.indexCount == 0) segment.calculateIndices();
+      segment.fillPattern(renderState, pattern);
+    }
+  }
+
+  @override
   bool hitTest(double x, double y) {
     int windingCount = 0;
     for (_GraphicsPathSegment segment in segments) {
