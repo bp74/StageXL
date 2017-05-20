@@ -86,7 +86,7 @@ class BitmapDataLoadOptions {
     options.png = this.png;
     options.jpg = this.jpg;
     options.webp = this.webp;
-    options.maxPixelRatio = this.maxPixelRatio;
+    options.pixelRatios = new List<double>.from(this.pixelRatios);
     options.corsEnabled = this.corsEnabled;
     return options;
   }
