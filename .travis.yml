@@ -7,7 +7,6 @@ dart:
 - dev
 
 dart_task:
-- test: --platform chrome
 - test: --platform firefox
 - test: --platform dartium
   install_dartium: true
