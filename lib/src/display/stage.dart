@@ -933,11 +933,11 @@ class Stage extends DisplayObjectContainer {
 
       if (event.type == "keyup") keyboardEventType = KeyboardEvent.KEY_UP;
       if (event.type == "keydown") keyboardEventType = KeyboardEvent.KEY_DOWN;
-      if (event.keyLocation == html.KeyLocation.LEFT) keyLocation = KeyLocation.LEFT;
-      if (event.keyLocation == html.KeyLocation.RIGHT) keyLocation = KeyLocation.RIGHT;
-      if (event.keyLocation == html.KeyLocation.NUMPAD) keyLocation = KeyLocation.NUM_PAD;
-      if (event.keyLocation == html.KeyLocation.JOYSTICK) keyLocation = KeyLocation.D_PAD;
-      if (event.keyLocation == html.KeyLocation.MOBILE) keyLocation = KeyLocation.D_PAD;
+      if (event.location == html.KeyLocation.LEFT) keyLocation = KeyLocation.LEFT;
+      if (event.location == html.KeyLocation.RIGHT) keyLocation = KeyLocation.RIGHT;
+      if (event.location == html.KeyLocation.NUMPAD) keyLocation = KeyLocation.NUM_PAD;
+      if (event.location == html.KeyLocation.JOYSTICK) keyLocation = KeyLocation.D_PAD;
+      if (event.location == html.KeyLocation.MOBILE) keyLocation = KeyLocation.D_PAD;
 
       var keyboardEvent = new KeyboardEvent(keyboardEventType, true,
           event.keyCode, keyLocation,
