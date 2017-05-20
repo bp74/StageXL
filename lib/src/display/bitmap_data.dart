@@ -73,19 +73,18 @@ class BitmapData implements BitmapDrawable {
       var originPixelRatioFractions = (match.group(2) ?? ".").length - 1;
       var originPixelRatio = double.parse(match.group(1));
       var devicePixelRatio = env.devicePixelRatio;
-      var loaderPixelRatio = options.pixelRatios.fold(0.0, (a, b) {
-        var aDelta = (a - devicePixelRatio).abs();
-        var bDelta = (b - devicePixelRatio).abs();
+      var loaderPixelRatio = options.pixelRatios.fold<num>(0.0, (num a, num b) {
+        var aDelta = pow(a - devicePixelRatio, 2);
+        var bDelta = pow(b - devicePixelRatio, 2);
         return aDelta < bDelta && a > 0.0 ? a : b;
       });
       var name = loaderPixelRatio.toStringAsFixed(originPixelRatioFractions);
-      url = url.replaceRange(match.start, match.end, "@${name}x");
+      url = url.replaceRange(match.start + 1, match.end - 1, name);
       pixelRatio = loaderPixelRatio / originPixelRatio;
     }
 
     var imageLoader = new ImageLoader(url, options.webp, options.corsEnabled);
-    var image = await imageLoader.done;
-    return new BitmapData.fromImageElement(image, pixelRatio);
+    return new BitmapData.fromImageElement(await imageLoader.done, pixelRatio);
   }
 
   //----------------------------------------------------------------------------
