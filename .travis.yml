@@ -8,6 +8,8 @@ dart:
 
 dart_task:
 - test: --platform dartium
+- test: --platform chrome
+- test: --platform firefox
   install_dartium: true
 - dartanalyzer: --fatal-warnings lib/stagexl.dart
 
