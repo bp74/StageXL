@@ -24,25 +24,30 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
   bool _corsEnabled = false;
   num _pixelRatio = 1.0;
 
-  _TextureAtlasLoaderFile(String sourceUrl, BitmapDataLoadOptions options) {
+  _TextureAtlasLoaderFile(String url, BitmapDataLoadOptions options) {
 
-    if (options == null) options = BitmapData.defaultLoadOptions;
+    options = options ?? BitmapData.defaultLoadOptions;
 
     var pixelRatio = 1.0;
-    var pixelRatioRegexp = new RegExp(r"@(\d)x");
-    var pixelRatioMatch = pixelRatioRegexp.firstMatch(sourceUrl);
+    var pixelRatioRegexp = new RegExp(r"@(\d+(.\d+)?)x");
+    var pixelRatioMatch = pixelRatioRegexp.firstMatch(url);
 
     if (pixelRatioMatch != null) {
       var match = pixelRatioMatch;
-      var maxPixelRatio = options.maxPixelRatio;
-      var originPixelRatio = int.parse(match.group(1));
+      var originPixelRatioFractions = (match.group(2) ?? ".").length - 1;
+      var originPixelRatio = double.parse(match.group(1));
       var devicePixelRatio = env.devicePixelRatio;
-      var loaderPixelRatio = minNum(devicePixelRatio, maxPixelRatio).round();
+      var loaderPixelRatio = options.pixelRatios.fold(originPixelRatio, (a, b) {
+        var aDelta = (a - devicePixelRatio).abs();
+        var bDelta = (b - devicePixelRatio).abs();
+        return aDelta < bDelta ? a : b;
+      });
+      var name = loaderPixelRatio.toStringAsFixed(originPixelRatioFractions);
+      url = url.replaceRange(match.start, match.end, "@${name}x");
       pixelRatio = loaderPixelRatio / originPixelRatio;
-      sourceUrl = sourceUrl.replaceRange(match.start, match.end, "@${loaderPixelRatio}x");
     }
 
-    _sourceUrl = sourceUrl;
+    _sourceUrl = url;
     _webpAvailable = options.webp;
     _corsEnabled = options.corsEnabled;
     _pixelRatio = pixelRatio;
