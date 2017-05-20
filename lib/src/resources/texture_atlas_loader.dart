@@ -38,8 +38,8 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
       var originPixelRatio = double.parse(match.group(1));
       var devicePixelRatio = env.devicePixelRatio;
       var loaderPixelRatio = options.pixelRatios.fold<num>(0.0, (num a, num b) {
-        var aDelta = pow(a - devicePixelRatio, 2);
-        var bDelta = pow(b - devicePixelRatio, 2);
+        var aDelta = (a - devicePixelRatio).abs();
+        var bDelta = (b - devicePixelRatio).abs();
         return aDelta < bDelta && a > 0.0 ? a : b;
       });
       var name = loaderPixelRatio.toStringAsFixed(originPixelRatioFractions);
