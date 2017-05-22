@@ -27,12 +27,12 @@ class BitmapDataLoadOptions {
   /// The maximum pixel ratio for images on HiDPI displays.
   ///
   /// The loader automatically detects the device's display pixel ratio
-  /// and accordingly loads high resoltion images. The application has
+  /// and accordingly loads high resolution images. The application has
   /// to provide images with the following naming schema:
   ///
   /// 1x resolution files are named "{imageName}@1x.png"
-  /// 2x resoultion files are named "{imageName}@2x.png"
-  /// 3x resoultion files are named "{imageName}@3x.png"
+  /// 2x resolution files are named "{imageName}@2x.png"
+  /// 3x resolution files are named "{imageName}@3x.png"
   ///
   /// The default maximum pixel ratio is 2. Therefore the application has
   /// to provide images with the @1x and @2x suffix (or images with no
@@ -41,7 +41,36 @@ class BitmapDataLoadOptions {
   ///     var resourceManager = new ResourceManager();
   ///     resourceManager.addBitmapData("test", "images/test@1x.png");
 
-  int maxPixelRatio = 2;
+  @deprecated
+  int get maxPixelRatio {
+    return pixelRatios.fold(0.0, (a, b) => a > b ? a : b).round();
+  }
+
+  @deprecated
+  set maxPixelRatio(int value) {
+    pixelRatios = new List<double>.generate(value, (v) => 1.0 + v);
+  }
+
+  /// The available pixel ratios for images on HiDPI displays.
+  ///
+  /// The loader automatically detects the device's display pixel ratio
+  /// and accordingly loads high resolution images. The application has
+  /// to provide images with the following naming schema:
+  ///
+  /// 1.00x resolution files are named "{imageName}@1.00x.png"
+  /// 1.25x resolution files are named "{imageName}@1.25x.png"
+  /// 1.50x resolution files are named "{imageName}@1.50x.png"
+  /// 2.00x resolution files are named "{imageName}@2.00x.png"
+  /// 3.00x resolution files are named "{imageName}@3.00x.png"
+  ///
+  /// The default ist [1.0, 2.0]. Therefore the application has to provide
+  /// images with the @1.00x and @2.00x suffix (or images with no name suffix
+  /// to ignore this feature entirely).
+  ///
+  ///     var resourceManager = new ResourceManager();
+  ///     resourceManager.addBitmapData("test", "images/test@1.00x.png");
+
+  List<double> pixelRatios = <double>[1.0, 2.0];
 
   /// Use CORS to download the image. This is often necessary when you have
   /// to download images from a third party server.
@@ -57,9 +86,8 @@ class BitmapDataLoadOptions {
     options.png = this.png;
     options.jpg = this.jpg;
     options.webp = this.webp;
-    options.maxPixelRatio = this.maxPixelRatio;
+    options.pixelRatios = new List<double>.from(this.pixelRatios);
     options.corsEnabled = this.corsEnabled;
     return options;
   }
-
 }

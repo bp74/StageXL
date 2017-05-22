@@ -58,6 +58,7 @@ class Stage extends DisplayObjectContainer {
   CanvasElement _canvas;
   RenderContext _renderContext;
   RenderLoop _renderLoop;
+  StageConsole _console;
 
   int _sourceWidth = 0;
   int _sourceHeight = 0;
@@ -66,9 +67,15 @@ class Stage extends DisplayObjectContainer {
   num _pixelRatio = 1.0;
   bool _invalid = false;
 
+  double _avgFrameTime = 0.0;
+  double _avgDrawCalls = 0.0;
+  double _avgVertexCount = 0.0;
+  double _avgIdexCount = 0.0;
+
   Rectangle<num> _contentRectangle = new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
   Matrix _clientTransformation = new Matrix.fromIdentity();
   Matrix _stageTransformation = new Matrix.fromIdentity();
+  Matrix _consoleTransformation = new Matrix.fromIdentity();
   RenderEvent _renderEvent = new RenderEvent();
 
   RenderState _renderState;
@@ -156,6 +163,7 @@ class Stage extends DisplayObjectContainer {
     _pixelRatio = minNum(options.maxPixelRatio, env.devicePixelRatio);
     _renderContext = _createRenderContext(canvas, options);
     _renderState = new RenderState(_renderContext);
+    _console = new StageConsole()..visible = false;
 
     print("StageXL render engine : ${_renderContext.renderEngine}");
 
@@ -209,6 +217,11 @@ class Stage extends DisplayObjectContainer {
   /// NULL in case this Stage is not added to a [RenderLoop].
 
   RenderLoop get renderLoop => _renderLoop;
+
+  /// Gets the [StageConsole] to show render information about the previous
+  /// frame as well as other custom information.
+
+  StageConsole get console => _console;
 
   /// Gets the last known mouse position in Stage coordinates.
 
@@ -362,6 +375,8 @@ class Stage extends DisplayObjectContainer {
         _stageRenderMode == StageRenderMode.AUTO_INVALID && _invalid ||
         _stageRenderMode == StageRenderMode.ONCE) {
 
+      var stopwatch = new Stopwatch()..start();
+
       _updateCanvasSize();
       _renderEvent.dispatch();
       _renderContext.reset();
@@ -373,6 +388,24 @@ class Stage extends DisplayObjectContainer {
       _renderState.renderObject(this);
       _renderState.flush();
       _invalid = false;
+
+      var stats = _renderContext.renderStatistics;
+      var frameTime = stopwatch.elapsedMilliseconds;
+      _avgDrawCalls = _avgDrawCalls * 0.75 + stats.drawCount * 0.25;
+      _avgVertexCount = _avgVertexCount * 0.75 + stats.vertexCount * 0.25;
+      _avgIdexCount = _avgIdexCount * 0.75 + stats.indexCount * 0.25;
+      _avgFrameTime = _avgFrameTime * 0.95 + frameTime * 0.05;
+
+      if (_console.visible && _console.off == false) {
+        _console.clear();
+        _console.print("FRAMETIME${_avgFrameTime.round().toString().padLeft(6)}");
+        _console.print("DRAWCALLS${_avgDrawCalls.round().toString().padLeft(6)}");
+        _console.print("VERTICES${_avgVertexCount.round().toString().padLeft(7)}");
+        _console.print("INDICES${_avgIdexCount.round().toString().padLeft(8)}");
+        _renderState.reset(_consoleTransformation);
+        _renderState.renderObject(_console);
+        _renderState.flush();
+      }
     }
 
     if (_stageRenderMode == StageRenderMode.ONCE) {
@@ -511,6 +544,9 @@ class Stage extends DisplayObjectContainer {
     // client to stage coordinate transformation
     _clientTransformation.setTo(1.0, 0.0, 0.0, 1.0, - clientLeft - pivotX, - clientTop - pivotY);
     _clientTransformation.scale(1.0 / scaleX, 1.0 / scaleY);
+
+    _consoleTransformation.identity();
+    _consoleTransformation.scale(pixelRatio, pixelRatio);
 
     //----------------------------
 
@@ -897,11 +933,11 @@ class Stage extends DisplayObjectContainer {
 
       if (event.type == "keyup") keyboardEventType = KeyboardEvent.KEY_UP;
       if (event.type == "keydown") keyboardEventType = KeyboardEvent.KEY_DOWN;
-      if (event.keyLocation == html.KeyLocation.LEFT) keyLocation = KeyLocation.LEFT;
-      if (event.keyLocation == html.KeyLocation.RIGHT) keyLocation = KeyLocation.RIGHT;
-      if (event.keyLocation == html.KeyLocation.NUMPAD) keyLocation = KeyLocation.NUM_PAD;
-      if (event.keyLocation == html.KeyLocation.JOYSTICK) keyLocation = KeyLocation.D_PAD;
-      if (event.keyLocation == html.KeyLocation.MOBILE) keyLocation = KeyLocation.D_PAD;
+      if (event.location == html.KeyLocation.LEFT) keyLocation = KeyLocation.LEFT;
+      if (event.location == html.KeyLocation.RIGHT) keyLocation = KeyLocation.RIGHT;
+      if (event.location == html.KeyLocation.NUMPAD) keyLocation = KeyLocation.NUM_PAD;
+      if (event.location == html.KeyLocation.JOYSTICK) keyLocation = KeyLocation.D_PAD;
+      if (event.location == html.KeyLocation.MOBILE) keyLocation = KeyLocation.D_PAD;
 
       var keyboardEvent = new KeyboardEvent(keyboardEventType, true,
           event.keyCode, keyLocation,

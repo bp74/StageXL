@@ -1,13 +1,15 @@
+# https://docs.travis-ci.com/user/languages/dart
+
 language: dart
-dart: ["stable", "dev"]
-with_content_shell: true
-sudo: false
 
-before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+dart:
+- stable
+- dev
 
-script:
-  - set -e
-  - pub run test -p content-shell
-  - dartanalyzer --fatal-hints --fatal-warnings lib/stagexl.dart
+dart_task:
+- test: --platform firefox
+- test: --platform dartium
+  install_dartium: true
+- dartanalyzer: --fatal-warnings lib/stagexl.dart
+
+

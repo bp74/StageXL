@@ -54,6 +54,7 @@ part 'display/simple_button.dart';
 part 'display/sprite.dart';
 part 'display/sprite_3d.dart';
 part 'display/stage.dart';
+part 'display/stage_console.dart';
 part 'display/stage_options.dart';
 part 'display/stage_tools.dart';
 

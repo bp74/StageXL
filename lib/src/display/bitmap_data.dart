@@ -60,31 +60,31 @@ class BitmapData implements BitmapDrawable {
 
   /// Loads a BitmapData from the given url.
 
-  static Future<BitmapData> load(String url, [BitmapDataLoadOptions bitmapDataLoadOptions]) async {
+  static Future<BitmapData> load(String url, [BitmapDataLoadOptions options]) async {
 
-    if (bitmapDataLoadOptions == null) {
-      bitmapDataLoadOptions = BitmapData.defaultLoadOptions;
-    }
+    options = options ?? BitmapData.defaultLoadOptions;
 
     var pixelRatio = 1.0;
-    var pixelRatioRegexp = new RegExp(r"@(\d)x");
+    var pixelRatioRegexp = new RegExp(r"@(\d+(.\d+)?)x");
     var pixelRatioMatch = pixelRatioRegexp.firstMatch(url);
-    var maxPixelRatio = bitmapDataLoadOptions.maxPixelRatio;
-    var webpAvailable = bitmapDataLoadOptions.webp;
-    var corsEnabled = bitmapDataLoadOptions.corsEnabled;
 
     if (pixelRatioMatch != null) {
       var match = pixelRatioMatch;
-      var originPixelRatio = int.parse(match.group(1));
-      var devicePixelRatio = env.devicePixelRatio.round();
-      var loaderPixelRatio = minInt(devicePixelRatio, maxPixelRatio);
+      var originPixelRatioFractions = (match.group(2) ?? ".").length - 1;
+      var originPixelRatio = double.parse(match.group(1));
+      var devicePixelRatio = env.devicePixelRatio;
+      var loaderPixelRatio = options.pixelRatios.fold<num>(0.0, (num a, num b) {
+        var aDelta = (a - devicePixelRatio).abs();
+        var bDelta = (b - devicePixelRatio).abs();
+        return aDelta < bDelta && a > 0.0 ? a : b;
+      });
+      var name = loaderPixelRatio.toStringAsFixed(originPixelRatioFractions);
+      url = url.replaceRange(match.start + 1, match.end - 1, name);
       pixelRatio = loaderPixelRatio / originPixelRatio;
-      url = url.replaceRange(match.start, match.end, "@${loaderPixelRatio}x");
     }
 
-    var imageLoader = new ImageLoader(url, webpAvailable, corsEnabled);
-    var image = await imageLoader.done;
-    return new BitmapData.fromImageElement(image, pixelRatio);
+    var imageLoader = new ImageLoader(url, options.webp, options.corsEnabled);
+    return new BitmapData.fromImageElement(await imageLoader.done, pixelRatio);
   }
 
   //----------------------------------------------------------------------------
