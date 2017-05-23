@@ -501,7 +501,9 @@ abstract class DisplayObject
     var matrix = this.transformationMatrix;
     var boundsTransformed = matrix.transformRectangle(bounds, bounds);
     var scale = value / boundsTransformed.width;
-    _reverseMatrix(matrix.a * scale, matrix.b, matrix.c * scale, matrix.d);
+    var ma = scale.isFinite ? matrix.a * scale : 1.0;
+    var mc = scale.isFinite ? matrix.c * scale : 0.0;
+    _reverseMatrix(ma, matrix.b, mc, matrix.d);
   }
 
   /// The height of this display object with the applied transformation.
@@ -516,7 +518,9 @@ abstract class DisplayObject
     var matrix = this.transformationMatrix;
     var boundsTransformed = matrix.transformRectangle(bounds, bounds);
     var scale = value / boundsTransformed.height;
-    _reverseMatrix(matrix.a, matrix.b * scale, matrix.c, matrix.d * scale);
+    var mb = scale.isFinite ? matrix.b * scale : 0.0;
+    var md = scale.isFinite ? matrix.d * scale : 1.0;
+    _reverseMatrix(matrix.a, mb, matrix.c, md);
   }
 
   //----------------------------------------------------------------------------
