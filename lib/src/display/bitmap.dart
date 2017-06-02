@@ -34,6 +34,7 @@ class Bitmap extends DisplayObject {
 
   @override
   Rectangle<num> get bounds {
+    if ( _scrollRect != null ) return _scrollRect.clone();
     return bitmapData == null
         ? new Rectangle<num>(0.0, 0.0, 0.0, 0.0)
         : new Rectangle<num>(0.0, 0.0, bitmapData.width, bitmapData.height);
@@ -43,6 +44,11 @@ class Bitmap extends DisplayObject {
   DisplayObject hitTestInput(num localX, num localY) {
     // We override the hitTestInput method for optimal performance.
     if (bitmapData == null) return null;
+    if ( _scrollRect != null ) {
+      if ( !this.bounds.contains(localX, localY) ) return null;
+      localX += _scrollRect.left;
+      localY += _scrollRect.top;
+    }
     if (localX < 0.0 || localX >= bitmapData.width) return null;
     if (localY < 0.0 || localY >= bitmapData.height) return null;
     return this;

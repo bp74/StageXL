@@ -49,6 +49,8 @@ abstract class DisplayObject
   bool _visible = true;
   bool _off = false;
 
+  Rectangle<num> _scrollRect;
+  Mask _scrollRectMask;
   Mask _mask;
   BlendMode _blendMode;
   List<BitmapFilter> _filters = <BitmapFilter>[];
@@ -729,11 +731,60 @@ abstract class DisplayObject
 
   //----------------------------------------------------------------------------
 
+  /// Returns a rectangle that clips scrolls
+  /// the visible area of this display object.
+
+  @override
+  Rectangle<num> get scrollRect {
+    return _scrollRect != null ? _scrollRect.clone() : null;
+  }
+
+  num get scrollX => _scrollRect != null ? _scrollRect.left : 0;
+  num get scrollY => _scrollRect != null ? _scrollRect.top : 0;
+
+  /// determine if scrollRect has been set.  This allows the user to check
+  /// for a valid scrollRect without needing to clone it
+  bool get isScrollRectSet {
+    return _scrollRect != null;
+  }
+
+  bool isScrollRectEquivalent(Rectangle<num> rect){
+    if ( rect == null ) {
+      return _scrollRect == null;
+    } else {
+      if ( _scrollRect == null ) return false;
+      return _scrollRect == rect;
+    }
+  }
+
+  set scrollRect(Rectangle<num> rect) {
+    if ( rect == null ) {
+      _scrollRect = null;
+      _scrollRectMask = null;
+    } else {
+      _scrollRect = rect.clone();
+      if ( _scrollRectMask is _RectangleMask ){
+        _scrollRectMask.rectangle.width = _scrollRect.width;
+        _scrollRectMask.rectangle.height = _scrollRect.height;
+      }
+      else {
+        _scrollRectMask = new Mask.rectangle(0, 0, _scrollRect.width, _scrollRect.height);
+      }
+    }
+  }
+
+  /// Returns a rectangle mask for the scrollRect rendering. Internal use only.
+  @override
+  Mask get scrollMask => _scrollRectMask;
+
+  //----------------------------------------------------------------------------
+
   /// Returns a rectangle that defines the area of this display object in
   /// this display object's local coordinates.
 
   @override
   Rectangle<num> get bounds {
+    if ( _scrollRect != null ) return _scrollRect.clone();
     return new Rectangle<num>(0.0, 0.0, 0.0, 0.0);
   }
 

@@ -348,7 +348,7 @@ abstract class DisplayObjectContainer
 
   @override
   Rectangle<num> get bounds {
-
+    if ( _scrollRect != null ) return _scrollRect.clone();
     if (_children.length == 0) return super.bounds;
 
     num left = double.INFINITY;
@@ -375,6 +375,12 @@ abstract class DisplayObjectContainer
 
     localX = localX.toDouble();
     localY = localY.toDouble();
+
+    if ( _scrollRect != null ) {
+      if ( !this.bounds.contains(localX, localY) ) return null;
+      localX += _scrollRect.left;
+      localY += _scrollRect.top;
+    }
 
     DisplayObject hit;
 

@@ -223,11 +223,17 @@ class TextField extends InteractiveObject {
 
   @override
   Rectangle<num> get bounds {
+    if ( this.isScrollRectSet ) return this.scrollRect;
     return new Rectangle<num>(0.0, 0.0, width, height);
   }
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
+    if ( this.isScrollRectSet ) {
+      if ( !this.bounds.contains(localX, localY) ) return null;
+      localX += scrollX;
+      localY += scrollY;
+    }
     if (localX < 0 || localX >= width) return null;
     if (localY < 0 || localY >= height) return null;
     return this;
@@ -782,6 +788,10 @@ class TextField extends InteractiveObject {
 
     var mouseX = mouseEvent.localX.toDouble();
     var mouseY = mouseEvent.localY.toDouble();
+    if ( _scrollRect != null ) {
+      mouseX += _scrollRect.left;
+      mouseY += _scrollRect.top;
+    }
     var canvasContext = _dummyCanvasContext;
 
     canvasContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
