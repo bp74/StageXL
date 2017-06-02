@@ -25,6 +25,9 @@ class SoundLoadOptions {
 
   bool opus = false;
 
+  /// The application provides *opus* files as an option to load audio files.
+  bool opus = true;
+
   /// The application provides *ac3* files as an option to load audio files.
 
   bool ac3 = true;
@@ -44,7 +47,7 @@ class SoundLoadOptions {
 
   bool ignoreErrors = true;
 
-  /// Use CORS to download the audio file. This is often necessary when you have
+  /// Use CORS to download the audo file. This is often necessary when you have
   /// to download audio files from a third party server.
 
   bool corsEnabled = false;

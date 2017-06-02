@@ -101,6 +101,7 @@ class AudioLoader {
     if (valid.indexOf(audio.canPlayType("audio/mpeg")) != -1) supportedTypes.add("mp3");
     if (valid.indexOf(audio.canPlayType("audio/mp4")) != -1) supportedTypes.add("mp4");
     if (valid.indexOf(audio.canPlayType("audio/ogg")) != -1) supportedTypes.add("ogg");
+    if (valid.indexOf(audio.canPlayType("audio/ogg; codecs=opus")) != -1) supportedTypes.add("opus");
     if (valid.indexOf(audio.canPlayType("audio/ac3")) != -1) supportedTypes.add("ac3");
     if (valid.indexOf(audio.canPlayType("audio/wav")) != -1) supportedTypes.add("wav");
 
