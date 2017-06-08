@@ -216,6 +216,9 @@ class RenderTexture {
     var rgba = gl.RGBA;
     var type = gl.UNSIGNED_BYTE;
 
+    var scissors = _renderingContext.isEnabled(gl.SCISSOR_TEST);
+    if (scissors) _renderingContext.disable(gl.SCISSOR_TEST);
+
     if (_textureSourceWorkaround) {
       _canvas.context2D.drawImage(_source, 0, 0);
       _renderContext.activateRenderTexture(this);
@@ -224,6 +227,8 @@ class RenderTexture {
       _renderContext.activateRenderTexture(this);
       _renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
     }
+
+    if (scissors) _renderingContext.enable(gl.SCISSOR_TEST);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -244,6 +249,9 @@ class RenderTexture {
       _renderingContext.activeTexture(textureSlot);
       _renderingContext.bindTexture(target, _texture);
 
+      var scissors = _renderingContext.isEnabled(gl.SCISSOR_TEST);
+      if (scissors) _renderingContext.disable(gl.SCISSOR_TEST);
+
       if (_source != null) {
         _renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
         _textureSourceWorkaround = _renderingContext.getError() == gl.INVALID_VALUE;
@@ -257,6 +265,8 @@ class RenderTexture {
         _canvas.context2D.drawImage(_source, 0, 0);
         _renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
       }
+
+      if (scissors) _renderingContext.enable(gl.SCISSOR_TEST);
 
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, _wrappingX.value);
       _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, _wrappingY.value);
