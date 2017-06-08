@@ -128,7 +128,7 @@ class RenderContextWebGL extends RenderContext {
       if (scissor != null) {
         var last = _getLastScissorValue();
         var next = last == null ? scissor : scissor.intersection(last);
-        _maskStates.add(new _ScissorMaskState(mask, next));
+        _getMaskStates().add(new _ScissorMaskState(mask, next));
         _updateScissorTest(next);
         return;
       }
@@ -147,7 +147,7 @@ class RenderContextWebGL extends RenderContext {
     _activeRenderProgram.flush();
     _renderingContext.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
     _renderingContext.colorMask(true, true, true, true);
-    _maskStates.add(new _StencilMaskState(mask, stencil));
+    _getMaskStates().add(new _StencilMaskState(mask, stencil));
     _updateStencilTest(stencil);
   }
 
