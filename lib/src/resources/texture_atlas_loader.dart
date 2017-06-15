@@ -19,52 +19,30 @@ abstract class TextureAtlasLoader {
 
 class _TextureAtlasLoaderFile extends TextureAtlasLoader {
 
-  String _sourceUrl = "";
-  bool _webpAvailable = false;
-  bool _corsEnabled = false;
-  num _pixelRatio = 1.0;
+  BitmapDataLoadOptions _loadOptions;
+  BitmapDataLoadInfo _loadInfo;
 
   _TextureAtlasLoaderFile(String url, BitmapDataLoadOptions options) {
-
-    options = options ?? BitmapData.defaultLoadOptions;
-
-    var pixelRatio = 1.0;
-    var pixelRatioRegexp = new RegExp(r"@(\d+(.\d+)?)x");
-    var pixelRatioMatch = pixelRatioRegexp.firstMatch(url);
-
-    if (pixelRatioMatch != null) {
-      var match = pixelRatioMatch;
-      var originPixelRatioFractions = (match.group(2) ?? ".").length - 1;
-      var originPixelRatio = double.parse(match.group(1));
-      var devicePixelRatio = env.devicePixelRatio;
-      var loaderPixelRatio = options.pixelRatios.fold<num>(0.0, (num a, num b) {
-        var aDelta = (a - devicePixelRatio).abs();
-        var bDelta = (b - devicePixelRatio).abs();
-        return aDelta < bDelta && a > 0.0 ? a : b;
-      });
-      var name = loaderPixelRatio.toStringAsFixed(originPixelRatioFractions);
-      url = url.replaceRange(match.start + 1, match.end - 1, name);
-      pixelRatio = loaderPixelRatio / originPixelRatio;
-    }
-
-    _sourceUrl = url;
-    _webpAvailable = options.webp;
-    _corsEnabled = options.corsEnabled;
-    _pixelRatio = pixelRatio;
+    _loadOptions = options ?? BitmapData.defaultLoadOptions;
+    _loadInfo = new BitmapDataLoadInfo(url, _loadOptions.pixelRatios);
   }
 
   @override
   Future<String> getSource() {
-    return HttpRequest.getString(_sourceUrl);
+    return HttpRequest.getString(_loadInfo.loaderUrl);
   }
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
-    var imageUrl = replaceFilename(_sourceUrl, filename);
-    var imageLoader = new ImageLoader(imageUrl, _webpAvailable, _corsEnabled);
+    var loaderUrl = _loadInfo.loaderUrl;
+    var pixelRatio = _loadInfo.pixelRatio;
+    var webpAvailable = _loadOptions.webp;
+    var corsEnabled = _loadOptions.corsEnabled;
+    var imageUrl = replaceFilename(loaderUrl, filename);
+    var imageLoader = new ImageLoader(imageUrl, webpAvailable, corsEnabled);
     var imageElement = await imageLoader.done;
     var renderTexture = new RenderTexture.fromImageElement(imageElement);
-    var renderTextureQuad = renderTexture.quad.withPixelRatio(_pixelRatio);
+    var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return renderTextureQuad;
   }
 }

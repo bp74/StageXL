@@ -60,31 +60,13 @@ class BitmapData implements BitmapDrawable {
 
   /// Loads a BitmapData from the given url.
 
-  static Future<BitmapData> load(String url, [BitmapDataLoadOptions options]) async {
-
+  static Future<BitmapData> load(String url, [BitmapDataLoadOptions options]) {
     options = options ?? BitmapData.defaultLoadOptions;
-
-    var pixelRatio = 1.0;
-    var pixelRatioRegexp = new RegExp(r"@(\d+(.\d+)?)x");
-    var pixelRatioMatch = pixelRatioRegexp.firstMatch(url);
-
-    if (pixelRatioMatch != null) {
-      var match = pixelRatioMatch;
-      var originPixelRatioFractions = (match.group(2) ?? ".").length - 1;
-      var originPixelRatio = double.parse(match.group(1));
-      var devicePixelRatio = env.devicePixelRatio;
-      var loaderPixelRatio = options.pixelRatios.fold<num>(0.0, (num a, num b) {
-        var aDelta = (a - devicePixelRatio).abs();
-        var bDelta = (b - devicePixelRatio).abs();
-        return aDelta < bDelta && a > 0.0 ? a : b;
-      });
-      var name = loaderPixelRatio.toStringAsFixed(originPixelRatioFractions);
-      url = url.replaceRange(match.start + 1, match.end - 1, name);
-      pixelRatio = loaderPixelRatio / originPixelRatio;
-    }
-
-    var imageLoader = new ImageLoader(url, options.webp, options.corsEnabled);
-    return new BitmapData.fromImageElement(await imageLoader.done, pixelRatio);
+    var bitmapDataFileInfo = new BitmapDataLoadInfo(url, options.pixelRatios);
+    var targetUrl = bitmapDataFileInfo.loaderUrl;
+    var pixelRatio = bitmapDataFileInfo.pixelRatio;
+    var loader = new ImageLoader(targetUrl, options.webp, options.corsEnabled);
+    return loader.done.then((i) => new BitmapData.fromImageElement(i, pixelRatio));
   }
 
   //----------------------------------------------------------------------------
