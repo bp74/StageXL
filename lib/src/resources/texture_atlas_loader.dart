@@ -7,6 +7,9 @@ part of stagexl.resources;
 
 abstract class TextureAtlasLoader {
 
+  /// Get the pixel ratio of the texture atlas.
+  double getPixelRatio();
+
   /// Get the source of the texture atlas.
   Future<String> getSource();
 
@@ -28,9 +31,10 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
   }
 
   @override
-  Future<String> getSource() {
-    return HttpRequest.getString(_loadInfo.loaderUrl);
-  }
+  double getPixelRatio() => _loadInfo.pixelRatio;
+
+  @override
+  Future<String> getSource() => HttpRequest.getString(_loadInfo.loaderUrl);
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
@@ -59,9 +63,10 @@ class _TextureAtlasLoaderTextureAtlas extends TextureAtlasLoader {
   _TextureAtlasLoaderTextureAtlas(this.textureAtlas, this.namePrefix, this.source);
 
   @override
-  Future<String> getSource() {
-    return new Future.value(this.source);
-  }
+  double getPixelRatio() => this.textureAtlas.pixelRatio;
+
+  @override
+  Future<String> getSource() => new Future.value(this.source);
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
@@ -82,9 +87,10 @@ class _TextureAtlasLoaderBitmapData extends TextureAtlasLoader {
   _TextureAtlasLoaderBitmapData(this.bitmapData, this.source);
 
   @override
-  Future<String> getSource() {
-    return new Future.value(this.source);
-  }
+  double getPixelRatio() => this.bitmapData.renderTextureQuad.pixelRatio;
+
+  @override
+  Future<String> getSource() => new Future.value(this.source);
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) {
