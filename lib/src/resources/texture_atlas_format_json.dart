@@ -8,12 +8,13 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
 
     var source = await loader.getSource();
+    var pixelRatio = loader.getPixelRatio();
+    var textureAtlas = new TextureAtlas(pixelRatio);
+
     var json = JSON.decode(source);
     var frames = json["frames"];
     var meta = json["meta"] as Map;
     var image = meta["image"] as String;
-
-    var textureAtlas = new TextureAtlas();
     var renderTextureQuad = await loader.getRenderTextureQuad(image);
 
     if (frames is List) {

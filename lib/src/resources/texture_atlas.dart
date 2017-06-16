@@ -2,6 +2,16 @@ part of stagexl.resources;
 
 class TextureAtlas {
 
+  /// A list with the frames in this texture atlas.
+  final List<TextureAtlasFrame> frames = new List<TextureAtlasFrame>();
+
+  /// The pixelRatio used for the BitmapDatas in the frames
+  final double pixelRatio;
+
+  TextureAtlas(this.pixelRatio);
+
+  //---------------------------------------------------------------------------
+
   static Future<TextureAtlas> load(String url, [
       TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
       BitmapDataLoadOptions bitmapDataLoadOptions = null]) =>
@@ -26,10 +36,6 @@ class TextureAtlas {
           textureAtlasFormat.load(textureAtlasLoader);
 
   //---------------------------------------------------------------------------
-
-  /// A list with the frames in this texture atlas.
-
-  final List<TextureAtlasFrame> frames = new List<TextureAtlasFrame>();
 
   /// A list with the frame-names in this texture atlas.
 

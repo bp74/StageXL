@@ -7,11 +7,13 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
   @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
 
-    RegExp splitRexExp = new RegExp(r"\r\n|\r|\n");
-    RegExp dataRexExp = new RegExp(r"^\s*([a-z]+):\s([A-Za-z0-9\s,]+)");
-    TextureAtlas textureAtlas = new TextureAtlas();
-
     var source = await loader.getSource();
+    var pixelRatio = loader.getPixelRatio();
+    var textureAtlas = new TextureAtlas(pixelRatio);
+
+    var splitRexExp = new RegExp(r"\r\n|\r|\n");
+    var dataRexExp = new RegExp(r"^\s*([a-z]+):\s([A-Za-z0-9\s,]+)");
+
     var lines = source.split(splitRexExp);
     var lineIndex = 0;
     var imageBlock = true;

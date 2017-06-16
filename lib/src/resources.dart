@@ -20,7 +20,6 @@ import 'geom.dart';
 import 'media.dart';
 import 'internal/tools.dart';
 import 'internal/image_loader.dart';
-import 'internal/environment.dart' as env;
 
 part 'resources/resource_manager.dart';
 part 'resources/resource_manager_resource.dart';

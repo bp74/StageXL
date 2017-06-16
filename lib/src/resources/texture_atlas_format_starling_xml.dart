@@ -8,9 +8,10 @@ class _TextureAtlasFormatStarlingXml  extends TextureAtlasFormat {
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
 
     var source = await loader.getSource();
-    var xmlRoot = parse(source).rootElement;
-    var textureAtlas = new TextureAtlas();
+    var pixelRatio = loader.getPixelRatio();
+    var textureAtlas = new TextureAtlas(pixelRatio);
 
+    var xmlRoot = parse(source).rootElement;
     var imagePath = _getString(xmlRoot, "imagePath", "");
     var renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
 
