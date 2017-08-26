@@ -39,6 +39,11 @@ class MockSoundChannel extends SoundChannel {
   @override
   Sound get sound => _mockSound;
 
+  @override
+  set position(num value) {
+      return;
+  }
+
   //---------------------------------------------------------------------------
 
   @override
