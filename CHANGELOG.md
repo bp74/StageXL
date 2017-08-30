@@ -8,6 +8,16 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 1.3.0
+  * Added SoundChannel.position setter.
+  * Added support for non integer HiDpi pixel ratios.
+  * Added BitmapDataLoadOptions.pixelRatios list.
+  * Added TextureAtlas.pixelRatio getter.
+  * Removed BitmapDataLoadOptions.maxPixelRatio.
+  * Removed SoundChannel.onComplete workaround for WebAudio API.
+  * Fixed infinite scaleX/scaleY on DisplayObjects.
+  * Fixed scissor masks on RenderBufferFrames.
+
 #### Pub version 1.2.0
   * Added ViewportContainer display object.
   * Added Stage.console to show render statistics.

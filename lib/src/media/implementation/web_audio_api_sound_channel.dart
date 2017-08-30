@@ -4,9 +4,10 @@ class WebAudioApiSoundChannel extends SoundChannel {
 
   WebAudioApiSound _webAudioApiSound;
   SoundTransform _soundTransform;
-  WebAudioApiMixer _webAudioApiMixer;
+  WebAudioApiMixer _mixer;
+
   AudioBufferSourceNode _sourceNode;
-  Timer _completeTimer;
+  StreamSubscription<html.Event> _sourceNodeEndedSubscription;
 
   bool _stopped = false;
   bool _paused = true;
@@ -16,20 +17,19 @@ class WebAudioApiSoundChannel extends SoundChannel {
   num _position = 0.0;
   num _timeOffset = 0.0;
 
-  WebAudioApiSoundChannel(WebAudioApiSound webAudioApiSound,
-                          num startTime, num duration, bool loop,
-                          SoundTransform soundTransform) {
+  WebAudioApiSoundChannel(
+      WebAudioApiSound webAudioApiSound,
+      num startTime, num duration, bool loop,
+      SoundTransform soundTransform) {
 
-    if (soundTransform == null) soundTransform = new SoundTransform();
-
+    _soundTransform = soundTransform ?? new SoundTransform();
     _webAudioApiSound = webAudioApiSound;
     _startTime = startTime.toDouble();
     _duration = duration.toDouble();
-    _soundTransform = soundTransform;
     _loop = loop;
 
-    _webAudioApiMixer = new WebAudioApiMixer(SoundMixer._webAudioApiMixer.inputNode);
-    _webAudioApiMixer.applySoundTransform(_soundTransform);
+    _mixer = new WebAudioApiMixer(SoundMixer._webAudioApiMixer.inputNode);
+    _mixer.applySoundTransform(_soundTransform);
 
     this.paused = false;
   }
@@ -45,6 +45,8 @@ class WebAudioApiSoundChannel extends SoundChannel {
   @override
   Sound get sound => _webAudioApiSound;
 
+  //---------------------------------------------------------------------------
+
   @override
   num get position {
     if (_paused || _stopped) {
@@ -52,17 +54,28 @@ class WebAudioApiSoundChannel extends SoundChannel {
     } else {
       var currentTime = WebAudioApiMixer.audioContext.currentTime;
       var position = currentTime - _timeOffset;
-      var duration = _duration;
-      return _loop ? position % duration : position.clamp(0.0, duration);
+      return _loop ? position % _duration : position.clamp(0.0, _duration);
+    }
+  }
+
+  @override
+  set position(num value) {
+    var position = _loop ? value % _duration : value.clamp(0.0, _duration);
+    if (_stopped) {
+      // do nothing
+    } else if (_paused) {
+      _position = position;
+    } else {
+      this.paused = true;
+      _position = position;
+      this.paused = false;
     }
   }
 
   //---------------------------------------------------------------------------
 
   @override
-  bool get paused {
-    return _paused;
-  }
+  bool get paused => _paused;
 
   @override
   set paused(bool value) {
@@ -74,8 +87,8 @@ class WebAudioApiSoundChannel extends SoundChannel {
     } else if (value){
       _position = this.position;
       _paused = true;
+      _sourceNodeEndedSubscription?.cancel();
       _sourceNode.stop(0);
-      _stopCompleteTimer();
     } else if (_loop) {
       _paused = false;
       _sourceNode = WebAudioApiMixer.audioContext.createBufferSource();
@@ -83,7 +96,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
       _sourceNode.loop = true;
       _sourceNode.loopStart = _startTime;
       _sourceNode.loopEnd = _startTime + _duration;
-      _sourceNode.connectNode(_webAudioApiMixer.inputNode);
+      _sourceNode.connectNode(_mixer.inputNode);
       _sourceNode.start(0, _startTime + _position);
       _timeOffset = WebAudioApiMixer.audioContext.currentTime - _position;
     } else {
@@ -91,22 +104,20 @@ class WebAudioApiSoundChannel extends SoundChannel {
       _sourceNode = WebAudioApiMixer.audioContext.createBufferSource();
       _sourceNode.buffer = _webAudioApiSound._audioBuffer;
       _sourceNode.loop = false;
-      _sourceNode.connectNode(_webAudioApiMixer.inputNode);
+      _sourceNode.connectNode(_mixer.inputNode);
       _sourceNode.start(0, _startTime + _position, _duration - _position);
+      _sourceNodeEndedSubscription = _sourceNode.onEnded.listen(_onEnded);
       _timeOffset = WebAudioApiMixer.audioContext.currentTime - _position;
-      _startCompleteTimer(_duration - _position);
     }
   }
 
   @override
-  SoundTransform get soundTransform {
-    return _soundTransform;
-  }
+  SoundTransform get soundTransform => _soundTransform;
 
   @override
   set soundTransform(SoundTransform value) {
-    _soundTransform = value != null ? value : new SoundTransform();
-    _webAudioApiMixer.applySoundTransform(value);
+    _soundTransform = value ?? new SoundTransform();
+    _mixer.applySoundTransform(_soundTransform);
   }
 
   //---------------------------------------------------------------------------
@@ -115,39 +126,19 @@ class WebAudioApiSoundChannel extends SoundChannel {
   void stop() {
     if (_stopped == false) {
       _sourceNode.stop(0);
-      _stopCompleteTimer();
-      _onCompleteTimer();
+      _sourceNodeEndedSubscription?.cancel();
+      _onEnded(null);
     }
   }
 
   //---------------------------------------------------------------------------
 
-  void _startCompleteTimer(num time) {
-    // This is a workaround for the broken onEnded event :(
-    // Replace the timer with the onEnded event as soon as possible.
-    // https://code.google.com/p/chromium/issues/detail?id=349543
-    // Bug was fixed in Chrome 50, waiting for Dartium to catch up.
-    time = time.clamp(0.0, _duration) * 1000.0;
-    var duration = new Duration(milliseconds: time.toInt());
-    _completeTimer = new Timer(duration, _onCompleteTimer);
-  }
-
-  void _stopCompleteTimer() {
-    if (_completeTimer != null) {
-      _completeTimer.cancel();
-      _completeTimer = null;
-    }
-  }
-
-  void _onCompleteTimer() {
-    if (_paused || _stopped || _loop) {
-      // Called by accident
-    } else {
+  void _onEnded(html.Event e) {
+    if (_paused == false && _stopped == false && _loop == false) {
       _position = this.position;
       _stopped = true;
       _paused = true;
       this.dispatchEvent(new Event(Event.COMPLETE));
     }
   }
-
 }
