@@ -65,7 +65,7 @@ class GraphicsPattern {
 
   GraphicsPattern(
       RenderTextureQuad renderTextureQuad,
-      GraphicsPatternType type, [Matrix matrix = null]) {
+      GraphicsPatternType type, [Matrix matrix]) {
 
     _renderTextureQuad = renderTextureQuad;
     _matrix = matrix;

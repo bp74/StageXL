@@ -44,7 +44,7 @@ class Sprite extends DisplayObjectContainer {
   /// [bounds] is the value relative to the coordinates of the Sprite's
   /// parent that specify a constraint rectangle for the Sprite.
 
-  void startDrag([bool lockCenter = false, Rectangle<num> bounds = null]) {
+  void startDrag([bool lockCenter = false, Rectangle<num> bounds]) {
 
     var stage = this.stage;
     var inputEvent = InputEvent.current;

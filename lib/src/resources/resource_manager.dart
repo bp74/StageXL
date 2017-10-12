@@ -80,7 +80,7 @@ class ResourceManager {
 
   void addTextureAtlas(String name, String url, [
       TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-      BitmapDataLoadOptions options = null]) {
+      BitmapDataLoadOptions options]) {
 
     var loader = TextureAtlas.load(url, textureAtlasFormat, options);
     _addResource("TextureAtlas", name, url, loader);

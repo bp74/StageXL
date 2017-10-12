@@ -57,7 +57,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// parent that specify a constraint rectangle for the Sprite.
 
   @override
-  void startDrag([bool lockCenter = false, Rectangle<num> bounds = null]) {
+  void startDrag([bool lockCenter = false, Rectangle<num> bounds]) {
 
     var stage = this.stage;
     var inputEvent = InputEvent.current;
