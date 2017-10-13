@@ -16,7 +16,7 @@ class DisplacementMapFilter extends BitmapFilter {
   final num scaleY;
 
   DisplacementMapFilter(BitmapData bitmapData, [
-    Matrix matrix = null, num scaleX = 16.0, num scaleY = 16.0]) :
+    Matrix matrix, num scaleX = 16.0, num scaleY = 16.0]) :
 
     bitmapData = bitmapData,
     matrix = (matrix != null) ? matrix : new Matrix.fromIdentity(),

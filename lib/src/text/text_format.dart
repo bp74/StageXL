@@ -28,7 +28,7 @@ class TextFormat {
   TextFormat(this.font, this.size, this.color, {
     this.strokeWidth  : 0.0,
     this.strokeColor  : Color.Black,
-    this.fillGradient : null,
+    this.fillGradient,
     this.weight       : 400,
     this.bold         : false,
     this.italic       : false,
