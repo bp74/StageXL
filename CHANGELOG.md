@@ -8,6 +8,10 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 1.3.0+1
+  * Replaced deprecated value AudioParam in WebAudio API.
+  * Allow colors with alpha value for TextField backgrounds.
+
 #### Pub version 1.3.0
   * Added SoundChannel.position setter.
   * Added support for non integer HiDpi pixel ratios.
