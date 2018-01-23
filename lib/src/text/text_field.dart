@@ -22,8 +22,8 @@ class TextField extends InteractiveObject {
   bool _background = false;
   bool _border = false;
   String _passwordChar = "•";
-  int _backgroundColor = 0xFFFFFF;
-  int _borderColor = 0x000000;
+  int _backgroundColor = Color.White;
+  int _borderColor = Color.Black;
   int _maxChars = 0;
   num _width = 100;
   num _height = 100;
