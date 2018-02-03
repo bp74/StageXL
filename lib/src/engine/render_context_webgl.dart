@@ -297,8 +297,8 @@ class RenderContextWebGL extends RenderContext {
     filterProjectionMatrix.translate(-1.0, -1.0, 0.0);
 
     var filterRenderState = new RenderState(this);
-    filterRenderState.globalMatrix.translate(-boundsLeft, -boundsTop);
     filterRenderState.globalMatrix.scale(pixelRatio, pixelRatio);
+    filterRenderState.globalMatrix.translate(-boundsLeft, -boundsTop);
 
     var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
     renderFrameBufferMap[0] = filterRenderFrameBuffer;
