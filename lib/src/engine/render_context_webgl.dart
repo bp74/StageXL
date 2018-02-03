@@ -290,16 +290,17 @@ class RenderContextWebGL extends RenderContext {
 
     var initialRenderFrameBuffer = this.activeRenderFrameBuffer;
     var initialProjectionMatrix = this.activeProjectionMatrix.clone();
-
-    var filterRenderState = new RenderState(this);
-    var filterProjectionMatrix = new Matrix3D.fromIdentity();
     var filterRenderFrameBuffer = this.getRenderFrameBuffer(boundsWidth, boundsHeight);
-    var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
 
-    filterProjectionMatrix.translate(-boundsLeft, -boundsTop, 0.0);
+    var filterProjectionMatrix = new Matrix3D.fromIdentity();
     filterProjectionMatrix.scale(2.0 / boundsWidth, 2.0 / boundsHeight, 1.0);
     filterProjectionMatrix.translate(-1.0, -1.0, 0.0);
+
+    var filterRenderState = new RenderState(this);
+    filterRenderState.globalMatrix.translate(-boundsLeft, -boundsTop);
     filterRenderState.globalMatrix.scale(pixelRatio, pixelRatio);
+
+    var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
     renderFrameBufferMap[0] = filterRenderFrameBuffer;
 
     //----------------------------------------------
@@ -433,14 +434,13 @@ class RenderContextWebGL extends RenderContext {
         _activeRenderProgram.flush();
         _activeRenderFrameBuffer = renderFrameBuffer;
         _activeRenderFrameBuffer.activate(this);
+        _renderingContext.viewport(0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
       } else {
         _activeRenderProgram.flush();
         _activeRenderFrameBuffer = null;
         _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, null);
+        _renderingContext.viewport(0, 0, _canvasElement.width, _canvasElement.height);
       }
-      var viewportWidth = _getViewportWidth();
-      var viewportHeight = _getViewportHeight();
-      _renderingContext.viewport(0, 0, viewportWidth, viewportHeight);
       _updateScissorTest(_getLastScissorValue());
       _updateStencilTest(_getLastStencilValue());
     }
@@ -496,16 +496,6 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  int _getViewportWidth() {
-    var rfb = _activeRenderFrameBuffer;
-    return rfb is RenderFrameBuffer ? rfb.width : _canvasElement.width;
-  }
-
-  int _getViewportHeight() {
-    var rfb = _activeRenderFrameBuffer;
-    return rfb is RenderFrameBuffer ? rfb.height : _canvasElement.height;
-  }
-
   List<_MaskState> _getMaskStates() {
     var rfb = _activeRenderFrameBuffer;
     return rfb is RenderFrameBuffer ? rfb._maskStates : _maskStates;
@@ -541,12 +531,18 @@ class RenderContextWebGL extends RenderContext {
   void _updateScissorTest(Rectangle<num> value) {
     if (value == null) {
       _renderingContext.disable(gl.SCISSOR_TEST);
-    } else {
-      int viewportHeight = _getViewportHeight();
+    } else if (_activeRenderFrameBuffer is RenderFrameBuffer) {
       int x1 = value.left.round();
-      int y1 = viewportHeight - value.bottom.round();
+      int y1 = value.top.round();
       int x2 = value.right.round();
-      int y2 = viewportHeight - value.top.round();
+      int y2 = value.bottom.round();
+      _renderingContext.enable(gl.SCISSOR_TEST);
+      _renderingContext.scissor(x1, y1, maxInt(x2 - x1, 0), maxInt(y2 - y1, 0));
+    } else {
+      int x1 = value.left.round();
+      int y1 = _canvasElement.height - value.bottom.round();
+      int x2 = value.right.round();
+      int y2 = _canvasElement.height - value.top.round();
       _renderingContext.enable(gl.SCISSOR_TEST);
       _renderingContext.scissor(x1, y1, maxInt(x2 - x1, 0), maxInt(y2 - y1, 0));
     }
