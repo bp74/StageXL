@@ -216,6 +216,7 @@ class RenderTexture {
     var rgba = gl.RGBA;
     var type = gl.UNSIGNED_BYTE;
 
+    _renderContext.flush();
     _renderContext.activateRenderTexture(this);
 
     var scissors = _renderingContext.isEnabled(gl.SCISSOR_TEST);
