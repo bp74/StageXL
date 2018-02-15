@@ -14,6 +14,7 @@
 library stagexl.display;
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:typed_data';
 import 'dart:html' as html;
 
@@ -59,5 +60,4 @@ part 'display/stage_console.dart';
 part 'display/stage_options.dart';
 part 'display/stage_tools.dart';
 
-final Matrix _tmpMatrix = new Matrix.fromIdentity();
 final Matrix _identityMatrix = new Matrix.fromIdentity();
