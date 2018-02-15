@@ -20,12 +20,10 @@ class AudioElementSoundChannel extends SoundChannel {
       num startTime, num duration, bool loop,
       SoundTransform soundTransform) {
 
-    if (soundTransform == null) soundTransform = new SoundTransform();
-
+    _soundTransform = soundTransform ?? new SoundTransform();
     _audioElementSound = audioElementSound;
     _startTime = startTime.toDouble();
     _duration = duration.toDouble();
-    _soundTransform = soundTransform;
     _loop = loop;
 
     audioElementSound._requestAudioElement(this).then(_onAudioElement);
@@ -43,6 +41,8 @@ class AudioElementSoundChannel extends SoundChannel {
   @override
   Sound get sound => _audioElementSound;
 
+  //---------------------------------------------------------------------------
+
   @override
   num get position {
     if (_paused || _stopped || _audioElement == null) {
@@ -50,6 +50,21 @@ class AudioElementSoundChannel extends SoundChannel {
     } else {
       var currentTime = _audioElement.currentTime;
       return (currentTime - _startTime).clamp(0.0, _duration);
+    }
+  }
+
+  @override
+  set position(num value) {
+    var position = _loop ? value % _duration : value.clamp(0.0, _duration);
+    if (_stopped) {
+      // do nothing
+    } else if (_paused || _audioElement == null) {
+      _position = position;
+    } else {
+      _stopCompleteTimer();
+      _position = position;
+      _audioElement.currentTime = _startTime + _position;
+      _startCompleteTimer(_duration - _position);
     }
   }
 
@@ -74,6 +89,7 @@ class AudioElementSoundChannel extends SoundChannel {
       _stopCompleteTimer();
     } else {
       _paused = false;
+      _audioElement.currentTime = _startTime + _position;
       _audioElement.play();
       _startCompleteTimer(_duration - _position);
     }
@@ -129,12 +145,12 @@ class AudioElementSoundChannel extends SoundChannel {
       _audioElementSound._releaseAudioElement(audioElement);
     } else {
       _audioElement = audioElement;
-      _audioElement.currentTime = _startTime;
       _audioElement.volume = _soundTransform.volume * mixer.volume;
       _volumeChangedSubscription = mixer.onVolumeChanged.listen(_onVolumeChanged);
       if (_paused == false) {
+        _audioElement.currentTime = _startTime + _position;
         _audioElement.play();
-        _startCompleteTimer(_duration);
+        _startCompleteTimer(_duration - _position);
       }
     }
   }
@@ -148,10 +164,8 @@ class AudioElementSoundChannel extends SoundChannel {
   }
 
   void _stopCompleteTimer() {
-    if (_completeTimer != null) {
-      _completeTimer.cancel();
-      _completeTimer = null;
-    }
+    _completeTimer?.cancel();
+    _completeTimer = null;
   }
 
   void _onCompleteTimer() {

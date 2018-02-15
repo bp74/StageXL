@@ -216,15 +216,16 @@ class RenderTexture {
     var rgba = gl.RGBA;
     var type = gl.UNSIGNED_BYTE;
 
+    _renderContext.flush();
+    _renderContext.activateRenderTexture(this);
+
     var scissors = _renderingContext.isEnabled(gl.SCISSOR_TEST);
     if (scissors) _renderingContext.disable(gl.SCISSOR_TEST);
 
     if (_textureSourceWorkaround) {
       _canvas.context2D.drawImage(_source, 0, 0);
-      _renderContext.activateRenderTexture(this);
       _renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
     } else {
-      _renderContext.activateRenderTexture(this);
       _renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
     }
 

@@ -22,8 +22,8 @@ class TextField extends InteractiveObject {
   bool _background = false;
   bool _border = false;
   String _passwordChar = "•";
-  int _backgroundColor = 0xFFFFFF;
-  int _borderColor = 0x000000;
+  int _backgroundColor = Color.White;
+  int _borderColor = Color.Black;
   int _maxChars = 0;
   num _width = 100;
   num _height = 100;
@@ -574,7 +574,7 @@ class TextField extends InteractiveObject {
     context.lineJoin = "round";
 
     if (_background) {
-      context.fillStyle = color2rgb(_backgroundColor);
+      context.fillStyle = color2rgba(_backgroundColor);
       context.fillRect(0, 0, _width, _height);
     }
 
@@ -607,7 +607,7 @@ class TextField extends InteractiveObject {
     }
 
     if (_border) {
-      context.strokeStyle = color2rgb(_borderColor);
+      context.strokeStyle = color2rgba(_borderColor);
       context.lineWidth = 1;
       context.strokeRect(0, 0, _width, _height);
     }
