@@ -357,6 +357,8 @@ abstract class DisplayObjectContainer
     num bottom = double.NEGATIVE_INFINITY;
 
     for (int i = 0; i < _children.length; i++) {
+      if (_children[i] is GlassPlate) continue; // ignore GlassPlate in bounds
+
       var rectangle = _children[i].boundsTransformed;
 
       if (rectangle.left < left) left = rectangle.left;

@@ -30,6 +30,7 @@ import 'ui.dart';
 import 'internal/tools.dart';
 import 'internal/image_loader.dart';
 import 'internal/environment.dart' as env;
+import 'display_ex.dart' show GlassPlate;
 
 part 'display/bitmap.dart';
 part 'display/bitmap_container.dart';
