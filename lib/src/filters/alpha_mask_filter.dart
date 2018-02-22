@@ -12,7 +12,7 @@ class AlphaMaskFilter extends BitmapFilter {
   final BitmapData bitmapData;
   final Matrix matrix;
 
-  AlphaMaskFilter(this.bitmapData, [Matrix matrix = null]):
+  AlphaMaskFilter(this.bitmapData, [Matrix matrix]):
     matrix = matrix != null ? matrix : new Matrix.fromIdentity();
 
   @override

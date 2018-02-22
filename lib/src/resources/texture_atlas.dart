@@ -14,7 +14,7 @@ class TextureAtlas {
 
   static Future<TextureAtlas> load(String url, [
       TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-      BitmapDataLoadOptions bitmapDataLoadOptions = null]) =>
+      BitmapDataLoadOptions bitmapDataLoadOptions]) =>
           textureAtlasFormat.load(new _TextureAtlasLoaderFile(
               url, bitmapDataLoadOptions));
 

@@ -131,13 +131,13 @@ class RenderState {
     var maskBefore = mask != null && mask.relativeToParent == true;
     var maskAfter = mask != null && mask.relativeToParent == false;
 
-    cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
-    cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
-    cs2.alpha = alpha * cs1.alpha;
-
     //-----------
 
     if (maskBefore) renderContext.beginRenderMask(this, mask);
+
+    cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
+    cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
+    cs2.alpha = alpha * cs1.alpha;
 
     if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
       RenderObject3D renderObject3D = renderObject;

@@ -25,7 +25,7 @@ class SoundSprite {
 
     var soundSpriteJson = await HttpRequest.getString(url);
     var data = JSON.decode(soundSpriteJson);
-    var urls = data['urls'] as List;
+    var urls = data['urls'] as List<String>;
     var segments = data["sprite"];
     var soundUrls = new List<String>();
 
