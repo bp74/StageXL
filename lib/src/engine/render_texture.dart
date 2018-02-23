@@ -16,6 +16,7 @@ class RenderTexture {
   bool _textureSourceWorkaround = false;
   gl.RenderingContext _renderingContext;
   gl.Texture _texture;
+  TextureInfo _textureInfo = new TextureInfo();
 
   //-----------------------------------------------------------------------------------------------
 
@@ -143,6 +144,15 @@ class RenderTexture {
     _renderingContext.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, _wrappingY.value);
   }
 
+  TextureInfo get textureInfo => _textureInfo;
+
+  set textureInfo(TextureInfo info) {
+    if (info == _textureInfo) return;
+    _textureInfo = info;
+
+    update();
+  }
+
   //-----------------------------------------------------------------------------------------------
 
   /// Call the dispose method to release memory allocated by WebGL.
@@ -181,12 +191,12 @@ class RenderTexture {
       if (_renderContext == null || _texture == null) return;
       if (_renderContext.contextIdentifier != contextIdentifier) return;
 
-      var target = gl.TEXTURE_2D;
-      var rgba = gl.RGBA;
-      var type = gl.UNSIGNED_BYTE;
+      var target = _textureInfo?.target ?? gl.TEXTURE_2D;
+      var pixelFormat = _textureInfo?.pixelFormat ?? gl.RGBA;
+      var pixelType = _textureInfo?.pixelType ?? gl.UNSIGNED_BYTE;
 
       _renderContext.activateRenderTexture(this);
-      _renderingContext.texImage2D(target, 0, rgba, _width, _height, 0, rgba, type, null);
+      _renderingContext.texImage2D(target, 0, pixelFormat, _width, _height, 0, pixelFormat, pixelType, null);
 
     } else {
 
@@ -212,9 +222,9 @@ class RenderTexture {
     if (_renderContext == null || _texture == null) return;
     if (_renderContext.contextIdentifier != contextIdentifier) return;
 
-    var target = gl.TEXTURE_2D;
-    var rgba = gl.RGBA;
-    var type = gl.UNSIGNED_BYTE;
+    var target = _textureInfo?.target ?? gl.TEXTURE_2D;
+    var pixelFormat = _textureInfo?.pixelFormat ?? gl.RGBA;
+    var pixelType = _textureInfo?.pixelType ?? gl.UNSIGNED_BYTE;
 
     _renderContext.flush();
     _renderContext.activateRenderTexture(this);
@@ -224,9 +234,9 @@ class RenderTexture {
 
     if (_textureSourceWorkaround) {
       _canvas.context2D.drawImage(_source, 0, 0);
-      _renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
+      _renderingContext.texImage2D(target, 0, pixelFormat, pixelFormat, pixelType, _canvas);
     } else {
-      _renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
+      _renderingContext.texImage2D(target, 0, pixelFormat, pixelFormat, pixelType, _source);
     }
 
     if (scissors) _renderingContext.enable(gl.SCISSOR_TEST);
@@ -238,9 +248,9 @@ class RenderTexture {
 
     if (this.contextIdentifier != renderContext.contextIdentifier) {
 
-      var target = gl.TEXTURE_2D;
-      var rgba = gl.RGBA;
-      var type = gl.UNSIGNED_BYTE;
+      var target = _textureInfo?.target ?? gl.TEXTURE_2D;
+      var pixelFormat = _textureInfo?.pixelFormat ?? gl.RGBA;
+      var pixelType = _textureInfo?.pixelType ?? gl.UNSIGNED_BYTE;
 
       _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;
@@ -254,17 +264,17 @@ class RenderTexture {
       if (scissors) _renderingContext.disable(gl.SCISSOR_TEST);
 
       if (_source != null) {
-        _renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
+        _renderingContext.texImage2D(_textureInfo.target, 0, pixelFormat, pixelFormat, pixelType, _source);
         _textureSourceWorkaround = _renderingContext.getError() == gl.INVALID_VALUE;
       } else {
-        _renderingContext.texImage2D(target, 0, rgba, width, height, 0, rgba, type, null);
+        _renderingContext.texImage2D(target, 0, pixelFormat, width, height, 0, pixelFormat, pixelType, null);
       }
 
       if (_textureSourceWorkaround) {
         // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
         _canvas = new CanvasElement(width: width, height: height);
         _canvas.context2D.drawImage(_source, 0, 0);
-        _renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
+        _renderingContext.texImage2D(target, 0, pixelFormat, pixelFormat, pixelType, _canvas);
       }
 
       if (scissors) _renderingContext.enable(gl.SCISSOR_TEST);
