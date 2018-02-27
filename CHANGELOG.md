@@ -8,6 +8,9 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### Pub version 1.3.1+2
+  * Fixed issues with Dart 2.
+
 #### Pub version 1.3.1+1
   * Fixed issue with rectangle masks and TextField updates.
   
