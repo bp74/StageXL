@@ -105,6 +105,8 @@ class RenderContextCanvas extends RenderContext {
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
     var blendMode = renderState.globalBlendMode;
+    
+    if (sourceRect.width <= 0 || sourceRect.height <= 0) return;
 
     if (_activeAlpha != alpha) {
       _activeAlpha = alpha;
