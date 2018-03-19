@@ -10,7 +10,7 @@ environment:
 documentation: http://www.stagexl.org/docs/api/index.html
 
 dependencies:
-  xml: any
+  xml: ^3.0.0
 
 dev_dependencies:
   browser: any
