@@ -1,7 +1,6 @@
 part of stagexl.engine;
 
 class RenderProgramTinted extends RenderProgram {
-
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexTextCoord:  Float32(u), Float32(v)
   // aVertextColor:     Float32(r), Float32(g), Float32(b), Float32(a)
@@ -40,7 +39,6 @@ class RenderProgramTinted extends RenderProgram {
 
   @override
   void activate(RenderContextWebGL renderContext) {
-
     super.activate(renderContext);
 
     renderingContext.uniform1i(uniforms["uSampler"], 0);
@@ -52,11 +50,8 @@ class RenderProgramTinted extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void renderTextureQuad(
-      RenderState renderState,
-      RenderTextureQuad renderTextureQuad,
-      double r, double g, num b, num a) {
-
+  void renderTextureQuad(RenderState renderState,
+      RenderTextureQuad renderTextureQuad, double r, double g, num b, num a) {
     if (renderTextureQuad.hasCustomVertices) {
       var ixList = renderTextureQuad.ixList;
       var vxList = renderTextureQuad.vxList;
@@ -154,11 +149,8 @@ class RenderProgramTinted extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void renderTextureMesh(
-      RenderState renderState,
-      Int16List ixList, Float32List vxList,
-      num r, num g, num b, num a) {
-
+  void renderTextureMesh(RenderState renderState, Int16List ixList,
+      Float32List vxList, num r, num g, num b, num a) {
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
     var ixListCount = ixList.length;
@@ -218,5 +210,4 @@ class RenderProgramTinted extends RenderProgram {
     renderBufferVertex.position += vxListCount * 8;
     renderBufferVertex.count += vxListCount;
   }
-
 }

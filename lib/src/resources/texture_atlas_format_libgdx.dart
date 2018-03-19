@@ -1,12 +1,10 @@
 part of stagexl.resources;
 
 class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
-
   const _TextureAtlasFormatLibGDX();
 
   @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
-
     var source = await loader.getSource();
     var pixelRatio = loader.getPixelRatio();
     var textureAtlas = new TextureAtlas(pixelRatio);
@@ -25,12 +23,9 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
       var line = lines[lineIndex].trim();
 
       if (line.length == 0) {
-
         imageBlock = true;
         lineIndex++;
-
       } else if (imageBlock) {
-
         imageBlock = false;
         renderTextureQuad = await loader.getRenderTextureQuad(line);
 
@@ -42,9 +37,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
           // filter: Linear,Linear
           // repeat: none
         }
-
       } else {
-
         var frameName = line;
         var frameRotation = 0;
         var frameX = 0, frameY = 0;
@@ -53,7 +46,6 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
         var offsetX = 0, offsetY = 0;
 
         while (++lineIndex < lines.length) {
-
           var frameMatch = dataRexExp.firstMatch(lines[lineIndex]);
           if (frameMatch == null) break;
 
@@ -78,10 +70,20 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
         }
 
         var textureAtlasFrame = new TextureAtlasFrame(
-            textureAtlas, renderTextureQuad, frameName, frameRotation,
-            offsetX, offsetY, originalWidth, originalHeight,
-            frameX, frameY, frameWidth, frameHeight,
-            null, null);
+            textureAtlas,
+            renderTextureQuad,
+            frameName,
+            frameRotation,
+            offsetX,
+            offsetY,
+            originalWidth,
+            originalHeight,
+            frameX,
+            frameY,
+            frameWidth,
+            frameHeight,
+            null,
+            null);
 
         textureAtlas.frames.add(textureAtlasFrame);
       }

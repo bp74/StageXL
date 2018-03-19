@@ -20,7 +20,6 @@ part of stagexl.animation;
 ///     });
 
 class Translation implements Animatable {
-
   final num _startValue;
   final num _targetValue;
   final TransitionFunction _transition;
@@ -37,7 +36,8 @@ class Translation implements Animatable {
   bool _started = false;
 
   /// Creates a new [Translation].
-  Translation(num startValue, num targetValue, num time, [TransitionFunction transition = Transition.linear])
+  Translation(num startValue, num targetValue, num time,
+      [TransitionFunction transition = Transition.linear])
       : _startValue = startValue,
         _targetValue = targetValue,
         _transition = transition {
@@ -50,7 +50,6 @@ class Translation implements Animatable {
 
   @override
   bool advanceTime(num time) {
-
     if (_currentTime < _totalTime || _started == false) {
       _currentTime = _currentTime + time;
 
@@ -67,7 +66,8 @@ class Translation implements Animatable {
 
         _currentValue = _startValue + transition * (_targetValue - _startValue);
 
-        if (_onUpdate != null) _onUpdate(_roundToInt ? _currentValue.round() : _currentValue);
+        if (_onUpdate != null)
+          _onUpdate(_roundToInt ? _currentValue.round() : _currentValue);
         if (_onComplete != null && _currentTime == _totalTime) _onComplete();
       }
     }
@@ -124,11 +124,17 @@ class Translation implements Animatable {
   /// The function that is called when this [Translation] starts.
   ///
   /// This happens after the specified [delay].
-  set onStart(void function()) { _onStart = function; }
+  set onStart(void function()) {
+    _onStart = function;
+  }
 
   /// The function that is called every time this [Translation] updates the value.
-  set onUpdate(void function(num value)) { _onUpdate = function; }
+  set onUpdate(void function(num value)) {
+    _onUpdate = function;
+  }
 
   /// The function that is called when this [Translation] is completed.
-  set onComplete(void function()) { _onComplete = function; }
+  set onComplete(void function()) {
+    _onComplete = function;
+  }
 }

@@ -1,12 +1,11 @@
 part of stagexl.engine;
 
 class RenderBufferVertex {
-
   final Float32List data;
   final int usage;
 
-  int position = 0;   // position in data list
-  int count = 0;      // count of vertices
+  int position = 0; // position in data list
+  int count = 0; // count of vertices
 
   int _contextIdentifier = -1;
   gl.Buffer _buffer;
@@ -15,9 +14,9 @@ class RenderBufferVertex {
 
   //---------------------------------------------------------------------------
 
-  RenderBufferVertex(int length) :
-    data = new Float32List(length),
-    usage = gl.DYNAMIC_DRAW;
+  RenderBufferVertex(int length)
+      : data = new Float32List(length),
+        usage = gl.DYNAMIC_DRAW;
 
   //---------------------------------------------------------------------------
 
@@ -33,7 +32,6 @@ class RenderBufferVertex {
   }
 
   void activate(RenderContextWebGL renderContext) {
-
     if (_contextIdentifier != renderContext.contextIdentifier) {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderStatistics = renderContext.renderStatistics;
@@ -54,6 +52,7 @@ class RenderBufferVertex {
 
   void bindAttribute(int index, int size, int stride, int offset) {
     if (index == null) return;
-    _renderingContext.vertexAttribPointer(index, size, gl.FLOAT, false, stride, offset);
+    _renderingContext.vertexAttribPointer(
+        index, size, gl.FLOAT, false, stride, offset);
   }
 }

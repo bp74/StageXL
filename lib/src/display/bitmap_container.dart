@@ -16,7 +16,6 @@ part of stagexl.display;
 
 class BitmapContainer extends DisplayObject
     implements DisplayObjectParent<Bitmap> {
-
   final List<Bitmap> _children = new List<Bitmap>();
   final Matrix3D _tmpMatrix1 = new Matrix3D.fromIdentity();
   final Matrix3D _tmpMatrix2 = new Matrix3D.fromIdentity();
@@ -79,7 +78,8 @@ class BitmapContainer extends DisplayObject
   @override
   void removeChild(Bitmap child) {
     if (child.parent != this) {
-      throw new ArgumentError("The supplied Bitmap must be a child of the caller.");
+      throw new ArgumentError(
+          "The supplied Bitmap must be a child of the caller.");
     } else {
       int index = _children.indexOf(child);
       child._parent = null;
@@ -120,7 +120,8 @@ class BitmapContainer extends DisplayObject
       throw new ArgumentError("The supplied index is out of bounds.");
     } else if (child.parent == this) {
       if (_children.indexOf(child) == index) return;
-      throw new ArgumentError("The bitmap is already a child of this container.");
+      throw new ArgumentError(
+          "The bitmap is already a child of this container.");
     } else {
       var oldChild = _children[index];
       var newChild = child;
@@ -176,7 +177,6 @@ class BitmapContainer extends DisplayObject
   //---------------------------------------------------------------------------
 
   void _renderWebGL(RenderState renderState) {
-
     var context = renderState.renderContext as RenderContextWebGL;
     var projectionMatrix = context.activeProjectionMatrix;
     var globalMatrix = renderState.globalMatrix;
@@ -202,7 +202,6 @@ class BitmapContainer extends DisplayObject
   }
 
   void _renderCanvas2D(RenderState renderState) {
-
     var context = renderState.renderContext as RenderContextCanvas;
 
     for (int i = 0; i < _children.length; i++) {
@@ -224,7 +223,6 @@ class BitmapContainer extends DisplayObject
 //-----------------------------------------------------------------------------
 
 class _BitmapContainerRenderState extends RenderState {
-
   Bitmap bitmap;
   final BlendMode blendMode;
   final double alpha;
@@ -233,7 +231,6 @@ class _BitmapContainerRenderState extends RenderState {
       : this.blendMode = parent.globalBlendMode,
         this.alpha = parent.globalAlpha,
         super(parent.renderContext) {
-
     this.currentTime = parent.currentTime;
     this.deltaTime = parent.deltaTime;
   }

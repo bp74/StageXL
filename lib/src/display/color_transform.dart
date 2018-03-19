@@ -1,12 +1,11 @@
 part of stagexl.display;
 
 class ColorTransform {
-
   final Float32List multipliers = new Float32List(4);
   final Int32List offsets = new Int32List(4);
 
-  ColorTransform([
-      num redMultiplier = 1.0,
+  ColorTransform(
+      [num redMultiplier = 1.0,
       num greenMultiplier = 1.0,
       num blueMultiplier = 1.0,
       num alphaMultiplier = 1.0,
@@ -14,7 +13,6 @@ class ColorTransform {
       int greenOffset = 0,
       int blueOffset = 0,
       int alphaOffset = 0]) {
-
     this.redMultiplier = redMultiplier.toDouble();
     this.greenMultiplier = greenMultiplier.toDouble();
     this.blueMultiplier = blueMultiplier.toDouble();
@@ -80,7 +78,6 @@ class ColorTransform {
   int get color => (redOffset << 16) + (greenOffset << 8) + (blueOffset << 0);
 
   set color(int value) {
-
     value = ensureInt(value);
 
     redOffset = (value & 0x00FF0000) >> 16;
@@ -95,7 +92,6 @@ class ColorTransform {
   //---------------------------------------------------------------------------
 
   void reset() {
-
     multipliers[0] = 1.0;
     multipliers[1] = 1.0;
     multipliers[2] = 1.0;
@@ -110,7 +106,6 @@ class ColorTransform {
   //---------------------------------------------------------------------------
 
   void copyFrom(ColorTransform other) {
-
     multipliers[0] = other.multipliers[0];
     multipliers[1] = other.multipliers[1];
     multipliers[2] = other.multipliers[2];
@@ -125,7 +120,6 @@ class ColorTransform {
   //---------------------------------------------------------------------------
 
   void concat(ColorTransform second) {
-
     multipliers[0] = multipliers[0] * second.multipliers[0];
     multipliers[1] = multipliers[1] * second.multipliers[1];
     multipliers[2] = multipliers[2] * second.multipliers[2];
@@ -140,7 +134,6 @@ class ColorTransform {
   //---------------------------------------------------------------------------
 
   void interpolate(ColorTransform c1, ColorTransform c2, double value) {
-
     var c1m = c1.multipliers;
     var c2m = c2.multipliers;
     var c1o = c1.offsets;
@@ -156,5 +149,4 @@ class ColorTransform {
     offsets[2] = c1o[2] + ((c2o[2] - c1o[2]) * value).toInt();
     offsets[3] = c1o[3] + ((c2o[3] - c1o[3]) * value).toInt();
   }
-
 }

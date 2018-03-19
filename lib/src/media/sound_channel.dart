@@ -1,7 +1,6 @@
 part of stagexl.media;
 
 abstract class SoundChannel extends EventDispatcher {
-
   EventStream<Event> get onComplete => this.on<Event>(Event.COMPLETE);
 
   //---------------------------------------------------------------------------
@@ -30,5 +29,4 @@ abstract class SoundChannel extends EventDispatcher {
   void resume() {
     this.paused = false;
   }
-
 }

@@ -1,12 +1,10 @@
 part of stagexl.resources;
 
-class _TextureAtlasFormatStarlingXml  extends TextureAtlasFormat {
-
+class _TextureAtlasFormatStarlingXml extends TextureAtlasFormat {
   const _TextureAtlasFormatStarlingXml();
 
   @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
-
     var source = await loader.getSource();
     var pixelRatio = loader.getPixelRatio();
     var textureAtlas = new TextureAtlas(pixelRatio);
@@ -15,8 +13,7 @@ class _TextureAtlasFormatStarlingXml  extends TextureAtlasFormat {
     var imagePath = _getString(xmlRoot, "imagePath", "");
     var renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
 
-    for(var subTextureXml in xmlRoot.findAllElements("SubTexture")) {
-
+    for (var subTextureXml in xmlRoot.findAllElements("SubTexture")) {
       var name = _getString(subTextureXml, "name", "");
       var rotation = _getBool(subTextureXml, "rotated", false) ? 1 : 0;
 
@@ -31,10 +28,20 @@ class _TextureAtlasFormatStarlingXml  extends TextureAtlasFormat {
       var originalHeight = _getInt(subTextureXml, "frameHeight", frameHeight);
 
       var textureAtlasFrame = new TextureAtlasFrame(
-          textureAtlas, renderTextureQuad, name, rotation,
-          offsetX, offsetY, originalWidth, originalHeight,
-          frameX, frameY, frameWidth, frameHeight,
-          null, null);
+          textureAtlas,
+          renderTextureQuad,
+          name,
+          rotation,
+          offsetX,
+          offsetY,
+          originalWidth,
+          originalHeight,
+          frameX,
+          frameY,
+          frameWidth,
+          frameHeight,
+          null,
+          null);
 
       textureAtlas.frames.add(textureAtlasFrame);
     }
@@ -45,7 +52,7 @@ class _TextureAtlasFormatStarlingXml  extends TextureAtlasFormat {
   //---------------------------------------------------------------------------
 
   String _getAttributeValue(XmlElement xml, String name) {
-    for(var attribute in xml.attributes) {
+    for (var attribute in xml.attributes) {
       if (attribute.name.local == name) return attribute.value;
     }
     return null;
@@ -64,8 +71,8 @@ class _TextureAtlasFormatStarlingXml  extends TextureAtlasFormat {
   bool _getBool(XmlElement xml, String name, bool defaultValue) {
     var value = _getAttributeValue(xml, name);
     if (value == null) return defaultValue;
-    if (value == "1" || value =="true") return true;
-    if (value == "0" || value =="false") return false;
+    if (value == "1" || value == "true") return true;
+    if (value == "0" || value == "false") return false;
     throw new FormatException("Error converting '$name' to bool.");
   }
 }

@@ -5,7 +5,6 @@ import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {
-
   test('new rectangle', () {
     Rectangle rect = rect1234();
 
@@ -195,14 +194,22 @@ void main() {
 
   group('#intersects', () {
     test('is false when there is no intersection', () {
-      testRectangleIntersection(x1: 0, y1: 0, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
-      testRectangleIntersection(x1: 1, y1: 0, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
-      testRectangleIntersection(x1: 2, y1: 0, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
-      testRectangleIntersection(x1: 0, y1: 1, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
-      testRectangleIntersection(x1: 2, y1: 1, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
-      testRectangleIntersection(x1: 0, y1: 2, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
-      testRectangleIntersection(x1: 1, y1: 2, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
-      testRectangleIntersection(x1: 2, y1: 2, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
+      testRectangleIntersection(
+          x1: 0, y1: 0, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
+      testRectangleIntersection(
+          x1: 1, y1: 0, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
+      testRectangleIntersection(
+          x1: 2, y1: 0, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
+      testRectangleIntersection(
+          x1: 0, y1: 1, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
+      testRectangleIntersection(
+          x1: 2, y1: 1, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
+      testRectangleIntersection(
+          x1: 0, y1: 2, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
+      testRectangleIntersection(
+          x1: 1, y1: 2, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
+      testRectangleIntersection(
+          x1: 2, y1: 2, x2: 1, y2: 1, sideSize: 1, matcher: isFalse);
     });
 
     test('is true when two rectangles are colliding', () {
@@ -272,7 +279,9 @@ void main() {
   });
 
   group('#intersection', () {
-    test('return rectangle with negative width/height if there is no intersection', () {
+    test(
+        'return rectangle with negative width/height if there is no intersection',
+        () {
       Rectangle r1 = new Rectangle(0, 0, 2, 2);
       Rectangle r2 = new Rectangle(3, 3, 2, 2);
       Rectangle rect = r1.intersection(r2);
@@ -319,7 +328,13 @@ void testPoint(Point point, num x, num y) {
   expect(point.y, equals(y));
 }
 
-void testRectangleIntersection({num x1: 0, num y1: 0, num x2: 1, num y2: 1, num sideSize: 2, Matcher matcher: isTrue}) {
+void testRectangleIntersection(
+    {num x1: 0,
+    num y1: 0,
+    num x2: 1,
+    num y2: 1,
+    num sideSize: 2,
+    Matcher matcher: isTrue}) {
   Rectangle r1 = new Rectangle(x1, y1, sideSize, sideSize);
   Rectangle r2 = new Rectangle(x2, y2, sideSize, sideSize);
 

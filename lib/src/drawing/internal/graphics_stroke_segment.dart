@@ -1,23 +1,19 @@
 part of stagexl.drawing;
 
 class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
-
   final _GraphicsStroke stroke;
   int _jointIndex1 = -1;
   int _jointIndex2 = -1;
 
   _GraphicsStrokeSegment(this.stroke, _GraphicsPathSegment pathSegment)
       : super(pathSegment.vertexCount * 4, pathSegment.vertexCount * 6) {
-
     _calculateStroke(pathSegment);
   }
 
   //---------------------------------------------------------------------------
 
   bool hitTest(double px, double py) {
-
     for (int i = 0; i < _indexCount - 2; i += 3) {
-
       var o1 = _indexBuffer[i + 0] * 2;
       var o2 = _indexBuffer[i + 1] * 2;
       var o3 = _indexBuffer[i + 2] * 2;
@@ -48,7 +44,6 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   void _calculateStroke(_GraphicsPathSegment pathSegment) {
-
     var width = stroke.width;
     var jointStyle = stroke.jointStyle;
     var capsStyle = stroke.capsStyle;
@@ -73,7 +68,6 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     var n2x = 0.0, n2y = 0.0;
 
     for (var i = -2; i <= length; i++) {
-
       // get next vertex
       var offset = ((i + 1) % length) * 2;
       v2x = vertices[offset + 0];
@@ -96,8 +90,11 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       }
 
       // shift vertices and normals
-      v1x = v2x; v1y = v2y; v1l = v2l;
-      n1x = n2x; n1y = n2y;
+      v1x = v2x;
+      v1y = v2y;
+      v1l = v2l;
+      n1x = n2x;
+      n1y = n2y;
     }
   }
 
@@ -138,10 +135,8 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  void _addJoint(
-      double vx, double vy, num al, num bl, num ax, num ay, num bx, num by,
-      JointStyle jointStyle) {
-
+  void _addJoint(double vx, double vy, num al, num bl, num ax, num ay, num bx,
+      num by, JointStyle jointStyle) {
     num id = (bx * ay - by * ax);
     num it = (bx * (ax - bx) + by * (ay - by)) / id;
     num itAbs = it.abs();
@@ -171,7 +166,6 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     int i3 = 0, i4 = 0, i5 = 0;
 
     if (jointStyle == JointStyle.MITER) {
-
       if (isOverlap == false) {
         i3 = _jointIndex2;
         i4 = _jointIndex1 = this.addVertex(vx + vmx, vy + vmy);
@@ -192,9 +186,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
       this.addIndices(i1, i2, i4);
       this.addIndices(i3, i4, i5);
-
     } else if (jointStyle == JointStyle.BEVEL) {
-
       if (isOverlap == false && it >= 0.0) {
         i3 = _jointIndex1 = this.addVertex(vx + vmx, vy + vmy);
         i4 = this.addVertex(vx - ax, vy - ay);
@@ -218,9 +210,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       this.addIndices(i1, i2, i3);
       this.addIndices(i2, i3, i4);
       this.addIndices(i3, i4, i5);
-
     } else if (jointStyle == JointStyle.ROUND) {
-
       if (isOverlap == false && it >= 0.0) {
         i3 = _jointIndex1 = this.addVertex(vx + vmx, vy + vmy);
         i4 = this.addVertex(vx - ax, vy - ay);
@@ -243,7 +233,6 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
       this.addIndices(i1, i2, i3);
       this.addIndices(i2, i3, i4);
-
     }
 
     if (isCloseJoint) {
@@ -260,10 +249,8 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  int _addArc(
-      num vx, num vy, num n1x, num n1y, num n2x, num n2y,
-      int index1, int index2, bool antiClockwise) {
-
+  int _addArc(num vx, num vy, num n1x, num n1y, num n2x, num n2y, int index1,
+      int index2, bool antiClockwise) {
     num tau = 2.0 * PI;
     num startAngle = atan2(n1y, n1x);
     num endAngle = atan2(n2y, n2x);
@@ -300,5 +287,4 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
     return index3;
   }
-
 }

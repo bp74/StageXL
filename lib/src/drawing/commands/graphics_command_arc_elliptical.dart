@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class GraphicsCommandArcElliptical extends GraphicsCommand {
-
   double _x;
   double _y;
   double _radiusX;
@@ -11,10 +10,8 @@ class GraphicsCommandArcElliptical extends GraphicsCommand {
   double _endAngle;
   bool _antiClockwise;
 
-  GraphicsCommandArcElliptical(
-      num x, num y, num radiusX, num radiusY, num rotation,
-      num startAngle, num endAngle, bool antiClockwise)
-
+  GraphicsCommandArcElliptical(num x, num y, num radiusX, num radiusY,
+      num rotation, num startAngle, num endAngle, bool antiClockwise)
       : _x = x.toDouble(),
         _y = y.toDouble(),
         _radiusX = radiusX.toDouble(),

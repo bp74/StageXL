@@ -8,7 +8,6 @@ part of stagexl.media;
 /// [Sound.load] function.
 
 class SoundLoadOptions {
-
   /// The application provides *mp3* files as an option to load audio files.
 
   bool mp3 = true;
@@ -20,7 +19,7 @@ class SoundLoadOptions {
   /// The application provides *ogg* files as an option to load audio files.
 
   bool ogg = true;
-  
+
   /// The application provides *opus* files as an option to load audio files.
 
   bool opus = false;
@@ -79,7 +78,6 @@ class SoundLoadOptions {
   /// based on the supported types and formats available.
 
   List<String> getOptimalAudioUrls(String primaryUrl) {
-
     var availableTypes = AudioLoader.supportedTypes.toList();
     if (!this.mp3) availableTypes.remove("mp3");
     if (!this.mp4) availableTypes.remove("mp4");
@@ -89,19 +87,21 @@ class SoundLoadOptions {
     if (!this.wav) availableTypes.remove("wav");
 
     var urls = new List<String>();
-    var regex = new RegExp(r"([A-Za-z0-9]+)$", multiLine:false, caseSensitive:true);
+    var regex =
+        new RegExp(r"([A-Za-z0-9]+)$", multiLine: false, caseSensitive: true);
     var primaryMatch = regex.firstMatch(primaryUrl);
     if (primaryMatch == null) return urls;
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
 
     if (this.alternativeUrls != null) {
-      for(var alternativeUrl in this.alternativeUrls) {
+      for (var alternativeUrl in this.alternativeUrls) {
         var alternativeMatch = regex.firstMatch(alternativeUrl);
         if (alternativeMatch == null) continue;
-        if (availableTypes.contains(alternativeMatch.group(1))) urls.add(alternativeUrl);
+        if (availableTypes.contains(alternativeMatch.group(1)))
+          urls.add(alternativeUrl);
       }
     } else {
-      for(var availableType in availableTypes) {
+      for (var availableType in availableTypes) {
         urls.add(primaryUrl.replaceAll(regex, availableType));
       }
     }

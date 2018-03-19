@@ -9,7 +9,6 @@ import 'vector.dart';
 import 'rectangle.dart';
 
 class Matrix {
-
   final Float32List _data = new Float32List(6);
 
   Matrix(num a, num b, num c, num d, num tx, num ty) {
@@ -38,14 +37,13 @@ class Matrix {
   Matrix clone() => new Matrix(a, b, c, d, tx, ty);
 
   Matrix cloneInvert() {
-
-    num det =  this.det;
-    num a =    this.d / det;
-    num b =  - this.b / det;
-    num c =  - this.c / det;
-    num d =    this.a / det;
-    num tx = - this.tx * a - this.ty * c;
-    num ty = - this.tx * b - this.ty * d;
+    num det = this.det;
+    num a = this.d / det;
+    num b = -this.b / det;
+    num c = -this.c / det;
+    num d = this.a / det;
+    num tx = -this.tx * a - this.ty * c;
+    num ty = -this.tx * b - this.ty * d;
 
     return new Matrix(a, b, c, d, tx, ty);
   }
@@ -53,39 +51,39 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get a =>  _data[0];
+  num get a => _data[0];
 
-  set a (num n) {
+  set a(num n) {
     _data[0] = n.toDouble();
   }
 
-  num get b =>  _data[1];
+  num get b => _data[1];
 
-  set b (num n) {
+  set b(num n) {
     _data[1] = n.toDouble();
   }
 
-  num get c =>  _data[2];
+  num get c => _data[2];
 
-  set c (num n) {
+  set c(num n) {
     _data[2] = n.toDouble();
   }
 
-  num get d =>  _data[3];
+  num get d => _data[3];
 
-  set d (num n) {
+  set d(num n) {
     _data[3] = n.toDouble();
   }
 
   num get tx => _data[4];
 
-  set tx (num n) {
+  set tx(num n) {
     _data[4] = n.toDouble();
   }
 
   num get ty => _data[5];
 
-  set ty (num n) {
+  set ty(num n) {
     _data[5] = n.toDouble();
   }
 
@@ -94,7 +92,6 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   Vector transformVector(Vector vector) {
-
     var vx = vector.x.toDouble();
     var vy = vector.y.toDouble();
     var tx = vx * this.a + vy * this.c + this.tx;
@@ -103,8 +100,8 @@ class Matrix {
     return new Vector(tx, ty);
   }
 
-  Point<num> deltaTransformPoint(math.Point<num> point, [Point<num> returnPoint]) {
-
+  Point<num> deltaTransformPoint(math.Point<num> point,
+      [Point<num> returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
     var tx = px * this.a + py * this.c;
@@ -121,7 +118,6 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   Point<num> transformPoint(math.Point<num> point, [Point<num> returnPoint]) {
-
     var px = point.x.toDouble();
     var py = point.y.toDouble();
     var tx = px * this.a + py * this.c + this.tx;
@@ -135,8 +131,8 @@ class Matrix {
     }
   }
 
-  Point<num> transformPointInverse(math.Point<num> point, [Point<num> returnPoint]) {
-
+  Point<num> transformPointInverse(math.Point<num> point,
+      [Point<num> returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
     var tx = (this.d * (px - this.tx) - this.c * (py - this.ty)) / this.det;
@@ -152,8 +148,8 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
-  Rectangle<num> transformRectangle(math.Rectangle<num> rectangle, [Rectangle<num> returnRectangle]) {
-
+  Rectangle<num> transformRectangle(math.Rectangle<num> rectangle,
+      [Rectangle<num> returnRectangle]) {
     num rl = rectangle.left.toDouble();
     num rr = rectangle.right.toDouble();
     num rt = rectangle.top.toDouble();
@@ -178,9 +174,9 @@ class Matrix {
     if (left > x4) left = x4;
 
     num top = y1;
-    if (top > y2 ) top = y2;
-    if (top > y3 ) top = y3;
-    if (top > y4 ) top = y4;
+    if (top > y2) top = y2;
+    if (top > y3) top = y3;
+    if (top > y4) top = y4;
 
     num right = x1;
     if (right < x2) right = x2;
@@ -188,9 +184,9 @@ class Matrix {
     if (right < x4) right = x4;
 
     num bottom = y1;
-    if (bottom < y2 ) bottom = y2;
-    if (bottom < y3 ) bottom = y3;
-    if (bottom < y4 ) bottom = y4;
+    if (bottom < y2) bottom = y2;
+    if (bottom < y3) bottom = y3;
+    if (bottom < y4) bottom = y4;
 
     num width = right - left;
     num heigth = bottom - top;
@@ -205,9 +201,8 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
-  void createBox(num scaleX, num scaleY, [
-    num rotation = 0.0, num translationX = 0.0, num translationY = 0.0]) {
-
+  void createBox(num scaleX, num scaleY,
+      [num rotation = 0.0, num translationX = 0.0, num translationY = 0.0]) {
     this.identity();
     this.scale(scaleX, scaleY);
     this.rotate(rotation);
@@ -228,34 +223,32 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void invert() {
-
-    num a =   this.a;
-    num b =   this.b;
-    num c =   this.c;
-    num d =   this.d;
-    num tx =  this.tx;
-    num ty =  this.ty;
+    num a = this.a;
+    num b = this.b;
+    num c = this.c;
+    num d = this.d;
+    num tx = this.tx;
+    num ty = this.ty;
     num det = this.det;
 
-    _data[0] =   d / det;
-    _data[1] = - b / det;
-    _data[2] = - c / det;
-    _data[3] =   a / det;
-    _data[4] = - tx * _data[0] - ty * _data[2];
-    _data[5] = - tx * _data[1] - ty * _data[3];
+    _data[0] = d / det;
+    _data[1] = -b / det;
+    _data[2] = -c / det;
+    _data[3] = a / det;
+    _data[4] = -tx * _data[0] - ty * _data[2];
+    _data[5] = -tx * _data[1] - ty * _data[3];
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void rotate(num rotation) {
-
     var cosR = cos(rotation);
     var sinR = sin(rotation);
 
-    var a =  this.a;
-    var b =  this.b;
-    var c =  this.c;
-    var d =  this.d;
+    var a = this.a;
+    var b = this.b;
+    var c = this.c;
+    var d = this.d;
     var tx = this.tx;
     var ty = this.ty;
 
@@ -270,16 +263,15 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void skew(num skewX, num skewY) {
-
     var sinX = sin(skewX);
     var cosX = cos(skewX);
     var sinY = sin(skewY);
     var cosY = cos(skewY);
 
-    var a =  this.a;
-    var b =  this.b;
-    var c =  this.c;
-    var d =  this.d;
+    var a = this.a;
+    var b = this.b;
+    var c = this.c;
+    var d = this.d;
     var tx = this.tx;
     var ty = this.ty;
 
@@ -347,18 +339,17 @@ class Matrix {
   }
 
   void copyFromAndConcat(Matrix copyMatrix, Matrix concatMatrix) {
-
-    var a1 =  copyMatrix.a;
-    var b1 =  copyMatrix.b;
-    var c1 =  copyMatrix.c;
-    var d1 =  copyMatrix.d;
+    var a1 = copyMatrix.a;
+    var b1 = copyMatrix.b;
+    var c1 = copyMatrix.c;
+    var d1 = copyMatrix.d;
     var tx1 = copyMatrix.tx;
     var ty1 = copyMatrix.ty;
 
-    var a2 =  concatMatrix.a;
-    var b2 =  concatMatrix.b;
-    var c2 =  concatMatrix.c;
-    var d2 =  concatMatrix.d;
+    var a2 = concatMatrix.a;
+    var b2 = concatMatrix.b;
+    var c2 = concatMatrix.c;
+    var d2 = concatMatrix.d;
     var tx2 = concatMatrix.tx;
     var ty2 = concatMatrix.ty;
 
@@ -373,19 +364,18 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void invertAndConcat(Matrix concatMatrix) {
+    var det = this.det;
+    var a1 = this.d / det;
+    var b1 = -this.b / det;
+    var c1 = -this.c / det;
+    var d1 = this.a / det;
+    var tx1 = -this.tx * a1 - this.ty * c1;
+    var ty1 = -this.tx * b1 - this.ty * d1;
 
-    var det =   this.det;
-    var a1 =    this.d / det;
-    var b1 =  - this.b / det;
-    var c1 =  - this.c / det;
-    var d1 =    this.a / det;
-    var tx1 = - this.tx * a1 - this.ty * c1;
-    var ty1 = - this.tx * b1 - this.ty * d1;
-
-    var a2 =  concatMatrix.a;
-    var b2 =  concatMatrix.b;
-    var c2 =  concatMatrix.c;
-    var d2 =  concatMatrix.d;
+    var a2 = concatMatrix.a;
+    var b2 = concatMatrix.b;
+    var c2 = concatMatrix.c;
+    var d2 = concatMatrix.d;
     var tx2 = concatMatrix.tx;
     var ty2 = concatMatrix.ty;
 
@@ -400,21 +390,19 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void copyFromAndInvert(Matrix matrix) {
-
-    var a =   matrix.a;
-    var b =   matrix.b;
-    var c =   matrix.c;
-    var d =   matrix.d;
-    var tx =  matrix.tx;
-    var ty =  matrix.ty;
+    var a = matrix.a;
+    var b = matrix.b;
+    var c = matrix.c;
+    var d = matrix.d;
+    var tx = matrix.tx;
+    var ty = matrix.ty;
     var det = matrix.det;
 
-    _data[0] =   d / det;
-    _data[1] = - b / det;
-    _data[2] = - c / det;
-    _data[3] =   a / det;
-    _data[4] = - tx * _data[0] - ty * _data[2];
-    _data[5] = - tx * _data[1] - ty * _data[3];
+    _data[0] = d / det;
+    _data[1] = -b / det;
+    _data[2] = -c / det;
+    _data[3] = a / det;
+    _data[4] = -tx * _data[0] - ty * _data[2];
+    _data[5] = -tx * _data[1] - ty * _data[3];
   }
-
 }

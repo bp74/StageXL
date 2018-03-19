@@ -11,7 +11,6 @@ typedef void EventListener<T extends Event>(T event);
 /// from the events, or to temporarily pause the events from the stream.
 
 class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
-
   int _priority = 0;
   int _pauseCount = 0;
   bool _canceled = false;
@@ -87,6 +86,4 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
     }
     _pauseCount--;
   }
-
 }
-

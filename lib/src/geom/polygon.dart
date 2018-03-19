@@ -33,11 +33,9 @@ import 'rectangle.dart';
 // OTHER DEALINGS IN THE SOFTWARE.
 
 class Polygon {
-
   final List<Point<num>> points;
 
   Polygon(List<Point<num>> points) : points = points.toList(growable: false) {
-
     if (this.points.length < 3) {
       throw new ArgumentError("Please provide three or more points.");
     }
@@ -47,17 +45,14 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   bool isSimple() {
-
     int length = points.length;
     if (length <= 3) return true;
 
-    for(int i = 0; i < length; i++) {
-
+    for (int i = 0; i < length; i++) {
       Point<num> a1 = points[i];
       Point<num> a2 = points[i + 1 < length ? i + 1 : 0];
 
-      for(int j = 0; j < length; j++) {
-
+      for (int j = 0; j < length; j++) {
         if ((i - j).abs() < 2) continue;
         if (j == length - 1 && i == 0) continue;
         if (i == length - 1 && j == 0) continue;
@@ -65,7 +60,7 @@ class Polygon {
         Point<num> b1 = points[j];
         Point<num> b2 = points[j + 1 < length ? j + 1 : 0];
 
-        if(_getLineIntersection(a1, a2, b1, b2) != null) return false;
+        if (_getLineIntersection(a1, a2, b1, b2) != null) return false;
       }
     }
 
@@ -74,16 +69,15 @@ class Polygon {
 
   //-----------------------------------------------------------------------------------------------
 
-  bool isConvex()  {
-
+  bool isConvex() {
     int length = points.length;
     if (length <= 3) return true;
 
-    for(int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
       Point<num> p1 = points[(i + 0) % length];
       Point<num> p2 = points[(i + 1) % length];
       Point<num> p3 = points[(i + 2) % length];
-      if(!_convex(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)) return false;
+      if (!_convex(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)) return false;
     }
 
     return true;
@@ -92,13 +86,12 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   Rectangle<num> getBounds() {
-
     num maxX = double.NEGATIVE_INFINITY;
     num minX = double.INFINITY;
     num maxY = double.NEGATIVE_INFINITY;
     num minY = double.INFINITY;
 
-    for(int i = 0; i < points.length; i++) {
+    for (int i = 0; i < points.length; i++) {
       Point<num> point = points[i];
       maxX = max(maxX, point.x);
       minX = min(minX, point.x);
@@ -112,18 +105,16 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   List<int> triangulate() {
-
     int i = 0;
     int al = points.length;
     List<int> result = new List<int>();
     List<int> available = new List<int>();
 
-    for(int p = 0; p < points.length; p++) {
+    for (int p = 0; p < points.length; p++) {
       available.add(p);
     }
 
-    while(al > 3) {
-
+    while (al > 3) {
       int i0 = available[(i + 0) % al];
       int i1 = available[(i + 1) % al];
       int i2 = available[(i + 2) % al];
@@ -137,27 +128,28 @@ class Polygon {
 
       bool earFound = false;
 
-      if(_convex(ax, ay, bx, by, cx, cy)) {
+      if (_convex(ax, ay, bx, by, cx, cy)) {
         earFound = true;
 
-        for(int j = 0; j < al; j++) {
+        for (int j = 0; j < al; j++) {
           int vi = available[j];
-          if(vi == i0 || vi == i1 || vi == i2) continue;
-          if(_pointInTriangle(points[vi].x, points[vi].y, ax, ay, bx, by, cx, cy)) {
+          if (vi == i0 || vi == i1 || vi == i2) continue;
+          if (_pointInTriangle(
+              points[vi].x, points[vi].y, ax, ay, bx, by, cx, cy)) {
             earFound = false;
             break;
           }
         }
       }
 
-      if(earFound) {
+      if (earFound) {
         result.add(i0);
         result.add(i1);
         result.add(i2);
         available.removeAt((i + 1) % al);
         al--;
         i = 0;
-      } else if(i++ > 3 * al) {
+      } else if (i++ > 3 * al) {
         break; // no convex angles :(
       }
     }
@@ -173,27 +165,25 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   bool contains(num px, num py) {
-
     num ax = 0;
     num ay = 0;
     num bx = points[points.length - 1].x - px;
     num by = points[points.length - 1].y - py;
     int depth = 0;
 
-    for(int i = 0; i < points.length; i++) {
-
+    for (int i = 0; i < points.length; i++) {
       ax = bx;
       ay = by;
       bx = points[i].x - px;
       by = points[i].y - py;
 
-      if (ay < 0 && by < 0) continue;  // both "up" or both "down"
-      if (ay > 0 && by > 0) continue;  // both "up" or both "down"
-      if (ax < 0 && bx < 0) continue;  // both points on left
+      if (ay < 0 && by < 0) continue; // both "up" or both "down"
+      if (ay > 0 && by > 0) continue; // both "up" or both "down"
+      if (ax < 0 && bx < 0) continue; // both points on left
 
       num lx = ax - ay * (bx - ax) / (by - ay);
 
-      if (lx == 0) return true;        // point on edge
+      if (lx == 0) return true; // point on edge
       if (lx > 0) depth++;
     }
 
@@ -203,12 +193,11 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   bool _inRect(Point<num> point, Point<num> a1, Point<num> a2) {
-
     num x = point.x;
     num y = point.y;
-    num left   = a1.x < a2.x ? a1.x : a2.x;
-    num top    = a1.y < a2.y ? a1.y : a2.y;
-    num right  = a1.x > a2.x ? a1.x : a2.x;
+    num left = a1.x < a2.x ? a1.x : a2.x;
+    num top = a1.y < a2.y ? a1.y : a2.y;
+    num right = a1.x > a2.x ? a1.x : a2.x;
     num bottom = a1.y > a2.y ? a1.y : a2.y;
 
     return x >= left && x <= right && y >= top && y <= bottom;
@@ -216,21 +205,21 @@ class Polygon {
 
   //-----------------------------------------------------------------------------------------------
 
-  Point<num> _getLineIntersection(Point<num> a1, Point<num> a2, Point<num> b1, Point<num> b2) {
-
+  Point<num> _getLineIntersection(
+      Point<num> a1, Point<num> a2, Point<num> b1, Point<num> b2) {
     num dax = (a1.x - a2.x);
     num dbx = (b1.x - b2.x);
     num day = (a1.y - a2.y);
     num dby = (b1.y - b2.y);
 
     num den = dax * dby - day * dbx;
-    if (den == 0) return null;  // parallel
+    if (den == 0) return null; // parallel
 
     num a = (a1.x * a2.y - a1.y * a2.x);
     num b = (b1.x * b2.y - b1.y * b2.x);
 
-    num x = (a * dbx - dax * b ) / den;
-    num y = (a * dby - day * b ) / den;
+    num x = (a * dbx - dax * b) / den;
+    num y = (a * dby - day * b) / den;
     Point<num> point = new Point<num>(x, y);
 
     return _inRect(point, a1, a2) && _inRect(point, b1, b2) ? point : null;
@@ -239,14 +228,13 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   bool _convex(num ax, num ay, num bx, num by, num cx, num cy) {
-
     return (ay - by) * (cx - bx) + (bx - ax) * (cy - by) >= 0;
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  bool _pointInTriangle (num px, num py, num ax, num ay, num bx, num by, num cx, num cy) {
-
+  bool _pointInTriangle(
+      num px, num py, num ax, num ay, num bx, num by, num cx, num cy) {
     num v0x = cx - ax;
     num v0y = cy - ay;
     num v1x = bx - ax;
@@ -266,5 +254,4 @@ class Polygon {
 
     return (u >= 0) && (v >= 0) && (u + v < 1);
   }
-
 }

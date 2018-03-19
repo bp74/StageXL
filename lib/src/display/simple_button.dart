@@ -5,7 +5,6 @@ enum SimpleButtonState { Up, Over, Down }
 /// The SimpleButton class lets you control all instances of button symbols.
 
 class SimpleButton extends InteractiveObject {
-
   /// Specifies a display object that is used as the visual object for the
   /// button up state — the state that the button is in when the pointer is not
   /// positioned over the button.
@@ -39,8 +38,8 @@ class SimpleButton extends InteractiveObject {
   /// Any or all of the display objects that represent the various button states
   /// can be set as parameters in the constructor.
 
-  SimpleButton([this.upState, this.overState, this.downState, this.hitTestState]) {
-
+  SimpleButton(
+      [this.upState, this.overState, this.downState, this.hitTestState]) {
     this.useHandCursor = true;
 
     this.onMouseOver.listen(_onMouseEvent);
@@ -99,7 +98,6 @@ class SimpleButton extends InteractiveObject {
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-
     if (this.hitTestState == null) return null;
 
     Matrix matrix = hitTestState.transformationMatrix;
@@ -123,18 +121,23 @@ class SimpleButton extends InteractiveObject {
   //---------------------------------------------------------------------------
 
   DisplayObject _getDisplayObject() {
-    switch(_state) {
-      case SimpleButtonState.Up: return this.upState;
-      case SimpleButtonState.Over: return this.overState;
-      case SimpleButtonState.Down: return this.downState;
-      default: return null;
+    switch (_state) {
+      case SimpleButtonState.Up:
+        return this.upState;
+      case SimpleButtonState.Over:
+        return this.overState;
+      case SimpleButtonState.Down:
+        return this.downState;
+      default:
+        return null;
     }
   }
 
   void _onMouseEvent(MouseEvent mouseEvent) {
     if (_enabled == false) {
       // don't change the state
-    } if (mouseEvent.type == MouseEvent.MOUSE_OUT) {
+    }
+    if (mouseEvent.type == MouseEvent.MOUSE_OUT) {
       _state = SimpleButtonState.Up;
     } else if (mouseEvent.buttonDown) {
       _state = SimpleButtonState.Down;
@@ -146,7 +149,8 @@ class SimpleButton extends InteractiveObject {
   void _onTouchEvent(TouchEvent touchEvent) {
     if (_enabled == false) {
       // don't change the state
-    } if (touchEvent.isPrimaryTouchPoint == false) {
+    }
+    if (touchEvent.isPrimaryTouchPoint == false) {
       // don't change the state
     } else if (touchEvent.type == TouchEvent.TOUCH_OVER) {
       _state = SimpleButtonState.Down;
@@ -158,5 +162,4 @@ class SimpleButton extends InteractiveObject {
       _state = SimpleButtonState.Up;
     }
   }
-
 }

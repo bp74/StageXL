@@ -1,13 +1,5 @@
 part of stagexl.drawing;
 
-enum JointStyle {
-  MITER,
-  ROUND,
-  BEVEL
-}
+enum JointStyle { MITER, ROUND, BEVEL }
 
-enum CapsStyle {
-  NONE,
-  ROUND,
-  SQUARE
-}
+enum CapsStyle { NONE, ROUND, SQUARE }

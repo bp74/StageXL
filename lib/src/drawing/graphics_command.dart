@@ -3,7 +3,6 @@ part of stagexl.drawing;
 /// The base class for all graphics commands
 
 abstract class GraphicsCommand {
-
   Graphics _graphics;
 
   //---------------------------------------------------------------------------
@@ -27,6 +26,4 @@ abstract class GraphicsCommand {
   void _invalidate() {
     _graphics?._invalidate();
   }
-
 }
-

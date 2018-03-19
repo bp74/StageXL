@@ -24,7 +24,6 @@ void _globalFrameRequest() {
 //-----------------------------------------------------------------------------
 
 abstract class RenderLoopBase {
-
   bool _running = false;
 
   void advanceTime(num deltaTime);

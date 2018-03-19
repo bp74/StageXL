@@ -1,13 +1,13 @@
 part of stagexl.drawing;
 
 class _GraphicsPathSegment extends _GraphicsMeshSegment {
-
   bool _clockwise;
   bool _closed = false;
 
   _GraphicsPathSegment() : super(16, 32);
 
-  _GraphicsPathSegment.clone(_GraphicsPathSegment segment) : super.clone(segment) {
+  _GraphicsPathSegment.clone(_GraphicsPathSegment segment)
+      : super.clone(segment) {
     _clockwise = segment.clockwise;
     _closed = segment.closed;
   }
@@ -49,7 +49,6 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   int windingCountHitTest(double x, double y) {
-
     if (_minX > x || _maxX < x) return 0;
     if (_minY > y || _maxY < y) return 0;
     if (_vertexCount < 3) return 0;
@@ -61,11 +60,11 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
     num ax = _vertexBuffer[(_vertexCount - 1) * 2 + 0];
     num ay = _vertexBuffer[(_vertexCount - 1) * 2 + 1];
 
-    for(int i = 0; i < _vertexCount; i++) {
+    for (int i = 0; i < _vertexCount; i++) {
       num bx = _vertexBuffer[i * 2 + 0];
       num by = _vertexBuffer[i * 2 + 1];
       if (ay <= y) {
-        if (by >  y && (bx - ax) * (y - ay) - (x - ax) * (by - ay) > 0) wn++;
+        if (by > y && (bx - ax) * (y - ay) - (x - ax) * (by - ay) > 0) wn++;
       } else {
         if (by <= y && (bx - ax) * (y - ay) - (x - ax) * (by - ay) < 0) wn--;
       }
@@ -80,7 +79,6 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   void _calculateIndices() {
-
     _indexCount = 0;
 
     var buffer = _vertexBuffer;
@@ -94,12 +92,11 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
     var clockwise = this.clockwise;
     var index = 0;
 
-    for(int p = 0; p < count; p++) {
+    for (int p = 0; p < count; p++) {
       available.add(p);
     }
 
     while (available.length > 3) {
-
       int i0 = available[(index + 0) % available.length];
       int i1 = available[(index + 1) % available.length];
       int i2 = available[(index + 2) % available.length];
@@ -120,7 +117,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
       num tmp = y31 * x21 - x31 * y21;
       var earFound = clockwise ? tmp >= 0 : tmp <= 0;
 
-      for(int j = 0; j < available.length && earFound; j++) {
+      for (int j = 0; j < available.length && earFound; j++) {
         int vi = available[j];
         if (vi != i0 && vi != i1 && vi != i2) {
           num x01 = buffer[vi * 2 + 0] - x1;
@@ -148,7 +145,6 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   double _calculateArea() {
-
     var buffer = _vertexBuffer;
     var count = _vertexCount;
     if (count < 3) return 0.0;
@@ -157,7 +153,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
     num x1 = buffer[(count - 1) * 2 + 0];
     num y1 = buffer[(count - 1) * 2 + 1];
 
-    for(int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
       num x2 = buffer[i * 2 + 0];
       num y2 = buffer[i * 2 + 1];
       value += (x1 - x2) * (y1 + y2);
@@ -167,5 +163,4 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
 
     return value / 2.0;
   }
-
 }

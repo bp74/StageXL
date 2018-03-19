@@ -14,7 +14,6 @@ part of stagexl.display;
 ///     flip.addTo(stage);
 ///
 class Sprite3D extends DisplayObjectContainer3D implements Sprite {
-
   @override
   Graphics _graphics;
 
@@ -58,7 +57,6 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
   @override
   void startDrag([bool lockCenter = false, Rectangle<num> bounds]) {
-
     var stage = this.stage;
     var inputEvent = InputEvent.current;
     var globalPoint = new Point<num>(0.0, 0.0);
@@ -72,7 +70,8 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
     } else if (inputEvent is TouchEvent) {
       globalPoint.setTo(inputEvent.stageX, inputEvent.stageY);
       touchPointID = inputEvent.touchPointID;
-    } else return;
+    } else
+      return;
 
     if (lockCenter) {
       anchorPoint = this.bounds.center;
@@ -126,7 +125,6 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-
     var hitArea = this.hitArea;
     var graphics = _graphics;
     DisplayObject target;
@@ -155,5 +153,4 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
     if (_graphics != null) _graphics.render(renderState);
     super.render(renderState);
   }
-
 }

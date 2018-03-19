@@ -1,7 +1,6 @@
 part of stagexl.engine;
 
 class RenderProgramSimple extends RenderProgram {
-
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexTextCoord:  Float32(u), Float32(v)
   // aVertexAlpha:      Float32(alpha)
@@ -40,7 +39,6 @@ class RenderProgramSimple extends RenderProgram {
 
   @override
   void activate(RenderContextWebGL renderContext) {
-
     super.activate(renderContext);
 
     renderingContext.uniform1i(uniforms["uSampler"], 0);
@@ -53,9 +51,7 @@ class RenderProgramSimple extends RenderProgram {
   //---------------------------------------------------------------------------
 
   void renderTextureQuad(
-      RenderState renderState,
-      RenderTextureQuad renderTextureQuad) {
-
+      RenderState renderState, RenderTextureQuad renderTextureQuad) {
     if (renderTextureQuad.hasCustomVertices) {
       var ixList = renderTextureQuad.ixList;
       var vxList = renderTextureQuad.vxList;
@@ -137,9 +133,7 @@ class RenderProgramSimple extends RenderProgram {
   //---------------------------------------------------------------------------
 
   void renderTextureMesh(
-      RenderState renderState,
-      Int16List ixList, Float32List vxList) {
-
+      RenderState renderState, Int16List ixList, Float32List vxList) {
     var alpha = renderState.globalAlpha;
     var matrix = renderState.globalMatrix;
     var ixListCount = ixList.length;
@@ -194,10 +188,8 @@ class RenderProgramSimple extends RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void renderTextureMapping(
-      RenderState renderState, Matrix mappingMatrix,
+  void renderTextureMapping(RenderState renderState, Matrix mappingMatrix,
       Int16List ixList, Float32List vxList) {
-
     var alpha = renderState.globalAlpha;
     var globalMatrix = renderState.globalMatrix;
     var ixListCount = ixList.length;
@@ -256,5 +248,4 @@ class RenderProgramSimple extends RenderProgram {
     renderBufferVertex.position += vxListCount * 5;
     renderBufferVertex.count += vxListCount;
   }
-
 }

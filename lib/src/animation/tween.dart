@@ -28,7 +28,6 @@ part of stagexl.animation;
 ///       ..animate.alpha.to(0.0);
 
 class Tween implements Animatable {
-
   final TweenObject _tweenObject;
   final TransitionFunction _transition;
   final List<TweenProperty> _tweenPropertyList = new List<TweenProperty>();
@@ -50,7 +49,8 @@ class Tween implements Animatable {
   /// additionally objects implements [TweenObject3D]. Therefore all
   /// display objects can be used with with tweens.
 
-  Tween(TweenObject tweenObject, num time, [TransitionFunction transition = Transition.linear])
+  Tween(TweenObject tweenObject, num time,
+      [TransitionFunction transition = Transition.linear])
       : _tweenObject = tweenObject,
         _transition = transition {
     if (_tweenObject is! TweenObject) {
@@ -86,7 +86,8 @@ class Tween implements Animatable {
     }
   }
 
-  TweenProperty _createTweenProperty(TweenPropertyAccessor accessor, int propertyID) {
+  TweenProperty _createTweenProperty(
+      TweenPropertyAccessor accessor, int propertyID) {
     var tweenProperty = new TweenProperty._(accessor, propertyID);
     if (_started == false) _tweenPropertyList.add(tweenProperty);
     return tweenProperty;
@@ -96,9 +97,7 @@ class Tween implements Animatable {
 
   @override
   bool advanceTime(num time) {
-
     if (_currentTime < _totalTime || _started == false) {
-
       _currentTime = _currentTime + time;
 
       if (_currentTime > _totalTime) {
@@ -106,11 +105,9 @@ class Tween implements Animatable {
       }
 
       if (_currentTime >= 0.0) {
-
         // set startValues if this is the first start
 
         if (_started == false) {
-
           _started = true;
 
           for (int i = 0; i < _tweenPropertyList.length; i++) {
@@ -198,15 +195,20 @@ class Tween implements Animatable {
   ///
   /// This happens after the specified [delay].
 
-  set onStart(void function()) { _onStart = function; }
+  set onStart(void function()) {
+    _onStart = function;
+  }
 
   /// The function that is called every time this [Tween] updates the
   /// properties of the [TweenObject].
 
-  set onUpdate(void function()) { _onUpdate = function; }
+  set onUpdate(void function()) {
+    _onUpdate = function;
+  }
 
   /// The function that is called when this [Tween] is completed.
 
-  set onComplete(void function()) { _onComplete = function; }
+  set onComplete(void function()) {
+    _onComplete = function;
+  }
 }
-

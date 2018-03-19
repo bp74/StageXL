@@ -1,15 +1,15 @@
 part of stagexl.drawing;
 
 class _GraphicsContextCanvas extends GraphicsContext {
-
   final RenderState renderState;
   final RenderContextCanvas _renderContext;
   final CanvasRenderingContext2D _canvasContext;
 
-  _GraphicsContextCanvas(RenderState renderState) :
-     renderState = renderState,
-    _renderContext = renderState.renderContext as RenderContextCanvas,
-    _canvasContext = (renderState.renderContext as RenderContextCanvas).rawContext {
+  _GraphicsContextCanvas(RenderState renderState)
+      : renderState = renderState,
+        _renderContext = renderState.renderContext as RenderContextCanvas,
+        _canvasContext =
+            (renderState.renderContext as RenderContextCanvas).rawContext {
     _renderContext.setTransform(renderState.globalMatrix);
     _renderContext.setAlpha(renderState.globalAlpha);
     _canvasContext.beginPath();
@@ -40,27 +40,33 @@ class _GraphicsContextCanvas extends GraphicsContext {
   }
 
   @override
-  void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
+  void arcTo(double controlX, double controlY, double endX, double endY,
+      double radius) {
     _canvasContext.arcTo(controlX, controlY, endX, endY, radius);
   }
 
   @override
-  void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
+  void quadraticCurveTo(
+      double controlX, double controlY, double endX, double endY) {
     _canvasContext.quadraticCurveTo(controlX, controlY, endX, endY);
   }
 
   @override
-  void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
-    _canvasContext.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
+  void bezierCurveTo(double controlX1, double controlY1, double controlX2,
+      double controlY2, double endX, double endY) {
+    _canvasContext.bezierCurveTo(
+        controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
 
   @override
-  void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
+  void arc(double x, double y, double radius, double startAngle,
+      double endAngle, bool antiClockwise) {
     _canvasContext.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
 
   @override
-  void arcElliptical(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, bool antiClockwise) {
+  void arcElliptical(double x, double y, double radiusX, double radiusY,
+      double rotation, double startAngle, double endAngle, bool antiClockwise) {
     _canvasContext.translate(x, y);
     _canvasContext.rotate(rotation);
     _canvasContext.scale(radiusX, radiusY);
@@ -86,13 +92,13 @@ class _GraphicsContextCanvas extends GraphicsContext {
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-
     _canvasContext.fillStyle = _getCanvasPattern(pattern);
 
     var matrix = pattern.matrix;
     if (matrix != null) {
       _canvasContext.save();
-      _canvasContext.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+      _canvasContext.transform(
+          matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       _canvasContext.fill();
       _canvasContext.restore();
     } else {
@@ -103,7 +109,8 @@ class _GraphicsContextCanvas extends GraphicsContext {
   //---------------------------------------------------------------------------
 
   @override
-  void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
+  void strokeColor(
+      int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     _canvasContext.strokeStyle = color2rgba(color);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
@@ -112,7 +119,8 @@ class _GraphicsContextCanvas extends GraphicsContext {
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
+  void strokeGradient(GraphicsGradient gradient, double width,
+      JointStyle jointStyle, CapsStyle capsStyle) {
     _canvasContext.strokeStyle = _getCanvasGradient(gradient);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
@@ -121,8 +129,8 @@ class _GraphicsContextCanvas extends GraphicsContext {
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-
+  void strokePattern(GraphicsPattern pattern, double width,
+      JointStyle jointStyle, CapsStyle capsStyle) {
     _canvasContext.strokeStyle = _getCanvasPattern(pattern);
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
@@ -131,7 +139,8 @@ class _GraphicsContextCanvas extends GraphicsContext {
     var matrix = pattern.matrix;
     if (matrix != null) {
       _canvasContext.save();
-      _canvasContext.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+      _canvasContext.transform(
+          matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       _canvasContext.stroke();
       _canvasContext.restore();
     } else {
@@ -168,7 +177,6 @@ class _GraphicsContextCanvas extends GraphicsContext {
 //-----------------------------------------------------------------------------
 
 class _GraphicsContextCanvasMask extends _GraphicsContextCanvas {
-
   _GraphicsContextCanvasMask(RenderState renderState) : super(renderState);
 
   @override
@@ -187,17 +195,20 @@ class _GraphicsContextCanvasMask extends _GraphicsContextCanvas {
   }
 
   @override
-  void strokeColor(int color, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
+  void strokeColor(
+      int color, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
     // do nothing
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
+  void strokeGradient(GraphicsGradient gradient, double lineWidth,
+      JointStyle jointStyle, CapsStyle capsStyle) {
     // do nothing
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double lineWidth, JointStyle jointStyle, CapsStyle capsStyle) {
+  void strokePattern(GraphicsPattern pattern, double lineWidth,
+      JointStyle jointStyle, CapsStyle capsStyle) {
     // do nothing
   }
 }

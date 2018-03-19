@@ -4,7 +4,6 @@ part of stagexl.engine;
 /// that can be rendered by the engine.
 
 abstract class RenderMask {
-
   bool get relativeToParent;
 
   bool get border;

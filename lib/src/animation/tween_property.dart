@@ -27,7 +27,6 @@ class TweenProperty {
   }
 
   void _init() {
-
     _startValue = _tweenPropertyAccessor._getValue(_propertyID);
 
     if (_deltaValue.isNaN && _targetValue.isFinite) {
@@ -39,7 +38,6 @@ class TweenProperty {
   }
 
   void _update(num transition, bool roundToInt) {
-
     if (_startValue.isFinite && _targetValue.isFinite) {
       var value = _startValue + transition * (_targetValue - _startValue);
       value = roundToInt ? value.roundToDouble() : value;

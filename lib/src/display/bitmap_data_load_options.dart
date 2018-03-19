@@ -8,7 +8,6 @@ part of stagexl.display;
 /// [BitmapData.load] function.
 
 class BitmapDataLoadOptions {
-
   /// The application provides *png* files for lossless images.
 
   bool png = true;

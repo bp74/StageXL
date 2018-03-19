@@ -10,7 +10,6 @@ part of stagexl.events;
 /// and there is no bubbling and capturing phase.
 
 abstract class BroadcastEvent extends Event {
-
   BroadcastEvent(String type) : super(type, false);
 
   @override
@@ -69,7 +68,6 @@ final List<EventStreamSubscription> _renderSubscriptions = [];
 
 void _dispatchBroadcastEvent(BroadcastEvent broadcastEvent,
     List<EventStreamSubscription> subscriptions) {
-
   // Dispatch event to current subscriptions.
   // Do not dispatch events to newly added subscriptions.
   // It is guaranteed that this function is not called recursively.

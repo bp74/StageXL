@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class GraphicsCommandArc extends GraphicsCommand {
-
   double _x;
   double _y;
   double _radius;
@@ -9,10 +8,8 @@ class GraphicsCommandArc extends GraphicsCommand {
   double _endAngle;
   bool _antiClockwise;
 
-  GraphicsCommandArc(
-      num x, num y, num radius,
-      num startAngle, num endAngle, bool antiClockwise)
-
+  GraphicsCommandArc(num x, num y, num radius, num startAngle, num endAngle,
+      bool antiClockwise)
       : _x = x.toDouble(),
         _y = y.toDouble(),
         _radius = radius.toDouble(),
@@ -70,5 +67,4 @@ class GraphicsCommandArc extends GraphicsCommand {
   void updateContext(GraphicsContext context) {
     context.arc(x, y, radius, startAngle, endAngle, antiClockwise);
   }
-
 }

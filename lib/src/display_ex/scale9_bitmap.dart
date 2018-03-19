@@ -6,7 +6,6 @@ part of stagexl.display_ex;
 /// the size defined by the [width] and [height] properties.
 
 class Scale9Bitmap extends Bitmap {
-
   Rectangle<num> _grid;
   num _width = 0.0;
   num _height = 0.0;
@@ -77,7 +76,6 @@ class Scale9Bitmap extends Bitmap {
 
   @override
   void render(RenderState renderState) {
-
     // We could use renderState.renderTextureMesh, it would work great with
     // the WebGL renderer but not so good with the Canvas2D renderer.
 
@@ -112,7 +110,6 @@ class Scale9Bitmap extends Bitmap {
   //---------------------------------------------------------------------------
 
   void _updateRenderTextureQuads() {
-
     var rtq = bitmapData.renderTextureQuad;
 
     var x0 = 0;
@@ -138,7 +135,4 @@ class Scale9Bitmap extends Bitmap {
       }
     }
   }
-
 }
-
-

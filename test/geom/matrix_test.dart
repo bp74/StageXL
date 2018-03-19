@@ -6,7 +6,6 @@ import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {
-
   test('new matrix', () {
     Matrix m = new Matrix(0.269, 0.283, 0.313, 0.479, 0.659, 0.701);
     verifyMatrix(m, 0.269, 0.283, 0.313, 0.479, 0.659, 0.701);
@@ -31,7 +30,7 @@ void main() {
   test('Matrix.cloneInvert', () {
     Matrix m = new Matrix(0.269, 0.283, 0.313, 0.479, 0.659, 0.701);
     Matrix n = m.cloneInvert();
-    verifyMatrix(n, 11.89412, -7.02721, -7.77215 , 6.67958, -2.38995, -0.05145);
+    verifyMatrix(n, 11.89412, -7.02721, -7.77215, 6.67958, -2.38995, -0.05145);
   });
 
   test('Matrix.deltaTransformPoint', () {
@@ -67,7 +66,7 @@ void main() {
   test('Matrix.invert', () {
     Matrix m = new Matrix(0.269, 0.283, 0.313, 0.479, 0.659, 0.701);
     m.invert();
-    verifyMatrix(m, 11.89412, -7.02721, -7.77215 , 6.67958, -2.38995, -0.05145);
+    verifyMatrix(m, 11.89412, -7.02721, -7.77215, 6.67958, -2.38995, -0.05145);
   });
 
   test('Matrix.rotate', () {
@@ -81,7 +80,7 @@ void main() {
   test('Matrix.scale', () {
     Matrix m = new Matrix(0.269, 0.283, 0.313, 0.479, 0.659, 0.701);
     m.scale(0.521, 0.829);
-    verifyMatrix(m, 0.14015, 0.23461, 0.16307,  0.39709, 0.34334, 0.58113);
+    verifyMatrix(m, 0.14015, 0.23461, 0.16307, 0.39709, 0.34334, 0.58113);
   });
 
   test('Matrix.translate', () {
@@ -142,9 +141,8 @@ void main() {
     Matrix m = new Matrix(0.269, 0.283, 0.313, 0.479, 0.659, 0.701);
     Matrix n = new Matrix.fromIdentity();
     n.copyFromAndInvert(m);
-    verifyMatrix(n, 11.89412, -7.02721, -7.77215 , 6.67958, -2.38995, -0.05145);
+    verifyMatrix(n, 11.89412, -7.02721, -7.77215, 6.67958, -2.38995, -0.05145);
   });
-
 }
 
 void verifyMatrix(Matrix m, num a, num b, num c, num d, num tx, num ty) {

@@ -1,7 +1,6 @@
 part of stagexl.media;
 
 class SoundTransform {
-
   num volume;
   num pan;
   //num leftToLeft = 1;

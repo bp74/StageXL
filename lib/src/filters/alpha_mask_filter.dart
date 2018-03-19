@@ -8,12 +8,11 @@ import '../engine.dart';
 import '../geom.dart';
 
 class AlphaMaskFilter extends BitmapFilter {
-
   final BitmapData bitmapData;
   final Matrix matrix;
 
-  AlphaMaskFilter(this.bitmapData, [Matrix matrix]):
-    matrix = matrix != null ? matrix : new Matrix.fromIdentity();
+  AlphaMaskFilter(this.bitmapData, [Matrix matrix])
+      : matrix = matrix != null ? matrix : new Matrix.fromIdentity();
 
   @override
   BitmapFilter clone() => new AlphaMaskFilter(bitmapData, matrix.clone());
@@ -22,7 +21,6 @@ class AlphaMaskFilter extends BitmapFilter {
 
   @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
-
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -36,8 +34,10 @@ class AlphaMaskFilter extends BitmapFilter {
 
     context.save();
     context.globalCompositeOperation = "destination-in";
-    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-    context.rect(vxList[0], vxList[1], vxList[8] - vxList[0], vxList[9] - vxList[1]);
+    context.setTransform(
+        matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+    context.rect(
+        vxList[0], vxList[1], vxList[8] - vxList[0], vxList[9] - vxList[1]);
     context.clip();
     renderState.globalMatrix.prepend(this.matrix);
     renderState.renderTextureQuad(this.bitmapData.renderTextureQuad);
@@ -47,8 +47,8 @@ class AlphaMaskFilter extends BitmapFilter {
   //---------------------------------------------------------------------------
 
   @override
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-
+  void renderFilter(
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
@@ -58,7 +58,8 @@ class AlphaMaskFilter extends BitmapFilter {
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTextureAt(renderTexture, 0);
     renderContext.activateRenderTextureAt(bitmapData.renderTexture, 1);
-    renderProgram.renderAlphaMaskFilterQuad(renderState, renderTextureQuad, this);
+    renderProgram.renderAlphaMaskFilterQuad(
+        renderState, renderTextureQuad, this);
   }
 }
 
@@ -67,7 +68,6 @@ class AlphaMaskFilter extends BitmapFilter {
 //-----------------------------------------------------------------------------
 
 class AlphaMaskFilterProgram extends RenderProgram {
-
   // aVertexPosition:  Float32(x), Float32(y)
   // aVertexTxtCoord:  Float32(u), Float32(v)
   // aVertexMskCoord:  Float32(u), Float32(v)
@@ -125,26 +125,22 @@ class AlphaMaskFilterProgram extends RenderProgram {
 
   @override
   void activate(RenderContextWebGL renderContext) {
-
     super.activate(renderContext);
 
     renderingContext.uniform1i(uniforms["uTexSampler"], 0);
     renderingContext.uniform1i(uniforms["uMskSampler"], 1);
 
-    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 44,  0);
-    renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"], 2, 44,  8);
+    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 44, 0);
+    renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"], 2, 44, 8);
     renderBufferVertex.bindAttribute(attributes["aVertexMskCoord"], 2, 44, 16);
     renderBufferVertex.bindAttribute(attributes["aVertexMskLimit"], 4, 44, 24);
-    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],    1, 44, 40);
+    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"], 1, 44, 40);
   }
 
   //---------------------------------------------------------------------------
 
-  void renderAlphaMaskFilterQuad(
-      RenderState renderState,
-      RenderTextureQuad renderTextureQuad,
-      AlphaMaskFilter alphaMaskFilter) {
-
+  void renderAlphaMaskFilterQuad(RenderState renderState,
+      RenderTextureQuad renderTextureQuad, AlphaMaskFilter alphaMaskFilter) {
     var alpha = renderState.globalAlpha;
     var ixList = renderTextureQuad.ixList;
     var vxList = renderTextureQuad.vxList;
@@ -183,7 +179,7 @@ class AlphaMaskFilterProgram extends RenderProgram {
 
     // copy index list
 
-    for(var i = 0; i < indexCount; i++) {
+    for (var i = 0; i < indexCount; i++) {
       ixData[ixIndex + i] = vxCount + ixList[i];
     }
 
@@ -192,7 +188,7 @@ class AlphaMaskFilterProgram extends RenderProgram {
 
     // copy vertex list
 
-    for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
+    for (var i = 0, o = 0; i < vertexCount; i++, o += 4) {
       var x = vxList[o + 0];
       var y = vxList[o + 1];
       vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
@@ -212,5 +208,4 @@ class AlphaMaskFilterProgram extends RenderProgram {
     renderBufferVertex.position += vertexCount * 11;
     renderBufferVertex.count += vertexCount;
   }
-
 }

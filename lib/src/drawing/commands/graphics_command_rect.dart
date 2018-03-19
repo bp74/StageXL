@@ -1,14 +1,12 @@
 part of stagexl.drawing;
 
 class GraphicsCommandRect extends GraphicsCommand {
-
   double _x;
   double _y;
   double _width;
   double _height;
 
   GraphicsCommandRect(num x, num y, num width, num height)
-
       : _x = x.toDouble(),
         _y = y.toDouble(),
         _width = width.toDouble(),
@@ -54,5 +52,4 @@ class GraphicsCommandRect extends GraphicsCommand {
     context.lineTo(x, y + height);
     context.closePath();
   }
-
 }

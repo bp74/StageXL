@@ -10,10 +10,8 @@ part of stagexl.display;
 /// order that determines which object is drawn in front, which is behind, and
 /// so on.
 
-abstract class DisplayObjectContainer
-    extends InteractiveObject
+abstract class DisplayObjectContainer extends InteractiveObject
     implements DisplayObjectParent<DisplayObject> {
-
   final List<DisplayObject> _children = new List<DisplayObject>();
   bool _mouseChildren = true;
   bool _tabChildren = true;
@@ -52,7 +50,9 @@ abstract class DisplayObjectContainer
 
   bool get mouseChildren => _mouseChildren;
 
-  set mouseChildren(bool value) { _mouseChildren = value; }
+  set mouseChildren(bool value) {
+    _mouseChildren = value;
+  }
 
   /// Determines whether the children of this container are tab enabled.
   ///
@@ -60,7 +60,9 @@ abstract class DisplayObjectContainer
 
   bool get tabChildren => _tabChildren;
 
-  set tabChildren(bool value) { _tabChildren = value; }
+  set tabChildren(bool value) {
+    _tabChildren = value;
+  }
 
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
@@ -77,7 +79,8 @@ abstract class DisplayObjectContainer
   @override
   void addChild(DisplayObject child) {
     if (child == this) {
-      throw new ArgumentError("An object cannot be added as a child of itself.");
+      throw new ArgumentError(
+          "An object cannot be added as a child of itself.");
     } else if (child.parent == this) {
       _addLocalChild(child);
     } else {
@@ -103,7 +106,8 @@ abstract class DisplayObjectContainer
     if (index < 0 || index > _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     } else if (child == this) {
-      throw new ArgumentError("An object cannot be added as a child of itself.");
+      throw new ArgumentError(
+          "An object cannot be added as a child of itself.");
     } else if (child.parent == this) {
       _addLocalChildAt(child, index);
     } else {
@@ -127,7 +131,8 @@ abstract class DisplayObjectContainer
   @override
   void removeChild(DisplayObject child) {
     if (child.parent != this) {
-      throw new ArgumentError("The supplied DisplayObject must be a child of the caller.");
+      throw new ArgumentError(
+          "The supplied DisplayObject must be a child of the caller.");
     } else {
       int index = _children.indexOf(child);
       _clearChildParent(child);
@@ -190,10 +195,12 @@ abstract class DisplayObjectContainer
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     } else if (child == this) {
-      throw new ArgumentError("An object cannot be added as a child of itself.");
+      throw new ArgumentError(
+          "An object cannot be added as a child of itself.");
     } else if (child.parent == this) {
       if (_children.indexOf(child) == index) return;
-      throw new ArgumentError("The display object is already a child of this container.");
+      throw new ArgumentError(
+          "The display object is already a child of this container.");
     } else {
       child.removeFromParent();
       _throwIfAncestors(child);
@@ -260,7 +267,8 @@ abstract class DisplayObjectContainer
     if (index < 0 || index >= _children.length) {
       throw new ArgumentError("The supplied index is out of bounds.");
     } else if (child.parent != this) {
-      throw new ArgumentError("The supplied DisplayObject must be a child of the caller.");
+      throw new ArgumentError(
+          "The supplied DisplayObject must be a child of the caller.");
     } else {
       _addLocalChildAt(child, index);
     }
@@ -275,7 +283,8 @@ abstract class DisplayObjectContainer
     int index1 = getChildIndex(child1);
     int index2 = getChildIndex(child2);
     if (index1 == -1 || index2 == -1) {
-      throw new ArgumentError("The supplied DisplayObject must be a child of the caller.");
+      throw new ArgumentError(
+          "The supplied DisplayObject must be a child of the caller.");
     } else {
       swapChildrenAt(index1, index2);
     }
@@ -311,7 +320,6 @@ abstract class DisplayObjectContainer
   /// and so on each return true.
 
   bool contains(DisplayObject child) {
-
     while (child != null) {
       if (child == this) return true;
       child = child.parent;
@@ -327,7 +335,6 @@ abstract class DisplayObjectContainer
   /// this display object container.
 
   List<DisplayObject> getObjectsUnderPoint(Point<num> point) {
-
     var result = new List<DisplayObject>();
     var temp = new Point<num>(0.0, 0.0);
 
@@ -348,7 +355,6 @@ abstract class DisplayObjectContainer
 
   @override
   Rectangle<num> get bounds {
-
     if (_children.length == 0) return super.bounds;
 
     num left = double.INFINITY;
@@ -372,7 +378,6 @@ abstract class DisplayObjectContainer
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-
     localX = localX.toDouble();
     localY = localY.toDouble();
 
@@ -433,9 +438,10 @@ abstract class DisplayObjectContainer
 
   void _throwIfAncestors(DisplayObject child) {
     for (DisplayObject a = this; a != null; a = a.parent) {
-      if (a == child) throw new ArgumentError(
-          "An object cannot be added as a child to one of it's children "
-          "(or children's children, etc.).");
+      if (a == child)
+        throw new ArgumentError(
+            "An object cannot be added as a child to one of it's children "
+            "(or children's children, etc.).");
     }
   }
 
@@ -473,7 +479,6 @@ abstract class DisplayObjectContainer
   //----------------------------------------------------------------------------
 
   void _dispatchStageEvents(DisplayObject child, String eventType) {
-
     // We optimize for the fact that the ADDED_TO_STAGE and REMOVE_FROM_STAGE
     // events do not bubble, and most of the time there are no capturing event
     // listeners. Iterate recursively through all children and children's
@@ -481,27 +486,27 @@ abstract class DisplayObjectContainer
     // only if necessary.
 
     var captured = false;
-    for (DisplayObject obj = this; obj != null && captured == false; obj = obj.parent) {
+    for (DisplayObject obj = this;
+        obj != null && captured == false;
+        obj = obj.parent) {
       if (obj.hasEventListener(eventType, useCapture: true)) captured = true;
     }
 
     _dispatchStageEventsRecursion(child, new Event(eventType), captured);
   }
 
-  void _dispatchStageEventsRecursion(DisplayObject displayObject,
-                                     Event event, bool captured) {
-
+  void _dispatchStageEventsRecursion(
+      DisplayObject displayObject, Event event, bool captured) {
     if (captured || displayObject.hasEventListener(event.type)) {
       displayObject.dispatchEvent(event);
     }
     if (displayObject is DisplayObjectContainer) {
       captured = captured ||
-        displayObject.hasEventListener(event.type, useCapture: true);
+          displayObject.hasEventListener(event.type, useCapture: true);
       var children = displayObject._children;
       for (int i = 0; i < children.length; i++) {
         _dispatchStageEventsRecursion(children[i], event, captured);
       }
     }
   }
-
 }

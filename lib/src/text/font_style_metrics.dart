@@ -1,22 +1,22 @@
 part of stagexl.text;
 
-final Map<String, _FontStyleMetrics> _fontStyleMetrics = new Map<String, _FontStyleMetrics>();
+final Map<String, _FontStyleMetrics> _fontStyleMetrics =
+    new Map<String, _FontStyleMetrics>();
 
 _FontStyleMetrics _getFontStyleMetrics(TextFormat textFormat) {
   String fontStyle = textFormat._cssFontStyle;
-  return _fontStyleMetrics.putIfAbsent(fontStyle, () => new _FontStyleMetrics(textFormat));
+  return _fontStyleMetrics.putIfAbsent(
+      fontStyle, () => new _FontStyleMetrics(textFormat));
 }
 
 //-------------------------------------------------------------------------------------------------
 
 class _FontStyleMetrics {
-
   int ascent = 0;
   int descent = 0;
   int height = 0;
 
   _FontStyleMetrics(TextFormat textFormat) {
-
     var fontStyle = textFormat._cssFontStyle;
     var text = new html.Element.tag("span");
     var block = new html.Element.tag("div");
@@ -46,6 +46,4 @@ class _FontStyleMetrics {
       div.remove();
     }
   }
-
 }
-

@@ -4,7 +4,6 @@ import 'point.dart';
 import '../internal/jenkins_hash.dart';
 
 class Circle<T extends num> {
-
   T x;
   T y;
   T radius;

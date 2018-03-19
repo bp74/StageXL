@@ -15,7 +15,6 @@ part of stagexl.animation;
 ///     juggler.delayCall(action, 1.0);
 ///
 class DelayedCall implements Animatable {
-
   final Function _action;
   num _currentTime = 0.0;
   num _totalTime = 0.0;
@@ -39,7 +38,6 @@ class DelayedCall implements Animatable {
 
   @override
   bool advanceTime(num time) {
-
     num newTime = _currentTime + time;
 
     while (newTime >= _totalTime && _repeatCount > 0) {

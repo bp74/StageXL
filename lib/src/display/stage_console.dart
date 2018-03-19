@@ -1,7 +1,6 @@
 part of stagexl.display;
 
 class StageConsole extends DisplayObject {
-
   final String _fontImage =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAAAOAQAAAACQy/GuAAABsE"
       "lEQVR4Aa3OMWsTUQDA8f97eV6fEpvT6YZgX4qDYwoOAdE+IQ5OfoXzG7S46KA8HZSC1PQLaN"

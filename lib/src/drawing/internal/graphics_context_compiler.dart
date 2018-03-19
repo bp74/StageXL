@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class _GraphicsContextCompiler extends _GraphicsContextBase {
-
   final List<GraphicsCommand> commands;
 
   _GraphicsContextCompiler(this.commands);
@@ -30,22 +29,27 @@ class _GraphicsContextCompiler extends _GraphicsContextBase {
   }
 
   @override
-  void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
+  void strokeColor(
+      int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
     var mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
     var command = new _GraphicsCommandMeshColor(mesh, color);
     this.commands.add(command);
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+  void strokeGradient(GraphicsGradient gradient, double width,
+      JointStyle jointStyle, CapsStyle capsStyle) {
+    _GraphicsMesh mesh =
+        new _GraphicsStroke(_path, width, jointStyle, capsStyle);
     var command = new _GraphicsCommandMeshGradient(mesh, gradient);
     this.commands.add(command);
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+  void strokePattern(GraphicsPattern pattern, double width,
+      JointStyle jointStyle, CapsStyle capsStyle) {
+    _GraphicsMesh mesh =
+        new _GraphicsStroke(_path, width, jointStyle, capsStyle);
     var command = new _GraphicsCommandMeshPattern(mesh, pattern);
     this.commands.add(command);
   }
@@ -64,5 +68,4 @@ class _GraphicsContextCompiler extends _GraphicsContextBase {
   void meshPattern(_GraphicsCommandMeshPattern command) {
     this.commands.add(command);
   }
-
 }

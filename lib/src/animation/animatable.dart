@@ -20,7 +20,6 @@ part of stagexl.animation;
 ///     juggler.add(myAnimation);
 ///
 abstract class Animatable {
-
   /// This method is called by the [Juggler] with the [time] past since the last
   /// call.
   ///

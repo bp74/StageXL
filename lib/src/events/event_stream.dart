@@ -2,7 +2,6 @@ part of stagexl.events;
 
 /// Provides a stream of [Event]s.
 class EventStream<T extends Event> extends Stream<T> {
-
   /// The event target.
   final EventDispatcher target;
 
@@ -26,11 +25,13 @@ class EventStream<T extends Event> extends Stream<T> {
   @override
   Stream<T> asBroadcastStream(
           {void onListen(StreamSubscription<T> subscription),
-          void onCancel(StreamSubscription<T> subscription)}) => this;
+          void onCancel(StreamSubscription<T> subscription)}) =>
+      this;
 
   bool get hasSubscriptions => _subscriptions.length > 0;
   bool get hasCapturingSubscriptions => _capturingSubscriptionCount > 0;
-  bool get hasBubblingSubscriptions => _subscriptions.length > _capturingSubscriptionCount;
+  bool get hasBubblingSubscriptions =>
+      _subscriptions.length > _capturingSubscriptionCount;
 
   //----------------------------------------------------------------------------
 
@@ -58,7 +59,6 @@ class EventStream<T extends Event> extends Stream<T> {
       void onDone(),
       bool cancelOnError: false,
       int priority: 0}) {
-
     return _subscribe(onData, false, priority);
   }
 
@@ -79,7 +79,7 @@ class EventStream<T extends Event> extends Stream<T> {
   /// the same priority, they are processed in the order in which they were
   /// added. The default priority is 0.
 
-  EventStreamSubscription<T> capture(void onData(T event), { int priority: 0 }) {
+  EventStreamSubscription<T> capture(void onData(T event), {int priority: 0}) {
     return _subscribe(onData, true, priority);
   }
 
@@ -88,10 +88,9 @@ class EventStream<T extends Event> extends Stream<T> {
   /// Cancels all subscriptions to this stream.
 
   void cancelSubscriptions() {
-
     var subscriptions = _subscriptions;
 
-    for(int i = 0; i < subscriptions.length; i++) {
+    for (int i = 0; i < subscriptions.length; i++) {
       _cancelSubscription(subscriptions[i]);
     }
   }
@@ -101,7 +100,6 @@ class EventStream<T extends Event> extends Stream<T> {
 
   EventStreamSubscription<T> _subscribe(
       EventListener<T> eventListener, bool captures, int priority) {
-
     var subscription = new EventStreamSubscription<T>._(
         this, eventListener, captures, priority);
 
@@ -112,7 +110,7 @@ class EventStream<T extends Event> extends Stream<T> {
         new List<EventStreamSubscription>(oldSubscriptions.length + 1);
     var index = newSubscriptions.length - 1;
 
-    for(int o = 0, n = 0; o < oldSubscriptions.length; o++) {
+    for (int o = 0, n = 0; o < oldSubscriptions.length; o++) {
       var oldSubscription = oldSubscriptions[o];
       if (o == n && oldSubscription.priority < priority) index = n++;
       newSubscriptions[n++] = oldSubscription;
@@ -127,10 +125,16 @@ class EventStream<T extends Event> extends Stream<T> {
     if (captures) {
       _capturingSubscriptionCount += 1;
     } else {
-      switch(this.eventType) {
-        case Event.ENTER_FRAME: _enterFrameSubscriptions.add(subscription); break;
-        case Event.EXIT_FRAME: _exitFrameSubscriptions.add(subscription); break;
-        case Event.RENDER: _renderSubscriptions.add(subscription); break;
+      switch (this.eventType) {
+        case Event.ENTER_FRAME:
+          _enterFrameSubscriptions.add(subscription);
+          break;
+        case Event.EXIT_FRAME:
+          _exitFrameSubscriptions.add(subscription);
+          break;
+        case Event.RENDER:
+          _renderSubscriptions.add(subscription);
+          break;
       }
     }
 
@@ -140,12 +144,12 @@ class EventStream<T extends Event> extends Stream<T> {
   //----------------------------------------------------------------------------
 
   void _unsubscribe(EventListener<T> eventListener, bool captures) {
-
     var subscriptions = _subscriptions;
 
-    for(int i = 0; i < subscriptions.length; i++) {
+    for (int i = 0; i < subscriptions.length; i++) {
       var subscription = subscriptions[i];
-      if (subscription.eventListener == eventListener && subscription.isCapturing == captures) {
+      if (subscription.eventListener == eventListener &&
+          subscription.isCapturing == captures) {
         _cancelSubscription(subscription);
       }
     }
@@ -154,7 +158,6 @@ class EventStream<T extends Event> extends Stream<T> {
   //----------------------------------------------------------------------------
 
   void _cancelSubscription(EventStreamSubscription eventStreamSubscription) {
-
     eventStreamSubscription._canceled = true;
 
     var oldSubscriptions = _subscriptions;
@@ -163,7 +166,7 @@ class EventStream<T extends Event> extends Stream<T> {
     var newSubscriptions =
         new List<EventStreamSubscription>(oldSubscriptions.length - 1);
 
-    for(int o = 0, n = 0; o < oldSubscriptions.length; o++) {
+    for (int o = 0, n = 0; o < oldSubscriptions.length; o++) {
       var oldSubscription = oldSubscriptions[o];
       if (identical(oldSubscription, eventStreamSubscription)) continue;
       if (n >= newSubscriptions.length) return;
@@ -179,16 +182,16 @@ class EventStream<T extends Event> extends Stream<T> {
 
   //----------------------------------------------------------------------------
 
-  void _dispatchEventInternal(T event, EventDispatcher target, EventPhase eventPhase)  {
-
+  void _dispatchEventInternal(
+      T event, EventDispatcher target, EventPhase eventPhase) {
     var subscriptions = _subscriptions;
     var isCapturing = eventPhase == EventPhase.CAPTURING_PHASE;
     var inputEvent = event is InputEvent ? event : null;
 
-    for(var i = 0; i < subscriptions.length; i++) {
-
+    for (var i = 0; i < subscriptions.length; i++) {
       var subscription = subscriptions[i];
-      if (subscription.isCanceled || subscription.isPaused ||
+      if (subscription.isCanceled ||
+          subscription.isPaused ||
           subscription.isCapturing != isCapturing) continue;
 
       event._target = target;
@@ -202,5 +205,4 @@ class EventStream<T extends Event> extends Stream<T> {
       if (event.isImmediatePropagationStopped) return;
     }
   }
-
 }

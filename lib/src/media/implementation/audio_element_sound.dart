@@ -1,23 +1,20 @@
 part of stagexl.media;
 
 class AudioElementSound extends Sound {
-
   final AudioElement _audioElement;
   final Map<AudioElement, AudioElementSoundChannel> _soundChannels;
 
-  AudioElementSound._(AudioElement audioElement) :
-    _audioElement = audioElement,
-    _soundChannels = new Map<AudioElement, AudioElementSoundChannel>() {
-
+  AudioElementSound._(AudioElement audioElement)
+      : _audioElement = audioElement,
+        _soundChannels = new Map<AudioElement, AudioElementSoundChannel>() {
     _audioElement.onEnded.listen(_onAudioEnded);
     _soundChannels[audioElement] = null;
   }
 
   //---------------------------------------------------------------------------
 
-  static Future<Sound> load(
-      String url, [SoundLoadOptions soundLoadOptions]) async {
-
+  static Future<Sound> load(String url,
+      [SoundLoadOptions soundLoadOptions]) async {
     try {
       var options = soundLoadOptions ?? Sound.defaultLoadOptions;
       var audioUrls = options.getOptimalAudioUrls(url);
@@ -36,9 +33,8 @@ class AudioElementSound extends Sound {
     }
   }
 
-  static Future<Sound> loadDataUrl(
-      String dataUrl, [SoundLoadOptions soundLoadOptions]) async {
-
+  static Future<Sound> loadDataUrl(String dataUrl,
+      [SoundLoadOptions soundLoadOptions]) async {
     try {
       var audioUrls = <String>[dataUrl];
       var audioLoader = new AudioLoader(audioUrls, false, false);
@@ -72,8 +68,8 @@ class AudioElementSound extends Sound {
   }
 
   @override
-  SoundChannel playSegment(num startTime, num duration, [
-    bool loop = false, SoundTransform soundTransform]) {
+  SoundChannel playSegment(num startTime, num duration,
+      [bool loop = false, SoundTransform soundTransform]) {
     return new AudioElementSoundChannel(
         this, startTime, duration, loop, soundTransform);
   }
@@ -82,8 +78,7 @@ class AudioElementSound extends Sound {
 
   Future<AudioElement> _requestAudioElement(
       AudioElementSoundChannel soundChannel) async {
-
-    for(var audioElement in _soundChannels.keys) {
+    for (var audioElement in _soundChannels.keys) {
       if (_soundChannels[audioElement] == null) {
         _soundChannels[audioElement] = soundChannel;
         return audioElement;
@@ -108,5 +103,4 @@ class AudioElementSound extends Sound {
     var soundChannel = _soundChannels[audioElement];
     if (soundChannel != null) soundChannel._onAudioEnded();
   }
-
 }

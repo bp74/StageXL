@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class GraphicsCommandLineTo extends GraphicsCommand {
-
   double _x;
   double _y;
 
@@ -31,5 +30,4 @@ class GraphicsCommandLineTo extends GraphicsCommand {
   void updateContext(GraphicsContext context) {
     context.lineTo(x, y);
   }
-
 }

@@ -3,13 +3,11 @@ part of stagexl.drawing;
 /// The base class for all graphics stroke commands
 
 abstract class GraphicsCommandStroke extends GraphicsCommand {
-
   double _width;
   JointStyle _jointStyle;
   CapsStyle _capsStyle;
 
   GraphicsCommandStroke(num width, JointStyle jointStyle, CapsStyle capsStyle)
-
       : _width = width.toDouble(),
         _jointStyle = jointStyle,
         _capsStyle = capsStyle;

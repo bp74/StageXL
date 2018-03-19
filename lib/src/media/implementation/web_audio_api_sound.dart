@@ -1,23 +1,23 @@
 part of stagexl.media;
 
 class WebAudioApiSound extends Sound {
-
   AudioBuffer _audioBuffer;
 
   WebAudioApiSound._(AudioBuffer audioBuffer) : _audioBuffer = audioBuffer;
 
   //---------------------------------------------------------------------------
 
-  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions]) async {
-
+  static Future<Sound> load(String url,
+      [SoundLoadOptions soundLoadOptions]) async {
     var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     var audioUrls = options.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
     var aggregateError = new AggregateError("Error loading sound.");
 
-    for(var audioUrl in audioUrls) {
+    for (var audioUrl in audioUrls) {
       try {
-        var httpRequest = await HttpRequest.request(audioUrl, responseType: 'arraybuffer');
+        var httpRequest =
+            await HttpRequest.request(audioUrl, responseType: 'arraybuffer');
         var audioData = httpRequest.response as ByteBuffer;
         var audioBuffer = await audioContext.decodeAudioData(audioData);
         return new WebAudioApiSound._(audioBuffer);
@@ -36,9 +36,8 @@ class WebAudioApiSound extends Sound {
 
   //---------------------------------------------------------------------------
 
-  static Future<Sound> loadDataUrl(
-      String dataUrl, [SoundLoadOptions soundLoadOptions]) async {
-
+  static Future<Sound> loadDataUrl(String dataUrl,
+      [SoundLoadOptions soundLoadOptions]) async {
     var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     var audioContext = WebAudioApiMixer.audioContext;
     var start = dataUrl.indexOf(',') + 1;
@@ -66,19 +65,15 @@ class WebAudioApiSound extends Sound {
   num get length => _audioBuffer.duration;
 
   @override
-  SoundChannel play([
-    bool loop = false, SoundTransform soundTransform]) {
-
+  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
     return new WebAudioApiSoundChannel(
         this, 0, this.length, loop, soundTransform);
   }
 
   @override
-  SoundChannel playSegment(num startTime, num duration, [
-    bool loop = false, SoundTransform soundTransform]) {
-
+  SoundChannel playSegment(num startTime, num duration,
+      [bool loop = false, SoundTransform soundTransform]) {
     return new WebAudioApiSoundChannel(
         this, startTime, duration, loop, soundTransform);
   }
-
 }

@@ -6,7 +6,6 @@ part of stagexl.display;
 /// an easy iteration over the children of a [DisplayObjectParent].
 
 class DisplayObjectChildren<T extends DisplayObject> extends IterableBase<T> {
-
   final DisplayObjectParent parent;
   final List<T> _children;
 

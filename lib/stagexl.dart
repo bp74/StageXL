@@ -93,7 +93,6 @@ export 'src/ui.dart';
 ///     StageXL.videoLoadOptions.corsEnabled = false;
 
 class StageXL {
-
   /// The system environment in which the application is running.
 
   static final Environment environment = new Environment._internal();
@@ -153,7 +152,6 @@ class StageXL {
   static set videoLoadOptions(VideoLoadOptions options) {
     Video.defaultLoadOptions = options;
   }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -162,7 +160,6 @@ class StageXL {
 /// The system environment in which the application is running.
 
 class Environment {
-
   Environment._internal();
 
   /// The device pixel ratio is the ratio between physical pixels and

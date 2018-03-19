@@ -19,7 +19,14 @@ import 'dart:web_gl' as gl;
 import 'dart:typed_data';
 
 import 'dart:html'
-    show window, ImageElement, CanvasElement, CanvasRenderingContext2D, CanvasImageSource, ImageData, VideoElement;
+    show
+        window,
+        ImageElement,
+        CanvasElement,
+        CanvasRenderingContext2D,
+        CanvasImageSource,
+        ImageData,
+        VideoElement;
 
 import 'geom/matrix.dart';
 import 'geom/matrix_3d.dart';

@@ -1,7 +1,6 @@
 part of stagexl.media;
 
 class MockSoundChannel extends SoundChannel {
-
   MockSound _mockSound;
   bool _stopped = false;
   bool _paused = false;
@@ -12,11 +11,8 @@ class MockSoundChannel extends SoundChannel {
 
   SoundTransform _soundTransform;
 
-  MockSoundChannel(
-      MockSound mockSound,
-      num startTime, num duration, bool loop,
+  MockSoundChannel(MockSound mockSound, num startTime, num duration, bool loop,
       SoundTransform soundTransform) {
-
     if (soundTransform == null) soundTransform = new SoundTransform();
 
     _mockSound = mockSound;
@@ -41,7 +37,7 @@ class MockSoundChannel extends SoundChannel {
 
   @override
   set position(num value) {
-      return;
+    return;
   }
 
   //---------------------------------------------------------------------------
@@ -76,5 +72,4 @@ class MockSoundChannel extends SoundChannel {
       this.dispatchEvent(new Event(Event.COMPLETE));
     }
   }
-
 }

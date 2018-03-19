@@ -6,7 +6,6 @@ part of stagexl.display_ex;
 /// moving/animated body.
 
 class FlipBook extends InteractiveObject implements Animatable {
-
   List<BitmapData> _bitmapDatas;
   List<double> _frameDurations;
 
@@ -20,9 +19,8 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   //---------------------------------------------------------------------------
 
-  FlipBook(List<BitmapData> bitmapDatas, [
-      int frameRate = 30, bool loop = true]) {
-
+  FlipBook(List<BitmapData> bitmapDatas,
+      [int frameRate = 30, bool loop = true]) {
     _bitmapDatas = bitmapDatas;
     _frameDurations = new List.filled(_bitmapDatas.length, 1.0 / frameRate);
 
@@ -52,7 +50,9 @@ class FlipBook extends InteractiveObject implements Animatable {
   int get totalFrames => _bitmapDatas.length;
 
   bool get loop => _loop;
-  set loop(bool value) { _loop = value; }
+  set loop(bool value) {
+    _loop = value;
+  }
 
   bool get playing => _play;
 
@@ -110,7 +110,6 @@ class FlipBook extends InteractiveObject implements Animatable {
   ///  * the [stop] method was called.
 
   Future playWith(Juggler juggler, {int gotoFrame, int stopFrame}) {
-
     _play = true;
     _frameTime = null;
     _currentFrame = gotoFrame ?? currentFrame;
@@ -130,7 +129,6 @@ class FlipBook extends InteractiveObject implements Animatable {
   //---------------------------------------------------------------------------
 
   void nextFrame() {
-
     var lastFrame = totalFrames - 1;
     var nextFrame = currentFrame + 1;
     if (nextFrame > lastFrame) nextFrame = loop ? 0 : lastFrame;
@@ -141,7 +139,6 @@ class FlipBook extends InteractiveObject implements Animatable {
   }
 
   void prevFrame() {
-
     var lastFrame = totalFrames - 1;
     var prevFrame = currentFrame - 1;
     if (prevFrame < 0) prevFrame = loop ? lastFrame : 0;
@@ -156,20 +153,15 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   @override
   bool advanceTime(num time) {
-
     if (_play == false) return true;
 
     if (_frameTime == null) {
-
       _frameTime = 0.0;
       this.dispatchEvent(_progressEvent);
-
     } else {
-
       _frameTime += time;
 
       while (_play) {
-
         var frameDuration = _frameDurations[_currentFrame];
         if (frameDuration > _frameTime) break;
 

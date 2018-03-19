@@ -5,4 +5,3 @@ part of stagexl.drawing;
 abstract class GraphicsCommandFill extends GraphicsCommand {
   GraphicsCommandFill();
 }
-

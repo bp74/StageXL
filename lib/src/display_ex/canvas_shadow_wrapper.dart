@@ -24,7 +24,6 @@ part of stagexl.display_ex;
 ///     stage.addChild(shadow);
 ///
 class CanvasShadowWrapper extends DisplayObject {
-
   final DisplayObject displayObject;
 
   int shadowColor;
@@ -32,49 +31,73 @@ class CanvasShadowWrapper extends DisplayObject {
   num shadowOffsetY;
   num shadowBlur;
 
-  CanvasShadowWrapper(this.displayObject, [
-    this.shadowColor = Color.Black,
-    this.shadowOffsetX = 10.0, this.shadowOffsetY = 10.0,
-    this.shadowBlur = 0.0]);
+  CanvasShadowWrapper(this.displayObject,
+      [this.shadowColor = Color.Black,
+      this.shadowOffsetX = 10.0,
+      this.shadowOffsetY = 10.0,
+      this.shadowBlur = 0.0]);
 
   //-----------------------------------------------------------------------------------------------
 
   void _throwUnsupportedError() {
-    throw new UnsupportedError("CanvasShadowWrapper does not implement this property or method.");
+    throw new UnsupportedError(
+        "CanvasShadowWrapper does not implement this property or method.");
   }
 
   @override
-  set x(num value) { _throwUnsupportedError(); }
+  set x(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set y(num value) { _throwUnsupportedError(); }
+  set y(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set pivotX(num value) { _throwUnsupportedError(); }
+  set pivotX(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set pivotY(num value) { _throwUnsupportedError(); }
+  set pivotY(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set scaleX(num value) { _throwUnsupportedError(); }
+  set scaleX(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set scaleY(num value) { _throwUnsupportedError(); }
+  set scaleY(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set skewX(num value) { _throwUnsupportedError(); }
+  set skewX(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set skewY(num value) { _throwUnsupportedError(); }
+  set skewY(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set rotation(num value) { _throwUnsupportedError(); }
+  set rotation(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set alpha(num value) { _throwUnsupportedError(); }
+  set alpha(num value) {
+    _throwUnsupportedError();
+  }
 
   @override
-  set mask(Mask mask) { _throwUnsupportedError(); }
+  set mask(Mask mask) {
+    _throwUnsupportedError();
+  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -99,8 +122,10 @@ class CanvasShadowWrapper extends DisplayObject {
       rawContext.save();
       rawContext.shadowColor = color2rgba(shadowColor);
       rawContext.shadowBlur = sqrt(shadowMatrix.det) * shadowBlur;
-      rawContext.shadowOffsetX = shadowOffsetX * shadowMatrix.a + shadowOffsetY * shadowMatrix.c;
-      rawContext.shadowOffsetY = shadowOffsetX * shadowMatrix.b + shadowOffsetY * shadowMatrix.d;
+      rawContext.shadowOffsetX =
+          shadowOffsetX * shadowMatrix.a + shadowOffsetY * shadowMatrix.c;
+      rawContext.shadowOffsetY =
+          shadowOffsetX * shadowMatrix.b + shadowOffsetY * shadowMatrix.d;
       renderState.renderObject(this.displayObject);
       rawContext.restore();
     } else {

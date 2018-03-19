@@ -1,14 +1,13 @@
 part of stagexl.drawing;
 
 class GraphicsCommandQuadraticCurveTo extends GraphicsCommand {
-
   double _controlX;
   double _controlY;
   double _endX;
   double _endY;
 
-  GraphicsCommandQuadraticCurveTo(num controlX, num controlY, num endX, num endY)
-
+  GraphicsCommandQuadraticCurveTo(
+      num controlX, num controlY, num endX, num endY)
       : _controlX = controlX.toDouble(),
         _controlY = controlY.toDouble(),
         _endX = endX.toDouble(),
@@ -50,5 +49,4 @@ class GraphicsCommandQuadraticCurveTo extends GraphicsCommand {
   void updateContext(GraphicsContext context) {
     context.quadraticCurveTo(controlX, controlY, endX, endY);
   }
-
 }

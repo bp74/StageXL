@@ -1,7 +1,6 @@
 part of stagexl.media;
 
 class WebAudioApiSoundChannel extends SoundChannel {
-
   WebAudioApiSound _webAudioApiSound;
   SoundTransform _soundTransform;
   WebAudioApiMixer _mixer;
@@ -17,11 +16,8 @@ class WebAudioApiSoundChannel extends SoundChannel {
   num _position = 0.0;
   num _timeOffset = 0.0;
 
-  WebAudioApiSoundChannel(
-      WebAudioApiSound webAudioApiSound,
-      num startTime, num duration, bool loop,
-      SoundTransform soundTransform) {
-
+  WebAudioApiSoundChannel(WebAudioApiSound webAudioApiSound, num startTime,
+      num duration, bool loop, SoundTransform soundTransform) {
     _soundTransform = soundTransform ?? new SoundTransform();
     _webAudioApiSound = webAudioApiSound;
     _startTime = startTime.toDouble();
@@ -84,7 +80,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
     } else if (_stopped) {
       // we can't pause/resume the audio playback.
       _paused = _stopped || value;
-    } else if (value){
+    } else if (value) {
       _position = this.position;
       _paused = true;
       _sourceNodeEndedSubscription?.cancel();

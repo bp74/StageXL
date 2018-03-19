@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class _GraphicsCommandMeshColor extends GraphicsCommand {
-
   final _GraphicsMesh mesh;
   final int color;
 
@@ -16,7 +15,6 @@ class _GraphicsCommandMeshColor extends GraphicsCommand {
 }
 
 class _GraphicsCommandMeshGradient extends GraphicsCommand {
-
   final _GraphicsMesh mesh;
   final GraphicsGradient gradient;
 
@@ -31,7 +29,6 @@ class _GraphicsCommandMeshGradient extends GraphicsCommand {
 }
 
 class _GraphicsCommandMeshPattern extends GraphicsCommand {
-
   final _GraphicsMesh mesh;
   final GraphicsPattern pattern;
 

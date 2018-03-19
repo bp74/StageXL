@@ -4,7 +4,6 @@ part of stagexl.engine;
 /// that can be rendered by the engine.
 ///
 abstract class RenderFilter {
-
   Rectangle<int> get overlap;
   List<int> get renderPassSources;
   List<int> get renderPassTargets;
@@ -15,5 +14,6 @@ abstract class RenderFilter {
     return overlap.width == 0 && overlap.height == 0 && rps.length == 1;
   }
 
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass);
+  void renderFilter(
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass);
 }

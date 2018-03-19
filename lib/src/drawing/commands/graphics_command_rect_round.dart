@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class GraphicsCommandRectRound extends GraphicsCommand {
-
   double _x;
   double _y;
   double _width;
@@ -10,9 +9,7 @@ class GraphicsCommandRectRound extends GraphicsCommand {
   double _ellipseHeight;
 
   GraphicsCommandRectRound(
-      num x, num y, num width, num height,
-      num ellipseWidth, num ellipseHeight)
-
+      num x, num y, num width, num height, num ellipseWidth, num ellipseHeight)
       : _x = x.toDouble(),
         _y = y.toDouble(),
         _width = width.toDouble(),
@@ -72,12 +69,12 @@ class GraphicsCommandRectRound extends GraphicsCommand {
     context.lineTo(x + width - ellipseWidth, y);
     context.quadraticCurveTo(x + width, y, x + width, y + ellipseHeight);
     context.lineTo(x + width, y + height - ellipseHeight);
-    context.quadraticCurveTo(x + width, y + height, x + width - ellipseWidth, y + height);
+    context.quadraticCurveTo(
+        x + width, y + height, x + width - ellipseWidth, y + height);
     context.lineTo(x + ellipseWidth, y + height);
     context.quadraticCurveTo(x, y + height, x, y + height - ellipseHeight);
     context.lineTo(x, y + ellipseHeight);
     context.quadraticCurveTo(x, y, x + ellipseWidth, y);
     context.closePath();
   }
-
 }
