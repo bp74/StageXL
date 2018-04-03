@@ -25,7 +25,7 @@ class SoundSprite {
 
     var soundSpriteJson = await HttpRequest.getString(url);
     var data = JSON.decode(soundSpriteJson);
-    var urls = data['urls'] as List<String>;
+    var urls = data['urls'] as List<dynamic>;
     var segments = data["sprite"];
     var soundUrls = new List<String>();
 
@@ -40,7 +40,7 @@ class SoundSprite {
       }
     }
 
-    soundUrls.addAll(urls.map((String u) => replaceFilename(url, u)));
+    soundUrls.addAll(urls.map((u) => replaceFilename(url, u)));
     soundLoadOptions = (soundLoadOptions ?? Sound.defaultLoadOptions).clone();
     soundLoadOptions.alternativeUrls = soundUrls.skip(1).toList();
     soundSprite._sound = await Sound.load(soundUrls[0], soundLoadOptions);
