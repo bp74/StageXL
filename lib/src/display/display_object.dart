@@ -1019,6 +1019,7 @@ abstract class DisplayObject extends EventDispatcher
       obj1 = obj1.parent;
       depth1 -= 1;
     }
+    // ignore: invariant_booleans
     while (depth2 > depth1) {
       obj2 = obj2.parent;
       depth2 -= 1;

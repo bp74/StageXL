@@ -31,6 +31,7 @@ class TimeGauge extends Gauge implements Animatable {
   bool advanceTime(num time) {
     if (_isStarted && ratio > 0.0) {
       ratio = ratio - time / totalTime;
+      // ignore: invariant_booleans
       if (ratio == 0.0) pause();
     }
     return true;
