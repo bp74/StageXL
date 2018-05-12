@@ -86,10 +86,10 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   Rectangle<num> getBounds() {
-    num maxX = double.NEGATIVE_INFINITY;
-    num minX = double.INFINITY;
-    num maxY = double.NEGATIVE_INFINITY;
-    num minY = double.INFINITY;
+    num maxX = double.negativeInfinity;
+    num minX = double.infinity;
+    num maxY = double.negativeInfinity;
+    num minY = double.infinity;
 
     for (int i = 0; i < points.length; i++) {
       Point<num> point = points[i];

@@ -357,10 +357,10 @@ abstract class DisplayObjectContainer extends InteractiveObject
   Rectangle<num> get bounds {
     if (_children.length == 0) return super.bounds;
 
-    num left = double.INFINITY;
-    num top = double.INFINITY;
-    num right = double.NEGATIVE_INFINITY;
-    num bottom = double.NEGATIVE_INFINITY;
+    num left = double.infinity;
+    num top = double.infinity;
+    num right = double.negativeInfinity;
+    num bottom = double.negativeInfinity;
 
     for (int i = 0; i < _children.length; i++) {
       var rectangle = _children[i].boundsTransformed;

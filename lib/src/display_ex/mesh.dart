@@ -140,10 +140,10 @@ class Mesh extends DisplayObject {
 
   @override
   Rectangle<num> get bounds {
-    double left = double.INFINITY;
-    double top = double.INFINITY;
-    double right = double.NEGATIVE_INFINITY;
-    double bottom = double.NEGATIVE_INFINITY;
+    double left = double.infinity;
+    double top = double.infinity;
+    double right = double.negativeInfinity;
+    double bottom = double.negativeInfinity;
 
     for (int i = 0; i < ixList.length; i++) {
       int index = ixList[i + 0];

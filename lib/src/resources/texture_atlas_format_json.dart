@@ -9,7 +9,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     var pixelRatio = loader.getPixelRatio();
     var textureAtlas = new TextureAtlas(pixelRatio);
 
-    var json = JSON.decode(source);
+    var json = jsonDecode(source);
     var frames = json["frames"];
     var meta = json["meta"] as Map;
     var image = meta["image"] as String;

@@ -288,7 +288,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var sy = cy;
             var rx = p[i + 0];
             var ry = p[i + 1];
-            var ra = p[i + 2] * PI / 180.0;
+            var ra = p[i + 2] * pi / 180.0;
             var fa = p[i + 3] != 0.0;
             var fs = p[i + 4] != 0.0;
             var ex = cx += p[i + 5];
@@ -303,7 +303,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var sy = cy;
             var rx = p[i + 0];
             var ry = p[i + 1];
-            var ra = p[i + 2] * PI / 180.0;
+            var ra = p[i + 2] * pi / 180.0;
             var fa = p[i + 3] != 0.0;
             var fs = p[i + 4] != 0.0;
             var ex = cx = p[i + 5];

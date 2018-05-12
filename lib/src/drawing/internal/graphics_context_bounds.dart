@@ -1,10 +1,10 @@
 part of stagexl.drawing;
 
 class _GraphicsContextBounds extends _GraphicsContextBase {
-  double _minX = 0.0 + double.MAX_FINITE;
-  double _minY = 0.0 + double.MAX_FINITE;
-  double _maxX = 0.0 - double.MAX_FINITE;
-  double _maxY = 0.0 - double.MAX_FINITE;
+  double _minX = 0.0 + double.maxFinite;
+  double _minY = 0.0 + double.maxFinite;
+  double _maxX = 0.0 - double.maxFinite;
+  double _maxY = 0.0 - double.maxFinite;
 
   //---------------------------------------------------------------------------
 

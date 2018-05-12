@@ -796,7 +796,7 @@ class TextField extends InteractiveObject {
       var lineY2 = textLineMetrics.y + textLineMetrics.descent;
 
       if (lineY1 <= mouseY && lineY2 >= mouseY) {
-        var bestDistance = double.INFINITY;
+        var bestDistance = double.infinity;
         var bestIndex = 0;
 
         for (var c = 0; c <= text.length; c++) {
