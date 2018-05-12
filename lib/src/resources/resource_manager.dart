@@ -65,11 +65,8 @@ class ResourceManager {
     }
   }
 
-  BitmapData getBitmapData(String name) {
-    var value = _getResourceValue("BitmapData", name);
-    if (value is! BitmapData) throw "dart2js_hint";
-    return value;
-  }
+  BitmapData getBitmapData(String name) =>
+      _getResourceValue("BitmapData", name) as BitmapData;
 
   //----------------------------------------------------------------------------
 

@@ -46,7 +46,7 @@ class EventDispatcher {
       _eventStreams = eventStreams;
     }
 
-    var eventStream = eventStreams[eventType];
+    EventStream<T> eventStream = eventStreams[eventType];
     if (eventStream == null) {
       eventStream = new EventStream<T>._(this, eventType);
       eventStreams[eventType] = eventStream;
