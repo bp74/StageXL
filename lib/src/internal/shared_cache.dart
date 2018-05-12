@@ -17,7 +17,6 @@ class SharedCacheNode<E> {
 //------------------------------------------------------------------------------
 
 class SharedCache<K, E> extends EventDispatcher {
-
   Map<K, SharedCacheNode<E>> _cachedObjects = new Map<K, SharedCacheNode<E>>();
   bool _autoReleaseUnusedObjects = true;
 
@@ -43,7 +42,6 @@ class SharedCache<K, E> extends EventDispatcher {
   }
 
   void releaseUnusedObjects() {
-
     // no unused objects should exist when auto-releasing
     if (_autoReleaseUnusedObjects) return;
 

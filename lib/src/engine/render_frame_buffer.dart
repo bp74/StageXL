@@ -1,7 +1,6 @@
 part of stagexl.engine;
 
 class RenderFrameBuffer {
-
   RenderTexture _renderTexture;
   RenderStencilBuffer _renderStencilBuffer;
   RenderContextWebGL _renderContext;
@@ -31,7 +30,6 @@ class RenderFrameBuffer {
   /// Call the dispose method to release memory allocated by WebGL.
 
   void dispose() {
-
     if (_renderTexture != null) _renderTexture.dispose();
     if (_renderStencilBuffer != null) _renderStencilBuffer.dispose();
     if (_framebuffer != null) _renderingContext.deleteFramebuffer(_framebuffer);
@@ -45,9 +43,7 @@ class RenderFrameBuffer {
   //---------------------------------------------------------------------------
 
   void activate(RenderContextWebGL renderContext) {
-
     if (this.contextIdentifier != renderContext.contextIdentifier) {
-
       _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
@@ -64,14 +60,12 @@ class RenderFrameBuffer {
       var stencilData = _renderStencilBuffer.renderbuffer;
 
       _renderingContext.bindFramebuffer(target, _framebuffer);
-      _renderingContext.framebufferTexture2D(target, color, colorTarget, colorData, 0);
-      _renderingContext.framebufferRenderbuffer(target, stencil, stencilTarget, stencilData);
-
+      _renderingContext.framebufferTexture2D(
+          target, color, colorTarget, colorData, 0);
+      _renderingContext.framebufferRenderbuffer(
+          target, stencil, stencilTarget, stencilData);
     } else {
-
       _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, _framebuffer);
-
     }
   }
-
 }

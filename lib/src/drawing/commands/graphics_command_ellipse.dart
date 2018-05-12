@@ -1,14 +1,12 @@
 part of stagexl.drawing;
 
 class GraphicsCommandEllipse extends GraphicsCommand {
-
   double _x;
   double _y;
   double _width;
   double _height;
 
-  GraphicsCommandEllipse( num x, num y, num width, num height)
-
+  GraphicsCommandEllipse(num x, num y, num width, num height)
       : _x = x.toDouble(),
         _y = y.toDouble(),
         _width = width.toDouble(),
@@ -48,7 +46,6 @@ class GraphicsCommandEllipse extends GraphicsCommand {
 
   @override
   void updateContext(GraphicsContext context) {
-
     const kappa = 0.5522848;
     var ox = (_width / 2) * kappa;
     var oy = (_height / 2) * kappa;
@@ -66,5 +63,4 @@ class GraphicsCommandEllipse extends GraphicsCommand {
     context.bezierCurveTo(xm - ox, y2, x1, ym + oy, x1, ym);
     context.closePath();
   }
-
 }

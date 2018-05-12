@@ -10,7 +10,6 @@ import '../internal/filter_helpers.dart';
 import '../internal/tools.dart';
 
 class BlurFilter extends BitmapFilter {
-
   int _blurX;
   int _blurY;
   int _quality;
@@ -74,14 +73,13 @@ class BlurFilter extends BitmapFilter {
   int get quality => _quality;
 
   set quality(int value) {
-
     RangeError.checkValueInInterval(value, 1, 5);
 
     _quality = value;
     _renderPassSources.clear();
     _renderPassTargets.clear();
 
-    for(int i = 0; i < value; i++) {
+    for (int i = 0; i < value; i++) {
       _renderPassSources.add(i * 2 + 0);
       _renderPassSources.add(i * 2 + 1);
       _renderPassTargets.add(i * 2 + 1);
@@ -93,7 +91,6 @@ class BlurFilter extends BitmapFilter {
 
   @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
-
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -133,11 +130,8 @@ class BlurFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState,
-      RenderTextureQuad renderTextureQuad,
-      int pass) {
-
-    var renderContext = renderState.renderContext as RenderContextWebGL ;
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+    var renderContext = renderState.renderContext as RenderContextWebGL;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     int passCount = _renderPassSources.length;
     num passScale = pow(0.5, pass >> 1);
@@ -164,7 +158,6 @@ class BlurFilter extends BitmapFilter {
 //-----------------------------------------------------------------------------
 
 class BlurFilterProgram extends RenderProgramSimple {
-
   @override
   String get vertexShaderSource => """
 
@@ -217,5 +210,4 @@ class BlurFilterProgram extends RenderProgramSimple {
     renderingContext.uniform1f(uniforms["uAlpha"], alpha);
     renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
   }
-
 }

@@ -1,7 +1,6 @@
 part of stagexl.display;
 
 abstract class BitmapFilter extends RenderFilter {
-
   BitmapFilter clone();
 
   @override
@@ -18,7 +17,8 @@ abstract class BitmapFilter extends RenderFilter {
   }
 
   @override
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+  void renderFilter(
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     renderState.renderTextureQuad(renderTextureQuad);
   }
 }

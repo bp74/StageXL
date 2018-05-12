@@ -3,7 +3,6 @@ part of stagexl.display;
 /// The options used by the [Stage] constructor to setup the stage.
 
 class StageOptions {
-
   /// The [RenderEngine] used to render the [Stage].
   ///
   /// Setting the render engine to WebGL will automatically fallback
@@ -133,5 +132,4 @@ class StageOptions {
     options.preventDefaultOnKeyboard = this.preventDefaultOnKeyboard;
     return options;
   }
-
 }

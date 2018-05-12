@@ -1,12 +1,10 @@
 part of stagexl.resources;
 
 class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
-
   const _TextureAtlasFormatStarlingJson();
 
   @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
-
     var source = await loader.getSource();
     var pixelRatio = loader.getPixelRatio();
     var textureAtlas = new TextureAtlas(pixelRatio);
@@ -15,8 +13,7 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
     var imagePath = _getString(json, "imagePath", "");
     var renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
 
-    for(Map subTextureMap in json["SubTexture"]) {
-
+    for (Map subTextureMap in json["SubTexture"]) {
       var name = _getString(subTextureMap, "name", "");
       var rotation = _getBool(subTextureMap, "rotated", false) ? 1 : 0;
 
@@ -31,10 +28,20 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
       var originalHeight = _getInt(subTextureMap, "frameHeight", frameHeight);
 
       var textureAtlasFrame = new TextureAtlasFrame(
-          textureAtlas, renderTextureQuad, name, rotation,
-          offsetX, offsetY, originalWidth, originalHeight,
-          frameX, frameY, frameWidth, frameHeight,
-          null, null);
+          textureAtlas,
+          renderTextureQuad,
+          name,
+          rotation,
+          offsetX,
+          offsetY,
+          originalWidth,
+          originalHeight,
+          frameX,
+          frameY,
+          frameWidth,
+          frameHeight,
+          null,
+          null);
 
       textureAtlas.frames.add(textureAtlasFrame);
     }

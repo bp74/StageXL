@@ -7,7 +7,6 @@ import 'environment.dart' as env;
 import '../errors.dart';
 
 class ImageLoader {
-
   final ImageElement image = new ImageElement();
   final Completer<ImageElement> _completer = new Completer<ImageElement>();
 
@@ -16,7 +15,6 @@ class ImageLoader {
   StreamSubscription _onErrorSubscription;
 
   ImageLoader(String url, bool webpAvailable, bool corsEnabled) : _url = url {
-
     _onLoadSubscription = image.onLoad.listen(_onImageLoad);
     _onErrorSubscription = image.onError.listen(_onImageError);
 

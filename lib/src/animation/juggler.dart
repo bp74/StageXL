@@ -30,7 +30,6 @@ class _AnimatableLink {
 ///     stage.juggler.remove(gameJuggler);
 
 class Juggler implements Animatable {
-
   _AnimatableLink _firstAnimatableLink;
   _AnimatableLink _lastAnimatableLink;
 
@@ -150,7 +149,6 @@ class Juggler implements Animatable {
   ///       print(value);
   ///     }
 
-
   Stream<num> translation(num startValue, num targetValue, num time,
       [TransitionFunction transition = Transition.linear]) async* {
     var startTime = this.elapsedTime;
@@ -174,9 +172,9 @@ class Juggler implements Animatable {
   /// returns false.
 
   void add(Animatable animatable) {
-
     if (animatable is! Animatable) {
-      throw new ArgumentError("The supplied animatable does not extend type Animatable.");
+      throw new ArgumentError(
+          "The supplied animatable does not extend type Animatable.");
     }
 
     if (this.contains(animatable) == false) {
@@ -205,7 +203,6 @@ class Juggler implements Animatable {
   /// Returns true if this juggler contains the specified [animatable].
 
   bool contains(Animatable animatable) {
-
     if (animatable != null) {
       var link = _firstAnimatableLink;
       while (identical(link, _lastAnimatableLink) == false) {
@@ -220,7 +217,6 @@ class Juggler implements Animatable {
   /// Removes all [Animatable]s from this juggler.
 
   void clear() {
-
     var link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
       link.animatable = null;
@@ -236,11 +232,11 @@ class Juggler implements Animatable {
   /// Removes all tweens from the specified [tweenObject].
 
   void removeTweens(TweenObject tweenObject) {
-
     var link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
       var animatable = link.animatable;
-      if (animatable is Tween && identical(animatable.tweenObject, tweenObject)) {
+      if (animatable is Tween &&
+          identical(animatable.tweenObject, tweenObject)) {
         link.animatable = null;
       }
       link = link.nextAnimatableLink;
@@ -251,11 +247,11 @@ class Juggler implements Animatable {
   /// [tweenObject].
 
   bool containsTweens(TweenObject tweenObject) {
-
     var link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
       var animatable = link.animatable;
-      if (animatable is Tween && identical(animatable.tweenObject, tweenObject)) {
+      if (animatable is Tween &&
+          identical(animatable.tweenObject, tweenObject)) {
         return true;
       }
       link = link.nextAnimatableLink;
@@ -291,9 +287,8 @@ class Juggler implements Animatable {
   ///     tween.animate.x.to(100);
   ///     tween.animate.y.to(200);
 
-  Tween addTween(TweenObject tweenObject, num time, [
-                 TransitionFunction transition = Transition.linear]) {
-
+  Tween addTween(TweenObject tweenObject, num time,
+      [TransitionFunction transition = Transition.linear]) {
     Tween tween = new Tween(tweenObject, time, transition);
     add(tween);
     return tween;
@@ -311,9 +306,9 @@ class Juggler implements Animatable {
   ///     });
 
   Translation addTranslation(num startValue, num targetValue, num time,
-                             TransitionFunction transition, void onUpdate(num value)) {
-
-    var translation = new Translation(startValue, targetValue, time, transition);
+      TransitionFunction transition, void onUpdate(num value)) {
+    var translation =
+        new Translation(startValue, targetValue, time, transition);
     translation.onUpdate = onUpdate;
     add(translation);
     return translation;
@@ -364,7 +359,6 @@ class Juggler implements Animatable {
 
   @override
   bool advanceTime(num time) {
-
     _elapsedTime += time;
     _elapsedTimeChangedEvent.add(_elapsedTime);
 
@@ -382,8 +376,8 @@ class Juggler implements Animatable {
         link.nextAnimatableLink = nextLink.nextAnimatableLink;
 
         if (identical(nextLink, lastLink)) lastLink = link;
-        if (identical(nextLink, _lastAnimatableLink)) _lastAnimatableLink = link;
-
+        if (identical(nextLink, _lastAnimatableLink))
+          _lastAnimatableLink = link;
       } else if (animatable.advanceTime(time) == false) {
         link.animatable = null;
       } else {

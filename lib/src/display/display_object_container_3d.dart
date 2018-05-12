@@ -7,10 +7,8 @@ part of stagexl.display;
 /// display object in 3D space. Use the [offsetX], [offsetY] and [offsetZ]
 /// properties to move the display object in 3D space.
 ///
-abstract class DisplayObjectContainer3D
-    extends DisplayObjectContainer
+abstract class DisplayObjectContainer3D extends DisplayObjectContainer
     implements TweenObject3D, RenderObject3D {
-
   PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
 
   num _offsetX = 0.0;
@@ -96,7 +94,6 @@ abstract class DisplayObjectContainer3D
 
   @override
   Matrix3D get transformationMatrix3D {
-
     if (_transformationMatrix3DRefresh) {
       _transformationMatrix3DRefresh = false;
       _transformationMatrix3D.setIdentity();
@@ -120,7 +117,6 @@ abstract class DisplayObjectContainer3D
   //---------------------------------------------------------------------------
 
   bool get isForwardFacing {
-
     var matrix = this.globalTransformationMatrix3D;
 
     num m00 = matrix.m00;

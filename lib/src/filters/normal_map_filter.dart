@@ -9,7 +9,6 @@ import '../ui/color.dart';
 import '../internal/tools.dart';
 
 class NormalMapFilter extends BitmapFilter {
-
   final BitmapData bitmapData;
 
   int ambientColor = Color.White;
@@ -35,8 +34,8 @@ class NormalMapFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-
+  void renderFilter(
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
@@ -54,7 +53,6 @@ class NormalMapFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 
 class NormalMapFilterProgram extends RenderProgram {
-
   // aVertexPosition:      Float32(x), Float32(y)
   // aVertexTexCoord:      Float32(u), Float32(v)
   // aVertexMapCoord:      Float32(v), Float32(v)
@@ -137,35 +135,34 @@ class NormalMapFilterProgram extends RenderProgram {
     }
     """;
 
-
   //-----------------------------------------------------------------------------------------------
 
   @override
   void activate(RenderContextWebGL renderContext) {
-
     super.activate(renderContext);
 
     renderingContext.uniform1i(uniforms["uTexSampler"], 0);
     renderingContext.uniform1i(uniforms["uMapSampler"], 1);
 
-    renderBufferVertex.bindAttribute(attributes["aVertexPosition"],     2, 76,  0);
-    renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"],     2, 76,  8);
-    renderBufferVertex.bindAttribute(attributes["aVertexMapCoord"],     2, 76, 16);
-    renderBufferVertex.bindAttribute(attributes["aVertexAmbientColor"], 4, 76, 24);
-    renderBufferVertex.bindAttribute(attributes["aVertexLightColor"],   4, 76, 40);
-    renderBufferVertex.bindAttribute(attributes["aVertexLightCoord"],   4, 76, 56);
-    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"],        1, 76, 72);
+    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 76, 0);
+    renderBufferVertex.bindAttribute(attributes["aVertexTexCoord"], 2, 76, 8);
+    renderBufferVertex.bindAttribute(attributes["aVertexMapCoord"], 2, 76, 16);
+    renderBufferVertex.bindAttribute(
+        attributes["aVertexAmbientColor"], 4, 76, 24);
+    renderBufferVertex.bindAttribute(
+        attributes["aVertexLightColor"], 4, 76, 40);
+    renderBufferVertex.bindAttribute(
+        attributes["aVertexLightCoord"], 4, 76, 56);
+    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"], 1, 76, 72);
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  void renderNormalMapQuad(
-      RenderState renderState,
-      RenderTextureQuad renderTextureQuad,
-      NormalMapFilter normalMapFilter) {
-
+  void renderNormalMapQuad(RenderState renderState,
+      RenderTextureQuad renderTextureQuad, NormalMapFilter normalMapFilter) {
     num alpha = renderState.globalAlpha;
-    Matrix mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
+    Matrix mapMatrix =
+        normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
     Matrix texMatrix = renderTextureQuad.samplerMatrix;
     Matrix posMatrix = renderState.globalMatrix;
     var ixList = renderTextureQuad.ixList;
@@ -191,7 +188,7 @@ class NormalMapFilterProgram extends RenderProgram {
     num ly = normalMapFilter.lightY;
     num lightX = texMatrix.tx + lx * texMatrix.a + ly * texMatrix.c;
     num lightY = texMatrix.ty + lx * texMatrix.b + ly * texMatrix.d;
-    num lightZ =  math.sqrt(texMatrix.det) * normalMapFilter.lightZ;
+    num lightZ = math.sqrt(texMatrix.det) * normalMapFilter.lightZ;
     num lightRadius = math.sqrt(texMatrix.det) * normalMapFilter.lightRadius;
 
     // check buffer sizes and flush if necessary
@@ -210,7 +207,7 @@ class NormalMapFilterProgram extends RenderProgram {
 
     // copy index list
 
-    for(var i = 0; i < indexCount; i++) {
+    for (var i = 0; i < indexCount; i++) {
       ixData[ixIndex + i] = vxCount + ixList[i];
     }
 
@@ -219,7 +216,7 @@ class NormalMapFilterProgram extends RenderProgram {
 
     // copy vertex list
 
-    for(var i = 0, o = 0; i < vertexCount; i++, o += 4) {
+    for (var i = 0, o = 0; i < vertexCount; i++, o += 4) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
       vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;

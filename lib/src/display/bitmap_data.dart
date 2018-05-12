@@ -17,7 +17,6 @@ part of stagexl.display;
 /// performance.
 
 class BitmapData implements BitmapDrawable {
-
   final num width;
   final num height;
   final RenderTextureQuad renderTextureQuad;
@@ -31,27 +30,32 @@ class BitmapData implements BitmapDrawable {
 
   //----------------------------------------------------------------------------
 
-  factory BitmapData(num width, num height, [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
+  factory BitmapData(num width, num height,
+      [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
     int textureWidth = (width * pixelRatio).round();
     int textureHeight = (height * pixelRatio).round();
-    var renderTexture = new RenderTexture(textureWidth, textureHeight, fillColor);
+    var renderTexture =
+        new RenderTexture(textureWidth, textureHeight, fillColor);
     var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  factory BitmapData.fromImageElement(ImageElement imageElement, [num pixelRatio = 1.0]) {
+  factory BitmapData.fromImageElement(ImageElement imageElement,
+      [num pixelRatio = 1.0]) {
     var renderTexture = new RenderTexture.fromImageElement(imageElement);
     var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  factory BitmapData.fromVideoElement(VideoElement videoElement, [num pixelRatio = 1.0]) {
+  factory BitmapData.fromVideoElement(VideoElement videoElement,
+      [num pixelRatio = 1.0]) {
     var renderTexture = new RenderTexture.fromVideoElement(videoElement);
     var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  factory BitmapData.fromBitmapData(BitmapData bitmapData, Rectangle<num> rectangle) {
+  factory BitmapData.fromBitmapData(
+      BitmapData bitmapData, Rectangle<num> rectangle) {
     var renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
     return new BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
@@ -66,7 +70,8 @@ class BitmapData implements BitmapDrawable {
     var targetUrl = bitmapDataFileInfo.loaderUrl;
     var pixelRatio = bitmapDataFileInfo.pixelRatio;
     var loader = new ImageLoader(targetUrl, options.webp, options.corsEnabled);
-    return loader.done.then((i) => new BitmapData.fromImageElement(i, pixelRatio));
+    return loader.done
+        .then((i) => new BitmapData.fromImageElement(i, pixelRatio));
   }
 
   //----------------------------------------------------------------------------
@@ -75,7 +80,8 @@ class BitmapData implements BitmapDrawable {
 
   BitmapData clone([num pixelRatio]) {
     if (pixelRatio == null) pixelRatio = renderTextureQuad.pixelRatio;
-    var bitmapData = new BitmapData(width, height, Color.Transparent, pixelRatio);
+    var bitmapData =
+        new BitmapData(width, height, Color.Transparent, pixelRatio);
     bitmapData.drawPixels(this, this.rectangle, new Point<num>(0, 0));
     return bitmapData;
   }
@@ -102,18 +108,22 @@ class BitmapData implements BitmapDrawable {
 
   List<BitmapData> sliceIntoFrames(num frameWidth, num frameHeight,
       {int frameCount, num frameSpacing: 0, num frameMargin: 0}) {
-    var cols = (width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
-    var rows = (height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
+    var cols =
+        (width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
+    var rows =
+        (height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
     var frames = new List<BitmapData>();
 
-    frameCount = (frameCount == null) ? rows * cols : min(frameCount, rows * cols);
+    frameCount =
+        (frameCount == null) ? rows * cols : min(frameCount, rows * cols);
 
     for (var f = 0; f < frameCount; f++) {
       var x = f % cols;
       var y = f ~/ cols;
       var frameLeft = frameMargin + x * (frameWidth + frameSpacing);
       var frameTop = frameMargin + y * (frameHeight + frameSpacing);
-      var rectangle = new Rectangle<num>(frameLeft, frameTop, frameWidth, frameHeight);
+      var rectangle =
+          new Rectangle<num>(frameLeft, frameTop, frameWidth, frameHeight);
       var bitmapData = new BitmapData.fromBitmapData(this, rectangle);
       frames.add(bitmapData);
     }
@@ -168,7 +178,8 @@ class BitmapData implements BitmapDrawable {
   ///
   /// NOTE: [drawPixels] is more performant.
 
-  void copyPixels(BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint) {
+  void copyPixels(
+      BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.copyPixels(source, sourceRect, destPoint);
     updateBatch.update();
@@ -180,7 +191,9 @@ class BitmapData implements BitmapDrawable {
   /// BitmapData may be visible if pixels from [source] are transparent. Select a [blendMode]
   /// to customize how two pixels are blended.
 
-  void drawPixels(BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint, [BlendMode blendMode]) {
+  void drawPixels(
+      BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint,
+      [BlendMode blendMode]) {
     var updateBatch = new BitmapDataUpdateBatch(this);
     updateBatch.drawPixels(source, sourceRect, destPoint, blendMode);
     updateBatch.update();

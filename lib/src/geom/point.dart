@@ -6,7 +6,6 @@ import 'dart:math' as math;
 import '../internal/jenkins_hash.dart';
 
 class Point<T extends num> implements math.Point<T> {
-
   @override
   T x;
 
@@ -25,13 +24,14 @@ class Point<T extends num> implements math.Point<T> {
   //---------------------------------------------------------------------------
 
   static num distance(math.Point<num> p1, math.Point<num> p2) =>
-    p1.distanceTo(p2);
+      p1.distanceTo(p2);
 
-  static Point<num> interpolate(math.Point<num> p1, math.Point<num> p2, num f) =>
-    new Point<num>(p2.x + (p1.x - p2.x) * f, p2.y + (p1.y - p2.y) * f);
+  static Point<num> interpolate(
+          math.Point<num> p1, math.Point<num> p2, num f) =>
+      new Point<num>(p2.x + (p1.x - p2.x) * f, p2.y + (p1.y - p2.y) * f);
 
   static Point<num> polar(num len, num angle) =>
-    new Point<num>(len * cos(angle), len * sin(angle));
+      new Point<num>(len * cos(angle), len * sin(angle));
 
   //---------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ class Point<T extends num> implements math.Point<T> {
   /// _runtime_ _error_ in checked mode.
 
   @override
-  Point<T> operator *(num/*T|int*/ factor) {
+  Point<T> operator *(num /*T|int*/ factor) {
     return new Point<T>(x * factor as T, y * factor as T);
   }
 

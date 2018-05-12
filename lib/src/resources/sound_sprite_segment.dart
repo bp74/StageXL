@@ -1,7 +1,6 @@
 part of stagexl.resources;
 
 class SoundSpriteSegment {
-
   final SoundSprite soundSprite;
   final String name;
   final num startTime;
@@ -9,8 +8,7 @@ class SoundSpriteSegment {
   final bool loop;
 
   SoundSpriteSegment(
-      this.soundSprite, this.name,
-      this.startTime, this.duration, this.loop);
+      this.soundSprite, this.name, this.startTime, this.duration, this.loop);
 
   SoundChannel play([bool loop, SoundTransform soundTransform]) {
     return soundSprite.sound.playSegment(

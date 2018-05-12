@@ -38,7 +38,6 @@ part of stagexl.media;
 /// codecs are webm, mp4 and ogg.
 
 class Video {
-
   final VideoElement videoElement;
   bool loop = false;
 
@@ -75,7 +74,8 @@ class Video {
   /// never complete if you call it elsewhere in your code. The same is true
   /// for the ResourceManager.addVideo method.
 
-  static Future<Video> load(String url, [VideoLoadOptions videoLoadOptions]) async {
+  static Future<Video> load(String url,
+      [VideoLoadOptions videoLoadOptions]) async {
     var options = videoLoadOptions ?? Video.defaultLoadOptions;
     var loadData = options.loadData;
     var corsEnabled = options.corsEnabled;
@@ -88,8 +88,7 @@ class Video {
   /// Clone this video instance and the underlying HTML VideoElement to play
   /// the new video independantly from this video.
 
-  Future <Video> clone() {
-
+  Future<Video> clone() {
     var videoElement = this.videoElement.clone(true) as VideoElement;
     Completer<Video> completer = new Completer<Video>();
     StreamSubscription onCanPlaySubscription;
@@ -164,7 +163,6 @@ class Video {
   //---------------------------------------------------------------------------
 
   void _onEnded(html.Event event) {
-
     _endedEvent.add(this);
 
     // we autoloop manualy to avoid a bug in some browser :
@@ -174,7 +172,7 @@ class Video {
     // a 206 result (partial content) and not a simple 200
     // http://stackoverflow.com/a/9549404/1537501
 
-    if(this.loop) {
+    if (this.loop) {
       videoElement.currentTime = 0.0;
       videoElement.play();
     } else {
@@ -194,5 +192,4 @@ class Video {
   void _onPlay(html.Event event) {
     _playEvent.add(this);
   }
-
 }

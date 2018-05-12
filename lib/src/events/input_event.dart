@@ -1,10 +1,6 @@
 part of stagexl.events;
 
-enum InputEventMode {
-  MouseOnly,
-  TouchOnly,
-  MouseAndTouch
-}
+enum InputEventMode { MouseOnly, TouchOnly, MouseAndTouch }
 
 /// The [InputEvent] is a common base class for [MouseEvent] and [TouchEvent].
 ///
@@ -25,7 +21,6 @@ enum InputEventMode {
 ///     }
 
 abstract class InputEvent extends Event {
-
   /// The mouse or touch event that is currently dispatched. The value is only
   /// set if the code is running in the context of a mouse or touch event
   /// propagation, otherwise the value is `null`.
@@ -64,10 +59,9 @@ abstract class InputEvent extends Event {
 
   /// Creates a new [InputEvent].
 
-  InputEvent(String type, bool bubbles,
-      this.localX, this.localY,
-      this.stageX, this.stageY,
-      this.altKey, this.ctrlKey, this.shiftKey) : super(type, bubbles);
+  InputEvent(String type, bool bubbles, this.localX, this.localY, this.stageX,
+      this.stageY, this.altKey, this.ctrlKey, this.shiftKey)
+      : super(type, bubbles);
 
   //---------------------------------------------------------------------------
 

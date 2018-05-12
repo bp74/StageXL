@@ -9,7 +9,6 @@ import '../internal/environment.dart' as env;
 import '../internal/tools.dart';
 
 class TintFilter extends BitmapFilter {
-
   num factorR;
   num factorG;
   num factorB;
@@ -17,11 +16,11 @@ class TintFilter extends BitmapFilter {
 
   TintFilter(this.factorR, this.factorG, this.factorB, this.factorA);
 
-  TintFilter.fromColor(int color) :
-    this.factorR = colorGetR(color) / 255.0,
-    this.factorG = colorGetG(color) / 255.0,
-    this.factorB = colorGetB(color) / 255.0,
-    this.factorA = colorGetA(color) / 255.0;
+  TintFilter.fromColor(int color)
+      : this.factorR = colorGetR(color) / 255.0,
+        this.factorG = colorGetG(color) / 255.0,
+        this.factorB = colorGetB(color) / 255.0,
+        this.factorA = colorGetA(color) / 255.0;
 
   @override
   BitmapFilter clone() => new TintFilter(factorR, factorG, factorB, factorA);
@@ -30,13 +29,16 @@ class TintFilter extends BitmapFilter {
 
   @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
-
     bool isLittleEndianSystem = env.isLittleEndianSystem;
 
-    int d0 = ((isLittleEndianSystem ? this.factorR : this.factorA) * 65536).round();
-    int d1 = ((isLittleEndianSystem ? this.factorG : this.factorB) * 65536).round();
-    int d2 = ((isLittleEndianSystem ? this.factorB : this.factorG) * 65536).round();
-    int d3 = ((isLittleEndianSystem ? this.factorA : this.factorR) * 65536).round();
+    int d0 =
+        ((isLittleEndianSystem ? this.factorR : this.factorA) * 65536).round();
+    int d1 =
+        ((isLittleEndianSystem ? this.factorG : this.factorB) * 65536).round();
+    int d2 =
+        ((isLittleEndianSystem ? this.factorB : this.factorG) * 65536).round();
+    int d3 =
+        ((isLittleEndianSystem ? this.factorA : this.factorR) * 65536).round();
 
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
@@ -45,7 +47,7 @@ class TintFilter extends BitmapFilter {
     ImageData imageData = renderTextureQuad.getImageData();
     List<int> data = imageData.data;
 
-    for(int index = 0 ; index <= data.length - 4; index += 4) {
+    for (int index = 0; index <= data.length - 4; index += 4) {
       int c0 = data[index + 0];
       int c1 = data[index + 1];
       int c2 = data[index + 2];
@@ -64,7 +66,6 @@ class TintFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-
     var renderContext = renderState.renderContext as RenderContextWebGL;
     RenderProgramTinted renderProgram = renderContext.renderProgramTinted;
 
@@ -73,5 +74,4 @@ class TintFilter extends BitmapFilter {
     renderProgram.renderTextureQuad(renderState, renderTextureQuad,
         this.factorR, this.factorG, this.factorB, this.factorA);
   }
-
 }

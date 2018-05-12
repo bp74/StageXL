@@ -6,7 +6,6 @@ import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
 
 void main() {
-
   test('VectorIsZero', () {
     var vector = new Vector(0, 0);
     expect(vector.x, equals(0));
@@ -89,15 +88,20 @@ void main() {
   });
 
   test('VectorLerp', () {
-    expect(new Vector(1, 0).lerp(new Vector(0, -1), 0.5).isWithinXY(0.5, -0.5,
-        0.01), isTrue);
+    expect(
+        new Vector(1, 0)
+            .lerp(new Vector(0, -1), 0.5)
+            .isWithinXY(0.5, -0.5, 0.01),
+        isTrue);
     expect(new Vector(1, 0).lerp(new Vector(-1, 0), 0.5).isWithinXY(0, 0, 0.01),
         isTrue);
   });
 
   test('VectorSlerp', () {
-    expect(new Vector(1, 0).slerp(new Vector(0, -1), 0.5).isWithinXY(0.7, -0.7,
-        0.1), isTrue);
+    expect(
+        new Vector(1, 0)
+            .slerp(new Vector(0, -1), 0.5)
+            .isWithinXY(0.7, -0.7, 0.1),
+        isTrue);
   });
-
 }

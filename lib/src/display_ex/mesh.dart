@@ -29,7 +29,6 @@ part of stagexl.display_ex;
 /// coordinate system of the BitmapData.
 
 class Mesh extends DisplayObject {
-
   BitmapData bitmapData;
 
   final int indexCount;
@@ -54,7 +53,6 @@ class Mesh extends DisplayObject {
   /// and [rows]. A 2x2 grid will create 9 vertices.
 
   factory Mesh.fromGrid(BitmapData bitmapData, int columns, int rows) {
-
     var width = bitmapData.width;
     var height = bitmapData.height;
     var vertexCount = (columns + 1) * (rows + 1);
@@ -62,7 +60,7 @@ class Mesh extends DisplayObject {
     var mesh = new Mesh(bitmapData, vertexCount, triangleCount);
 
     for (int r = 0, vertex = 0; r <= rows; r++) {
-      for(int c = 0; c <= columns; c++) {
+      for (int c = 0; c <= columns; c++) {
         var u = c / columns;
         var v = r / rows;
         var x = width * u;
@@ -142,7 +140,6 @@ class Mesh extends DisplayObject {
 
   @override
   Rectangle<num> get bounds {
-
     double left = double.INFINITY;
     double top = double.INFINITY;
     double right = double.NEGATIVE_INFINITY;
@@ -163,9 +160,7 @@ class Mesh extends DisplayObject {
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-
     for (int i = 0; i < ixList.length - 2; i += 3) {
-
       int i1 = ixList[i + 0] << 2;
       int i2 = ixList[i + 1] << 2;
       int i3 = ixList[i + 2] << 2;
@@ -206,7 +201,6 @@ class Mesh extends DisplayObject {
 
   @override
   void render(RenderState renderState) {
-
     var renderContext = renderState.renderContext;
     var renderTextureQuad = bitmapData.renderTextureQuad;
     var renderTexture = bitmapData.renderTexture;
@@ -231,7 +225,6 @@ class Mesh extends DisplayObject {
     }
 
     renderContext.renderTextureMesh(
-        renderState, renderTexture,
-        ixList, _vxListTemp);
+        renderState, renderTexture, ixList, _vxListTemp);
   }
 }

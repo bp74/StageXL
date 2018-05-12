@@ -5,13 +5,11 @@ part of stagexl.display;
 /// display configuration.
 
 class BitmapDataLoadInfo {
-
   String _sourceUrl;
   String _loaderUrl;
   double _pixelRatio;
 
   BitmapDataLoadInfo(String url, List<double> pixelRatios) {
-
     _sourceUrl = url;
     _loaderUrl = url;
     _pixelRatio = 1.0;
@@ -39,4 +37,3 @@ class BitmapDataLoadInfo {
   String get loaderUrl => _loaderUrl;
   double get pixelRatio => _pixelRatio;
 }
-

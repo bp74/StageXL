@@ -16,32 +16,38 @@ part of stagexl.display_ex;
 ///
 
 class VideoObject extends InteractiveObject {
-
-  static const EventStreamProvider<Event> endedEvent = const EventStreamProvider<Event>("videoEnded");
-  static const EventStreamProvider<Event> pauseEvent = const EventStreamProvider<Event>("videoPause");
-  static const EventStreamProvider<Event> errorEvent = const EventStreamProvider<Event>("videoError");
-  static const EventStreamProvider<Event> playEvent  = const EventStreamProvider<Event>("videoPlay");
+  static const EventStreamProvider<Event> endedEvent =
+      const EventStreamProvider<Event>("videoEnded");
+  static const EventStreamProvider<Event> pauseEvent =
+      const EventStreamProvider<Event>("videoPause");
+  static const EventStreamProvider<Event> errorEvent =
+      const EventStreamProvider<Event>("videoError");
+  static const EventStreamProvider<Event> playEvent =
+      const EventStreamProvider<Event>("videoPlay");
 
   EventStream<Event> get onEnded => VideoObject.endedEvent.forTarget(this);
   EventStream<Event> get onPause => VideoObject.pauseEvent.forTarget(this);
   EventStream<Event> get onError => VideoObject.errorEvent.forTarget(this);
-  EventStream<Event> get onPlay  => VideoObject.playEvent.forTarget(this);
+  EventStream<Event> get onPlay => VideoObject.playEvent.forTarget(this);
 
   Video _video;
   RenderTexture _renderTexture;
   RenderTextureQuad _renderTextureQuad;
 
   VideoObject(Video video, [bool autoplay = false]) {
-
     _video = video;
     _renderTexture = new RenderTexture.fromVideoElement(video.videoElement);
     _renderTextureQuad = _renderTexture.quad;
 
     var videoElement = video.videoElement;
-    videoElement.onEnded.listen((e) => this.dispatchEvent(new Event("videoEnded")));
-    videoElement.onPause.listen((e) => this.dispatchEvent(new Event("videoPause")));
-    videoElement.onError.listen((e) => this.dispatchEvent(new Event("videoError")));
-    videoElement.onPlay.listen((e) => this.dispatchEvent(new Event("videoPlay")));
+    videoElement.onEnded
+        .listen((e) => this.dispatchEvent(new Event("videoEnded")));
+    videoElement.onPause
+        .listen((e) => this.dispatchEvent(new Event("videoPause")));
+    videoElement.onError
+        .listen((e) => this.dispatchEvent(new Event("videoError")));
+    videoElement.onPlay
+        .listen((e) => this.dispatchEvent(new Event("videoPlay")));
 
     if (autoplay) play();
   }

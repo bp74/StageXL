@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class _GraphicsContextBounds extends _GraphicsContextBase {
-
   double _minX = 0.0 + double.MAX_FINITE;
   double _minY = 0.0 + double.MAX_FINITE;
   double _maxX = 0.0 - double.MAX_FINITE;
@@ -43,20 +42,26 @@ class _GraphicsContextBounds extends _GraphicsContextBase {
   }
 
   @override
-  void strokeColor(int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+  void strokeColor(
+      int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
+    _GraphicsMesh mesh =
+        new _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _updateBoundsForMesh(mesh);
   }
 
   @override
-  void strokeGradient(GraphicsGradient gradient, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+  void strokeGradient(GraphicsGradient gradient, double width,
+      JointStyle jointStyle, CapsStyle capsStyle) {
+    _GraphicsMesh mesh =
+        new _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _updateBoundsForMesh(mesh);
   }
 
   @override
-  void strokePattern(GraphicsPattern pattern, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+  void strokePattern(GraphicsPattern pattern, double width,
+      JointStyle jointStyle, CapsStyle capsStyle) {
+    _GraphicsMesh mesh =
+        new _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _updateBoundsForMesh(mesh);
   }
 
@@ -88,5 +93,4 @@ class _GraphicsContextBounds extends _GraphicsContextBase {
       _maxY = _maxY < meshSegment.maxY ? meshSegment.maxY : _maxY;
     }
   }
-
 }

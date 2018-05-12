@@ -1,7 +1,6 @@
 part of stagexl.resources;
 
 class ResourceManagerResource {
-
   final String kind;
   final String name;
   final String url;
@@ -10,7 +9,6 @@ class ResourceManagerResource {
   final Completer _completer = new Completer();
 
   ResourceManagerResource(this.kind, this.name, this.url, Future loader) {
-
     loader.then((resource) {
       _value = resource;
     }).catchError((error) {

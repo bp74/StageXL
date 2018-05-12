@@ -1,7 +1,6 @@
 part of stagexl.display_ex;
 
 class ViewportContainer extends DisplayObjectContainer {
-
   Mask _viewportMask;
   Rectangle<num> _viewportRectangle;
   Matrix _viewportMatrix = new Matrix.fromIdentity();

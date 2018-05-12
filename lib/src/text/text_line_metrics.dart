@@ -1,12 +1,11 @@
 part of stagexl.text;
 
 class TextLineMetrics {
-
   String _text;
   int _textIndex;
 
   num _x = 0.0;
-  num _y = 0.0;   // relative to baseline
+  num _y = 0.0; // relative to baseline
   num _width = 0.0;
   num _height = 0.0;
   num _ascent = 0.0;

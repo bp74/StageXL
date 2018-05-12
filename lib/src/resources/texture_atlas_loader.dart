@@ -6,7 +6,6 @@ part of stagexl.resources;
 /// from a custom source by implementing a TextureAtlasLoader class.
 
 abstract class TextureAtlasLoader {
-
   /// Get the pixel ratio of the texture atlas.
   double getPixelRatio();
 
@@ -21,7 +20,6 @@ abstract class TextureAtlasLoader {
 //-------------------------------------------------------------------------------------------------
 
 class _TextureAtlasLoaderFile extends TextureAtlasLoader {
-
   BitmapDataLoadOptions _loadOptions;
   BitmapDataLoadInfo _loadInfo;
 
@@ -55,12 +53,12 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
 //-------------------------------------------------------------------------------------------------
 
 class _TextureAtlasLoaderTextureAtlas extends TextureAtlasLoader {
-
   final TextureAtlas textureAtlas;
   final String namePrefix;
   final String source;
 
-  _TextureAtlasLoaderTextureAtlas(this.textureAtlas, this.namePrefix, this.source);
+  _TextureAtlasLoaderTextureAtlas(
+      this.textureAtlas, this.namePrefix, this.source);
 
   @override
   double getPixelRatio() => this.textureAtlas.pixelRatio;
@@ -80,7 +78,6 @@ class _TextureAtlasLoaderTextureAtlas extends TextureAtlasLoader {
 //-------------------------------------------------------------------------------------------------
 
 class _TextureAtlasLoaderBitmapData extends TextureAtlasLoader {
-
   final BitmapData bitmapData;
   final String source;
 

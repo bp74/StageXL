@@ -2,8 +2,8 @@ library stagexl.internal.tools;
 
 int colorGetA(int color) => (color >> 24) & 0xFF;
 int colorGetR(int color) => (color >> 16) & 0xFF;
-int colorGetG(int color) => (color >>  8) & 0xFF;
-int colorGetB(int color) => (color      ) & 0xFF;
+int colorGetG(int color) => (color >> 8) & 0xFF;
+int colorGetB(int color) => (color) & 0xFF;
 
 String color2rgb(int color) {
   int r = colorGetR(color);

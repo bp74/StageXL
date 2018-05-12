@@ -27,7 +27,6 @@ part of stagexl.events;
 /// can instead use the [EventDispatcher] as a mixin.
 
 class EventDispatcher {
-
   Map<String, EventStream<Event>> _eventStreams;
 
   //----------------------------------------------------------------------------
@@ -41,7 +40,6 @@ class EventDispatcher {
   ///     sprite.onMouseClick.capture(_onMouseClick);
   ///     sprite.on("CustomEvent").listen(_onCustomEvent);
   EventStream<T> on<T extends Event>(String eventType) {
-
     var eventStreams = _eventStreams;
     if (eventStreams == null) {
       eventStreams = new Map<String, EventStream<Event>>();
@@ -63,8 +61,7 @@ class EventDispatcher {
   /// [useCapture] paramenter defines if the event listeners should be
   /// registered for the capturing event phase or not.
 
-  bool hasEventListener(String eventType, { bool useCapture: false }) {
-
+  bool hasEventListener(String eventType, {bool useCapture: false}) {
     var eventStreams = _eventStreams;
     if (eventStreams == null) return false;
     var eventStream = eventStreams[eventType];
@@ -97,8 +94,7 @@ class EventDispatcher {
 
   StreamSubscription<T> addEventListener<T extends Event>(
       String eventType, EventListener<T> eventListener,
-      { bool useCapture: false, int priority: 0 }) {
-
+      {bool useCapture: false, int priority: 0}) {
     var eventStream = this.on<T>(eventType);
     return eventStream._subscribe(eventListener, useCapture, priority);
   }
@@ -121,8 +117,7 @@ class EventDispatcher {
 
   void removeEventListener<T extends Event>(
       String eventType, EventListener<T> eventListener,
-      { bool useCapture: false }) {
-
+      {bool useCapture: false}) {
     var eventStream = this.on<T>(eventType);
     eventStream._unsubscribe(eventListener, useCapture);
   }
@@ -145,8 +140,8 @@ class EventDispatcher {
   /// way how events are dispatched for display list object. Please use
   /// [dispatchEvent] instead.
 
-  void dispatchEventRaw(Event event, EventDispatcher target, EventPhase eventPhase) {
-
+  void dispatchEventRaw(
+      Event event, EventDispatcher target, EventPhase eventPhase) {
     event._isPropagationStopped = false;
     event._isImmediatePropagationStopped = false;
 
@@ -157,5 +152,4 @@ class EventDispatcher {
 
     eventStream._dispatchEventInternal(event, target, eventPhase);
   }
-
 }

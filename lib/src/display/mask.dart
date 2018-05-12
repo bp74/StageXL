@@ -15,7 +15,6 @@ part of stagexl.display;
 ///     rifleScope.addChild(world);
 
 abstract class Mask implements RenderMask {
-
   /// You can use the [transformationMatrix] to change the size,
   /// position, scale, rotation etc. from the Mask.
 
@@ -88,7 +87,6 @@ abstract class Mask implements RenderMask {
 //-----------------------------------------------------------------------------
 
 abstract class _TransformedMask extends Mask {
-
   bool hitTestTransformed(num x, num y);
 
   @override
@@ -115,7 +113,6 @@ abstract class _TransformedMask extends Mask {
 //-----------------------------------------------------------------------------
 
 class _RectangleMask extends _TransformedMask implements ScissorRenderMask {
-
   final Rectangle<num> rectangle;
 
   _RectangleMask(this.rectangle);
@@ -137,17 +134,13 @@ class _RectangleMask extends _TransformedMask implements ScissorRenderMask {
 
   @override
   void renderMaskTransformed(RenderState renderState) {
-
     var renderContext = renderState.renderContext;
 
     if (renderContext is RenderContextCanvas) {
-
       renderContext.setTransform(renderState.globalMatrix);
       renderContext.rawContext.rect(
           rectangle.left, rectangle.top, rectangle.width, rectangle.height);
-
     } else {
-
       var l = rectangle.left;
       var t = rectangle.top;
       var r = rectangle.right;
@@ -162,7 +155,6 @@ class _RectangleMask extends _TransformedMask implements ScissorRenderMask {
 //-----------------------------------------------------------------------------
 
 class _GraphicsMask extends _TransformedMask {
-
   final Graphics graphics;
 
   _GraphicsMask(this.graphics);
@@ -181,7 +173,6 @@ class _GraphicsMask extends _TransformedMask {
 //-----------------------------------------------------------------------------
 
 class _ShapeMask extends _TransformedMask {
-
   final Shape shape;
 
   _ShapeMask(this.shape);

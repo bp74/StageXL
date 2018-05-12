@@ -1,7 +1,6 @@
 part of stagexl.resources;
 
 class ResourceManager {
-
   final Map<String, ResourceManagerResource> _resourceMap =
       new Map<String, ResourceManagerResource>();
 
@@ -36,16 +35,16 @@ class ResourceManager {
   //----------------------------------------------------------------------------
 
   List<ResourceManagerResource> get finishedResources =>
-    _resourceMap.values.where((r) => r.value != null).toList();
+      _resourceMap.values.where((r) => r.value != null).toList();
 
-  List<ResourceManagerResource> get pendingResources =>
-    _resourceMap.values.where((r) => r.value == null && r.error == null).toList();
+  List<ResourceManagerResource> get pendingResources => _resourceMap.values
+      .where((r) => r.value == null && r.error == null)
+      .toList();
 
   List<ResourceManagerResource> get failedResources =>
-    _resourceMap.values.where((r) => r.error != null).toList();
+      _resourceMap.values.where((r) => r.error != null).toList();
 
-  List<ResourceManagerResource> get resources =>
-    _resourceMap.values.toList();
+  List<ResourceManagerResource> get resources => _resourceMap.values.toList();
 
   //----------------------------------------------------------------------------
 
@@ -58,7 +57,7 @@ class ResourceManager {
     _addResource("BitmapData", name, url, loader);
   }
 
-  void removeBitmapData(String name, {bool dispose:true}) {
+  void removeBitmapData(String name, {bool dispose: true}) {
     var resourceManagerResource = _removeResource("BitmapData", name);
     var bitmapData = resourceManagerResource?.value;
     if (bitmapData is BitmapData && dispose) {
@@ -78,15 +77,14 @@ class ResourceManager {
     return _containsResource("TextureAtlas", name);
   }
 
-  void addTextureAtlas(String name, String url, [
-      TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
+  void addTextureAtlas(String name, String url,
+      [TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
       BitmapDataLoadOptions options]) {
-
     var loader = TextureAtlas.load(url, textureAtlasFormat, options);
     _addResource("TextureAtlas", name, url, loader);
   }
 
-  void removeTextureAtlas(String name, {bool dispose:true}) {
+  void removeTextureAtlas(String name, {bool dispose: true}) {
     var resourceManagerResource = _removeResource("TextureAtlas", name);
     var textureAtlas = resourceManagerResource?.value;
     if (textureAtlas is TextureAtlas && dispose) {
@@ -182,7 +180,8 @@ class ResourceManager {
   }
 
   void addTextFile(String name, String url) {
-    var loader = HttpRequest.getString(url).then((text) => text, onError: (error) {
+    var loader =
+        HttpRequest.getString(url).then((text) => text, onError: (error) {
       throw new StateError("Failed to load text file.");
     });
     _addResource("TextFile", name, url, loader);
@@ -227,12 +226,12 @@ class ResourceManager {
   }
 
   void _addResource(String kind, String name, String url, Future loader) {
-
     var key = "$kind.$name";
     var resource = new ResourceManagerResource(kind, name, url, loader);
 
     if (_resourceMap.containsKey(key)) {
-      throw new StateError("ResourceManager already contains a resource called '$name'");
+      throw new StateError(
+          "ResourceManager already contains a resource called '$name'");
     } else {
       _resourceMap[key] = resource;
     }

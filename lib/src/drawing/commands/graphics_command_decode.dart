@@ -3,7 +3,6 @@ part of stagexl.drawing;
 enum PathEncoding { SVG, EaselJS }
 
 abstract class GraphicsCommandDecode extends GraphicsCommand {
-
   String _path = "";
   final List<GraphicsCommand> _commands = new List<GraphicsCommand>();
 
@@ -34,7 +33,6 @@ abstract class GraphicsCommandDecode extends GraphicsCommand {
 //------------------------------------------------------------------------------
 
 class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
-
   GraphicsCommandDecodeEaselJS(String path) {
     this.path = path;
   }
@@ -50,7 +48,6 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
 
   @override
   void _decodePath() {
-
     var paramCounts = [2, 2, 4, 6, 0];
     var p = new Float32List(8);
     var path = this.path;
@@ -58,8 +55,7 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
     var y = 0.0;
     var w = 0.0;
 
-    for (int i = 0; i < path.length; ) {
-
+    for (int i = 0; i < path.length;) {
       var n = _base64(path.codeUnitAt(i++));
       var m = (n >> 3);
       var l = (n >> 2 & 1) + 2;
@@ -97,7 +93,6 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
 //------------------------------------------------------------------------------
 
 class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
-
   static final RegExp _commandRegExp = new RegExp(r"([a-zA-Z])([^a-zA-Z]+|$)");
   static final RegExp _parameterRegExp = new RegExp(r"\-?\d+(\.\d+)?");
   static final RegExp _lineBreakRegExp = new RegExp(r"\r\n|\r|\n");
@@ -111,7 +106,6 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
   @override
   void _decodePath() {
-
     double cx = 0.0;
     double cy = 0.0;
     double startPointX = 0.0;
@@ -121,7 +115,6 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
     List<double> p = new List<double>();
 
     for (var commandMatch in _commandRegExp.allMatches(path)) {
-
       var command = commandMatch.group(1);
       var parameter = commandMatch.group(2);
 
@@ -131,7 +124,6 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       }
 
       switch (command) {
-
         case "l": // l dx dy
           for (int i = 0; i <= p.length - 2; i += 2) {
             _add(new GraphicsCommandLineTo(cx += p[i + 0], cy += p[i + 1]));
@@ -263,8 +255,10 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
         case 't': // t dx dy
           for (int i = 0; i <= p.length - 2; i += 2) {
             var l = _commands.isNotEmpty ? _commands.last : null;
-            var lx = l is GraphicsCommandQuadraticCurveTo ? cx - l.controlX : 0.0;
-            var ly = l is GraphicsCommandQuadraticCurveTo ? cy - l.controlY : 0.0;
+            var lx =
+                l is GraphicsCommandQuadraticCurveTo ? cx - l.controlX : 0.0;
+            var ly =
+                l is GraphicsCommandQuadraticCurveTo ? cy - l.controlY : 0.0;
             var x1 = cx + lx;
             var y1 = cy + ly;
             var ex = cx += p[i + 2];
@@ -276,8 +270,10 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
         case 'T': // T x y
           for (int i = 0; i <= p.length - 2; i += 2) {
             var l = _commands.isNotEmpty ? _commands.last : null;
-            var lx = l is GraphicsCommandQuadraticCurveTo ? cx - l.controlX : 0.0;
-            var ly = l is GraphicsCommandQuadraticCurveTo ? cy - l.controlY : 0.0;
+            var lx =
+                l is GraphicsCommandQuadraticCurveTo ? cx - l.controlX : 0.0;
+            var ly =
+                l is GraphicsCommandQuadraticCurveTo ? cy - l.controlY : 0.0;
             var x1 = cx + lx;
             var y1 = cy + ly;
             var ex = cx = p[i + 2];
@@ -329,16 +325,18 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
   }
 
   void _arcElliptical(
-      double startX, double startY, double radiusX, double radiusY,
-      double rotation, bool largeArcFlag, bool sweepFlag,
-      double endX, double endY) {
-
+      double startX,
+      double startY,
+      double radiusX,
+      double radiusY,
+      double rotation,
+      bool largeArcFlag,
+      bool sweepFlag,
+      double endX,
+      double endY) {
     if (radiusX == 0.0 || radiusY == 0.0) {
-
       _add(new GraphicsCommandLineTo(endX, endY));
-
     } else {
-
       var cosRotation = cos(rotation);
       var sinRotation = sin(rotation);
       var rx = radiusX.abs();
@@ -351,7 +349,10 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       var uy = cosRotation * sy - sinRotation * sx;
 
       var l = sqrt(pow(ux / rx, 2) + pow(uy / ry, 2));
-      if (l > 1.0) { rx = rx * l; ry = ry * l; }
+      if (l > 1.0) {
+        rx = rx * l;
+        ry = ry * l;
+      }
 
       var b = pow(uy * rx, 2) + pow(ux * ry, 2);
       if (b > -0.00001 && b < 0.00001) b = 0.0;

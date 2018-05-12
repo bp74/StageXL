@@ -1,7 +1,6 @@
 part of stagexl.engine;
 
 abstract class RenderProgram {
-
   int _contextIdentifier = -1;
   gl.RenderingContext _renderingContext;
   gl.Program _program;
@@ -44,7 +43,6 @@ abstract class RenderProgram {
   //---------------------------------------------------------------------------
 
   void activate(RenderContextWebGL renderContext) {
-
     if (this.contextIdentifier != renderContext.contextIdentifier) {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
@@ -81,7 +79,6 @@ abstract class RenderProgram {
   //---------------------------------------------------------------------------
 
   gl.Program _createProgram(gl.RenderingContext rc) {
-
     var program = rc.createProgram();
     var vShader = _createShader(rc, vertexShaderSource, gl.VERTEX_SHADER);
     var fShader = _createShader(rc, fragmentShaderSource, gl.FRAGMENT_SHADER);
@@ -100,7 +97,6 @@ abstract class RenderProgram {
   //---------------------------------------------------------------------------
 
   gl.Shader _createShader(gl.RenderingContext rc, String source, int type) {
-
     var shader = rc.createShader(type);
     rc.shaderSource(shader, source);
     rc.compileShader(shader);
@@ -115,11 +111,10 @@ abstract class RenderProgram {
   //---------------------------------------------------------------------------
 
   void _updateAttributes(gl.RenderingContext rc, gl.Program program) {
-
     _attributes.clear();
     int count = rc.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
 
-    for(int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
       var activeInfo = rc.getActiveAttrib(program, i);
       var location = rc.getAttribLocation(program, activeInfo.name);
       rc.enableVertexAttribArray(location);
@@ -130,15 +125,13 @@ abstract class RenderProgram {
   //---------------------------------------------------------------------------
 
   void _updateUniforms(gl.RenderingContext rc, gl.Program program) {
-
     _uniforms.clear();
     int count = rc.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
 
-    for(int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
       var activeInfo = rc.getActiveUniform(program, i);
       var location = rc.getUniformLocation(program, activeInfo.name);
       _uniforms[activeInfo.name] = location;
     }
   }
-
 }

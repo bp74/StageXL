@@ -1,7 +1,6 @@
 part of stagexl.media;
 
 class AudioElementSoundChannel extends SoundChannel {
-
   AudioElementSound _audioElementSound;
   SoundTransform _soundTransform;
   AudioElement _audioElement;
@@ -15,11 +14,8 @@ class AudioElementSoundChannel extends SoundChannel {
   num _duration = 0.0;
   num _position = 0.0;
 
-  AudioElementSoundChannel(
-      AudioElementSound audioElementSound,
-      num startTime, num duration, bool loop,
-      SoundTransform soundTransform) {
-
+  AudioElementSoundChannel(AudioElementSound audioElementSound, num startTime,
+      num duration, bool loop, SoundTransform soundTransform) {
     _soundTransform = soundTransform ?? new SoundTransform();
     _audioElementSound = audioElementSound;
     _startTime = startTime.toDouble();
@@ -138,7 +134,6 @@ class AudioElementSoundChannel extends SoundChannel {
   //---------------------------------------------------------------------------
 
   void _onAudioElement(AudioElement audioElement) {
-
     var mixer = SoundMixer._audioElementMixer;
 
     if (_stopped) {
@@ -146,7 +141,8 @@ class AudioElementSoundChannel extends SoundChannel {
     } else {
       _audioElement = audioElement;
       _audioElement.volume = _soundTransform.volume * mixer.volume;
-      _volumeChangedSubscription = mixer.onVolumeChanged.listen(_onVolumeChanged);
+      _volumeChangedSubscription =
+          mixer.onVolumeChanged.listen(_onVolumeChanged);
       if (_paused == false) {
         _audioElement.currentTime = _startTime + _position;
         _audioElement.play();
@@ -191,5 +187,4 @@ class AudioElementSoundChannel extends SoundChannel {
       this.stop();
     }
   }
-
 }

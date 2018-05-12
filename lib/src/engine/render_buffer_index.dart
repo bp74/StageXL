@@ -1,12 +1,11 @@
 part of stagexl.engine;
 
 class RenderBufferIndex {
-
   final Int16List data;
   final int usage;
 
-  int position = 0;   // position in data list
-  int count = 0;      // count of indices
+  int position = 0; // position in data list
+  int count = 0; // count of indices
 
   int _contextIdentifier = -1;
   gl.Buffer _buffer;
@@ -15,9 +14,9 @@ class RenderBufferIndex {
 
   //---------------------------------------------------------------------------
 
-  RenderBufferIndex(int length) :
-    data = new Int16List(length),
-    usage = gl.DYNAMIC_DRAW;
+  RenderBufferIndex(int length)
+      : data = new Int16List(length),
+        usage = gl.DYNAMIC_DRAW;
 
   //---------------------------------------------------------------------------
 
@@ -33,7 +32,6 @@ class RenderBufferIndex {
   }
 
   void activate(RenderContextWebGL renderContext) {
-
     if (_contextIdentifier != renderContext.contextIdentifier) {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderStatistics = renderContext.renderStatistics;
@@ -51,5 +49,4 @@ class RenderBufferIndex {
     _renderingContext.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, update);
     _renderStatistics.indexCount += this.count;
   }
-
 }

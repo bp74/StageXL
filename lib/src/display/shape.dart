@@ -12,7 +12,6 @@ part of stagexl.display;
 /// less memory than [Sprite] objects that contain the same graphics. However, a
 /// [Sprite] object supports user input events, while a [Shape] object does not.
 class Shape extends DisplayObject {
-
   /// Specifies the graphics object belonging to this Shape object, where vector
   /// drawing commands can occur.
   Graphics graphics = new Graphics();

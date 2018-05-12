@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 abstract class _GraphicsGradientProgram extends RenderProgram {
-
   GraphicsGradient activeGradient;
 
   // aVertexPosition:   Float32(x), Float32(y)
@@ -37,9 +36,7 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
   //---------------------------------------------------------------------------
 
   void renderGradient(
-      RenderState renderState,
-      Int16List ixList, Float32List vxList) {
-
+      RenderState renderState, Int16List ixList, Float32List vxList) {
     var alpha = renderState.globalAlpha;
     var matrix = renderState.globalMatrix;
     var ixListCount = ixList.length;
@@ -95,7 +92,6 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
 //------------------------------------------------------------------------------
 
 class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
-
   @override
   String get fragmentShaderSource => """
 
@@ -116,7 +112,6 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
 
   @override
   void configure(RenderState renderState, GraphicsGradient gradient) {
-
     var m = renderState.globalMatrix;
     var g = gradient;
 
@@ -138,7 +133,6 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
 //------------------------------------------------------------------------------
 
 class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
-
   @override
   String get fragmentShaderSource => """
 
@@ -163,11 +157,11 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
 
   @override
   void configure(RenderState renderState, GraphicsGradient gradient) {
-
     var m = renderState.globalMatrix;
     var g = gradient;
 
-    var scaleR = sqrt(m.a * m.a + m.c * m.c); // we are simplifying here, assuming uniform scale
+    var scaleR = sqrt(m.a * m.a +
+        m.c * m.c); // we are simplifying here, assuming uniform scale
     var startX = m.tx + m.a * g.startX + m.c * g.startY;
     var startY = m.ty + m.b * g.startX + m.d * g.startY;
     var vectorX = (m.tx + m.a * g.endX + m.c * g.endY) - startX;
@@ -181,7 +175,9 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
     var a = vectorX * vectorX + vectorY * vectorY - radiusOffset * radiusOffset;
     var b0 = -2 * vectorX;
     var b1 = -2 * vectorY;
-    var b2 = 2 * startX * vectorX + 2 * startY * vectorY - 2 * startRadius * radiusOffset;
+    var b2 = 2 * startX * vectorX +
+        2 * startY * vectorY -
+        2 * startRadius * radiusOffset;
     var c0 = -2 * startX;
     var c1 = -2 * startY;
     var c2 = startX * startX + startY * startY - startRadius * startRadius;

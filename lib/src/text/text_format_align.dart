@@ -1,7 +1,6 @@
 part of stagexl.text;
 
 class TextFormatAlign {
-
   static const String CENTER = "center";
   static const String END = "end";
   static const String JUSTIFY = "justify";
@@ -11,7 +10,6 @@ class TextFormatAlign {
 }
 
 class TextFormatVerticalAlign {
-
   static const String CENTER = "center";
   static const String TOP = "top";
   static const String BOTTOM = "bottom";

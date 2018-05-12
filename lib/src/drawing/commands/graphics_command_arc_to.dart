@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class GraphicsCommandArcTo extends GraphicsCommand {
-
   double _controlX;
   double _controlY;
   double _endX;
@@ -9,9 +8,7 @@ class GraphicsCommandArcTo extends GraphicsCommand {
   double _radius;
 
   GraphicsCommandArcTo(
-      num controlX, num controlY,
-      num endX, num endY, num radius)
-
+      num controlX, num controlY, num endX, num endY, num radius)
       : _controlX = controlX.toDouble(),
         _controlY = controlY.toDouble(),
         _endX = endX.toDouble(),
@@ -61,5 +58,4 @@ class GraphicsCommandArcTo extends GraphicsCommand {
   void updateContext(GraphicsContext context) {
     context.arcTo(controlX, controlY, endX, endY, radius);
   }
-
 }

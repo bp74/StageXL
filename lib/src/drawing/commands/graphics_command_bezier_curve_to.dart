@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class GraphicsCommandBezierCurveTo extends GraphicsCommand {
-
   double _controlX1;
   double _controlY1;
   double _controlX2;
@@ -9,11 +8,8 @@ class GraphicsCommandBezierCurveTo extends GraphicsCommand {
   double _endX;
   double _endY;
 
-  GraphicsCommandBezierCurveTo(
-      num controlX1, num controlY1,
-      num controlX2, num controlY2,
-      num endX, num endY)
-
+  GraphicsCommandBezierCurveTo(num controlX1, num controlY1, num controlX2,
+      num controlY2, num endX, num endY)
       : _controlX1 = controlX1.toDouble(),
         _controlY1 = controlY1.toDouble(),
         _controlX2 = controlX2.toDouble(),
@@ -69,8 +65,7 @@ class GraphicsCommandBezierCurveTo extends GraphicsCommand {
 
   @override
   void updateContext(GraphicsContext context) {
-    context.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
+    context.bezierCurveTo(
+        controlX1, controlY1, controlX2, controlY2, endX, endY);
   }
-
 }
-

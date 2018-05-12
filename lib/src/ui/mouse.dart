@@ -38,10 +38,10 @@ class MouseCursorData {
 /// the appearance of the mouse cursor.
 
 class Mouse {
-
   static bool _cursorHidden = false;
   static String _cursorName = MouseCursor.AUTO;
-  static Map<String, MouseCursorData> _cursorDatas = new Map<String, MouseCursorData>();
+  static Map<String, MouseCursorData> _cursorDatas =
+      new Map<String, MouseCursorData>();
 
   static final _cursorChangedEvent = new StreamController<String>.broadcast();
   static Stream<String> onCursorChanged = _cursorChangedEvent.stream;
@@ -79,7 +79,6 @@ class Mouse {
   //-------------------------------------------------------------------------------------------------
 
   static String getCursorStyle(String cursorName) {
-
     String style = cursorName;
 
     if (_cursorDatas.containsKey(cursorName)) {
@@ -92,5 +91,4 @@ class Mouse {
 
     return _cursorHidden ? "none" : style;
   }
-
 }

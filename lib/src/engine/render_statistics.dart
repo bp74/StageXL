@@ -1,7 +1,6 @@
 part of stagexl.engine;
 
 class RenderStatistics {
-
   int drawCount = 0;
   int vertexCount = 0;
   int indexCount = 0;

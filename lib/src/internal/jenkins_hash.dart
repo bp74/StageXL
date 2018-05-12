@@ -4,7 +4,6 @@
 
 library stagexl.internal.jenkins_hash;
 
-
 /*
  * This is the [Jenkins hash function][1] but using masking to keep
  * values in SMI range.
@@ -23,7 +22,6 @@ library stagexl.internal.jenkins_hash;
  */
 
 class JenkinsHash {
-
   // TODO(11617): This class should be optimized and standardized elsewhere.
   // https://code.google.com/p/dart/issues/detail?id=11617
 
@@ -34,13 +32,12 @@ class JenkinsHash {
   }
 
   static int finish(int hash) {
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) <<  3));
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
     hash = hash ^ (hash >> 11);
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 
-  static int hash2(int a, int b) =>
-      finish(combine(combine(0, a), b));
+  static int hash2(int a, int b) => finish(combine(combine(0, a), b));
 
   static int hash3(int a, int b, int c) =>
       finish(combine(combine(combine(0, a), b), c));

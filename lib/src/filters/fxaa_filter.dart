@@ -20,7 +20,6 @@ import '../geom.dart';
 /// transparency.
 
 class FxaaFilter extends BitmapFilter {
-
   @override
   BitmapFilter clone() => new FxaaFilter();
 
@@ -34,8 +33,8 @@ class FxaaFilter extends BitmapFilter {
   //----------------------------------------------------------------------------
 
   @override
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-
+  void renderFilter(
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
@@ -54,7 +53,6 @@ class FxaaFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 
 class FxaaFilterProgram extends RenderProgramSimple {
-
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexTextCoord:  Float32(u), Float32(v)
   // aVertexAlpha:      Float32(alpha)

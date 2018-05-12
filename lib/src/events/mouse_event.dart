@@ -13,7 +13,6 @@ part of stagexl.events;
 ///     sprite.onMouseClick.listen(_onMouseClick);
 
 class MouseEvent extends InputEvent {
-
   static const String CLICK = "click";
   static const String DOUBLE_CLICK = "doubleClick";
 
@@ -72,10 +71,19 @@ class MouseEvent extends InputEvent {
   /// Creates a new [MouseEvent].
 
   MouseEvent(
-      String type, bool bubbles,
-      num localX, num localY, num stageX, num stageY,
-      bool altKey, bool ctrlKey, bool shiftKey,
-      this.deltaX, this.deltaY, this.buttonDown, this.clickCount) : super(
-          type, bubbles, localX, localY, stageX, stageY,
-          altKey, ctrlKey, shiftKey);
+      String type,
+      bool bubbles,
+      num localX,
+      num localY,
+      num stageX,
+      num stageY,
+      bool altKey,
+      bool ctrlKey,
+      bool shiftKey,
+      this.deltaX,
+      this.deltaY,
+      this.buttonDown,
+      this.clickCount)
+      : super(type, bubbles, localX, localY, stageX, stageY, altKey, ctrlKey,
+            shiftKey);
 }

@@ -7,7 +7,6 @@ import 'point.dart';
 import '../internal/jenkins_hash.dart';
 
 class Rectangle<T extends num> implements math.MutableRectangle<T> {
-
   @override
   T left;
 
@@ -22,11 +21,9 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   Rectangle(this.left, this.top, this.width, this.height);
 
-  Rectangle.from(math.Rectangle<T> r) :
-      this(r.left, r.top, r.width, r.height);
+  Rectangle.from(math.Rectangle<T> r) : this(r.left, r.top, r.width, r.height);
 
-  Rectangle<T> clone() =>
-      new Rectangle<T>(left, top, width, height);
+  Rectangle<T> clone() => new Rectangle<T>(left, top, width, height);
 
   @override
   String toString() =>
@@ -147,7 +144,10 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   @override
   bool containsRectangle(math.Rectangle<num> r) {
-    return left <= r.left && top <= r.top && right >= r.right && bottom >= r.bottom;
+    return left <= r.left &&
+        top <= r.top &&
+        right >= r.right &&
+        bottom >= r.bottom;
   }
 
   //---------------------------------------------------------------------------
@@ -197,5 +197,4 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     int rBottom = bottom.ceil();
     return new Rectangle<int>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
-
 }

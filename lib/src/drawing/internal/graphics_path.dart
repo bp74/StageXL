@@ -1,7 +1,6 @@
 part of stagexl.drawing;
 
 class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
-
   _GraphicsPathSegment _currentSegment;
 
   _GraphicsPath();
@@ -36,14 +35,11 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     }
   }
 
-  void arcTo(double controlX, double controlY, double endX, double endY, double radius) {
-
+  void arcTo(double controlX, double controlY, double endX, double endY,
+      double radius) {
     if (_currentSegment == null) {
-
       this.moveTo(controlX, controlY);
-
     } else {
-
       var v1x = controlX - _currentSegment.lastVertexX;
       var v1y = controlY - _currentSegment.lastVertexY;
       var v1l = sqrt(v1x * v1x + v1y * v1y);
@@ -73,16 +69,13 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     }
   }
 
-  void quadraticCurveTo(double controlX, double controlY, double endX, double endY) {
-
+  void quadraticCurveTo(
+      double controlX, double controlY, double endX, double endY) {
     // TODO: adjust steps
 
     if (_currentSegment == null) {
-
       this.moveTo(endY, endY);
-
     } else {
-
       int steps = 20;
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
@@ -100,16 +93,13 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     }
   }
 
-  void bezierCurveTo(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY) {
-
+  void bezierCurveTo(double controlX1, double controlY1, double controlX2,
+      double controlY2, double endX, double endY) {
     // TODO: adjust steps
 
     if (_currentSegment == null) {
-
       this.moveTo(endY, endY);
-
     } else {
-
       int steps = 20;
       num vx = _currentSegment.lastVertexX;
       num vy = _currentSegment.lastVertexY;
@@ -130,8 +120,8 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   //---------------------------------------------------------------------------
 
-  void arc(double x, double y, double radius, double startAngle, double endAngle, bool antiClockwise) {
-
+  void arc(double x, double y, double radius, double startAngle,
+      double endAngle, bool antiClockwise) {
     num tau = 2.0 * PI;
     num start = (startAngle % tau);
     num delta = (endAngle % tau) - start;
@@ -167,10 +157,8 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     }
   }
 
-  void arcElliptical(
-      double x, double y, double radiusX, double radiusY, double rotation,
-      double startAngle, double endAngle, bool antiClockwise) {
-
+  void arcElliptical(double x, double y, double radiusX, double radiusY,
+      double rotation, double startAngle, double endAngle, bool antiClockwise) {
     num tau = 2.0 * PI;
     num start = (startAngle % tau);
     num delta = (endAngle % tau) - start;
@@ -246,5 +234,4 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     }
     return windingCount != 0;
   }
-
 }

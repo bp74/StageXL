@@ -1,7 +1,6 @@
 part of stagexl.display;
 
 class RenderLoop extends RenderLoopBase {
-
   final Juggler _juggler = new Juggler();
   final List<Stage> _stages = new List<Stage>();
   final EnterFrameEvent _enterFrameEvent = new EnterFrameEvent(0);

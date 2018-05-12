@@ -19,7 +19,6 @@ part of stagexl.display;
 /// input events on the Bitmap's parent display object.
 
 class Bitmap extends DisplayObject {
-
   /// The BitmapData object being referenced.
   BitmapData _bitmapData;
 
@@ -60,5 +59,4 @@ class Bitmap extends DisplayObject {
       renderState.renderTextureQuadFiltered(renderTextureQuad, this.filters);
     }
   }
-
 }

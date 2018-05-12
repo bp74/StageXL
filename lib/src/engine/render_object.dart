@@ -6,7 +6,6 @@ part of stagexl.engine;
 /// rendered by the engine.
 
 abstract class RenderObject {
-
   Matrix get transformationMatrix;
   BlendMode get blendMode;
   num get alpha;
@@ -35,7 +34,6 @@ abstract class RenderObject3D extends RenderObject {
 /// fallback if the [RenderTextureQuad] can't be rendered in the fast path.
 
 class _RenderTextureQuadObject implements RenderObject {
-
   final RenderTextureQuad renderTextureQuad;
 
   @override

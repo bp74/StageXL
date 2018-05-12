@@ -1,7 +1,6 @@
 part of stagexl.engine;
 
 class RenderTextureQuad {
-
   final RenderTexture renderTexture;
   final Rectangle<int> sourceRectangle;
   final Rectangle<int> offsetRectangle;
@@ -11,16 +10,14 @@ class RenderTextureQuad {
   final Int16List ixListQuad = new Int16List(6);
   final Float32List vxListQuad = new Float32List(16);
 
-  Int16List _ixList ;
-  Float32List _vxList ;
+  Int16List _ixList;
+  Float32List _vxList;
   bool _hasCustomVertices = false;
 
   //---------------------------------------------------------------------------
 
-  RenderTextureQuad(this.renderTexture,
-                    this.sourceRectangle, this.offsetRectangle,
-                    this.rotation, this.pixelRatio) {
-
+  RenderTextureQuad(this.renderTexture, this.sourceRectangle,
+      this.offsetRectangle, this.rotation, this.pixelRatio) {
     Rectangle<int> sr = this.sourceRectangle;
     Rectangle<int> or = this.offsetRectangle;
     RenderTexture rt = this.renderTexture;
@@ -86,12 +83,9 @@ class RenderTextureQuad {
 
   //---------------------------------------------------------------------------
 
-  factory RenderTextureQuad.slice(
-      RenderTextureQuad renderTextureQuad,
-      Rectangle<int> sourceRectangle,
-      Rectangle<int> offsetRectangle,
+  factory RenderTextureQuad.slice(RenderTextureQuad renderTextureQuad,
+      Rectangle<int> sourceRectangle, Rectangle<int> offsetRectangle,
       [int rotation = 0]) {
-
     var renderTexture = renderTextureQuad.renderTexture;
     var pixelRatio = renderTextureQuad.pixelRatio;
 
@@ -162,19 +156,24 @@ class RenderTextureQuad {
     var newSourceW = newSourceR - newSourceL;
     var newSourceH = newSourceB - newSourceT;
 
-    return new RenderTextureQuad(renderTexture,
+    return new RenderTextureQuad(
+        renderTexture,
         new Rectangle<int>(newSourceL, newSourceT, newSourceW, newSourceH),
         new Rectangle<int>(newOffsetL, newOffsetT, newOffsetW, newOffsetH),
-        newRotation, pixelRatio);
+        newRotation,
+        pixelRatio);
   }
 
   //---------------------------------------------------------------------------
 
   bool get isEquivalentToSource {
-    return (renderTexture!=null) && (this.rotation == 0) && !_hasCustomVertices &&
-          ( sourceRectangle.left==0 && sourceRectangle.top==0 &&
-            sourceRectangle.width==renderTexture.width &&
-            sourceRectangle.height==renderTexture.height );
+    return (renderTexture != null) &&
+        (this.rotation == 0) &&
+        !_hasCustomVertices &&
+        (sourceRectangle.left == 0 &&
+            sourceRectangle.top == 0 &&
+            sourceRectangle.width == renderTexture.width &&
+            sourceRectangle.height == renderTexture.height);
   }
 
   //---------------------------------------------------------------------------
@@ -195,9 +194,8 @@ class RenderTextureQuad {
   }
 
   RenderTextureQuad withPixelRatio(num pixelRatio) {
-    return new RenderTextureQuad(this.renderTexture,
-        this.sourceRectangle, this.offsetRectangle,
-        this.rotation, pixelRatio);
+    return new RenderTextureQuad(this.renderTexture, this.sourceRectangle,
+        this.offsetRectangle, this.rotation, pixelRatio);
   }
 
   //---------------------------------------------------------------------------
@@ -223,7 +221,6 @@ class RenderTextureQuad {
   /// Target coordinates take the [pixelRatio] into account.
 
   Matrix get drawMatrix {
-
     var pr = this.pixelRatio;
 
     if (rotation == 0) {
@@ -256,7 +253,6 @@ class RenderTextureQuad {
   /// Target coordinates take the [pixelRatio] into account.
 
   Matrix get samplerMatrix {
-
     var pr = this.pixelRatio;
     var sx = 1.0 / this.renderTexture.width;
     var sy = 1.0 / this.renderTexture.height;
@@ -272,7 +268,8 @@ class RenderTextureQuad {
     } else if (rotation == 2) {
       var tx = sourceRectangle.right - offsetRectangle.left;
       var ty = sourceRectangle.bottom - offsetRectangle.top;
-      return new Matrix(0.0 - sx * pr, 0.0, 0.0, 0.0 - sy * pr, sx * tx, sy * ty);
+      return new Matrix(
+          0.0 - sx * pr, 0.0, 0.0, 0.0 - sy * pr, sx * tx, sy * ty);
     } else if (rotation == 3) {
       var tx = sourceRectangle.left + offsetRectangle.top;
       var ty = sourceRectangle.bottom - offsetRectangle.left;
@@ -341,5 +338,4 @@ class RenderTextureQuad {
     var context = renderTexture.canvas.context2D;
     context.putImageData(imageData, rect.left, rect.top);
   }
-
 }

@@ -1,11 +1,9 @@
 part of stagexl.drawing;
 
 class GraphicsCommandFillColor extends GraphicsCommandFill {
-
   int _color;
 
-  GraphicsCommandFillColor(int color)
-      : _color = color;
+  GraphicsCommandFillColor(int color) : _color = color;
 
   //---------------------------------------------------------------------------
 
@@ -22,5 +20,4 @@ class GraphicsCommandFillColor extends GraphicsCommandFill {
   void updateContext(GraphicsContext context) {
     context.fillColor(color);
   }
-
 }

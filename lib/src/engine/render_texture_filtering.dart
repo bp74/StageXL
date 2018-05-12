@@ -7,11 +7,12 @@ part of stagexl.engine;
 /// See also: [RenderTexture.filtering]
 ///
 class RenderTextureFiltering {
-
   final int value;
 
   const RenderTextureFiltering(this.value);
 
-  static const RenderTextureFiltering NEAREST = const RenderTextureFiltering(gl.NEAREST);
-  static const RenderTextureFiltering LINEAR  = const RenderTextureFiltering(gl.LINEAR);
+  static const RenderTextureFiltering NEAREST =
+      const RenderTextureFiltering(gl.NEAREST);
+  static const RenderTextureFiltering LINEAR =
+      const RenderTextureFiltering(gl.LINEAR);
 }

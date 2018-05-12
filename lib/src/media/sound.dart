@@ -1,7 +1,6 @@
 part of stagexl.media;
 
 abstract class Sound {
-
   Sound() {
     SoundMixer._initEngine();
   }
@@ -47,9 +46,8 @@ abstract class Sound {
   ///     var sound = await Sound.loadDataUrl("data:audio/mpeg;base64,<data>");
   ///     sound.play();
 
-  static Future<Sound> loadDataUrl(
-      String dataUrl, [SoundLoadOptions soundLoadOptions]) {
-
+  static Future<Sound> loadDataUrl(String dataUrl,
+      [SoundLoadOptions soundLoadOptions]) {
     var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     switch (options.engine ?? SoundMixer.engine) {
       case SoundEngine.WebAudioApi:
@@ -67,10 +65,8 @@ abstract class Sound {
 
   num get length;
 
-  SoundChannel play([
-    bool loop = false, SoundTransform soundTransform]);
+  SoundChannel play([bool loop = false, SoundTransform soundTransform]);
 
-  SoundChannel playSegment(num startTime, num duration, [
-    bool loop = false, SoundTransform soundTransform]);
-
+  SoundChannel playSegment(num startTime, num duration,
+      [bool loop = false, SoundTransform soundTransform]);
 }

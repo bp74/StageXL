@@ -10,7 +10,6 @@ import '../internal/filter_helpers.dart';
 import '../internal/tools.dart';
 
 class DropShadowFilter extends BitmapFilter {
-
   num _distance;
   num _angle;
   int _blurX;
@@ -24,11 +23,15 @@ class DropShadowFilter extends BitmapFilter {
   final List<int> _renderPassSources = new List<int>();
   final List<int> _renderPassTargets = new List<int>();
 
-  DropShadowFilter([
-    num distance = 8, num angle = PI / 4, int color = 0xFF000000,
-    int blurX = 4, int blurY = 4, int quality = 1,
-    bool knockout = false, bool hideObject = false]) {
-
+  DropShadowFilter(
+      [num distance = 8,
+      num angle = PI / 4,
+      int color = 0xFF000000,
+      int blurX = 4,
+      int blurY = 4,
+      int quality = 1,
+      bool knockout = false,
+      bool hideObject = false]) {
     this.distance = distance;
     this.angle = angle;
     this.color = color;
@@ -45,7 +48,7 @@ class DropShadowFilter extends BitmapFilter {
   @override
   BitmapFilter clone() {
     return new DropShadowFilter(
-      distance, angle, color, blurX, blurY, quality, knockout, hideObject);
+        distance, angle, color, blurX, blurY, quality, knockout, hideObject);
   }
 
   @override
@@ -53,7 +56,8 @@ class DropShadowFilter extends BitmapFilter {
     int shiftX = (this.distance * cos(this.angle)).round();
     int shiftY = (this.distance * sin(this.angle)).round();
     var sRect = new Rectangle<int>(-1, -1, 2, 2);
-    var dRect = new Rectangle<int>(shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
+    var dRect = new Rectangle<int>(
+        shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
     return sRect.boundingBox(dRect);
   }
 
@@ -114,14 +118,13 @@ class DropShadowFilter extends BitmapFilter {
   int get quality => _quality;
 
   set quality(int value) {
-
     RangeError.checkValueInInterval(value, 1, 5);
 
     _quality = value;
     _renderPassSources.clear();
     _renderPassTargets.clear();
 
-    for(int i = 0; i < value; i++) {
+    for (int i = 0; i < value; i++) {
       _renderPassSources.add(i * 2 + 0);
       _renderPassSources.add(i * 2 + 1);
       _renderPassTargets.add(i * 2 + 1);
@@ -136,13 +139,13 @@ class DropShadowFilter extends BitmapFilter {
 
   @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
-
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    ImageData sourceImageData =
-        this.hideObject == false || this.knockout ? renderTextureQuad.getImageData() : null;
+    ImageData sourceImageData = this.hideObject == false || this.knockout
+        ? renderTextureQuad.getImageData()
+        : null;
 
     ImageData imageData = renderTextureQuad.getImageData();
     List<int> data = imageData.data;
@@ -154,7 +157,8 @@ class DropShadowFilter extends BitmapFilter {
     num pixelRatio = renderTextureQuad.pixelRatio;
     int blurX = (this.blurX * pixelRatio).round();
     int blurY = (this.blurY * pixelRatio).round();
-    int alphaChannel = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.ALPHA);
+    int alphaChannel =
+        BitmapDataChannel.getCanvasIndex(BitmapDataChannel.ALPHA);
     int stride = width * 4;
 
     shiftChannel(data, 3, width, height, shiftX, shiftY);
@@ -181,9 +185,8 @@ class DropShadowFilter extends BitmapFilter {
   //---------------------------------------------------------------------------
 
   @override
-  void renderFilter(RenderState renderState,
-                    RenderTextureQuad renderTextureQuad, int pass) {
-
+  void renderFilter(
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     RenderContextWebGL renderContext = renderState.renderContext;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
     int passCount = _renderPassSources.length;
@@ -193,13 +196,10 @@ class DropShadowFilter extends BitmapFilter {
     num pixelRatioDistance = pixelRatio * distance;
 
     if (pass == passCount - 1) {
-
       if (!this.knockout && !this.hideObject) {
         renderContext.renderTextureQuad(renderState, renderTextureQuad);
       }
-
     } else {
-
       DropShadowFilterProgram renderProgram = renderContext.getRenderProgram(
           r"$DropShadowFilterProgram", () => new DropShadowFilterProgram());
 
@@ -209,8 +209,12 @@ class DropShadowFilter extends BitmapFilter {
       renderProgram.configure(
           pass == passCount - 2 ? this.color : this.color | 0xFF000000,
           pass == passCount - 2 ? renderState.globalAlpha : 1.0,
-          pass == 0 ? pixelRatioDistance * cos(angle) / renderTexture.width : 0.0,
-          pass == 0 ? pixelRatioDistance * sin(angle) / renderTexture.height : 0.0,
+          pass == 0
+              ? pixelRatioDistance * cos(angle) / renderTexture.width
+              : 0.0,
+          pass == 0
+              ? pixelRatioDistance * sin(angle) / renderTexture.height
+              : 0.0,
           pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
           pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);
 
@@ -224,7 +228,6 @@ class DropShadowFilter extends BitmapFilter {
 //-----------------------------------------------------------------------------
 
 class DropShadowFilterProgram extends RenderProgramSimple {
-
   @override
   String get vertexShaderSource => """
 
@@ -278,10 +281,7 @@ class DropShadowFilterProgram extends RenderProgramSimple {
   //---------------------------------------------------------------------------
 
   void configure(
-      int color, num alpha,
-      num shiftX, num shiftY,
-      num radiusX, num radiusY) {
-
+      int color, num alpha, num shiftX, num shiftY, num radiusX, num radiusY) {
     num r = colorGetR(color) / 255.0;
     num g = colorGetG(color) / 255.0;
     num b = colorGetB(color) / 255.0;
@@ -291,5 +291,4 @@ class DropShadowFilterProgram extends RenderProgramSimple {
     renderingContext.uniform2f(uniforms["uRadius"], radiusX, radiusY);
     renderingContext.uniform4f(uniforms["uColor"], r, g, b, a);
   }
-
 }

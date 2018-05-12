@@ -8,7 +8,6 @@ part of stagexl.display_ex;
 /// time gauges used in games.
 ///
 class TimeGauge extends Gauge implements Animatable {
-
   static const String TIME_OUT = 'TIME_OUT';
   static const String TIME_SHORT = 'TIME_SHORT';
 
@@ -18,9 +17,9 @@ class TimeGauge extends Gauge implements Animatable {
   Map<String, num> _alarms;
   bool _alarmsEnabled = true;
 
-  TimeGauge(num time, BitmapData bitmapData, [String direction =
-      Gauge.DIRECTION_LEFT]) : super(bitmapData, direction) {
-
+  TimeGauge(num time, BitmapData bitmapData,
+      [String direction = Gauge.DIRECTION_LEFT])
+      : super(bitmapData, direction) {
     if (time <= 0) throw new ArgumentError('Time must be greater than zero');
     _totalTime = time;
     clearAlarms();

@@ -4,7 +4,6 @@ library stagexl.ui.color;
 /// easy access to the ARGB values of different colors.
 
 class Color {
-
   static const int AliceBlue = 0xFFF0F8FF;
   static const int AntiqueWhite = 0xFFFAEBD7;
   static const int Aqua = 0xFF00FFFF;

@@ -9,25 +9,24 @@ import '../geom.dart';
 import '../internal/tools.dart';
 
 class DisplacementMapFilter extends BitmapFilter {
-
   final BitmapData bitmapData;
   final Matrix matrix;
   final num scaleX;
   final num scaleY;
 
-  DisplacementMapFilter(BitmapData bitmapData, [
-    Matrix matrix, num scaleX = 16.0, num scaleY = 16.0]) :
-
-    bitmapData = bitmapData,
-    matrix = (matrix != null) ? matrix : new Matrix.fromIdentity(),
-    scaleX = scaleX,
-    scaleY = scaleY;
+  DisplacementMapFilter(BitmapData bitmapData,
+      [Matrix matrix, num scaleX = 16.0, num scaleY = 16.0])
+      : bitmapData = bitmapData,
+        matrix = (matrix != null) ? matrix : new Matrix.fromIdentity(),
+        scaleX = scaleX,
+        scaleY = scaleY;
 
   //-----------------------------------------------------------------------------------------------
 
   @override
-  BitmapFilter clone(){
-    return new DisplacementMapFilter(bitmapData, matrix.clone(), scaleX, scaleY);
+  BitmapFilter clone() {
+    return new DisplacementMapFilter(
+        bitmapData, matrix.clone(), scaleX, scaleY);
   }
 
   @override
@@ -41,7 +40,6 @@ class DisplacementMapFilter extends BitmapFilter {
 
   @override
   void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
-
     RenderTextureQuad renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -74,10 +72,12 @@ class DisplacementMapFilter extends BitmapFilter {
     Matrix matrix = this.matrix.cloneInvert();
     matrix.prependTranslation(vxList[0], vxList[1]);
 
-    for(int dstY = 0; dstY < dstHeight; dstY++) {
+    for (int dstY = 0; dstY < dstHeight; dstY++) {
       num mx = dstY * matrix.c + matrix.tx;
       num my = dstY * matrix.d + matrix.ty;
-      for(int dstX = 0; dstX < dstWidth; dstX++, mx += matrix.a, my += matrix.b) {
+      for (int dstX = 0;
+          dstX < dstWidth;
+          dstX++, mx += matrix.a, my += matrix.b) {
         int mapX = mx.round();
         int mapY = my.round();
         if (mapX < 0) mapX = 0;
@@ -85,8 +85,10 @@ class DisplacementMapFilter extends BitmapFilter {
         if (mapX >= mapWidth) mapX = mapWidth - 1;
         if (mapY >= mapHeight) mapY = mapHeight - 1;
         int mapOffset = (mapX + mapY * mapWidth) << 2;
-        int srcX = dstX + ((mapData[mapOffset + channelX] - 127) * scaleX) ~/ 256;
-        int srcY = dstY + ((mapData[mapOffset + channelY] - 127) * scaleY) ~/ 256;
+        int srcX =
+            dstX + ((mapData[mapOffset + channelX] - 127) * scaleX) ~/ 256;
+        int srcY =
+            dstY + ((mapData[mapOffset + channelY] - 127) * scaleY) ~/ 256;
         if (srcX >= 0 && srcY >= 0 && srcX < srcWidth && srcY < srcHeight) {
           int srcOffset = (srcX + srcY * srcWidth) << 2;
           int dstOffset = (dstX + dstY * dstWidth) << 2;
@@ -106,13 +108,14 @@ class DisplacementMapFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-
+  void renderFilter(
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(
-        r"$DisplacementMapFilterProgram", () => new DisplacementMapFilterProgram());
+        r"$DisplacementMapFilterProgram",
+        () => new DisplacementMapFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTextureAt(renderTexture, 0);
@@ -127,7 +130,6 @@ class DisplacementMapFilter extends BitmapFilter {
 //-------------------------------------------------------------------------------------------------
 
 class DisplacementMapFilterProgram extends RenderProgramSimple {
-
   @override
   String get fragmentShaderSource => """
       precision mediump float;
@@ -145,30 +147,47 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
       }
       """;
 
-  void configure(DisplacementMapFilter displacementMapFilter, RenderTextureQuad renderTextureQuad) {
-
+  void configure(DisplacementMapFilter displacementMapFilter,
+      RenderTextureQuad renderTextureQuad) {
     var mapMatrix = new Matrix.fromIdentity();
-    mapMatrix.copyFromAndConcat(displacementMapFilter.matrix, renderTextureQuad.samplerMatrix);
-    mapMatrix.invertAndConcat(displacementMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
+    mapMatrix.copyFromAndConcat(
+        displacementMapFilter.matrix, renderTextureQuad.samplerMatrix);
+    mapMatrix.invertAndConcat(
+        displacementMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
 
     var disMatrix = new Matrix.fromIdentity();
     disMatrix.copyFrom(renderTextureQuad.samplerMatrix);
     disMatrix.scale(displacementMapFilter.scaleX, displacementMapFilter.scaleY);
 
     var uMapMatrix = new Float32List.fromList(<double>[
-      mapMatrix.a, mapMatrix.c, mapMatrix.tx,
-      mapMatrix.b, mapMatrix.d, mapMatrix.ty,
-      0.0, 0.0, 1.0]);
+      mapMatrix.a,
+      mapMatrix.c,
+      mapMatrix.tx,
+      mapMatrix.b,
+      mapMatrix.d,
+      mapMatrix.ty,
+      0.0,
+      0.0,
+      1.0
+    ]);
 
     var uDisMatrix = new Float32List.fromList(<double>[
-      disMatrix.a, disMatrix.c, 0.0,
-      disMatrix.b, disMatrix.d, 0.0,
-      0.0, 0.0, 1.0]);
+      disMatrix.a,
+      disMatrix.c,
+      0.0,
+      disMatrix.b,
+      disMatrix.d,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]);
 
     renderingContext.uniform1i(uniforms["uTexSampler"], 0);
     renderingContext.uniform1i(uniforms["uMapSampler"], 1);
-    renderingContext.uniformMatrix3fv(uniforms["uMapMatrix"], false, uMapMatrix);
-    renderingContext.uniformMatrix3fv(uniforms["uDisMatrix"], false, uDisMatrix);
+    renderingContext.uniformMatrix3fv(
+        uniforms["uMapMatrix"], false, uMapMatrix);
+    renderingContext.uniformMatrix3fv(
+        uniforms["uDisMatrix"], false, uDisMatrix);
   }
-
 }

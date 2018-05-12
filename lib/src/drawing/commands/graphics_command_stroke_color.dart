@@ -1,12 +1,10 @@
 part of stagexl.drawing;
 
 class GraphicsCommandStrokeColor extends GraphicsCommandStroke {
-
   int _color;
 
-  GraphicsCommandStrokeColor(int color,
-      num width, JointStyle jointStyle, CapsStyle capsStyle)
-
+  GraphicsCommandStrokeColor(
+      int color, num width, JointStyle jointStyle, CapsStyle capsStyle)
       : _color = color,
         super(width, jointStyle, capsStyle);
 
@@ -25,5 +23,4 @@ class GraphicsCommandStrokeColor extends GraphicsCommandStroke {
   void updateContext(GraphicsContext context) {
     context.strokeColor(color, width, jointStyle, capsStyle);
   }
-
 }

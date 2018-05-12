@@ -1,12 +1,10 @@
 part of stagexl.drawing;
 
 class GraphicsCommandStrokeGradient extends GraphicsCommandStroke {
-
   GraphicsGradient _gradient;
 
-  GraphicsCommandStrokeGradient(GraphicsGradient gradient,
-      num width, JointStyle jointStyle, CapsStyle capsStyle)
-
+  GraphicsCommandStrokeGradient(GraphicsGradient gradient, num width,
+      JointStyle jointStyle, CapsStyle capsStyle)
       : _gradient = gradient,
         super(width, jointStyle, capsStyle);
 
@@ -25,5 +23,4 @@ class GraphicsCommandStrokeGradient extends GraphicsCommandStroke {
   void updateContext(GraphicsContext context) {
     context.strokeGradient(gradient, width, jointStyle, capsStyle);
   }
-
 }

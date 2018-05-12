@@ -1,7 +1,6 @@
 part of stagexl.resources;
 
 class TextureAtlas {
-
   /// A list with the frames in this texture atlas.
   final List<TextureAtlasFrame> frames = new List<TextureAtlasFrame>();
 
@@ -12,36 +11,36 @@ class TextureAtlas {
 
   //---------------------------------------------------------------------------
 
-  static Future<TextureAtlas> load(String url, [
-      TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-      BitmapDataLoadOptions bitmapDataLoadOptions]) =>
-          textureAtlasFormat.load(new _TextureAtlasLoaderFile(
-              url, bitmapDataLoadOptions));
+  static Future<TextureAtlas> load(String url,
+          [TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
+          BitmapDataLoadOptions bitmapDataLoadOptions]) =>
+      textureAtlasFormat
+          .load(new _TextureAtlasLoaderFile(url, bitmapDataLoadOptions));
 
   static Future<TextureAtlas> fromTextureAtlas(
-      TextureAtlas textureAtlas, String namePrefix, String source, [
-      TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY]) =>
-          textureAtlasFormat.load(new _TextureAtlasLoaderTextureAtlas(
-              textureAtlas, namePrefix, source));
+          TextureAtlas textureAtlas, String namePrefix, String source,
+          [TextureAtlasFormat textureAtlasFormat =
+              TextureAtlasFormat.JSONARRAY]) =>
+      textureAtlasFormat.load(new _TextureAtlasLoaderTextureAtlas(
+          textureAtlas, namePrefix, source));
 
   static Future<TextureAtlas> fromBitmapData(
-      BitmapData bitmapData, String source, [
-      TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY]) =>
-          textureAtlasFormat.load(new _TextureAtlasLoaderBitmapData(
-              bitmapData, source));
+          BitmapData bitmapData, String source,
+          [TextureAtlasFormat textureAtlasFormat =
+              TextureAtlasFormat.JSONARRAY]) =>
+      textureAtlasFormat
+          .load(new _TextureAtlasLoaderBitmapData(bitmapData, source));
 
-  static Future<TextureAtlas> withLoader(
-      TextureAtlasLoader textureAtlasLoader, [
-      TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY]) =>
-          textureAtlasFormat.load(textureAtlasLoader);
+  static Future<TextureAtlas> withLoader(TextureAtlasLoader textureAtlasLoader,
+          [TextureAtlasFormat textureAtlasFormat =
+              TextureAtlasFormat.JSONARRAY]) =>
+      textureAtlasFormat.load(textureAtlasLoader);
 
   //---------------------------------------------------------------------------
 
   /// A list with the frame-names in this texture atlas.
 
-  List<String> get frameNames => frames
-      .map((f) => f.name)
-      .toList();
+  List<String> get frameNames => frames.map((f) => f.name).toList();
 
   /// Get a list of BitmapDatas of frames whose names starts with [namePrefix].
 
@@ -56,12 +55,10 @@ class TextureAtlas {
   /// without it's file extension.
 
   BitmapData getBitmapData(String name) {
-    for(int i = 0; i < frames.length; i++) {
+    for (int i = 0; i < frames.length; i++) {
       var frame = frames[i];
       if (frame.name == name) return frame.bitmapData;
     }
     throw new ArgumentError("TextureAtlasFrame not found: '$name'");
   }
-
-
 }
