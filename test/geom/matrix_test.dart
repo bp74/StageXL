@@ -53,7 +53,7 @@ void main() {
 
   test('Matrix.createBox2', () {
     Matrix m = new Matrix.fromIdentity();
-    m.createBox(0.269, 0.479, PI / 8, 0.659, 0.701);
+    m.createBox(0.269, 0.479, pi / 8, 0.659, 0.701);
     verifyMatrix(m, 0.24852, 0.10294, -0.18331, 0.44254, 0.659, 0.701);
   });
 

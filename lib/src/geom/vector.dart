@@ -64,7 +64,7 @@ class Vector {
   bool isWithinXY(num x, num y, num epsilon) =>
       distanceXYSqr(x, y) < epsilon * epsilon;
 
-  num get degrees => atan2(y, x) * 180 / PI;
+  num get degrees => atan2(y, x) * 180 / pi;
   num get rads => atan2(y, x);
 
   //-----------------------------------------------------------------------------------------------

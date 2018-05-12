@@ -7,10 +7,10 @@ abstract class _GraphicsMeshSegment {
   int _vertexCount = 0;
   int _indexCount = 0;
 
-  double _minX = 0.0 + double.MAX_FINITE;
-  double _minY = 0.0 + double.MAX_FINITE;
-  double _maxX = 0.0 - double.MAX_FINITE;
-  double _maxY = 0.0 - double.MAX_FINITE;
+  double _minX = 0.0 + double.maxFinite;
+  double _minY = 0.0 + double.maxFinite;
+  double _maxX = 0.0 - double.maxFinite;
+  double _maxY = 0.0 - double.maxFinite;
 
   final Matrix _tmpMatrix = new Matrix.fromIdentity();
 

@@ -32,11 +32,11 @@ class Transition {
   }
 
   static num sine(num ratio) {
-    return 0.5 - 0.5 * cos(ratio * 2.0 * PI);
+    return 0.5 - 0.5 * cos(ratio * 2.0 * pi);
   }
 
   static num cosine(num ratio) {
-    return 0.5 + 0.5 * cos(ratio * 2.0 * PI);
+    return 0.5 + 0.5 * cos(ratio * 2.0 * pi);
   }
 
   static num random(num ratio) {
@@ -185,11 +185,11 @@ class Transition {
   // Sine
 
   static num easeInSine(num ratio) {
-    return 1.0 - cos(ratio * (PI / 2.0));
+    return 1.0 - cos(ratio * (pi / 2.0));
   }
 
   static num easeOutSine(num ratio) {
-    return sin(ratio * (PI / 2.0));
+    return sin(ratio * (pi / 2.0));
   }
 
   static num easeInOutSine(num ratio) {
@@ -265,13 +265,13 @@ class Transition {
     if (ratio == 0.0 || ratio == 1.0) return ratio;
     ratio = ratio - 1.0;
     return -pow(2.0, 10.0 * ratio) *
-        sin((ratio - 0.3 / 4.0) * (2.0 * PI) / 0.3);
+        sin((ratio - 0.3 / 4.0) * (2.0 * pi) / 0.3);
   }
 
   static num easeOutElastic(num ratio) {
     if (ratio == 0.0 || ratio == 1.0) return ratio;
     return pow(2.0, -10.0 * ratio) *
-            sin((ratio - 0.3 / 4.0) * (2.0 * PI) / 0.3) +
+            sin((ratio - 0.3 / 4.0) * (2.0 * pi) / 0.3) +
         1;
   }
 

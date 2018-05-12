@@ -25,7 +25,7 @@ class DropShadowFilter extends BitmapFilter {
 
   DropShadowFilter(
       [num distance = 8,
-      num angle = PI / 4,
+      num angle = pi / 4,
       int color = 0xFF000000,
       int blurX = 4,
       int blurY = 4,

@@ -8,9 +8,9 @@ class TweenProperty {
   final TweenPropertyAccessor _tweenPropertyAccessor;
   final int _propertyID;
 
-  num _startValue = double.NAN;
-  num _targetValue = double.NAN;
-  num _deltaValue = double.NAN;
+  num _startValue = double.nan;
+  num _targetValue = double.nan;
+  num _deltaValue = double.nan;
 
   TweenProperty._(this._tweenPropertyAccessor, this._propertyID);
 

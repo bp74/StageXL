@@ -251,7 +251,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   int _addArc(num vx, num vy, num n1x, num n1y, num n2x, num n2y, int index1,
       int index2, bool antiClockwise) {
-    num tau = 2.0 * PI;
+    num tau = 2.0 * pi;
     num startAngle = atan2(n1y, n1x);
     num endAngle = atan2(n2y, n2x);
     num start = (startAngle % tau);
@@ -267,7 +267,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       delta %= tau;
     }
 
-    int steps = (10 * delta / PI).abs().ceil();
+    int steps = (10 * delta / pi).abs().ceil();
     int index3 = index2;
 
     var cosR = cos(delta / steps);

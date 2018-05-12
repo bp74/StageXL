@@ -42,7 +42,7 @@ class BitmapDataLoadOptions {
 
   @deprecated
   int get maxPixelRatio {
-    return pixelRatios.fold(0.0, (a, b) => a > b ? a : b).round();
+    return pixelRatios.fold(0.0, (num a, b) => a > b ? a : b).round();
   }
 
   @deprecated

@@ -88,7 +88,7 @@ class ColorMatrixFilter extends BitmapFilter {
   }
 
   void adjustHue(num value) {
-    num v = min(max(value, -1), 1) * PI;
+    num v = min(max(value, -1), 1) * pi;
     num cv = cos(v);
     num sv = sin(v);
 

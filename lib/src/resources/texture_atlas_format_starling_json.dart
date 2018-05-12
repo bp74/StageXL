@@ -9,7 +9,7 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
     var pixelRatio = loader.getPixelRatio();
     var textureAtlas = new TextureAtlas(pixelRatio);
 
-    var json = JSON.decode(source) as Map;
+    var json = jsonDecode(source) as Map;
     var imagePath = _getString(json, "imagePath", "");
     var renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
 

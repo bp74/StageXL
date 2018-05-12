@@ -122,7 +122,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   void arc(double x, double y, double radius, double startAngle,
       double endAngle, bool antiClockwise) {
-    num tau = 2.0 * PI;
+    num tau = 2.0 * pi;
     num start = (startAngle % tau);
     num delta = (endAngle % tau) - start;
 
@@ -159,7 +159,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   void arcElliptical(double x, double y, double radiusX, double radiusY,
       double rotation, double startAngle, double endAngle, bool antiClockwise) {
-    num tau = 2.0 * PI;
+    num tau = 2.0 * pi;
     num start = (startAngle % tau);
     num delta = (endAngle % tau) - start;
 

@@ -164,7 +164,7 @@ class EventStream<T extends Event> extends Stream<T> {
     if (oldSubscriptions.length == 0) return;
 
     var newSubscriptions =
-        new List<EventStreamSubscription>(oldSubscriptions.length - 1);
+        new List<EventStreamSubscription<T>>(oldSubscriptions.length - 1);
 
     for (int o = 0, n = 0; o < oldSubscriptions.length; o++) {
       var oldSubscription = oldSubscriptions[o];

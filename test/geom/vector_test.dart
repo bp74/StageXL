@@ -66,8 +66,8 @@ void main() {
     expect(new Vector(1, 0).normalLeft().isNearXY(0, -1), isTrue);
     expect(new Vector(1, 0).normalRight().isNearXY(0, 1), isTrue);
     expect(new Vector(-13, 3).negate().isNearXY(13, -3), isTrue);
-    expect(new Vector(1, 0).rotate(PI * 0.5).isNearXY(0, 1), isTrue);
-    expect(new Vector(1, 1).rads, closeTo(PI / 4, Vector.Epsilon));
+    expect(new Vector(1, 0).rotate(pi * 0.5).isNearXY(0, 1), isTrue);
+    expect(new Vector(1, 1).rads, closeTo(pi / 4, Vector.Epsilon));
     expect(new Vector(1, 1).degrees, closeTo(45, Vector.Epsilon));
   });
 
