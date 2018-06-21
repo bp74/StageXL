@@ -47,7 +47,7 @@ class RenderStencilBuffer {
 
       _renderContext.activateRenderStencilBuffer(this);
       _renderingContext.renderbufferStorage(
-          gl.RENDERBUFFER, gl.DEPTH_STENCIL, _width, _height);
+          gl.WebGL.RENDERBUFFER, gl.WebGL.DEPTH_STENCIL, _width, _height);
     }
   }
 
@@ -59,11 +59,11 @@ class RenderStencilBuffer {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
       _renderbuffer = _renderingContext.createRenderbuffer();
-      _renderingContext.bindRenderbuffer(gl.RENDERBUFFER, _renderbuffer);
+      _renderingContext.bindRenderbuffer(gl.WebGL.RENDERBUFFER, _renderbuffer);
       _renderingContext.renderbufferStorage(
-          gl.RENDERBUFFER, gl.DEPTH_STENCIL, _width, _height);
+          gl.WebGL.RENDERBUFFER, gl.WebGL.DEPTH_STENCIL, _width, _height);
     } else {
-      _renderingContext.bindRenderbuffer(gl.RENDERBUFFER, _renderbuffer);
+      _renderingContext.bindRenderbuffer(gl.WebGL.RENDERBUFFER, _renderbuffer);
     }
   }
 }

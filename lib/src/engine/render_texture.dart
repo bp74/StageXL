@@ -108,9 +108,9 @@ class RenderTexture {
 
     _renderContext.activateRenderTexture(this);
     _renderingContext.texParameteri(
-        gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
+        gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_MIN_FILTER, _filtering.value);
     _renderingContext.texParameteri(
-        gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
+        gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_MAG_FILTER, _filtering.value);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -126,7 +126,7 @@ class RenderTexture {
 
     _renderContext.activateRenderTexture(this);
     _renderingContext.texParameteri(
-        gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, _wrappingX.value);
+        gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_WRAP_S, _wrappingX.value);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -142,7 +142,7 @@ class RenderTexture {
 
     _renderContext.activateRenderTexture(this);
     _renderingContext.texParameteri(
-        gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, _wrappingY.value);
+        gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_WRAP_T, _wrappingY.value);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -177,9 +177,9 @@ class RenderTexture {
       if (_renderContext == null || _texture == null) return;
       if (_renderContext.contextIdentifier != contextIdentifier) return;
 
-      var target = gl.TEXTURE_2D;
-      var rgba = gl.RGBA;
-      var type = gl.UNSIGNED_BYTE;
+      var target = gl.WebGL.TEXTURE_2D;
+      var rgba = gl.WebGL.RGBA;
+      var type = gl.WebGL.UNSIGNED_BYTE;
 
       _renderContext.activateRenderTexture(this);
       _renderingContext.texImage2D(
@@ -206,15 +206,15 @@ class RenderTexture {
     if (_renderContext == null || _texture == null) return;
     if (_renderContext.contextIdentifier != contextIdentifier) return;
 
-    var target = gl.TEXTURE_2D;
-    var rgba = gl.RGBA;
-    var type = gl.UNSIGNED_BYTE;
+    var target = gl.WebGL.TEXTURE_2D;
+    var rgba = gl.WebGL.RGBA;
+    var type = gl.WebGL.UNSIGNED_BYTE;
 
     _renderContext.flush();
     _renderContext.activateRenderTexture(this);
 
-    var scissors = _renderingContext.isEnabled(gl.SCISSOR_TEST);
-    if (scissors) _renderingContext.disable(gl.SCISSOR_TEST);
+    var scissors = _renderingContext.isEnabled(gl.WebGL.SCISSOR_TEST);
+    if (scissors) _renderingContext.disable(gl.WebGL.SCISSOR_TEST);
 
     if (_textureSourceWorkaround) {
       _canvas.context2D.drawImage(_source, 0, 0);
@@ -223,16 +223,16 @@ class RenderTexture {
       _renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
     }
 
-    if (scissors) _renderingContext.enable(gl.SCISSOR_TEST);
+    if (scissors) _renderingContext.enable(gl.WebGL.SCISSOR_TEST);
   }
 
   //-----------------------------------------------------------------------------------------------
 
   void activate(RenderContextWebGL renderContext, int textureSlot) {
     if (this.contextIdentifier != renderContext.contextIdentifier) {
-      var target = gl.TEXTURE_2D;
-      var rgba = gl.RGBA;
-      var type = gl.UNSIGNED_BYTE;
+      var target = gl.WebGL.TEXTURE_2D;
+      var rgba = gl.WebGL.RGBA;
+      var type = gl.WebGL.UNSIGNED_BYTE;
 
       _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;
@@ -242,13 +242,13 @@ class RenderTexture {
       _renderingContext.activeTexture(textureSlot);
       _renderingContext.bindTexture(target, _texture);
 
-      var scissors = _renderingContext.isEnabled(gl.SCISSOR_TEST);
-      if (scissors) _renderingContext.disable(gl.SCISSOR_TEST);
+      var scissors = _renderingContext.isEnabled(gl.WebGL.SCISSOR_TEST);
+      if (scissors) _renderingContext.disable(gl.WebGL.SCISSOR_TEST);
 
       if (_source != null) {
         _renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
         _textureSourceWorkaround =
-            _renderingContext.getError() == gl.INVALID_VALUE;
+            _renderingContext.getError() == gl.WebGL.INVALID_VALUE;
       } else {
         _renderingContext.texImage2D(
             target, 0, rgba, width, height, 0, rgba, type, null);
@@ -261,19 +261,19 @@ class RenderTexture {
         _renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
       }
 
-      if (scissors) _renderingContext.enable(gl.SCISSOR_TEST);
+      if (scissors) _renderingContext.enable(gl.WebGL.SCISSOR_TEST);
 
       _renderingContext.texParameteri(
-          gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, _wrappingX.value);
+          gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_WRAP_S, _wrappingX.value);
       _renderingContext.texParameteri(
-          gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, _wrappingY.value);
+          gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_WRAP_T, _wrappingY.value);
       _renderingContext.texParameteri(
-          gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, _filtering.value);
+          gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_MIN_FILTER, _filtering.value);
       _renderingContext.texParameteri(
-          gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, _filtering.value);
+          gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_MAG_FILTER, _filtering.value);
     } else {
       _renderingContext.activeTexture(textureSlot);
-      _renderingContext.bindTexture(gl.TEXTURE_2D, _texture);
+      _renderingContext.bindTexture(gl.WebGL.TEXTURE_2D, _texture);
     }
   }
 

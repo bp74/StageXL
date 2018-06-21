@@ -16,7 +16,7 @@ class RenderBufferVertex {
 
   RenderBufferVertex(int length)
       : data = new Float32List(length),
-        usage = gl.DYNAMIC_DRAW;
+        usage = gl.WebGL.DYNAMIC_DRAW;
 
   //---------------------------------------------------------------------------
 
@@ -37,22 +37,22 @@ class RenderBufferVertex {
       _renderStatistics = renderContext.renderStatistics;
       _renderingContext = renderContext.rawContext;
       _buffer = _renderingContext.createBuffer();
-      _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _buffer);
-      _renderingContext.bufferData(gl.ARRAY_BUFFER, data, usage);
+      _renderingContext.bindBuffer(gl.WebGL.ARRAY_BUFFER, _buffer);
+      _renderingContext.bufferData(gl.WebGL.ARRAY_BUFFER, data, usage);
     }
 
-    _renderingContext.bindBuffer(gl.ARRAY_BUFFER, _buffer);
+    _renderingContext.bindBuffer(gl.WebGL.ARRAY_BUFFER, _buffer);
   }
 
   void update() {
     var update = new Float32List.view(data.buffer, 0, this.position);
-    _renderingContext.bufferSubData(gl.ARRAY_BUFFER, 0, update);
+    _renderingContext.bufferSubData(gl.WebGL.ARRAY_BUFFER, 0, update);
     _renderStatistics.vertexCount += this.count;
   }
 
   void bindAttribute(int index, int size, int stride, int offset) {
     if (index == null) return;
     _renderingContext.vertexAttribPointer(
-        index, size, gl.FLOAT, false, stride, offset);
+        index, size, gl.WebGL.FLOAT, false, stride, offset);
   }
 }
