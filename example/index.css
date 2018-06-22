@@ -1,0 +1,24 @@
+
+/* stage-full-window */
+body.stage-full-window { margin: 0; padding: 0; overflow: hidden; }
+canvas.stage-full-window { width: 100%; height: 100%; position:fixed; }
+
+/* stage-fixed-size */
+canvas.stage-fixed-size { width: 800px; height: 600px; border: 1px dotted black; }
+
+/* stage-full-screen */
+/* https://dvcs.w3.org/hg/fullscreen/raw-file/tip/Overview.html#:fullscreen-pseudo-class */
+canvas.stage-full-screen:-webkit-full-screen {
+  position:fixed; top:0; right:0; bottom:0; left:0; margin:0;
+  box-sizing:border-box; width:100%; height:100%; object-fit:contain;
+}
+
+canvas.stage-full-screen:-moz-full-screen {
+  position:fixed; top:0; right:0; bottom:0; left:0; margin:0;
+  box-sizing:border-box; width:100%; height:100%; object-fit:contain;
+}
+
+canvas.stage-full-screen:fullscreen {
+  position:fixed; top:0; right:0; bottom:0; left:0; margin:0;
+  box-sizing:border-box; width:100%; height:100%; object-fit:contain;
+}
