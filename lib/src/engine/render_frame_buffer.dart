@@ -51,12 +51,12 @@ class RenderFrameBuffer {
       _renderContext.activateRenderTexture(_renderTexture);
       _renderContext.activateRenderStencilBuffer(_renderStencilBuffer);
 
-      var target = gl.FRAMEBUFFER;
-      var color = gl.COLOR_ATTACHMENT0;
-      var colorTarget = gl.TEXTURE_2D;
+      var target = gl.WebGL.FRAMEBUFFER;
+      var color = gl.WebGL.COLOR_ATTACHMENT0;
+      var colorTarget = gl.WebGL.TEXTURE_2D;
       var colorData = _renderTexture.texture;
-      var stencil = gl.DEPTH_STENCIL_ATTACHMENT;
-      var stencilTarget = gl.RENDERBUFFER;
+      var stencil = gl.WebGL.DEPTH_STENCIL_ATTACHMENT;
+      var stencilTarget = gl.WebGL.RENDERBUFFER;
       var stencilData = _renderStencilBuffer.renderbuffer;
 
       _renderingContext.bindFramebuffer(target, _framebuffer);
@@ -65,7 +65,7 @@ class RenderFrameBuffer {
       _renderingContext.framebufferRenderbuffer(
           target, stencil, stencilTarget, stencilData);
     } else {
-      _renderingContext.bindFramebuffer(gl.FRAMEBUFFER, _framebuffer);
+      _renderingContext.bindFramebuffer(gl.WebGL.FRAMEBUFFER, _framebuffer);
     }
   }
 }
