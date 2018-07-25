@@ -8,25 +8,29 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
-#### Pub version 1.3.1+4
+#### 1.4.0
+  * Require Dart 2.
+  * Support Dart 2 stable.
+
+#### 1.3.1+4
   * Fixed issues with Dart 2.
 
-#### Pub version 1.3.1+3
+#### 1.3.1+3
   * Fixed issues with Dart 2.
 
-#### Pub version 1.3.1+2
+#### 1.3.1+2
   * Fixed issues with Dart 2.
 
-#### Pub version 1.3.1+1
+#### 1.3.1+1
   * Fixed issue with rectangle masks and TextField updates.
   
-#### Pub version 1.3.1
+#### 1.3.1
   * Replaced deprecated value AudioParam in WebAudio API.
   * Allow colors with alpha value for TextField backgrounds.
   * Fixed issue with rectangular masks within filters.
   * Fixed issue with masks relative to parent.
 
-#### Pub version 1.3.0
+#### 1.3.0
   * Added SoundChannel.position setter.
   * Added support for non integer HiDpi pixel ratios.
   * Added BitmapDataLoadOptions.pixelRatios list.
@@ -36,7 +40,7 @@ announcements on the StageXL forum or use one of the support links below:
   * Fixed infinite scaleX/scaleY on DisplayObjects.
   * Fixed scissor masks on RenderBufferFrames.
 
-#### Pub version 1.2.0
+#### 1.2.0
   * Added ViewportContainer display object.
   * Added Stage.console to show render statistics.
   * Added support for GraphicsGradient with WebGL renderer.
@@ -48,22 +52,22 @@ announcements on the StageXL forum or use one of the support links below:
   Special thanks to John Talley for his work on the WebGL graphics
   code to support gradient and pattern fills and strokes.
 
-#### Pub version 1.1.0
+#### 1.1.0
   * Added Graphics.arcElliptical method.
   * Added support for SVG encoded graphics paths.
   * Optimized EaselJS encoded graphics paths.
   * Updated to Dart 1.21 and use generic functions.
   * Fixed bug in Sprite.bounds with Sprite.graphics.
 
-#### Pub version 1.0.0
+#### 1.0.0
   * Stable release
 
-#### Pub version 0.13.12
+#### 0.13.12
   * Added FxaaFilter.
   * More strong mode fixes.
   * Improved error handling for image, sound and video loader.
   
-#### Pub version 0.13.11
+#### 0.13.11
   * Added ResourceManager.remove(BitmapData/Sound/...) methods.
   * Added ResourceManager.dispose method to unload all resources.
   * Added RenderContext.renderStatistics to measure WebGL operations.
@@ -74,17 +78,17 @@ announcements on the StageXL forum or use one of the support links below:
   * Fixed bug in BitmapContainer.
   * Updated SDK dependency to Dart 1.19 
 
-#### Pub version 0.13.10
+#### 0.13.10
   * Fixed joints of strokes in graphics.
   * Added graphics.undoCommand method.
 
-#### Pub version 0.13.9
+#### 0.13.9
   * Added SoundEngine enum.
   * Added SoundMixer.engine setter to overrule the detected engine.
   * Added SoundLoadOptions.engine to load with a specific engine.
   * Added Sound.engine to get the underlying engine.
   
-#### Pub version 0.13.8
+#### 0.13.8
   * Added support for opus audio codec.
   * Added support for SoundLoadOptions in Sound.loadDataUrl.
   * Fixes and optimizations in graphics methods.
@@ -92,40 +96,40 @@ announcements on the StageXL forum or use one of the support links below:
   * Enabled analysis options for strong mode.
   * Updated SDK dependency to Dart 1.17 
 
-#### Pub version 0.13.7
+#### 0.13.7
   * Replaced deprecated WebGL methods
   * Updated SDK dependency to Dart 1.16
   
-#### Pub version 0.13.6
+#### 0.13.6
   * Added support for Starling JSON texture atlas format.
   * Allow all number types in DisplayObject.applyCache.
   * Fixed ColorMatrixClass for some use cases.
   * Fixed Mesh.setVertexUV method.
   * Simplified TintFilter
   
-#### Pub version 0.13.5
+#### 0.13.5
   * Fixed TextField cache update on scale changes. 
   * Fixed int/num type ambiguity in BitmapData. 
 
-#### Pub version 0.13.4
+#### 0.13.4
   * Fixed an issue with filters caused by resizing of FrameBuffers. 
   * Fixed AlphaMaskFilter with better fragment shader code (again).
   
-#### Pub version 0.13.3
+#### 0.13.3
   * Moved the 'Toolkit for Dart' to a dedicated StageXL extension package.
   * Fixed Graphics.fillGradient and Graphics.fillPattern return types.
 
-#### Pub version 0.13.2
+#### 0.13.2
   * Added BitmapContainer for extensive Bitmap rendering.
   * Fixed AlphaMaskFilter with better fragment shader code.
 
-#### Pub version 0.13.1
+#### 0.13.1
   * Added better support for vector graphics in WebGL.
   * Added DisplayObject.alignPivot method.
   * Fixed Sprite.bounds with graphics.
   * Fixed Sprite.getObjectsUnderPoint with graphics.
   
-#### Pub version 0.13.0
+#### 0.13.0
   * Added support for polygon sprite meshes.
   * Added support for polygon texture packing.
   * Added support for custom graphics masks in WebGL.
@@ -135,13 +139,13 @@ announcements on the StageXL forum or use one of the support links below:
   * Fixed flickering on stage initialization.
   * Simplified render program implementations.
   
-#### Pub version 0.12.0+1
+#### 0.12.0+1
   * Enabled HiDPI filters. 
   * Fixed stage with transparent background color.
   * Fixed rendering issue with sequential filters. 
   * Fixed color of primitive WebGL triangles.
   
-#### Pub version 0.12.0
+#### 0.12.0
   * Added StageXL global default configuration options.
   * Added Juggler async/await and reactive features.
   * Added SoundChannel play() and pause() methods.
@@ -167,10 +171,10 @@ announcements on the StageXL forum or use one of the support links below:
 This version contains quite a few breaking changes and we are sorry for it. 
 We do this in an effort to to get closer to a 1.0 release.
   
-#### Pub version 0.11.0+1
+#### 0.11.0+1
   * Added hashCode getter in Point, Rectangle, Circle, Vector.
   
-#### Pub version 0.11.0
+#### 0.11.0
   * Added DisplayObjectContainer.children for better child access.
   * Added DisplayObjectContainer.replaceChildAt. 
   * Added Sound.loadDataUrl and Sound.supportedTypes.
@@ -187,7 +191,7 @@ We do this in an effort to to get closer to a 1.0 release.
   * Internal simplifications and optimizations.  
   * Requires Dart SDK 1.9 or higher.    
 
-#### Pub version 0.10.3
+#### 0.10.3
   * Added InputEvent as base class for MouseEvent and TouchEvent.
   * Added InputEvent.current for current propagating InputEvent.
   * Added Sprite drag support for multi touch.
@@ -197,7 +201,7 @@ We do this in an effort to to get closer to a 1.0 release.
   * Remove Sprite.buttonMode since it has no use.
   * Bugfixes.
 
-#### Pub version 0.10.2
+#### 0.10.2
   * Added lots of API documentations (thanks to @marcojakob)
   * Added Video and VideoObject classes (thanks fot @sebgeelen)
   * Added BitmapData.fromVideoElement constructor.
@@ -208,7 +212,7 @@ We do this in an effort to to get closer to a 1.0 release.
   * Improved Sprite3D calculations.
   * Improved global2local and local2global calculations.
 
-#### Pub version 0.10.1
+#### 0.10.1
   * Added Sprite3D for 3D transformations of display objects.
   * Added RenderTexture.filtering option for pixel art games.
   * Added InteractiveObject.mouseCursor property.
@@ -217,7 +221,7 @@ We do this in an effort to to get closer to a 1.0 release.
   * Fixed Stage.autoHiDpi heuristics.
   * Bugfixes and performance improvements.
 
-#### Pub version 0.10.0
+#### 0.10.0
   * Added DisplayObject.blendMode property.
   * Added BitmapDataUpdateBatch class for better BitmapData update performance.
   * Added LibGDX texture atlases loader (for Spine runtime).
@@ -231,13 +235,13 @@ We do this in an effort to to get closer to a 1.0 release.
   * Bugfixes and performance improvements.
   * Internal refactoring to use mini-libs.
 
-#### Pub version 0.9.4+2
+#### 0.9.4+2
   * Fixed an issue with TouchEvents in Dartium.
 
-#### Pub version 0.9.4+1
+#### 0.9.4+1
   * Fixed an issue with WebGL masks in combination with WebGL filters.
 
-#### Pub version 0.9.4
+#### 0.9.4
   * Added TouchEvents TOUCH\_ROLL\_OUT, TOUCH\_ROLL\_OVER, TOUCH\_TAP.
   * Added touch support for SimpleButton.
   * Fixed TextField.displayAsPassword
@@ -251,14 +255,14 @@ Therefore the next version of StageXL will take advantage of features (like
 typed arrays) which are not supported by IE9. This will presumably improve
 the render performance on all other browsers.
 
-#### Pub version 0.9.3+2
+#### 0.9.3+2
   * stageWidth and stageHeight are integers again.
 
-#### Pub version 0.9.3+1
+#### 0.9.3+1
   * Changed Stage.stageWidth and stageHeight to num.
   * Added workaround for web fonts issue in IE.  
   
-#### Pub version 0.9.3
+#### 0.9.3
   * Added Scale9Bitmap DisplayObject.
   * Added Mouse.registerCursor for custom cursor styles.
   * Added BitmapData.toDataUrl method.  
@@ -271,7 +275,7 @@ the render performance on all other browsers.
   * Fixed GC issues with WebGL resources.
   * Fixed IE9 render and sound issues.
 
-#### Pub version 0.9.2
+#### 0.9.2
   * Added support for Sound Sprits (thanks Alex).
   * Added Stage.backgroundColor property (thanks Xavier).
   * Added ColorMatrixFilter.adjustColoration method (thanks Emmanuel).
@@ -280,22 +284,22 @@ the render performance on all other browsers.
   * Fixed MouseEvent/TouchEvent ctrl/alt/shift getters.
   * Fixed Juggler.clear method.
 
-#### Pub version 0.9.1
+#### 0.9.1
   * Added WebGL filters.
   * Added TextField stroke and gradients.
   * Enable CORS when loading BitmapDatas.
   * BREAKING CHANGE: Removed Bitmap.clipRectangle.
 
-#### Pub version 0.9.0+2
+#### 0.9.0+2
   * Fixed fallback for WebGL on iOS.
 
-#### Pub version 0.9.0+1
+#### 0.9.0+1
   * Added dartdoc comments for Graphics class (thanks Arron).
   * Enabled audio on IE Mobile 10 (thanks Xavier).
   * Fixed Mask.shape for Canvas2D renderer (thanks Alain).
   * Fixed DisplayObject.compositeOperation.
 
-#### Pub version 0.9.0
+#### 0.9.0
   * Added WebGL renderer (opt-in with Stage constructor).
   * Added fallback to Canvas renderer.
   * Added texture atlas optimizations.
@@ -308,7 +312,7 @@ the render performance on all other browsers.
   objects please use the applyCache method which renders the vector graphics 
   to a texture or do not opt-in for the WebGL renderer.
 
-#### Pub version 0.8.9
+#### 0.8.9
   * Added HtmlObject class to use HTML elements as DisplayObjects (kind of).
   * Added DisplayObject.userData property to custom user-defined data. 
   * Added BitmapData.sliceIntoFrames (better SpriteSheet support).
@@ -322,19 +326,19 @@ the render performance on all other browsers.
   * Improved performance of BitmapFilters (~ 2x).
   * Improved performance and smaller code for Tweens.
   
-#### Pub version 0.8.8
+#### 0.8.8
   * Added new mouse event for roll over and out.
   * Removed examples in favor of StageXL_Samples.
   * Updated ReadMe and GettingStarted documents.
   * Set version of dependencies according to Dart 1.0 release.
   
-#### Pub version 0.8.7
+#### 0.8.7
   * Refactored event system and how we add capturing event listeners.
   * Optimized filters (up to twice as fast now).
   * Improved performance of Graphics renderer. 
   * Some minor changes to align with the latest Dart changes.
 
-#### Pub version 0.8.6
+#### 0.8.6
   * Added TextField.cacheAsBitmap (default = true) for better text scaling.
   * Fixed TextField.autoSize.  
   * Fixed TextFormat.leading, TextFormat.indent and TextFormat.underline.
@@ -344,26 +348,26 @@ the render performance on all other browsers.
   * Fixed Firefox render problems on Linux.
   * Added Stage.sourceWidth and Stage.sourceHeight getters.
 
-#### Pub version 0.8.5
+#### 0.8.5
   * Added FlipBook.frameDurations property for flexible animation speeds.
   * Added SoundMixer.soundTransform implementation. 
   * KeyboardEvent stopPropagation prevents html event defaults.
   * Fixed Point.polar method. 
   * Include the latest Dart API changes.
 
-#### Pub version 0.8.4
+#### 0.8.4
   * Fixed TextFieldAutoSize feature.
   * Fixed TextFormat margins.
   * TextField.backgroundColor now matches Flash's default.
   * Moved Flump runtime to separate package.
   * Moved Particle Emitter runtime to separate package.
 
-#### Pub version 0.8.3
+#### 0.8.3
   * Added support for text files in ResourceManager.
   * Include the latest Dart API changes.
   * Honor TextFormat.leftMargin in TextField.
 
-#### Pub version 0.8.2
+#### 0.8.2
   * ResourceManger got an onProgress event to monitor loading progress.
   * Improved detection of HiDpi displays and mobile devices.
   * Mask got border properties to draw outlines of the mask.
@@ -372,15 +376,15 @@ the render performance on all other browsers.
   * Smaller JavaScript code size.
   * Minor optimization in Juggler.
 
-#### Pub version 0.8.1
+#### 0.8.1
   * Fixed MovieClip frame 0 execution.
 
-#### Pub version 0.8.0
+#### 0.8.0
   * New MovieClip class for the Toolkit for Dart.
   * Stage automatically set the "tabindex" attribute of canvas.
   * Smaller JavaScript code size.
 
-#### Pub version 0.7.6
+#### 0.7.6
   * Added ParticleEmitter for particle effects.
   * TextField supports TextFieldType.Input.
   * Stage supports resizing (full window, full screen).
@@ -390,7 +394,7 @@ the render performance on all other browsers.
   * Added AlphaMaskFilter class.
   * Smaller JavaScript code size.
 
-#### Pub version 0.7.5
+#### 0.7.5
   * DisplayObject.compositeOperation property.
   * DisplayObject.filters property.
   * Customize Sound loading with SoundLoadOptions.
@@ -406,11 +410,11 @@ the render performance on all other browsers.
   * TextField fixes for Firefox.
   * Smaller JavaScript code size.
 
-#### Pub version 0.7.4
+#### 0.7.4
   * New name for the library -> StageXL.
   * Added StageScaleMode and StageAlign.
 
-#### Pub version 0.7.3
+#### 0.7.3
   * DisplayObject.applyCache/refreshCache/removeCache.
   * Renamed current MovieClip class to FlipBook.
   * DisplayObject.skewX and skewY support.
@@ -418,13 +422,13 @@ the render performance on all other browsers.
   * Juggler.containsTween().
   * Stop mouse wheel event propagation on canvas.
 
-#### Pub version 0.7.2
+#### 0.7.2
   * Some fixes to align with the latest changes in Dart.
 
-#### Pub version 0.7.1
+#### 0.7.1
   * ResourceManager optimization and fixes.
 
-#### Pub version 0.7.0
+#### 0.7.0
   * Reworked event system to align with the Dart event system.
 
 ----------
