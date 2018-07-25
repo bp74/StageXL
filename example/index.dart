@@ -1,6 +1,6 @@
 import 'dart:html' as html;
 import 'package:stagexl/stagexl.dart';
-import 'dart:math' as math ;
+import 'dart:math' as math;
 
 void main() {
   StageOptions options = new StageOptions()
@@ -8,7 +8,7 @@ void main() {
     ..stageScaleMode = StageScaleMode.NO_SCALE
     ..renderEngine = RenderEngine.WebGL;
 
-  var canvas =  html.querySelector("#stage");
+  var canvas = html.querySelector("#stage");
   var stage = new Stage(canvas, width: 990, height: 620, options: options);
   var renderLoop = new RenderLoop();
   renderLoop.addStage(stage);

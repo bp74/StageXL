@@ -3,16 +3,9 @@
 language: dart
 
 dart:
-- stable
 - dev
 
 dart_task:
-- test: --platform firefox
-- dartanalyzer: --fatal-warnings lib/stagexl.dart
-
-matrix:
-  include:
-    - dart: stable
-    - dart_task:
-        test: --platform dartium
-        install_dartium: true
+- test: --platform firefox -j 1
+- dartanalyzer: --fatal-warnings .
+- dartfmt
