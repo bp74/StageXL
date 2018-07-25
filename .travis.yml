@@ -8,3 +8,4 @@ dart:
 dart_task:
 - test: --platform firefox -j 1
 - dartanalyzer: --fatal-warnings .
+- dartfmt
