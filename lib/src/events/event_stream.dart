@@ -100,7 +100,6 @@ class EventStream<T extends Event> extends Stream<T> {
 
   EventStreamSubscription<T> _subscribe(
       EventListener<T> eventListener, bool captures, int priority) {
-
     var subscription = new EventStreamSubscription<T>._(
         this, eventListener, captures, priority);
 
@@ -126,11 +125,14 @@ class EventStream<T extends Event> extends Stream<T> {
     if (captures) {
       _capturingSubscriptionCount += 1;
     } else if (subscription is EventStreamSubscription<EnterFrameEvent>) {
-      _enterFrameSubscriptions.add(subscription as EventStreamSubscription<EnterFrameEvent>);
+      _enterFrameSubscriptions
+          .add(subscription as EventStreamSubscription<EnterFrameEvent>);
     } else if (subscription is EventStreamSubscription<ExitFrameEvent>) {
-      _exitFrameSubscriptions.add(subscription as EventStreamSubscription<ExitFrameEvent>);
+      _exitFrameSubscriptions
+          .add(subscription as EventStreamSubscription<ExitFrameEvent>);
     } else if (subscription is EventStreamSubscription<RenderEvent>) {
-      _renderSubscriptions.add(subscription as EventStreamSubscription<RenderEvent>);
+      _renderSubscriptions
+          .add(subscription as EventStreamSubscription<RenderEvent>);
     }
 
     return subscription;
