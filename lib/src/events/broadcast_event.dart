@@ -28,7 +28,7 @@ class EnterFrameEvent extends BroadcastEvent {
   EnterFrameEvent(this.passedTime) : super(Event.ENTER_FRAME);
 
   @override
-  void dispatch() => _dispatchBroadcastEvent(this, _enterFrameSubscriptions);
+  void dispatch() => _dispatchBroadcastEvent<EnterFrameEvent>(this, _enterFrameSubscriptions);
 }
 
 /// An event that is dispatched when the current frame is exited.
@@ -40,7 +40,7 @@ class ExitFrameEvent extends BroadcastEvent {
   ExitFrameEvent() : super(Event.EXIT_FRAME);
 
   @override
-  void dispatch() => _dispatchBroadcastEvent(this, _exitFrameSubscriptions);
+  void dispatch() => _dispatchBroadcastEvent<ExitFrameEvent>(this, _exitFrameSubscriptions);
 }
 
 /// An event that is dispatched when the display list is about to be updated
@@ -56,18 +56,20 @@ class RenderEvent extends BroadcastEvent {
   RenderEvent() : super(Event.RENDER);
 
   @override
-  void dispatch() => _dispatchBroadcastEvent(this, _renderSubscriptions);
+  void dispatch() => _dispatchBroadcastEvent<RenderEvent>(this, _renderSubscriptions);
 }
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-final List<EventStreamSubscription> _enterFrameSubscriptions = [];
-final List<EventStreamSubscription> _exitFrameSubscriptions = [];
-final List<EventStreamSubscription> _renderSubscriptions = [];
+final List<EventStreamSubscription<EnterFrameEvent>> _enterFrameSubscriptions = [];
+final List<EventStreamSubscription<ExitFrameEvent>> _exitFrameSubscriptions = [];
+final List<EventStreamSubscription<RenderEvent>> _renderSubscriptions = [];
 
-void _dispatchBroadcastEvent(BroadcastEvent broadcastEvent,
-    List<EventStreamSubscription> subscriptions) {
+void _dispatchBroadcastEvent<T extends BroadcastEvent>(
+    BroadcastEvent broadcastEvent,
+    List<EventStreamSubscription<T>> subscriptions) {
+
   // Dispatch event to current subscriptions.
   // Do not dispatch events to newly added subscriptions.
   // It is guaranteed that this function is not called recursively.
