@@ -136,7 +136,6 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
 
   Stage(CanvasElement canvas, {int width, int height, StageOptions options}) {
-    if (canvas is! CanvasElement) throw new ArgumentError("canvas");
     if (canvas.tabIndex <= 0) canvas.tabIndex = 1;
     if (canvas.style.outline == "") canvas.style.outline = "none";
     if (options == null) options = Stage.defaultOptions;
@@ -481,11 +480,6 @@ class Stage extends DisplayObjectContainer {
     clientTop = _canvas.clientTop + clientRectangle.top.round();
     clientWidth = _canvas.clientWidth;
     clientHeight = _canvas.clientHeight;
-
-    if (clientWidth is! num) throw "dart2js_hint";
-    if (clientHeight is! num) throw "dart2js_hint";
-    if (sourceWidth is! num) throw "dart2js_hint";
-    if (sourceHeight is! num) throw "dart2js_hint";
 
     if (clientWidth == 0 || clientHeight == 0) return;
 
