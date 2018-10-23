@@ -64,7 +64,7 @@ class ColorMatrixFilter extends BitmapFilter {
       : this([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], [0, 0, 0, 0]);
 
   factory ColorMatrixFilter.adjust(
-      {num hue: 0, num saturation: 0, num brightness: 0, num contrast: 0}) {
+      {num hue = 0, num saturation = 0, num brightness = 0, num contrast = 0}) {
     var colorMatrixFilter = new ColorMatrixFilter.identity();
     colorMatrixFilter.adjustHue(hue);
     colorMatrixFilter.adjustSaturation(saturation);

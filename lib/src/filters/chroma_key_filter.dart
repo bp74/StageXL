@@ -36,9 +36,9 @@ class ChromaKeyFilter extends BitmapFilter {
   int _invisibleThreshold;
 
   ChromaKeyFilter(
-      {int backgroundColor: 0xFF00FF00,
-      int solidThreshold: 140,
-      int invisibleThreshold: 20}) {
+      {int backgroundColor = 0xFF00FF00,
+      int solidThreshold = 140,
+      int invisibleThreshold = 20}) {
     if (invisibleThreshold < 0) {
       throw new ArgumentError("The minimum solidThreshold is 0.");
     }

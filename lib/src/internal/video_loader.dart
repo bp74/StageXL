@@ -47,7 +47,7 @@ class VideoLoader {
   }
 
   void _loadNextUrl() {
-    if (_urls.length == 0) {
+    if (_urls.isEmpty) {
       _loadFailed();
     } else if (_loadData) {
       _loadVideoData(_urls.removeAt(0));
@@ -59,7 +59,7 @@ class VideoLoader {
   void _loadFailed() {
     _onCanPlaySubscription.cancel();
     _onErrorSubscription.cancel();
-    if (this.aggregateError.errors.length == 0) {
+    if (this.aggregateError.errors.isEmpty) {
       var loadError = new LoadError("No configured video type is supported.");
       this.aggregateError.errors.add(loadError);
     }
@@ -91,11 +91,11 @@ class VideoLoader {
     var video = new VideoElement();
     var valid = ["maybe", "probably"];
 
-    if (valid.indexOf(video.canPlayType("video/webm")) != -1)
+    if (valid.contains(video.canPlayType("video/webm")))
       supportedTypes.add("webm");
-    if (valid.indexOf(video.canPlayType("video/mp4")) != -1)
+    if (valid.contains(video.canPlayType("video/mp4")))
       supportedTypes.add("mp4");
-    if (valid.indexOf(video.canPlayType("video/ogg")) != -1)
+    if (valid.contains(video.canPlayType("video/ogg")))
       supportedTypes.add("ogg");
 
     print("StageXL video types   : $supportedTypes");

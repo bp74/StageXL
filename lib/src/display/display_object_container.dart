@@ -355,7 +355,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
   @override
   Rectangle<num> get bounds {
-    if (_children.length == 0) return super.bounds;
+    if (_children.isEmpty) return super.bounds;
 
     num left = double.infinity;
     num top = double.infinity;

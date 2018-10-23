@@ -31,7 +31,7 @@ bool _checkMobileDevice() {
     "webos",
     "windows phone"
   ];
-  return identifiers.any((id) => ua.indexOf(id) >= 0);
+  return identifiers.any(ua.contains);
 }
 
 //-------------------------------------------------------------------------------------

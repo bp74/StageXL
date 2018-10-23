@@ -28,7 +28,7 @@ class EventStream<T extends Event> extends Stream<T> {
           void onCancel(StreamSubscription<T> subscription)}) =>
       this;
 
-  bool get hasSubscriptions => _subscriptions.length > 0;
+  bool get hasSubscriptions => _subscriptions.isNotEmpty;
   bool get hasCapturingSubscriptions => _capturingSubscriptionCount > 0;
   bool get hasBubblingSubscriptions =>
       _subscriptions.length > _capturingSubscriptionCount;
@@ -57,8 +57,8 @@ class EventStream<T extends Event> extends Stream<T> {
   EventStreamSubscription<T> listen(void onData(T event),
       {Function onError,
       void onDone(),
-      bool cancelOnError: false,
-      int priority: 0}) {
+      bool cancelOnError = false,
+      int priority = 0}) {
     return _subscribe(onData, false, priority);
   }
 
@@ -79,7 +79,7 @@ class EventStream<T extends Event> extends Stream<T> {
   /// the same priority, they are processed in the order in which they were
   /// added. The default priority is 0.
 
-  EventStreamSubscription<T> capture(void onData(T event), {int priority: 0}) {
+  EventStreamSubscription<T> capture(void onData(T event), {int priority = 0}) {
     return _subscribe(onData, true, priority);
   }
 
@@ -158,7 +158,7 @@ class EventStream<T extends Event> extends Stream<T> {
     eventStreamSubscription._canceled = true;
 
     var oldSubscriptions = _subscriptions;
-    if (oldSubscriptions.length == 0) return;
+    if (oldSubscriptions.isEmpty) return;
 
     var newSubscriptions =
         new List<EventStreamSubscription<T>>(oldSubscriptions.length - 1);

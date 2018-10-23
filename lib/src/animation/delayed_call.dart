@@ -27,7 +27,7 @@ class DelayedCall implements Animatable {
   ///
   /// The optional [repeatCount] specifies the number of times the delayed call
   /// should be executed.
-  DelayedCall(Function action, num delay, {int repeatCount: 1})
+  DelayedCall(Function action, num delay, {int repeatCount = 1})
       : _action = action,
         _repeatCount = repeatCount {
     _totalTime = max(delay, 0.0001);

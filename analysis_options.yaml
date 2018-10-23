@@ -1,3 +1,4 @@
+include: package:pedantic/analysis_options.yaml
 linter:
   # http://dart-lang.github.io/linter/lints/
   rules:

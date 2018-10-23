@@ -22,7 +22,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
     while (lineIndex < lines.length) {
       var line = lines[lineIndex].trim();
 
-      if (line.length == 0) {
+      if (line.isEmpty) {
         imageBlock = true;
         lineIndex++;
       } else if (imageBlock) {
