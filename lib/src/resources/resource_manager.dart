@@ -57,7 +57,7 @@ class ResourceManager {
     _addResource("BitmapData", name, url, loader);
   }
 
-  void removeBitmapData(String name, {bool dispose: true}) {
+  void removeBitmapData(String name, {bool dispose = true}) {
     var resourceManagerResource = _removeResource("BitmapData", name);
     var bitmapData = resourceManagerResource?.value;
     if (bitmapData is BitmapData && dispose) {
@@ -81,7 +81,7 @@ class ResourceManager {
     _addResource("TextureAtlas", name, url, loader);
   }
 
-  void removeTextureAtlas(String name, {bool dispose: true}) {
+  void removeTextureAtlas(String name, {bool dispose = true}) {
     var resourceManagerResource = _removeResource("TextureAtlas", name);
     var textureAtlas = resourceManagerResource?.value;
     if (textureAtlas is TextureAtlas && dispose) {

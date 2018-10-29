@@ -329,12 +329,12 @@ void testPoint(Point point, num x, num y) {
 }
 
 void testRectangleIntersection(
-    {num x1: 0,
-    num y1: 0,
-    num x2: 1,
-    num y2: 1,
-    num sideSize: 2,
-    Matcher matcher: isTrue}) {
+    {num x1 = 0,
+    num y1 = 0,
+    num x2 = 1,
+    num y2 = 1,
+    num sideSize = 2,
+    Matcher matcher = isTrue}) {
   Rectangle r1 = new Rectangle(x1, y1, sideSize, sideSize);
   Rectangle r2 = new Rectangle(x2, y2, sideSize, sideSize);
 

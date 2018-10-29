@@ -117,7 +117,7 @@ class CanvasShadowWrapper extends DisplayObject {
   void render(RenderState renderState) {
     var renderContext = renderState.renderContext;
     if (renderContext is RenderContextCanvas) {
-      CanvasRenderingContext2D rawContext = renderContext.rawContext;
+      var rawContext = renderContext.rawContext;
       Matrix shadowMatrix = renderState.globalMatrix;
       rawContext.save();
       rawContext.shadowColor = color2rgba(shadowColor);

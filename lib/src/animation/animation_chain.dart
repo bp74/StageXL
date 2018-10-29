@@ -53,13 +53,13 @@ class AnimationChain implements Animatable {
       }
     }
 
-    if (_animatables.length > 0) {
+    if (_animatables.isNotEmpty) {
       if (_animatables[0].advanceTime(time) == false) {
         _animatables.removeAt(0);
       }
     }
 
-    if (_animatables.length == 0) {
+    if (_animatables.isEmpty) {
       _completed = true;
       if (_onComplete != null) _onComplete();
       return false;

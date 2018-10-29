@@ -58,7 +58,7 @@ class _DisplayObjectCache {
 
     var filters = this.displayObject.filters;
 
-    if (filters != null && filters.length > 0) {
+    if (filters != null && filters.isNotEmpty) {
       var bitmapData = new BitmapData.fromRenderTextureQuad(renderTextureQuad);
       filters.forEach((filter) => filter.apply(bitmapData));
     }

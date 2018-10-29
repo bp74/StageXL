@@ -94,7 +94,7 @@ class SoundMixer {
       }
     }
 
-    if (AudioLoader.supportedTypes.length == 0) {
+    if (AudioLoader.supportedTypes.isEmpty) {
       _engineDetected = SoundEngine.Mockup;
     }
 

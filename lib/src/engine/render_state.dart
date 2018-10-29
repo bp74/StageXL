@@ -158,7 +158,7 @@ class RenderState {
 
     if (cache != null) {
       this.renderTextureQuad(cache);
-    } else if (filters.length > 0) {
+    } else if (filters.isNotEmpty) {
       renderObject.renderFiltered(this);
     } else {
       renderObject.render(this);

@@ -32,7 +32,7 @@ class Graphics {
   /// Undo last graphics command
 
   void undoCommand() {
-    if (_originalCommands.length > 0) {
+    if (_originalCommands.isNotEmpty) {
       _originalCommands.removeLast();
       _invalidate();
     }

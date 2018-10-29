@@ -25,21 +25,21 @@ class TextFormat {
   //-------------------------------------------------------------------------------------------------
 
   TextFormat(this.font, this.size, this.color,
-      {this.strokeWidth: 0.0,
-      this.strokeColor: Color.Black,
+      {this.strokeWidth = 0.0,
+      this.strokeColor = Color.Black,
       this.fillGradient,
-      this.weight: 400,
-      this.bold: false,
-      this.italic: false,
-      this.underline: false,
-      this.align: "left",
-      this.verticalAlign: "top",
-      this.topMargin: 0.0,
-      this.bottomMargin: 0.0,
-      this.leftMargin: 0.0,
-      this.rightMargin: 0.0,
-      this.indent: 0.0,
-      this.leading: 0.0});
+      this.weight = 400,
+      this.bold = false,
+      this.italic = false,
+      this.underline = false,
+      this.align = "left",
+      this.verticalAlign = "top",
+      this.topMargin = 0.0,
+      this.bottomMargin = 0.0,
+      this.leftMargin = 0.0,
+      this.rightMargin = 0.0,
+      this.indent = 0.0,
+      this.leading = 0.0});
 
   //-------------------------------------------------------------------------------------------------
 

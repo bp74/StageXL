@@ -35,7 +35,7 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
 
   RenderContextWebGL(CanvasElement canvasElement,
-      {bool alpha: false, bool antialias: false})
+      {bool alpha = false, bool antialias = false})
       : _canvasElement = canvasElement {
     _canvasElement.onWebGlContextLost.listen(_onContextLost);
     _canvasElement.onWebGlContextRestored.listen(_onContextRestored);
@@ -241,7 +241,7 @@ class RenderContextWebGL extends RenderContext {
       RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
     var firstFilter = renderFilters.length == 1 ? renderFilters[0] : null;
 
-    if (renderFilters.length == 0) {
+    if (renderFilters.isEmpty) {
       // Don't render anything
     } else if (firstFilter is RenderFilter && firstFilter.isSimple) {
       firstFilter.renderFilter(renderState, renderTextureQuad, 0);
@@ -305,7 +305,7 @@ class RenderContextWebGL extends RenderContext {
     this.activateBlendMode(BlendMode.NORMAL);
     this.clear(0);
 
-    if (filters.length == 0) {
+    if (filters.isEmpty) {
       // Don't render anything
     } else if (filters[0].isSimple &&
         renderObject is _RenderTextureQuadObject) {
@@ -395,7 +395,7 @@ class RenderContextWebGL extends RenderContext {
   }
 
   RenderFrameBuffer getRenderFrameBuffer(int width, int height) {
-    if (_renderFrameBufferPool.length == 0) {
+    if (_renderFrameBufferPool.isEmpty) {
       return new RenderFrameBuffer.rawWebGL(width, height);
     } else {
       var renderFrameBuffer = _renderFrameBufferPool.removeLast();

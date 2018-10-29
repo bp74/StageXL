@@ -6,7 +6,7 @@ library stagexl.display_ex;
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:math' hide Point, Rectangle;
-import 'dart:html' show CanvasRenderingContext2D, CssStyleDeclaration, Element;
+import 'dart:html' show CssStyleDeclaration, Element;
 
 import 'animation.dart';
 import 'engine.dart';
