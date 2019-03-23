@@ -61,7 +61,7 @@ class SoundSprite {
   //----------------------------------------------------------------------------
 
   SoundSpriteSegment getSegment(String name) {
-    var segment = _segments.firstWhere((s) => s.name == name, orElse: null);
+    var segment = _segments.firstWhere((s) => s.name == name);
     if (segment == null) {
       throw new ArgumentError("SoundSpriteSegment not found: '$name'");
     } else {
