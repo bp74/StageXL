@@ -23,7 +23,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   Rectangle.from(math.Rectangle<T> r) : this(r.left, r.top, r.width, r.height);
 
-  Rectangle<T> clone() => new Rectangle<T>(left, top, width, height);
+  Rectangle<T> clone() => Rectangle<T>(left, top, width, height);
 
   @override
   String toString() =>
@@ -52,7 +52,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   //---------------------------------------------------------------------------
 
-  Point<num> get center => new Point<num>(left + width / 2, top + height / 2);
+  Point<num> get center => Point<num>(left + width / 2, top + height / 2);
 
   bool get isEmpty => width <= 0 || height <= 0;
 
@@ -71,7 +71,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   }
 
   @override
-  Point<T> get topLeft => new Point<T>(left, top);
+  Point<T> get topLeft => Point<T>(left, top);
 
   set topLeft(Point<T> point) {
     width = width + left - point.x;
@@ -81,7 +81,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   }
 
   @override
-  Point<T> get topRight => new Point<T>(right, top);
+  Point<T> get topRight => Point<T>(right, top);
 
   set topRight(Point<T> point) {
     width = point.x - left;
@@ -90,7 +90,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   }
 
   @override
-  Point<T> get bottomLeft => new Point<T>(left, bottom);
+  Point<T> get bottomLeft => Point<T>(left, bottom);
 
   set bottomLeft(Point<T> point) {
     width = width + left - point.x;
@@ -99,14 +99,14 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   }
 
   @override
-  Point<T> get bottomRight => new Point<T>(right, bottom);
+  Point<T> get bottomRight => Point<T>(right, bottom);
 
   set bottomRight(Point<T> point) {
     width = point.x - left;
     height = point.y - top;
   }
 
-  Point<T> get size => new Point<T>(width, height);
+  Point<T> get size => Point<T>(width, height);
 
   set size(Point<T> point) {
     width = point.x;
@@ -129,7 +129,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     return left < r.right && right > r.left && top < r.bottom && bottom > r.top;
   }
 
-  /// Returns a new rectangle which completely contains `this` and [other].
+  /// Returns a rectangle which completely contains `this` and [other].
 
   @override
   Rectangle<T> boundingBox(math.Rectangle<T> other) {
@@ -137,7 +137,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     T rTop = min(top, other.top);
     T rRight = max(right, other.right);
     T rBottom = max(bottom, other.bottom);
-    return new Rectangle<T>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
+    return Rectangle<T>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 
   /// Tests whether `this` entirely contains [another].
@@ -187,7 +187,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     T rTop = max(top, rect.top);
     T rRight = min(right, rect.right);
     T rBottom = min(bottom, rect.bottom);
-    return new Rectangle<T>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
+    return Rectangle<T>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 
   Rectangle<int> align() {
@@ -195,6 +195,6 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     int rTop = top.floor();
     int rRight = right.ceil();
     int rBottom = bottom.ceil();
-    return new Rectangle<int>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
+    return Rectangle<int>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 }

@@ -7,8 +7,8 @@ class RenderTextureQuad {
   final int rotation;
   final num pixelRatio;
 
-  final Int16List ixListQuad = new Int16List(6);
-  final Float32List vxListQuad = new Float32List(16);
+  final Int16List ixListQuad = Int16List(6);
+  final Float32List vxListQuad = Float32List(16);
 
   Int16List _ixList;
   Float32List _vxList;
@@ -36,7 +36,7 @@ class RenderTextureQuad {
       vxListQuad[08] = vxListQuad[04] = (0 - or.left + sr.height) / pr;
       vxListQuad[09] = vxListQuad[13] = (0 - or.top + sr.width) / pr;
     } else {
-      throw new Error();
+      throw Error();
     }
 
     // Vertex list [u/v]
@@ -62,7 +62,7 @@ class RenderTextureQuad {
       vxListQuad[10] = vxListQuad[14] = sr.right / rt.width;
       vxListQuad[11] = vxListQuad[07] = sr.top / rt.height;
     } else {
-      throw new Error();
+      throw Error();
     }
 
     // Index list
@@ -97,15 +97,15 @@ class RenderTextureQuad {
     var oldOffsetL = renderTextureQuad.offsetRectangle.left;
     var oldOffsetT = renderTextureQuad.offsetRectangle.top;
 
-    var newRotation = (renderTextureQuad.rotation + rotation) % 4;
-    var newSourceL = sourceRectangle.left;
-    var newSourceT = sourceRectangle.top;
-    var newSourceR = sourceRectangle.right;
-    var newSourceB = sourceRectangle.bottom;
-    var newOffsetL = offsetRectangle.left;
-    var newOffsetT = offsetRectangle.top;
-    var newOffsetW = offsetRectangle.width;
-    var newOffsetH = offsetRectangle.height;
+    var otation = (renderTextureQuad.rotation + rotation) % 4;
+    var ourceL = sourceRectangle.left;
+    var ourceT = sourceRectangle.top;
+    var ourceR = sourceRectangle.right;
+    var ourceB = sourceRectangle.bottom;
+    var ffsetL = offsetRectangle.left;
+    var ffsetT = offsetRectangle.top;
+    var ffsetW = offsetRectangle.width;
+    var ffsetH = offsetRectangle.height;
 
     var tmpSourceL = 0;
     var tmpSourceT = 0;
@@ -113,54 +113,54 @@ class RenderTextureQuad {
     var tmpSourceB = 0;
 
     if (oldRotation == 0) {
-      tmpSourceL = oldSourceL + oldOffsetL + newSourceL;
-      tmpSourceT = oldSourceT + oldOffsetT + newSourceT;
-      tmpSourceR = oldSourceL + oldOffsetL + newSourceR;
-      tmpSourceB = oldSourceT + oldOffsetT + newSourceB;
+      tmpSourceL = oldSourceL + oldOffsetL + ourceL;
+      tmpSourceT = oldSourceT + oldOffsetT + ourceT;
+      tmpSourceR = oldSourceL + oldOffsetL + ourceR;
+      tmpSourceB = oldSourceT + oldOffsetT + ourceB;
     } else if (oldRotation == 1) {
-      tmpSourceL = oldSourceR - oldOffsetT - newSourceB;
-      tmpSourceT = oldSourceT + oldOffsetL + newSourceL;
-      tmpSourceR = oldSourceR - oldOffsetT - newSourceT;
-      tmpSourceB = oldSourceT + oldOffsetL + newSourceR;
+      tmpSourceL = oldSourceR - oldOffsetT - ourceB;
+      tmpSourceT = oldSourceT + oldOffsetL + ourceL;
+      tmpSourceR = oldSourceR - oldOffsetT - ourceT;
+      tmpSourceB = oldSourceT + oldOffsetL + ourceR;
     } else if (oldRotation == 2) {
-      tmpSourceL = oldSourceR - oldOffsetL - newSourceR;
-      tmpSourceT = oldSourceB - oldOffsetT - newSourceB;
-      tmpSourceR = oldSourceR - oldOffsetL - newSourceL;
-      tmpSourceB = oldSourceB - oldOffsetT - newSourceT;
+      tmpSourceL = oldSourceR - oldOffsetL - ourceR;
+      tmpSourceT = oldSourceB - oldOffsetT - ourceB;
+      tmpSourceR = oldSourceR - oldOffsetL - ourceL;
+      tmpSourceB = oldSourceB - oldOffsetT - ourceT;
     } else if (oldRotation == 3) {
-      tmpSourceL = oldSourceL + oldOffsetT + newSourceT;
-      tmpSourceT = oldSourceB - oldOffsetL - newSourceR;
-      tmpSourceR = oldSourceL + oldOffsetT + newSourceB;
-      tmpSourceB = oldSourceB - oldOffsetL - newSourceL;
+      tmpSourceL = oldSourceL + oldOffsetT + ourceT;
+      tmpSourceT = oldSourceB - oldOffsetL - ourceR;
+      tmpSourceR = oldSourceL + oldOffsetT + ourceB;
+      tmpSourceB = oldSourceB - oldOffsetL - ourceL;
     }
 
-    newSourceL = clampInt(tmpSourceL, oldSourceL, oldSourceR);
-    newSourceT = clampInt(tmpSourceT, oldSourceT, oldSourceB);
-    newSourceR = clampInt(tmpSourceR, oldSourceL, oldSourceR);
-    newSourceB = clampInt(tmpSourceB, oldSourceT, oldSourceB);
+    ourceL = clampInt(tmpSourceL, oldSourceL, oldSourceR);
+    ourceT = clampInt(tmpSourceT, oldSourceT, oldSourceB);
+    ourceR = clampInt(tmpSourceR, oldSourceL, oldSourceR);
+    ourceB = clampInt(tmpSourceB, oldSourceT, oldSourceB);
 
-    if (newRotation == 0) {
-      newOffsetL += tmpSourceL - newSourceL;
-      newOffsetT += tmpSourceT - newSourceT;
-    } else if (newRotation == 1) {
-      newOffsetL += tmpSourceT - newSourceT;
-      newOffsetT += newSourceR - tmpSourceR;
-    } else if (newRotation == 2) {
-      newOffsetL += newSourceR - tmpSourceR;
-      newOffsetT += tmpSourceB - newSourceB;
-    } else if (newRotation == 3) {
-      newOffsetL += newSourceB - tmpSourceB;
-      newOffsetT += newSourceL - tmpSourceL;
+    if (otation == 0) {
+      ffsetL += tmpSourceL - ourceL;
+      ffsetT += tmpSourceT - ourceT;
+    } else if (otation == 1) {
+      ffsetL += tmpSourceT - ourceT;
+      ffsetT += ourceR - tmpSourceR;
+    } else if (otation == 2) {
+      ffsetL += ourceR - tmpSourceR;
+      ffsetT += tmpSourceB - ourceB;
+    } else if (otation == 3) {
+      ffsetL += ourceB - tmpSourceB;
+      ffsetT += ourceL - tmpSourceL;
     }
 
-    var newSourceW = newSourceR - newSourceL;
-    var newSourceH = newSourceB - newSourceT;
+    var ourceW = ourceR - ourceL;
+    var ourceH = ourceB - ourceT;
 
-    return new RenderTextureQuad(
+    return RenderTextureQuad(
         renderTexture,
-        new Rectangle<int>(newSourceL, newSourceT, newSourceW, newSourceH),
-        new Rectangle<int>(newOffsetL, newOffsetT, newOffsetW, newOffsetH),
-        newRotation,
+        Rectangle<int>(ourceL, ourceT, ourceW, ourceH),
+        Rectangle<int>(ffsetL, ffsetT, ffsetW, ffsetH),
+        otation,
         pixelRatio);
   }
 
@@ -190,11 +190,11 @@ class RenderTextureQuad {
     num t = offsetRectangle.top / pixelRatio;
     num w = offsetRectangle.width / pixelRatio;
     num h = offsetRectangle.height / pixelRatio;
-    return new Rectangle<num>(l, t, w, h);
+    return Rectangle<num>(l, t, w, h);
   }
 
   RenderTextureQuad withPixelRatio(num pixelRatio) {
-    return new RenderTextureQuad(this.renderTexture, this.sourceRectangle,
+    return RenderTextureQuad(this.renderTexture, this.sourceRectangle,
         this.offsetRectangle, this.rotation, pixelRatio);
   }
 
@@ -226,21 +226,21 @@ class RenderTextureQuad {
     if (rotation == 0) {
       var tx = sourceRectangle.left + offsetRectangle.left;
       var ty = sourceRectangle.top + offsetRectangle.top;
-      return new Matrix(pr, 0.0, 0.0, pr, tx, ty);
+      return Matrix(pr, 0.0, 0.0, pr, tx, ty);
     } else if (rotation == 1) {
       var tx = sourceRectangle.right - offsetRectangle.top;
       var ty = sourceRectangle.top + offsetRectangle.left;
-      return new Matrix(0.0, pr, 0.0 - pr, 0.0, tx, ty);
+      return Matrix(0.0, pr, 0.0 - pr, 0.0, tx, ty);
     } else if (rotation == 2) {
       var tx = sourceRectangle.right - offsetRectangle.left;
       var ty = sourceRectangle.bottom - offsetRectangle.top;
-      return new Matrix(0.0 - pr, 0.0, 0.0, 0.0 - pr, tx, ty);
+      return Matrix(0.0 - pr, 0.0, 0.0, 0.0 - pr, tx, ty);
     } else if (rotation == 3) {
       var tx = sourceRectangle.left + offsetRectangle.top;
       var ty = sourceRectangle.bottom - offsetRectangle.left;
-      return new Matrix(0.0, 0.0 - pr, pr, 0.0, tx, ty);
+      return Matrix(0.0, 0.0 - pr, pr, 0.0, tx, ty);
     } else {
-      throw new Error();
+      throw Error();
     }
   }
 
@@ -260,29 +260,28 @@ class RenderTextureQuad {
     if (rotation == 0) {
       var tx = sourceRectangle.left + offsetRectangle.left;
       var ty = sourceRectangle.top + offsetRectangle.top;
-      return new Matrix(sx * pr, 0.0, 0.0, sy * pr, sx * tx, sy * ty);
+      return Matrix(sx * pr, 0.0, 0.0, sy * pr, sx * tx, sy * ty);
     } else if (rotation == 1) {
       var tx = sourceRectangle.right - offsetRectangle.top;
       var ty = sourceRectangle.top + offsetRectangle.left;
-      return new Matrix(0.0, sy * pr, 0.0 - sx * pr, 0.0, sx * tx, sy * ty);
+      return Matrix(0.0, sy * pr, 0.0 - sx * pr, 0.0, sx * tx, sy * ty);
     } else if (rotation == 2) {
       var tx = sourceRectangle.right - offsetRectangle.left;
       var ty = sourceRectangle.bottom - offsetRectangle.top;
-      return new Matrix(
-          0.0 - sx * pr, 0.0, 0.0, 0.0 - sy * pr, sx * tx, sy * ty);
+      return Matrix(0.0 - sx * pr, 0.0, 0.0, 0.0 - sy * pr, sx * tx, sy * ty);
     } else if (rotation == 3) {
       var tx = sourceRectangle.left + offsetRectangle.top;
       var ty = sourceRectangle.bottom - offsetRectangle.left;
-      return new Matrix(0.0, 0.0 - sy * pr, sx * pr, 0.0, sx * tx, sy * ty);
+      return Matrix(0.0, 0.0 - sy * pr, sx * pr, 0.0, sx * tx, sy * ty);
     } else {
-      throw new Error();
+      throw Error();
     }
   }
 
   //---------------------------------------------------------------------------
 
-  /// Clips a new RenderTextureQuad from this RenderTextureQuad. The offset
-  /// of the new RenderTextureQuad will be adjusted to match the origin of
+  /// Clips a RenderTextureQuad from this RenderTextureQuad. The offset
+  /// of the RenderTextureQuad will be adjusted to match the origin of
   /// this RenderTextureQuad.
   ///
   /// The [rectangle] is in target coordinates. Those coordinates take the
@@ -296,13 +295,13 @@ class RenderTextureQuad {
     int rB = (rectangle.bottom * pixelRatio).round();
     int ow = this.offsetRectangle.width;
     int oh = this.offsetRectangle.height;
-    var sourceRectangle = new Rectangle<int>(rL, rT, rR - rL, rB - rT);
-    var offsetRectangle = new Rectangle<int>(0 - rL, 0 - rT, ow, oh);
-    return new RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);
+    var sourceRectangle = Rectangle<int>(rL, rT, rR - rL, rB - rT);
+    var offsetRectangle = Rectangle<int>(0 - rL, 0 - rT, ow, oh);
+    return RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);
   }
 
-  /// Cuts a new RenderTextureQuad out of this RenderTextureQuad. The offset
-  /// of the new RenderTextureQuad will be adjusted to match the origin of
+  /// Cuts a RenderTextureQuad out of this RenderTextureQuad. The offset
+  /// of the RenderTextureQuad will be adjusted to match the origin of
   /// the [rectangle].
   ///
   /// The [rectangle] is in target coordinates. Those coordinates take the
@@ -314,9 +313,9 @@ class RenderTextureQuad {
     int rT = (rectangle.top * pixelRatio).round();
     int rR = (rectangle.right * pixelRatio).round();
     int rB = (rectangle.bottom * pixelRatio).round();
-    var sourceRectangle = new Rectangle<int>(rL, rT, rR - rL, rB - rT);
-    var offsetRectangle = new Rectangle<int>(0, 0, rR - rL, rB - rT);
-    return new RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);
+    var sourceRectangle = Rectangle<int>(rL, rT, rR - rL, rB - rT);
+    var offsetRectangle = Rectangle<int>(0, 0, rR - rL, rB - rT);
+    return RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);
   }
 
   //---------------------------------------------------------------------------

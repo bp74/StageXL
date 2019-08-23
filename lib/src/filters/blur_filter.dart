@@ -14,8 +14,8 @@ class BlurFilter extends BitmapFilter {
   int _blurY;
   int _quality;
 
-  final List<int> _renderPassSources = new List<int>();
-  final List<int> _renderPassTargets = new List<int>();
+  final List<int> _renderPassSources = List<int>();
+  final List<int> _renderPassTargets = List<int>();
 
   //---------------------------------------------------------------------------
   // Credits to Alois Zingl, Vienna, Austria.
@@ -32,12 +32,12 @@ class BlurFilter extends BitmapFilter {
 
   @override
   BitmapFilter clone() {
-    return new BlurFilter(blurX, blurY);
+    return BlurFilter(blurX, blurY);
   }
 
   @override
   Rectangle<int> get overlap {
-    return new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
+    return Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
   }
 
   @override
@@ -139,7 +139,7 @@ class BlurFilter extends BitmapFilter {
     num pixelRatioScale = pixelRatio * passScale;
 
     var renderProgram = renderContext.getRenderProgram(
-        r"$BlurFilterProgram", () => new BlurFilterProgram());
+        r"$BlurFilterProgram", () => BlurFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);

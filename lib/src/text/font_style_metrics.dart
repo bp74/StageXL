@@ -1,12 +1,12 @@
 part of stagexl.text;
 
 final Map<String, _FontStyleMetrics> _fontStyleMetrics =
-    new Map<String, _FontStyleMetrics>();
+    Map<String, _FontStyleMetrics>();
 
 _FontStyleMetrics _getFontStyleMetrics(TextFormat textFormat) {
   String fontStyle = textFormat._cssFontStyle;
   return _fontStyleMetrics.putIfAbsent(
-      fontStyle, () => new _FontStyleMetrics(textFormat));
+      fontStyle, () => _FontStyleMetrics(textFormat));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -18,9 +18,9 @@ class _FontStyleMetrics {
 
   _FontStyleMetrics(TextFormat textFormat) {
     var fontStyle = textFormat._cssFontStyle;
-    var text = new html.Element.tag("span");
-    var block = new html.Element.tag("div");
-    var div = new html.Element.tag("div");
+    var text = html.Element.tag("span");
+    var block = html.Element.tag("div");
+    var div = html.Element.tag("div");
 
     text.style.font = fontStyle;
     text.text = "Hg";

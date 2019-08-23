@@ -8,7 +8,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
   _GraphicsPath.clone(_GraphicsPath path) {
     for (_GraphicsPathSegment segment in path.segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
-      segments.add(new _GraphicsPathSegment.clone(segment));
+      segments.add(_GraphicsPathSegment.clone(segment));
     }
   }
 
@@ -22,7 +22,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
   }
 
   void moveTo(double x, double y) {
-    _currentSegment = new _GraphicsPathSegment();
+    _currentSegment = _GraphicsPathSegment();
     _currentSegment.addVertex(x, y);
     segments.add(_currentSegment);
   }
@@ -71,8 +71,6 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   void quadraticCurveTo(
       double controlX, double controlY, double endX, double endY) {
-    // TODO: adjust steps
-
     if (_currentSegment == null) {
       this.moveTo(endY, endY);
     } else {
@@ -95,8 +93,6 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   void bezierCurveTo(double controlX1, double controlY1, double controlX2,
       double controlY2, double endX, double endY) {
-    // TODO: adjust steps
-
     if (_currentSegment == null) {
       this.moveTo(endY, endY);
     } else {
@@ -199,7 +195,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   @override
   void fillColor(RenderState renderState, int color) {
-    // TODO: non-zero winding rule
+    // not implemented: non-zero winding rule
     for (_GraphicsPathSegment segment in segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
       segment.fillColor(renderState, color);
@@ -208,7 +204,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   @override
   void fillGradient(RenderState renderState, GraphicsGradient gradient) {
-    // TODO: non-zero winding rule
+    // not implemented: non-zero winding rule
     for (_GraphicsPathSegment segment in segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
       segment.fillGradient(renderState, gradient);
@@ -217,7 +213,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   @override
   void fillPattern(RenderState renderState, GraphicsPattern pattern) {
-    // TODO: non-zero winding rule
+    // not implemented: non-zero winding rule
     for (_GraphicsPathSegment segment in segments) {
       if (segment.indexCount == 0) segment.calculateIndices();
       segment.fillPattern(renderState, pattern);

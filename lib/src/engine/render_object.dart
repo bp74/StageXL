@@ -40,7 +40,7 @@ class _RenderTextureQuadObject implements RenderObject {
   final List<RenderFilter> filters;
 
   @override
-  final Matrix transformationMatrix = new Matrix.fromIdentity();
+  final Matrix transformationMatrix = Matrix.fromIdentity();
 
   @override
   final BlendMode blendMode = BlendMode.NORMAL;
@@ -62,7 +62,7 @@ class _RenderTextureQuadObject implements RenderObject {
   Rectangle<num> get bounds {
     num w = renderTextureQuad.targetWidth;
     num h = renderTextureQuad.targetHeight;
-    return new Rectangle<num>(0.0, 0.0, w, h);
+    return Rectangle<num>(0.0, 0.0, w, h);
   }
 
   @override

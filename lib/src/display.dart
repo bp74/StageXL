@@ -60,4 +60,4 @@ part 'display/stage_console.dart';
 part 'display/stage_options.dart';
 part 'display/stage_tools.dart';
 
-final Matrix _identityMatrix = new Matrix.fromIdentity();
+final Matrix _identityMatrix = Matrix.fromIdentity();

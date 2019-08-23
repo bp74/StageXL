@@ -14,9 +14,9 @@ import '../display.dart';
 ///     sprite.addChild(foreground);
 ///     sprite.addChild(text);
 ///     sprite.blendMode = BlendMode.ADD;
-///     sprite.filters = [new FlattenFilter()];
+///     sprite.filters = [FlattenFilter()];
 
 class FlattenFilter extends BitmapFilter {
   @override
-  BitmapFilter clone() => new FlattenFilter();
+  BitmapFilter clone() => FlattenFilter();
 }

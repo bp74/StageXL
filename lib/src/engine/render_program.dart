@@ -12,11 +12,11 @@ abstract class RenderProgram {
   RenderStatistics _renderStatistics;
 
   RenderProgram()
-      : _attributes = new Map<String, int>(),
-        _uniforms = new Map<String, gl.UniformLocation>(),
-        _renderBufferIndex = new RenderBufferIndex(0),
-        _renderBufferVertex = new RenderBufferVertex(0),
-        _renderStatistics = new RenderStatistics();
+      : _attributes = Map<String, int>(),
+        _uniforms = Map<String, gl.UniformLocation>(),
+        _renderBufferIndex = RenderBufferIndex(0),
+        _renderBufferVertex = RenderBufferVertex(0),
+        _renderStatistics = RenderStatistics();
 
   //---------------------------------------------------------------------------
 
@@ -93,7 +93,7 @@ abstract class RenderProgram {
     if (status == true) return program;
 
     var cl = rc.isContextLost();
-    throw new StateError(cl ? "ContextLost" : rc.getProgramInfoLog(program));
+    throw StateError(cl ? "ContextLost" : rc.getProgramInfoLog(program));
   }
 
   //---------------------------------------------------------------------------
@@ -107,7 +107,7 @@ abstract class RenderProgram {
     if (status == true) return shader;
 
     var cl = rc.isContextLost();
-    throw new StateError(cl ? "ContextLost" : rc.getShaderInfoLog(shader));
+    throw StateError(cl ? "ContextLost" : rc.getShaderInfoLog(shader));
   }
 
   //---------------------------------------------------------------------------

@@ -22,7 +22,7 @@ class GlassPlate extends InteractiveObject {
 
   @override
   Rectangle<num> get bounds {
-    return new Rectangle<num>(0.0, 0.0, width, height);
+    return Rectangle<num>(0.0, 0.0, width, height);
   }
 
   @override

@@ -28,8 +28,9 @@ class RenderStencilBuffer {
   /// Call the dispose method to release memory allocated by WebGL.
 
   void dispose() {
-    if (_renderbuffer != null)
+    if (_renderbuffer != null) {
       _renderingContext.deleteRenderbuffer(_renderbuffer);
+    }
 
     _contextIdentifier = -1;
     _renderbuffer = null;

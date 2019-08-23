@@ -23,7 +23,7 @@ class TintFilter extends BitmapFilter {
         this.factorA = colorGetA(color) / 255.0;
 
   @override
-  BitmapFilter clone() => new TintFilter(factorR, factorG, factorB, factorA);
+  BitmapFilter clone() => TintFilter(factorR, factorG, factorB, factorA);
 
   //---------------------------------------------------------------------------
 

@@ -1,11 +1,11 @@
 part of stagexl.drawing;
 
 abstract class _GraphicsContextBase extends GraphicsContext {
-  _GraphicsPath _path = new _GraphicsPath();
+  _GraphicsPath _path = _GraphicsPath();
 
   @override
   void beginPath() {
-    _path = new _GraphicsPath();
+    _path = _GraphicsPath();
   }
 
   @override

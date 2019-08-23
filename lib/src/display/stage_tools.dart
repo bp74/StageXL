@@ -15,14 +15,11 @@ class _MouseButton {
       this.mouseClickEventType, this.mouseDoubleClickEventType);
 
   static List<_MouseButton> createDefaults() => [
-        new _MouseButton(MouseEvent.MOUSE_DOWN, MouseEvent.MOUSE_UP,
+        _MouseButton(MouseEvent.MOUSE_DOWN, MouseEvent.MOUSE_UP,
             MouseEvent.CLICK, MouseEvent.DOUBLE_CLICK),
-        new _MouseButton(
-            MouseEvent.MIDDLE_MOUSE_DOWN,
-            MouseEvent.MIDDLE_MOUSE_UP,
-            MouseEvent.MIDDLE_CLICK,
-            MouseEvent.MIDDLE_CLICK),
-        new _MouseButton(MouseEvent.RIGHT_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_UP,
+        _MouseButton(MouseEvent.MIDDLE_MOUSE_DOWN, MouseEvent.MIDDLE_MOUSE_UP,
+            MouseEvent.MIDDLE_CLICK, MouseEvent.MIDDLE_CLICK),
+        _MouseButton(MouseEvent.RIGHT_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_UP,
             MouseEvent.RIGHT_CLICK, MouseEvent.RIGHT_CLICK)
       ];
 }
@@ -58,8 +55,8 @@ class _Drag {
   void update(int touchPointID, Point<num> stagePoint) {
     if (touchPointID != this.touchPointID) return;
 
-    var localPoint = new Point<num>(0.0, 0.0);
-    var parentPoint = new Point<num>(0.0, 0.0);
+    var localPoint = Point<num>(0.0, 0.0);
+    var parentPoint = Point<num>(0.0, 0.0);
     var visible = sprite.visible;
 
     sprite.globalToLocal(stagePoint, localPoint);

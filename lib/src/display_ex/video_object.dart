@@ -17,13 +17,13 @@ part of stagexl.display_ex;
 
 class VideoObject extends InteractiveObject {
   static const EventStreamProvider<Event> endedEvent =
-      const EventStreamProvider<Event>("videoEnded");
+      EventStreamProvider<Event>("videoEnded");
   static const EventStreamProvider<Event> pauseEvent =
-      const EventStreamProvider<Event>("videoPause");
+      EventStreamProvider<Event>("videoPause");
   static const EventStreamProvider<Event> errorEvent =
-      const EventStreamProvider<Event>("videoError");
+      EventStreamProvider<Event>("videoError");
   static const EventStreamProvider<Event> playEvent =
-      const EventStreamProvider<Event>("videoPlay");
+      EventStreamProvider<Event>("videoPlay");
 
   EventStream<Event> get onEnded => VideoObject.endedEvent.forTarget(this);
   EventStream<Event> get onPause => VideoObject.pauseEvent.forTarget(this);
@@ -36,18 +36,14 @@ class VideoObject extends InteractiveObject {
 
   VideoObject(Video video, [bool autoplay = false]) {
     _video = video;
-    _renderTexture = new RenderTexture.fromVideoElement(video.videoElement);
+    _renderTexture = RenderTexture.fromVideoElement(video.videoElement);
     _renderTextureQuad = _renderTexture.quad;
 
     var videoElement = video.videoElement;
-    videoElement.onEnded
-        .listen((e) => this.dispatchEvent(new Event("videoEnded")));
-    videoElement.onPause
-        .listen((e) => this.dispatchEvent(new Event("videoPause")));
-    videoElement.onError
-        .listen((e) => this.dispatchEvent(new Event("videoError")));
-    videoElement.onPlay
-        .listen((e) => this.dispatchEvent(new Event("videoPlay")));
+    videoElement.onEnded.listen((e) => this.dispatchEvent(Event("videoEnded")));
+    videoElement.onPause.listen((e) => this.dispatchEvent(Event("videoPause")));
+    videoElement.onError.listen((e) => this.dispatchEvent(Event("videoError")));
+    videoElement.onPlay.listen((e) => this.dispatchEvent(Event("videoPlay")));
 
     if (autoplay) play();
   }
@@ -64,7 +60,7 @@ class VideoObject extends InteractiveObject {
   Rectangle<num> get bounds {
     var width = _renderTextureQuad.targetWidth;
     var height = _renderTextureQuad.targetHeight;
-    return new Rectangle<num>(0.0, 0.0, width, height);
+    return Rectangle<num>(0.0, 0.0, width, height);
   }
 
   @override

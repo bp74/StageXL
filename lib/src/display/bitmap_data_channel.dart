@@ -8,15 +8,19 @@ class BitmapDataChannel {
 
   static int getCanvasIndex(int bitmapDataChannel) {
     var isLittleEndianSystem = env.isLittleEndianSystem;
-    if (bitmapDataChannel & BitmapDataChannel.RED != 0)
+    if (bitmapDataChannel & BitmapDataChannel.RED != 0) {
       return isLittleEndianSystem ? 0 : 3;
-    if (bitmapDataChannel & BitmapDataChannel.GREEN != 0)
+    }
+    if (bitmapDataChannel & BitmapDataChannel.GREEN != 0) {
       return isLittleEndianSystem ? 1 : 2;
-    if (bitmapDataChannel & BitmapDataChannel.BLUE != 0)
+    }
+    if (bitmapDataChannel & BitmapDataChannel.BLUE != 0) {
       return isLittleEndianSystem ? 2 : 1;
-    if (bitmapDataChannel & BitmapDataChannel.ALPHA != 0)
+    }
+    if (bitmapDataChannel & BitmapDataChannel.ALPHA != 0) {
       return isLittleEndianSystem ? 3 : 0;
-    throw new ArgumentError("Invalid bitmapDataChannel");
+    }
+    throw ArgumentError("Invalid bitmapDataChannel");
   }
 
   static int getWebglIndex(int bitmapDataChannel) {
@@ -24,6 +28,6 @@ class BitmapDataChannel {
     if (bitmapDataChannel & BitmapDataChannel.GREEN != 0) return 1;
     if (bitmapDataChannel & BitmapDataChannel.BLUE != 0) return 2;
     if (bitmapDataChannel & BitmapDataChannel.ALPHA != 0) return 3;
-    throw new ArgumentError("Invalid bitmapDataChannel");
+    throw ArgumentError("Invalid bitmapDataChannel");
   }
 }

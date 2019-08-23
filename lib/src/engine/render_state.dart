@@ -4,15 +4,15 @@ class _ContextState {
   double alpha = 1.0;
   BlendMode blendMode = BlendMode.NORMAL;
 
-  final Matrix matrix = new Matrix.fromIdentity();
-  final Matrix3D matrix3D = new Matrix3D.fromIdentity();
+  final Matrix matrix = Matrix.fromIdentity();
+  final Matrix3D matrix3D = Matrix3D.fromIdentity();
   final _ContextState previousContextState;
 
   _ContextState(this.previousContextState);
 
   _ContextState _nextContextState;
   _ContextState get nextContextState {
-    return _nextContextState ??= new _ContextState(this);
+    return _nextContextState ??= _ContextState(this);
   }
 }
 
@@ -40,7 +40,7 @@ class RenderState {
   RenderState(RenderContext renderContext,
       [Matrix matrix, num alpha, BlendMode blendMode])
       : _renderContext = renderContext,
-        _firstContextState = new _ContextState(null) {
+        _firstContextState = _ContextState(null) {
     _currentContextState = _firstContextState;
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);

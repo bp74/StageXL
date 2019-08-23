@@ -37,7 +37,7 @@ bool _checkMobileDevice() {
 //-------------------------------------------------------------------------------------
 
 bool _checkLittleEndianSystem() {
-  var wordList = new Int32List(1);
+  var wordList = Int32List(1);
   var byteList = wordList.buffer.asUint8List();
   wordList[0] = 0x11223344;
   return byteList[0] == 0x44;
@@ -61,8 +61,8 @@ bool _checkAutoHiDPI() {
 //-------------------------------------------------------------------------------------
 
 Future<bool> _checkWebpSupport() {
-  var completer = new Completer<bool>();
-  var img = new ImageElement();
+  var completer = Completer<bool>();
+  var img = ImageElement();
 
   img.onLoad
       .listen((e) => completer.complete(img.width == 2 && img.height == 2));

@@ -58,7 +58,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   @override
   Future<E> asFuture<E>([E futureValue]) {
     // This stream is never done and has no errors.
-    return new Completer<E>().future;
+    return Completer<E>().future;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   @override
   void resume() {
     if (_pauseCount == 0) {
-      throw new StateError("Subscription is not paused.");
+      throw StateError("Subscription is not paused.");
     }
     _pauseCount--;
   }

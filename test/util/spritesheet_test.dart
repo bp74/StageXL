@@ -10,11 +10,11 @@ void main() {
   BitmapData spiders;
 
   setUp(() async {
-    resourceManager = new ResourceManager();
+    resourceManager = ResourceManager();
     resourceManager.addBitmapData('spiders', '../common/images/spider.png');
     await resourceManager.load();
     spiders = resourceManager.getBitmapData('spiders');
-    spritesheet = new SpriteSheet(spiders, 32, 32);
+    spritesheet = SpriteSheet(spiders, 32, 32);
   });
 
   tearDown(() {

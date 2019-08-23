@@ -17,7 +17,7 @@ class DisplacementMapFilter extends BitmapFilter {
   DisplacementMapFilter(BitmapData bitmapData,
       [Matrix matrix, num scaleX = 16.0, num scaleY = 16.0])
       : bitmapData = bitmapData,
-        matrix = (matrix != null) ? matrix : new Matrix.fromIdentity(),
+        matrix = (matrix != null) ? matrix : Matrix.fromIdentity(),
         scaleX = scaleX,
         scaleY = scaleY;
 
@@ -25,15 +25,14 @@ class DisplacementMapFilter extends BitmapFilter {
 
   @override
   BitmapFilter clone() {
-    return new DisplacementMapFilter(
-        bitmapData, matrix.clone(), scaleX, scaleY);
+    return DisplacementMapFilter(bitmapData, matrix.clone(), scaleX, scaleY);
   }
 
   @override
   Rectangle<int> get overlap {
     int x = (0.5 * scaleX).abs().ceil();
     int y = (0.5 * scaleY).abs().ceil();
-    return new Rectangle<int>(-x, -y, x + x, y + y);
+    return Rectangle<int>(-x, -y, x + x, y + y);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -114,8 +113,7 @@ class DisplacementMapFilter extends BitmapFilter {
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(
-        r"$DisplacementMapFilterProgram",
-        () => new DisplacementMapFilterProgram());
+        r"$DisplacementMapFilterProgram", () => DisplacementMapFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTextureAt(renderTexture, 0);
@@ -149,17 +147,17 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
 
   void configure(DisplacementMapFilter displacementMapFilter,
       RenderTextureQuad renderTextureQuad) {
-    var mapMatrix = new Matrix.fromIdentity();
+    var mapMatrix = Matrix.fromIdentity();
     mapMatrix.copyFromAndConcat(
         displacementMapFilter.matrix, renderTextureQuad.samplerMatrix);
     mapMatrix.invertAndConcat(
         displacementMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
 
-    var disMatrix = new Matrix.fromIdentity();
+    var disMatrix = Matrix.fromIdentity();
     disMatrix.copyFrom(renderTextureQuad.samplerMatrix);
     disMatrix.scale(displacementMapFilter.scaleX, displacementMapFilter.scaleY);
 
-    var uMapMatrix = new Float32List.fromList(<double>[
+    var uMapMatrix = Float32List.fromList(<double>[
       mapMatrix.a,
       mapMatrix.c,
       mapMatrix.tx,
@@ -171,7 +169,7 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
       1.0
     ]);
 
-    var uDisMatrix = new Float32List.fromList(<double>[
+    var uDisMatrix = Float32List.fromList(<double>[
       disMatrix.a,
       disMatrix.c,
       0.0,

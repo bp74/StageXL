@@ -8,14 +8,13 @@ import '../errors.dart';
 class VideoLoader {
   static final List<String> supportedTypes = _getSupportedTypes();
 
-  final VideoElement video = new VideoElement();
-  final AggregateError aggregateError =
-      new AggregateError("Error loading video.");
-  final Completer<VideoElement> _completer = new Completer<VideoElement>();
+  final VideoElement video = VideoElement();
+  final AggregateError aggregateError = AggregateError("Error loading video.");
+  final Completer<VideoElement> _completer = Completer<VideoElement>();
 
   StreamSubscription _onCanPlaySubscription;
   StreamSubscription _onErrorSubscription;
-  List<String> _urls = new List<String>();
+  List<String> _urls = List<String>();
   bool _loadData = false;
 
   VideoLoader(List<String> urls, bool loadData, bool corsEnabled) {
@@ -41,7 +40,7 @@ class VideoLoader {
 
   void _onVideoError(Event event) {
     var ve = event.target as VideoElement;
-    var loadError = new LoadError("Failed to load ${ve.src}.", ve.error);
+    var loadError = LoadError("Failed to load ${ve.src}.", ve.error);
     aggregateError.errors.add(loadError);
     _loadNextUrl();
   }
@@ -60,7 +59,7 @@ class VideoLoader {
     _onCanPlaySubscription.cancel();
     _onErrorSubscription.cancel();
     if (this.aggregateError.errors.isEmpty) {
-      var loadError = new LoadError("No configured video type is supported.");
+      var loadError = LoadError("No configured video type is supported.");
       this.aggregateError.errors.add(loadError);
     }
     _completer.completeError(this.aggregateError);
@@ -68,11 +67,11 @@ class VideoLoader {
 
   void _loadVideoData(String url) {
     HttpRequest.request(url, responseType: 'blob').then((request) {
-      var reader = new FileReader();
+      var reader = FileReader();
       reader.readAsDataUrl(request.response);
       reader.onLoadEnd.first.then((e) => _loadVideoSource(reader.result));
     }).catchError((error) {
-      var loadError = new LoadError("Failed to load $url.", error);
+      var loadError = LoadError("Failed to load $url.", error);
       this.aggregateError.errors.add(loadError);
       _loadNextUrl();
     });
@@ -87,19 +86,21 @@ class VideoLoader {
   //---------------------------------------------------------------------------
 
   static List<String> _getSupportedTypes() {
-    var supportedTypes = new List<String>();
-    var video = new VideoElement();
+    var supportedTypes = List<String>();
+    var video = VideoElement();
     var valid = ["maybe", "probably"];
 
-    if (valid.contains(video.canPlayType("video/webm")))
+    if (valid.contains(video.canPlayType("video/webm"))) {
       supportedTypes.add("webm");
-    if (valid.contains(video.canPlayType("video/mp4")))
+    }
+    if (valid.contains(video.canPlayType("video/mp4"))) {
       supportedTypes.add("mp4");
-    if (valid.contains(video.canPlayType("video/ogg")))
+    }
+    if (valid.contains(video.canPlayType("video/ogg"))) {
       supportedTypes.add("ogg");
+    }
 
     print("StageXL video types   : $supportedTypes");
-
     return supportedTypes.toList(growable: false);
   }
 }

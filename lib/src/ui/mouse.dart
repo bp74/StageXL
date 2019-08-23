@@ -41,9 +41,9 @@ class Mouse {
   static bool _cursorHidden = false;
   static String _cursorName = MouseCursor.AUTO;
   static Map<String, MouseCursorData> _cursorDatas =
-      new Map<String, MouseCursorData>();
+      Map<String, MouseCursorData>();
 
-  static final _cursorChangedEvent = new StreamController<String>.broadcast();
+  static final _cursorChangedEvent = StreamController<String>.broadcast();
   static Stream<String> onCursorChanged = _cursorChangedEvent.stream;
 
   //-------------------------------------------------------------------------------------------------

@@ -18,13 +18,13 @@ class WebAudioApiSoundChannel extends SoundChannel {
 
   WebAudioApiSoundChannel(WebAudioApiSound webAudioApiSound, num startTime,
       num duration, bool loop, SoundTransform soundTransform) {
-    _soundTransform = soundTransform ?? new SoundTransform();
+    _soundTransform = soundTransform ?? SoundTransform();
     _webAudioApiSound = webAudioApiSound;
     _startTime = startTime.toDouble();
     _duration = duration.toDouble();
     _loop = loop;
 
-    _mixer = new WebAudioApiMixer(SoundMixer._webAudioApiMixer.inputNode);
+    _mixer = WebAudioApiMixer(SoundMixer._webAudioApiMixer.inputNode);
     _mixer.applySoundTransform(_soundTransform);
 
     this.paused = false;
@@ -112,7 +112,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
 
   @override
   set soundTransform(SoundTransform value) {
-    _soundTransform = value ?? new SoundTransform();
+    _soundTransform = value ?? SoundTransform();
     _mixer.applySoundTransform(_soundTransform);
   }
 
@@ -134,7 +134,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
       _position = this.position;
       _stopped = true;
       _paused = true;
-      this.dispatchEvent(new Event(Event.COMPLETE));
+      this.dispatchEvent(Event(Event.COMPLETE));
     }
   }
 }

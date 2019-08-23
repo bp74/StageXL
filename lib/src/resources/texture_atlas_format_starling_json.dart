@@ -7,7 +7,7 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
     var source = await loader.getSource();
     var pixelRatio = loader.getPixelRatio();
-    var textureAtlas = new TextureAtlas(pixelRatio);
+    var textureAtlas = TextureAtlas(pixelRatio);
 
     var json = jsonDecode(source) as Map;
     var imagePath = _getString(json, "imagePath", "");
@@ -27,7 +27,7 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
       var originalWidth = _getInt(subTextureMap, "frameWidth", frameWidth);
       var originalHeight = _getInt(subTextureMap, "frameHeight", frameHeight);
 
-      var textureAtlasFrame = new TextureAtlasFrame(
+      var textureAtlasFrame = TextureAtlasFrame(
           textureAtlas,
           renderTextureQuad,
           name,

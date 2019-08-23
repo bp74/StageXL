@@ -40,10 +40,10 @@ class ChromaKeyFilter extends BitmapFilter {
       int solidThreshold = 140,
       int invisibleThreshold = 20}) {
     if (invisibleThreshold < 0) {
-      throw new ArgumentError("The minimum solidThreshold is 0.");
+      throw ArgumentError("The minimum solidThreshold is 0.");
     }
     if (solidThreshold < invisibleThreshold) {
-      throw new ArgumentError(
+      throw ArgumentError(
           "solidThreshold cannot be lower than invisibleThreshold");
     }
 
@@ -62,7 +62,7 @@ class ChromaKeyFilter extends BitmapFilter {
 
   set solidThreshold(int solidThreshold) {
     if (solidThreshold < _invisibleThreshold) {
-      throw new ArgumentError(
+      throw ArgumentError(
           "solidThreshold cannot be lower than _invisibleThreshold");
     }
     _solidThreshold = solidThreshold;
@@ -70,13 +70,13 @@ class ChromaKeyFilter extends BitmapFilter {
 
   set invisibleThreshold(int invisibleThreshold) {
     if (invisibleThreshold < 0) {
-      throw new ArgumentError("The minimum solidThreshold is 0.");
+      throw ArgumentError("The minimum solidThreshold is 0.");
     }
     _invisibleThreshold = invisibleThreshold;
   }
 
   @override
-  BitmapFilter clone() => new ChromaKeyFilter(
+  BitmapFilter clone() => ChromaKeyFilter(
       backgroundColor: _backgroundColor,
       solidThreshold: _solidThreshold,
       invisibleThreshold: _invisibleThreshold);
@@ -103,7 +103,7 @@ class ChromaKeyFilter extends BitmapFilter {
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
     ChromaKeyFilterProgram renderProgram = renderContext.getRenderProgram(
-        r"$ChromaKeyFilterProgram", () => new ChromaKeyFilterProgram());
+        r"$ChromaKeyFilterProgram", () => ChromaKeyFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);

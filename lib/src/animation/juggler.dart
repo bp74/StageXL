@@ -34,10 +34,10 @@ class Juggler implements Animatable {
   _AnimatableLink _lastAnimatableLink;
 
   num _elapsedTime = 0.0;
-  final _elapsedTimeChangedEvent = new StreamController<num>.broadcast();
+  final _elapsedTimeChangedEvent = StreamController<num>.broadcast();
 
   Juggler() {
-    _firstAnimatableLink = new _AnimatableLink();
+    _firstAnimatableLink = _AnimatableLink();
     _lastAnimatableLink = _firstAnimatableLink;
   }
 
@@ -173,12 +173,12 @@ class Juggler implements Animatable {
 
   void add(Animatable animatable) {
     if (animatable is! Animatable) {
-      throw new ArgumentError(
+      throw ArgumentError(
           "The supplied animatable does not extend type Animatable.");
     }
 
     if (this.contains(animatable) == false) {
-      var animatableLink = new _AnimatableLink();
+      var animatableLink = _AnimatableLink();
       _lastAnimatableLink.animatable = animatable;
       _lastAnimatableLink.nextAnimatableLink = animatableLink;
       _lastAnimatableLink = animatableLink;
@@ -272,7 +272,7 @@ class Juggler implements Animatable {
   ///     juggler.delayCall(action, 5.0);
 
   DelayedCall delayCall(Function action, num delay) {
-    DelayedCall delayedCall = new DelayedCall(action, delay);
+    DelayedCall delayedCall = DelayedCall(action, delay);
     add(delayedCall);
     return delayedCall;
   }
@@ -289,7 +289,7 @@ class Juggler implements Animatable {
 
   Tween addTween(TweenObject tweenObject, num time,
       [TransitionFunction transition = Transition.linear]) {
-    Tween tween = new Tween(tweenObject, time, transition);
+    Tween tween = Tween(tweenObject, time, transition);
     add(tween);
     return tween;
   }
@@ -307,8 +307,7 @@ class Juggler implements Animatable {
 
   Translation addTranslation(num startValue, num targetValue, num time,
       TransitionFunction transition, void onUpdate(num value)) {
-    var translation =
-        new Translation(startValue, targetValue, time, transition);
+    var translation = Translation(startValue, targetValue, time, transition);
     translation.onUpdate = onUpdate;
     add(translation);
     return translation;
@@ -326,7 +325,7 @@ class Juggler implements Animatable {
   ///     animationGroup.onComplete = () => print("complete");
 
   AnimationGroup addGroup(List<Animatable> animatables) {
-    var animationGroup = new AnimationGroup();
+    var animationGroup = AnimationGroup();
     for (int i = 0; i < animatables.length; i++) {
       animationGroup.add(animatables[i]);
     }
@@ -346,7 +345,7 @@ class Juggler implements Animatable {
   ///     animationChain.onComplete = () => print("complete");
 
   AnimationChain addChain(List<Animatable> animatables) {
-    var animationChain = new AnimationChain();
+    var animationChain = AnimationChain();
     for (int i = 0; i < animatables.length; i++) {
       animationChain.add(animatables[i]);
     }
@@ -376,8 +375,9 @@ class Juggler implements Animatable {
         link.nextAnimatableLink = nextLink.nextAnimatableLink;
 
         if (identical(nextLink, lastLink)) lastLink = link;
-        if (identical(nextLink, _lastAnimatableLink))
+        if (identical(nextLink, _lastAnimatableLink)) {
           _lastAnimatableLink = link;
+        }
       } else if (animatable.advanceTime(time) == false) {
         link.animatable = null;
       } else {

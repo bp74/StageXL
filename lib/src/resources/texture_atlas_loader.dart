@@ -25,7 +25,7 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
 
   _TextureAtlasLoaderFile(String url, BitmapDataLoadOptions options) {
     _loadOptions = options ?? BitmapData.defaultLoadOptions;
-    _loadInfo = new BitmapDataLoadInfo(url, _loadOptions.pixelRatios);
+    _loadInfo = BitmapDataLoadInfo(url, _loadOptions.pixelRatios);
   }
 
   @override
@@ -41,9 +41,9 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
     var webpAvailable = _loadOptions.webp;
     var corsEnabled = _loadOptions.corsEnabled;
     var imageUrl = replaceFilename(loaderUrl, filename);
-    var imageLoader = new ImageLoader(imageUrl, webpAvailable, corsEnabled);
+    var imageLoader = ImageLoader(imageUrl, webpAvailable, corsEnabled);
     var imageElement = await imageLoader.done;
-    var renderTexture = new RenderTexture.fromImageElement(imageElement);
+    var renderTexture = RenderTexture.fromImageElement(imageElement);
     var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return renderTextureQuad;
   }
@@ -64,7 +64,7 @@ class _TextureAtlasLoaderTextureAtlas extends TextureAtlasLoader {
   double getPixelRatio() => this.textureAtlas.pixelRatio;
 
   @override
-  Future<String> getSource() => new Future.value(this.source);
+  Future<String> getSource() => Future.value(this.source);
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
@@ -87,10 +87,10 @@ class _TextureAtlasLoaderBitmapData extends TextureAtlasLoader {
   double getPixelRatio() => this.bitmapData.renderTextureQuad.pixelRatio;
 
   @override
-  Future<String> getSource() => new Future.value(this.source);
+  Future<String> getSource() => Future.value(this.source);
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) {
-    return new Future.value(this.bitmapData.renderTextureQuad);
+    return Future.value(this.bitmapData.renderTextureQuad);
   }
 }

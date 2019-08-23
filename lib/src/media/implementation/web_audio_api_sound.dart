@@ -12,7 +12,7 @@ class WebAudioApiSound extends Sound {
     var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     var audioUrls = options.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
-    var aggregateError = new AggregateError("Error loading sound.");
+    var aggregateError = AggregateError("Error loading sound.");
 
     for (var audioUrl in audioUrls) {
       try {
@@ -20,9 +20,9 @@ class WebAudioApiSound extends Sound {
             await HttpRequest.request(audioUrl, responseType: 'arraybuffer');
         var audioData = httpRequest.response as ByteBuffer;
         var audioBuffer = await audioContext.decodeAudioData(audioData);
-        return new WebAudioApiSound._(audioBuffer);
+        return WebAudioApiSound._(audioBuffer);
       } catch (e) {
-        var loadError = new LoadError("Failed to load $audioUrl", e);
+        var loadError = LoadError("Failed to load $audioUrl", e);
         aggregateError.errors.add(loadError);
       }
     }
@@ -46,12 +46,12 @@ class WebAudioApiSound extends Sound {
     try {
       var audioData = bytes.buffer;
       var audioBuffer = await audioContext.decodeAudioData(audioData);
-      return new WebAudioApiSound._(audioBuffer);
+      return WebAudioApiSound._(audioBuffer);
     } catch (e) {
       if (options.ignoreErrors) {
         return MockSound.loadDataUrl(dataUrl, options);
       } else {
-        throw new LoadError("Failed to load sound.", e);
+        throw LoadError("Failed to load sound.", e);
       }
     }
   }
@@ -66,14 +66,13 @@ class WebAudioApiSound extends Sound {
 
   @override
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-    return new WebAudioApiSoundChannel(
-        this, 0, this.length, loop, soundTransform);
+    return WebAudioApiSoundChannel(this, 0, this.length, loop, soundTransform);
   }
 
   @override
   SoundChannel playSegment(num startTime, num duration,
       [bool loop = false, SoundTransform soundTransform]) {
-    return new WebAudioApiSoundChannel(
+    return WebAudioApiSoundChannel(
         this, startTime, duration, loop, soundTransform);
   }
 }

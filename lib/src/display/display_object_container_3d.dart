@@ -9,7 +9,7 @@ part of stagexl.display;
 ///
 abstract class DisplayObjectContainer3D extends DisplayObjectContainer
     implements TweenObject3D, RenderObject3D {
-  PerspectiveProjection perspectiveProjection = new PerspectiveProjection();
+  PerspectiveProjection perspectiveProjection = PerspectiveProjection();
 
   num _offsetX = 0.0;
   num _offsetY = 0.0;
@@ -19,8 +19,8 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   num _rotationZ = 0.0;
 
   bool _transformationMatrix3DRefresh = false;
-  final Matrix3D _transformationMatrix3D = new Matrix3D.fromIdentity();
-  final Matrix3D _projectionMatrix3D = new Matrix3D.fromIdentity();
+  final Matrix3D _transformationMatrix3D = Matrix3D.fromIdentity();
+  final Matrix3D _projectionMatrix3D = Matrix3D.fromIdentity();
 
   //---------------------------------------------------------------------------
 

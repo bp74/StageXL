@@ -12,10 +12,10 @@ class GraphicsGradient {
   static const int GRADIENT_TEXTURE_SIZE = 512;
 
   static SharedCache<String, CanvasGradient> _canvasGradientCache =
-      new SharedCache<String, CanvasGradient>();
+      SharedCache<String, CanvasGradient>();
 
   static SharedCache<String, RenderTexture> _gradientTextureCache =
-      new SharedCache<String, RenderTexture>()
+      SharedCache<String, RenderTexture>()
         ..onObjectReleased.listen((e) => e.object.dispose());
 
   /// cached by the Canvas2D renderer
@@ -43,7 +43,7 @@ class GraphicsGradient {
         _endX = endX,
         _endY = endY,
         _endRadius = 0,
-        _colorStops = new List<GraphicsGradientColorStop>(),
+        _colorStops = List<GraphicsGradientColorStop>(),
         _type = GraphicsGradientType.Linear;
 
   GraphicsGradient.radial(num startX, num startY, num startRadius, num endX,
@@ -54,7 +54,7 @@ class GraphicsGradient {
         _endX = endX,
         _endY = endY,
         _endRadius = endRadius,
-        _colorStops = new List<GraphicsGradientColorStop>(),
+        _colorStops = List<GraphicsGradientColorStop>(),
         _type = GraphicsGradientType.Radial;
 
   //---------------------------------------------------------------------------
@@ -121,7 +121,7 @@ class GraphicsGradient {
 
   void addColorStop(num offset, int color) {
     disposeCachedRenderObjects();
-    _colorStops.add(new GraphicsGradientColorStop(offset, color));
+    _colorStops.add(GraphicsGradientColorStop(offset, color));
   }
 
   void disposeCachedRenderObjects([bool colorStopsChanged = true]) {
@@ -167,14 +167,14 @@ class GraphicsGradient {
     }
 
     if (_gradientTexture == null) {
-      var canvas = new CanvasElement(width: 1, height: GRADIENT_TEXTURE_SIZE);
+      var canvas = CanvasElement(width: 1, height: GRADIENT_TEXTURE_SIZE);
       var canvasGradient =
           canvas.context2D.createLinearGradient(0, 0, 0, GRADIENT_TEXTURE_SIZE);
       _colorStops.forEach(
           (cs) => canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
       canvas.context2D.fillStyle = canvasGradient;
       canvas.context2D.fillRect(0, 0, 1, GRADIENT_TEXTURE_SIZE);
-      _gradientTexture = new RenderTexture.fromCanvasElement(canvas);
+      _gradientTexture = RenderTexture.fromCanvasElement(canvas);
       _gradientTextureCache.addObject(_textureCacheKey, _gradientTexture);
     }
 
@@ -199,7 +199,7 @@ class GraphicsGradient {
       key += "_" + _endY.toStringAsFixed(3);
       key += "_" + _endRadius.toStringAsFixed(3);
     } else {
-      throw new StateError("Unknown gradient kind");
+      throw StateError("Unknown gradient kind");
     }
 
     key += "_" + _colorStops.length.toString();

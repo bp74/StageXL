@@ -7,7 +7,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
     var source = await loader.getSource();
     var pixelRatio = loader.getPixelRatio();
-    var textureAtlas = new TextureAtlas(pixelRatio);
+    var textureAtlas = TextureAtlas(pixelRatio);
 
     var json = jsonDecode(source);
     var frames = json["frames"];
@@ -65,8 +65,8 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
       var width = metaMap["size"]["w"].toInt();
       var height = metaMap["size"]["h"].toInt();
 
-      vxList = new Float32List(vertices.length * 4);
-      ixList = new Int16List(triangles.length * 3);
+      vxList = Float32List(vertices.length * 4);
+      ixList = Int16List(triangles.length * 3);
 
       for (int i = 0, j = 0; i <= vxList.length - 4; i += 4, j += 1) {
         vxList[i + 0] = vertices[j][0] * 1.0;
@@ -82,7 +82,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
       }
     }
 
-    var taf = new TextureAtlasFrame(
+    var taf = TextureAtlasFrame(
         textureAtlas,
         renderTextureQuad,
         frameName,

@@ -6,7 +6,7 @@ part of stagexl.media;
 /// used like any other static image content. The sample below creates
 /// a BitmapData from the video and also a VideoObject display object.
 ///
-///     var resourceManager = new ResourceManager();
+///     var resourceManager = ResourceManager();
 ///     resourceManager.addVideo("vid1", "video.webm");
 ///     resourceManager.load().then((_) {
 ///
@@ -14,12 +14,12 @@ part of stagexl.media;
 ///       video.play();
 ///
 ///       // create a BitmapData used with a Bitmap
-///       var bitmapData = new BitmapData.fromVideoElement(video.videoElement);
-///       var bitmap = new Bitmap(bitmapData);
+///       var bitmapData = BitmapData.fromVideoElement(video.videoElement);
+///       var bitmap = Bitmap(bitmapData);
 ///       stage.addChild(bitmap);
 ///
 ///       // create a convenient VideoObject display object
-///       var videoObject = new VideoObject(video);
+///       var videoObject = VideoObject(video);
 ///       stage.addChild(videoObject);
 ///     });
 ///
@@ -28,7 +28,7 @@ part of stagexl.media;
 /// creates a clone of this instance.
 ///
 ///     video.clone().then((newVideo) => {
-///       var videoObject = new VideoObject(newVideo);
+///       var videoObject = VideoObject(newVideo);
 ///       stage.addChild(videoObject);
 ///     });
 ///
@@ -41,10 +41,10 @@ class Video {
   final VideoElement videoElement;
   bool loop = false;
 
-  final _endedEvent = new StreamController<Video>.broadcast();
-  final _pauseEvent = new StreamController<Video>.broadcast();
-  final _errorEvent = new StreamController<Video>.broadcast();
-  final _playEvent = new StreamController<Video>.broadcast();
+  final _endedEvent = StreamController<Video>.broadcast();
+  final _pauseEvent = StreamController<Video>.broadcast();
+  final _errorEvent = StreamController<Video>.broadcast();
+  final _playEvent = StreamController<Video>.broadcast();
 
   Video._(this.videoElement) {
     videoElement.onEnded.listen(_onEnded);
@@ -64,7 +64,7 @@ class Video {
   /// are provided for the [load] method. This default video load options
   /// enable all supported video file formats: mp4, webm and ogg.
 
-  static VideoLoadOptions defaultLoadOptions = new VideoLoadOptions();
+  static VideoLoadOptions defaultLoadOptions = VideoLoadOptions();
 
   /// Use this method to load a video from a given [url]. If you don't
   /// provide [videoLoadOptions] the [defaultLoadOptions] will be used.
@@ -80,22 +80,22 @@ class Video {
     var loadData = options.loadData;
     var corsEnabled = options.corsEnabled;
     var videoUrls = options.getOptimalVideoUrls(url);
-    var videoLoader = new VideoLoader(videoUrls, loadData, corsEnabled);
+    var videoLoader = VideoLoader(videoUrls, loadData, corsEnabled);
     var videoElement = await videoLoader.done;
-    return new Video._(videoElement);
+    return Video._(videoElement);
   }
 
   /// Clone this video instance and the underlying HTML VideoElement to play
-  /// the new video independantly from this video.
+  /// the video independantly from this video.
 
   Future<Video> clone() {
     var videoElement = this.videoElement.clone(true) as VideoElement;
-    Completer<Video> completer = new Completer<Video>();
+    Completer<Video> completer = Completer<Video>();
     StreamSubscription onCanPlaySubscription;
     StreamSubscription onErrorSubscription;
 
     void onCanPlay(html.Event e) {
-      var video = new Video._(videoElement);
+      var video = Video._(videoElement);
       video.volume = this.volume;
       video.muted = this.muted;
       onCanPlaySubscription.cancel();
@@ -107,7 +107,7 @@ class Video {
       onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
       var error = videoElement.error;
-      var loadError = new LoadError("Failed to clone video.", error);
+      var loadError = LoadError("Failed to clone video.", error);
       completer.completeError(loadError);
     }
 

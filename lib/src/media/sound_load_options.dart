@@ -57,7 +57,7 @@ class SoundLoadOptions {
   /// Create a deep clone of this [SoundLoadOptions].
 
   SoundLoadOptions clone() {
-    var options = new SoundLoadOptions();
+    var options = SoundLoadOptions();
     var urls = this.alternativeUrls;
     options.mp3 = this.mp3;
     options.mp4 = this.mp4;
@@ -86,9 +86,9 @@ class SoundLoadOptions {
     if (!this.ac3) availableTypes.remove("ac3");
     if (!this.wav) availableTypes.remove("wav");
 
-    var urls = new List<String>();
+    var urls = List<String>();
     var regex =
-        new RegExp(r"([A-Za-z0-9]+)$", multiLine: false, caseSensitive: true);
+        RegExp(r"([A-Za-z0-9]+)$", multiLine: false, caseSensitive: true);
     var primaryMatch = regex.firstMatch(primaryUrl);
     if (primaryMatch == null) return urls;
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
@@ -97,8 +97,9 @@ class SoundLoadOptions {
       for (var alternativeUrl in this.alternativeUrls) {
         var alternativeMatch = regex.firstMatch(alternativeUrl);
         if (alternativeMatch == null) continue;
-        if (availableTypes.contains(alternativeMatch.group(1)))
+        if (availableTypes.contains(alternativeMatch.group(1))) {
           urls.add(alternativeUrl);
+        }
       }
     } else {
       for (var availableType in availableTypes) {

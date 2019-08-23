@@ -8,7 +8,7 @@ class _GraphicsStroke extends _GraphicsMesh<_GraphicsStrokeSegment> {
   _GraphicsStroke(
       _GraphicsPath path, this.width, this.jointStyle, this.capsStyle) {
     for (var pathSegment in path.segments) {
-      segments.add(new _GraphicsStrokeSegment(this, pathSegment));
+      segments.add(_GraphicsStrokeSegment(this, pathSegment));
     }
   }
 

@@ -22,23 +22,23 @@ class FlipBook extends InteractiveObject implements Animatable {
   FlipBook(List<BitmapData> bitmapDatas,
       [int frameRate = 30, bool loop = true]) {
     _bitmapDatas = bitmapDatas;
-    _frameDurations = new List.filled(_bitmapDatas.length, 1.0 / frameRate);
+    _frameDurations = List.filled(_bitmapDatas.length, 1.0 / frameRate);
 
     _currentFrame = 0;
     _frameTime = null;
     _play = false;
     _loop = loop;
-    _progressEvent = new Event(Event.PROGRESS);
-    _completeEvent = new Event(Event.COMPLETE);
+    _progressEvent = Event(Event.PROGRESS);
+    _completeEvent = Event(Event.COMPLETE);
   }
 
   //---------------------------------------------------------------------------
 
   static const EventStreamProvider<Event> progressEvent =
-      const EventStreamProvider<Event>(Event.PROGRESS);
+      EventStreamProvider<Event>(Event.PROGRESS);
 
   static const EventStreamProvider<Event> completeEvent =
-      const EventStreamProvider<Event>(Event.COMPLETE);
+      EventStreamProvider<Event>(Event.COMPLETE);
 
   EventStream<Event> get onProgress => FlipBook.progressEvent.forTarget(this);
   EventStream<Event> get onComplete => FlipBook.completeEvent.forTarget(this);
@@ -195,7 +195,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   @override
   Rectangle<num> get bounds {
     var bitmapData = _bitmapDatas[_currentFrame];
-    return new Rectangle<num>(0.0, 0.0, bitmapData.width, bitmapData.height);
+    return Rectangle<num>(0.0, 0.0, bitmapData.width, bitmapData.height);
   }
 
   @override

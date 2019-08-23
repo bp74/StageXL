@@ -9,7 +9,7 @@ import 'vector.dart';
 import 'rectangle.dart';
 
 class Matrix {
-  final Float32List _data = new Float32List(6);
+  final Float32List _data = Float32List(6);
 
   Matrix(num a, num b, num c, num d, num tx, num ty) {
     _data[0] = a.toDouble();
@@ -34,7 +34,7 @@ class Matrix {
   @override
   String toString() => "Matrix [a=$a, b=$b, c=$c, d=$d, tx=$tx, ty=$ty]";
 
-  Matrix clone() => new Matrix(a, b, c, d, tx, ty);
+  Matrix clone() => Matrix(a, b, c, d, tx, ty);
 
   Matrix cloneInvert() {
     num det = this.det;
@@ -45,7 +45,7 @@ class Matrix {
     num tx = -this.tx * a - this.ty * c;
     num ty = -this.tx * b - this.ty * d;
 
-    return new Matrix(a, b, c, d, tx, ty);
+    return Matrix(a, b, c, d, tx, ty);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ class Matrix {
     var tx = vx * this.a + vy * this.c + this.tx;
     var ty = vx * this.b + vy * this.d + this.ty;
 
-    return new Vector(tx, ty);
+    return Vector(tx, ty);
   }
 
   Point<num> deltaTransformPoint(math.Point<num> point,
@@ -111,7 +111,7 @@ class Matrix {
       returnPoint.setTo(tx, ty);
       return returnPoint;
     } else {
-      return new Point<num>(tx, ty);
+      return Point<num>(tx, ty);
     }
   }
 
@@ -127,7 +127,7 @@ class Matrix {
       returnPoint.setTo(tx, ty);
       return returnPoint;
     } else {
-      return new Point<num>(tx, ty);
+      return Point<num>(tx, ty);
     }
   }
 
@@ -142,7 +142,7 @@ class Matrix {
       returnPoint.setTo(tx, ty);
       return returnPoint;
     } else {
-      return new Point<num>(tx, ty);
+      return Point<num>(tx, ty);
     }
   }
 
@@ -195,7 +195,7 @@ class Matrix {
       returnRectangle.setTo(tx + left, ty + top, width, heigth);
       return returnRectangle;
     } else {
-      return new Rectangle<num>(tx + left, ty + top, width, heigth);
+      return Rectangle<num>(tx + left, ty + top, width, heigth);
     }
   }
 

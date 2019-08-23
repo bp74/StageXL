@@ -22,14 +22,12 @@ class NormalMapFilter extends BitmapFilter {
   NormalMapFilter(this.bitmapData);
 
   @override
-  BitmapFilter clone() => new NormalMapFilter(bitmapData);
+  BitmapFilter clone() => NormalMapFilter(bitmapData);
 
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
-    // TODO: implement NormalMapFilter for BitmapDatas.
-  }
+  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {}
 
   //-----------------------------------------------------------------------------------------------
 
@@ -40,7 +38,7 @@ class NormalMapFilter extends BitmapFilter {
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
     NormalMapFilterProgram renderProgram = renderContext.getRenderProgram(
-        r"$NormalMapFilterProgram", () => new NormalMapFilterProgram());
+        r"$NormalMapFilterProgram", () => NormalMapFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTextureAt(renderTexture, 0);

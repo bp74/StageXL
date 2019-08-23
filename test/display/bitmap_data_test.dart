@@ -10,7 +10,7 @@ void main() {
   BitmapData monster;
 
   setUp(() async {
-    resourceManager = new ResourceManager();
+    resourceManager = ResourceManager();
     resourceManager.addBitmapData(
         'monster', '../common/images/brainmonster.png');
     await resourceManager.load();

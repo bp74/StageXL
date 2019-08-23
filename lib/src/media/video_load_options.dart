@@ -42,7 +42,7 @@ class VideoLoadOptions {
   /// Create a deep clone of this [VideoLoadOptions].
 
   VideoLoadOptions clone() {
-    var options = new VideoLoadOptions();
+    var options = VideoLoadOptions();
     var urls = this.alternativeUrls;
     options.mp4 = this.mp4;
     options.webm = this.webm;
@@ -64,9 +64,9 @@ class VideoLoadOptions {
     if (!this.mp4) availableTypes.remove("mp4");
     if (!this.ogg) availableTypes.remove("ogg");
 
-    var urls = new List<String>();
+    var urls = List<String>();
     var regex =
-        new RegExp(r"([A-Za-z0-9]+)$", multiLine: false, caseSensitive: true);
+        RegExp(r"([A-Za-z0-9]+)$", multiLine: false, caseSensitive: true);
     var primaryMatch = regex.firstMatch(primaryUrl);
     if (primaryMatch == null) return urls;
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
@@ -75,8 +75,9 @@ class VideoLoadOptions {
       for (var alternativeUrl in this.alternativeUrls) {
         var alternativeMatch = regex.firstMatch(alternativeUrl);
         if (alternativeMatch == null) continue;
-        if (availableTypes.contains(alternativeMatch.group(1)))
+        if (availableTypes.contains(alternativeMatch.group(1))) {
           urls.add(alternativeUrl);
+        }
       }
     } else {
       for (var availableType in availableTypes) {

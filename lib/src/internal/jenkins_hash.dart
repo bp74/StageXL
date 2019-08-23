@@ -22,9 +22,6 @@ library stagexl.internal.jenkins_hash;
  */
 
 class JenkinsHash {
-  // TODO(11617): This class should be optimized and standardized elsewhere.
-  // https://code.google.com/p/dart/issues/detail?id=11617
-
   static int combine(int hash, int value) {
     hash = 0x1fffffff & (hash + value);
     hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));

@@ -13,7 +13,7 @@ void main() {
 
   test('new from rectangle', () {
     Rectangle rect = rect1234();
-    Rectangle rect2 = new Rectangle.from(rect);
+    Rectangle rect2 = Rectangle.from(rect);
 
     rect2.left = 5;
 
@@ -38,7 +38,7 @@ void main() {
   });
 
   test('#left=', () {
-    Rectangle rect = new Rectangle(0, 0, 0, 0);
+    Rectangle rect = Rectangle(0, 0, 0, 0);
     rect.left = 10;
 
     expect(rect.left, 10);
@@ -90,9 +90,9 @@ void main() {
   });
 
   test('#topLeft=', () {
-    Rectangle rect = new Rectangle(10, 20, 30, 40);
+    Rectangle rect = Rectangle(10, 20, 30, 40);
 
-    rect.topLeft = new Point(1, 2);
+    rect.topLeft = Point(1, 2);
 
     testRectangle(rect, x: 1, y: 2, width: 39, height: 58);
   });
@@ -106,7 +106,7 @@ void main() {
   test('#bottomRight=', () {
     Rectangle rect = rect1234();
 
-    rect.bottomRight = new Point(10, 10);
+    rect.bottomRight = Point(10, 10);
 
     testRectangle(rect, x: 1, y: 2, width: 9, height: 8);
   });
@@ -126,13 +126,13 @@ void main() {
   test('#size=', () {
     Rectangle rect = rect1234();
 
-    rect.size = new Point(10, 10);
+    rect.size = Point(10, 10);
 
     testRectangle(rect, x: 1, y: 2, width: 10, height: 10);
   });
 
   test('#contains', () {
-    Rectangle rect = new Rectangle(1, 1, 2, 2);
+    Rectangle rect = Rectangle(1, 1, 2, 2);
     expect(rect.contains(0, 0), false);
     expect(rect.contains(1, 0), false);
     expect(rect.contains(2, 0), false);
@@ -152,37 +152,37 @@ void main() {
   });
 
   test('#containsPoint', () {
-    Rectangle rect = new Rectangle(1, 1, 2, 2);
-    expect(rect.containsPoint(new Point(0, 0)), false);
-    expect(rect.containsPoint(new Point(1, 0)), false);
-    expect(rect.containsPoint(new Point(2, 0)), false);
-    expect(rect.containsPoint(new Point(3, 0)), false);
-    expect(rect.containsPoint(new Point(0, 1)), false);
-    expect(rect.containsPoint(new Point(1, 1)), true);
-    expect(rect.containsPoint(new Point(2, 1)), true);
-    expect(rect.containsPoint(new Point(3, 1)), false);
-    expect(rect.containsPoint(new Point(0, 2)), false);
-    expect(rect.containsPoint(new Point(1, 2)), true);
-    expect(rect.containsPoint(new Point(2, 2)), true);
-    expect(rect.containsPoint(new Point(3, 2)), false);
-    expect(rect.containsPoint(new Point(0, 3)), false);
-    expect(rect.containsPoint(new Point(1, 3)), false);
-    expect(rect.containsPoint(new Point(2, 3)), false);
-    expect(rect.containsPoint(new Point(3, 3)), false);
+    Rectangle rect = Rectangle(1, 1, 2, 2);
+    expect(rect.containsPoint(Point(0, 0)), false);
+    expect(rect.containsPoint(Point(1, 0)), false);
+    expect(rect.containsPoint(Point(2, 0)), false);
+    expect(rect.containsPoint(Point(3, 0)), false);
+    expect(rect.containsPoint(Point(0, 1)), false);
+    expect(rect.containsPoint(Point(1, 1)), true);
+    expect(rect.containsPoint(Point(2, 1)), true);
+    expect(rect.containsPoint(Point(3, 1)), false);
+    expect(rect.containsPoint(Point(0, 2)), false);
+    expect(rect.containsPoint(Point(1, 2)), true);
+    expect(rect.containsPoint(Point(2, 2)), true);
+    expect(rect.containsPoint(Point(3, 2)), false);
+    expect(rect.containsPoint(Point(0, 3)), false);
+    expect(rect.containsPoint(Point(1, 3)), false);
+    expect(rect.containsPoint(Point(2, 3)), false);
+    expect(rect.containsPoint(Point(3, 3)), false);
   });
 
   test('#containsRect', () {
-    Rectangle rect = new Rectangle(1, 1, 2, 2);
+    Rectangle rect = Rectangle(1, 1, 2, 2);
 
-    expect(rect.containsRectangle(new Rectangle(0, 0, 2, 2)), isFalse);
-    expect(rect.containsRectangle(new Rectangle(1, 0, 2, 2)), isFalse);
-    expect(rect.containsRectangle(new Rectangle(2, 0, 2, 2)), isFalse);
-    expect(rect.containsRectangle(new Rectangle(0, 1, 2, 2)), isFalse);
-    expect(rect.containsRectangle(new Rectangle(1, 1, 2, 2)), isTrue);
-    expect(rect.containsRectangle(new Rectangle(2, 1, 2, 2)), isFalse);
-    expect(rect.containsRectangle(new Rectangle(0, 2, 2, 2)), isFalse);
-    expect(rect.containsRectangle(new Rectangle(1, 2, 2, 2)), isFalse);
-    expect(rect.containsRectangle(new Rectangle(2, 2, 2, 2)), isFalse);
+    expect(rect.containsRectangle(Rectangle(0, 0, 2, 2)), isFalse);
+    expect(rect.containsRectangle(Rectangle(1, 0, 2, 2)), isFalse);
+    expect(rect.containsRectangle(Rectangle(2, 0, 2, 2)), isFalse);
+    expect(rect.containsRectangle(Rectangle(0, 1, 2, 2)), isFalse);
+    expect(rect.containsRectangle(Rectangle(1, 1, 2, 2)), isTrue);
+    expect(rect.containsRectangle(Rectangle(2, 1, 2, 2)), isFalse);
+    expect(rect.containsRectangle(Rectangle(0, 2, 2, 2)), isFalse);
+    expect(rect.containsRectangle(Rectangle(1, 2, 2, 2)), isFalse);
+    expect(rect.containsRectangle(Rectangle(2, 2, 2, 2)), isFalse);
   });
 
   test('#equals', () {
@@ -226,17 +226,17 @@ void main() {
   });
 
   test('#isEmpty', () {
-    expect(new Rectangle(0, 0, 0, 0).isEmpty, isTrue);
-    expect(new Rectangle(0, 0, 1, 0).isEmpty, isTrue);
-    expect(new Rectangle(0, 0, 0, 1).isEmpty, isTrue);
-    expect(new Rectangle(0, 0, -1, 5).isEmpty, isTrue);
-    expect(new Rectangle(0, 0, 5, -1).isEmpty, isTrue);
-    expect(new Rectangle(0, 0, 1, 1).isEmpty, isFalse);
+    expect(Rectangle(0, 0, 0, 0).isEmpty, isTrue);
+    expect(Rectangle(0, 0, 1, 0).isEmpty, isTrue);
+    expect(Rectangle(0, 0, 0, 1).isEmpty, isTrue);
+    expect(Rectangle(0, 0, -1, 5).isEmpty, isTrue);
+    expect(Rectangle(0, 0, 5, -1).isEmpty, isTrue);
+    expect(Rectangle(0, 0, 1, 1).isEmpty, isFalse);
   });
 
   test('#copyFrom', () {
     Rectangle rect = rect1234();
-    Rectangle rect2 = new Rectangle(3, 3, 2, 1);
+    Rectangle rect2 = Rectangle(3, 3, 2, 1);
 
     rect.copyFrom(rect2);
 
@@ -252,7 +252,7 @@ void main() {
 
   test('#inflatePoint', () {
     Rectangle rect = rect1234();
-    rect.inflatePoint(new Point(1, 2));
+    rect.inflatePoint(Point(1, 2));
 
     testRectangle(rect, x: 1, y: 2, width: 4, height: 6);
   });
@@ -266,7 +266,7 @@ void main() {
 
   test('#offsetPoint', () {
     Rectangle rect = rect1234();
-    rect.offsetPoint(new Point(1, 2));
+    rect.offsetPoint(Point(1, 2));
 
     testRectangle(rect, x: 2, y: 4, width: 3, height: 4);
   });
@@ -282,16 +282,16 @@ void main() {
     test(
         'return rectangle with negative width/height if there is no intersection',
         () {
-      Rectangle r1 = new Rectangle(0, 0, 2, 2);
-      Rectangle r2 = new Rectangle(3, 3, 2, 2);
+      Rectangle r1 = Rectangle(0, 0, 2, 2);
+      Rectangle r2 = Rectangle(3, 3, 2, 2);
       Rectangle rect = r1.intersection(r2);
 
       testRectangle(rect, x: 3, y: 3, width: -1, height: -1);
     });
 
     test('with rectangles intersecting', () {
-      Rectangle r1 = new Rectangle(0, 0, 2, 2);
-      Rectangle r2 = new Rectangle(1, 1, 2, 2);
+      Rectangle r1 = Rectangle(0, 0, 2, 2);
+      Rectangle r2 = Rectangle(1, 1, 2, 2);
       Rectangle rect = r1.intersection(r2);
 
       testRectangle(rect, x: 1, y: 1, width: 1, height: 1);
@@ -299,22 +299,22 @@ void main() {
   });
 
   test('#boundingBox', () {
-    Rectangle r1 = new Rectangle(0, 0, 2, 2);
-    Rectangle r2 = new Rectangle(1, 1, 2, 2);
+    Rectangle r1 = Rectangle(0, 0, 2, 2);
+    Rectangle r2 = Rectangle(1, 1, 2, 2);
     Rectangle rect = r1.boundingBox(r2);
 
     testRectangle(rect, x: 0, y: 0, width: 3, height: 3);
   });
 
   test('#align', () {
-    Rectangle rect = new Rectangle(0.8, 0.7, 2.5, 2.7);
+    Rectangle rect = Rectangle(0.8, 0.7, 2.5, 2.7);
 
     testRectangle(rect.align(), x: 0, y: 0, width: 4, height: 4);
   });
 }
 
-Rectangle rect1234() => new Rectangle(1, 2, 3, 4);
-Rectangle rect0000() => new Rectangle(0, 0, 0, 0);
+Rectangle rect1234() => Rectangle(1, 2, 3, 4);
+Rectangle rect0000() => Rectangle(0, 0, 0, 0);
 
 void testRectangle(Rectangle rect, {num x, num y, num width, num height}) {
   if (x != null) expect(rect.left, equals(x));
@@ -335,8 +335,8 @@ void testRectangleIntersection(
     num y2 = 1,
     num sideSize = 2,
     Matcher matcher = isTrue}) {
-  Rectangle r1 = new Rectangle(x1, y1, sideSize, sideSize);
-  Rectangle r2 = new Rectangle(x2, y2, sideSize, sideSize);
+  Rectangle r1 = Rectangle(x1, y1, sideSize, sideSize);
+  Rectangle r2 = Rectangle(x2, y2, sideSize, sideSize);
 
   expect(r1.intersects(r2), matcher);
 }

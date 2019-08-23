@@ -13,9 +13,9 @@ class StageConsole extends DisplayObject {
       "MweTtq+7tMhnin9YTDF4/chDftUsKcoW97B2RQEIC24GDJWsNvDAWRVrjHUgmWhOMPEf/DT5"
       "NSmGlKVHTvAAAAAElFTkSuQmCC";
 
-  final List<RenderTextureQuad> _glyphs = new List<RenderTextureQuad>();
-  final Matrix _matrix = new Matrix.fromIdentity();
-  final List<String> _lines = new List<String>();
+  final List<RenderTextureQuad> _glyphs = List<RenderTextureQuad>();
+  final Matrix _matrix = Matrix.fromIdentity();
+  final List<String> _lines = List<String>();
 
   int _consoleWidth = 0;
   int _consoleHeight = 0;
@@ -46,7 +46,7 @@ class StageConsole extends DisplayObject {
 
   @override
   void render(RenderState renderState) {
-    this.dispatchEvent(new Event("Update"));
+    this.dispatchEvent(Event("Update"));
     for (int y = 0; y < _consoleHeight; y++) {
       for (int x = 0; x < _consoleWidth; x++) {
         var index = x < _lines[y].length ? _lines[y].codeUnitAt(x) - 32 : 0;
@@ -64,7 +64,7 @@ class StageConsole extends DisplayObject {
   void _calculateGlyphs(BitmapData fontBitmapData) {
     fontBitmapData.renderTexture.filtering = RenderTextureFiltering.NEAREST;
     for (int i = 0; i < 64; i++) {
-      var rectangle = new Rectangle<int>(i * 7, 0, 7, 14);
+      var rectangle = Rectangle<int>(i * 7, 0, 7, 14);
       _glyphs.add(fontBitmapData.renderTextureQuad.cut(rectangle));
     }
   }

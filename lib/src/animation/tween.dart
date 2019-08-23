@@ -30,7 +30,7 @@ part of stagexl.animation;
 class Tween implements Animatable {
   final TweenObject _tweenObject;
   final TransitionFunction _transition;
-  final List<TweenProperty> _tweenPropertyList = new List<TweenProperty>();
+  final List<TweenProperty> _tweenPropertyList = List<TweenProperty>();
 
   Function _onStart;
   Function _onUpdate;
@@ -54,7 +54,7 @@ class Tween implements Animatable {
       : _tweenObject = tweenObject,
         _transition = transition {
     if (_tweenObject is! TweenObject) {
-      throw new ArgumentError("tweenObject");
+      throw ArgumentError("tweenObject");
     }
 
     _totalTime = max(0.0001, time);
@@ -68,9 +68,9 @@ class Tween implements Animatable {
   TweenPropertyAccessor2D get animate {
     var tweenObject = _tweenObject;
     if (tweenObject is TweenObject2D) {
-      return new TweenPropertyAccessor2D._(this, tweenObject);
+      return TweenPropertyAccessor2D._(this, tweenObject);
     } else {
-      throw new StateError("Invalid tween object for 2D animation.");
+      throw StateError("Invalid tween object for 2D animation.");
     }
   }
 
@@ -80,15 +80,15 @@ class Tween implements Animatable {
   TweenPropertyAccessor3D get animate3D {
     var tweenObject = _tweenObject;
     if (tweenObject is TweenObject3D) {
-      return new TweenPropertyAccessor3D._(this, tweenObject);
+      return TweenPropertyAccessor3D._(this, tweenObject);
     } else {
-      throw new StateError("Invalid tween object for 3D animation.");
+      throw StateError("Invalid tween object for 3D animation.");
     }
   }
 
   TweenProperty _createTweenProperty(
       TweenPropertyAccessor accessor, int propertyID) {
-    var tweenProperty = new TweenProperty._(accessor, propertyID);
+    var tweenProperty = TweenProperty._(accessor, propertyID);
     if (_started == false) _tweenPropertyList.add(tweenProperty);
     return tweenProperty;
   }

@@ -12,7 +12,7 @@ void main() {
 
   test('new from point', () {
     Point source = point12();
-    Point p = new Point.from(source);
+    Point p = Point.from(source);
 
     p.x = 3;
 
@@ -44,8 +44,8 @@ void main() {
 
   test('.distance', () {
     for (List<num> r in distanceTestTable) {
-      Point p1 = new Point(r[0], r[1]);
-      Point p2 = new Point(r[2], r[3]);
+      Point p1 = Point(r[0], r[1]);
+      Point p2 = Point(r[2], r[3]);
 
       expect(Point.distance(p1, p2), closeTo(r[4], 0.001));
     }
@@ -53,15 +53,15 @@ void main() {
 
   test('#distanceTo', () {
     for (List<num> r in distanceTestTable) {
-      Point p1 = new Point(r[0], r[1]);
-      Point p2 = new Point(r[2], r[3]);
+      Point p1 = Point(r[0], r[1]);
+      Point p2 = Point(r[2], r[3]);
 
       expect(p1.distanceTo(p2), closeTo(r[4], 0.001));
     }
   });
 
   test('.interpolate', () {
-    testPoint(Point.interpolate(point12(), new Point(3, 4), 3), x: -3, y: -2);
+    testPoint(Point.interpolate(point12(), Point(3, 4), 3), x: -3, y: -2);
   });
 
   test('.polar', () {
@@ -115,8 +115,8 @@ void main() {
   });
 }
 
-Point point12() => new Point<num>(1, 2);
-Point point00() => new Point<num>(0, 0);
+Point point12() => Point<num>(1, 2);
+Point point00() => Point<num>(0, 0);
 
 void testPoint(Point point, {num x, num y}) {
   if (x != null) expect(point.x, closeTo(x, 0.001));

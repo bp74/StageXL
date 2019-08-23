@@ -12,7 +12,7 @@ class EventStream<T extends Event> extends Stream<T> {
   // If subscriptions are added or canceled we create a new list.
   // This is safe and gives good performance in JavaScript.
 
-  List<EventStreamSubscription<T>> _subscriptions = new List(0);
+  List<EventStreamSubscription<T>> _subscriptions = List(0);
   int _capturingSubscriptionCount = 0;
 
   EventStream._(this.target, this.eventType);
@@ -100,14 +100,14 @@ class EventStream<T extends Event> extends Stream<T> {
 
   EventStreamSubscription<T> _subscribe(
       EventListener<T> eventListener, bool captures, int priority) {
-    var subscription = new EventStreamSubscription<T>._(
-        this, eventListener, captures, priority);
+    var subscription =
+        EventStreamSubscription<T>._(this, eventListener, captures, priority);
 
-    // Insert the new subscription according to its priority.
+    // Insert the subscription according to its priority.
 
     var oldSubscriptions = _subscriptions;
     var newSubscriptions =
-        new List<EventStreamSubscription<T>>(oldSubscriptions.length + 1);
+        List<EventStreamSubscription<T>>(oldSubscriptions.length + 1);
     var index = newSubscriptions.length - 1;
 
     for (int o = 0, n = 0; o < oldSubscriptions.length; o++) {
@@ -161,7 +161,7 @@ class EventStream<T extends Event> extends Stream<T> {
     if (oldSubscriptions.isEmpty) return;
 
     var newSubscriptions =
-        new List<EventStreamSubscription<T>>(oldSubscriptions.length - 1);
+        List<EventStreamSubscription<T>>(oldSubscriptions.length - 1);
 
     for (int o = 0, n = 0; o < oldSubscriptions.length; o++) {
       var oldSubscription = oldSubscriptions[o];

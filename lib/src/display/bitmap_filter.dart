@@ -4,7 +4,7 @@ abstract class BitmapFilter extends RenderFilter {
   BitmapFilter clone();
 
   @override
-  Rectangle<int> get overlap => new Rectangle<int>(0, 0, 0, 0);
+  Rectangle<int> get overlap => Rectangle<int>(0, 0, 0, 0);
 
   @override
   List<int> get renderPassSources => const [0];

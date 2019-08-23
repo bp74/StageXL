@@ -6,13 +6,13 @@ import 'matrix_3d.dart';
 /// 3D display objects on a 2D plane like the stage or other display objects.
 ///
 class PerspectiveProjection {
-  final Matrix3D perspectiveMatrix3D = new Matrix3D.fromIdentity();
+  final Matrix3D perspectiveMatrix3D = Matrix3D.fromIdentity();
 
   /// Creates a default perspective projection which should be suitable for
   /// most use cases.
   ///
   factory PerspectiveProjection() {
-    return new PerspectiveProjection.fromDepth(10000, 10);
+    return PerspectiveProjection.fromDepth(10000, 10);
   }
 
   /// Creates a perspective projection with custom [depth] and [scale] values.

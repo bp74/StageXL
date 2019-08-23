@@ -8,14 +8,13 @@ import '../errors.dart';
 class AudioLoader {
   static final List<String> supportedTypes = _getSupportedTypes();
 
-  final AudioElement audio = new AudioElement();
-  final AggregateError aggregateError =
-      new AggregateError("Error loading sound.");
-  final Completer<AudioElement> _completer = new Completer<AudioElement>();
+  final AudioElement audio = AudioElement();
+  final AggregateError aggregateError = AggregateError("Error loading sound.");
+  final Completer<AudioElement> _completer = Completer<AudioElement>();
 
   StreamSubscription _onCanPlaySubscription;
   StreamSubscription _onErrorSubscription;
-  List<String> _urls = new List<String>();
+  List<String> _urls = List<String>();
   bool _loadData = false;
 
   AudioLoader(List<String> urls, bool loadData, bool corsEnabled) {
@@ -45,7 +44,7 @@ class AudioLoader {
 
   void _onAudioError(Event event) {
     var ae = event.target as AudioElement;
-    var loadError = new LoadError("Failed to load ${ae.src}.", ae.error);
+    var loadError = LoadError("Failed to load ${ae.src}.", ae.error);
     aggregateError.errors.add(loadError);
     _loadNextUrl();
   }
@@ -64,7 +63,7 @@ class AudioLoader {
     _onCanPlaySubscription.cancel();
     _onErrorSubscription.cancel();
     if (this.aggregateError.errors.isEmpty) {
-      var loadError = new LoadError("No configured audio type is supported.");
+      var loadError = LoadError("No configured audio type is supported.");
       this.aggregateError.errors.add(loadError);
     }
     _completer.completeError(this.aggregateError);
@@ -72,11 +71,11 @@ class AudioLoader {
 
   void _loadAudioData(String url) {
     HttpRequest.request(url, responseType: 'blob').then((request) {
-      var reader = new FileReader();
+      var reader = FileReader();
       reader.readAsDataUrl(request.response as Blob);
       reader.onLoadEnd.first.then((e) => _loadAudioSource(reader.result));
     }).catchError((error) {
-      var loadError = new LoadError("Failed to load $url.", error);
+      var loadError = LoadError("Failed to load $url.", error);
       this.aggregateError.errors.add(loadError);
       _loadNextUrl();
     });
@@ -91,22 +90,28 @@ class AudioLoader {
   //-------------------------------------------------------------------------------------------------
 
   static List<String> _getSupportedTypes() {
-    var supportedTypes = new List<String>();
-    var audio = new AudioElement();
+    var supportedTypes = List<String>();
+    var audio = AudioElement();
     var valid = ["maybe", "probably"];
 
-    if (valid.contains(audio.canPlayType("audio/ogg; codecs=opus")))
+    if (valid.contains(audio.canPlayType("audio/ogg; codecs=opus"))) {
       supportedTypes.add("opus");
-    if (valid.contains(audio.canPlayType("audio/mpeg")))
+    }
+    if (valid.contains(audio.canPlayType("audio/mpeg"))) {
       supportedTypes.add("mp3");
-    if (valid.contains(audio.canPlayType("audio/mp4")))
+    }
+    if (valid.contains(audio.canPlayType("audio/mp4"))) {
       supportedTypes.add("mp4");
-    if (valid.contains(audio.canPlayType("audio/ogg")))
+    }
+    if (valid.contains(audio.canPlayType("audio/ogg"))) {
       supportedTypes.add("ogg");
-    if (valid.contains(audio.canPlayType("audio/ac3")))
+    }
+    if (valid.contains(audio.canPlayType("audio/ac3"))) {
       supportedTypes.add("ac3");
-    if (valid.contains(audio.canPlayType("audio/wav")))
+    }
+    if (valid.contains(audio.canPlayType("audio/wav"))) {
       supportedTypes.add("wav");
+    }
 
     print("StageXL audio types   : $supportedTypes");
 

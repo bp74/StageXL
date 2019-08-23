@@ -7,8 +7,8 @@ import 'environment.dart' as env;
 import '../errors.dart';
 
 class ImageLoader {
-  final ImageElement image = new ImageElement();
-  final Completer<ImageElement> _completer = new Completer<ImageElement>();
+  final ImageElement image = ImageElement();
+  final Completer<ImageElement> _completer = Completer<ImageElement>();
 
   final String _url;
   StreamSubscription _onLoadSubscription;
@@ -36,7 +36,7 @@ class ImageLoader {
   //---------------------------------------------------------------------------
 
   void _onWebpSupported(bool webpSupported) {
-    var match = new RegExp(r"(png|jpg|jpeg)$").firstMatch(_url);
+    var match = RegExp(r"(png|jpg|jpeg)$").firstMatch(_url);
     if (webpSupported && match != null) {
       image.src = _url.substring(0, match.start) + "webp";
     } else {
@@ -53,6 +53,6 @@ class ImageLoader {
   void _onImageError(Event event) {
     _onLoadSubscription.cancel();
     _onErrorSubscription.cancel();
-    _completer.completeError(new LoadError("Failed to load ${image.src}."));
+    _completer.completeError(LoadError("Failed to load ${image.src}."));
   }
 }

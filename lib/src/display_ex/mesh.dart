@@ -46,8 +46,8 @@ class Mesh extends DisplayObject {
       : indexCount = triangleCount * 3,
         triangleCount = triangleCount,
         vertexCount = vertexCount,
-        ixList = new Int16List(triangleCount * 3),
-        vxList = new Float32List(vertexCount * 4);
+        ixList = Int16List(triangleCount * 3),
+        vxList = Float32List(vertexCount * 4);
 
   /// Create a new grid shaped Mesh with the desired number of [columns]
   /// and [rows]. A 2x2 grid will create 9 vertices.
@@ -57,7 +57,7 @@ class Mesh extends DisplayObject {
     var height = bitmapData.height;
     var vertexCount = (columns + 1) * (rows + 1);
     var triangleCount = 2 * columns * rows;
-    var mesh = new Mesh(bitmapData, vertexCount, triangleCount);
+    var mesh = Mesh(bitmapData, vertexCount, triangleCount);
 
     for (int r = 0, vertex = 0; r <= rows; r++) {
       for (int c = 0; c <= columns; c++) {
@@ -155,7 +155,7 @@ class Mesh extends DisplayObject {
       if (bottom < vertexY) bottom = vertexY;
     }
 
-    return new Rectangle<num>(left, top, right - left, bottom - top);
+    return Rectangle<num>(left, top, right - left, bottom - top);
   }
 
   @override
@@ -213,7 +213,7 @@ class Mesh extends DisplayObject {
     var mx = matrix.tx;
     var my = matrix.tx;
 
-    _vxListTemp = _vxListTemp ?? new Float32List(vxList.length);
+    _vxListTemp = _vxListTemp ?? Float32List(vxList.length);
 
     for (int i = 0; i < _vxListTemp.length - 3; i += 4) {
       var x = vxList[i + 2];

@@ -2,7 +2,7 @@ part of stagexl.resources;
 
 class TextureAtlas {
   /// A list with the frames in this texture atlas.
-  final List<TextureAtlasFrame> frames = new List<TextureAtlasFrame>();
+  final List<TextureAtlasFrame> frames = List<TextureAtlasFrame>();
 
   /// The pixelRatio used for the BitmapDatas in the frames
   final double pixelRatio;
@@ -15,21 +15,21 @@ class TextureAtlas {
           [TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
           BitmapDataLoadOptions bitmapDataLoadOptions]) =>
       textureAtlasFormat
-          .load(new _TextureAtlasLoaderFile(url, bitmapDataLoadOptions));
+          .load(_TextureAtlasLoaderFile(url, bitmapDataLoadOptions));
 
   static Future<TextureAtlas> fromTextureAtlas(
           TextureAtlas textureAtlas, String namePrefix, String source,
           [TextureAtlasFormat textureAtlasFormat =
               TextureAtlasFormat.JSONARRAY]) =>
-      textureAtlasFormat.load(new _TextureAtlasLoaderTextureAtlas(
-          textureAtlas, namePrefix, source));
+      textureAtlasFormat.load(
+          _TextureAtlasLoaderTextureAtlas(textureAtlas, namePrefix, source));
 
   static Future<TextureAtlas> fromBitmapData(
           BitmapData bitmapData, String source,
           [TextureAtlasFormat textureAtlasFormat =
               TextureAtlasFormat.JSONARRAY]) =>
       textureAtlasFormat
-          .load(new _TextureAtlasLoaderBitmapData(bitmapData, source));
+          .load(_TextureAtlasLoaderBitmapData(bitmapData, source));
 
   static Future<TextureAtlas> withLoader(TextureAtlasLoader textureAtlasLoader,
           [TextureAtlasFormat textureAtlasFormat =
@@ -59,6 +59,6 @@ class TextureAtlas {
       var frame = frames[i];
       if (frame.name == name) return frame.bitmapData;
     }
-    throw new ArgumentError("TextureAtlasFrame not found: '$name'");
+    throw ArgumentError("TextureAtlasFrame not found: '$name'");
   }
 }

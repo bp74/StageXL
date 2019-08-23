@@ -37,7 +37,7 @@ class Polygon {
 
   Polygon(List<Point<num>> points) : points = points.toList(growable: false) {
     if (this.points.length < 3) {
-      throw new ArgumentError("Please provide three or more points.");
+      throw ArgumentError("Please provide three or more points.");
     }
   }
 
@@ -99,7 +99,7 @@ class Polygon {
       minY = min(minY, point.y);
     }
 
-    return new Rectangle<num>(minX, minY, maxX - minX, maxY - minY);
+    return Rectangle<num>(minX, minY, maxX - minX, maxY - minY);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -107,8 +107,8 @@ class Polygon {
   List<int> triangulate() {
     int i = 0;
     int al = points.length;
-    List<int> result = new List<int>();
-    List<int> available = new List<int>();
+    List<int> result = List<int>();
+    List<int> available = List<int>();
 
     for (int p = 0; p < points.length; p++) {
       available.add(p);
@@ -220,7 +220,7 @@ class Polygon {
 
     num x = (a * dbx - dax * b) / den;
     num y = (a * dby - day * b) / den;
-    Point<num> point = new Point<num>(x, y);
+    Point<num> point = Point<num>(x, y);
 
     return _inRect(point, a1, a2) && _inRect(point, b1, b2) ? point : null;
   }

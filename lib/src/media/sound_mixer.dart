@@ -3,7 +3,7 @@ part of stagexl.media;
 class SoundMixer {
   static SoundEngine _engineDetected;
   static SoundEngine _engineOverride;
-  static SoundTransform _soundTransform = new SoundTransform();
+  static SoundTransform _soundTransform = SoundTransform();
 
   static WebAudioApiMixer _webAudioApiMixer;
   static AudioElementMixer _audioElementMixer;
@@ -35,7 +35,7 @@ class SoundMixer {
 
   static set soundTransform(SoundTransform value) {
     _initEngine();
-    _soundTransform = value ?? new SoundTransform();
+    _soundTransform = value ?? SoundTransform();
     _webAudioApiMixer?.applySoundTransform(_soundTransform);
     _audioElementMixer?.applySoundTransform(_soundTransform);
   }
@@ -73,11 +73,11 @@ class SoundMixer {
     if (_engineDetected != null) return;
 
     _engineDetected = SoundEngine.AudioElement;
-    _audioElementMixer = new AudioElementMixer();
+    _audioElementMixer = AudioElementMixer();
 
     if (AudioContext.supported) {
       _engineDetected = SoundEngine.WebAudioApi;
-      _webAudioApiMixer = new WebAudioApiMixer();
+      _webAudioApiMixer = WebAudioApiMixer();
     }
 
     var ua = html.window.navigator.userAgent;

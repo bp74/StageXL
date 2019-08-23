@@ -25,7 +25,7 @@ typedef num TransitionFunction(num ratio);
 class Transition {
   // Standard
 
-  static Random _random = new Random();
+  static Random _random = Random();
 
   static num linear(num ratio) {
     return ratio;

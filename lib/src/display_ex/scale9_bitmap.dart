@@ -10,7 +10,7 @@ class Scale9Bitmap extends Bitmap {
   num _width = 0.0;
   num _height = 0.0;
 
-  final List<RenderTextureQuad> _slices = new List<RenderTextureQuad>(9);
+  final List<RenderTextureQuad> _slices = List<RenderTextureQuad>(9);
 
   Scale9Bitmap(BitmapData bitmapData, Rectangle<num> grid) : super(bitmapData) {
     _grid = grid;
@@ -64,7 +64,7 @@ class Scale9Bitmap extends Bitmap {
 
   @override
   Rectangle<num> get bounds {
-    return new Rectangle<num>(0.0, 0.0, _width, _height);
+    return Rectangle<num>(0.0, 0.0, _width, _height);
   }
 
   @override
@@ -128,9 +128,9 @@ class Scale9Bitmap extends Bitmap {
       for (int i = 0; i < 3; i++) {
         var x = (i == 0 ? x0 : i == 1 ? x1 : x2);
         var w = (i == 0 ? x1 : i == 1 ? x2 : x3) - x;
-        var source = new Rectangle<int>(x, y, w, h);
-        var offset = new Rectangle<int>(0, 0, w, h);
-        var slice = new RenderTextureQuad.slice(rtq, source, offset);
+        var source = Rectangle<int>(x, y, w, h);
+        var offset = Rectangle<int>(0, 0, w, h);
+        var slice = RenderTextureQuad.slice(rtq, source, offset);
         _slices[i + j * 3] = slice;
       }
     }

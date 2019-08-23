@@ -34,24 +34,21 @@ class _GraphicsContextHitTest extends _GraphicsContextBase {
   @override
   void strokeColor(
       int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh =
-        new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    _GraphicsMesh mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double width,
       JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh =
-        new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    _GraphicsMesh mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double width,
       JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh =
-        new _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    _GraphicsMesh mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 

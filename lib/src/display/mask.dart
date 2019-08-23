@@ -10,15 +10,15 @@ part of stagexl.display;
 ///
 /// Example:
 ///
-///     var rifleScope = new Sprite();
-///     rifleScope.mask = new Mask.circle(0, 0, 50);
+///     var rifleScope = Sprite();
+///     rifleScope.mask = Mask.circle(0, 0, 50);
 ///     rifleScope.addChild(world);
 
 abstract class Mask implements RenderMask {
   /// You can use the [transformationMatrix] to change the size,
   /// position, scale, rotation etc. from the Mask.
 
-  final Matrix transformationMatrix = new Matrix.fromIdentity();
+  final Matrix transformationMatrix = Matrix.fromIdentity();
 
   /// Set to `true` to place the [Mask] relative to the DisplayObjects
   /// parent. The default value is `false` and therefore the mask is
@@ -48,38 +48,38 @@ abstract class Mask implements RenderMask {
   /// Create a rectangular mask.
 
   factory Mask.rectangle(num x, num y, num width, num height) {
-    var rectangle = new Rectangle<num>(x, y, width, height);
-    return new _RectangleMask(rectangle);
+    var rectangle = Rectangle<num>(x, y, width, height);
+    return _RectangleMask(rectangle);
   }
 
   /// Create a circular mask.
 
   factory Mask.circle(num x, num y, num radius) {
-    var graphics = new Graphics();
+    var graphics = Graphics();
     graphics.circle(x, y, radius);
     graphics.fillColor(Color.Magenta);
-    return new _GraphicsMask(graphics);
+    return _GraphicsMask(graphics);
   }
 
   /// Create a custom mask with a polygonal shape defined by [points].
 
   factory Mask.custom(List<Point<num>> points) {
-    var graphics = new Graphics();
+    var graphics = Graphics();
     points.forEach((p) => graphics.lineTo(p.x, p.y));
     graphics.fillColor(Color.Magenta);
-    return new _GraphicsMask(graphics);
+    return _GraphicsMask(graphics);
   }
 
   /// Create a custom mask defined by a [Graphics] object.
 
   factory Mask.graphics(Graphics graphics) {
-    return new _GraphicsMask(graphics);
+    return _GraphicsMask(graphics);
   }
 
   /// Create a custom mask defined by a [Shape] object.
 
   factory Mask.shape(Shape shape) {
-    return new _ShapeMask(shape);
+    return _ShapeMask(shape);
   }
 }
 

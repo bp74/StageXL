@@ -8,7 +8,7 @@ import 'point.dart';
 import 'rectangle.dart';
 
 class Matrix3D {
-  final Float32List _data = new Float32List(16);
+  final Float32List _data = Float32List(16);
 
   Matrix3D.fromIdentity() {
     this.setIdentity();
@@ -26,7 +26,7 @@ class Matrix3D {
     this.copyFrom(matrix);
   }
 
-  Matrix3D clone() => new Matrix3D.fromMatrix3D(this);
+  Matrix3D clone() => Matrix3D.fromMatrix3D(this);
 
   //-----------------------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ class Matrix3D {
       returnPoint.setTo(tx / td, ty / td);
       return returnPoint;
     } else {
-      return new Point<num>(tx / td, ty / td);
+      return Point<num>(tx / td, ty / td);
     }
   }
 
@@ -89,7 +89,7 @@ class Matrix3D {
       returnPoint.setTo(tx / td, ty / td);
       return returnPoint;
     } else {
-      return new Point<num>(tx / td, ty / td);
+      return Point<num>(tx / td, ty / td);
     }
   }
 
@@ -146,7 +146,7 @@ class Matrix3D {
       returnRectangle.setTo(left, top, width, heigth);
       return returnRectangle;
     } else {
-      return new Rectangle<num>(left, top, width, heigth);
+      return Rectangle<num>(left, top, width, heigth);
     }
   }
 

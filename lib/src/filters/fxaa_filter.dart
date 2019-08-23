@@ -21,7 +21,7 @@ import '../geom.dart';
 
 class FxaaFilter extends BitmapFilter {
   @override
-  BitmapFilter clone() => new FxaaFilter();
+  BitmapFilter clone() => FxaaFilter();
 
   //----------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ class FxaaFilter extends BitmapFilter {
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
     FxaaFilterProgram renderProgram = renderContext.getRenderProgram(
-        r"$FxaaFilterProgram", () => new FxaaFilterProgram());
+        r"$FxaaFilterProgram", () => FxaaFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);

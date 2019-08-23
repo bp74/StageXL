@@ -29,7 +29,7 @@ class Gauge extends DisplayObject {
     validDirection = validDirection || direction == DIRECTION_LEFT;
     validDirection = validDirection || direction == DIRECTION_RIGHT;
 
-    if (!validDirection) throw new ArgumentError('Invalid Gauge direction!');
+    if (!validDirection) throw ArgumentError('Invalid Gauge direction!');
   }
 
   //---------------------------------------------------------------------------
@@ -47,8 +47,8 @@ class Gauge extends DisplayObject {
   @override
   Rectangle<num> get bounds {
     return bitmapData == null
-        ? new Rectangle<num>(0.0, 0.0, 0.0, 0.0)
-        : new Rectangle<num>(0.0, 0.0, bitmapData.width, bitmapData.height);
+        ? Rectangle<num>(0.0, 0.0, 0.0, 0.0)
+        : Rectangle<num>(0.0, 0.0, bitmapData.width, bitmapData.height);
   }
 
   @override
@@ -90,7 +90,7 @@ class Gauge extends DisplayObject {
     if (direction == DIRECTION_RIGHT) right = (_ratio * width).round();
     if (direction == DIRECTION_DOWN) bottom = (_ratio * height).round();
 
-    var rectangle = new Rectangle(left, top, right - left, bottom - top);
+    var rectangle = Rectangle(left, top, right - left, bottom - top);
     var renderTextureQuad = bitmapData.renderTextureQuad.clip(rectangle);
 
     return renderTextureQuad;

@@ -10,7 +10,7 @@ class Circle<T extends num> {
 
   Circle(this.x, this.y, this.radius);
 
-  Circle clone() => new Circle(x, y, radius);
+  Circle clone() => Circle(x, y, radius);
 
   @override
   String toString() => "Circle<$T> [x=$x, y=$y, radius=$radius]";

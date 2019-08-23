@@ -2,9 +2,9 @@ part of stagexl.resources;
 
 class ResourceManager {
   final Map<String, ResourceManagerResource> _resourceMap =
-      new Map<String, ResourceManagerResource>();
+      Map<String, ResourceManagerResource>();
 
-  final _progressEvent = new StreamController<num>.broadcast();
+  final _progressEvent = StreamController<num>.broadcast();
   Stream<num> get onProgress => _progressEvent.stream;
 
   //----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ class ResourceManager {
     await Future.wait(futures);
     var errors = this.failedResources.length;
     if (errors > 0) {
-      throw new StateError("Failed to load $errors resource(s).");
+      throw StateError("Failed to load $errors resource(s).");
     } else {
       return this;
     }
@@ -159,7 +159,7 @@ class ResourceManager {
   }
 
   void addText(String name, String text) {
-    _addResource("Text", name, "", new Future.value(text));
+    _addResource("Text", name, "", Future.value(text));
   }
 
   void removeText(String name) {
@@ -179,7 +179,7 @@ class ResourceManager {
   void addTextFile(String name, String url) {
     var loader =
         HttpRequest.getString(url).then((text) => text, onError: (error) {
-      throw new StateError("Failed to load text file.");
+      throw StateError("Failed to load text file.");
     });
     _addResource("TextFile", name, url, loader);
   }
@@ -224,10 +224,10 @@ class ResourceManager {
 
   void _addResource(String kind, String name, String url, Future loader) {
     var key = "$kind.$name";
-    var resource = new ResourceManagerResource(kind, name, url, loader);
+    var resource = ResourceManagerResource(kind, name, url, loader);
 
     if (_resourceMap.containsKey(key)) {
-      throw new StateError(
+      throw StateError(
           "ResourceManager already contains a resource called '$name'");
     } else {
       _resourceMap[key] = resource;
@@ -244,13 +244,13 @@ class ResourceManager {
     var key = "$kind.$name";
     var resource = _resourceMap[key];
     if (resource == null) {
-      throw new StateError("Resource '$name' does not exist.");
+      throw StateError("Resource '$name' does not exist.");
     } else if (resource.value != null) {
       return resource.value;
     } else if (resource.error != null) {
       throw resource.error;
     } else {
-      throw new StateError("Resource '$name' has not finished loading yet.");
+      throw StateError("Resource '$name' has not finished loading yet.");
     }
   }
 }

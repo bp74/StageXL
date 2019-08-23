@@ -16,7 +16,7 @@ class AudioElementSoundChannel extends SoundChannel {
 
   AudioElementSoundChannel(AudioElementSound audioElementSound, num startTime,
       num duration, bool loop, SoundTransform soundTransform) {
-    _soundTransform = soundTransform ?? new SoundTransform();
+    _soundTransform = soundTransform ?? SoundTransform();
     _audioElementSound = audioElementSound;
     _startTime = startTime.toDouble();
     _duration = duration.toDouble();
@@ -98,7 +98,7 @@ class AudioElementSoundChannel extends SoundChannel {
 
   @override
   set soundTransform(SoundTransform value) {
-    _soundTransform = value != null ? value : new SoundTransform();
+    _soundTransform = value != null ? value : SoundTransform();
     if (_audioElement == null) {
       // we can't set the audio element
     } else {
@@ -127,7 +127,7 @@ class AudioElementSoundChannel extends SoundChannel {
       _stopped = true;
       _paused = true;
       _stopCompleteTimer();
-      this.dispatchEvent(new Event(Event.COMPLETE));
+      this.dispatchEvent(Event(Event.COMPLETE));
     }
   }
 
@@ -155,8 +155,8 @@ class AudioElementSoundChannel extends SoundChannel {
 
   void _startCompleteTimer(num time) {
     time = time.clamp(0.0, _duration) * 1000.0;
-    var duration = new Duration(milliseconds: time.toInt());
-    _completeTimer = new Timer(duration, _onCompleteTimer);
+    var duration = Duration(milliseconds: time.toInt());
+    _completeTimer = Timer(duration, _onCompleteTimer);
   }
 
   void _stopCompleteTimer() {

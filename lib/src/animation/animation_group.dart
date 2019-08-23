@@ -22,7 +22,7 @@ part of stagexl.animation;
 ///        ..onComplete = () => print("complete");
 ///
 class AnimationGroup implements Animatable {
-  final List<Animatable> _animatables = new List<Animatable>();
+  final List<Animatable> _animatables = List<Animatable>();
 
   Function _onStart;
   Function _onComplete;

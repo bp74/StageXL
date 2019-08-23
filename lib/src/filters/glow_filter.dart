@@ -18,8 +18,8 @@ class GlowFilter extends BitmapFilter {
   bool knockout;
   bool hideObject;
 
-  final List<int> _renderPassSources = new List<int>();
-  final List<int> _renderPassTargets = new List<int>();
+  final List<int> _renderPassSources = List<int>();
+  final List<int> _renderPassTargets = List<int>();
 
   GlowFilter(
       [int color = 0xFF000000,
@@ -40,12 +40,12 @@ class GlowFilter extends BitmapFilter {
 
   @override
   BitmapFilter clone() {
-    return new GlowFilter(color, blurX, blurY, quality, knockout, hideObject);
+    return GlowFilter(color, blurX, blurY, quality, knockout, hideObject);
   }
 
   @override
   Rectangle<int> get overlap {
-    return new Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
+    return Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
   }
 
   @override
@@ -167,7 +167,7 @@ class GlowFilter extends BitmapFilter {
       }
     } else {
       var renderProgram = renderContext.getRenderProgram(
-          r"$GlowFilterProgram", () => new GlowFilterProgram());
+          r"$GlowFilterProgram", () => GlowFilterProgram());
 
       renderContext.activateRenderProgram(renderProgram);
       renderContext.activateRenderTexture(renderTexture);

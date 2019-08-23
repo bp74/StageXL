@@ -17,7 +17,7 @@ class SharedCacheNode<E> {
 //------------------------------------------------------------------------------
 
 class SharedCache<K, E> extends EventDispatcher {
-  Map<K, SharedCacheNode<E>> _cachedObjects = new Map<K, SharedCacheNode<E>>();
+  Map<K, SharedCacheNode<E>> _cachedObjects = Map<K, SharedCacheNode<E>>();
   bool _autoReleaseUnusedObjects = true;
 
   SharedCache([bool autoReleaseUnusedObjects = true]) {
@@ -63,9 +63,9 @@ class SharedCache<K, E> extends EventDispatcher {
 
   void addObject(K key, E value) {
     if (!containsObject(key)) {
-      _cachedObjects[key] = new SharedCacheNode<E>(value);
+      _cachedObjects[key] = SharedCacheNode<E>(value);
     } else {
-      throw new ArgumentError("key-value already in cache!");
+      throw ArgumentError("key-value already in cache!");
     }
   }
 
@@ -98,6 +98,6 @@ class SharedCache<K, E> extends EventDispatcher {
   }
 
   void _finalReleaseObject(E object) {
-    dispatchEvent(new ObjectReleaseEvent<E>(object));
+    dispatchEvent(ObjectReleaseEvent<E>(object));
   }
 }

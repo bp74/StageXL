@@ -14,7 +14,7 @@ class BitmapDataLoadInfo {
     _loaderUrl = url;
     _pixelRatio = 1.0;
 
-    var pixelRatioRegexp = new RegExp(r"@(\d+(.\d+)?)x");
+    var pixelRatioRegexp = RegExp(r"@(\d+(.\d+)?)x");
     var pixelRatioMatch = pixelRatioRegexp.firstMatch(sourceUrl);
 
     if (pixelRatioMatch != null) {

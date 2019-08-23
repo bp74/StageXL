@@ -12,10 +12,10 @@ class AlphaMaskFilter extends BitmapFilter {
   final Matrix matrix;
 
   AlphaMaskFilter(this.bitmapData, [Matrix matrix])
-      : matrix = matrix != null ? matrix : new Matrix.fromIdentity();
+      : matrix = matrix != null ? matrix : Matrix.fromIdentity();
 
   @override
-  BitmapFilter clone() => new AlphaMaskFilter(bitmapData, matrix.clone());
+  BitmapFilter clone() => AlphaMaskFilter(bitmapData, matrix.clone());
 
   //---------------------------------------------------------------------------
 
@@ -28,8 +28,8 @@ class AlphaMaskFilter extends BitmapFilter {
     Matrix matrix = renderTextureQuad.drawMatrix;
     Float32List vxList = renderTextureQuad.vxList;
     CanvasElement canvas = renderTextureQuad.renderTexture.canvas;
-    RenderContextCanvas renderContext = new RenderContextCanvas(canvas);
-    RenderState renderState = new RenderState(renderContext, matrix);
+    RenderContextCanvas renderContext = RenderContextCanvas(canvas);
+    RenderState renderState = RenderState(renderContext, matrix);
     CanvasRenderingContext2D context = renderContext.rawContext;
 
     context.save();
@@ -53,7 +53,7 @@ class AlphaMaskFilter extends BitmapFilter {
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
     AlphaMaskFilterProgram renderProgram = renderContext.getRenderProgram(
-        r"$AlphaMaskFilterProgram", () => new AlphaMaskFilterProgram());
+        r"$AlphaMaskFilterProgram", () => AlphaMaskFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTextureAt(renderTexture, 0);

@@ -15,7 +15,7 @@ class RenderBufferIndex {
   //---------------------------------------------------------------------------
 
   RenderBufferIndex(int length)
-      : data = new Int16List(length),
+      : data = Int16List(length),
         usage = gl.WebGL.DYNAMIC_DRAW;
 
   //---------------------------------------------------------------------------
@@ -45,7 +45,7 @@ class RenderBufferIndex {
   }
 
   void update() {
-    var update = new Int16List.view(data.buffer, 0, this.position);
+    var update = Int16List.view(data.buffer, 0, this.position);
     _renderingContext.bufferSubData(gl.WebGL.ELEMENT_ARRAY_BUFFER, 0, update);
     _renderStatistics.indexCount += this.count;
   }

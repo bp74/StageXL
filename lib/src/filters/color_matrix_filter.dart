@@ -11,16 +11,16 @@ import '../internal/environment.dart' as env;
 import '../internal/tools.dart';
 
 class ColorMatrixFilter extends BitmapFilter {
-  Float32List _colorMatrixList = new Float32List(16);
-  Float32List _colorOffsetList = new Float32List(4);
+  Float32List _colorMatrixList = Float32List(16);
+  Float32List _colorOffsetList = Float32List(4);
 
   static const num _lumaR = 0.213;
   static const num _lumaG = 0.715;
   static const num _lumaB = 0.072;
 
   ColorMatrixFilter(List<num> colorMatrix, List<num> colorOffset) {
-    if (colorMatrix.length != 16) throw new ArgumentError("colorMatrix");
-    if (colorOffset.length != 4) throw new ArgumentError("colorOffset");
+    if (colorMatrix.length != 16) throw ArgumentError("colorMatrix");
+    if (colorOffset.length != 4) throw ArgumentError("colorOffset");
 
     for (int i = 0; i < colorMatrix.length; i++) {
       _colorMatrixList[i] = colorMatrix[i].toDouble();
@@ -65,7 +65,7 @@ class ColorMatrixFilter extends BitmapFilter {
 
   factory ColorMatrixFilter.adjust(
       {num hue = 0, num saturation = 0, num brightness = 0, num contrast = 0}) {
-    var colorMatrixFilter = new ColorMatrixFilter.identity();
+    var colorMatrixFilter = ColorMatrixFilter.identity();
     colorMatrixFilter.adjustHue(hue);
     colorMatrixFilter.adjustSaturation(saturation);
     colorMatrixFilter.adjustBrightness(brightness);
@@ -77,8 +77,7 @@ class ColorMatrixFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  BitmapFilter clone() =>
-      new ColorMatrixFilter(_colorMatrixList, _colorOffsetList);
+  BitmapFilter clone() => ColorMatrixFilter(_colorMatrixList, _colorOffsetList);
 
   //-----------------------------------------------------------------------------------------------
 
@@ -175,8 +174,8 @@ class ColorMatrixFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   void _concat(List<num> colorMatrix, List<num> colorOffset) {
-    var newColorMatrix = new Float32List(16);
-    var newColorOffset = new Float32List(4);
+    var newColorMatrix = Float32List(16);
+    var newColorOffset = Float32List(4);
 
     for (var y = 0, i = 0; y < 4; y++, i += 4) {
       if (i > 12) continue; // dart2js_hint
@@ -262,7 +261,7 @@ class ColorMatrixFilter extends BitmapFilter {
     RenderTexture renderTexture = renderTextureQuad.renderTexture;
 
     ColorMatrixFilterProgram renderProgram = renderContext.getRenderProgram(
-        r"$ColorMatrixFilterProgram", () => new ColorMatrixFilterProgram());
+        r"$ColorMatrixFilterProgram", () => ColorMatrixFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);

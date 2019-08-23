@@ -7,10 +7,10 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
     var source = await loader.getSource();
     var pixelRatio = loader.getPixelRatio();
-    var textureAtlas = new TextureAtlas(pixelRatio);
+    var textureAtlas = TextureAtlas(pixelRatio);
 
-    var splitRexExp = new RegExp(r"\r\n|\r|\n");
-    var dataRexExp = new RegExp(r"^\s*([a-z]+):\s([A-Za-z0-9\s,]+)");
+    var splitRexExp = RegExp(r"\r\n|\r|\n");
+    var dataRexExp = RegExp(r"^\s*([a-z]+):\s([A-Za-z0-9\s,]+)");
 
     var lines = source.split(splitRexExp);
     var lineIndex = 0;
@@ -69,7 +69,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
           }
         }
 
-        var textureAtlasFrame = new TextureAtlasFrame(
+        var textureAtlasFrame = TextureAtlasFrame(
             textureAtlas,
             renderTextureQuad,
             frameName,

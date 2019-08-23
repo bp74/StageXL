@@ -1,7 +1,5 @@
 part of stagexl.events;
 
-// TODO: We should make BroadcastEvents more generic.
-
 /// An event that has no specific [DisplayObject] as target but rather all
 /// [DisplayObject] instances, including those that are not on the display list.
 ///
@@ -18,7 +16,7 @@ abstract class BroadcastEvent extends Event {
   void dispatch();
 }
 
-/// An event that is dispatched when a new frame is entered.
+/// An event that is dispatched when a frame is entered.
 ///
 /// This event is a [BroadcastEvent], which means that it is dispatched by all
 /// [DisplayObject]s with a listener registered for this event.
@@ -69,11 +67,11 @@ class RenderEvent extends BroadcastEvent {
 //------------------------------------------------------------------------------
 
 final List<EventStreamSubscription<EnterFrameEvent>> _enterFrameSubscriptions =
-    new List<EventStreamSubscription<EnterFrameEvent>>();
+    List<EventStreamSubscription<EnterFrameEvent>>();
 final List<EventStreamSubscription<ExitFrameEvent>> _exitFrameSubscriptions =
-    new List<EventStreamSubscription<ExitFrameEvent>>();
+    List<EventStreamSubscription<ExitFrameEvent>>();
 final List<EventStreamSubscription<RenderEvent>> _renderSubscriptions =
-    new List<EventStreamSubscription<RenderEvent>>();
+    List<EventStreamSubscription<RenderEvent>>();
 
 void _dispatchBroadcastEvent<T extends BroadcastEvent>(
     BroadcastEvent broadcastEvent,

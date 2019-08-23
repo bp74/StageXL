@@ -6,7 +6,7 @@ class AudioElementSound extends Sound {
 
   AudioElementSound._(AudioElement audioElement)
       : _audioElement = audioElement,
-        _soundChannels = new Map<AudioElement, AudioElementSoundChannel>() {
+        _soundChannels = Map<AudioElement, AudioElementSoundChannel>() {
     _audioElement.onEnded.listen(_onAudioEnded);
     _soundChannels[audioElement] = null;
   }
@@ -20,9 +20,9 @@ class AudioElementSound extends Sound {
       var audioUrls = options.getOptimalAudioUrls(url);
       var corsEnabled = options.corsEnabled;
       var loadData = false; // options.loadData;
-      var audioLoader = new AudioLoader(audioUrls, loadData, corsEnabled);
+      var audioLoader = AudioLoader(audioUrls, loadData, corsEnabled);
       var audioElement = await audioLoader.done;
-      return new AudioElementSound._(audioElement);
+      return AudioElementSound._(audioElement);
     } catch (e) {
       var options = soundLoadOptions ?? Sound.defaultLoadOptions;
       if (options.ignoreErrors) {
@@ -37,9 +37,9 @@ class AudioElementSound extends Sound {
       [SoundLoadOptions soundLoadOptions]) async {
     try {
       var audioUrls = <String>[dataUrl];
-      var audioLoader = new AudioLoader(audioUrls, false, false);
+      var audioLoader = AudioLoader(audioUrls, false, false);
       var audioElement = await audioLoader.done;
-      return new AudioElementSound._(audioElement);
+      return AudioElementSound._(audioElement);
     } catch (e) {
       var options = soundLoadOptions ?? Sound.defaultLoadOptions;
       if (options.ignoreErrors) {
@@ -63,14 +63,14 @@ class AudioElementSound extends Sound {
     var startTime = 0.0;
     var duration = _audioElement.duration;
     if (duration.isInfinite) duration = 3600.0;
-    return new AudioElementSoundChannel(
+    return AudioElementSoundChannel(
         this, startTime, duration, loop, soundTransform);
   }
 
   @override
   SoundChannel playSegment(num startTime, num duration,
       [bool loop = false, SoundTransform soundTransform]) {
-    return new AudioElementSoundChannel(
+    return AudioElementSoundChannel(
         this, startTime, duration, loop, soundTransform);
   }
 

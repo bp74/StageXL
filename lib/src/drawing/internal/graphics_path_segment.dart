@@ -85,10 +85,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
     var count = _vertexCount;
     if (count < 3) return;
 
-    // TODO: benchmark more triangulation methods
-    // http://erich.realtimerendering.com/ptinpoly/
-
-    var available = new List<int>();
+    var available = List<int>();
     var clockwise = this.clockwise;
     var index = 0;
 

@@ -20,7 +20,7 @@ class Vector {
       : x = (len * cos(angle)).toDouble(),
         y = (len * sin(angle)).toDouble();
 
-  Vector clone() => new Vector(x, y);
+  Vector clone() => Vector(x, y);
 
   @override
   String toString() => "Vector [x=$x, y=$y]";
@@ -28,12 +28,12 @@ class Vector {
   //-----------------------------------------------------------------------------------------------
   // Operators
 
-  Vector operator +(Vector other) => new Vector(x + other.x, y + other.y);
-  Vector operator -(Vector other) => new Vector(x - other.x, y - other.y);
-  Vector operator *(Vector other) => new Vector(x * other.x, y * other.y);
-  Vector operator /(Vector other) => new Vector(x / other.x, y / other.y);
+  Vector operator +(Vector other) => Vector(x + other.x, y + other.y);
+  Vector operator -(Vector other) => Vector(x - other.x, y - other.y);
+  Vector operator *(Vector other) => Vector(x * other.x, y * other.y);
+  Vector operator /(Vector other) => Vector(x / other.x, y / other.y);
 
-  Vector operator -() => new Vector(-x, -y);
+  Vector operator -() => Vector(-x, -y);
 
   @override
   bool operator ==(Object other) {
@@ -71,17 +71,17 @@ class Vector {
   // Scale
 
   Vector scale(num scale) {
-    return new Vector(x * scale, y * scale);
+    return Vector(x * scale, y * scale);
   }
 
   Vector scaleLength(num value) {
     var scale = value / length;
-    return new Vector(x * scale, y * scale);
+    return Vector(x * scale, y * scale);
   }
 
   Vector normalize() {
     num nf = 1 / length;
-    return new Vector(x * nf, y * nf);
+    return Vector(x * nf, y * nf);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -132,40 +132,40 @@ class Vector {
   Vector rotate(num rads) {
     num s = sin(rads);
     num c = cos(rads);
-    return new Vector(x * c - y * s, x * s + y * c);
+    return Vector(x * c - y * s, x * s + y * c);
   }
 
   Vector normalRight() {
-    return new Vector(-y, x);
+    return Vector(-y, x);
   }
 
   Vector normalLeft() {
-    return new Vector(y, -x);
+    return Vector(y, -x);
   }
 
   Vector negate() {
-    return new Vector(-x, -y);
+    return Vector(-x, -y);
   }
 
   //-----------------------------------------------------------------------------------------------
   // Spinor rotation
 
   Vector rotateSpinor(Vector vec) {
-    return new Vector(x * vec.x - y * vec.y, x * vec.y + y * vec.x);
+    return Vector(x * vec.x - y * vec.y, x * vec.y + y * vec.x);
   }
 
   Vector spinorBetween(Vector vec) {
     num d = this.lengthSqr;
     num r = (vec.x * x + vec.y * y) / d;
     num i = (vec.y * x - vec.x * y) / d;
-    return new Vector(r, i);
+    return Vector(r, i);
   }
 
   //-----------------------------------------------------------------------------------------------
   // Lerp / slerp
 
   Vector lerp(Vector to, num t) {
-    return new Vector(x + t * (to.x - x), y + t * (to.y - y));
+    return Vector(x + t * (to.x - x), y + t * (to.y - y));
   }
 
   Vector slerp(Vector vec, num t) {
@@ -185,6 +185,6 @@ class Vector {
 
   Vector reflect(Vector normal) {
     num d = 2 * (x * normal.x + y * normal.y);
-    return new Vector(x - d * normal.x, y - d * normal.y);
+    return Vector(x - d * normal.x, y - d * normal.y);
   }
 }

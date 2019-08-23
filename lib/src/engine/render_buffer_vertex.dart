@@ -15,7 +15,7 @@ class RenderBufferVertex {
   //---------------------------------------------------------------------------
 
   RenderBufferVertex(int length)
-      : data = new Float32List(length),
+      : data = Float32List(length),
         usage = gl.WebGL.DYNAMIC_DRAW;
 
   //---------------------------------------------------------------------------
@@ -45,7 +45,7 @@ class RenderBufferVertex {
   }
 
   void update() {
-    var update = new Float32List.view(data.buffer, 0, this.position);
+    var update = Float32List.view(data.buffer, 0, this.position);
     _renderingContext.bufferSubData(gl.WebGL.ARRAY_BUFFER, 0, update);
     _renderStatistics.vertexCount += this.count;
   }

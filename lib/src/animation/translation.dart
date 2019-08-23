@@ -66,9 +66,12 @@ class Translation implements Animatable {
 
         _currentValue = _startValue + transition * (_targetValue - _startValue);
 
-        if (_onUpdate != null)
+        if (_onUpdate != null) {
           _onUpdate(_roundToInt ? _currentValue.round() : _currentValue);
-        if (_onComplete != null && _currentTime == _totalTime) _onComplete();
+        }
+        if (_onComplete != null && _currentTime == _totalTime) {
+          _onComplete();
+        }
       }
     }
 

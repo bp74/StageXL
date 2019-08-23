@@ -19,12 +19,12 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   RenderTexture(int width, int height, int fillColor) {
-    if (width <= 0) throw new ArgumentError("width");
-    if (height <= 0) throw new ArgumentError("height");
+    if (width <= 0) throw ArgumentError("width");
+    if (height <= 0) throw ArgumentError("height");
 
     _width = ensureInt(width);
     _height = ensureInt(height);
-    _source = _canvas = new CanvasElement(width: _width, height: _height);
+    _source = _canvas = CanvasElement(width: _width, height: _height);
 
     if (fillColor != 0) {
       var context = _canvas.context2D;
@@ -46,7 +46,7 @@ class RenderTexture {
   }
 
   RenderTexture.fromVideoElement(VideoElement videoElement) {
-    if (videoElement.readyState < 3) throw new ArgumentError("videoElement");
+    if (videoElement.readyState < 3) throw ArgumentError("videoElement");
     _width = ensureInt(videoElement.videoWidth);
     _height = ensureInt(videoElement.videoHeight);
     _source = videoElement;
@@ -65,12 +65,8 @@ class RenderTexture {
   CanvasImageSource get source => _source;
 
   RenderTextureQuad get quad {
-    return new RenderTextureQuad(
-        this,
-        new Rectangle<int>(0, 0, _width, _height),
-        new Rectangle<int>(0, 0, _width, _height),
-        0,
-        1.0);
+    return RenderTextureQuad(this, Rectangle<int>(0, 0, _width, _height),
+        Rectangle<int>(0, 0, _width, _height), 0, 1.0);
   }
 
   CanvasElement get canvas {
@@ -78,11 +74,11 @@ class RenderTexture {
       return _source;
     } else if (_source is ImageElement) {
       ImageElement imageElement = _source;
-      _canvas = _source = new CanvasElement(width: _width, height: _height);
+      _canvas = _source = CanvasElement(width: _width, height: _height);
       _canvas.context2D.drawImageScaled(imageElement, 0, 0, _width, _height);
       return _canvas;
     } else {
-      throw new StateError("RenderTexture is read only.");
+      throw StateError("RenderTexture is read only.");
     }
   }
 
@@ -166,7 +162,7 @@ class RenderTexture {
 
   void resize(int width, int height) {
     if (_source is VideoElement) {
-      throw new StateError("RenderTexture is not resizeable.");
+      throw StateError("RenderTexture is not resizeable.");
     } else if (_width == width && _height == height) {
       // there is no need to resize the texture
 
@@ -187,7 +183,7 @@ class RenderTexture {
     } else {
       _width = width;
       _height = height;
-      _canvas = _source = new CanvasElement(width: _width, height: _height);
+      _canvas = _source = CanvasElement(width: _width, height: _height);
     }
   }
 
@@ -256,7 +252,7 @@ class RenderTexture {
 
       if (_textureSourceWorkaround) {
         // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
-        _canvas = new CanvasElement(width: width, height: height);
+        _canvas = CanvasElement(width: width, height: height);
         _canvas.context2D.drawImage(_source, 0, 0);
         _renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
       }

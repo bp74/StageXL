@@ -3,7 +3,7 @@ library stagexl.errors;
 /// An AggregateError contains a list of errors that occur during execution.
 class AggregateError extends Error {
   final String message;
-  final List<Error> errors = new List<Error>();
+  final List<Error> errors = List<Error>();
   AggregateError(this.message);
 
   @override

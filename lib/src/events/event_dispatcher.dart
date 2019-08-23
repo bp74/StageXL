@@ -42,13 +42,13 @@ class EventDispatcher {
   EventStream<T> on<T extends Event>(String eventType) {
     var eventStreams = _eventStreams;
     if (eventStreams == null) {
-      eventStreams = new Map<String, EventStream<Event>>();
+      eventStreams = Map<String, EventStream<Event>>();
       _eventStreams = eventStreams;
     }
 
     EventStream<T> eventStream = eventStreams[eventType];
     if (eventStream == null) {
-      eventStream = new EventStream<T>._(this, eventType);
+      eventStream = EventStream<T>._(this, eventType);
       eventStreams[eventType] = eventStream;
     }
 

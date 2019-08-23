@@ -4,7 +4,7 @@ enum PathEncoding { SVG, EaselJS }
 
 abstract class GraphicsCommandDecode extends GraphicsCommand {
   String _path = "";
-  final List<GraphicsCommand> _commands = new List<GraphicsCommand>();
+  final List<GraphicsCommand> _commands = List<GraphicsCommand>();
 
   String get path => _path;
 
@@ -49,7 +49,7 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
   @override
   void _decodePath() {
     var paramCounts = [2, 2, 4, 6, 0];
-    var p = new Float32List(8);
+    var p = Float32List(8);
     var path = this.path;
     var x = 0.0;
     var y = 0.0;
@@ -75,15 +75,15 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
       }
 
       if (m == 0) {
-        _add(new GraphicsCommandMoveTo(x, y));
+        _add(GraphicsCommandMoveTo(x, y));
       } else if (m == 1) {
-        _add(new GraphicsCommandLineTo(x, y));
+        _add(GraphicsCommandLineTo(x, y));
       } else if (m == 2) {
-        _add(new GraphicsCommandQuadraticCurveTo(p[0], p[1], x, y));
+        _add(GraphicsCommandQuadraticCurveTo(p[0], p[1], x, y));
       } else if (m == 3) {
-        _add(new GraphicsCommandBezierCurveTo(p[0], p[1], p[2], p[3], x, y));
+        _add(GraphicsCommandBezierCurveTo(p[0], p[1], p[2], p[3], x, y));
       } else if (m == 4) {
-        _add(new GraphicsCommandClosePath());
+        _add(GraphicsCommandClosePath());
       }
     }
   }
@@ -93,9 +93,9 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
 //------------------------------------------------------------------------------
 
 class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
-  static final RegExp _commandRegExp = new RegExp(r"([a-zA-Z])([^a-zA-Z]+|$)");
-  static final RegExp _parameterRegExp = new RegExp(r"\-?\d+(\.\d+)?");
-  static final RegExp _lineBreakRegExp = new RegExp(r"\r\n|\r|\n");
+  static final RegExp _commandRegExp = RegExp(r"([a-zA-Z])([^a-zA-Z]+|$)");
+  static final RegExp _parameterRegExp = RegExp(r"\-?\d+(\.\d+)?");
+  static final RegExp _lineBreakRegExp = RegExp(r"\r\n|\r|\n");
 
   // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
   // https://svgwg.org/svg2-draft/paths.html
@@ -112,7 +112,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
     double startPointY = 0.0;
     bool startPointValid = false;
     String path = this.path.replaceAll(_lineBreakRegExp, " ");
-    List<double> p = new List<double>();
+    List<double> p = List<double>();
 
     for (var commandMatch in _commandRegExp.allMatches(path)) {
       var command = commandMatch.group(1);
@@ -126,19 +126,19 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       switch (command) {
         case "l": // l dx dy
           for (int i = 0; i <= p.length - 2; i += 2) {
-            _add(new GraphicsCommandLineTo(cx += p[i + 0], cy += p[i + 1]));
+            _add(GraphicsCommandLineTo(cx += p[i + 0], cy += p[i + 1]));
           }
           break;
 
         case "L": // L x y
           for (int i = 0; i <= p.length - 2; i += 2) {
-            _add(new GraphicsCommandLineTo(cx = p[i + 0], cy = p[i + 1]));
+            _add(GraphicsCommandLineTo(cx = p[i + 0], cy = p[i + 1]));
           }
           break;
 
         case 'm': // m dx dy
           for (int i = 0; i <= p.length - 2; i += 2) {
-            _add(new GraphicsCommandMoveTo(cx += p[i + 0], cy += p[i + 1]));
+            _add(GraphicsCommandMoveTo(cx += p[i + 0], cy += p[i + 1]));
             startPointX = startPointValid ? startPointX : cx;
             startPointY = startPointValid ? startPointY : cy;
             startPointValid = true;
@@ -147,7 +147,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
         case 'M': // M x y
           for (int i = 0; i <= p.length - 2; i += 2) {
-            _add(new GraphicsCommandMoveTo(cx = p[i + 0], cy = p[i + 1]));
+            _add(GraphicsCommandMoveTo(cx = p[i + 0], cy = p[i + 1]));
             startPointX = startPointValid ? startPointX : cx;
             startPointY = startPointValid ? startPointY : cy;
             startPointValid = true;
@@ -156,25 +156,25 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
         case 'h': // h dx
           for (int i = 0; i <= p.length - 1; i += 1) {
-            _add(new GraphicsCommandLineTo(cx += p[i], cy));
+            _add(GraphicsCommandLineTo(cx += p[i], cy));
           }
           break;
 
         case 'H': // H x
           for (int i = 0; i <= p.length - 1; i += 1) {
-            _add(new GraphicsCommandLineTo(cx = p[i], cy));
+            _add(GraphicsCommandLineTo(cx = p[i], cy));
           }
           break;
 
         case 'v': // v dy
           for (int i = 0; i <= p.length - 1; i += 1) {
-            _add(new GraphicsCommandLineTo(cx, cy += p[i]));
+            _add(GraphicsCommandLineTo(cx, cy += p[i]));
           }
           break;
 
         case 'V': // V y
           for (int i = 0; i <= p.length - 1; i += 1) {
-            _add(new GraphicsCommandLineTo(cx, cy = p[i]));
+            _add(GraphicsCommandLineTo(cx, cy = p[i]));
           }
           break;
 
@@ -186,7 +186,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y2 = cy + p[i + 3];
             var ex = cx += p[i + 4];
             var ey = cy += p[i + 5];
-            _add(new GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
+            _add(GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
           }
           break;
 
@@ -198,7 +198,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y2 = p[i + 3];
             var ex = cx = p[i + 4];
             var ey = cy = p[i + 5];
-            _add(new GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
+            _add(GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
           }
           break;
 
@@ -213,7 +213,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y2 = cy + p[i + 1];
             var ex = cx += p[i + 2];
             var ey = cy += p[i + 3];
-            _add(new GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
+            _add(GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
           }
           break;
 
@@ -228,7 +228,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y2 = p[i + 1];
             var ex = cx = p[i + 2];
             var ey = cy = p[i + 3];
-            _add(new GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
+            _add(GraphicsCommandBezierCurveTo(x1, y1, x2, y2, ex, ey));
           }
           break;
 
@@ -238,7 +238,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y1 = cy + p[i + 1];
             var ex = cx += p[i + 2];
             var ey = cy += p[i + 3];
-            _add(new GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
+            _add(GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
           }
           break;
 
@@ -248,7 +248,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y1 = p[i + 1];
             var ex = cx = p[i + 2];
             var ey = cy = p[i + 3];
-            _add(new GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
+            _add(GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
           }
           break;
 
@@ -263,7 +263,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y1 = cy + ly;
             var ex = cx += p[i + 2];
             var ey = cy += p[i + 3];
-            _add(new GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
+            _add(GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
           }
           break;
 
@@ -278,7 +278,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
             var y1 = cy + ly;
             var ex = cx = p[i + 2];
             var ey = cy = p[i + 3];
-            _add(new GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
+            _add(GraphicsCommandQuadraticCurveTo(x1, y1, ex, ey));
           }
           break;
 
@@ -317,8 +317,8 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           cx = startPointValid ? startPointX : 0.0;
           cy = startPointValid ? startPointY : 0.0;
           startPointValid = false;
-          _add(new GraphicsCommandClosePath());
-          _add(new GraphicsCommandMoveTo(cx, cy));
+          _add(GraphicsCommandClosePath());
+          _add(GraphicsCommandMoveTo(cx, cy));
           break;
       }
     }
@@ -335,7 +335,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       double endX,
       double endY) {
     if (radiusX == 0.0 || radiusY == 0.0) {
-      _add(new GraphicsCommandLineTo(endX, endY));
+      _add(GraphicsCommandLineTo(endX, endY));
     } else {
       var cosRotation = cos(rotation);
       var sinRotation = sin(rotation);
@@ -371,7 +371,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       var a2 = atan2((vy - uy) * rx, (-ux - vx) * ry);
       var antiClockwise = sweepFlag ? false : true;
 
-      _add(new GraphicsCommandArcElliptical(
+      _add(GraphicsCommandArcElliptical(
           cx, cy, rx, ry, rotation, a1, a2, antiClockwise));
     }
   }

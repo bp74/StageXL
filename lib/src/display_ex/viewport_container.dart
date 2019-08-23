@@ -3,7 +3,7 @@ part of stagexl.display_ex;
 class ViewportContainer extends DisplayObjectContainer {
   Mask _viewportMask;
   Rectangle<num> _viewportRectangle;
-  Matrix _viewportMatrix = new Matrix.fromIdentity();
+  Matrix _viewportMatrix = Matrix.fromIdentity();
 
   Rectangle<num> get viewport {
     return _viewportRectangle.clone();
@@ -14,7 +14,7 @@ class ViewportContainer extends DisplayObjectContainer {
     if (value != null) {
       _viewportMatrix.identity();
       _viewportMatrix.translate(0.0 - value.left, 0.0 - value.top);
-      _viewportMask = new Mask.rectangle(0.0, 0.0, value.width, value.height);
+      _viewportMask = Mask.rectangle(0.0, 0.0, value.width, value.height);
     }
   }
 

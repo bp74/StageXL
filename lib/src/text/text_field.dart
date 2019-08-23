@@ -29,7 +29,7 @@ class TextField extends InteractiveObject {
 
   num _textWidth = 0.0;
   num _textHeight = 0.0;
-  final List<TextLineMetrics> _textLineMetrics = new List<TextLineMetrics>();
+  final List<TextLineMetrics> _textLineMetrics = List<TextLineMetrics>();
 
   int _refreshPending = 3; // bit 0: textLineMetrics, bit 1: cache
   bool _cacheAsBitmap = true;
@@ -41,9 +41,8 @@ class TextField extends InteractiveObject {
 
   TextField([String text, TextFormat textFormat]) {
     this.text = (text != null) ? text : "";
-    this.defaultTextFormat = (textFormat != null)
-        ? textFormat
-        : new TextFormat("Arial", 12, 0x000000);
+    this.defaultTextFormat =
+        (textFormat != null) ? textFormat : TextFormat("Arial", 12, 0x000000);
 
     this.onKeyDown.listen(_onKeyDown);
     this.onTextInput.listen(_onTextInput);
@@ -223,7 +222,7 @@ class TextField extends InteractiveObject {
 
   @override
   Rectangle<num> get bounds {
-    return new Rectangle<num>(0.0, 0.0, width, height);
+    return Rectangle<num>(0.0, 0.0, width, height);
   }
 
   @override
@@ -322,8 +321,8 @@ class TextField extends InteractiveObject {
 
     var availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
     var canvasContext = _dummyCanvasContext;
-    var paragraphLines = new List<int>();
-    var paragraphSplit = new RegExp(r"\r\n|\r|\n");
+    var paragraphLines = List<int>();
+    var paragraphSplit = RegExp(r"\r\n|\r|\n");
     var paragraphs = _text.split(paragraphSplit);
 
     canvasContext.font = fontStyle + " "; // IE workaround
@@ -339,8 +338,7 @@ class TextField extends InteractiveObject {
 
       if (_wordWrap == false) {
         paragraph = _passwordEncoder(paragraph);
-        _textLineMetrics
-            .add(new TextLineMetrics._internal(paragraph, startIndex));
+        _textLineMetrics.add(TextLineMetrics._internal(paragraph, startIndex));
         startIndex += paragraph.length + 1;
       } else {
         checkLine = null;
@@ -360,13 +358,13 @@ class TextField extends InteractiveObject {
           if (lineIndent + lineWidth >= availableWidth) {
             if (validLine == null) {
               _textLineMetrics
-                  .add(new TextLineMetrics._internal(checkLine, startIndex));
+                  .add(TextLineMetrics._internal(checkLine, startIndex));
               startIndex += checkLine.length + 1;
               checkLine = null;
               lineIndent = 0;
             } else {
               _textLineMetrics
-                  .add(new TextLineMetrics._internal(validLine, startIndex));
+                  .add(TextLineMetrics._internal(validLine, startIndex));
               startIndex += validLine.length + 1;
               checkLine = _passwordEncoder(word);
               lineIndent = 0;
@@ -376,7 +374,7 @@ class TextField extends InteractiveObject {
 
         if (checkLine != null) {
           _textLineMetrics
-              .add(new TextLineMetrics._internal(checkLine, startIndex));
+              .add(TextLineMetrics._internal(checkLine, startIndex));
           startIndex += checkLine.length + 1;
         }
       }
@@ -505,11 +503,18 @@ class TextField extends InteractiveObject {
       var shiftX = 0.0;
       var shiftY = 0.0;
 
-      while (shiftX + _caretX > _width) shiftX -= _width * 0.2;
-      while (shiftX + _caretX < 0) shiftX += _width * 0.2;
-      while (shiftY + _caretY + _caretHeight > _height)
+      while (shiftX + _caretX > _width) {
+        shiftX -= _width * 0.2;
+      }
+      while (shiftX + _caretX < 0) {
+        shiftX += _width * 0.2;
+      }
+      while (shiftY + _caretY + _caretHeight > _height) {
         shiftY -= textFormatSize;
-      while (shiftY + _caretY < 0) shiftY += textFormatSize;
+      }
+      while (shiftY + _caretY < 0) {
+        shiftY += textFormatSize;
+      }
 
       _caretX += shiftX;
       _caretY += shiftY;
@@ -539,7 +544,7 @@ class TextField extends InteractiveObject {
     var height = max(1, _height * pixelRatioGlobal).ceil();
 
     if (_renderTexture == null) {
-      _renderTexture = new RenderTexture(width, height, Color.Transparent);
+      _renderTexture = RenderTexture(width, height, Color.Transparent);
       _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatioGlobal);
     } else {
       _renderTexture.resize(width, height);
@@ -647,7 +652,7 @@ class TextField extends InteractiveObject {
     } else if (gradient.type == GraphicsGradientType.Radial) {
       canvasGradient = context.createRadialGradient(sx, sy, sr, ex, ey, er);
     } else {
-      throw new StateError("Unknown gradient kind");
+      throw StateError("Unknown gradient kind");
     }
 
     for (var colorStop in gradient.colorStops) {

@@ -43,7 +43,7 @@ class TextFormat {
 
   //-------------------------------------------------------------------------------------------------
 
-  TextFormat clone() => new TextFormat(font, size, color,
+  TextFormat clone() => TextFormat(font, size, color,
       strokeWidth: strokeWidth,
       strokeColor: strokeColor,
       fillGradient: fillGradient,

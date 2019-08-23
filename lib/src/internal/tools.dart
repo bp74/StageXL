@@ -70,7 +70,7 @@ bool ensureBool(bool value) {
   if (value is bool) {
     return value;
   } else {
-    throw new ArgumentError("The supplied value ($value) is not a bool.");
+    throw ArgumentError("The supplied value ($value) is not a bool.");
   }
 }
 
@@ -78,7 +78,7 @@ int ensureInt(int value) {
   if (value is int) {
     return value;
   } else {
-    throw new ArgumentError("The supplied value ($value) is not an int.");
+    throw ArgumentError("The supplied value ($value) is not an int.");
   }
 }
 
@@ -86,7 +86,7 @@ num ensureNum(Object value) {
   if (value is num) {
     return value;
   } else {
-    throw new ArgumentError("The supplied value ($value) is not a number.");
+    throw ArgumentError("The supplied value ($value) is not a number.");
   }
 }
 
@@ -94,7 +94,7 @@ String ensureString(Object value) {
   if (value is String) {
     return value;
   } else {
-    throw new ArgumentError("The supplied value ($value) is not a string.");
+    throw ArgumentError("The supplied value ($value) is not a string.");
   }
 }
 
@@ -107,7 +107,7 @@ bool similar(num a, num b, [num epsilon = 0.0001]) {
 //-----------------------------------------------------------------------------
 
 String getFilenameWithoutExtension(String filename) {
-  RegExp regex = new RegExp(r"(.+?)(\.[^.]*$|$)");
+  RegExp regex = RegExp(r"(.+?)(\.[^.]*$|$)");
   Match match = regex.firstMatch(filename);
   return match.group(1);
 }
@@ -115,7 +115,7 @@ String getFilenameWithoutExtension(String filename) {
 //-----------------------------------------------------------------------------
 
 String replaceFilename(String url, String filename) {
-  RegExp regex = new RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))");
+  RegExp regex = RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))");
   Match match = regex.firstMatch(url);
   String path = match.group(1);
   return (path == null) ? filename : "$path$filename";

@@ -7,7 +7,7 @@ class _TextureAtlasFormatStarlingXml extends TextureAtlasFormat {
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
     var source = await loader.getSource();
     var pixelRatio = loader.getPixelRatio();
-    var textureAtlas = new TextureAtlas(pixelRatio);
+    var textureAtlas = TextureAtlas(pixelRatio);
 
     var xmlRoot = parse(source).rootElement;
     var imagePath = _getString(xmlRoot, "imagePath", "");
@@ -27,7 +27,7 @@ class _TextureAtlasFormatStarlingXml extends TextureAtlasFormat {
       var originalWidth = _getInt(subTextureXml, "frameWidth", frameWidth);
       var originalHeight = _getInt(subTextureXml, "frameHeight", frameHeight);
 
-      var textureAtlasFrame = new TextureAtlasFrame(
+      var textureAtlasFrame = TextureAtlasFrame(
           textureAtlas,
           renderTextureQuad,
           name,
@@ -73,6 +73,6 @@ class _TextureAtlasFormatStarlingXml extends TextureAtlasFormat {
     if (value == null) return defaultValue;
     if (value == "1" || value == "true") return true;
     if (value == "0" || value == "false") return false;
-    throw new FormatException("Error converting '$name' to bool.");
+    throw FormatException("Error converting '$name' to bool.");
   }
 }

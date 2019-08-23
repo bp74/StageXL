@@ -1,8 +1,8 @@
 part of stagexl.display;
 
 class ColorTransform {
-  final Float32List multipliers = new Float32List(4);
-  final Int32List offsets = new Int32List(4);
+  final Float32List multipliers = Float32List(4);
+  final Int32List offsets = Int32List(4);
 
   ColorTransform(
       [num redMultiplier = 1.0,

@@ -17,7 +17,7 @@ abstract class GraphicsCommand {
 
   void _setGraphics(Graphics graphics) {
     if (_graphics != null && graphics != null) {
-      throw new ArgumentError("Command is already assigned to graphics.");
+      throw ArgumentError("Command is already assigned to graphics.");
     } else {
       _graphics = graphics;
     }

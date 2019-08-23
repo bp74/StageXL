@@ -13,8 +13,7 @@ class BitmapDataUpdateBatch {
 
   BitmapDataUpdateBatch(BitmapData bitmapData)
       : bitmapData = bitmapData,
-        _renderContext =
-            new RenderContextCanvas(bitmapData.renderTexture.canvas),
+        _renderContext = RenderContextCanvas(bitmapData.renderTexture.canvas),
         _drawMatrix = bitmapData.renderTextureQuad.drawMatrix;
 
   //---------------------------------------------------------------------------
@@ -100,7 +99,7 @@ class BitmapDataUpdateBatch {
   //---------------------------------------------------------------------------
 
   void draw(BitmapDrawable source, [Matrix matrix]) {
-    var renderState = new RenderState(_renderContext, _drawMatrix);
+    var renderState = RenderState(_renderContext, _drawMatrix);
     if (matrix != null) renderState.globalMatrix.prepend(matrix);
     source.render(renderState);
   }
@@ -112,7 +111,7 @@ class BitmapDataUpdateBatch {
   void copyPixels(
       BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
-    var renderState = new RenderState(_renderContext, _drawMatrix);
+    var renderState = RenderState(_renderContext, _drawMatrix);
     renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);
     _renderContext.setTransform(renderState.globalMatrix);
     _renderContext.rawContext
@@ -128,8 +127,7 @@ class BitmapDataUpdateBatch {
       BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint,
       [BlendMode blendMode]) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
-    var renderState =
-        new RenderState(_renderContext, _drawMatrix, 1.0, blendMode);
+    var renderState = RenderState(_renderContext, _drawMatrix, 1.0, blendMode);
     renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);
     renderState.renderTextureQuad(sourceQuad);
   }
@@ -141,7 +139,7 @@ class BitmapDataUpdateBatch {
   int getPixel32(num x, num y) {
     int r = 0, g = 0, b = 0, a = 0;
 
-    var rectangle = new Rectangle<num>(x, y, 1, 1);
+    var rectangle = Rectangle<num>(x, y, 1, 1);
     var renderTextureQuad = this.bitmapData.renderTextureQuad.clip(rectangle);
     if (renderTextureQuad.sourceRectangle.isEmpty) return Color.Transparent;
 

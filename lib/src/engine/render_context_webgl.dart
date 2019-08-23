@@ -5,8 +5,8 @@ class RenderContextWebGL extends RenderContext {
   final CanvasElement _canvasElement;
 
   gl.RenderingContext _renderingContext;
-  final Matrix3D _projectionMatrix = new Matrix3D.fromIdentity();
-  final List<_MaskState> _maskStates = new List<_MaskState>();
+  final Matrix3D _projectionMatrix = Matrix3D.fromIdentity();
+  final List<_MaskState> _maskStates = List<_MaskState>();
 
   RenderProgram _activeRenderProgram;
   RenderFrameBuffer _activeRenderFrameBuffer;
@@ -18,19 +18,18 @@ class RenderContextWebGL extends RenderContext {
 
   //---------------------------------------------------------------------------
 
-  final RenderProgramSimple renderProgramSimple = new RenderProgramSimple();
-  final RenderProgramTinted renderProgramTinted = new RenderProgramTinted();
-  final RenderProgramTriangle renderProgramTriangle =
-      new RenderProgramTriangle();
+  final RenderProgramSimple renderProgramSimple = RenderProgramSimple();
+  final RenderProgramTinted renderProgramTinted = RenderProgramTinted();
+  final RenderProgramTriangle renderProgramTriangle = RenderProgramTriangle();
 
-  final RenderBufferIndex renderBufferIndex = new RenderBufferIndex(16384);
-  final RenderBufferVertex renderBufferVertex = new RenderBufferVertex(32768);
+  final RenderBufferIndex renderBufferIndex = RenderBufferIndex(16384);
+  final RenderBufferVertex renderBufferVertex = RenderBufferVertex(32768);
 
-  final List<RenderTexture> _activeRenderTextures = new List<RenderTexture>(8);
+  final List<RenderTexture> _activeRenderTextures = List<RenderTexture>(8);
   final List<RenderFrameBuffer> _renderFrameBufferPool =
-      new List<RenderFrameBuffer>();
+      List<RenderFrameBuffer>();
   final Map<String, RenderProgram> _renderPrograms =
-      new Map<String, RenderProgram>();
+      Map<String, RenderProgram>();
 
   //---------------------------------------------------------------------------
 
@@ -49,7 +48,7 @@ class RenderContextWebGL extends RenderContext {
         preserveDrawingBuffer: false);
 
     if (renderingContext is! gl.RenderingContext) {
-      throw new StateError("Failed to get WebGL context.");
+      throw StateError("Failed to get WebGL context.");
     }
 
     _renderingContext = renderingContext;
@@ -133,7 +132,7 @@ class RenderContextWebGL extends RenderContext {
       if (scissor != null) {
         var last = _getLastScissorValue();
         var next = last == null ? scissor : scissor.intersection(last);
-        _getMaskStates().add(new _ScissorMaskState(mask, next));
+        _getMaskStates().add(_ScissorMaskState(mask, next));
         _updateScissorTest(next);
         return;
       }
@@ -152,7 +151,7 @@ class RenderContextWebGL extends RenderContext {
     _activeRenderProgram.flush();
     _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.KEEP);
     _renderingContext.colorMask(true, true, true, true);
-    _getMaskStates().add(new _StencilMaskState(mask, stencil));
+    _getMaskStates().add(_StencilMaskState(mask, stencil));
     _updateStencilTest(stencil);
   }
 
@@ -247,7 +246,7 @@ class RenderContextWebGL extends RenderContext {
       firstFilter.renderFilter(renderState, renderTextureQuad, 0);
     } else {
       var renderObject =
-          new _RenderTextureQuadObject(renderTextureQuad, renderFilters);
+          _RenderTextureQuadObject(renderTextureQuad, renderFilters);
       this.renderObjectFiltered(renderState, renderObject);
     }
   }
@@ -287,15 +286,15 @@ class RenderContextWebGL extends RenderContext {
     var filterRenderFrameBuffer =
         this.getRenderFrameBuffer(boundsWidth, boundsHeight);
 
-    var filterProjectionMatrix = new Matrix3D.fromIdentity();
+    var filterProjectionMatrix = Matrix3D.fromIdentity();
     filterProjectionMatrix.scale(2.0 / boundsWidth, 2.0 / boundsHeight, 1.0);
     filterProjectionMatrix.translate(-1.0, -1.0, 0.0);
 
-    var filterRenderState = new RenderState(this);
+    var filterRenderState = RenderState(this);
     filterRenderState.globalMatrix.scale(pixelRatio, pixelRatio);
     filterRenderState.globalMatrix.translate(-boundsLeft, -boundsTop);
 
-    var renderFrameBufferMap = new Map<int, RenderFrameBuffer>();
+    var renderFrameBufferMap = Map<int, RenderFrameBuffer>();
     renderFrameBufferMap[0] = filterRenderFrameBuffer;
 
     //----------------------------------------------
@@ -335,15 +334,15 @@ class RenderContextWebGL extends RenderContext {
 
         if (renderFrameBufferMap.containsKey(renderPassSource)) {
           sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
-          sourceRenderTextureQuad = new RenderTextureQuad(
+          sourceRenderTextureQuad = RenderTextureQuad(
               sourceRenderFrameBuffer.renderTexture,
-              new Rectangle<int>(0, 0, boundsWidth, boundsHeight),
-              new Rectangle<int>(
+              Rectangle<int>(0, 0, boundsWidth, boundsHeight),
+              Rectangle<int>(
                   -boundsLeft, -boundsTop, boundsWidth, boundsHeight),
               0,
               pixelRatio);
         } else {
-          throw new StateError("Invalid renderPassSource!");
+          throw StateError("Invalid renderPassSource!");
         }
 
         // get targetRenderFrameBuffer
@@ -396,7 +395,7 @@ class RenderContextWebGL extends RenderContext {
 
   RenderFrameBuffer getRenderFrameBuffer(int width, int height) {
     if (_renderFrameBufferPool.isEmpty) {
-      return new RenderFrameBuffer.rawWebGL(width, height);
+      return RenderFrameBuffer.rawWebGL(width, height);
     } else {
       var renderFrameBuffer = _renderFrameBufferPool.removeLast();
       var renderTexture = renderFrameBuffer.renderTexture;
@@ -556,12 +555,12 @@ class RenderContextWebGL extends RenderContext {
   void _onContextLost(gl.ContextEvent contextEvent) {
     contextEvent.preventDefault();
     _contextValid = false;
-    _contextLostEvent.add(new RenderContextEvent());
+    _contextLostEvent.add(RenderContextEvent());
   }
 
   void _onContextRestored(gl.ContextEvent contextEvent) {
     _contextValid = true;
     _contextIdentifier = ++_globalContextIdentifier;
-    _contextRestoredEvent.add(new RenderContextEvent());
+    _contextRestoredEvent.add(RenderContextEvent());
   }
 }

@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'environment.dart' as env;
 import 'tools.dart';
 
-Int32List _buffer = new Int32List(1024);
+Int32List _buffer = Int32List(1024);
 
 //-----------------------------------------------------------------------------------------------
 
@@ -59,8 +59,8 @@ void unpremultiplyAlpha(List<int> data) {
 void clearChannel(List<int> data, int offset, int length) {
   int offsetStart = offset;
   int offsetEnd = offset + length * 4 - 4;
-  if (offsetStart < 0) throw new RangeError(offsetStart);
-  if (offsetEnd >= data.length) throw new RangeError(offsetEnd);
+  if (offsetStart < 0) throw RangeError(offsetStart);
+  if (offsetEnd >= data.length) throw RangeError(offsetEnd);
   for (int i = offsetStart; i <= offsetEnd; i += 4) {
     data[i] = 0;
   }
@@ -70,8 +70,8 @@ void clearChannel(List<int> data, int offset, int length) {
 
 void shiftChannel(List<int> data, int channel, int width, int height,
     int shiftX, int shiftY) {
-  if (channel < 0) throw new ArgumentError();
-  if (channel > 3) throw new ArgumentError();
+  if (channel < 0) throw ArgumentError();
+  if (channel > 3) throw ArgumentError();
   if (shiftX == 0 && shiftY == 0) return;
 
   if (shiftX.abs() >= width || shiftY.abs() >= height) {
@@ -82,11 +82,15 @@ void shiftChannel(List<int> data, int channel, int width, int height,
   if (shiftX + width * shiftY < 0) {
     int dst = channel;
     int src = channel - 4 * (shiftX + width * shiftY);
-    for (; src < data.length; src += 4, dst += 4) data[dst] = data[src];
+    for (; src < data.length; src += 4, dst += 4) {
+      data[dst] = data[src];
+    }
   } else {
     int dst = data.length + channel - 4;
     int src = data.length + channel - 4 * (shiftX + width * shiftY);
-    for (; src >= 0; src -= 4, dst -= 4) data[dst] = data[src];
+    for (; src >= 0; src -= 4, dst -= 4) {
+      data[dst] = data[src];
+    }
   }
 
   for (int y = 0; y < height; y++) {

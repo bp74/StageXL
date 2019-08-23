@@ -20,8 +20,8 @@ class DropShadowFilter extends BitmapFilter {
   bool knockout;
   bool hideObject;
 
-  final List<int> _renderPassSources = new List<int>();
-  final List<int> _renderPassTargets = new List<int>();
+  final List<int> _renderPassSources = List<int>();
+  final List<int> _renderPassTargets = List<int>();
 
   DropShadowFilter(
       [num distance = 8,
@@ -47,7 +47,7 @@ class DropShadowFilter extends BitmapFilter {
 
   @override
   BitmapFilter clone() {
-    return new DropShadowFilter(
+    return DropShadowFilter(
         distance, angle, color, blurX, blurY, quality, knockout, hideObject);
   }
 
@@ -55,9 +55,9 @@ class DropShadowFilter extends BitmapFilter {
   Rectangle<int> get overlap {
     int shiftX = (this.distance * cos(this.angle)).round();
     int shiftY = (this.distance * sin(this.angle)).round();
-    var sRect = new Rectangle<int>(-1, -1, 2, 2);
-    var dRect = new Rectangle<int>(
-        shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
+    var sRect = Rectangle<int>(-1, -1, 2, 2);
+    var dRect =
+        Rectangle<int>(shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
     return sRect.boundingBox(dRect);
   }
 
@@ -201,7 +201,7 @@ class DropShadowFilter extends BitmapFilter {
       }
     } else {
       DropShadowFilterProgram renderProgram = renderContext.getRenderProgram(
-          r"$DropShadowFilterProgram", () => new DropShadowFilterProgram());
+          r"$DropShadowFilterProgram", () => DropShadowFilterProgram());
 
       renderContext.activateRenderProgram(renderProgram);
       renderContext.activateRenderTexture(renderTexture);
