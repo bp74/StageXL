@@ -20,7 +20,7 @@ class BitmapDataChannel {
     if (bitmapDataChannel & BitmapDataChannel.ALPHA != 0) {
       return isLittleEndianSystem ? 3 : 0;
     }
-    throw ArgumentError("Invalid bitmapDataChannel");
+    throw ArgumentError('Invalid bitmapDataChannel');
   }
 
   static int getWebglIndex(int bitmapDataChannel) {
@@ -28,6 +28,6 @@ class BitmapDataChannel {
     if (bitmapDataChannel & BitmapDataChannel.GREEN != 0) return 1;
     if (bitmapDataChannel & BitmapDataChannel.BLUE != 0) return 2;
     if (bitmapDataChannel & BitmapDataChannel.ALPHA != 0) return 3;
-    throw ArgumentError("Invalid bitmapDataChannel");
+    throw ArgumentError('Invalid bitmapDataChannel');
   }
 }

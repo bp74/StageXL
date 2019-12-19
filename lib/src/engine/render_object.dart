@@ -60,18 +60,18 @@ class _RenderTextureQuadObject implements RenderObject {
 
   @override
   Rectangle<num> get bounds {
-    num w = renderTextureQuad.targetWidth;
-    num h = renderTextureQuad.targetHeight;
+    var w = renderTextureQuad.targetWidth;
+    var h = renderTextureQuad.targetHeight;
     return Rectangle<num>(0.0, 0.0, w, h);
   }
 
   @override
   void render(RenderState renderState) {
-    renderState.renderTextureQuad(this.renderTextureQuad);
+    renderState.renderTextureQuad(renderTextureQuad);
   }
 
   @override
   void renderFiltered(RenderState renderState) {
-    renderState.renderTextureQuad(this.renderTextureQuad);
+    renderState.renderTextureQuad(renderTextureQuad);
   }
 }

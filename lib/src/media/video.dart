@@ -90,14 +90,14 @@ class Video {
 
   Future<Video> clone() {
     var videoElement = this.videoElement.clone(true) as VideoElement;
-    Completer<Video> completer = Completer<Video>();
+    var completer = Completer<Video>();
     StreamSubscription onCanPlaySubscription;
     StreamSubscription onErrorSubscription;
 
     void onCanPlay(html.Event e) {
       var video = Video._(videoElement);
-      video.volume = this.volume;
-      video.muted = this.muted;
+      video.volume = volume;
+      video.muted = muted;
       onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
       completer.complete(video);
@@ -107,7 +107,7 @@ class Video {
       onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
       var error = videoElement.error;
-      var loadError = LoadError("Failed to clone video.", error);
+      var loadError = LoadError('Failed to clone video.', error);
       completer.completeError(loadError);
     }
 
@@ -172,7 +172,7 @@ class Video {
     // a 206 result (partial content) and not a simple 200
     // http://stackoverflow.com/a/9549404/1537501
 
-    if (this.loop) {
+    if (loop) {
       videoElement.currentTime = 0.0;
       videoElement.play();
     } else {

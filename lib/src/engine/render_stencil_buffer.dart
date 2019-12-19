@@ -55,7 +55,7 @@ class RenderStencilBuffer {
   //-----------------------------------------------------------------------------------------------
 
   void activate(RenderContextWebGL renderContext) {
-    if (this.contextIdentifier != renderContext.contextIdentifier) {
+    if (contextIdentifier != renderContext.contextIdentifier) {
       _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;

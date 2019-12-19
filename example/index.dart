@@ -3,12 +3,12 @@ import 'package:stagexl/stagexl.dart';
 import 'dart:math' as math;
 
 void main() {
-  StageOptions options = StageOptions()
+  var options = StageOptions()
     ..stageAlign = StageAlign.TOP_LEFT
     ..stageScaleMode = StageScaleMode.NO_SCALE
     ..renderEngine = RenderEngine.WebGL;
 
-  var canvas = html.querySelector("#stage");
+  var canvas = html.querySelector('#stage');
   var stage = Stage(canvas, width: 990, height: 620, options: options);
   var renderLoop = RenderLoop();
   renderLoop.addStage(stage);

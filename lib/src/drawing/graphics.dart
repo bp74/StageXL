@@ -14,8 +14,8 @@ part of stagexl.drawing;
 /// drawing operations.
 
 class Graphics {
-  final List<GraphicsCommand> _originalCommands = List<GraphicsCommand>();
-  final List<GraphicsCommand> _compiledCommands = List<GraphicsCommand>();
+  final List<GraphicsCommand> _originalCommands = <GraphicsCommand>[];
+  final List<GraphicsCommand> _compiledCommands = <GraphicsCommand>[];
 
   Rectangle<num> _bounds;
 
@@ -53,14 +53,14 @@ class Graphics {
   /// Start drawing a freeform path.
   GraphicsCommandBeginPath beginPath() {
     var command = GraphicsCommandBeginPath();
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
   /// Stop drawing a freeform path.
   GraphicsCommandClosePath closePath() {
     var command = GraphicsCommandClosePath();
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -69,14 +69,14 @@ class Graphics {
   /// Moves the next point in the path to [x] and [y]
   GraphicsCommandMoveTo moveTo(num x, num y) {
     var command = GraphicsCommandMoveTo(x, y);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
   /// From the current point in the path, draw a line to [x] and [y]
   GraphicsCommandLineTo lineTo(num x, num y) {
     var command = GraphicsCommandLineTo(x, y);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -84,7 +84,7 @@ class Graphics {
   GraphicsCommandArcTo arcTo(
       num controlX, num controlY, num endX, num endY, num radius) {
     var command = GraphicsCommandArcTo(controlX, controlY, endX, endY, radius);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -93,7 +93,7 @@ class Graphics {
       num controlX, num controlY, num endX, num endY) {
     var command =
         GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -102,7 +102,7 @@ class Graphics {
       num controlX2, num controlY2, num endX, num endY) {
     var command = GraphicsCommandBezierCurveTo(
         controlX1, controlY1, controlX2, controlY2, endX, endY);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -111,7 +111,7 @@ class Graphics {
   /// Draw a rectangle at [x] and [y]
   GraphicsCommandRect rect(num x, num y, num width, num height) {
     var command = GraphicsCommandRect(x, y, width, height);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -120,7 +120,7 @@ class Graphics {
       num ellipseWidth, num ellipseHeight) {
     var command = GraphicsCommandRectRound(
         x, y, width, height, ellipseWidth, ellipseHeight);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -129,7 +129,7 @@ class Graphics {
       [bool antiClockwise = false]) {
     var command =
         GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -139,7 +139,7 @@ class Graphics {
       [bool antiClockwise = false]) {
     var command = GraphicsCommandArcElliptical(
         x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -147,14 +147,14 @@ class Graphics {
   GraphicsCommandCircle circle(num x, num y, num radius,
       [bool antiClockwise = false]) {
     var command = GraphicsCommandCircle(x, y, radius, antiClockwise);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
   /// Draw an ellipse at [x] and [y]
   GraphicsCommandEllipse ellipse(num x, num y, num width, num height) {
     var command = GraphicsCommandEllipse(x, y, width, height);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -163,21 +163,21 @@ class Graphics {
   /// Apply a fill color to the **previously drawn** vector object.
   GraphicsCommandFillColor fillColor(int color) {
     var command = GraphicsCommandFillColor(color);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
   /// Apply a fill gradient to the **previously drawn** vector object.
   GraphicsCommandFillGradient fillGradient(GraphicsGradient gradient) {
     var command = GraphicsCommandFillGradient(gradient);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
   /// Apply a fill pattern to the **previously drawn** vector object.
   GraphicsCommandFillPattern fillPattern(GraphicsPattern pattern) {
     var command = GraphicsCommandFillPattern(pattern);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -190,7 +190,7 @@ class Graphics {
       CapsStyle capsStyle = CapsStyle.NONE]) {
     var command =
         GraphicsCommandStrokeColor(color, width, jointStyle, capsStyle);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -201,7 +201,7 @@ class Graphics {
       CapsStyle capsStyle = CapsStyle.NONE]) {
     var command =
         GraphicsCommandStrokeGradient(gradient, width, jointStyle, capsStyle);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -212,7 +212,7 @@ class Graphics {
       CapsStyle capsStyle = CapsStyle.NONE]) {
     var command =
         GraphicsCommandStrokePattern(pattern, width, jointStyle, capsStyle);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -224,7 +224,7 @@ class Graphics {
   @deprecated
   GraphicsCommandDecode decode(String text) {
     var command = GraphicsCommandDecodeEaselJS(text);
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -236,9 +236,9 @@ class Graphics {
     } else if (pathEncoding == PathEncoding.SVG) {
       command = GraphicsCommandDecodeSVG(path);
     } else {
-      throw ArgumentError("Unknown path encoding.");
+      throw ArgumentError('Unknown path encoding.');
     }
-    this.addCommand(command);
+    addCommand(command);
     return command;
   }
 
@@ -256,7 +256,7 @@ class Graphics {
   }
 
   bool hitTest(num localX, num localY) {
-    if (this.bounds.contains(localX, localY)) {
+    if (bounds.contains(localX, localY)) {
       var commands = _getCommands(true);
       var context = _GraphicsContextHitTest(localX, localY);
       _updateContext(context, commands);
@@ -303,7 +303,7 @@ class Graphics {
   }
 
   void _updateContext(GraphicsContext context, List<GraphicsCommand> commands) {
-    for (int i = 0; i < commands.length; i++) {
+    for (var i = 0; i < commands.length; i++) {
       commands[i].updateContext(context);
     }
   }

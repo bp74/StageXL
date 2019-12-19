@@ -6,7 +6,7 @@ class AudioElementSound extends Sound {
 
   AudioElementSound._(AudioElement audioElement)
       : _audioElement = audioElement,
-        _soundChannels = Map<AudioElement, AudioElementSoundChannel>() {
+        _soundChannels = <AudioElement, AudioElementSoundChannel>{} {
     _audioElement.onEnded.listen(_onAudioEnded);
     _soundChannels[audioElement] = null;
   }

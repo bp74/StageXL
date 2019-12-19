@@ -79,7 +79,7 @@ class AudioElementSoundChannel extends SoundChannel {
       // we can't pause/resume the audio playback.
       _paused = _stopped || value;
     } else if (value) {
-      _position = this.position;
+      _position = position;
       _paused = true;
       _audioElement.pause();
       _stopCompleteTimer();
@@ -98,7 +98,7 @@ class AudioElementSoundChannel extends SoundChannel {
 
   @override
   set soundTransform(SoundTransform value) {
-    _soundTransform = value != null ? value : SoundTransform();
+    _soundTransform = value ?? SoundTransform();
     if (_audioElement == null) {
       // we can't set the audio element
     } else {
@@ -113,7 +113,7 @@ class AudioElementSoundChannel extends SoundChannel {
   @override
   void stop() {
     if (_audioElement != null) {
-      _position = this.position;
+      _position = position;
       _audioElement.pause();
       _audioElement.currentTime = 0;
       _audioElementSound._releaseAudioElement(_audioElement);
@@ -127,7 +127,7 @@ class AudioElementSoundChannel extends SoundChannel {
       _stopped = true;
       _paused = true;
       _stopCompleteTimer();
-      this.dispatchEvent(Event(Event.COMPLETE));
+      dispatchEvent(Event(Event.COMPLETE));
     }
   }
 
@@ -165,14 +165,14 @@ class AudioElementSoundChannel extends SoundChannel {
   }
 
   void _onCompleteTimer() {
-    if (this.paused) {
+    if (paused) {
       // called by accident
-    } else if (this.loop) {
+    } else if (loop) {
       _audioElement.currentTime = _startTime;
       _audioElement.play();
       _startCompleteTimer(_duration);
     } else {
-      this.stop();
+      stop();
     }
   }
 
@@ -181,10 +181,10 @@ class AudioElementSoundChannel extends SoundChannel {
   }
 
   void _onAudioEnded() {
-    if (this.loop) {
+    if (loop) {
       // The loop is restarted by the complete timer.
     } else {
-      this.stop();
+      stop();
     }
   }
 }

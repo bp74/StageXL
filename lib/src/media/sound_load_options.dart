@@ -58,17 +58,17 @@ class SoundLoadOptions {
 
   SoundLoadOptions clone() {
     var options = SoundLoadOptions();
-    var urls = this.alternativeUrls;
-    options.mp3 = this.mp3;
-    options.mp4 = this.mp4;
-    options.ogg = this.ogg;
-    options.opus = this.opus;
-    options.ac3 = this.ac3;
-    options.wav = this.wav;
-    options.engine = this.engine;
+    var urls = alternativeUrls;
+    options.mp3 = mp3;
+    options.mp4 = mp4;
+    options.ogg = ogg;
+    options.opus = opus;
+    options.ac3 = ac3;
+    options.wav = wav;
+    options.engine = engine;
     options.alternativeUrls = urls == null ? null : urls.toList();
-    options.ignoreErrors = this.ignoreErrors;
-    options.corsEnabled = this.corsEnabled;
+    options.ignoreErrors = ignoreErrors;
+    options.corsEnabled = corsEnabled;
     return options;
   }
 
@@ -79,22 +79,22 @@ class SoundLoadOptions {
 
   List<String> getOptimalAudioUrls(String primaryUrl) {
     var availableTypes = AudioLoader.supportedTypes.toList();
-    if (!this.mp3) availableTypes.remove("mp3");
-    if (!this.mp4) availableTypes.remove("mp4");
-    if (!this.ogg) availableTypes.remove("ogg");
-    if (!this.opus) availableTypes.remove("opus");
-    if (!this.ac3) availableTypes.remove("ac3");
-    if (!this.wav) availableTypes.remove("wav");
+    if (!mp3) availableTypes.remove('mp3');
+    if (!mp4) availableTypes.remove('mp4');
+    if (!ogg) availableTypes.remove('ogg');
+    if (!opus) availableTypes.remove('opus');
+    if (!ac3) availableTypes.remove('ac3');
+    if (!wav) availableTypes.remove('wav');
 
-    var urls = List<String>();
+    var urls = <String>[];
     var regex =
-        RegExp(r"([A-Za-z0-9]+)$", multiLine: false, caseSensitive: true);
+        RegExp(r'([A-Za-z0-9]+)$', multiLine: false, caseSensitive: true);
     var primaryMatch = regex.firstMatch(primaryUrl);
     if (primaryMatch == null) return urls;
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
 
-    if (this.alternativeUrls != null) {
-      for (var alternativeUrl in this.alternativeUrls) {
+    if (alternativeUrls != null) {
+      for (var alternativeUrl in alternativeUrls) {
         var alternativeMatch = regex.firstMatch(alternativeUrl);
         if (alternativeMatch == null) continue;
         if (availableTypes.contains(alternativeMatch.group(1))) {

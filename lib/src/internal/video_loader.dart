@@ -9,12 +9,12 @@ class VideoLoader {
   static final List<String> supportedTypes = _getSupportedTypes();
 
   final VideoElement video = VideoElement();
-  final AggregateError aggregateError = AggregateError("Error loading video.");
+  final AggregateError aggregateError = AggregateError('Error loading video.');
   final Completer<VideoElement> _completer = Completer<VideoElement>();
 
   StreamSubscription _onCanPlaySubscription;
   StreamSubscription _onErrorSubscription;
-  List<String> _urls = List<String>();
+  final List<String> _urls = <String>[];
   bool _loadData = false;
 
   VideoLoader(List<String> urls, bool loadData, bool corsEnabled) {
@@ -40,7 +40,7 @@ class VideoLoader {
 
   void _onVideoError(Event event) {
     var ve = event.target as VideoElement;
-    var loadError = LoadError("Failed to load ${ve.src}.", ve.error);
+    var loadError = LoadError('Failed to load ${ve.src}.', ve.error);
     aggregateError.errors.add(loadError);
     _loadNextUrl();
   }
@@ -58,11 +58,11 @@ class VideoLoader {
   void _loadFailed() {
     _onCanPlaySubscription.cancel();
     _onErrorSubscription.cancel();
-    if (this.aggregateError.errors.isEmpty) {
-      var loadError = LoadError("No configured video type is supported.");
-      this.aggregateError.errors.add(loadError);
+    if (aggregateError.errors.isEmpty) {
+      var loadError = LoadError('No configured video type is supported.');
+      aggregateError.errors.add(loadError);
     }
-    _completer.completeError(this.aggregateError);
+    _completer.completeError(aggregateError);
   }
 
   void _loadVideoData(String url) {
@@ -71,14 +71,14 @@ class VideoLoader {
       reader.readAsDataUrl(request.response);
       reader.onLoadEnd.first.then((e) => _loadVideoSource(reader.result));
     }).catchError((error) {
-      var loadError = LoadError("Failed to load $url.", error);
-      this.aggregateError.errors.add(loadError);
+      var loadError = LoadError('Failed to load $url.', error);
+      aggregateError.errors.add(loadError);
       _loadNextUrl();
     });
   }
 
   void _loadVideoSource(String url) {
-    video.preload = "auto";
+    video.preload = 'auto';
     video.src = url;
     video.load();
   }
@@ -86,21 +86,21 @@ class VideoLoader {
   //---------------------------------------------------------------------------
 
   static List<String> _getSupportedTypes() {
-    var supportedTypes = List<String>();
+    var supportedTypes = <String>[];
     var video = VideoElement();
-    var valid = ["maybe", "probably"];
+    var valid = ['maybe', 'probably'];
 
-    if (valid.contains(video.canPlayType("video/webm"))) {
-      supportedTypes.add("webm");
+    if (valid.contains(video.canPlayType('video/webm'))) {
+      supportedTypes.add('webm');
     }
-    if (valid.contains(video.canPlayType("video/mp4"))) {
-      supportedTypes.add("mp4");
+    if (valid.contains(video.canPlayType('video/mp4'))) {
+      supportedTypes.add('mp4');
     }
-    if (valid.contains(video.canPlayType("video/ogg"))) {
-      supportedTypes.add("ogg");
+    if (valid.contains(video.canPlayType('video/ogg'))) {
+      supportedTypes.add('ogg');
     }
 
-    print("StageXL video types   : $supportedTypes");
+    print('StageXL video types   : $supportedTypes');
     return supportedTypes.toList(growable: false);
   }
 }

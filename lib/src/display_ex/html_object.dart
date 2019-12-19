@@ -36,25 +36,25 @@ class HtmlObject extends DisplayObject {
   final Element element;
 
   CssStyleDeclaration _style;
-  String _styleOpacity = "";
-  String _styleTransform = "";
-  String _styleVisibility = "";
+  String _styleOpacity = '';
+  String _styleTransform = '';
+  String _styleVisibility = '';
 
   HtmlObject(this.element) {
-    _style = this.element.style;
-    _style.position = "absolute";
-    _style.left = "0px";
-    _style.top = "0px";
-    _style.transformOrigin = "0% 0% 0";
-    _style.visibility = "hidden";
+    _style = element.style;
+    _style.position = 'absolute';
+    _style.left = '0px';
+    _style.top = '0px';
+    _style.transformOrigin = '0% 0% 0';
+    _style.visibility = 'hidden';
 
-    this.onRemovedFromStage.listen(_onRemovedFromStage);
+    onRemovedFromStage.listen(_onRemovedFromStage);
   }
 
   //-----------------------------------------------------------------------------------------------
 
   void _hideElement() {
-    _style.visibility = _styleVisibility = "hidden";
+    _style.visibility = _styleVisibility = 'hidden';
   }
 
   void _onRemovedFromStage(Event e) {
@@ -79,7 +79,7 @@ class HtmlObject extends DisplayObject {
   void render(RenderState renderState) {
     var globalMatrix = renderState.globalMatrix;
     var globalAlpha = renderState.globalAlpha;
-    var visibility = this.visible && this.off == false;
+    var visibility = visible && off == false;
     var stage = this.stage;
     var pixelRatio = stage != null ? stage.pixelRatio : 1.0;
 
@@ -91,8 +91,8 @@ class HtmlObject extends DisplayObject {
     var mty = (globalMatrix.ty / pixelRatio).toStringAsFixed(4);
 
     var styleOpacity = globalAlpha.toStringAsFixed(4);
-    var styleTransform = "matrix($ma,$mb,$mc,$md,$mtx,$mty)";
-    var styleVisibility = visibility ? "visible" : "hidden";
+    var styleTransform = 'matrix($ma,$mb,$mc,$md,$mtx,$mty)';
+    var styleVisibility = visibility ? 'visible' : 'hidden';
 
     if (_styleVisibility != styleVisibility) {
       _style.visibility = _styleVisibility = styleVisibility;

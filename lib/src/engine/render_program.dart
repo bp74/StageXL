@@ -5,15 +5,15 @@ abstract class RenderProgram {
   gl.RenderingContext _renderingContext;
   gl.Program _program;
 
-  Map<String, int> _attributes;
-  Map<String, gl.UniformLocation> _uniforms;
+  final Map<String, int> _attributes;
+  final Map<String, gl.UniformLocation> _uniforms;
   RenderBufferIndex _renderBufferIndex;
   RenderBufferVertex _renderBufferVertex;
   RenderStatistics _renderStatistics;
 
   RenderProgram()
-      : _attributes = Map<String, int>(),
-        _uniforms = Map<String, gl.UniformLocation>(),
+      : _attributes = <String, int>{},
+        _uniforms = <String, gl.UniformLocation>{},
         _renderBufferIndex = RenderBufferIndex(0),
         _renderBufferVertex = RenderBufferVertex(0),
         _renderStatistics = RenderStatistics();
@@ -36,14 +36,14 @@ abstract class RenderProgram {
   //---------------------------------------------------------------------------
 
   set projectionMatrix(Matrix3D matrix) {
-    var location = uniforms["uProjectionMatrix"];
+    var location = uniforms['uProjectionMatrix'];
     renderingContext.uniformMatrix4fv(location, false, matrix.data);
   }
 
   //---------------------------------------------------------------------------
 
   void activate(RenderContextWebGL renderContext) {
-    if (this.contextIdentifier != renderContext.contextIdentifier) {
+    if (contextIdentifier != renderContext.contextIdentifier) {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
       _renderStatistics = renderContext.renderStatistics;
@@ -63,7 +63,7 @@ abstract class RenderProgram {
 
   void flush() {
     if (renderBufferIndex.position > 0 && renderBufferVertex.position > 0) {
-      int count = renderBufferIndex.position;
+      var count = renderBufferIndex.position;
       renderBufferIndex.update();
       renderBufferIndex.position = 0;
       renderBufferIndex.count = 0;
@@ -93,7 +93,7 @@ abstract class RenderProgram {
     if (status == true) return program;
 
     var cl = rc.isContextLost();
-    throw StateError(cl ? "ContextLost" : rc.getProgramInfoLog(program));
+    throw StateError(cl ? 'ContextLost' : rc.getProgramInfoLog(program));
   }
 
   //---------------------------------------------------------------------------
@@ -107,7 +107,7 @@ abstract class RenderProgram {
     if (status == true) return shader;
 
     var cl = rc.isContextLost();
-    throw StateError(cl ? "ContextLost" : rc.getShaderInfoLog(shader));
+    throw StateError(cl ? 'ContextLost' : rc.getShaderInfoLog(shader));
   }
 
   //---------------------------------------------------------------------------
@@ -116,7 +116,7 @@ abstract class RenderProgram {
     _attributes.clear();
     int count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_ATTRIBUTES);
 
-    for (int i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
       var activeInfo = rc.getActiveAttrib(program, i);
       var location = rc.getAttribLocation(program, activeInfo.name);
       rc.enableVertexAttribArray(location);
@@ -130,7 +130,7 @@ abstract class RenderProgram {
     _uniforms.clear();
     int count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_UNIFORMS);
 
-    for (int i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
       var activeInfo = rc.getActiveUniform(program, i);
       var location = rc.getUniformLocation(program, activeInfo.name);
       _uniforms[activeInfo.name] = location;

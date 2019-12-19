@@ -125,13 +125,13 @@ abstract class _GraphicsMeshSegment {
 
     if (gradient.type == GraphicsGradientType.Linear) {
       renderProgram = renderContext.getRenderProgram(
-          r"$LinearGraphicsGradientProgram",
+          r'$LinearGraphicsGradientProgram',
           () => _LinearGraphicsGradientProgram());
     }
 
     if (gradient.type == GraphicsGradientType.Radial) {
       renderProgram = renderContext.getRenderProgram(
-          r"$RadialGraphicsGradientProgram",
+          r'$RadialGraphicsGradientProgram',
           () => _RadialGraphicsGradientProgram());
     }
 

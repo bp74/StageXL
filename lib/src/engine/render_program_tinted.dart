@@ -6,34 +6,34 @@ class RenderProgramTinted extends RenderProgram {
   // aVertextColor:     Float32(r), Float32(g), Float32(b), Float32(a)
 
   @override
-  String get vertexShaderSource => """
+  String get vertexShaderSource => '''
 
     uniform mat4 uProjectionMatrix;
     attribute vec2 aVertexPosition;
     attribute vec2 aVertexTextCoord;
     attribute vec4 aVertexColor;
     varying vec2 vTextCoord;
-    varying vec4 vColor; 
+    varying vec4 vColor;
 
     void main() {
       vTextCoord = aVertexTextCoord;
       vColor = aVertexColor;
       gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
     }
-    """;
+    ''';
 
   @override
-  String get fragmentShaderSource => """
+  String get fragmentShaderSource => '''
 
     precision mediump float;
     uniform sampler2D uSampler;
     varying vec2 vTextCoord;
-    varying vec4 vColor; 
+    varying vec4 vColor;
 
     void main() {
       gl_FragColor = texture2D(uSampler, vTextCoord) * vColor;
     }
-    """;
+    ''';
 
   //---------------------------------------------------------------------------
 
@@ -41,11 +41,11 @@ class RenderProgramTinted extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext.uniform1i(uniforms["uSampler"], 0);
+    renderingContext.uniform1i(uniforms['uSampler'], 0);
 
-    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 32, 0);
-    renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 32, 8);
-    renderBufferVertex.bindAttribute(attributes["aVertexColor"], 4, 32, 16);
+    renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 32, 0);
+    renderBufferVertex.bindAttribute(attributes['aVertexTextCoord'], 2, 32, 8);
+    renderBufferVertex.bindAttribute(attributes['aVertexColor'], 4, 32, 16);
   }
 
   //---------------------------------------------------------------------------
@@ -55,7 +55,7 @@ class RenderProgramTinted extends RenderProgram {
     if (renderTextureQuad.hasCustomVertices) {
       var ixList = renderTextureQuad.ixList;
       var vxList = renderTextureQuad.vxList;
-      this.renderTextureMesh(renderState, ixList, vxList, r, g, b, a);
+      renderTextureMesh(renderState, ixList, vxList, r, g, b, a);
       return;
     }
 

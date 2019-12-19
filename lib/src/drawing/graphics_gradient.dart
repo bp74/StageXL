@@ -11,10 +11,10 @@ enum GraphicsGradientType { Linear, Radial }
 class GraphicsGradient {
   static const int GRADIENT_TEXTURE_SIZE = 512;
 
-  static SharedCache<String, CanvasGradient> _canvasGradientCache =
+  static final SharedCache<String, CanvasGradient> _canvasGradientCache =
       SharedCache<String, CanvasGradient>();
 
-  static SharedCache<String, RenderTexture> _gradientTextureCache =
+  static final SharedCache<String, RenderTexture> _gradientTextureCache =
       SharedCache<String, RenderTexture>()
         ..onObjectReleased.listen((e) => e.object.dispose());
 
@@ -33,7 +33,7 @@ class GraphicsGradient {
   num _endY;
   num _endRadius;
 
-  List<GraphicsGradientColorStop> _colorStops;
+  final List<GraphicsGradientColorStop> _colorStops;
   GraphicsGradientType _type;
 
   GraphicsGradient.linear(num startX, num startY, num endX, num endY)
@@ -43,7 +43,7 @@ class GraphicsGradient {
         _endX = endX,
         _endY = endY,
         _endRadius = 0,
-        _colorStops = List<GraphicsGradientColorStop>(),
+        _colorStops = <GraphicsGradientColorStop>[],
         _type = GraphicsGradientType.Linear;
 
   GraphicsGradient.radial(num startX, num startY, num startRadius, num endX,
@@ -54,7 +54,7 @@ class GraphicsGradient {
         _endX = endX,
         _endY = endY,
         _endRadius = endRadius,
-        _colorStops = List<GraphicsGradientColorStop>(),
+        _colorStops = <GraphicsGradientColorStop>[],
         _type = GraphicsGradientType.Radial;
 
   //---------------------------------------------------------------------------
@@ -182,31 +182,31 @@ class GraphicsGradient {
   }
 
   String _createCanvasCacheKey() {
-    var key = "";
+    var key = '';
 
     if (_type == GraphicsGradientType.Linear) {
-      key += "L";
-      key += "_" + _startX.toStringAsFixed(3);
-      key += "_" + _startY.toStringAsFixed(3);
-      key += "_" + _endX.toStringAsFixed(3);
-      key += "_" + _endY.toStringAsFixed(3);
+      key += 'L';
+      key += '_' + _startX.toStringAsFixed(3);
+      key += '_' + _startY.toStringAsFixed(3);
+      key += '_' + _endX.toStringAsFixed(3);
+      key += '_' + _endY.toStringAsFixed(3);
     } else if (_type == GraphicsGradientType.Radial) {
-      key += "R";
-      key += "_" + _startX.toStringAsFixed(3);
-      key += "_" + _startY.toStringAsFixed(3);
-      key += "_" + _startRadius.toStringAsFixed(3);
-      key += "_" + _endX.toStringAsFixed(3);
-      key += "_" + _endY.toStringAsFixed(3);
-      key += "_" + _endRadius.toStringAsFixed(3);
+      key += 'R';
+      key += '_' + _startX.toStringAsFixed(3);
+      key += '_' + _startY.toStringAsFixed(3);
+      key += '_' + _startRadius.toStringAsFixed(3);
+      key += '_' + _endX.toStringAsFixed(3);
+      key += '_' + _endY.toStringAsFixed(3);
+      key += '_' + _endRadius.toStringAsFixed(3);
     } else {
-      throw StateError("Unknown gradient kind");
+      throw StateError('Unknown gradient kind');
     }
 
-    key += "_" + _colorStops.length.toString();
+    key += '_' + _colorStops.length.toString();
 
     for (var colorStop in _colorStops) {
-      key += "_" + colorStop.offset.toStringAsPrecision(3);
-      key += "_" + colorStop.color.toRadixString(16);
+      key += '_' + colorStop.offset.toStringAsPrecision(3);
+      key += '_' + colorStop.color.toRadixString(16);
     }
 
     return key;
@@ -215,8 +215,8 @@ class GraphicsGradient {
   String _createTextureCacheKey() {
     var key = _colorStops.length.toString();
     for (var colorStop in _colorStops) {
-      key += "_" + colorStop.offset.toStringAsPrecision(3);
-      key += "_" + colorStop.color.toRadixString(16);
+      key += '_' + colorStop.offset.toStringAsPrecision(3);
+      key += '_' + colorStop.color.toRadixString(16);
     }
     return key;
   }

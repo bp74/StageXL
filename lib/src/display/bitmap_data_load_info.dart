@@ -14,12 +14,12 @@ class BitmapDataLoadInfo {
     _loaderUrl = url;
     _pixelRatio = 1.0;
 
-    var pixelRatioRegexp = RegExp(r"@(\d+(.\d+)?)x");
+    var pixelRatioRegexp = RegExp(r'@(\d+(.\d+)?)x');
     var pixelRatioMatch = pixelRatioRegexp.firstMatch(sourceUrl);
 
     if (pixelRatioMatch != null) {
       var match = pixelRatioMatch;
-      var originPixelRatioFractions = (match.group(2) ?? ".").length - 1;
+      var originPixelRatioFractions = (match.group(2) ?? '.').length - 1;
       var originPixelRatio = double.parse(match.group(1));
       var devicePixelRatio = env.devicePixelRatio;
       var loaderPixelRatio = pixelRatios.fold<num>(0.0, (num a, num b) {

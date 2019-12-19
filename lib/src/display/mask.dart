@@ -91,11 +91,11 @@ abstract class _TransformedMask extends Mask {
 
   @override
   bool hitTest(num x, num y) {
-    Matrix mtx = this.transformationMatrix;
-    num deltaX = x - mtx.tx;
-    num deltaY = y - mtx.ty;
-    num maskX = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
-    num maskY = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
+    var mtx = transformationMatrix;
+    var deltaX = x - mtx.tx;
+    var deltaY = y - mtx.ty;
+    var maskX = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
+    var maskY = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
     return hitTestTransformed(maskX, maskY);
   }
 
@@ -103,7 +103,7 @@ abstract class _TransformedMask extends Mask {
 
   @override
   void renderMask(RenderState renderState) {
-    renderState.push(this.transformationMatrix, 1.0, null);
+    renderState.push(transformationMatrix, 1.0, null);
     renderMaskTransformed(renderState);
     renderState.pop();
   }
@@ -119,10 +119,10 @@ class _RectangleMask extends _TransformedMask implements ScissorRenderMask {
 
   @override
   Rectangle<num> getScissorRectangle(RenderState renderState) {
-    renderState.push(this.transformationMatrix, 1.0, null);
+    renderState.push(transformationMatrix, 1.0, null);
     var matrix = renderState.globalMatrix;
     var aligned = similar(matrix.b, 0.0) && similar(matrix.c, 0.0);
-    var result = aligned ? matrix.transformRectangle(this.rectangle) : null;
+    var result = aligned ? matrix.transformRectangle(rectangle) : null;
     renderState.pop();
     return result;
   }
@@ -179,11 +179,11 @@ class _ShapeMask extends _TransformedMask {
 
   @override
   bool hitTestTransformed(num x, num y) {
-    Matrix mtx = shape.transformationMatrix;
-    num deltaX = x - mtx.tx;
-    num deltaY = y - mtx.ty;
-    num maskX = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
-    num maskY = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
+    var mtx = shape.transformationMatrix;
+    var deltaX = x - mtx.tx;
+    var deltaY = y - mtx.ty;
+    var maskX = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
+    var maskY = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
     return shape.graphics.hitTest(maskX, maskY);
   }
 

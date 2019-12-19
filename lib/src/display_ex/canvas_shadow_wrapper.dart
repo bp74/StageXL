@@ -41,7 +41,7 @@ class CanvasShadowWrapper extends DisplayObject {
 
   void _throwUnsupportedError() {
     throw UnsupportedError(
-        "CanvasShadowWrapper does not implement this property or method.");
+        'CanvasShadowWrapper does not implement this property or method.');
   }
 
   @override
@@ -103,12 +103,12 @@ class CanvasShadowWrapper extends DisplayObject {
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-    var matrix = this.displayObject.transformationMatrix;
-    num deltaX = localX - matrix.tx;
-    num deltaY = localY - matrix.ty;
-    num childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
-    num childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
-    return this.displayObject.hitTestInput(childX, childY);
+    var matrix = displayObject.transformationMatrix;
+    var deltaX = localX - matrix.tx;
+    var deltaY = localY - matrix.ty;
+    var childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
+    var childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
+    return displayObject.hitTestInput(childX, childY);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ class CanvasShadowWrapper extends DisplayObject {
     var renderContext = renderState.renderContext;
     if (renderContext is RenderContextCanvas) {
       var rawContext = renderContext.rawContext;
-      Matrix shadowMatrix = renderState.globalMatrix;
+      var shadowMatrix = renderState.globalMatrix;
       rawContext.save();
       rawContext.shadowColor = color2rgba(shadowColor);
       rawContext.shadowBlur = sqrt(shadowMatrix.det) * shadowBlur;
@@ -126,10 +126,10 @@ class CanvasShadowWrapper extends DisplayObject {
           shadowOffsetX * shadowMatrix.a + shadowOffsetY * shadowMatrix.c;
       rawContext.shadowOffsetY =
           shadowOffsetX * shadowMatrix.b + shadowOffsetY * shadowMatrix.d;
-      renderState.renderObject(this.displayObject);
+      renderState.renderObject(displayObject);
       rawContext.restore();
     } else {
-      renderState.renderObject(this.displayObject);
+      renderState.renderObject(displayObject);
     }
   }
 }

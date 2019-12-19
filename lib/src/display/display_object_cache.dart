@@ -52,11 +52,11 @@ class _DisplayObjectCache {
     var renderState = RenderState(renderContext, matrix);
 
     renderContext.clear(Color.Transparent);
-    this.displayObject.render(renderState);
+    displayObject.render(renderState);
 
     // apply filters
 
-    var filters = this.displayObject.filters;
+    var filters = displayObject.filters;
 
     if (filters != null && filters.isNotEmpty) {
       var bitmapData = BitmapData.fromRenderTextureQuad(renderTextureQuad);
@@ -69,9 +69,9 @@ class _DisplayObjectCache {
       var context = canvas.context2D;
       context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
       context.lineWidth = 1;
-      context.lineJoin = "miter";
-      context.lineCap = "butt";
-      context.strokeStyle = "#FF00FF";
+      context.lineJoin = 'miter';
+      context.lineCap = 'butt';
+      context.strokeStyle = '#FF00FF';
       context.strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
     }
 

@@ -27,7 +27,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   @override
   String toString() =>
-      "Rectangle<$T> [left=$left, top=$top, width=$width, height=$height]";
+      'Rectangle<$T> [left=$left, top=$top, width=$width, height=$height]';
 
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
@@ -35,18 +35,18 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   @override
   bool operator ==(Object other) {
     return other is math.Rectangle &&
-        this.left == other.left &&
-        this.top == other.top &&
-        this.width == other.width &&
-        this.height == other.height;
+        left == other.left &&
+        top == other.top &&
+        width == other.width &&
+        height == other.height;
   }
 
   @override
   int get hashCode {
-    int a = this.left.hashCode;
-    int b = this.top.hashCode;
-    int c = this.width.hashCode;
-    int d = this.height.hashCode;
+    var a = left.hashCode;
+    var b = top.hashCode;
+    var c = width.hashCode;
+    var d = height.hashCode;
     return JenkinsHash.hash4(a, b, c, d);
   }
 
@@ -133,10 +133,10 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   @override
   Rectangle<T> boundingBox(math.Rectangle<T> other) {
-    T rLeft = min(left, other.left);
-    T rTop = min(top, other.top);
-    T rRight = max(right, other.right);
-    T rBottom = max(bottom, other.bottom);
+    var rLeft = min(left, other.left);
+    var rTop = min(top, other.top);
+    var rRight = max(right, other.right);
+    var rBottom = max(bottom, other.bottom);
     return Rectangle<T>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 
@@ -183,18 +183,18 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
 
   @override
   Rectangle<T> intersection(math.Rectangle<T> rect) {
-    T rLeft = max(left, rect.left);
-    T rTop = max(top, rect.top);
-    T rRight = min(right, rect.right);
-    T rBottom = min(bottom, rect.bottom);
+    var rLeft = max(left, rect.left);
+    var rTop = max(top, rect.top);
+    var rRight = min(right, rect.right);
+    var rBottom = min(bottom, rect.bottom);
     return Rectangle<T>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 
   Rectangle<int> align() {
-    int rLeft = left.floor();
-    int rTop = top.floor();
-    int rRight = right.ceil();
-    int rBottom = bottom.ceil();
+    var rLeft = left.floor();
+    var rTop = top.floor();
+    var rRight = right.ceil();
+    var rBottom = bottom.ceil();
     return Rectangle<int>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
   }
 }

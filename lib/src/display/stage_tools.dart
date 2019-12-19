@@ -36,9 +36,9 @@ class _TouchPoint {
   InteractiveObject currentTarget;
 
   _TouchPoint(InteractiveObject target, bool primaryTouchPoint)
-      : this.target = target,
-        this.currentTarget = target,
-        this.primaryTouchPoint = primaryTouchPoint;
+      : target = target,
+        currentTarget = target,
+        primaryTouchPoint = primaryTouchPoint;
 }
 
 //------------------------------------------------------------------------------

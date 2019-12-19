@@ -23,7 +23,7 @@ class RenderBufferIndex {
   int get contextIdentifier => _contextIdentifier;
 
   void dispose() {
-    if (this._buffer != null && _renderingContext != null) {
+    if (_buffer != null && _renderingContext != null) {
       _renderingContext.deleteBuffer(_buffer);
       _renderingContext = null;
       _buffer = null;
@@ -45,8 +45,8 @@ class RenderBufferIndex {
   }
 
   void update() {
-    var update = Int16List.view(data.buffer, 0, this.position);
+    var update = Int16List.view(data.buffer, 0, position);
     _renderingContext.bufferSubData(gl.WebGL.ELEMENT_ARRAY_BUFFER, 0, update);
-    _renderStatistics.indexCount += this.count;
+    _renderStatistics.indexCount += count;
   }
 }

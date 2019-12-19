@@ -4,28 +4,28 @@ import 'dart:async';
 import 'dart:math';
 
 class MouseCursor {
-  static const String AUTO = "auto";
-  static const String DEFAULT = "default";
-  static const String POINTER = "pointer";
-  static const String MOVE = "move";
-  static const String CROSSHAIR = "crosshair";
-  static const String TEXT = "text";
-  static const String VERTICAL_TEXT = "vertical-text";
-  static const String PROGRESS = "progress";
-  static const String WAIT = "wait";
-  static const String RESIZE_COLUMN = "col-resize";
-  static const String RESIZE_ROW = "row-resize";
-  static const String RESIZE_NORTH = "n-resize";
-  static const String RESIZE_SOUTH = "s-resize";
-  static const String RESIZE_EAST = "e-resize";
-  static const String RESIZE_WEST = "w-resize";
-  static const String RESIZE_NORTHWEST = "nw-resize";
-  static const String RESIZE_NORTHEAST = "ne-resize";
-  static const String RESIZE_SOUTHWEST = "sw-resize";
-  static const String RESIZE_SOUTHEAST = "se-resize";
-  static const String NOT_ALLOWED = "not-allowed";
-  static const String NO_DROP = "no-drop";
-  static const String ALL_SCROLL = "all-scroll";
+  static const String AUTO = 'auto';
+  static const String DEFAULT = 'default';
+  static const String POINTER = 'pointer';
+  static const String MOVE = 'move';
+  static const String CROSSHAIR = 'crosshair';
+  static const String TEXT = 'text';
+  static const String VERTICAL_TEXT = 'vertical-text';
+  static const String PROGRESS = 'progress';
+  static const String WAIT = 'wait';
+  static const String RESIZE_COLUMN = 'col-resize';
+  static const String RESIZE_ROW = 'row-resize';
+  static const String RESIZE_NORTH = 'n-resize';
+  static const String RESIZE_SOUTH = 's-resize';
+  static const String RESIZE_EAST = 'e-resize';
+  static const String RESIZE_WEST = 'w-resize';
+  static const String RESIZE_NORTHWEST = 'nw-resize';
+  static const String RESIZE_NORTHEAST = 'ne-resize';
+  static const String RESIZE_SOUTHWEST = 'sw-resize';
+  static const String RESIZE_SOUTHEAST = 'se-resize';
+  static const String NOT_ALLOWED = 'not-allowed';
+  static const String NO_DROP = 'no-drop';
+  static const String ALL_SCROLL = 'all-scroll';
 }
 
 class MouseCursorData {
@@ -40,8 +40,7 @@ class MouseCursorData {
 class Mouse {
   static bool _cursorHidden = false;
   static String _cursorName = MouseCursor.AUTO;
-  static Map<String, MouseCursorData> _cursorDatas =
-      Map<String, MouseCursorData>();
+  static final _cursorDatas = <String, MouseCursorData>{};
 
   static final _cursorChangedEvent = StreamController<String>.broadcast();
   static Stream<String> onCursorChanged = _cursorChangedEvent.stream;
@@ -79,7 +78,7 @@ class Mouse {
   //-------------------------------------------------------------------------------------------------
 
   static String getCursorStyle(String cursorName) {
-    String style = cursorName;
+    var style = cursorName;
 
     if (_cursorDatas.containsKey(cursorName)) {
       var cursorData = _cursorDatas[cursorName];
@@ -89,6 +88,6 @@ class Mouse {
       style = "url('$cursorDataUrl') $cursorDataX $cursorDataY, $style";
     }
 
-    return _cursorHidden ? "none" : style;
+    return _cursorHidden ? 'none' : style;
   }
 }

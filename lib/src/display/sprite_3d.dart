@@ -132,7 +132,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
     if (hitArea != null) {
       var point = Point<num>(localX, localY);
-      this.localToGlobal(point, point);
+      localToGlobal(point, point);
       hitArea.globalToLocal(point, point);
       target = hitArea.hitTestInput(point.x, point.y);
       return target != null ? this : null;

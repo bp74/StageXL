@@ -32,18 +32,18 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   @override
-  String toString() => "Matrix [a=$a, b=$b, c=$c, d=$d, tx=$tx, ty=$ty]";
+  String toString() => 'Matrix [a=$a, b=$b, c=$c, d=$d, tx=$tx, ty=$ty]';
 
   Matrix clone() => Matrix(a, b, c, d, tx, ty);
 
   Matrix cloneInvert() {
-    num det = this.det;
-    num a = this.d / det;
-    num b = -this.b / det;
-    num c = -this.c / det;
-    num d = this.a / det;
-    num tx = -this.tx * a - this.ty * c;
-    num ty = -this.tx * b - this.ty * d;
+    var det = this.det;
+    var a = this.d / det;
+    var b = -this.b / det;
+    var c = -this.c / det;
+    var d = this.a / det;
+    var tx = -this.tx * a - this.ty * c;
+    var ty = -this.tx * b - this.ty * d;
 
     return Matrix(a, b, c, d, tx, ty);
   }
@@ -94,8 +94,8 @@ class Matrix {
   Vector transformVector(Vector vector) {
     var vx = vector.x.toDouble();
     var vy = vector.y.toDouble();
-    var tx = vx * this.a + vy * this.c + this.tx;
-    var ty = vx * this.b + vy * this.d + this.ty;
+    var tx = vx * a + vy * c + this.tx;
+    var ty = vx * b + vy * d + this.ty;
 
     return Vector(tx, ty);
   }
@@ -104,8 +104,8 @@ class Matrix {
       [Point<num> returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
-    var tx = px * this.a + py * this.c;
-    var ty = px * this.b + py * this.d;
+    var tx = px * a + py * c;
+    var ty = px * b + py * d;
 
     if (returnPoint is Point) {
       returnPoint.setTo(tx, ty);
@@ -120,8 +120,8 @@ class Matrix {
   Point<num> transformPoint(math.Point<num> point, [Point<num> returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
-    var tx = px * this.a + py * this.c + this.tx;
-    var ty = px * this.b + py * this.d + this.ty;
+    var tx = px * a + py * c + this.tx;
+    var ty = px * b + py * d + this.ty;
 
     if (returnPoint is Point) {
       returnPoint.setTo(tx, ty);
@@ -135,8 +135,8 @@ class Matrix {
       [Point<num> returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
-    var tx = (this.d * (px - this.tx) - this.c * (py - this.ty)) / this.det;
-    var ty = (this.a * (py - this.ty) - this.b * (px - this.tx)) / this.det;
+    var tx = (d * (px - this.tx) - c * (py - this.ty)) / det;
+    var ty = (a * (py - this.ty) - b * (px - this.tx)) / det;
 
     if (returnPoint is Point) {
       returnPoint.setTo(tx, ty);
@@ -157,39 +157,39 @@ class Matrix {
 
     // transform rectangle corners
 
-    num x1 = rl * a + rt * c;
-    num y1 = rl * b + rt * d;
-    num x2 = rr * a + rt * c;
-    num y2 = rr * b + rt * d;
-    num x3 = rr * a + rb * c;
-    num y3 = rr * b + rb * d;
-    num x4 = rl * a + rb * c;
-    num y4 = rl * b + rb * d;
+    var x1 = rl * a + rt * c;
+    var y1 = rl * b + rt * d;
+    var x2 = rr * a + rt * c;
+    var y2 = rr * b + rt * d;
+    var x3 = rr * a + rb * c;
+    var y3 = rr * b + rb * d;
+    var x4 = rl * a + rb * c;
+    var y4 = rl * b + rb * d;
 
     // find minima and maxima
 
-    num left = x1;
+    var left = x1;
     if (left > x2) left = x2;
     if (left > x3) left = x3;
     if (left > x4) left = x4;
 
-    num top = y1;
+    var top = y1;
     if (top > y2) top = y2;
     if (top > y3) top = y3;
     if (top > y4) top = y4;
 
-    num right = x1;
+    var right = x1;
     if (right < x2) right = x2;
     if (right < x3) right = x3;
     if (right < x4) right = x4;
 
-    num bottom = y1;
+    var bottom = y1;
     if (bottom < y2) bottom = y2;
     if (bottom < y3) bottom = y3;
     if (bottom < y4) bottom = y4;
 
-    num width = right - left;
-    num heigth = bottom - top;
+    var width = right - left;
+    var heigth = bottom - top;
 
     if (returnRectangle is Rectangle) {
       returnRectangle.setTo(tx + left, ty + top, width, heigth);
@@ -203,10 +203,10 @@ class Matrix {
 
   void createBox(num scaleX, num scaleY,
       [num rotation = 0.0, num translationX = 0.0, num translationY = 0.0]) {
-    this.identity();
-    this.scale(scaleX, scaleY);
-    this.rotate(rotation);
-    this.translate(translationX, translationY);
+    identity();
+    scale(scaleX, scaleY);
+    rotate(rotation);
+    translate(translationX, translationY);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -223,13 +223,13 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void invert() {
-    num a = this.a;
-    num b = this.b;
-    num c = this.c;
-    num d = this.d;
-    num tx = this.tx;
-    num ty = this.ty;
-    num det = this.det;
+    var a = this.a;
+    var b = this.b;
+    var c = this.c;
+    var d = this.d;
+    var tx = this.tx;
+    var ty = this.ty;
+    var det = this.det;
 
     _data[0] = d / det;
     _data[1] = -b / det;
@@ -286,24 +286,24 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void scale(num scaleX, num scaleY) {
-    _data[0] = this.a * scaleX;
-    _data[1] = this.b * scaleY;
-    _data[2] = this.c * scaleX;
-    _data[3] = this.d * scaleY;
-    _data[4] = this.tx * scaleX;
-    _data[5] = this.ty * scaleY;
+    _data[0] = a * scaleX;
+    _data[1] = b * scaleY;
+    _data[2] = c * scaleX;
+    _data[3] = d * scaleY;
+    _data[4] = tx * scaleX;
+    _data[5] = ty * scaleY;
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void translate(num translationX, num translationY) {
-    _data[4] = this.tx + translationX;
-    _data[5] = this.ty + translationY;
+    _data[4] = tx + translationX;
+    _data[5] = ty + translationY;
   }
 
   void prependTranslation(num translationX, num translationY) {
-    _data[4] = translationX * this.a + translationY * this.c + this.tx;
-    _data[5] = translationX * this.b + translationY * this.d + this.ty;
+    _data[4] = translationX * a + translationY * c + tx;
+    _data[5] = translationX * b + translationY * d + ty;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -331,11 +331,11 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void concat(Matrix matrix) {
-    this.copyFromAndConcat(this, matrix);
+    copyFromAndConcat(this, matrix);
   }
 
   void prepend(Matrix matrix) {
-    this.copyFromAndConcat(matrix, this);
+    copyFromAndConcat(matrix, this);
   }
 
   void copyFromAndConcat(Matrix copyMatrix, Matrix concatMatrix) {
@@ -365,12 +365,12 @@ class Matrix {
 
   void invertAndConcat(Matrix concatMatrix) {
     var det = this.det;
-    var a1 = this.d / det;
-    var b1 = -this.b / det;
-    var c1 = -this.c / det;
-    var d1 = this.a / det;
-    var tx1 = -this.tx * a1 - this.ty * c1;
-    var ty1 = -this.tx * b1 - this.ty * d1;
+    var a1 = d / det;
+    var b1 = -b / det;
+    var c1 = -c / det;
+    var d1 = a / det;
+    var tx1 = -tx * a1 - ty * c1;
+    var ty1 = -tx * b1 - ty * d1;
 
     var a2 = concatMatrix.a;
     var b2 = concatMatrix.b;

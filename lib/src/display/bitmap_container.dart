@@ -16,7 +16,7 @@ part of stagexl.display;
 
 class BitmapContainer extends DisplayObject
     implements DisplayObjectParent<Bitmap> {
-  final List<Bitmap> _children = List<Bitmap>();
+  final List<Bitmap> _children = <Bitmap>[];
   final Matrix3D _tmpMatrix1 = Matrix3D.fromIdentity();
   final Matrix3D _tmpMatrix2 = Matrix3D.fromIdentity();
 
@@ -39,8 +39,8 @@ class BitmapContainer extends DisplayObject
 
   @override
   Bitmap getChildByName(String name) {
-    for (int i = 0; i < _children.length; i++) {
-      Bitmap child = _children[i];
+    for (var i = 0; i < _children.length; i++) {
+      var child = _children[i];
       if (child.name == name) return child;
     }
     return null;
@@ -65,7 +65,7 @@ class BitmapContainer extends DisplayObject
   @override
   void addChildAt(Bitmap child, int index) {
     if (index < 0 || index > _children.length) {
-      throw ArgumentError("The supplied index is out of bounds.");
+      throw ArgumentError('The supplied index is out of bounds.');
     } else if (child.parent == this) {
       _addLocalChildAt(child, index);
     } else {
@@ -78,9 +78,9 @@ class BitmapContainer extends DisplayObject
   @override
   void removeChild(Bitmap child) {
     if (child.parent != this) {
-      throw ArgumentError("The supplied Bitmap must be a child of the caller.");
+      throw ArgumentError('The supplied Bitmap must be a child of the caller.');
     } else {
-      int index = _children.indexOf(child);
+      var index = _children.indexOf(child);
       child._parent = null;
       _children.removeAt(index);
     }
@@ -89,9 +89,9 @@ class BitmapContainer extends DisplayObject
   @override
   void removeChildAt(int index) {
     if (index < 0 || index >= _children.length) {
-      throw ArgumentError("The supplied index is out of bounds.");
+      throw ArgumentError('The supplied index is out of bounds.');
     } else {
-      Bitmap child = _children[index];
+      var child = _children[index];
       child._parent = null;
       _children.removeAt(index);
     }
@@ -99,15 +99,15 @@ class BitmapContainer extends DisplayObject
 
   @override
   void removeChildren([int beginIndex, int endIndex]) {
-    int length = _children.length;
-    int i1 = beginIndex is int ? beginIndex : 0;
-    int i2 = endIndex is int ? endIndex : length - 1;
+    var length = _children.length;
+    var i1 = beginIndex is int ? beginIndex : 0;
+    var i2 = endIndex is int ? endIndex : length - 1;
     if (i1 > i2) {
       // do nothing
     } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
-      throw ArgumentError("The supplied index is out of bounds.");
+      throw ArgumentError('The supplied index is out of bounds.');
     } else {
-      for (int i = i1; i <= i2 && i1 < _children.length; i++) {
+      for (var i = i1; i <= i2 && i1 < _children.length; i++) {
         removeChildAt(i1);
       }
     }
@@ -116,10 +116,10 @@ class BitmapContainer extends DisplayObject
   @override
   void replaceChildAt(Bitmap child, int index) {
     if (index < 0 || index >= _children.length) {
-      throw ArgumentError("The supplied index is out of bounds.");
+      throw ArgumentError('The supplied index is out of bounds.');
     } else if (child.parent == this) {
       if (_children.indexOf(child) == index) return;
-      throw ArgumentError("The bitmap is already a child of this container.");
+      throw ArgumentError('The bitmap is already a child of this container.');
     } else {
       var oldChild = _children[index];
       var newChild = child;
@@ -154,10 +154,10 @@ class BitmapContainer extends DisplayObject
   //---------------------------------------------------------------------------
 
   void _addLocalChild(Bitmap child) {
-    List<Bitmap> children = _children;
+    var children = _children;
     Bitmap oldChild;
-    Bitmap newChild = child;
-    for (int i = children.length - 1; i >= 0; i--) {
+    var newChild = child;
+    for (var i = children.length - 1; i >= 0; i--) {
       oldChild = children[i];
       children[i] = newChild;
       newChild = oldChild;
@@ -185,7 +185,7 @@ class BitmapContainer extends DisplayObject
 
     context.activateProjectionMatrix(_tmpMatrix2);
 
-    for (int i = 0; i < _children.length; i++) {
+    for (var i = 0; i < _children.length; i++) {
       var bitmap = _children[i];
       if (bitmap.visible) {
         var bitmapData = bitmap.bitmapData;
@@ -202,7 +202,7 @@ class BitmapContainer extends DisplayObject
   void _renderCanvas2D(RenderState renderState) {
     var context = renderState.renderContext as RenderContextCanvas;
 
-    for (int i = 0; i < _children.length; i++) {
+    for (var i = 0; i < _children.length; i++) {
       var bitmap = _children[i];
       if (bitmap.visible) {
         var bitmapData = bitmap.bitmapData;
@@ -226,11 +226,11 @@ class _BitmapContainerRenderState extends RenderState {
   final double alpha;
 
   _BitmapContainerRenderState(RenderState parent)
-      : this.blendMode = parent.globalBlendMode,
-        this.alpha = parent.globalAlpha,
+      : blendMode = parent.globalBlendMode,
+        alpha = parent.globalAlpha,
         super(parent.renderContext) {
-    this.currentTime = parent.currentTime;
-    this.deltaTime = parent.deltaTime;
+    currentTime = parent.currentTime;
+    deltaTime = parent.deltaTime;
   }
 
   //---------------------------------------------------------------------------
@@ -239,35 +239,35 @@ class _BitmapContainerRenderState extends RenderState {
   Matrix get globalMatrix => bitmap.transformationMatrix;
 
   @override
-  double get globalAlpha => bitmap.alpha * this.alpha;
+  double get globalAlpha => bitmap.alpha * alpha;
 
   @override
-  BlendMode get globalBlendMode => bitmap.blendMode ?? this.blendMode;
+  BlendMode get globalBlendMode => bitmap.blendMode ?? blendMode;
 
   //---------------------------------------------------------------------------
 
   @override
   void reset([Matrix matrix, num alpha, BlendMode blendMode]) {
-    throw StateError("Not supported");
+    throw StateError('Not supported');
   }
 
   @override
   void copyFrom(RenderState renderState) {
-    throw StateError("Not supported");
+    throw StateError('Not supported');
   }
 
   @override
   void renderObject(RenderObject renderObject) {
-    throw StateError("Not supported");
+    throw StateError('Not supported');
   }
 
   @override
   void push(Matrix matrix, num alpha, BlendMode blendMode) {
-    throw StateError("Not supported");
+    throw StateError('Not supported');
   }
 
   @override
   void pop() {
-    throw StateError("Not supported");
+    throw StateError('Not supported');
   }
 }

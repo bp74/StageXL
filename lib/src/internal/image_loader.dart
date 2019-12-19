@@ -36,9 +36,9 @@ class ImageLoader {
   //---------------------------------------------------------------------------
 
   void _onWebpSupported(bool webpSupported) {
-    var match = RegExp(r"(png|jpg|jpeg)$").firstMatch(_url);
+    var match = RegExp(r'(png|jpg|jpeg)$').firstMatch(_url);
     if (webpSupported && match != null) {
-      image.src = _url.substring(0, match.start) + "webp";
+      image.src = _url.substring(0, match.start) + 'webp';
     } else {
       image.src = _url;
     }
@@ -53,6 +53,6 @@ class ImageLoader {
   void _onImageError(Event event) {
     _onLoadSubscription.cancel();
     _onErrorSubscription.cancel();
-    _completer.completeError(LoadError("Failed to load ${image.src}."));
+    _completer.completeError(LoadError('Failed to load ${image.src}.'));
   }
 }

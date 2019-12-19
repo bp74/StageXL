@@ -66,7 +66,7 @@ class TimeGauge extends Gauge implements Animatable {
   }
 
   void clearAlarms() {
-    _alarms = Map<String, num>();
+    _alarms = <String, num>{};
     addAlarm(TimeGauge.TIME_OUT, 0);
   }
 
@@ -101,7 +101,7 @@ class TimeGauge extends Gauge implements Animatable {
 
   @override
   set ratio(num value) {
-    num oldRatio = ratio;
+    var oldRatio = ratio;
     super.ratio = value;
     if (_alarmsEnabled) {
       _alarms.forEach((alarmName, alarmRatio) {

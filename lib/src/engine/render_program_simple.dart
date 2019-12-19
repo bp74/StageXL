@@ -6,7 +6,7 @@ class RenderProgramSimple extends RenderProgram {
   // aVertexAlpha:      Float32(alpha)
 
   @override
-  String get vertexShaderSource => """
+  String get vertexShaderSource => '''
 
     uniform mat4 uProjectionMatrix;
     attribute vec2 aVertexPosition;
@@ -20,10 +20,10 @@ class RenderProgramSimple extends RenderProgram {
       vAlpha = aVertexAlpha;
       gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
     }
-    """;
+    ''';
 
   @override
-  String get fragmentShaderSource => """
+  String get fragmentShaderSource => '''
 
     precision mediump float;
     uniform sampler2D uSampler;
@@ -33,7 +33,7 @@ class RenderProgramSimple extends RenderProgram {
     void main() {
       gl_FragColor = texture2D(uSampler, vTextCoord) * vAlpha;
     }
-    """;
+    ''';
 
   //---------------------------------------------------------------------------
 
@@ -41,11 +41,11 @@ class RenderProgramSimple extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext.uniform1i(uniforms["uSampler"], 0);
+    renderingContext.uniform1i(uniforms['uSampler'], 0);
 
-    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 20, 0);
-    renderBufferVertex.bindAttribute(attributes["aVertexTextCoord"], 2, 20, 8);
-    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"], 1, 20, 16);
+    renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 20, 0);
+    renderBufferVertex.bindAttribute(attributes['aVertexTextCoord'], 2, 20, 8);
+    renderBufferVertex.bindAttribute(attributes['aVertexAlpha'], 1, 20, 16);
   }
 
   //---------------------------------------------------------------------------
@@ -55,7 +55,7 @@ class RenderProgramSimple extends RenderProgram {
     if (renderTextureQuad.hasCustomVertices) {
       var ixList = renderTextureQuad.ixList;
       var vxList = renderTextureQuad.vxList;
-      this.renderTextureMesh(renderState, ixList, vxList);
+      renderTextureMesh(renderState, ixList, vxList);
       return;
     }
 

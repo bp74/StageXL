@@ -29,7 +29,7 @@ class MockSound extends Sound {
 
   @override
   SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-    return MockSoundChannel(this, 0, this.length, loop, soundTransform);
+    return MockSoundChannel(this, 0, length, loop, soundTransform);
   }
 
   @override

@@ -7,7 +7,7 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
   // aVertexAlpha:      Float32(alpha)
 
   @override
-  String get vertexShaderSource => """
+  String get vertexShaderSource => '''
 
     uniform mat4 uProjectionMatrix;
     attribute vec2 aVertexPosition;
@@ -20,15 +20,15 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
       vAlpha = aVertexAlpha;
       gl_Position = vec4(aVertexPosition, 0.0, 1.0) * uProjectionMatrix;
     }
-    """;
+    ''';
 
   //---------------------------------------------------------------------------
 
   @override
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
-    renderBufferVertex.bindAttribute(attributes["aVertexPosition"], 2, 12, 0);
-    renderBufferVertex.bindAttribute(attributes["aVertexAlpha"], 1, 12, 8);
+    renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 12, 0);
+    renderBufferVertex.bindAttribute(attributes['aVertexAlpha'], 1, 12, 8);
   }
 
   void configure(RenderState renderState, GraphicsGradient gradient);
@@ -93,7 +93,7 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
 
 class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
   @override
-  String get fragmentShaderSource => """
+  String get fragmentShaderSource => '''
 
     precision mediump float;
     uniform sampler2D uSampler;
@@ -108,7 +108,7 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
       float t = dot(pixelVector,uvGradientVector)/dot(uvGradientVector,uvGradientVector);
       gl_FragColor = texture2D(uSampler, vec2(0.5,t)) * vAlpha;
     }
-    """;
+    ''';
 
   @override
   void configure(RenderState renderState, GraphicsGradient gradient) {
@@ -123,9 +123,9 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
     // protect against zero length vector (linear gradient not defined for this case)
     if (vectorX == 0 && vectorY == 0) vectorY = 1;
 
-    renderingContext.uniform1i(uniforms["uSampler"], 0);
-    renderingContext.uniform2f(uniforms["uvGradientStart"], startX, startY);
-    renderingContext.uniform2f(uniforms["uvGradientVector"], vectorX, vectorY);
+    renderingContext.uniform1i(uniforms['uSampler'], 0);
+    renderingContext.uniform2f(uniforms['uvGradientStart'], startX, startY);
+    renderingContext.uniform2f(uniforms['uvGradientVector'], vectorX, vectorY);
   }
 }
 
@@ -134,7 +134,7 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
 
 class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
   @override
-  String get fragmentShaderSource => """
+  String get fragmentShaderSource => '''
 
     precision mediump float;
     uniform sampler2D uSampler;
@@ -153,7 +153,7 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
       float t = (-b + sign*sqrt(b*b-4.0*a*c))/(2.0*a);
       gl_FragColor = texture2D(uSampler, vec2(0.5,t)) * vAlpha;
     }
-    """;
+    ''';
 
   @override
   void configure(RenderState renderState, GraphicsGradient gradient) {
@@ -183,9 +183,9 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
     var c2 = startX * startX + startY * startY - startRadius * startRadius;
     var sign = radiusOffset >= 0 ? -1 : 1;
 
-    renderingContext.uniform1i(uniforms["uSampler"], 0);
-    renderingContext.uniform2f(uniforms["uvA"], a, sign);
-    renderingContext.uniform3f(uniforms["uvB"], b0, b1, b2);
-    renderingContext.uniform3f(uniforms["uvC"], c0, c1, c2);
+    renderingContext.uniform1i(uniforms['uSampler'], 0);
+    renderingContext.uniform2f(uniforms['uvA'], a, sign);
+    renderingContext.uniform3f(uniforms['uvB'], b0, b1, b2);
+    renderingContext.uniform3f(uniforms['uvC'], c0, c1, c2);
   }
 }

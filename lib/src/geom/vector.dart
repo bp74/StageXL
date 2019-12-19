@@ -23,7 +23,7 @@ class Vector {
   Vector clone() => Vector(x, y);
 
   @override
-  String toString() => "Vector [x=$x, y=$y]";
+  String toString() => 'Vector [x=$x, y=$y]';
 
   //-----------------------------------------------------------------------------------------------
   // Operators
@@ -37,13 +37,13 @@ class Vector {
 
   @override
   bool operator ==(Object other) {
-    return other is Vector && this.x == other.x && this.y == other.y;
+    return other is Vector && x == other.x && y == other.y;
   }
 
   @override
   int get hashCode {
-    int a = this.x.hashCode;
-    int b = this.y.hashCode;
+    var a = x.hashCode;
+    var b = y.hashCode;
     return JenkinsHash.hash2(a, b);
   }
 
@@ -91,26 +91,26 @@ class Vector {
   num get lengthSqr => x * x + y * y;
 
   num distance(Vector vec) {
-    num xd = x - vec.x;
-    num yd = y - vec.y;
+    var xd = x - vec.x;
+    var yd = y - vec.y;
     return sqrt(xd * xd + yd * yd);
   }
 
   num distanceXY(num x, num y) {
-    num xd = this.x - x;
-    num yd = this.y - y;
+    var xd = this.x - x;
+    var yd = this.y - y;
     return sqrt(xd * xd + yd * yd);
   }
 
   num distanceSqr(Vector vec) {
-    num xd = x - vec.x;
-    num yd = y - vec.y;
+    var xd = x - vec.x;
+    var yd = y - vec.y;
     return xd * xd + yd * yd;
   }
 
   num distanceXYSqr(num x, num y) {
-    num xd = this.x - x;
-    num yd = this.y - y;
+    var xd = this.x - x;
+    var yd = this.y - y;
     return xd * xd + yd * yd;
   }
 
@@ -155,9 +155,9 @@ class Vector {
   }
 
   Vector spinorBetween(Vector vec) {
-    num d = this.lengthSqr;
-    num r = (vec.x * x + vec.y * y) / d;
-    num i = (vec.y * x - vec.x * y) / d;
+    var d = lengthSqr;
+    var r = (vec.x * x + vec.y * y) / d;
+    var i = (vec.y * x - vec.x * y) / d;
     return Vector(r, i);
   }
 
@@ -169,22 +169,22 @@ class Vector {
   }
 
   Vector slerp(Vector vec, num t) {
-    num cosTheta = this.dot(vec);
-    num theta = acos(cosTheta);
-    num sinTheta = sin(theta);
+    var cosTheta = dot(vec);
+    var theta = acos(cosTheta);
+    var sinTheta = sin(theta);
 
     if (sinTheta <= Epsilon) return vec.clone();
 
-    num w1 = sin((1 - t) * theta) / sinTheta;
-    num w2 = sin(t * theta) / sinTheta;
-    return this.scale(w1) + vec.scale(w2);
+    var w1 = sin((1 - t) * theta) / sinTheta;
+    var w2 = sin(t * theta) / sinTheta;
+    return scale(w1) + vec.scale(w2);
   }
 
   //-----------------------------------------------------------------------------------------------
   // Reflect
 
   Vector reflect(Vector normal) {
-    num d = 2 * (x * normal.x + y * normal.y);
+    var d = 2 * (x * normal.x + y * normal.y);
     return Vector(x - d * normal.x, y - d * normal.y);
   }
 }

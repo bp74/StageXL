@@ -19,7 +19,7 @@ class Point<T extends num> implements math.Point<T> {
   Point<T> clone() => Point<T>(x, y);
 
   @override
-  String toString() => "Point<$T> [x=$x, y=$y]";
+  String toString() => 'Point<$T> [x=$x, y=$y]';
 
   //---------------------------------------------------------------------------
 
@@ -42,13 +42,13 @@ class Point<T extends num> implements math.Point<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is math.Point && this.x == other.x && this.y == other.y;
+    return other is math.Point && x == other.x && y == other.y;
   }
 
   @override
   int get hashCode {
-    int a = this.x.hashCode;
-    int b = this.y.hashCode;
+    var a = x.hashCode;
+    var b = y.hashCode;
     return JenkinsHash.hash2(a, b);
   }
 

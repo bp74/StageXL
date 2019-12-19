@@ -12,7 +12,7 @@ class Sprite extends DisplayObjectContainer {
   /// drawing commands can occur.
 
   Graphics get graphics {
-    return _graphics != null ? _graphics : _graphics = Graphics();
+    return _graphics ??= Graphics();
   }
 
   set graphics(Graphics value) {
@@ -133,7 +133,7 @@ class Sprite extends DisplayObjectContainer {
 
     if (hitArea != null) {
       var point = Point<num>(localX, localY);
-      this.localToGlobal(point, point);
+      localToGlobal(point, point);
       hitArea.globalToLocal(point, point);
       target = hitArea.hitTestInput(point.x, point.y);
       return target != null ? this : null;

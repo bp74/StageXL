@@ -117,7 +117,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   //---------------------------------------------------------------------------
 
   bool get isForwardFacing {
-    var matrix = this.globalTransformationMatrix3D;
+    var matrix = globalTransformationMatrix3D;
 
     num m00 = matrix.m00;
     num m10 = matrix.m10;
@@ -144,7 +144,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
 
   @override
   Rectangle<num> get boundsTransformed {
-    var rectangle = this.bounds;
+    var rectangle = bounds;
     _calculateProjectionMatrix(transformationMatrix);
     return _projectionMatrix3D.transformRectangle(rectangle, rectangle);
   }

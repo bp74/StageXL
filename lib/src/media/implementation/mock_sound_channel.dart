@@ -5,15 +5,12 @@ class MockSoundChannel extends SoundChannel {
   bool _stopped = false;
   bool _paused = false;
   bool _loop = false;
-  num _startTime = 0.0;
-  num _duration = 0.0;
-  num _position = 0.0;
 
   SoundTransform _soundTransform;
 
   MockSoundChannel(MockSound mockSound, num startTime, num duration, bool loop,
       SoundTransform soundTransform) {
-    if (soundTransform == null) soundTransform = SoundTransform();
+    soundTransform ??= SoundTransform();
 
     _mockSound = mockSound;
     _soundTransform = soundTransform;
@@ -69,7 +66,7 @@ class MockSoundChannel extends SoundChannel {
     if (_stopped == false) {
       _stopped = true;
       _paused = true;
-      this.dispatchEvent(Event(Event.COMPLETE));
+      dispatchEvent(Event(Event.COMPLETE));
     }
   }
 }

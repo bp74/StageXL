@@ -38,7 +38,7 @@ class DelayedCall implements Animatable {
 
   @override
   bool advanceTime(num time) {
-    num newTime = _currentTime + time;
+    var newTime = _currentTime + time;
 
     while (newTime >= _totalTime && _repeatCount > 0) {
       _currentTime = _totalTime;

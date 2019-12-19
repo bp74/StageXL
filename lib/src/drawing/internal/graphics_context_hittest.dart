@@ -2,8 +2,8 @@ part of stagexl.drawing;
 
 class _GraphicsContextHitTest extends _GraphicsContextBase {
   bool _hit = false;
-  double _localX = 0.0;
-  double _localY = 0.0;
+  final double _localX;
+  final double _localY;
 
   _GraphicsContextHitTest(num localX, num localY)
       : _localX = localX.toDouble(),
@@ -54,19 +54,19 @@ class _GraphicsContextHitTest extends _GraphicsContextBase {
 
   @override
   void meshColor(_GraphicsCommandMeshColor command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 
   @override
   void meshGradient(_GraphicsCommandMeshGradient command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 
   @override
   void meshPattern(_GraphicsCommandMeshPattern command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     _hit = _hit || mesh.hitTest(_localX, _localY);
   }
 }

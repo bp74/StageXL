@@ -19,8 +19,8 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   RenderTexture(int width, int height, int fillColor) {
-    if (width <= 0) throw ArgumentError("width");
-    if (height <= 0) throw ArgumentError("height");
+    if (width <= 0) throw ArgumentError('width');
+    if (height <= 0) throw ArgumentError('height');
 
     _width = ensureInt(width);
     _height = ensureInt(height);
@@ -46,7 +46,7 @@ class RenderTexture {
   }
 
   RenderTexture.fromVideoElement(VideoElement videoElement) {
-    if (videoElement.readyState < 3) throw ArgumentError("videoElement");
+    if (videoElement.readyState < 3) throw ArgumentError('videoElement');
     _width = ensureInt(videoElement.videoWidth);
     _height = ensureInt(videoElement.videoHeight);
     _source = videoElement;
@@ -78,7 +78,7 @@ class RenderTexture {
       _canvas.context2D.drawImageScaled(imageElement, 0, 0, _width, _height);
       return _canvas;
     } else {
-      throw StateError("RenderTexture is read only.");
+      throw StateError('RenderTexture is read only.');
     }
   }
 
@@ -162,7 +162,7 @@ class RenderTexture {
 
   void resize(int width, int height) {
     if (_source is VideoElement) {
-      throw StateError("RenderTexture is not resizeable.");
+      throw StateError('RenderTexture is not resizeable.');
     } else if (_width == width && _height == height) {
       // there is no need to resize the texture
 
@@ -225,7 +225,7 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   void activate(RenderContextWebGL renderContext, int textureSlot) {
-    if (this.contextIdentifier != renderContext.contextIdentifier) {
+    if (contextIdentifier != renderContext.contextIdentifier) {
       var target = gl.WebGL.TEXTURE_2D;
       var rgba = gl.WebGL.RGBA;
       var type = gl.WebGL.UNSIGNED_BYTE;

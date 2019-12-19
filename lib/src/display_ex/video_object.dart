@@ -17,13 +17,13 @@ part of stagexl.display_ex;
 
 class VideoObject extends InteractiveObject {
   static const EventStreamProvider<Event> endedEvent =
-      EventStreamProvider<Event>("videoEnded");
+      EventStreamProvider<Event>('videoEnded');
   static const EventStreamProvider<Event> pauseEvent =
-      EventStreamProvider<Event>("videoPause");
+      EventStreamProvider<Event>('videoPause');
   static const EventStreamProvider<Event> errorEvent =
-      EventStreamProvider<Event>("videoError");
+      EventStreamProvider<Event>('videoError');
   static const EventStreamProvider<Event> playEvent =
-      EventStreamProvider<Event>("videoPlay");
+      EventStreamProvider<Event>('videoPlay');
 
   EventStream<Event> get onEnded => VideoObject.endedEvent.forTarget(this);
   EventStream<Event> get onPause => VideoObject.pauseEvent.forTarget(this);
@@ -40,10 +40,10 @@ class VideoObject extends InteractiveObject {
     _renderTextureQuad = _renderTexture.quad;
 
     var videoElement = video.videoElement;
-    videoElement.onEnded.listen((e) => this.dispatchEvent(Event("videoEnded")));
-    videoElement.onPause.listen((e) => this.dispatchEvent(Event("videoPause")));
-    videoElement.onError.listen((e) => this.dispatchEvent(Event("videoError")));
-    videoElement.onPlay.listen((e) => this.dispatchEvent(Event("videoPlay")));
+    videoElement.onEnded.listen((e) => dispatchEvent(Event('videoEnded')));
+    videoElement.onPause.listen((e) => dispatchEvent(Event('videoPause')));
+    videoElement.onError.listen((e) => dispatchEvent(Event('videoError')));
+    videoElement.onPlay.listen((e) => dispatchEvent(Event('videoPlay')));
 
     if (autoplay) play();
   }
@@ -70,7 +70,7 @@ class VideoObject extends InteractiveObject {
 
   @override
   void renderFiltered(RenderState renderState) {
-    renderState.renderTextureQuadFiltered(_renderTextureQuad, this.filters);
+    renderState.renderTextureQuadFiltered(_renderTextureQuad, filters);
   }
 
   //----------------------------------------------------------------------------
