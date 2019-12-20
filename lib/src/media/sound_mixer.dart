@@ -82,14 +82,14 @@ class SoundMixer {
 
     var ua = html.window.navigator.userAgent;
 
-    if (ua.contains("IEMobile")) {
-      if (ua.contains("9.0")) {
+    if (ua.contains('IEMobile')) {
+      if (ua.contains('9.0')) {
         _engineDetected = SoundEngine.Mockup;
       }
     }
 
-    if (ua.contains("iPhone") || ua.contains("iPad") || ua.contains("iPod")) {
-      if (ua.contains("OS 3") || ua.contains("OS 4") || ua.contains("OS 5")) {
+    if (ua.contains('iPhone') || ua.contains('iPad') || ua.contains('iPod')) {
+      if (ua.contains('OS 3') || ua.contains('OS 4') || ua.contains('OS 5')) {
         _engineDetected = SoundEngine.Mockup;
       }
     }
@@ -98,6 +98,6 @@ class SoundMixer {
       _engineDetected = SoundEngine.Mockup;
     }
 
-    print("StageXL sound engine  : $engine");
+    print('StageXL sound engine  : $engine');
   }
 }

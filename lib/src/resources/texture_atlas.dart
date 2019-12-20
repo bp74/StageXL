@@ -2,7 +2,7 @@ part of stagexl.resources;
 
 class TextureAtlas {
   /// A list with the frames in this texture atlas.
-  final List<TextureAtlasFrame> frames = List<TextureAtlasFrame>();
+  final List<TextureAtlasFrame> frames = <TextureAtlasFrame>[];
 
   /// The pixelRatio used for the BitmapDatas in the frames
   final double pixelRatio;
@@ -55,7 +55,7 @@ class TextureAtlas {
   /// without it's file extension.
 
   BitmapData getBitmapData(String name) {
-    for (int i = 0; i < frames.length; i++) {
+    for (var i = 0; i < frames.length; i++) {
       var frame = frames[i];
       if (frame.name == name) return frame.bitmapData;
     }

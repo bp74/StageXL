@@ -61,15 +61,15 @@ class _TextureAtlasLoaderTextureAtlas extends TextureAtlasLoader {
       this.textureAtlas, this.namePrefix, this.source);
 
   @override
-  double getPixelRatio() => this.textureAtlas.pixelRatio;
+  double getPixelRatio() => textureAtlas.pixelRatio;
 
   @override
-  Future<String> getSource() => Future.value(this.source);
+  Future<String> getSource() => Future.value(source);
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
-    var name = this.namePrefix + getFilenameWithoutExtension(filename);
-    var bitmapData = this.textureAtlas.getBitmapData(name);
+    var name = namePrefix + getFilenameWithoutExtension(filename);
+    var bitmapData = textureAtlas.getBitmapData(name);
     return bitmapData.renderTextureQuad;
   }
 }
@@ -84,13 +84,13 @@ class _TextureAtlasLoaderBitmapData extends TextureAtlasLoader {
   _TextureAtlasLoaderBitmapData(this.bitmapData, this.source);
 
   @override
-  double getPixelRatio() => this.bitmapData.renderTextureQuad.pixelRatio;
+  double getPixelRatio() => bitmapData.renderTextureQuad.pixelRatio;
 
   @override
-  Future<String> getSource() => Future.value(this.source);
+  Future<String> getSource() => Future.value(source);
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) {
-    return Future.value(this.bitmapData.renderTextureQuad);
+    return Future.value(bitmapData.renderTextureQuad);
   }
 }

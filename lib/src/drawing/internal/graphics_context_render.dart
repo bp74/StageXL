@@ -48,19 +48,19 @@ class _GraphicsContextRender extends _GraphicsContextBase {
 
   @override
   void meshColor(_GraphicsCommandMeshColor command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     mesh.fillColor(renderState, command.color);
   }
 
   @override
   void meshGradient(_GraphicsCommandMeshGradient command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     mesh.fillGradient(renderState, command.gradient);
   }
 
   @override
   void meshPattern(_GraphicsCommandMeshPattern command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     mesh.fillPattern(renderState, command.pattern);
   }
 }
@@ -109,21 +109,21 @@ class GraphicsContextRenderMask extends _GraphicsContextRender {
 
   @override
   void meshColor(_GraphicsCommandMeshColor command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     if (mesh is _GraphicsStroke) return;
     mesh.fillColor(renderState, 0xFFFF00FF);
   }
 
   @override
   void meshGradient(_GraphicsCommandMeshGradient command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     if (mesh is _GraphicsStroke) return;
     mesh.fillColor(renderState, 0xFFFF00FF);
   }
 
   @override
   void meshPattern(_GraphicsCommandMeshPattern command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     if (mesh is _GraphicsStroke) return;
     mesh.fillColor(renderState, 0xFFFF00FF);
   }

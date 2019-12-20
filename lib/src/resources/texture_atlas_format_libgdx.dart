@@ -9,8 +9,8 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
     var pixelRatio = loader.getPixelRatio();
     var textureAtlas = TextureAtlas(pixelRatio);
 
-    var splitRexExp = RegExp(r"\r\n|\r|\n");
-    var dataRexExp = RegExp(r"^\s*([a-z]+):\s([A-Za-z0-9\s,]+)");
+    var splitRexExp = RegExp(r'\r\n|\r|\n');
+    var dataRexExp = RegExp(r'^\s*([a-z]+):\s([A-Za-z0-9\s,]+)');
 
     var lines = source.split(splitRexExp);
     var lineIndex = 0;
@@ -50,20 +50,20 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
           if (frameMatch == null) break;
 
           var key = frameMatch[1];
-          var values = frameMatch[2].split(",").map((s) => s.trim()).toList();
+          var values = frameMatch[2].split(',').map((s) => s.trim()).toList();
 
-          if (key == "rotate" && values.length == 1) {
-            frameRotation = (values[0] == "true") ? 3 : 0;
-          } else if (key == "xy" && values.length == 2) {
+          if (key == 'rotate' && values.length == 1) {
+            frameRotation = (values[0] == 'true') ? 3 : 0;
+          } else if (key == 'xy' && values.length == 2) {
             frameX = int.parse(values[0]);
             frameY = int.parse(values[1]);
-          } else if (key == "size" && values.length == 2) {
+          } else if (key == 'size' && values.length == 2) {
             frameWidth = int.parse(values[frameRotation == 0 ? 0 : 1]);
             frameHeight = int.parse(values[frameRotation == 0 ? 1 : 0]);
-          } else if (key == "orig" && values.length == 2) {
+          } else if (key == 'orig' && values.length == 2) {
             originalWidth = int.parse(values[0]);
             originalHeight = int.parse(values[1]);
-          } else if (key == "offset" && values.length == 2) {
+          } else if (key == 'offset' && values.length == 2) {
             offsetX = int.parse(values[0]);
             offsetY = int.parse(values[1]);
           }
