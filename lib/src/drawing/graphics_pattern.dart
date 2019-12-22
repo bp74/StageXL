@@ -44,11 +44,11 @@ class _CanvasPatternKey {
 //------------------------------------------------------------------------------
 
 class GraphicsPattern {
-  static final SharedCache<_CanvasPatternKey, CanvasPattern> _canvasPatternCache =
-      SharedCache<_CanvasPatternKey, CanvasPattern>();
+  static final SharedCache<_CanvasPatternKey, CanvasPattern>
+      _canvasPatternCache = SharedCache<_CanvasPatternKey, CanvasPattern>();
 
-  static final SharedCache<RenderTextureQuad, RenderTexture> _patternTextureCache =
-      SharedCache<RenderTextureQuad, RenderTexture>()
+  static final SharedCache<RenderTextureQuad, RenderTexture>
+      _patternTextureCache = SharedCache<RenderTextureQuad, RenderTexture>()
         ..onObjectReleased.listen((e) => e.object.dispose());
 
   /// cached by the canvas2D renderer
