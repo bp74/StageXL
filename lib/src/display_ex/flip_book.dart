@@ -68,12 +68,12 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   void gotoAndPlay(int frame) {
     _currentFrame = min(max(frame, 0), totalFrames - 1);
-    this.play();
+    play();
   }
 
   void gotoAndStop(int frame) {
     _currentFrame = min(max(frame, 0), totalFrames - 1);
-    this.stop();
+    stop();
   }
 
   void play() {
@@ -87,7 +87,7 @@ class FlipBook extends InteractiveObject implements Animatable {
     if (_play == true) {
       _play = false;
       _frameTime = null;
-      this.dispatchEvent(_completeEvent);
+      dispatchEvent(_completeEvent);
     }
   }
 
@@ -114,12 +114,12 @@ class FlipBook extends InteractiveObject implements Animatable {
     _frameTime = null;
     _currentFrame = gotoFrame ?? currentFrame;
 
-    var completed = this.onComplete.first;
+    var completed = onComplete.first;
     var currentTime = juggler.elapsedTime;
     var subscription = juggler.onElapsedTimeChange.listen((elapsedTime) {
       advanceTime(elapsedTime - currentTime);
       currentTime = elapsedTime;
-      if (currentFrame == stopFrame) this.stop();
+      if (currentFrame == stopFrame) stop();
     });
 
     completed.then((_) => subscription.cancel());
@@ -157,7 +157,7 @@ class FlipBook extends InteractiveObject implements Animatable {
 
     if (_frameTime == null) {
       _frameTime = 0.0;
-      this.dispatchEvent(_progressEvent);
+      dispatchEvent(_progressEvent);
     } else {
       _frameTime += time;
 
@@ -165,7 +165,7 @@ class FlipBook extends InteractiveObject implements Animatable {
         var frameDuration = _frameDurations[_currentFrame];
         if (frameDuration > _frameTime) break;
 
-        var lastFrame = this.totalFrames - 1;
+        var lastFrame = totalFrames - 1;
         var prevFrame = _currentFrame;
         var nextFrame = _currentFrame + 1;
         if (nextFrame > lastFrame) nextFrame = loop ? 0 : lastFrame;
@@ -175,13 +175,13 @@ class FlipBook extends InteractiveObject implements Animatable {
 
         // dispatch progress event on every new frame
         if (nextFrame != prevFrame) {
-          this.dispatchEvent(_progressEvent);
+          dispatchEvent(_progressEvent);
           if (_currentFrame != nextFrame) return true;
         }
 
         // dispatch complete event only on last frame
         if (!loop && nextFrame == lastFrame && nextFrame != prevFrame) {
-          this.dispatchEvent(_completeEvent);
+          dispatchEvent(_completeEvent);
           if (_currentFrame != nextFrame) return true;
         }
       }
@@ -216,6 +216,6 @@ class FlipBook extends InteractiveObject implements Animatable {
   void renderFiltered(RenderState renderState) {
     var bitmapData = _bitmapDatas[_currentFrame];
     var renderTextureQuad = bitmapData.renderTextureQuad;
-    renderState.renderTextureQuadFiltered(renderTextureQuad, this.filters);
+    renderState.renderTextureQuadFiltered(renderTextureQuad, filters);
   }
 }

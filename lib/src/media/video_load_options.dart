@@ -43,13 +43,13 @@ class VideoLoadOptions {
 
   VideoLoadOptions clone() {
     var options = VideoLoadOptions();
-    var urls = this.alternativeUrls;
-    options.mp4 = this.mp4;
-    options.webm = this.webm;
-    options.ogg = this.ogg;
-    options.alternativeUrls = urls == null ? null : urls.toList();
-    options.loadData = this.loadData;
-    options.corsEnabled = this.corsEnabled;
+    var urls = alternativeUrls;
+    options.mp4 = mp4;
+    options.webm = webm;
+    options.ogg = ogg;
+    options.alternativeUrls = urls?.toList();
+    options.loadData = loadData;
+    options.corsEnabled = corsEnabled;
     return options;
   }
 
@@ -60,19 +60,19 @@ class VideoLoadOptions {
 
   List<String> getOptimalVideoUrls(String primaryUrl) {
     var availableTypes = VideoLoader.supportedTypes.toList();
-    if (!this.webm) availableTypes.remove("webm");
-    if (!this.mp4) availableTypes.remove("mp4");
-    if (!this.ogg) availableTypes.remove("ogg");
+    if (!webm) availableTypes.remove('webm');
+    if (!mp4) availableTypes.remove('mp4');
+    if (!ogg) availableTypes.remove('ogg');
 
-    var urls = List<String>();
+    var urls = <String>[];
     var regex =
-        RegExp(r"([A-Za-z0-9]+)$", multiLine: false, caseSensitive: true);
+        RegExp(r'([A-Za-z0-9]+)$', multiLine: false, caseSensitive: true);
     var primaryMatch = regex.firstMatch(primaryUrl);
     if (primaryMatch == null) return urls;
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
 
-    if (this.alternativeUrls != null) {
-      for (var alternativeUrl in this.alternativeUrls) {
+    if (alternativeUrls != null) {
+      for (var alternativeUrl in alternativeUrls) {
         var alternativeMatch = regex.firstMatch(alternativeUrl);
         if (alternativeMatch == null) continue;
         if (availableTypes.contains(alternativeMatch.group(1))) {

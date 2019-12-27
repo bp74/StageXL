@@ -23,7 +23,7 @@ class RenderBufferVertex {
   int get contextIdentifier => _contextIdentifier;
 
   void dispose() {
-    if (this._buffer != null && _renderingContext != null) {
+    if (_buffer != null && _renderingContext != null) {
       _renderingContext.deleteBuffer(_buffer);
       _renderingContext = null;
       _buffer = null;
@@ -45,9 +45,9 @@ class RenderBufferVertex {
   }
 
   void update() {
-    var update = Float32List.view(data.buffer, 0, this.position);
+    var update = Float32List.view(data.buffer, 0, position);
     _renderingContext.bufferSubData(gl.WebGL.ARRAY_BUFFER, 0, update);
-    _renderStatistics.vertexCount += this.count;
+    _renderStatistics.vertexCount += count;
   }
 
   void bindAttribute(int index, int size, int stride, int offset) {

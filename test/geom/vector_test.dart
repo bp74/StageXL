@@ -1,4 +1,4 @@
-@TestOn("browser")
+@TestOn('browser')
 library vector_test;
 
 import 'dart:math';

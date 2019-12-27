@@ -10,7 +10,7 @@ abstract class RenderFilter {
 
   bool get isSimple {
     var overlap = this.overlap;
-    var rps = this.renderPassSources;
+    var rps = renderPassSources;
     return overlap.width == 0 && overlap.height == 0 && rps.length == 1;
   }
 

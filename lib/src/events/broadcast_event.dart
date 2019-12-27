@@ -67,11 +67,11 @@ class RenderEvent extends BroadcastEvent {
 //------------------------------------------------------------------------------
 
 final List<EventStreamSubscription<EnterFrameEvent>> _enterFrameSubscriptions =
-    List<EventStreamSubscription<EnterFrameEvent>>();
+    <EventStreamSubscription<EnterFrameEvent>>[];
 final List<EventStreamSubscription<ExitFrameEvent>> _exitFrameSubscriptions =
-    List<EventStreamSubscription<ExitFrameEvent>>();
+    <EventStreamSubscription<ExitFrameEvent>>[];
 final List<EventStreamSubscription<RenderEvent>> _renderSubscriptions =
-    List<EventStreamSubscription<RenderEvent>>();
+    <EventStreamSubscription<RenderEvent>>[];
 
 void _dispatchBroadcastEvent<T extends BroadcastEvent>(
     BroadcastEvent broadcastEvent,
@@ -83,7 +83,7 @@ void _dispatchBroadcastEvent<T extends BroadcastEvent>(
 
   var length = subscriptions.length;
 
-  for (int i = 0; i < length; i++) {
+  for (var i = 0; i < length; i++) {
     var subscription = subscriptions[i];
     if (subscription.isCanceled == false) {
       broadcastEvent._isPropagationStopped = false;

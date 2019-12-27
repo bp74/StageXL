@@ -3,13 +3,13 @@ part of stagexl.drawing;
 enum PathEncoding { SVG, EaselJS }
 
 abstract class GraphicsCommandDecode extends GraphicsCommand {
-  String _path = "";
-  final List<GraphicsCommand> _commands = List<GraphicsCommand>();
+  String _path = '';
+  final List<GraphicsCommand> _commands = <GraphicsCommand>[];
 
   String get path => _path;
 
   set path(String value) {
-    _path = value ?? "";
+    _path = value ?? '';
     _commands.clear();
     _decodePath();
     _invalidate();
@@ -17,7 +17,7 @@ abstract class GraphicsCommandDecode extends GraphicsCommand {
 
   @override
   void updateContext(GraphicsContext context) {
-    for (int i = 0; i < _commands.length; i++) {
+    for (var i = 0; i < _commands.length; i++) {
       _commands[i].updateContext(context);
     }
   }
@@ -55,7 +55,7 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
     var y = 0.0;
     var w = 0.0;
 
-    for (int i = 0; i < path.length;) {
+    for (var i = 0; i < path.length;) {
       var n = _base64(path.codeUnitAt(i++));
       var m = (n >> 3);
       var l = (n >> 2 & 1) + 2;
@@ -93,9 +93,9 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
 //------------------------------------------------------------------------------
 
 class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
-  static final RegExp _commandRegExp = RegExp(r"([a-zA-Z])([^a-zA-Z]+|$)");
-  static final RegExp _parameterRegExp = RegExp(r"\-?\d+(\.\d+)?");
-  static final RegExp _lineBreakRegExp = RegExp(r"\r\n|\r|\n");
+  static final RegExp _commandRegExp = RegExp(r'([a-zA-Z])([^a-zA-Z]+|$)');
+  static final RegExp _parameterRegExp = RegExp(r'\-?\d+(\.\d+)?');
+  static final RegExp _lineBreakRegExp = RegExp(r'\r\n|\r|\n');
 
   // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
   // https://svgwg.org/svg2-draft/paths.html
@@ -106,13 +106,13 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
   @override
   void _decodePath() {
-    double cx = 0.0;
-    double cy = 0.0;
-    double startPointX = 0.0;
-    double startPointY = 0.0;
-    bool startPointValid = false;
-    String path = this.path.replaceAll(_lineBreakRegExp, " ");
-    List<double> p = List<double>();
+    var cx = 0.0;
+    var cy = 0.0;
+    var startPointX = 0.0;
+    var startPointY = 0.0;
+    var startPointValid = false;
+    var path = this.path.replaceAll(_lineBreakRegExp, ' ');
+    var p = <double>[];
 
     for (var commandMatch in _commandRegExp.allMatches(path)) {
       var command = commandMatch.group(1);
@@ -124,20 +124,20 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       }
 
       switch (command) {
-        case "l": // l dx dy
-          for (int i = 0; i <= p.length - 2; i += 2) {
+        case 'l': // l dx dy
+          for (var i = 0; i <= p.length - 2; i += 2) {
             _add(GraphicsCommandLineTo(cx += p[i + 0], cy += p[i + 1]));
           }
           break;
 
-        case "L": // L x y
-          for (int i = 0; i <= p.length - 2; i += 2) {
+        case 'L': // L x y
+          for (var i = 0; i <= p.length - 2; i += 2) {
             _add(GraphicsCommandLineTo(cx = p[i + 0], cy = p[i + 1]));
           }
           break;
 
         case 'm': // m dx dy
-          for (int i = 0; i <= p.length - 2; i += 2) {
+          for (var i = 0; i <= p.length - 2; i += 2) {
             _add(GraphicsCommandMoveTo(cx += p[i + 0], cy += p[i + 1]));
             startPointX = startPointValid ? startPointX : cx;
             startPointY = startPointValid ? startPointY : cy;
@@ -146,7 +146,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 'M': // M x y
-          for (int i = 0; i <= p.length - 2; i += 2) {
+          for (var i = 0; i <= p.length - 2; i += 2) {
             _add(GraphicsCommandMoveTo(cx = p[i + 0], cy = p[i + 1]));
             startPointX = startPointValid ? startPointX : cx;
             startPointY = startPointValid ? startPointY : cy;
@@ -155,31 +155,31 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 'h': // h dx
-          for (int i = 0; i <= p.length - 1; i += 1) {
+          for (var i = 0; i <= p.length - 1; i += 1) {
             _add(GraphicsCommandLineTo(cx += p[i], cy));
           }
           break;
 
         case 'H': // H x
-          for (int i = 0; i <= p.length - 1; i += 1) {
+          for (var i = 0; i <= p.length - 1; i += 1) {
             _add(GraphicsCommandLineTo(cx = p[i], cy));
           }
           break;
 
         case 'v': // v dy
-          for (int i = 0; i <= p.length - 1; i += 1) {
+          for (var i = 0; i <= p.length - 1; i += 1) {
             _add(GraphicsCommandLineTo(cx, cy += p[i]));
           }
           break;
 
         case 'V': // V y
-          for (int i = 0; i <= p.length - 1; i += 1) {
+          for (var i = 0; i <= p.length - 1; i += 1) {
             _add(GraphicsCommandLineTo(cx, cy = p[i]));
           }
           break;
 
         case 'c': // c dx1 dy1, dx2 dy2, dx dy
-          for (int i = 0; i <= p.length - 6; i += 6) {
+          for (var i = 0; i <= p.length - 6; i += 6) {
             var x1 = cx + p[i + 0];
             var y1 = cy + p[i + 1];
             var x2 = cx + p[i + 2];
@@ -191,7 +191,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 'C': // C x1 y1, x2 y2, x y
-          for (int i = 0; i <= p.length - 6; i += 6) {
+          for (var i = 0; i <= p.length - 6; i += 6) {
             var x1 = p[i + 0];
             var y1 = p[i + 1];
             var x2 = p[i + 2];
@@ -203,7 +203,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 's': // s dx2 dy2, dx dy
-          for (int i = 0; i <= p.length - 4; i += 4) {
+          for (var i = 0; i <= p.length - 4; i += 4) {
             var l = _commands.isNotEmpty ? _commands.last : null;
             var lx = l is GraphicsCommandBezierCurveTo ? cx - l.controlX2 : 0.0;
             var ly = l is GraphicsCommandBezierCurveTo ? cy - l.controlY2 : 0.0;
@@ -218,7 +218,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 'S': // S x2 y2, x y
-          for (int i = 0; i <= p.length - 4; i += 4) {
+          for (var i = 0; i <= p.length - 4; i += 4) {
             var l = _commands.isNotEmpty ? _commands.last : null;
             var lx = l is GraphicsCommandBezierCurveTo ? cx - l.controlX2 : 0.0;
             var ly = l is GraphicsCommandBezierCurveTo ? cy - l.controlY2 : 0.0;
@@ -233,7 +233,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 'q': // q dx1 dy1, dx dy
-          for (int i = 0; i <= p.length - 4; i += 4) {
+          for (var i = 0; i <= p.length - 4; i += 4) {
             var x1 = cx + p[i + 0];
             var y1 = cy + p[i + 1];
             var ex = cx += p[i + 2];
@@ -243,7 +243,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 'Q': // Q x1 y1, x y
-          for (int i = 0; i <= p.length - 4; i += 4) {
+          for (var i = 0; i <= p.length - 4; i += 4) {
             var x1 = p[i + 0];
             var y1 = p[i + 1];
             var ex = cx = p[i + 2];
@@ -253,7 +253,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 't': // t dx dy
-          for (int i = 0; i <= p.length - 2; i += 2) {
+          for (var i = 0; i <= p.length - 2; i += 2) {
             var l = _commands.isNotEmpty ? _commands.last : null;
             var lx =
                 l is GraphicsCommandQuadraticCurveTo ? cx - l.controlX : 0.0;
@@ -268,7 +268,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 'T': // T x y
-          for (int i = 0; i <= p.length - 2; i += 2) {
+          for (var i = 0; i <= p.length - 2; i += 2) {
             var l = _commands.isNotEmpty ? _commands.last : null;
             var lx =
                 l is GraphicsCommandQuadraticCurveTo ? cx - l.controlX : 0.0;
@@ -283,7 +283,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 'a': // a rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
-          for (int i = 0; i <= p.length - 7; i += 7) {
+          for (var i = 0; i <= p.length - 7; i += 7) {
             var sx = cx;
             var sy = cy;
             var rx = p[i + 0];
@@ -298,7 +298,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
           break;
 
         case 'A': // A rx ry x-axis-rotation large-arc-flag sweep-flag x y
-          for (int i = 0; i <= p.length - 7; i += 7) {
+          for (var i = 0; i <= p.length - 7; i += 7) {
             var sx = cx;
             var sy = cy;
             var rx = p[i + 0];

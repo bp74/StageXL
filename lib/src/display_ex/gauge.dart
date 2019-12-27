@@ -71,7 +71,7 @@ class Gauge extends DisplayObject {
   void renderFiltered(RenderState renderState) {
     if (bitmapData != null) {
       var renderTextureQuad = _getRenderTextureQuad();
-      renderState.renderTextureQuadFiltered(renderTextureQuad, this.filters);
+      renderState.renderTextureQuadFiltered(renderTextureQuad, filters);
     }
   }
 

@@ -37,7 +37,7 @@ class _GraphicsStroke extends _GraphicsMesh<_GraphicsStrokeSegment> {
 
   @override
   bool hitTest(double x, double y) {
-    for (_GraphicsStrokeSegment segment in segments) {
+    for (var segment in segments) {
       if (segment.checkBounds(x, y) == false) continue;
       if (segment.hitTest(x, y)) return true;
     }

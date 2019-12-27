@@ -16,33 +16,35 @@ part of stagexl.events;
 /// or [stopImmediatePropagation] method.
 class Event {
   // DiplayObject events
-  static const String ADDED = "added";
-  static const String ADDED_TO_STAGE = "addedToStage";
-  static const String ENTER_FRAME = "enterFrame";
-  static const String EXIT_FRAME = "exitFrame";
-  static const String REMOVED = "removed";
-  static const String REMOVED_FROM_STAGE = "removedFromStage";
-  static const String RESIZE = "resize";
-  static const String RENDER = "render";
-  static const String MOUSE_LEAVE = "mouseLeave";
+  static const String ADDED = 'added';
+  static const String ADDED_TO_STAGE = 'addedToStage';
+  static const String ENTER_FRAME = 'enterFrame';
+  static const String EXIT_FRAME = 'exitFrame';
+  static const String REMOVED = 'removed';
+  static const String REMOVED_FROM_STAGE = 'removedFromStage';
+  static const String RESIZE = 'resize';
+  static const String RENDER = 'render';
+  static const String MOUSE_LEAVE = 'mouseLeave';
 
   // Common events
-  static const String OKAY = "okay";
-  static const String CANCEL = "cancel";
-  static const String CHANGE = "change";
-  static const String CONFIRM = "confirm";
-  static const String SCROLL = "scroll";
-  static const String OPEN = "open";
-  static const String CLOSE = "close";
-  static const String SELECT = "select";
-  static const String COMPLETE = "complete";
-  static const String PROGRESS = "progress";
+  static const String OKAY = 'okay';
+  static const String CANCEL = 'cancel';
+  static const String CHANGE = 'change';
+  static const String CONFIRM = 'confirm';
+  static const String SCROLL = 'scroll';
+  static const String OPEN = 'open';
+  static const String CLOSE = 'close';
+  static const String SELECT = 'select';
+  static const String COMPLETE = 'complete';
+  static const String PROGRESS = 'progress';
 
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  String _type;
-  bool _bubbles;
+  final String _type;
+  final bool _bubbles;
+  // The following field is modified from various places in this library.
+  // ignore: prefer_final_fields
   EventPhase _eventPhase = EventPhase.AT_TARGET;
   EventDispatcher _target;
   EventDispatcher _currentTarget;

@@ -20,7 +20,7 @@ class ResourceManagerResource {
 
   @override
   String toString() =>
-      "ResourceManagerResource [kind=$kind, name=$name, url = $url]";
+      'ResourceManagerResource [kind=$kind, name=$name, url = $url]';
 
   //---------------------------------------------------------------------------
 

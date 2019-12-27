@@ -62,7 +62,7 @@ class Translation implements Animatable {
         }
 
         num ratio = _currentTime / _totalTime;
-        num transition = _transition(ratio);
+        var transition = _transition(ratio);
 
         _currentValue = _startValue + transition * (_targetValue - _startValue);
 
@@ -127,17 +127,17 @@ class Translation implements Animatable {
   /// The function that is called when this [Translation] starts.
   ///
   /// This happens after the specified [delay].
-  set onStart(void function()) {
+  set onStart(void Function() function) {
     _onStart = function;
   }
 
   /// The function that is called every time this [Translation] updates the value.
-  set onUpdate(void function(num value)) {
+  set onUpdate(void Function(num value) function) {
     _onUpdate = function;
   }
 
   /// The function that is called when this [Translation] is completed.
-  set onComplete(void function()) {
+  set onComplete(void Function() function) {
     _onComplete = function;
   }
 }

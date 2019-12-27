@@ -6,18 +6,18 @@ int colorGetG(int color) => (color >> 8) & 0xFF;
 int colorGetB(int color) => (color) & 0xFF;
 
 String color2rgb(int color) {
-  int r = colorGetR(color);
-  int g = colorGetG(color);
-  int b = colorGetB(color);
-  return "rgb($r,$g,$b)";
+  var r = colorGetR(color);
+  var g = colorGetG(color);
+  var b = colorGetB(color);
+  return 'rgb($r,$g,$b)';
 }
 
 String color2rgba(int color) {
-  int r = colorGetR(color);
-  int g = colorGetG(color);
-  int b = colorGetB(color);
+  var r = colorGetR(color);
+  var g = colorGetG(color);
+  var b = colorGetB(color);
   num a = colorGetA(color) / 255.0;
-  return "rgba($r,$g,$b,$a)";
+  return 'rgba($r,$g,$b,$a)';
 }
 
 //-----------------------------------------------------------------------------
@@ -70,7 +70,7 @@ bool ensureBool(bool value) {
   if (value is bool) {
     return value;
   } else {
-    throw ArgumentError("The supplied value ($value) is not a bool.");
+    throw ArgumentError('The supplied value ($value) is not a bool.');
   }
 }
 
@@ -78,7 +78,7 @@ int ensureInt(int value) {
   if (value is int) {
     return value;
   } else {
-    throw ArgumentError("The supplied value ($value) is not an int.");
+    throw ArgumentError('The supplied value ($value) is not an int.');
   }
 }
 
@@ -86,7 +86,7 @@ num ensureNum(Object value) {
   if (value is num) {
     return value;
   } else {
-    throw ArgumentError("The supplied value ($value) is not a number.");
+    throw ArgumentError('The supplied value ($value) is not a number.');
   }
 }
 
@@ -94,7 +94,7 @@ String ensureString(Object value) {
   if (value is String) {
     return value;
   } else {
-    throw ArgumentError("The supplied value ($value) is not a string.");
+    throw ArgumentError('The supplied value ($value) is not a string.');
   }
 }
 
@@ -107,16 +107,16 @@ bool similar(num a, num b, [num epsilon = 0.0001]) {
 //-----------------------------------------------------------------------------
 
 String getFilenameWithoutExtension(String filename) {
-  RegExp regex = RegExp(r"(.+?)(\.[^.]*$|$)");
-  Match match = regex.firstMatch(filename);
+  var regex = RegExp(r'(.+?)(\.[^.]*$|$)');
+  var match = regex.firstMatch(filename);
   return match.group(1);
 }
 
 //-----------------------------------------------------------------------------
 
 String replaceFilename(String url, String filename) {
-  RegExp regex = RegExp(r"^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))");
-  Match match = regex.firstMatch(url);
-  String path = match.group(1);
-  return (path == null) ? filename : "$path$filename";
+  var regex = RegExp(r'^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))');
+  var match = regex.firstMatch(url);
+  var path = match.group(1);
+  return (path == null) ? filename : '$path$filename';
 }

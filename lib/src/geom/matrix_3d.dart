@@ -11,19 +11,19 @@ class Matrix3D {
   final Float32List _data = Float32List(16);
 
   Matrix3D.fromIdentity() {
-    this.setIdentity();
+    setIdentity();
   }
 
   Matrix3D.fromZero() {
-    this.setZero();
+    setZero();
   }
 
   Matrix3D.fromMatrix2D(Matrix matrix) {
-    this.copyFrom2D(matrix);
+    copyFrom2D(matrix);
   }
 
   Matrix3D.fromMatrix3D(Matrix3D matrix) {
-    this.copyFrom(matrix);
+    copyFrom(matrix);
   }
 
   Matrix3D clone() => Matrix3D.fromMatrix3D(this);
@@ -119,28 +119,28 @@ class Matrix3D {
 
     // find minima and maxima
 
-    num left = x1;
+    var left = x1;
     if (left > x2) left = x2;
     if (left > x3) left = x3;
     if (left > x4) left = x4;
 
-    num top = y1;
+    var top = y1;
     if (top > y2) top = y2;
     if (top > y3) top = y3;
     if (top > y4) top = y4;
 
-    num right = x1;
+    var right = x1;
     if (right < x2) right = x2;
     if (right < x3) right = x3;
     if (right < x4) right = x4;
 
-    num bottom = y1;
+    var bottom = y1;
     if (bottom < y2) bottom = y2;
     if (bottom < y3) bottom = y3;
     if (bottom < y4) bottom = y4;
 
-    num width = right - left;
-    num heigth = bottom - top;
+    var width = right - left;
+    var heigth = bottom - top;
 
     if (returnRectangle is Rectangle) {
       returnRectangle.setTo(left, top, width, heigth);
@@ -336,22 +336,22 @@ class Matrix3D {
   //-----------------------------------------------------------------------------------------------
 
   void invert() {
-    double a00 = _data[00];
-    double a10 = _data[01];
-    double a20 = _data[02];
-    double a30 = _data[03];
-    double a01 = _data[04];
-    double a11 = _data[05];
-    double a21 = _data[06];
-    double a31 = _data[07];
-    double a02 = _data[08];
-    double a12 = _data[09];
-    double a22 = _data[10];
-    double a32 = _data[11];
-    double a03 = _data[12];
-    double a13 = _data[13];
-    double a23 = _data[14];
-    double a33 = _data[15];
+    var a00 = _data[00];
+    var a10 = _data[01];
+    var a20 = _data[02];
+    var a30 = _data[03];
+    var a01 = _data[04];
+    var a11 = _data[05];
+    var a21 = _data[06];
+    var a31 = _data[07];
+    var a02 = _data[08];
+    var a12 = _data[09];
+    var a22 = _data[10];
+    var a32 = _data[11];
+    var a03 = _data[12];
+    var a13 = _data[13];
+    var a23 = _data[14];
+    var a33 = _data[15];
 
     var b00 = a00 * a11 - a01 * a10;
     var b01 = a00 * a12 - a02 * a10;
@@ -393,11 +393,11 @@ class Matrix3D {
   //-----------------------------------------------------------------------------------------------
 
   void concat(Matrix3D matrix) {
-    this.copyFromAndConcat(this, matrix);
+    copyFromAndConcat(this, matrix);
   }
 
   void prepend(Matrix3D matrix) {
-    this.copyFromAndConcat(matrix, this);
+    copyFromAndConcat(matrix, this);
   }
 
   void concat2D(Matrix matrix) {
@@ -414,12 +414,12 @@ class Matrix3D {
     var m23 = this.m23;
     var m33 = this.m33;
 
-    num n00 = matrix.a;
-    num n10 = matrix.c;
-    num n30 = matrix.tx;
-    num n01 = matrix.b;
-    num n11 = matrix.d;
-    num n31 = matrix.ty;
+    var n00 = matrix.a;
+    var n10 = matrix.c;
+    var n30 = matrix.tx;
+    var n01 = matrix.b;
+    var n11 = matrix.d;
+    var n31 = matrix.ty;
 
     _data[00] = m00 * n00 + m01 * n10 + m03 * n30;
     _data[01] = m10 * n00 + m11 * n10 + m13 * n30;
@@ -476,12 +476,12 @@ class Matrix3D {
     var n01 = this.m01;
     var n11 = this.m11;
     var n31 = this.m31;
-    var n02 = this.m02;
-    var n12 = this.m12;
-    var n32 = this.m32;
-    var n03 = this.m03;
-    var n13 = this.m13;
-    var n33 = this.m33;
+    var n02 = m02;
+    var n12 = m12;
+    var n32 = m32;
+    var n03 = m03;
+    var n13 = m13;
+    var n33 = m33;
 
     _data[00] = m00 * n00 + m01 * n10;
     _data[01] = m10 * n00 + m11 * n10;
@@ -511,12 +511,12 @@ class Matrix3D {
     var n01 = this.m01;
     var n11 = this.m11;
     var n31 = this.m31;
-    var n02 = this.m02;
-    var n12 = this.m12;
-    var n32 = this.m32;
-    var n03 = this.m03;
-    var n13 = this.m13;
-    var n33 = this.m33;
+    var n02 = m02;
+    var n12 = m12;
+    var n32 = m32;
+    var n03 = m03;
+    var n13 = m13;
+    var n33 = m33;
 
     _data[00] = m00 * n00 + m01 * n10;
     _data[01] = m10 * n00 + m11 * n10;

@@ -14,16 +14,16 @@ class DisplayObjectChildren<T extends DisplayObject> extends IterableBase<T> {
   //---------------------------------------------------------------------------
 
   void clear() {
-    this.parent.removeChildren();
+    parent.removeChildren();
   }
 
   void add(T displayObject) {
-    this.parent.addChild(displayObject);
+    parent.addChild(displayObject);
   }
 
   void addAll(Iterable<T> displayObjects) {
     for (var displayObject in displayObjects) {
-      this.parent.addChild(displayObject);
+      parent.addChild(displayObject);
     }
   }
 
@@ -32,24 +32,24 @@ class DisplayObjectChildren<T extends DisplayObject> extends IterableBase<T> {
   }
 
   void insert(int index, T displayObject) {
-    this.parent.addChildAt(displayObject, index);
+    parent.addChildAt(displayObject, index);
   }
 
   void insertAll(int index, Iterable<T> displayObjects) {
     for (var displayObject in displayObjects) {
-      this.parent.addChildAt(displayObject, index++);
+      parent.addChildAt(displayObject, index++);
     }
   }
 
   bool remove(T displayObject) {
     var index = _children.indexOf(displayObject);
-    if (index >= 0) this.parent.removeChildAt(index);
+    if (index >= 0) parent.removeChildAt(index);
     return index >= 0;
   }
 
   T removeAt(int index) {
     var displayObject = _children[index];
-    this.parent.removeChildAt(index);
+    parent.removeChildAt(index);
     return displayObject;
   }
 
@@ -58,7 +58,7 @@ class DisplayObjectChildren<T extends DisplayObject> extends IterableBase<T> {
   }
 
   void removeRange(int start, int end) {
-    return this.parent.removeChildren(start, end);
+    return parent.removeChildren(start, end);
   }
 
   T operator [](int index) {
@@ -66,7 +66,7 @@ class DisplayObjectChildren<T extends DisplayObject> extends IterableBase<T> {
   }
 
   void operator []=(int index, T displayObject) {
-    this.parent.replaceChildAt(displayObject, index);
+    parent.replaceChildAt(displayObject, index);
   }
 
   Iterable<T> get reversed {

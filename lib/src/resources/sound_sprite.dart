@@ -12,20 +12,20 @@ part of stagexl.resources;
 /// https://github.com/realbluesky/soundsprite
 
 class SoundSprite {
-  final List<SoundSpriteSegment> _segments = List<SoundSpriteSegment>();
+  final List<SoundSpriteSegment> _segments = <SoundSpriteSegment>[];
   Sound _sound;
 
   //----------------------------------------------------------------------------
 
   static Future<SoundSprite> load(String url,
       [SoundLoadOptions soundLoadOptions]) async {
-    SoundSprite soundSprite = SoundSprite();
+    var soundSprite = SoundSprite();
 
     var soundSpriteJson = await HttpRequest.getString(url);
     var data = json.decode(soundSpriteJson);
     var urls = data['urls'] as List<dynamic>;
-    var segments = data["sprite"];
-    var soundUrls = List<String>();
+    var segments = data['sprite'];
+    var soundUrls = <String>[];
 
     if (segments is Map) {
       for (String segment in segments.keys) {
@@ -70,6 +70,6 @@ class SoundSprite {
   }
 
   SoundChannel play(String name, [bool loop, SoundTransform soundTransform]) {
-    return this.getSegment(name).play(loop, soundTransform);
+    return getSegment(name).play(loop, soundTransform);
   }
 }

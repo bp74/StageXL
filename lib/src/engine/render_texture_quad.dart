@@ -18,19 +18,19 @@ class RenderTextureQuad {
 
   RenderTextureQuad(this.renderTexture, this.sourceRectangle,
       this.offsetRectangle, this.rotation, this.pixelRatio) {
-    Rectangle<int> sr = this.sourceRectangle;
-    Rectangle<int> or = this.offsetRectangle;
-    RenderTexture rt = this.renderTexture;
-    num pr = this.pixelRatio;
+    var sr = sourceRectangle;
+    var or = offsetRectangle;
+    var rt = renderTexture;
+    var pr = pixelRatio;
 
     // Vertex list [x/y]
 
-    if (this.rotation == 0 || this.rotation == 2) {
+    if (rotation == 0 || rotation == 2) {
       vxListQuad[00] = vxListQuad[12] = (0 - or.left) / pr;
       vxListQuad[01] = vxListQuad[05] = (0 - or.top) / pr;
       vxListQuad[08] = vxListQuad[04] = (0 - or.left + sr.width) / pr;
       vxListQuad[09] = vxListQuad[13] = (0 - or.top + sr.height) / pr;
-    } else if (this.rotation == 1 || this.rotation == 3) {
+    } else if (rotation == 1 || rotation == 3) {
       vxListQuad[00] = vxListQuad[12] = (0 - or.left) / pr;
       vxListQuad[01] = vxListQuad[05] = (0 - or.top) / pr;
       vxListQuad[08] = vxListQuad[04] = (0 - or.left + sr.height) / pr;
@@ -41,22 +41,22 @@ class RenderTextureQuad {
 
     // Vertex list [u/v]
 
-    if (this.rotation == 0) {
+    if (rotation == 0) {
       vxListQuad[02] = vxListQuad[14] = sr.left / rt.width;
       vxListQuad[03] = vxListQuad[07] = sr.top / rt.height;
       vxListQuad[10] = vxListQuad[06] = sr.right / rt.width;
       vxListQuad[11] = vxListQuad[15] = sr.bottom / rt.height;
-    } else if (this.rotation == 1) {
+    } else if (rotation == 1) {
       vxListQuad[02] = vxListQuad[06] = sr.right / rt.width;
       vxListQuad[03] = vxListQuad[15] = sr.top / rt.height;
       vxListQuad[10] = vxListQuad[14] = sr.left / rt.width;
       vxListQuad[11] = vxListQuad[07] = sr.bottom / rt.height;
-    } else if (this.rotation == 2) {
+    } else if (rotation == 2) {
       vxListQuad[02] = vxListQuad[14] = sr.right / rt.width;
       vxListQuad[03] = vxListQuad[07] = sr.bottom / rt.height;
       vxListQuad[10] = vxListQuad[06] = sr.left / rt.width;
       vxListQuad[11] = vxListQuad[15] = sr.top / rt.height;
-    } else if (this.rotation == 3) {
+    } else if (rotation == 3) {
       vxListQuad[02] = vxListQuad[06] = sr.left / rt.width;
       vxListQuad[03] = vxListQuad[15] = sr.bottom / rt.height;
       vxListQuad[10] = vxListQuad[14] = sr.right / rt.width;
@@ -168,7 +168,7 @@ class RenderTextureQuad {
 
   bool get isEquivalentToSource {
     return (renderTexture != null) &&
-        (this.rotation == 0) &&
+        (rotation == 0) &&
         !_hasCustomVertices &&
         (sourceRectangle.left == 0 &&
             sourceRectangle.top == 0 &&
@@ -194,15 +194,15 @@ class RenderTextureQuad {
   }
 
   RenderTextureQuad withPixelRatio(num pixelRatio) {
-    return RenderTextureQuad(this.renderTexture, this.sourceRectangle,
-        this.offsetRectangle, this.rotation, pixelRatio);
+    return RenderTextureQuad(
+        renderTexture, sourceRectangle, offsetRectangle, rotation, pixelRatio);
   }
 
   //---------------------------------------------------------------------------
 
   void setQuadVertices() {
-    _vxList = this.vxListQuad;
-    _ixList = this.ixListQuad;
+    _vxList = vxListQuad;
+    _ixList = ixListQuad;
     _hasCustomVertices = false;
   }
 
@@ -221,7 +221,7 @@ class RenderTextureQuad {
   /// Target coordinates take the [pixelRatio] into account.
 
   Matrix get drawMatrix {
-    var pr = this.pixelRatio;
+    var pr = pixelRatio;
 
     if (rotation == 0) {
       var tx = sourceRectangle.left + offsetRectangle.left;
@@ -253,9 +253,9 @@ class RenderTextureQuad {
   /// Target coordinates take the [pixelRatio] into account.
 
   Matrix get samplerMatrix {
-    var pr = this.pixelRatio;
-    var sx = 1.0 / this.renderTexture.width;
-    var sy = 1.0 / this.renderTexture.height;
+    var pr = pixelRatio;
+    var sx = 1.0 / renderTexture.width;
+    var sy = 1.0 / renderTexture.height;
 
     if (rotation == 0) {
       var tx = sourceRectangle.left + offsetRectangle.left;
@@ -289,12 +289,12 @@ class RenderTextureQuad {
   /// learn more about this topic.
 
   RenderTextureQuad clip(Rectangle<num> rectangle) {
-    int rL = (rectangle.left * pixelRatio).round();
-    int rT = (rectangle.top * pixelRatio).round();
-    int rR = (rectangle.right * pixelRatio).round();
-    int rB = (rectangle.bottom * pixelRatio).round();
-    int ow = this.offsetRectangle.width;
-    int oh = this.offsetRectangle.height;
+    var rL = (rectangle.left * pixelRatio).round();
+    var rT = (rectangle.top * pixelRatio).round();
+    var rR = (rectangle.right * pixelRatio).round();
+    var rB = (rectangle.bottom * pixelRatio).round();
+    var ow = this.offsetRectangle.width;
+    var oh = this.offsetRectangle.height;
     var sourceRectangle = Rectangle<int>(rL, rT, rR - rL, rB - rT);
     var offsetRectangle = Rectangle<int>(0 - rL, 0 - rT, ow, oh);
     return RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);
@@ -309,10 +309,10 @@ class RenderTextureQuad {
   /// learn more about this topic.
 
   RenderTextureQuad cut(Rectangle<num> rectangle) {
-    int rL = (rectangle.left * pixelRatio).round();
-    int rT = (rectangle.top * pixelRatio).round();
-    int rR = (rectangle.right * pixelRatio).round();
-    int rB = (rectangle.bottom * pixelRatio).round();
+    var rL = (rectangle.left * pixelRatio).round();
+    var rT = (rectangle.top * pixelRatio).round();
+    var rR = (rectangle.right * pixelRatio).round();
+    var rB = (rectangle.bottom * pixelRatio).round();
     var sourceRectangle = Rectangle<int>(rL, rT, rR - rL, rB - rT);
     var offsetRectangle = Rectangle<int>(0, 0, rR - rL, rB - rT);
     return RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);

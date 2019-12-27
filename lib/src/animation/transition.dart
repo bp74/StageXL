@@ -14,7 +14,7 @@ part of stagexl.animation;
 ///     // a quadratic transition
 ///     TransitionFunction transition = (ratio) => ratio * ratio;
 
-typedef num TransitionFunction(num ratio);
+typedef TransitionFunction = num Function(num ratio);
 
 /// The [Transition] class provides common transition functions
 /// used by the [Tween] and [Translation] classes.
@@ -25,7 +25,7 @@ typedef num TransitionFunction(num ratio);
 class Transition {
   // Standard
 
-  static Random _random = Random();
+  static final Random _random = Random();
 
   static num linear(num ratio) {
     return ratio;

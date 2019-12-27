@@ -82,11 +82,11 @@ class BitmapDataLoadOptions {
 
   BitmapDataLoadOptions clone() {
     var options = BitmapDataLoadOptions();
-    options.png = this.png;
-    options.jpg = this.jpg;
-    options.webp = this.webp;
-    options.pixelRatios = List<double>.from(this.pixelRatios);
-    options.corsEnabled = this.corsEnabled;
+    options.png = png;
+    options.jpg = jpg;
+    options.webp = webp;
+    options.pixelRatios = List<double>.from(pixelRatios);
+    options.corsEnabled = corsEnabled;
     return options;
   }
 }

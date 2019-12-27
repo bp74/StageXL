@@ -117,19 +117,19 @@ class StageOptions {
 
   StageOptions clone() {
     var options = StageOptions();
-    options.renderEngine = this.renderEngine;
-    options.inputEventMode = this.inputEventMode;
-    options.stageRenderMode = this.stageRenderMode;
-    options.stageScaleMode = this.stageScaleMode;
-    options.stageAlign = this.stageAlign;
-    options.backgroundColor = this.backgroundColor;
-    options.transparent = this.transparent;
-    options.antialias = this.antialias;
-    options.maxPixelRatio = this.maxPixelRatio;
-    options.preventDefaultOnTouch = this.preventDefaultOnTouch;
-    options.preventDefaultOnMouse = this.preventDefaultOnMouse;
-    options.preventDefaultOnWheel = this.preventDefaultOnWheel;
-    options.preventDefaultOnKeyboard = this.preventDefaultOnKeyboard;
+    options.renderEngine = renderEngine;
+    options.inputEventMode = inputEventMode;
+    options.stageRenderMode = stageRenderMode;
+    options.stageScaleMode = stageScaleMode;
+    options.stageAlign = stageAlign;
+    options.backgroundColor = backgroundColor;
+    options.transparent = transparent;
+    options.antialias = antialias;
+    options.maxPixelRatio = maxPixelRatio;
+    options.preventDefaultOnTouch = preventDefaultOnTouch;
+    options.preventDefaultOnMouse = preventDefaultOnMouse;
+    options.preventDefaultOnWheel = preventDefaultOnWheel;
+    options.preventDefaultOnKeyboard = preventDefaultOnKeyboard;
     return options;
   }
 }

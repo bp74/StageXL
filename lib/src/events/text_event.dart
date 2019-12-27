@@ -8,8 +8,8 @@ part of stagexl.events;
 /// * [TextEvent.LINK]
 /// * [TextEvent.TEXT_INPUT]
 class TextEvent extends Event {
-  static const String LINK = "link";
-  static const String TEXT_INPUT = "textInput";
+  static const String LINK = 'link';
+  static const String TEXT_INPUT = 'textInput';
 
   //---------------------------------------------------------------------------
 

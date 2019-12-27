@@ -23,7 +23,7 @@ part of stagexl.animation;
 ///        ..onComplete = () => print("complete");
 ///
 class AnimationChain implements Animatable {
-  final List<Animatable> _animatables = List<Animatable>();
+  final List<Animatable> _animatables = <Animatable>[];
 
   Function _onStart;
   Function _onComplete;
@@ -90,12 +90,12 @@ class AnimationChain implements Animatable {
   /// The function that is called when an [AnimationChain] starts.
   ///
   /// This happens after the specified [delay].
-  set onStart(void function()) {
+  set onStart(void Function() function) {
     _onStart = function;
   }
 
   /// The function that is called when an [AnimationChain] is completed.
-  set onComplete(void function()) {
+  set onComplete(void Function() function) {
     _onComplete = function;
   }
 }

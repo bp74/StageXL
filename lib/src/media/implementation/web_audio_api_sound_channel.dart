@@ -27,7 +27,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
     _mixer = WebAudioApiMixer(SoundMixer._webAudioApiMixer.inputNode);
     _mixer.applySoundTransform(_soundTransform);
 
-    this.paused = false;
+    paused = false;
   }
 
   //---------------------------------------------------------------------------
@@ -62,9 +62,9 @@ class WebAudioApiSoundChannel extends SoundChannel {
     } else if (_paused) {
       _position = position;
     } else {
-      this.paused = true;
+      paused = true;
       _position = position;
-      this.paused = false;
+      paused = false;
     }
   }
 
@@ -81,7 +81,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
       // we can't pause/resume the audio playback.
       _paused = _stopped || value;
     } else if (value) {
-      _position = this.position;
+      _position = position;
       _paused = true;
       _sourceNodeEndedSubscription?.cancel();
       _sourceNode.stop(0);
@@ -131,10 +131,10 @@ class WebAudioApiSoundChannel extends SoundChannel {
 
   void _onEnded(html.Event e) {
     if (_paused == false && _stopped == false && _loop == false) {
-      _position = this.position;
+      _position = position;
       _stopped = true;
       _paused = true;
-      this.dispatchEvent(Event(Event.COMPLETE));
+      dispatchEvent(Event(Event.COMPLETE));
     }
   }
 }

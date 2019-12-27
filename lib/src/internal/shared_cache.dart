@@ -4,11 +4,11 @@ import '../events.dart';
 
 class ObjectReleaseEvent<E> extends Event {
   final E object;
-  ObjectReleaseEvent(this.object) : super("objectRelease", false);
+  ObjectReleaseEvent(this.object) : super('objectRelease', false);
 }
 
 class SharedCacheNode<E> {
-  E _cachedObject;
+  final E _cachedObject;
   int _shareCount = 1;
   SharedCacheNode(this._cachedObject);
 }
@@ -17,7 +17,7 @@ class SharedCacheNode<E> {
 //------------------------------------------------------------------------------
 
 class SharedCache<K, E> extends EventDispatcher {
-  Map<K, SharedCacheNode<E>> _cachedObjects = Map<K, SharedCacheNode<E>>();
+  final Map<K, SharedCacheNode<E>> _cachedObjects = <K, SharedCacheNode<E>>{};
   bool _autoReleaseUnusedObjects = true;
 
   SharedCache([bool autoReleaseUnusedObjects = true]) {
@@ -25,7 +25,7 @@ class SharedCache<K, E> extends EventDispatcher {
   }
 
   EventStream<ObjectReleaseEvent<E>> get onObjectReleased {
-    return this.on<ObjectReleaseEvent<E>>("objectRelease");
+    return on<ObjectReleaseEvent<E>>('objectRelease');
   }
 
   //----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ class SharedCache<K, E> extends EventDispatcher {
     if (!containsObject(key)) {
       _cachedObjects[key] = SharedCacheNode<E>(value);
     } else {
-      throw ArgumentError("key-value already in cache!");
+      throw ArgumentError('key-value already in cache!');
     }
   }
 

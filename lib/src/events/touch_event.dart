@@ -9,17 +9,17 @@ part of stagexl.events;
 ///     StageXL.stageOptions.inputEventMode = InputEventMode.MouseAndTouch;
 
 class TouchEvent extends InputEvent {
-  static const String TOUCH_BEGIN = "touchBegin";
-  static const String TOUCH_END = "touchEnd";
-  static const String TOUCH_CANCEL = "touchCancel";
-  static const String TOUCH_MOVE = "touchMove";
+  static const String TOUCH_BEGIN = 'touchBegin';
+  static const String TOUCH_END = 'touchEnd';
+  static const String TOUCH_CANCEL = 'touchCancel';
+  static const String TOUCH_MOVE = 'touchMove';
 
-  static const String TOUCH_OVER = "touchOver";
-  static const String TOUCH_OUT = "touchOut";
+  static const String TOUCH_OVER = 'touchOver';
+  static const String TOUCH_OUT = 'touchOut';
 
-  static const String TOUCH_ROLL_OUT = "touchRollOut";
-  static const String TOUCH_ROLL_OVER = "touchRollOver";
-  static const String TOUCH_TAP = "touchTap";
+  static const String TOUCH_ROLL_OUT = 'touchRollOut';
+  static const String TOUCH_ROLL_OVER = 'touchRollOver';
+  static const String TOUCH_TAP = 'touchTap';
 
   //---------------------------------------------------------------------------
 

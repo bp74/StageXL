@@ -7,8 +7,8 @@ part of stagexl.events;
 /// * [KeyboardEvent.KEY_DOWN]
 /// * [KeyboardEvent.KEY_UP]
 class KeyboardEvent extends Event {
-  static const String KEY_DOWN = "keyDown";
-  static const String KEY_UP = "keyUp";
+  static const String KEY_DOWN = 'keyDown';
+  static const String KEY_UP = 'keyUp';
 
   //----------------------------------------------------------------------------
 

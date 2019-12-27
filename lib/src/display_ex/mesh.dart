@@ -59,8 +59,8 @@ class Mesh extends DisplayObject {
     var triangleCount = 2 * columns * rows;
     var mesh = Mesh(bitmapData, vertexCount, triangleCount);
 
-    for (int r = 0, vertex = 0; r <= rows; r++) {
-      for (int c = 0; c <= columns; c++) {
+    for (var r = 0, vertex = 0; r <= rows; r++) {
+      for (var c = 0; c <= columns; c++) {
         var u = c / columns;
         var v = r / rows;
         var x = width * u;
@@ -69,8 +69,8 @@ class Mesh extends DisplayObject {
       }
     }
 
-    for (int r = 0, triangle = 0; r < rows; r++) {
-      for (int c = 0; c < columns; c++) {
+    for (var r = 0, triangle = 0; r < rows; r++) {
+      for (var c = 0; c < columns; c++) {
         var v0 = (r + 0) * (columns + 1) + c + 0;
         var v1 = (r + 0) * (columns + 1) + c + 1;
         var v2 = (r + 1) * (columns + 1) + c + 1;
@@ -140,13 +140,13 @@ class Mesh extends DisplayObject {
 
   @override
   Rectangle<num> get bounds {
-    double left = double.infinity;
-    double top = double.infinity;
-    double right = double.negativeInfinity;
-    double bottom = double.negativeInfinity;
+    var left = double.infinity;
+    var top = double.infinity;
+    var right = double.negativeInfinity;
+    var bottom = double.negativeInfinity;
 
-    for (int i = 0; i < ixList.length; i++) {
-      int index = ixList[i + 0];
+    for (var i = 0; i < ixList.length; i++) {
+      var index = ixList[i + 0];
       var vertexX = vxList[(index << 2) + 0];
       var vertexY = vxList[(index << 2) + 1];
       if (left > vertexX) left = vertexX;
@@ -160,38 +160,38 @@ class Mesh extends DisplayObject {
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-    for (int i = 0; i < ixList.length - 2; i += 3) {
-      int i1 = ixList[i + 0] << 2;
-      int i2 = ixList[i + 1] << 2;
-      int i3 = ixList[i + 2] << 2;
+    for (var i = 0; i < ixList.length - 2; i += 3) {
+      var i1 = ixList[i + 0] << 2;
+      var i2 = ixList[i + 1] << 2;
+      var i3 = ixList[i + 2] << 2;
 
-      num x1 = vxList[i1 + 0];
-      num y1 = vxList[i1 + 1];
-      num x2 = vxList[i2 + 0];
-      num y2 = vxList[i2 + 1];
-      num x3 = vxList[i3 + 0];
-      num y3 = vxList[i3 + 1];
+      var x1 = vxList[i1 + 0];
+      var y1 = vxList[i1 + 1];
+      var x2 = vxList[i2 + 0];
+      var y2 = vxList[i2 + 1];
+      var x3 = vxList[i3 + 0];
+      var y3 = vxList[i3 + 1];
 
       if (localX < x1 && localX < x2 && localX < x3) continue;
       if (localX > x1 && localX > x2 && localX > x3) continue;
       if (localY < y1 && localY < y2 && localY < y3) continue;
       if (localY > y1 && localY > y2 && localY > y3) continue;
 
-      num vx1 = x3 - x1;
-      num vy1 = y3 - y1;
-      num vx2 = x2 - x1;
-      num vy2 = y2 - y1;
-      num vx3 = localX - x1;
-      num vy3 = localY - y1;
+      var vx1 = x3 - x1;
+      var vy1 = y3 - y1;
+      var vx2 = x2 - x1;
+      var vy2 = y2 - y1;
+      var vx3 = localX - x1;
+      var vy3 = localY - y1;
 
-      num dot11 = vx1 * vx1 + vy1 * vy1;
-      num dot12 = vx1 * vx2 + vy1 * vy2;
-      num dot13 = vx1 * vx3 + vy1 * vy3;
-      num dot22 = vx2 * vx2 + vy2 * vy2;
-      num dot23 = vx2 * vx3 + vy2 * vy3;
+      var dot11 = vx1 * vx1 + vy1 * vy1;
+      var dot12 = vx1 * vx2 + vy1 * vy2;
+      var dot13 = vx1 * vx3 + vy1 * vy3;
+      var dot22 = vx2 * vx2 + vy2 * vy2;
+      var dot23 = vx2 * vx3 + vy2 * vy3;
 
-      num u = (dot22 * dot13 - dot12 * dot23) / (dot11 * dot22 - dot12 * dot12);
-      num v = (dot11 * dot23 - dot12 * dot13) / (dot11 * dot22 - dot12 * dot12);
+      var u = (dot22 * dot13 - dot12 * dot23) / (dot11 * dot22 - dot12 * dot12);
+      var v = (dot11 * dot23 - dot12 * dot13) / (dot11 * dot22 - dot12 * dot12);
 
       if ((u >= 0) && (v >= 0) && (u + v < 1)) return this;
     }
@@ -215,7 +215,7 @@ class Mesh extends DisplayObject {
 
     _vxListTemp = _vxListTemp ?? Float32List(vxList.length);
 
-    for (int i = 0; i < _vxListTemp.length - 3; i += 4) {
+    for (var i = 0; i < _vxListTemp.length - 3; i += 4) {
       var x = vxList[i + 2];
       var y = vxList[i + 3];
       _vxListTemp[i + 0] = vxList[i + 0];

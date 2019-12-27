@@ -4,14 +4,14 @@ class RenderContextCanvas extends RenderContext {
   final CanvasElement _canvasElement;
   final CanvasRenderingContext2D _renderingContext;
 
-  Matrix _identityMatrix = Matrix.fromIdentity();
+  final Matrix _identityMatrix = Matrix.fromIdentity();
   BlendMode _activeBlendMode = BlendMode.NORMAL;
   double _activeAlpha = 1.0;
 
   RenderContextCanvas(CanvasElement canvasElement)
       : _canvasElement = canvasElement,
         _renderingContext = canvasElement.context2D {
-    this.reset();
+    reset();
   }
 
   //---------------------------------------------------------------------------
@@ -36,7 +36,7 @@ class RenderContextCanvas extends RenderContext {
     setBlendMode(BlendMode.NORMAL);
     setAlpha(1.0);
 
-    int alpha = colorGetA(color);
+    var alpha = colorGetA(color);
 
     if (alpha < 255) {
       _renderingContext.clearRect(
@@ -77,8 +77,8 @@ class RenderContextCanvas extends RenderContext {
     if (mask.border) {
       _renderingContext.strokeStyle = color2rgba(mask.borderColor);
       _renderingContext.lineWidth = mask.borderWidth;
-      _renderingContext.lineCap = "round";
-      _renderingContext.lineJoin = "round";
+      _renderingContext.lineCap = 'round';
+      _renderingContext.lineJoin = 'round';
       _renderingContext.stroke();
     }
   }
@@ -92,7 +92,7 @@ class RenderContextCanvas extends RenderContext {
       var renderTexture = renderTextureQuad.renderTexture;
       var ixList = renderTextureQuad.ixList;
       var vxList = renderTextureQuad.vxList;
-      this.renderTextureMesh(renderState, renderTexture, ixList, vxList);
+      renderTextureMesh(renderState, renderTexture, ixList, vxList);
       return;
     }
 
@@ -196,10 +196,10 @@ class RenderContextCanvas extends RenderContext {
     context.setTransform(
         matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
 
-    for (int i = 0; i < ixList.length - 2; i += 3) {
-      int i1 = ixList[i + 0] << 2;
-      int i2 = ixList[i + 1] << 2;
-      int i3 = ixList[i + 2] << 2;
+    for (var i = 0; i < ixList.length - 2; i += 3) {
+      var i1 = ixList[i + 0] << 2;
+      var i2 = ixList[i + 1] << 2;
+      var i3 = ixList[i + 2] << 2;
 
       num x1 = vxList[i1 + 0];
       num y1 = vxList[i1 + 1];
@@ -233,13 +233,13 @@ class RenderContextCanvas extends RenderContext {
       u3 -= u1;
       v3 -= v1;
 
-      num id = 1.0 / (u2 * v3 - u3 * v2);
-      num ma = id * (v3 * x2 - v2 * x3);
-      num mb = id * (v3 * y2 - v2 * y3);
-      num mc = id * (u2 * x3 - u3 * x2);
-      num md = id * (u2 * y3 - u3 * y2);
-      num mx = x1 - ma * u1 - mc * v1;
-      num my = y1 - mb * u1 - md * v1;
+      var id = 1.0 / (u2 * v3 - u3 * v2);
+      var ma = id * (v3 * x2 - v2 * x3);
+      var mb = id * (v3 * y2 - v2 * y3);
+      var mc = id * (u2 * x3 - u3 * x2);
+      var md = id * (u2 * y3 - u3 * y2);
+      var mx = x1 - ma * u1 - mc * v1;
+      var my = y1 - mb * u1 - md * v1;
 
       context.transform(ma * iw, mb * iw, mc * ih, md * ih, mx, my);
       context.drawImage(source, 0, 0);
@@ -315,16 +315,16 @@ class RenderContextCanvas extends RenderContext {
         matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     context.beginPath();
 
-    for (int i = 0; i < ixList.length - 2; i += 3) {
-      int i0 = ixList[i + 0] << 1;
-      int i1 = ixList[i + 1] << 1;
-      int i2 = ixList[i + 2] << 1;
-      num x1 = vxList[i0 + 0];
-      num y1 = vxList[i0 + 1];
-      num x2 = vxList[i1 + 0];
-      num y2 = vxList[i1 + 1];
-      num x3 = vxList[i2 + 0];
-      num y3 = vxList[i2 + 1];
+    for (var i = 0; i < ixList.length - 2; i += 3) {
+      var i0 = ixList[i + 0] << 1;
+      var i1 = ixList[i + 1] << 1;
+      var i2 = ixList[i + 2] << 1;
+      var x1 = vxList[i0 + 0];
+      var y1 = vxList[i0 + 1];
+      var x2 = vxList[i1 + 0];
+      var y2 = vxList[i1 + 1];
+      var x3 = vxList[i2 + 0];
+      var y3 = vxList[i2 + 1];
       context.moveTo(x1, y1);
       context.lineTo(x2, y2);
       context.lineTo(x3, y3);

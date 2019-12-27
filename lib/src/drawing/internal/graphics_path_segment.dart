@@ -38,7 +38,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
       _clockwise = null;
       return super.addVertex(x, y);
     } else {
-      return this.vertexCount - 1;
+      return vertexCount - 1;
     }
   }
 
@@ -56,11 +56,11 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
     // Winding Number Method
     // http://geomalgorithms.com/a03-_inclusion.html
 
-    int wn = 0;
+    var wn = 0;
     num ax = _vertexBuffer[(_vertexCount - 1) * 2 + 0];
     num ay = _vertexBuffer[(_vertexCount - 1) * 2 + 1];
 
-    for (int i = 0; i < _vertexCount; i++) {
+    for (var i = 0; i < _vertexCount; i++) {
       num bx = _vertexBuffer[i * 2 + 0];
       num by = _vertexBuffer[i * 2 + 1];
       if (ay <= y) {
@@ -85,37 +85,37 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
     var count = _vertexCount;
     if (count < 3) return;
 
-    var available = List<int>();
+    var available = <int>[];
     var clockwise = this.clockwise;
     var index = 0;
 
-    for (int p = 0; p < count; p++) {
+    for (var p = 0; p < count; p++) {
       available.add(p);
     }
 
     while (available.length > 3) {
-      int i0 = available[(index + 0) % available.length];
-      int i1 = available[(index + 1) % available.length];
-      int i2 = available[(index + 2) % available.length];
+      var i0 = available[(index + 0) % available.length];
+      var i1 = available[(index + 1) % available.length];
+      var i2 = available[(index + 2) % available.length];
 
-      num x1 = buffer[i0 * 2 + 0];
-      num y1 = buffer[i0 * 2 + 1];
-      num x2 = buffer[i1 * 2 + 0];
-      num y2 = buffer[i1 * 2 + 1];
-      num x3 = buffer[i2 * 2 + 0];
-      num y3 = buffer[i2 * 2 + 1];
+      var x1 = buffer[i0 * 2 + 0];
+      var y1 = buffer[i0 * 2 + 1];
+      var x2 = buffer[i1 * 2 + 0];
+      var y2 = buffer[i1 * 2 + 1];
+      var x3 = buffer[i2 * 2 + 0];
+      var y3 = buffer[i2 * 2 + 1];
 
-      num x31 = x3 - x1;
-      num y31 = y3 - y1;
-      num x21 = x2 - x1;
-      num y21 = y2 - y1;
+      var x31 = x3 - x1;
+      var y31 = y3 - y1;
+      var x21 = x2 - x1;
+      var y21 = y2 - y1;
 
-      num u = 0.0, v = 0.0;
-      num tmp = y31 * x21 - x31 * y21;
+      var u = 0.0, v = 0.0;
+      var tmp = y31 * x21 - x31 * y21;
       var earFound = clockwise ? tmp >= 0 : tmp <= 0;
 
-      for (int j = 0; j < available.length && earFound; j++) {
-        int vi = available[j];
+      for (var j = 0; j < available.length && earFound; j++) {
+        var vi = available[j];
         if (vi != i0 && vi != i1 && vi != i2) {
           num x01 = buffer[vi * 2 + 0] - x1;
           num y01 = buffer[vi * 2 + 1] - y1;
@@ -150,7 +150,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
     num x1 = buffer[(count - 1) * 2 + 0];
     num y1 = buffer[(count - 1) * 2 + 1];
 
-    for (int i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
       num x2 = buffer[i * 2 + 0];
       num y2 = buffer[i * 2 + 1];
       value += (x1 - x2) * (y1 + y2);

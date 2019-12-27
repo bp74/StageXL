@@ -9,7 +9,7 @@ class RenderFrameBuffer {
   gl.Framebuffer _framebuffer;
   gl.RenderingContext _renderingContext;
 
-  final List<_MaskState> _maskStates = List<_MaskState>();
+  final List<_MaskState> _maskStates = <_MaskState>[];
 
   RenderFrameBuffer.rawWebGL(int width, int height) {
     _renderTexture = RenderTexture.rawWebGL(width, height);
@@ -43,7 +43,7 @@ class RenderFrameBuffer {
   //---------------------------------------------------------------------------
 
   void activate(RenderContextWebGL renderContext) {
-    if (this.contextIdentifier != renderContext.contextIdentifier) {
+    if (contextIdentifier != renderContext.contextIdentifier) {
       _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;

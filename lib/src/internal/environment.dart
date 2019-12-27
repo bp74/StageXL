@@ -24,12 +24,12 @@ num _checkDevicePixelRatio() {
 bool _checkMobileDevice() {
   var ua = window.navigator.userAgent.toLowerCase();
   var identifiers = [
-    "iphone",
-    "ipad",
-    "ipod",
-    "android",
-    "webos",
-    "windows phone"
+    'iphone',
+    'ipad',
+    'ipod',
+    'android',
+    'webos',
+    'windows phone'
   ];
   return identifiers.any(ua.contains);
 }

@@ -13,7 +13,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   bool hitTest(double px, double py) {
-    for (int i = 0; i < _indexCount - 2; i += 3) {
+    for (var i = 0; i < _indexCount - 2; i += 3) {
       var o1 = _indexBuffer[i + 0] * 2;
       var o2 = _indexBuffer[i + 1] * 2;
       var o3 = _indexBuffer[i + 2] * 2;
@@ -102,44 +102,44 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   void _addCapStart(double vx, double vy, num nx, num ny, CapsStyle capsStyle) {
     if (capsStyle == CapsStyle.SQUARE) {
-      _jointIndex1 = this.addVertex(vx + nx - ny, vy + ny + nx);
-      _jointIndex2 = this.addVertex(vx - nx - ny, vy - ny + nx);
+      _jointIndex1 = addVertex(vx + nx - ny, vy + ny + nx);
+      _jointIndex2 = addVertex(vx - nx - ny, vy - ny + nx);
     } else if (capsStyle == CapsStyle.ROUND) {
-      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
-      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
+      _jointIndex1 = addVertex(vx + nx, vy + ny);
+      _jointIndex2 = addVertex(vx - nx, vy - ny);
       _addArc(vx, vy, -nx, -ny, nx, ny, _jointIndex1, _jointIndex2, true);
     } else {
-      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
-      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
+      _jointIndex1 = addVertex(vx + nx, vy + ny);
+      _jointIndex2 = addVertex(vx - nx, vy - ny);
     }
   }
 
   //---------------------------------------------------------------------------
 
   void _addCapEnd(double vx, double vy, num nx, num ny, CapsStyle capsStyle) {
-    int i1 = _jointIndex1, i2 = _jointIndex2;
+    var i1 = _jointIndex1, i2 = _jointIndex2;
     if (capsStyle == CapsStyle.SQUARE) {
-      _jointIndex1 = this.addVertex(vx + nx + ny, vy + ny - nx);
-      _jointIndex2 = this.addVertex(vx - nx + ny, vy - ny - nx);
+      _jointIndex1 = addVertex(vx + nx + ny, vy + ny - nx);
+      _jointIndex2 = addVertex(vx - nx + ny, vy - ny - nx);
     } else if (capsStyle == CapsStyle.ROUND) {
-      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
-      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
+      _jointIndex1 = addVertex(vx + nx, vy + ny);
+      _jointIndex2 = addVertex(vx - nx, vy - ny);
       _addArc(vx, vy, nx, ny, -nx, -ny, _jointIndex2, _jointIndex1, true);
     } else {
-      _jointIndex1 = this.addVertex(vx + nx, vy + ny);
-      _jointIndex2 = this.addVertex(vx - nx, vy - ny);
+      _jointIndex1 = addVertex(vx + nx, vy + ny);
+      _jointIndex2 = addVertex(vx - nx, vy - ny);
     }
-    this.addIndices(i1, i2, _jointIndex1);
-    this.addIndices(i2, _jointIndex1, _jointIndex2);
+    addIndices(i1, i2, _jointIndex1);
+    addIndices(i2, _jointIndex1, _jointIndex2);
   }
 
   //---------------------------------------------------------------------------
 
   void _addJoint(double vx, double vy, num al, num bl, num ax, num ay, num bx,
       num by, JointStyle jointStyle) {
-    num id = (bx * ay - by * ax);
-    num it = (bx * (ax - bx) + by * (ay - by)) / id;
-    num itAbs = it.abs();
+    var id = (bx * ay - by * ax);
+    var it = (bx * (ax - bx) + by * (ay - by)) / id;
+    var itAbs = it.abs();
 
     if (it.isNaN) {
       // a perfectly flat joint
@@ -158,81 +158,81 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
     var vmx = ax - it * ay; // miter-x
     var vmy = ay + it * ax; // miter-y
-    bool isOverlap = itAbs > al || itAbs > bl;
-    bool isCloseJoint = _jointIndex1 < 0;
+    var isOverlap = itAbs > al || itAbs > bl;
+    var isCloseJoint = _jointIndex1 < 0;
 
-    int i1 = it >= 0.0 ? _jointIndex1 : _jointIndex2;
-    int i2 = it >= 0.0 ? _jointIndex2 : _jointIndex1;
-    int i3 = 0, i4 = 0, i5 = 0;
+    var i1 = it >= 0.0 ? _jointIndex1 : _jointIndex2;
+    var i2 = it >= 0.0 ? _jointIndex2 : _jointIndex1;
+    var i3 = 0, i4 = 0, i5 = 0;
 
     if (jointStyle == JointStyle.MITER) {
       if (isOverlap == false) {
         i3 = _jointIndex2;
-        i4 = _jointIndex1 = this.addVertex(vx + vmx, vy + vmy);
-        i5 = _jointIndex2 = this.addVertex(vx - vmx, vy - vmy);
+        i4 = _jointIndex1 = addVertex(vx + vmx, vy + vmy);
+        i5 = _jointIndex2 = addVertex(vx - vmx, vy - vmy);
       } else if (it >= 0.0) {
-        i3 = this.addVertex(vx + ax, vy + ay);
-        i4 = this.addVertex(vx - vmx, vy - vmy);
-        i5 = _jointIndex2 = this.addVertex(vx - bx, vy - by);
-        _jointIndex1 = this.addVertex(vx + bx, vy + by);
-        this.addIndices(i1, i3, i4);
+        i3 = addVertex(vx + ax, vy + ay);
+        i4 = addVertex(vx - vmx, vy - vmy);
+        i5 = _jointIndex2 = addVertex(vx - bx, vy - by);
+        _jointIndex1 = addVertex(vx + bx, vy + by);
+        addIndices(i1, i3, i4);
       } else {
-        i3 = this.addVertex(vx - ax, vy - ay);
-        i4 = this.addVertex(vx + vmx, vy + vmy);
-        i5 = _jointIndex1 = this.addVertex(vx + bx, vy + by);
-        _jointIndex2 = this.addVertex(vx - bx, vy - by);
-        this.addIndices(i1, i3, i4);
+        i3 = addVertex(vx - ax, vy - ay);
+        i4 = addVertex(vx + vmx, vy + vmy);
+        i5 = _jointIndex1 = addVertex(vx + bx, vy + by);
+        _jointIndex2 = addVertex(vx - bx, vy - by);
+        addIndices(i1, i3, i4);
       }
 
-      this.addIndices(i1, i2, i4);
-      this.addIndices(i3, i4, i5);
+      addIndices(i1, i2, i4);
+      addIndices(i3, i4, i5);
     } else if (jointStyle == JointStyle.BEVEL) {
       if (isOverlap == false && it >= 0.0) {
-        i3 = _jointIndex1 = this.addVertex(vx + vmx, vy + vmy);
-        i4 = this.addVertex(vx - ax, vy - ay);
-        i5 = _jointIndex2 = this.addVertex(vx - bx, vy - by);
+        i3 = _jointIndex1 = addVertex(vx + vmx, vy + vmy);
+        i4 = addVertex(vx - ax, vy - ay);
+        i5 = _jointIndex2 = addVertex(vx - bx, vy - by);
       } else if (isOverlap == false) {
-        i3 = _jointIndex2 = this.addVertex(vx - vmx, vy - vmy);
-        i4 = this.addVertex(vx + ax, vy + ay);
-        i5 = _jointIndex1 = this.addVertex(vx + bx, vy + by);
+        i3 = _jointIndex2 = addVertex(vx - vmx, vy - vmy);
+        i4 = addVertex(vx + ax, vy + ay);
+        i5 = _jointIndex1 = addVertex(vx + bx, vy + by);
       } else if (it >= 0.0) {
-        i3 = this.addVertex(vx + ax, vy + ay);
-        i4 = this.addVertex(vx - ax, vy - ay);
-        i5 = _jointIndex2 = this.addVertex(vx - bx, vy - by);
-        _jointIndex1 = this.addVertex(vx + bx, vy + by);
+        i3 = addVertex(vx + ax, vy + ay);
+        i4 = addVertex(vx - ax, vy - ay);
+        i5 = _jointIndex2 = addVertex(vx - bx, vy - by);
+        _jointIndex1 = addVertex(vx + bx, vy + by);
       } else {
-        i3 = this.addVertex(vx - ax, vy - ay);
-        i4 = this.addVertex(vx + ax, vy + ay);
-        i5 = _jointIndex1 = this.addVertex(vx + bx, vy + by);
-        _jointIndex2 = this.addVertex(vx - bx, vy - by);
+        i3 = addVertex(vx - ax, vy - ay);
+        i4 = addVertex(vx + ax, vy + ay);
+        i5 = _jointIndex1 = addVertex(vx + bx, vy + by);
+        _jointIndex2 = addVertex(vx - bx, vy - by);
       }
 
-      this.addIndices(i1, i2, i3);
-      this.addIndices(i2, i3, i4);
-      this.addIndices(i3, i4, i5);
+      addIndices(i1, i2, i3);
+      addIndices(i2, i3, i4);
+      addIndices(i3, i4, i5);
     } else if (jointStyle == JointStyle.ROUND) {
       if (isOverlap == false && it >= 0.0) {
-        i3 = _jointIndex1 = this.addVertex(vx + vmx, vy + vmy);
-        i4 = this.addVertex(vx - ax, vy - ay);
+        i3 = _jointIndex1 = addVertex(vx + vmx, vy + vmy);
+        i4 = addVertex(vx - ax, vy - ay);
         _jointIndex2 = _addArc(vx, vy, -ax, -ay, -bx, -by, i3, i4, false);
       } else if (isOverlap == false) {
-        i3 = _jointIndex2 = this.addVertex(vx - vmx, vy - vmy);
-        i4 = this.addVertex(vx + ax, vy + ay);
+        i3 = _jointIndex2 = addVertex(vx - vmx, vy - vmy);
+        i4 = addVertex(vx + ax, vy + ay);
         _jointIndex1 = _addArc(vx, vy, ax, ay, bx, by, i3, i4, true);
       } else if (it >= 0.0) {
-        i3 = this.addVertex(vx + ax, vy + ay);
-        i4 = this.addVertex(vx - ax, vy - ay);
-        _jointIndex1 = this.addVertex(vx + bx, vy + by);
+        i3 = addVertex(vx + ax, vy + ay);
+        i4 = addVertex(vx - ax, vy - ay);
+        _jointIndex1 = addVertex(vx + bx, vy + by);
         _jointIndex2 = _addArc(vx, vy, -ax, -ay, -bx, -by, i3, i4, false);
       } else {
-        i3 = this.addVertex(vx - ax, vy - ay);
-        i4 = this.addVertex(vx + ax, vy + ay);
-        _jointIndex2 = this.addVertex(vx - bx, vy - by);
+        i3 = addVertex(vx - ax, vy - ay);
+        i4 = addVertex(vx + ax, vy + ay);
+        _jointIndex2 = addVertex(vx - bx, vy - by);
         _jointIndex1 = _addArc(vx, vy, ax, ay, bx, by, i3, i4, true);
       }
 
-      this.addIndices(i1, i2, i3);
-      this.addIndices(i2, i3, i4);
+      addIndices(i1, i2, i3);
+      addIndices(i2, i3, i4);
     }
 
     if (isCloseJoint) {
@@ -242,8 +242,8 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       var y2 = _vertexBuffer[_jointIndex2 * 2 + 1];
       _vertexCount = 0;
       _indexCount = 0;
-      _jointIndex1 = this.addVertex(x1, y1);
-      _jointIndex2 = this.addVertex(x2, y2);
+      _jointIndex1 = addVertex(x1, y1);
+      _jointIndex2 = addVertex(x2, y2);
     }
   }
 
@@ -251,11 +251,11 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   int _addArc(num vx, num vy, num n1x, num n1y, num n2x, num n2y, int index1,
       int index2, bool antiClockwise) {
-    num tau = 2.0 * pi;
-    num startAngle = atan2(n1y, n1x);
-    num endAngle = atan2(n2y, n2x);
-    num start = (startAngle % tau);
-    num delta = (endAngle % tau) - start;
+    var tau = 2.0 * pi;
+    var startAngle = atan2(n1y, n1x);
+    var endAngle = atan2(n2y, n2x);
+    var start = (startAngle % tau);
+    var delta = (endAngle % tau) - start;
 
     if (antiClockwise && endAngle > startAngle) {
       if (delta >= 0.0) delta -= tau;
@@ -267,8 +267,8 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       delta %= tau;
     }
 
-    int steps = (10 * delta / pi).abs().ceil();
-    int index3 = index2;
+    var steps = (10 * delta / pi).abs().ceil();
+    var index3 = index2;
 
     var cosR = cos(delta / steps);
     var sinR = sin(delta / steps);
@@ -277,11 +277,11 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     var ax = vx + n1x;
     var ay = vy + n1y;
 
-    for (int s = 0; s < steps; s++) {
-      num bx = ax * cosR - ay * sinR + tx;
-      num by = ax * sinR + ay * cosR + ty;
-      int index = this.addVertex(ax = bx, ay = by);
-      this.addIndices(index1, index3, index);
+    for (var s = 0; s < steps; s++) {
+      var bx = ax * cosR - ay * sinR + tx;
+      var by = ax * sinR + ay * cosR + ty;
+      var index = addVertex(ax = bx, ay = by);
+      addIndices(index1, index3, index);
       index3 = index;
     }
 

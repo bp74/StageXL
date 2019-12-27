@@ -64,19 +64,19 @@ class _GraphicsContextBounds extends _GraphicsContextBase {
 
   @override
   void meshColor(_GraphicsCommandMeshColor command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void meshGradient(_GraphicsCommandMeshGradient command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void meshPattern(_GraphicsCommandMeshPattern command) {
-    _GraphicsMesh mesh = command.mesh;
+    var mesh = command.mesh;
     _updateBoundsForMesh(mesh);
   }
 

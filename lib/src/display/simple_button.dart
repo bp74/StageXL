@@ -40,17 +40,17 @@ class SimpleButton extends InteractiveObject {
 
   SimpleButton(
       [this.upState, this.overState, this.downState, this.hitTestState]) {
-    this.useHandCursor = true;
+    useHandCursor = true;
 
-    this.onMouseOver.listen(_onMouseEvent);
-    this.onMouseOut.listen(_onMouseEvent);
-    this.onMouseDown.listen(_onMouseEvent);
-    this.onMouseUp.listen(_onMouseEvent);
+    onMouseOver.listen(_onMouseEvent);
+    onMouseOut.listen(_onMouseEvent);
+    onMouseDown.listen(_onMouseEvent);
+    onMouseUp.listen(_onMouseEvent);
 
-    this.onTouchOver.listen(_onTouchEvent);
-    this.onTouchOut.listen(_onTouchEvent);
-    this.onTouchBegin.listen(_onTouchEvent);
-    this.onTouchEnd.listen(_onTouchEvent);
+    onTouchOver.listen(_onTouchEvent);
+    onTouchOut.listen(_onTouchEvent);
+    onTouchBegin.listen(_onTouchEvent);
+    onTouchEnd.listen(_onTouchEvent);
   }
 
   //---------------------------------------------------------------------------
@@ -98,14 +98,14 @@ class SimpleButton extends InteractiveObject {
 
   @override
   DisplayObject hitTestInput(num localX, num localY) {
-    if (this.hitTestState == null) return null;
+    if (hitTestState == null) return null;
 
-    Matrix matrix = hitTestState.transformationMatrix;
+    var matrix = hitTestState.transformationMatrix;
 
-    num deltaX = localX - matrix.tx;
-    num deltaY = localY - matrix.ty;
-    num childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
-    num childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
+    var deltaX = localX - matrix.tx;
+    var deltaY = localY - matrix.ty;
+    var childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
+    var childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
 
     return hitTestState.hitTestInput(childX, childY) != null ? this : null;
   }
@@ -123,11 +123,11 @@ class SimpleButton extends InteractiveObject {
   DisplayObject _getDisplayObject() {
     switch (_state) {
       case SimpleButtonState.Up:
-        return this.upState;
+        return upState;
       case SimpleButtonState.Over:
-        return this.overState;
+        return overState;
       case SimpleButtonState.Down:
-        return this.downState;
+        return downState;
       default:
         return null;
     }

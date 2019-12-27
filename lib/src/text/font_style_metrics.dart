@@ -1,10 +1,10 @@
 part of stagexl.text;
 
 final Map<String, _FontStyleMetrics> _fontStyleMetrics =
-    Map<String, _FontStyleMetrics>();
+    <String, _FontStyleMetrics>{};
 
 _FontStyleMetrics _getFontStyleMetrics(TextFormat textFormat) {
-  String fontStyle = textFormat._cssFontStyle;
+  var fontStyle = textFormat._cssFontStyle;
   return _fontStyleMetrics.putIfAbsent(
       fontStyle, () => _FontStyleMetrics(textFormat));
 }
@@ -18,30 +18,30 @@ class _FontStyleMetrics {
 
   _FontStyleMetrics(TextFormat textFormat) {
     var fontStyle = textFormat._cssFontStyle;
-    var text = html.Element.tag("span");
-    var block = html.Element.tag("div");
-    var div = html.Element.tag("div");
+    var text = html.Element.tag('span');
+    var block = html.Element.tag('div');
+    var div = html.Element.tag('div');
 
     text.style.font = fontStyle;
-    text.text = "Hg";
-    block.style.display = "inline-block";
-    block.style.width = "1px";
-    block.style.height = "0px";
+    text.text = 'Hg';
+    block.style.display = 'inline-block';
+    block.style.width = '1px';
+    block.style.height = '0px';
     div.append(block);
     div.append(text);
 
     html.document.body.append(div);
 
     try {
-      block.style.verticalAlign = "baseline";
-      this.ascent = block.offsetTop - text.offsetTop;
-      block.style.verticalAlign = "bottom";
-      this.height = block.offsetTop - text.offsetTop;
-      this.descent = height - ascent;
+      block.style.verticalAlign = 'baseline';
+      ascent = block.offsetTop - text.offsetTop;
+      block.style.verticalAlign = 'bottom';
+      height = block.offsetTop - text.offsetTop;
+      descent = height - ascent;
     } catch (e) {
-      this.height = textFormat.size;
-      this.ascent = textFormat.size * 7 ~/ 8;
-      this.descent = textFormat.size * 2 ~/ 8;
+      height = textFormat.size;
+      ascent = textFormat.size * 7 ~/ 8;
+      descent = textFormat.size * 2 ~/ 8;
     } finally {
       div.remove();
     }

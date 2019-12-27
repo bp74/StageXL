@@ -1,4 +1,4 @@
-@TestOn("browser")
+@TestOn('browser')
 library render_texture_quad_test;
 
 import 'dart:typed_data';

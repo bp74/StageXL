@@ -24,16 +24,16 @@ class BitmapData implements BitmapDrawable {
   static BitmapDataLoadOptions defaultLoadOptions = BitmapDataLoadOptions();
 
   BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad)
-      : this.renderTextureQuad = renderTextureQuad,
-        this.width = renderTextureQuad.targetWidth,
-        this.height = renderTextureQuad.targetHeight;
+      : renderTextureQuad = renderTextureQuad,
+        width = renderTextureQuad.targetWidth,
+        height = renderTextureQuad.targetHeight;
 
   //----------------------------------------------------------------------------
 
   factory BitmapData(num width, num height,
       [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
-    int textureWidth = (width * pixelRatio).round();
-    int textureHeight = (height * pixelRatio).round();
+    var textureWidth = (width * pixelRatio).round();
+    var textureHeight = (height * pixelRatio).round();
     var renderTexture = RenderTexture(textureWidth, textureHeight, fillColor);
     var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return BitmapData.fromRenderTextureQuad(renderTextureQuad);
@@ -77,16 +77,16 @@ class BitmapData implements BitmapDrawable {
   /// Returns a new BitmapData with a copy of this BitmapData's texture.
 
   BitmapData clone([num pixelRatio]) {
-    if (pixelRatio == null) pixelRatio = renderTextureQuad.pixelRatio;
+    pixelRatio ??= renderTextureQuad.pixelRatio;
     var bitmapData = BitmapData(width, height, Color.Transparent, pixelRatio);
-    bitmapData.drawPixels(this, this.rectangle, Point<num>(0, 0));
+    bitmapData.drawPixels(this, rectangle, Point<num>(0, 0));
     return bitmapData;
   }
 
   /// Return a dataUrl for this BitmapData.
 
   String toDataUrl([String type = 'image/png', num quality]) {
-    return this.clone().renderTexture.canvas.toDataUrl(type, quality);
+    return clone().renderTexture.canvas.toDataUrl(type, quality);
   }
 
   //----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ class BitmapData implements BitmapDrawable {
         (width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
     var rows =
         (height - frameMargin + frameSpacing) ~/ (frameHeight + frameSpacing);
-    var frames = List<BitmapData>();
+    var frames = <BitmapData>[];
 
     frameCount =
         (frameCount == null) ? rows * cols : min(frameCount, rows * cols);

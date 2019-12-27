@@ -2,7 +2,7 @@ part of stagexl.events;
 
 /// A handler function that is used to listen to events.
 
-typedef void EventListener<T extends Event>(T event);
+typedef EventListener<T extends Event> = void Function(T event);
 
 /// A subscription on events from an [EventStream].
 ///
@@ -11,12 +11,12 @@ typedef void EventListener<T extends Event>(T event);
 /// from the events, or to temporarily pause the events from the stream.
 
 class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
-  int _priority = 0;
+  final int _priority;
   int _pauseCount = 0;
   bool _canceled = false;
-  bool _captures = false;
+  final bool _captures;
 
-  EventStream<T> _eventStream;
+  final EventStream<T> _eventStream;
   EventListener<T> _eventListener;
 
   EventStreamSubscription._(
@@ -39,7 +39,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void onData(void handleData(T event)) {
+  void onData(void Function(T event) handleData) {
     _eventListener = handleData;
   }
 
@@ -49,7 +49,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   }
 
   @override
-  void onDone(void handleDone()) {
+  void onDone(void Function() handleDone) {
     // This stream is never done.
   }
 
@@ -67,6 +67,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   Future cancel() {
     if (_canceled == false) {
       _eventStream._cancelSubscription(this);
+      _canceled = true;
     }
     return null;
   }
@@ -82,7 +83,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   @override
   void resume() {
     if (_pauseCount == 0) {
-      throw StateError("Subscription is not paused.");
+      throw StateError('Subscription is not paused.');
     }
     _pauseCount--;
   }
