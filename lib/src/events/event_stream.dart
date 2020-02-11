@@ -184,7 +184,7 @@ class EventStream<T extends Event> extends Stream<T> {
       T event, EventDispatcher target, EventPhase eventPhase) {
     var subscriptions = _subscriptions;
     var isCapturing = eventPhase == EventPhase.CAPTURING_PHASE;
-    var inputEvent = event is InputEvent ? event : null;
+    InputEvent inputEvent = event is InputEvent ? event : null;
 
     for (var i = 0; i < subscriptions.length; i++) {
       var subscription = subscriptions[i];
