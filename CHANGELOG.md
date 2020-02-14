@@ -8,6 +8,10 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### 1.4.3
+  * Fix compilation error due to changes in latest Dart SDK.
+    See [dart-lang/sdk#40485](https://github.com/dart-lang/sdk/issues/40485).
+
 #### 1.4.2
   * fixed linter warnings
   * Require Dart 2.7
