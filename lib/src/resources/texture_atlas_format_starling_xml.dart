@@ -9,7 +9,7 @@ class _TextureAtlasFormatStarlingXml extends TextureAtlasFormat {
     var pixelRatio = loader.getPixelRatio();
     var textureAtlas = TextureAtlas(pixelRatio);
 
-    var xmlRoot = parse(source).rootElement;
+    var xmlRoot = XmlDocument.parse(source).rootElement;
     var imagePath = _getString(xmlRoot, 'imagePath', '');
     var renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
 

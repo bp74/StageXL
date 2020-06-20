@@ -2,4 +2,5 @@
 .packages
 .pub/
 .idea/
+.vscode/
 pubspec.lock
