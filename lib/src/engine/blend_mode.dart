@@ -8,6 +8,11 @@ class BlendMode {
 
   const BlendMode(this.srcFactor, this.dstFactor, this.compositeOperation);
 
+  void blend(gl.RenderingContext renderingContext) {
+    renderingContext.blendFunc(srcFactor, dstFactor);
+    renderingContext.blendEquation(gl.WebGL.FUNC_ADD);
+  }
+
   /// The display object appears in front of the background. Pixel values of the
   /// display object override those of the background. Where the display object
   /// is transparent, the background is visible.
