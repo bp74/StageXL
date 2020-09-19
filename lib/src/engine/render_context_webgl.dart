@@ -468,7 +468,7 @@ class RenderContextWebGL extends RenderContext {
     if (!identical(blendMode, _activeBlendMode)) {
       _activeRenderProgram.flush();
       _activeBlendMode = blendMode;
-      _renderingContext.blendFunc(blendMode.srcFactor, blendMode.dstFactor);
+      _activeBlendMode.blend(_renderingContext);
     }
   }
 
