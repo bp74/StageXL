@@ -8,11 +8,15 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+#### 1.4.6
+  * Upgraded to latest package versions
+  * Allow overriding blend mode function
+
 #### 1.4.5
   * Upgraded to latest package versions
 
 #### 1.4.4
-  * Support the latest release of `package:xml`.
+  * Support the latest release of `package:xml`
 
 #### 1.4.3
   * Fix compilation error due to changes in latest Dart SDK.
