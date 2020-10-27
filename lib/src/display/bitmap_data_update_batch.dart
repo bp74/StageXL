@@ -11,9 +11,8 @@ class BitmapDataUpdateBatch {
   final RenderContextCanvas _renderContext;
   final Matrix _drawMatrix;
 
-  BitmapDataUpdateBatch(BitmapData bitmapData)
-      : bitmapData = bitmapData,
-        _renderContext = RenderContextCanvas(bitmapData.renderTexture.canvas),
+  BitmapDataUpdateBatch(this.bitmapData)
+      : _renderContext = RenderContextCanvas(bitmapData.renderTexture.canvas),
         _drawMatrix = bitmapData.renderTextureQuad.drawMatrix;
 
   //---------------------------------------------------------------------------
