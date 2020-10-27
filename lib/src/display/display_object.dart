@@ -728,9 +728,7 @@ abstract class DisplayObject extends EventDispatcher
   /// Removes this display object from its parent.
 
   void removeFromParent() {
-    if (parent != null) {
-      parent!.removeChild(this);
-    }
+    parent?.removeChild(this);
   }
 
   //----------------------------------------------------------------------------
@@ -905,7 +903,7 @@ abstract class DisplayObject extends EventDispatcher
   }
 
   void _globalToLocalRecursion(Point<num> point) {
-    if (parent != null) parent!._globalToLocalRecursion(point);
+    parent?._globalToLocalRecursion(point);
     parentToLocal(point, point);
   }
 
@@ -931,13 +929,13 @@ abstract class DisplayObject extends EventDispatcher
   /// Refreshes the cached area of this display object.
 
   void refreshCache() {
-    if (_cache != null) _cache!.update();
+    _cache?.update();
   }
 
   /// Removes the previously cached area of this display object.
 
   void removeCache() {
-    if (_cache != null) _cache!.dispose();
+    _cache?.dispose();
   }
 
   //----------------------------------------------------------------------------
