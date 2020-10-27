@@ -62,11 +62,6 @@ class BitmapDataUpdateBatch {
       var c2 = data[i + 2];
       var c3 = data[i + 3];
 
-      if (c0 is! num) continue; // dart2js hint
-      if (c1 is! num) continue; // dart2js hint
-      if (c2 is! num) continue; // dart2js hint
-      if (c3 is! num) continue; // dart2js hint
-
       data[i + 0] = offset0 + (((c0 * mulitplier0) | 0) >> 10);
       data[i + 1] = offset1 + (((c1 * mulitplier1) | 0) >> 10);
       data[i + 2] = offset2 + (((c2 * mulitplier2) | 0) >> 10);
