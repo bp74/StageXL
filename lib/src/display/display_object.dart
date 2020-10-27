@@ -480,22 +480,22 @@ abstract class DisplayObject extends EventDispatcher
   /// directly instead of calling this method.
 
   void setTransform(num x, num y,
-      [num? scaleX,
-      num? scaleY,
-      num? rotation,
-      num? skewX,
-      num? skewY,
-      num? pivotX,
-      num? pivotY]) {
-    if (x is num) _x = x;
-    if (y is num) _y = y;
-    if (scaleX is num) _scaleX = scaleX;
-    if (scaleY is num) _scaleY = scaleY;
-    if (rotation is num) _rotation = rotation;
-    if (skewX is num) _skewX = skewX;
-    if (skewY is num) _skewY = skewY;
-    if (pivotX is num) _pivotX = pivotX;
-    if (pivotY is num) _pivotY = pivotY;
+      [num scaleX = 1,
+      num scaleY = 1,
+      num rotation = 0,
+      num skewX = 0,
+      num skewY = 0,
+      num pivotX = 0,
+      num pivotY = 0]) {
+    _x = x;
+    _y = y;
+    _scaleX = scaleX;
+    _scaleY = scaleY;
+    _rotation = rotation;
+    _skewX = skewX;
+    _skewY = skewY;
+    _pivotX = pivotX;
+    _pivotY = pivotY;
     _transformationMatrixRefresh = true;
   }
 
