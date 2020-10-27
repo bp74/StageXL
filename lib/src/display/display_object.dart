@@ -317,7 +317,7 @@ abstract class DisplayObject extends EventDispatcher
   bool get visible => _visible;
 
   set visible(bool value) {
-    if (value is bool) _visible = value;
+    _visible = value;
   }
 
   /// The availability and visibility of the display object.
@@ -331,7 +331,7 @@ abstract class DisplayObject extends EventDispatcher
   bool get off => _off;
 
   set off(bool value) {
-    if (value is bool) _off = value;
+    _off = value;
   }
 
   /// The alpha transparency value of the object specified.
