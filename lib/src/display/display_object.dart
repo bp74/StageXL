@@ -408,9 +408,7 @@ abstract class DisplayObject extends EventDispatcher
   /// See also [applyCache], [refreshCache] and [removeCache].
 
   @override
-  RenderTextureQuad? get cache {
-    return _cache != null ? _cache!.renderTextureQuad : null;
-  }
+  RenderTextureQuad? get cache => _cache?.renderTextureQuad;
 
   /// The [DisplayObjectContainer] object that contains this display object.
   ///
