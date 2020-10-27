@@ -236,7 +236,7 @@ class TextField extends InteractiveObject {
 
     if (renderState.renderContext is RenderContextWebGL || _cacheAsBitmap) {
       _refreshCache(renderState.globalMatrix);
-      renderState.renderTextureQuad(_renderTextureQuad);
+      renderState.renderTextureQuad(_renderTextureQuad!);
     } else if (renderState.renderContext is RenderContextCanvas) {
       var renderContextCanvas =
           renderState.renderContext as RenderContextCanvas;

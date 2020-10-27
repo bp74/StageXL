@@ -83,7 +83,7 @@ class RenderState {
     _renderContext.flush();
   }
 
-  void renderTextureQuad(RenderTextureQuad? renderTextureQuad) {
+  void renderTextureQuad(RenderTextureQuad renderTextureQuad) {
     _renderContext.renderTextureQuad(this, renderTextureQuad);
   }
 

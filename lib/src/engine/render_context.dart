@@ -33,7 +33,7 @@ abstract class RenderContext {
   //---------------------------------------------------------------------------
 
   void renderTextureQuad(
-      RenderState renderState, RenderTextureQuad? renderTextureQuad);
+      RenderState renderState, RenderTextureQuad renderTextureQuad);
 
   void renderTextureMesh(RenderState renderState, RenderTexture renderTexture,
       Int16List ixList, Float32List vxList);
