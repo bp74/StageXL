@@ -6,14 +6,13 @@ part of stagexl.display_ex;
 /// the size defined by the [width] and [height] properties.
 
 class Scale9Bitmap extends Bitmap {
-  Rectangle<num>? _grid;
+  Rectangle<num> _grid;
   num _width = 0.0;
   num _height = 0.0;
 
   final List<RenderTextureQuad?> _slices = List.filled(9, null);
 
   Scale9Bitmap(BitmapData bitmapData, Rectangle<num> grid) : _grid = grid, super(bitmapData) {
-    _grid = grid;
     _width = ensureNum(bitmapData.width);
     _height = ensureNum(bitmapData.height);
     _updateRenderTextureQuads();
@@ -45,9 +44,9 @@ class Scale9Bitmap extends Bitmap {
 
   /// Gets and sets the grid rectangle within the BitmapData to be scaled.
 
-  Rectangle<num>? get grid => _grid;
+  Rectangle<num> get grid => _grid;
 
-  set grid(Rectangle<num>? value) {
+  set grid(Rectangle<num> value) {
     _grid = value;
     _updateRenderTextureQuads();
   }
@@ -113,13 +112,13 @@ class Scale9Bitmap extends Bitmap {
     var rtq = bitmapData!.renderTextureQuad;
 
     var x0 = 0;
-    var x1 = (rtq.pixelRatio * grid!.left).round();
-    var x2 = (rtq.pixelRatio * grid!.right).round();
+    var x1 = (rtq.pixelRatio * grid.left).round();
+    var x2 = (rtq.pixelRatio * grid.right).round();
     var x3 = (rtq.sourceRectangle.width);
 
     var y0 = 0;
-    var y1 = (rtq.pixelRatio * grid!.top).round();
-    var y2 = (rtq.pixelRatio * grid!.bottom).round();
+    var y1 = (rtq.pixelRatio * grid.top).round();
+    var y2 = (rtq.pixelRatio * grid.bottom).round();
     var y3 = (rtq.sourceRectangle.height);
 
     for (var j = 0; j < 3; j++) {
