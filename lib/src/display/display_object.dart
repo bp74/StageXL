@@ -180,8 +180,8 @@ abstract class DisplayObject extends EventDispatcher
   num get x => _x;
 
   @override
-  set x(num? value) {
-    if (value is num) _x = value;
+  set x(num value) {
+    _x = value;
     _transformationMatrixRefresh = true;
   }
 
@@ -196,8 +196,8 @@ abstract class DisplayObject extends EventDispatcher
   num get y => _y;
 
   @override
-  set y(num? value) {
-    if (value is num) _y = value;
+  set y(num value) {
+    _y = value;
     _transformationMatrixRefresh = true;
   }
 
@@ -213,8 +213,8 @@ abstract class DisplayObject extends EventDispatcher
   num get pivotX => _pivotX;
 
   @override
-  set pivotX(num? value) {
-    if (value is num) _pivotX = value;
+  set pivotX(num value) {
+    _pivotX = value;
     _transformationMatrixRefresh = true;
   }
 
@@ -230,8 +230,8 @@ abstract class DisplayObject extends EventDispatcher
   num get pivotY => _pivotY;
 
   @override
-  set pivotY(num? value) {
-    if (value is num) _pivotY = value;
+  set pivotY(num value) {
+    _pivotY = value;
     _transformationMatrixRefresh = true;
   }
 
@@ -247,8 +247,8 @@ abstract class DisplayObject extends EventDispatcher
   num get scaleX => _scaleX;
 
   @override
-  set scaleX(num? value) {
-    if (value is num) _scaleX = value;
+  set scaleX(num value) {
+    _scaleX = value;
     _transformationMatrixRefresh = true;
   }
 
@@ -264,8 +264,8 @@ abstract class DisplayObject extends EventDispatcher
   num get scaleY => _scaleY;
 
   @override
-  set scaleY(num? value) {
-    if (value is num) _scaleY = value;
+  set scaleY(num value) {
+    _scaleY = value;
     _transformationMatrixRefresh = true;
   }
 
@@ -275,8 +275,8 @@ abstract class DisplayObject extends EventDispatcher
   num get skewX => _skewX;
 
   @override
-  set skewX(num? value) {
-    if (value is num) _skewX = value;
+  set skewX(num value) {
+    _skewX = value;
     _transformationMatrixRefresh = true;
   }
 
@@ -286,8 +286,8 @@ abstract class DisplayObject extends EventDispatcher
   num get skewY => _skewY;
 
   @override
-  set skewY(num? value) {
-    if (value is num) _skewY = value;
+  set skewY(num value) {
+    _skewY = value;
     _transformationMatrixRefresh = true;
   }
 
@@ -304,8 +304,8 @@ abstract class DisplayObject extends EventDispatcher
   num get rotation => _rotation;
 
   @override
-  set rotation(num? value) {
-    if (value is num) _rotation = value;
+  set rotation(num value) {
+    _rotation = value;
     _transformationMatrixRefresh = true;
   }
 
@@ -344,13 +344,8 @@ abstract class DisplayObject extends EventDispatcher
   num get alpha => _alpha;
 
   @override
-  set alpha(num? value) {
-    if (value is num) {
-      // Clamp values and convert possible integers to double.
-      if (value <= 0) value = 0.0;
-      if (value >= 1) value = 1.0;
-      _alpha = value;
-    }
+  set alpha(num value) {
+    _alpha = value.clamp(0.0, 1.0);
   }
 
   /// The calling display object is masked by the specified mask object.
