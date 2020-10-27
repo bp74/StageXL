@@ -27,8 +27,8 @@ abstract class RenderContext {
   void clear(int color);
   void flush();
 
-  void beginRenderMask(RenderState renderState, RenderMask? mask);
-  void endRenderMask(RenderState renderState, RenderMask? mask);
+  void beginRenderMask(RenderState renderState, RenderMask mask);
+  void endRenderMask(RenderState renderState, RenderMask mask);
 
   //---------------------------------------------------------------------------
 

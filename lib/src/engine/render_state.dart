@@ -134,7 +134,7 @@ class RenderState {
 
     //-----------
 
-    if (maskBefore) renderContext.beginRenderMask(this, mask);
+    if (maskBefore) renderContext.beginRenderMask(this, mask!);
 
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
     cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
@@ -154,7 +154,7 @@ class RenderState {
 
     //-----------
 
-    if (maskAfter) renderContext.beginRenderMask(this, mask);
+    if (maskAfter) renderContext.beginRenderMask(this, mask!);
 
     if (cache != null) {
       renderTextureQuad(cache);
@@ -164,7 +164,7 @@ class RenderState {
       renderObject.render(this);
     }
 
-    if (maskAfter) renderContext.endRenderMask(this, mask);
+    if (maskAfter) renderContext.endRenderMask(this, mask!);
 
     //-----------
 
@@ -175,7 +175,7 @@ class RenderState {
       renderContextWebGL.activateProjectionMatrix(cs1.matrix3D);
     }
 
-    if (maskBefore) renderContext.endRenderMask(this, mask);
+    if (maskBefore) renderContext.endRenderMask(this, mask!);
   }
 
   //---------------------------------------------------------------------------
