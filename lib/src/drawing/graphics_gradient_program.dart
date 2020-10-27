@@ -112,6 +112,8 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
 
   @override
   void configure(RenderState renderState, GraphicsGradient gradient) {
+    if (renderingContext == null) return;
+
     var m = renderState.globalMatrix;
     var g = gradient;
 
