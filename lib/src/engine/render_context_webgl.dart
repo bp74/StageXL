@@ -254,7 +254,7 @@ class RenderContextWebGL extends RenderContext {
   @override
   void renderObjectFiltered(
       RenderState renderState, RenderObject renderObject) {
-    var bounds = renderObject.bounds!;
+    var bounds = renderObject.bounds;
     var filters = renderObject.filters;
     var pixelRatio = math.sqrt(renderState.globalMatrix.det.abs());
 

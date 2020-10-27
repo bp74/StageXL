@@ -14,7 +14,7 @@ abstract class RenderObject {
   RenderTextureQuad? get cache;
   RenderMask? get mask;
 
-  Rectangle<num>? get bounds;
+  Rectangle<num> get bounds;
 
   void render(RenderState renderState);
   void renderFiltered(RenderState renderState);
