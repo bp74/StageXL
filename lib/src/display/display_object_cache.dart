@@ -38,10 +38,10 @@ class _DisplayObjectCache {
 
     if (renderTexture == null) {
       renderTexture = RenderTexture(w, h, Color.Transparent);
-      renderTextureQuad = RenderTextureQuad(renderTexture, sr, or, 0, pr);
+      renderTextureQuad = RenderTextureQuad(renderTexture!, sr, or, 0, pr);
     } else {
       renderTexture!.resize(w, h);
-      renderTextureQuad = RenderTextureQuad(renderTexture, sr, or, 0, pr);
+      renderTextureQuad = RenderTextureQuad(renderTexture!, sr, or, 0, pr);
     }
 
     // render display object to texture

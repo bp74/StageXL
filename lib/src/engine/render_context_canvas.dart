@@ -89,7 +89,7 @@ class RenderContextCanvas extends RenderContext {
   void renderTextureQuad(
       RenderState renderState, RenderTextureQuad? renderTextureQuad) {
     if (renderTextureQuad!.hasCustomVertices) {
-      var renderTexture = renderTextureQuad.renderTexture!;
+      var renderTexture = renderTextureQuad.renderTexture;
       var ixList = renderTextureQuad.ixList!;
       var vxList = renderTextureQuad.vxList;
       renderTextureMesh(renderState, renderTexture, ixList, vxList);
@@ -97,7 +97,7 @@ class RenderContextCanvas extends RenderContext {
     }
 
     var context = _renderingContext;
-    var source = renderTextureQuad.renderTexture!.source;
+    var source = renderTextureQuad.renderTexture.source;
     var rotation = renderTextureQuad.rotation;
     var sourceRect = renderTextureQuad.sourceRectangle;
     var vxList = renderTextureQuad.vxListQuad;

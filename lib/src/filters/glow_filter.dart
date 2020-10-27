@@ -174,8 +174,8 @@ class GlowFilter extends BitmapFilter {
       renderProgram.configure(
           pass == passCount - 2 ? color! : color! | 0xFF000000,
           pass == passCount - 2 ? renderState.globalAlpha : 1.0,
-          pass.isEven ? pixelRatioScale * blurX / renderTexture!.width : 0.0,
-          pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture!.height);
+          pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
+          pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);
 
       renderProgram.renderTextureQuad(renderState, renderTextureQuad);
       renderProgram.flush();

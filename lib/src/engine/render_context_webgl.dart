@@ -331,9 +331,12 @@ class RenderContextWebGL extends RenderContext {
         // get sourceRenderTextureQuad
 
         if (renderFrameBufferMap.containsKey(renderPassSource)) {
-          sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource];
+          sourceRenderFrameBuffer = renderFrameBufferMap[renderPassSource]!;
+          if (sourceRenderFrameBuffer.renderTexture == null) {
+            throw StateError('Invalid renderPassSource!');
+          }
           sourceRenderTextureQuad = RenderTextureQuad(
-              sourceRenderFrameBuffer!.renderTexture,
+              sourceRenderFrameBuffer.renderTexture!,
               Rectangle<int>(0, 0, boundsWidth, boundsHeight),
               Rectangle<int>(
                   -boundsLeft, -boundsTop, boundsWidth, boundsHeight),
@@ -408,11 +411,9 @@ class RenderContextWebGL extends RenderContext {
     }
   }
 
-  void releaseRenderFrameBuffer(RenderFrameBuffer? renderFrameBuffer) {
-    if (renderFrameBuffer is RenderFrameBuffer) {
-      _activeRenderProgram!.flush();
-      _renderFrameBufferPool.add(renderFrameBuffer);
-    }
+  void releaseRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
+    _activeRenderProgram!.flush();
+    _renderFrameBufferPool.add(renderFrameBuffer);
   }
 
   void releaseRenderTexture(RenderTexture renderTexture) {

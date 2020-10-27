@@ -209,13 +209,13 @@ class DropShadowFilter extends BitmapFilter {
           pass == passCount - 2 ? color! : color! | 0xFF000000,
           pass == passCount - 2 ? renderState.globalAlpha : 1.0,
           pass == 0
-              ? pixelRatioDistance * cos(angle!) / renderTexture!.width
+              ? pixelRatioDistance * cos(angle!) / renderTexture.width
               : 0.0,
           pass == 0
-              ? pixelRatioDistance * sin(angle!) / renderTexture!.height
+              ? pixelRatioDistance * sin(angle!) / renderTexture.height
               : 0.0,
-          pass.isEven ? pixelRatioScale * blurX / renderTexture!.width : 0.0,
-          pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture!.height);
+          pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
+          pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);
 
       renderProgram.renderTextureQuad(renderState, renderTextureQuad);
       renderProgram.flush();

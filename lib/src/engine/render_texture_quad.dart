@@ -1,7 +1,7 @@
 part of stagexl.engine;
 
 class RenderTextureQuad {
-  final RenderTexture? renderTexture;
+  final RenderTexture renderTexture;
   final Rectangle<int> sourceRectangle;
   final Rectangle<int> offsetRectangle;
   final int rotation;
@@ -42,22 +42,22 @@ class RenderTextureQuad {
     // Vertex list [u/v]
 
     if (rotation == 0) {
-      vxListQuad[02] = vxListQuad[14] = sr.left / rt!.width;
+      vxListQuad[02] = vxListQuad[14] = sr.left / rt.width;
       vxListQuad[03] = vxListQuad[07] = sr.top / rt.height;
       vxListQuad[10] = vxListQuad[06] = sr.right / rt.width;
       vxListQuad[11] = vxListQuad[15] = sr.bottom / rt.height;
     } else if (rotation == 1) {
-      vxListQuad[02] = vxListQuad[06] = sr.right / rt!.width;
+      vxListQuad[02] = vxListQuad[06] = sr.right / rt.width;
       vxListQuad[03] = vxListQuad[15] = sr.top / rt.height;
       vxListQuad[10] = vxListQuad[14] = sr.left / rt.width;
       vxListQuad[11] = vxListQuad[07] = sr.bottom / rt.height;
     } else if (rotation == 2) {
-      vxListQuad[02] = vxListQuad[14] = sr.right / rt!.width;
+      vxListQuad[02] = vxListQuad[14] = sr.right / rt.width;
       vxListQuad[03] = vxListQuad[07] = sr.bottom / rt.height;
       vxListQuad[10] = vxListQuad[06] = sr.left / rt.width;
       vxListQuad[11] = vxListQuad[15] = sr.top / rt.height;
     } else if (rotation == 3) {
-      vxListQuad[02] = vxListQuad[06] = sr.left / rt!.width;
+      vxListQuad[02] = vxListQuad[06] = sr.left / rt.width;
       vxListQuad[03] = vxListQuad[15] = sr.bottom / rt.height;
       vxListQuad[10] = vxListQuad[14] = sr.right / rt.width;
       vxListQuad[11] = vxListQuad[07] = sr.top / rt.height;
@@ -167,13 +167,13 @@ class RenderTextureQuad {
   //---------------------------------------------------------------------------
 
   bool get isEquivalentToSource {
-    return (renderTexture != null) &&
+    return
         (rotation == 0) &&
         !_hasCustomVertices &&
         (sourceRectangle.left == 0 &&
             sourceRectangle.top == 0 &&
-            sourceRectangle.width == renderTexture!.width &&
-            sourceRectangle.height == renderTexture!.height);
+            sourceRectangle.width == renderTexture.width &&
+            sourceRectangle.height == renderTexture.height);
   }
 
   //---------------------------------------------------------------------------
@@ -254,8 +254,8 @@ class RenderTextureQuad {
 
   Matrix get samplerMatrix {
     var pr = pixelRatio;
-    var sx = 1.0 / renderTexture!.width;
-    var sy = 1.0 / renderTexture!.height;
+    var sx = 1.0 / renderTexture.width;
+    var sy = 1.0 / renderTexture.height;
 
     if (rotation == 0) {
       var tx = sourceRectangle.left + offsetRectangle.left;
@@ -322,19 +322,19 @@ class RenderTextureQuad {
 
   ImageData createImageData() {
     var rect = sourceRectangle;
-    var context = renderTexture!.canvas!.context2D;
+    var context = renderTexture.canvas!.context2D;
     return context.createImageData(rect.width, rect.height);
   }
 
   ImageData getImageData() {
     var rect = sourceRectangle;
-    var context = renderTexture!.canvas!.context2D;
+    var context = renderTexture.canvas!.context2D;
     return context.getImageData(rect.left, rect.top, rect.width, rect.height);
   }
 
   void putImageData(ImageData imageData) {
     var rect = sourceRectangle;
-    var context = renderTexture!.canvas!.context2D;
+    var context = renderTexture.canvas!.context2D;
     context.putImageData(imageData, rect.left, rect.top);
   }
 }

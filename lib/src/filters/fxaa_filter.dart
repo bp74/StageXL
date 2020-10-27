@@ -36,7 +36,7 @@ class FxaaFilter extends BitmapFilter {
   void renderFilter(
       RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad!.renderTexture!;
+    var renderTexture = renderTextureQuad!.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(
         r'$FxaaFilterProgram', () => FxaaFilterProgram());
