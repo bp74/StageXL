@@ -92,7 +92,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   @override
   void stopDrag() {
     var stage = this.stage;
-    if (stage != null) stage._stopDrag(this);
+    stage?._stopDrag(this);
   }
 
   //----------------------------------------------------------------------------
@@ -151,7 +151,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
   @override
   void render(RenderState renderState) {
-    if (_graphics != null) _graphics!.render(renderState);
+    _graphics?.render(renderState);
     super.render(renderState);
   }
 }
