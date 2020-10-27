@@ -592,7 +592,7 @@ class Stage extends DisplayObjectContainer {
 
     if (mouseTarget != null && mouseCursor == MouseCursor.AUTO) {
       var mc = mouseTarget.mouseCursor;
-      if (mc != null && mc != MouseCursor.AUTO) mouseCursor = mc;
+      if (mc != MouseCursor.AUTO) mouseCursor = mc;
     }
 
     if (mouseCursor == MouseCursor.AUTO) {

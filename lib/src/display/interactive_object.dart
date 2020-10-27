@@ -37,7 +37,7 @@ abstract class InteractiveObject extends DisplayObject {
   bool mouseEnabled = true;
 
   /// Defines the mouse cursor that is displayed on this interactive object.
-  String? mouseCursor = MouseCursor.AUTO;
+  String mouseCursor = MouseCursor.AUTO;
 
   /// Specifies whether this object is in the tab order.
   ///
@@ -57,7 +57,7 @@ abstract class InteractiveObject extends DisplayObject {
   }
 
   set useHandCursor(bool value) {
-    mouseCursor = value ? MouseCursor.POINTER : null;
+    mouseCursor = value ? MouseCursor.POINTER : MouseCursor.AUTO;
   }
 
   // mouse events
