@@ -4,7 +4,7 @@ class RenderContextWebGL extends RenderContext {
   static int _globalContextIdentifier = 0;
   final CanvasElement _canvasElement;
 
-  gl.RenderingContext? _renderingContext;
+  late final gl.RenderingContext _renderingContext;
   final Matrix3D _projectionMatrix = Matrix3D.fromIdentity();
   final List<_MaskState> _maskStates = <_MaskState>[];
 
@@ -50,12 +50,12 @@ class RenderContextWebGL extends RenderContext {
     }
 
     _renderingContext = renderingContext;
-    _renderingContext!.enable(gl.WebGL.BLEND);
-    _renderingContext!.disable(gl.WebGL.STENCIL_TEST);
-    _renderingContext!.disable(gl.WebGL.DEPTH_TEST);
-    _renderingContext!.disable(gl.WebGL.CULL_FACE);
-    _renderingContext!.pixelStorei(gl.WebGL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-    _renderingContext!.blendFunc(gl.WebGL.ONE, gl.WebGL.ONE_MINUS_SRC_ALPHA);
+    _renderingContext.enable(gl.WebGL.BLEND);
+    _renderingContext.disable(gl.WebGL.STENCIL_TEST);
+    _renderingContext.disable(gl.WebGL.DEPTH_TEST);
+    _renderingContext.disable(gl.WebGL.CULL_FACE);
+    _renderingContext.pixelStorei(gl.WebGL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+    _renderingContext.blendFunc(gl.WebGL.ONE, gl.WebGL.ONE_MINUS_SRC_ALPHA);
 
     _activeRenderProgram = renderProgramSimple;
     _activeRenderProgram!.activate(this);
@@ -68,7 +68,7 @@ class RenderContextWebGL extends RenderContext {
 
   //---------------------------------------------------------------------------
 
-  gl.RenderingContext? get rawContext => _renderingContext;
+  gl.RenderingContext get rawContext => _renderingContext;
 
   @override
   RenderEngine get renderEngine => RenderEngine.WebGL;
@@ -89,8 +89,8 @@ class RenderContextWebGL extends RenderContext {
     var viewportWidth = _canvasElement.width!;
     var viewportHeight = _canvasElement.height!;
     _activeRenderFrameBuffer = null;
-    _renderingContext!.bindFramebuffer(gl.WebGL.FRAMEBUFFER, null);
-    _renderingContext!.viewport(0, 0, viewportWidth, viewportHeight);
+    _renderingContext.bindFramebuffer(gl.WebGL.FRAMEBUFFER, null);
+    _renderingContext.viewport(0, 0, viewportWidth, viewportHeight);
     _projectionMatrix.setIdentity();
     _projectionMatrix.scale(2.0 / viewportWidth, -2.0 / viewportHeight, 1.0);
     _projectionMatrix.translate(-1.0, 1.0, 0.0);
@@ -106,9 +106,9 @@ class RenderContextWebGL extends RenderContext {
     num g = colorGetG(color) / 255.0;
     num b = colorGetB(color) / 255.0;
     num a = colorGetA(color) / 255.0;
-    _renderingContext!.colorMask(true, true, true, true);
-    _renderingContext!.clearColor(r * a, g * a, b * a, a);
-    _renderingContext!
+    _renderingContext.colorMask(true, true, true, true);
+    _renderingContext.clearColor(r * a, g * a, b * a, a);
+    _renderingContext
         .clear(gl.WebGL.COLOR_BUFFER_BIT | gl.WebGL.STENCIL_BUFFER_BIT);
   }
 
@@ -140,15 +140,15 @@ class RenderContextWebGL extends RenderContext {
 
     var stencil = _getLastStencilValue() + 1;
 
-    _renderingContext!.enable(gl.WebGL.STENCIL_TEST);
-    _renderingContext!.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.INCR);
-    _renderingContext!.stencilFunc(gl.WebGL.EQUAL, stencil - 1, 0xFF);
-    _renderingContext!.colorMask(false, false, false, false);
+    _renderingContext.enable(gl.WebGL.STENCIL_TEST);
+    _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.INCR);
+    _renderingContext.stencilFunc(gl.WebGL.EQUAL, stencil - 1, 0xFF);
+    _renderingContext.colorMask(false, false, false, false);
     mask!.renderMask(renderState);
 
     _activeRenderProgram!.flush();
-    _renderingContext!.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.KEEP);
-    _renderingContext!.colorMask(true, true, true, true);
+    _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.KEEP);
+    _renderingContext.colorMask(true, true, true, true);
     _getMaskStates().add(_StencilMaskState(mask, stencil));
     _updateStencilTest(stencil);
   }
@@ -161,15 +161,15 @@ class RenderContextWebGL extends RenderContext {
     if (maskState is _ScissorMaskState) {
       _updateScissorTest(_getLastScissorValue());
     } else if (maskState is _StencilMaskState) {
-      _renderingContext!.enable(gl.WebGL.STENCIL_TEST);
-      _renderingContext!.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.DECR);
-      _renderingContext!.stencilFunc(gl.WebGL.EQUAL, maskState.value, 0xFF);
-      _renderingContext!.colorMask(false, false, false, false);
+      _renderingContext.enable(gl.WebGL.STENCIL_TEST);
+      _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.DECR);
+      _renderingContext.stencilFunc(gl.WebGL.EQUAL, maskState.value, 0xFF);
+      _renderingContext.colorMask(false, false, false, false);
       mask!.renderMask(renderState);
 
       _activeRenderProgram!.flush();
-      _renderingContext!.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.KEEP);
-      _renderingContext!.colorMask(true, true, true, true);
+      _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.KEEP);
+      _renderingContext.colorMask(true, true, true, true);
       _updateStencilTest(maskState.value - 1);
     }
   }
@@ -419,8 +419,8 @@ class RenderContextWebGL extends RenderContext {
     for (var i = 0; i < _activeRenderTextures.length; i++) {
       if (identical(renderTexture, _activeRenderTextures[i])) {
         _activeRenderTextures[i] = null;
-        _renderingContext!.activeTexture(gl.WebGL.TEXTURE0 + i);
-        _renderingContext!.bindTexture(gl.WebGL.TEXTURE_2D, null);
+        _renderingContext.activeTexture(gl.WebGL.TEXTURE0 + i);
+        _renderingContext.bindTexture(gl.WebGL.TEXTURE_2D, null);
       }
     }
   }
@@ -433,13 +433,13 @@ class RenderContextWebGL extends RenderContext {
         _activeRenderProgram!.flush();
         _activeRenderFrameBuffer = renderFrameBuffer;
         _activeRenderFrameBuffer!.activate(this);
-        _renderingContext!.viewport(
+        _renderingContext.viewport(
             0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
       } else {
         _activeRenderProgram!.flush();
         _activeRenderFrameBuffer = null;
-        _renderingContext!.bindFramebuffer(gl.WebGL.FRAMEBUFFER, null);
-        _renderingContext!.viewport(
+        _renderingContext.bindFramebuffer(gl.WebGL.FRAMEBUFFER, null);
+        _renderingContext.viewport(
             0, 0, _canvasElement.width!, _canvasElement.height!);
       }
       _updateScissorTest(_getLastScissorValue());
@@ -468,7 +468,7 @@ class RenderContextWebGL extends RenderContext {
     if (!identical(blendMode, _activeBlendMode)) {
       _activeRenderProgram!.flush();
       _activeBlendMode = blendMode;
-      _activeBlendMode!.blend(_renderingContext!);
+      _activeBlendMode!.blend(_renderingContext);
     }
   }
 
@@ -522,30 +522,30 @@ class RenderContextWebGL extends RenderContext {
 
   void _updateStencilTest(int value) {
     if (value == 0) {
-      _renderingContext!.disable(gl.WebGL.STENCIL_TEST);
+      _renderingContext.disable(gl.WebGL.STENCIL_TEST);
     } else {
-      _renderingContext!.enable(gl.WebGL.STENCIL_TEST);
-      _renderingContext!.stencilFunc(gl.WebGL.EQUAL, value, 0xFF);
+      _renderingContext.enable(gl.WebGL.STENCIL_TEST);
+      _renderingContext.stencilFunc(gl.WebGL.EQUAL, value, 0xFF);
     }
   }
 
   void _updateScissorTest(Rectangle<num>? value) {
     if (value == null) {
-      _renderingContext!.disable(gl.WebGL.SCISSOR_TEST);
+      _renderingContext.disable(gl.WebGL.SCISSOR_TEST);
     } else if (_activeRenderFrameBuffer is RenderFrameBuffer) {
       var x1 = value.left.round();
       var y1 = value.top.round();
       var x2 = value.right.round();
       var y2 = value.bottom.round();
-      _renderingContext!.enable(gl.WebGL.SCISSOR_TEST);
-      _renderingContext!.scissor(x1, y1, maxInt(x2 - x1, 0), maxInt(y2 - y1, 0));
+      _renderingContext.enable(gl.WebGL.SCISSOR_TEST);
+      _renderingContext.scissor(x1, y1, maxInt(x2 - x1, 0), maxInt(y2 - y1, 0));
     } else {
       var x1 = value.left.round();
       var y1 = _canvasElement.height! - value.bottom.round();
       var x2 = value.right.round();
       var y2 = _canvasElement.height! - value.top.round();
-      _renderingContext!.enable(gl.WebGL.SCISSOR_TEST);
-      _renderingContext!.scissor(x1, y1, maxInt(x2 - x1, 0), maxInt(y2 - y1, 0));
+      _renderingContext.enable(gl.WebGL.SCISSOR_TEST);
+      _renderingContext.scissor(x1, y1, maxInt(x2 - x1, 0), maxInt(y2 - y1, 0));
     }
   }
 

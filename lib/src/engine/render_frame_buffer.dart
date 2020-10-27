@@ -47,7 +47,7 @@ class RenderFrameBuffer {
       _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
-      _framebuffer = renderContext.rawContext!.createFramebuffer();
+      _framebuffer = renderContext.rawContext.createFramebuffer();
       _renderContext.activateRenderTexture(_renderTexture);
       _renderContext.activateRenderStencilBuffer(_renderStencilBuffer);
 

@@ -232,21 +232,21 @@ class RenderTexture {
 
       _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;
-      _renderingContext = renderContext.rawContext;
-      _texture = _renderingContext!.createTexture();
+      final renderingContext = _renderingContext = renderContext.rawContext;
+      _texture = renderingContext.createTexture();
 
-      _renderingContext!.activeTexture(textureSlot);
-      _renderingContext!.bindTexture(target, _texture);
+      renderingContext.activeTexture(textureSlot);
+      renderingContext.bindTexture(target, _texture);
 
-      var scissors = _renderingContext!.isEnabled(gl.WebGL.SCISSOR_TEST);
-      if (scissors) _renderingContext!.disable(gl.WebGL.SCISSOR_TEST);
+      var scissors = renderingContext.isEnabled(gl.WebGL.SCISSOR_TEST);
+      if (scissors) renderingContext.disable(gl.WebGL.SCISSOR_TEST);
 
       if (_source != null) {
-        _renderingContext!.texImage2D(target, 0, rgba, rgba, type, _source);
+        renderingContext.texImage2D(target, 0, rgba, rgba, type, _source);
         _textureSourceWorkaround =
-            _renderingContext!.getError() == gl.WebGL.INVALID_VALUE;
+            renderingContext.getError() == gl.WebGL.INVALID_VALUE;
       } else {
-        _renderingContext!.texImage2D(
+        renderingContext.texImage2D(
             target, 0, rgba, width, height, 0, rgba, type, null);
       }
 
@@ -254,22 +254,22 @@ class RenderTexture {
         // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
         _canvas = CanvasElement(width: width, height: height);
         _canvas!.context2D.drawImage(_source!, 0, 0);
-        _renderingContext!.texImage2D(target, 0, rgba, rgba, type, _canvas);
+        renderingContext.texImage2D(target, 0, rgba, rgba, type, _canvas);
       }
 
-      if (scissors) _renderingContext!.enable(gl.WebGL.SCISSOR_TEST);
+      if (scissors) renderingContext.enable(gl.WebGL.SCISSOR_TEST);
 
-      _renderingContext!.texParameteri(
+      renderingContext.texParameteri(
           gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_WRAP_S, _wrappingX.value);
-      _renderingContext!.texParameteri(
+      renderingContext.texParameteri(
           gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_WRAP_T, _wrappingY.value);
-      _renderingContext!.texParameteri(
+      renderingContext.texParameteri(
           gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_MIN_FILTER, _filtering.value);
-      _renderingContext!.texParameteri(
+      renderingContext.texParameteri(
           gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_MAG_FILTER, _filtering.value);
-    } else {
-      _renderingContext!.activeTexture(textureSlot);
-      _renderingContext!.bindTexture(gl.WebGL.TEXTURE_2D, _texture);
+    } else if (_texture != null){
+      _renderingContext?.activeTexture(textureSlot);
+      _renderingContext?.bindTexture(gl.WebGL.TEXTURE_2D, _texture);
     }
   }
 
