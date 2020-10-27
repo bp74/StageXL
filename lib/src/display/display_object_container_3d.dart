@@ -30,8 +30,8 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   num get offsetX => _offsetX;
 
   @override
-  set offsetX(num? value) {
-    if (value is num) _offsetX = value;
+  set offsetX(num value) {
+    _offsetX = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -41,8 +41,8 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   num get offsetY => _offsetY;
 
   @override
-  set offsetY(num? value) {
-    if (value is num) _offsetY = value;
+  set offsetY(num value) {
+    _offsetY = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -52,8 +52,8 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   num get offsetZ => _offsetZ;
 
   @override
-  set offsetZ(num? value) {
-    if (value is num) _offsetZ = value;
+  set offsetZ(num value) {
+    _offsetZ = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -63,8 +63,8 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   num get rotationX => _rotationX;
 
   @override
-  set rotationX(num? value) {
-    if (value is num) _rotationX = value;
+  set rotationX(num value) {
+    _rotationX = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -74,8 +74,8 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   num get rotationY => _rotationY;
 
   @override
-  set rotationY(num? value) {
-    if (value is num) _rotationY = value;
+  set rotationY(num value) {
+    _rotationY = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -85,8 +85,8 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   num get rotationZ => _rotationZ;
 
   @override
-  set rotationZ(num? value) {
-    if (value is num) _rotationZ = value;
+  set rotationZ(num value) {
+    _rotationZ = value;
     _transformationMatrix3DRefresh = true;
   }
 
