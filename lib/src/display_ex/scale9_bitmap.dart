@@ -78,6 +78,9 @@ class Scale9Bitmap extends Bitmap {
     // We could use renderState.renderTextureMesh, it would work great with
     // the WebGL renderer but not so good with the Canvas2D renderer.
 
+    // If first slice set, all the rest should be too
+    if (_slices.first == null) return;
+
     var globalMatrix = renderState.globalMatrix;
     var renderContext = renderState.renderContext;
     var tempMatrix = globalMatrix.clone();
