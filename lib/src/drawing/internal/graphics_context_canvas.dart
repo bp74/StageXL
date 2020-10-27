@@ -164,11 +164,11 @@ class _GraphicsContextCanvas extends GraphicsContext {
     return lineCap;
   }
 
-  CanvasPattern? _getCanvasPattern(GraphicsPattern pattern) {
+  CanvasPattern _getCanvasPattern(GraphicsPattern pattern) {
     return pattern.getCanvasPattern(_canvasContext);
   }
 
-  CanvasGradient? _getCanvasGradient(GraphicsGradient gradient) {
+  CanvasGradient _getCanvasGradient(GraphicsGradient gradient) {
     return gradient.getCanvasGradient(_canvasContext);
   }
 }
