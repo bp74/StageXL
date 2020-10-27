@@ -10,8 +10,8 @@ class RenderTextureQuad {
   final Int16List ixListQuad = Int16List(6);
   final Float32List vxListQuad = Float32List(16);
 
-  Int16List? _ixList;
-  Float32List? _vxList;
+  late Int16List _ixList;
+  late Float32List _vxList;
   bool _hasCustomVertices = false;
 
   //---------------------------------------------------------------------------
@@ -181,8 +181,8 @@ class RenderTextureQuad {
   num get targetWidth => offsetRectangle.width / pixelRatio;
   num get targetHeight => offsetRectangle.height / pixelRatio;
 
-  Float32List? get vxList => _vxList;
-  Int16List? get ixList => _ixList;
+  Float32List get vxList => _vxList;
+  Int16List get ixList => _ixList;
   bool get hasCustomVertices => _hasCustomVertices;
 
   Rectangle<num> get targetRectangle {
@@ -206,7 +206,7 @@ class RenderTextureQuad {
     _hasCustomVertices = false;
   }
 
-  void setCustomVertices(Float32List? vxList, Int16List? ixList) {
+  void setCustomVertices(Float32List vxList, Int16List ixList) {
     _vxList = vxList;
     _ixList = ixList;
     _hasCustomVertices = true;

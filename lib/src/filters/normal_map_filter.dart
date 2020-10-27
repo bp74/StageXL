@@ -162,8 +162,8 @@ class NormalMapFilterProgram extends RenderProgram {
     var mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
     var texMatrix = renderTextureQuad.samplerMatrix;
     var posMatrix = renderState.globalMatrix;
-    var ixList = renderTextureQuad.ixList!;
-    var vxList = renderTextureQuad.vxList!;
+    var ixList = renderTextureQuad.ixList;
+    var vxList = renderTextureQuad.vxList;
     var indexCount = ixList.length;
     var vertexCount = vxList.length >> 2;
 

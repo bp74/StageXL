@@ -350,8 +350,8 @@ class ColorMatrixFilterProgram extends RenderProgram {
       ColorMatrixFilter colorMatrixFilter) {
     var alpha = renderState.globalAlpha;
     var matrix = renderState.globalMatrix;
-    var ixList = renderTextureQuad.ixList!;
-    var vxList = renderTextureQuad.vxList!;
+    var ixList = renderTextureQuad.ixList;
+    var vxList = renderTextureQuad.vxList;
     var indexCount = ixList.length;
     var vertexCount = vxList.length >> 2;
 

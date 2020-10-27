@@ -53,8 +53,8 @@ class RenderProgramTinted extends RenderProgram {
   void renderTextureQuad(RenderState renderState,
       RenderTextureQuad renderTextureQuad, double r, double g, num b, num a) {
     if (renderTextureQuad.hasCustomVertices) {
-      var ixList = renderTextureQuad.ixList!;
-      var vxList = renderTextureQuad.vxList!;
+      var ixList = renderTextureQuad.ixList;
+      var vxList = renderTextureQuad.vxList;
       renderTextureMesh(renderState, ixList, vxList, r, g, b, a);
       return;
     }

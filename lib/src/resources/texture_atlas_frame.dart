@@ -43,7 +43,7 @@ class TextureAtlasFrame {
     var q = RenderTextureQuad.slice(textureAtlasQuad!, s, o, rotation);
 
     if (vxList != null && ixList != null) {
-      q.setCustomVertices(vxList, ixList);
+      q.setCustomVertices(vxList!, ixList!);
     } else {
       q.setQuadVertices();
     }

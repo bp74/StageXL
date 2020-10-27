@@ -53,8 +53,8 @@ class RenderProgramSimple extends RenderProgram {
   void renderTextureQuad(
       RenderState renderState, RenderTextureQuad renderTextureQuad) {
     if (renderTextureQuad.hasCustomVertices) {
-      var ixList = renderTextureQuad.ixList!;
-      var vxList = renderTextureQuad.vxList!;
+      var ixList = renderTextureQuad.ixList;
+      var vxList = renderTextureQuad.vxList;
       renderTextureMesh(renderState, ixList, vxList);
       return;
     }

@@ -23,7 +23,7 @@ class AlphaMaskFilter extends BitmapFilter {
         : bitmapData.renderTextureQuad.cut(rectangle);
 
     var matrix = renderTextureQuad.drawMatrix;
-    var vxList = renderTextureQuad.vxList!;
+    var vxList = renderTextureQuad.vxList;
     var canvas = renderTextureQuad.renderTexture.canvas;
     var renderContext = RenderContextCanvas(canvas);
     var renderState = RenderState(renderContext, matrix);
@@ -139,8 +139,8 @@ class AlphaMaskFilterProgram extends RenderProgram {
   void renderAlphaMaskFilterQuad(RenderState renderState,
       RenderTextureQuad renderTextureQuad, AlphaMaskFilter alphaMaskFilter) {
     var alpha = renderState.globalAlpha;
-    var ixList = renderTextureQuad.ixList!;
-    var vxList = renderTextureQuad.vxList!;
+    var ixList = renderTextureQuad.ixList;
+    var vxList = renderTextureQuad.vxList;
     var indexCount = ixList.length;
     var vertexCount = vxList.length >> 2;
 
@@ -150,7 +150,7 @@ class AlphaMaskFilterProgram extends RenderProgram {
 
     // Calculate mask bounds and transformation matrix
 
-    var bounds = mskQuad.vxList!;
+    var bounds = mskQuad.vxList;
     var mskBoundsX1 = bounds[2] < bounds[10] ? bounds[2] : bounds[10];
     var mskBoundsX2 = bounds[2] > bounds[10] ? bounds[2] : bounds[10];
     var mskBoundsY1 = bounds[3] < bounds[11] ? bounds[3] : bounds[11];
