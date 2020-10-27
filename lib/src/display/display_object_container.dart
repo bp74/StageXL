@@ -167,10 +167,10 @@ abstract class DisplayObjectContainer extends InteractiveObject
   /// objects are garbage collected if no other references to the children exist.
 
   @override
-  void removeChildren([int? beginIndex, int? endIndex]) {
+  void removeChildren([int beginIndex = 0, int? endIndex]) {
     var length = _children.length;
-    var i1 = beginIndex is int ? beginIndex : 0;
-    var i2 = endIndex is int ? endIndex : length - 1;
+    var i1 = beginIndex;
+    var i2 = endIndex ?? length - 1;
     if (i1 > i2) {
       // do nothing
     } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
