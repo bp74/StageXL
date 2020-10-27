@@ -267,9 +267,9 @@ class RenderTexture {
           gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_MIN_FILTER, _filtering.value);
       renderingContext.texParameteri(
           gl.WebGL.TEXTURE_2D, gl.WebGL.TEXTURE_MAG_FILTER, _filtering.value);
-    } else if (_texture != null){
-      _renderingContext?.activeTexture(textureSlot);
-      _renderingContext?.bindTexture(gl.WebGL.TEXTURE_2D, _texture);
+    } else {
+      _renderingContext!.activeTexture(textureSlot);
+      _renderingContext!.bindTexture(gl.WebGL.TEXTURE_2D, _texture);
     }
   }
 
