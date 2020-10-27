@@ -296,14 +296,14 @@ class Matrix3D {
   //-------------------------------------------------------------------------------------------------
 
   void copyFrom2D(Matrix matrix) {
-    _data[00] = matrix.a as double;
-    _data[01] = matrix.c as double;
+    _data[00] = matrix.a;
+    _data[01] = matrix.c;
     _data[02] = 0.0;
-    _data[03] = matrix.tx as double;
-    _data[04] = matrix.b as double;
-    _data[05] = matrix.d as double;
+    _data[03] = matrix.tx;
+    _data[04] = matrix.b;
+    _data[05] = matrix.d;
     _data[06] = 0.0;
-    _data[07] = matrix.ty as double;
+    _data[07] = matrix.ty;
     _data[08] = 0.0;
     _data[09] = 0.0;
     _data[10] = 1.0;

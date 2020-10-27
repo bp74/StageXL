@@ -156,24 +156,24 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
     disMatrix.copyFrom(renderTextureQuad.samplerMatrix);
     disMatrix.scale(displacementMapFilter.scaleX, displacementMapFilter.scaleY);
 
-    var uMapMatrix = Float32List.fromList(<double>[
-      mapMatrix.a as double,
-      mapMatrix.c as double,
-      mapMatrix.tx as double,
-      mapMatrix.b as double,
-      mapMatrix.d as double,
-      mapMatrix.ty as double,
+    var uMapMatrix = Float32List.fromList([
+      mapMatrix.a,
+      mapMatrix.c,
+      mapMatrix.tx,
+      mapMatrix.b,
+      mapMatrix.d,
+      mapMatrix.ty,
       0.0,
       0.0,
       1.0
     ]);
 
-    var uDisMatrix = Float32List.fromList(<double>[
-      disMatrix.a as double,
-      disMatrix.c as double,
+    var uDisMatrix = Float32List.fromList([
+      disMatrix.a,
+      disMatrix.c,
       0.0,
-      disMatrix.b as double,
-      disMatrix.d as double,
+      disMatrix.b,
+      disMatrix.d,
       0.0,
       0.0,
       0.0,

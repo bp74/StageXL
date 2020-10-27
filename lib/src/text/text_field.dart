@@ -796,9 +796,9 @@ class TextField extends InteractiveObject {
         for (var c = 0; c <= text.length; c++) {
           var width =
               canvasContext.measureText(text.substring(0, c)).width!.toDouble();
-          num distance = (lineX + width - mouseX).abs();
+          var distance = (lineX + width - mouseX).abs();
           if (distance < bestDistance) {
-            bestDistance = distance as double;
+            bestDistance = distance;
             bestIndex = c;
           }
         }

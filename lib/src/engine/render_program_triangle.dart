@@ -86,8 +86,8 @@ class RenderProgramTriangle extends RenderProgram {
     var colorG = colorScale * colorGetG(color) * colorA;
     var colorB = colorScale * colorGetB(color) * colorA;
 
-    vxData[vxIndex + 00] = x1 * ma + y1 * mc + (mx as double);
-    vxData[vxIndex + 01] = x1 * mb + y1 * md + (my as double);
+    vxData[vxIndex + 00] = x1 * ma + y1 * mc + mx;
+    vxData[vxIndex + 01] = x1 * mb + y1 * md + my;
     vxData[vxIndex + 02] = colorR;
     vxData[vxIndex + 03] = colorG;
     vxData[vxIndex + 04] = colorB;
@@ -159,9 +159,9 @@ class RenderProgramTriangle extends RenderProgram {
     var colorB = colorScale * colorGetB(color) * colorA;
 
     for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
-      num x = vxList[o + 0];
-      num y = vxList[o + 1];
-      vxData[vxIndex + 0] = mx + ma * x + mc * (y as double);
+      var x = vxList[o + 0];
+      var y = vxList[o + 1];
+      vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = colorR;
       vxData[vxIndex + 3] = colorG;

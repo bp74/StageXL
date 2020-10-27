@@ -51,43 +51,43 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get a => _data[0];
+  double get a => _data[0];
 
   set a(num n) {
     _data[0] = n.toDouble();
   }
 
-  num get b => _data[1];
+  double get b => _data[1];
 
   set b(num n) {
     _data[1] = n.toDouble();
   }
 
-  num get c => _data[2];
+  double get c => _data[2];
 
   set c(num n) {
     _data[2] = n.toDouble();
   }
 
-  num get d => _data[3];
+  double get d => _data[3];
 
   set d(num n) {
     _data[3] = n.toDouble();
   }
 
-  num get tx => _data[4];
+  double get tx => _data[4];
 
   set tx(num n) {
     _data[4] = n.toDouble();
   }
 
-  num get ty => _data[5];
+  double get ty => _data[5];
 
   set ty(num n) {
     _data[5] = n.toDouble();
   }
 
-  num get det => a * d - b * c;
+  double get det => a * d - b * c;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -286,8 +286,8 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void scale(num scaleX, num scaleY) {
-    _data[0] = a * (scaleX as double);
-    _data[1] = b * (scaleY as double);
+    _data[0] = a * scaleX.toDouble();
+    _data[1] = b * scaleY.toDouble();
     _data[2] = c * scaleX;
     _data[3] = d * scaleY;
     _data[4] = tx * scaleX;
@@ -297,13 +297,13 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void translate(num translationX, num translationY) {
-    _data[4] = tx + (translationX as double);
-    _data[5] = ty + (translationY as double);
+    _data[4] = tx + translationX.toDouble();
+    _data[5] = ty + translationY.toDouble();
   }
 
   void prependTranslation(num translationX, num translationY) {
-    _data[4] = translationX * a + translationY * c + (tx as double);
-    _data[5] = translationX * b + translationY * d + (ty as double);
+    _data[4] = translationX * a + translationY * c + tx;
+    _data[5] = translationX * b + translationY * d + ty;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -320,12 +320,12 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void copyFrom(Matrix matrix) {
-    _data[0] = matrix.a as double;
-    _data[1] = matrix.b as double;
-    _data[2] = matrix.c as double;
-    _data[3] = matrix.d as double;
-    _data[4] = matrix.tx as double;
-    _data[5] = matrix.ty as double;
+    _data[0] = matrix.a;
+    _data[1] = matrix.b;
+    _data[2] = matrix.c;
+    _data[3] = matrix.d;
+    _data[4] = matrix.tx;
+    _data[5] = matrix.ty;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -353,8 +353,8 @@ class Matrix {
     var tx2 = concatMatrix.tx;
     var ty2 = concatMatrix.ty;
 
-    _data[0] = a1 * a2 + b1 * (c2 as double);
-    _data[1] = a1 * b2 + b1 * (d2 as double);
+    _data[0] = a1 * a2 + b1 * c2;
+    _data[1] = a1 * b2 + b1 * d2;
     _data[2] = c1 * a2 + d1 * c2;
     _data[3] = c1 * b2 + d1 * d2;
     _data[4] = tx1 * a2 + ty1 * c2 + tx2;
@@ -383,8 +383,8 @@ class Matrix {
     _data[1] = a1 * b2 + b1 * d2;
     _data[2] = c1 * a2 + d1 * c2;
     _data[3] = c1 * b2 + d1 * d2;
-    _data[4] = tx1 * a2 + ty1 * c2 + (tx2 as double);
-    _data[5] = tx1 * b2 + ty1 * d2 + (ty2 as double);
+    _data[4] = tx1 * a2 + ty1 * c2 + tx2;
+    _data[5] = tx1 * b2 + ty1 * d2 + ty2;
   }
 
   //-------------------------------------------------------------------------------------------------

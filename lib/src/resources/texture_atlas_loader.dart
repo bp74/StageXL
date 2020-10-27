@@ -84,7 +84,7 @@ class _TextureAtlasLoaderBitmapData extends TextureAtlasLoader {
   _TextureAtlasLoaderBitmapData(this.bitmapData, this.source);
 
   @override
-  double getPixelRatio() => bitmapData.renderTextureQuad.pixelRatio as double;
+  double getPixelRatio() => bitmapData.renderTextureQuad.pixelRatio.toDouble();
 
   @override
   Future<String> getSource() => Future.value(source);

@@ -7,7 +7,7 @@ part of stagexl.display_ex;
 
 class FlipBook extends InteractiveObject implements Animatable {
   final List<BitmapData> _bitmapDatas;
-  final List<double> _frameDurations;
+  final List<num> _frameDurations;
 
   int _currentFrame = 0;
   double? _frameTime;
@@ -54,7 +54,7 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   set frameDurations(List<num> value) {
     for (var i = 0; i < _frameDurations.length; i++) {
-      _frameDurations[i] = (i < value.length) ? value[i] as double : value.last as double;
+      _frameDurations[i] = (i < value.length) ? value[i] : value.last;
     }
   }
 

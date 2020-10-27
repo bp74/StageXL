@@ -400,8 +400,8 @@ abstract class DisplayObjectContainer extends InteractiveObject
         if (child is DisplayObjectContainer3D) {
           var point = Point<num>(childX, childY);
           child.projectionMatrix3D.transformPointInverse(point, point);
-          childX = point.x as double;
-          childY = point.y as double;
+          childX = point.x.toDouble();
+          childY = point.y.toDouble();
         }
 
         var displayObject = child.hitTestInput(childX, childY);

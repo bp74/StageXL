@@ -44,7 +44,7 @@ class RenderState {
     _currentContextState = _firstContextState;
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
-    if (alpha is num) _firstContextState.alpha = alpha as double;
+    if (alpha is num) _firstContextState.alpha = alpha.toDouble();
     if (blendMode is BlendMode) _firstContextState.blendMode = blendMode;
   }
 
@@ -66,7 +66,7 @@ class RenderState {
     _currentContextState!.blendMode = BlendMode.NORMAL;
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
-    if (alpha is num) _firstContextState.alpha = alpha as double;
+    if (alpha is num) _firstContextState.alpha = alpha.toDouble();
     if (blendMode is BlendMode) _firstContextState.blendMode = blendMode;
   }
 
