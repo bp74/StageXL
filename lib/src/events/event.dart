@@ -41,7 +41,7 @@ class Event {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  final String? _type;
+  final String _type;
   final bool _bubbles;
   // The following field is modified from various places in this library.
   // ignore: prefer_final_fields
@@ -52,7 +52,7 @@ class Event {
   bool _isImmediatePropagationStopped = false;
 
   /// Creates an [Event] of specified [type].
-  Event(String? type, [bool bubbles = false])
+  Event(String type, [bool bubbles = false])
       : _type = type,
         _bubbles = bubbles;
 
@@ -106,7 +106,7 @@ class Event {
 
   /// The type of event.
 
-  String? get type => _type;
+  String get type => _type;
 
   /// Indicates whether an event is a bubbling event. If the event can bubble,
   /// this value is true; otherwise it is false.

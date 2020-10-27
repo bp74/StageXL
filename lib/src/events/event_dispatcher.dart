@@ -147,7 +147,7 @@ class EventDispatcher {
 
     var eventStreams = _eventStreams;
     if (eventStreams == null) return;
-    var eventStream = eventStreams[event.type!];
+    var eventStream = eventStreams[event.type];
     if (eventStream == null) return;
 
     eventStream._dispatchEventInternal(event, target, eventPhase);
