@@ -151,7 +151,7 @@ abstract class _GraphicsMeshSegment {
 
   void fillPattern(RenderState renderState, GraphicsPattern pattern) {
     var matrix = _tmpMatrix;
-    var texture = pattern.patternTexture!;
+    var texture = pattern.patternTexture;
     var invWidth = 1.0 / texture.width;
     var invHeight = 1.0 / texture.height;
 

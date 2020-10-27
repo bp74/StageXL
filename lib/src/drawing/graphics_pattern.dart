@@ -127,14 +127,14 @@ class GraphicsPattern {
     if (_canvasPattern == null) {
       var cacheKey = _CanvasPatternKey(_renderTextureQuad, _type);
       _canvasPattern =
-          context.createPattern(patternTexture!.source!, _type.value);
+          context.createPattern(patternTexture.source!, _type.value);
       _canvasPatternCache.addObject(cacheKey, _canvasPattern);
     }
 
     return _canvasPattern!;
   }
 
-  RenderTexture? get patternTexture {
+  RenderTexture get patternTexture {
     // try to get the patternTexture from the texture cache
     _patternTexture ??= _patternTextureCache.getObject(_renderTextureQuad);
 
@@ -158,6 +158,6 @@ class GraphicsPattern {
       _patternTextureCache.addObject(_renderTextureQuad, _patternTexture);
     }
 
-    return _patternTexture;
+    return _patternTexture!;
   }
 }
