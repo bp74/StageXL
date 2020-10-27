@@ -39,8 +39,7 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  TextField([String? text, TextFormat? textFormat]) {
-    this.text = (text != null) ? text : '';
+  TextField([String? text = '', TextFormat? textFormat]) {
     defaultTextFormat =
         (textFormat != null) ? textFormat : TextFormat('Arial', 12, 0x000000);
 
