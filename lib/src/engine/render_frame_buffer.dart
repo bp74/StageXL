@@ -30,9 +30,9 @@ class RenderFrameBuffer {
   /// Call the dispose method to release memory allocated by WebGL.
 
   void dispose() {
-    if (_renderTexture != null) _renderTexture!.dispose();
-    if (_renderStencilBuffer != null) _renderStencilBuffer!.dispose();
-    if (_framebuffer != null) _renderingContext!.deleteFramebuffer(_framebuffer);
+    _renderTexture?.dispose();
+    _renderStencilBuffer?.dispose();
+    if (_framebuffer != null) _renderingContext?.deleteFramebuffer(_framebuffer);
 
     _contextIdentifier = -1;
     _renderTexture = null;
