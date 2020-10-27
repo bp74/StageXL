@@ -15,7 +15,7 @@ class _DisplayObjectCache {
   //---------------------------------------------------------------------------
 
   void dispose() {
-    if (renderTexture != null) renderTexture!.dispose();
+    renderTexture?.dispose();
     renderTexture = null;
     renderTextureQuad = null;
   }
@@ -46,7 +46,7 @@ class _DisplayObjectCache {
 
     // render display object to texture
 
-    var canvas = renderTexture!.canvas!;
+    var canvas = renderTexture!.canvas;
     var matrix = renderTextureQuad!.drawMatrix;
     var renderContext = RenderContextCanvas(canvas);
     var renderState = RenderState(renderContext, matrix);

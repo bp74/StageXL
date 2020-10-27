@@ -86,7 +86,7 @@ class BitmapData implements BitmapDrawable {
   /// Return a dataUrl for this BitmapData.
 
   String toDataUrl([String type = 'image/png', num? quality]) {
-    return clone().renderTexture.canvas!.toDataUrl(type, quality);
+    return clone().renderTexture.canvas.toDataUrl(type, quality);
   }
 
   //----------------------------------------------------------------------------

@@ -24,7 +24,7 @@ class AlphaMaskFilter extends BitmapFilter {
 
     var matrix = renderTextureQuad.drawMatrix;
     var vxList = renderTextureQuad.vxList!;
-    var canvas = renderTextureQuad.renderTexture.canvas!;
+    var canvas = renderTextureQuad.renderTexture.canvas;
     var renderContext = RenderContextCanvas(canvas);
     var renderState = RenderState(renderContext, matrix);
     var context = renderContext.rawContext;

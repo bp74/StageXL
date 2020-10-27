@@ -155,7 +155,7 @@ class GraphicsPattern {
       var textureHeight = _renderTextureQuad!.offsetRectangle.height;
       var renderTexture = RenderTexture(textureWidth, textureHeight, 0);
       var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
-      var renderContext = RenderContextCanvas(renderTexture.canvas!);
+      var renderContext = RenderContextCanvas(renderTexture.canvas);
       var renderState =
           RenderState(renderContext, renderTextureQuad.drawMatrix);
       renderState.renderTextureQuad(_renderTextureQuad);

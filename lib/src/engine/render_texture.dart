@@ -69,14 +69,14 @@ class RenderTexture {
         Rectangle<int>(0, 0, _width, _height), 0, 1.0);
   }
 
-  CanvasElement? get canvas {
+  CanvasElement get canvas {
     if (_source is CanvasElement) {
-      return _source as CanvasElement?;
+      return _source as CanvasElement;
     } else if (_source is ImageElement) {
       var imageElement = _source as ImageElement;
       _canvas = _source = CanvasElement(width: _width, height: _height);
       _canvas!.context2D.drawImageScaled(imageElement, 0, 0, _width, _height);
-      return _canvas;
+      return _canvas!;
     } else {
       throw StateError('RenderTexture is read only.');
     }

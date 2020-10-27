@@ -322,19 +322,19 @@ class RenderTextureQuad {
 
   ImageData createImageData() {
     var rect = sourceRectangle;
-    var context = renderTexture.canvas!.context2D;
+    var context = renderTexture.canvas.context2D;
     return context.createImageData(rect.width, rect.height);
   }
 
   ImageData getImageData() {
     var rect = sourceRectangle;
-    var context = renderTexture.canvas!.context2D;
+    var context = renderTexture.canvas.context2D;
     return context.getImageData(rect.left, rect.top, rect.width, rect.height);
   }
 
   void putImageData(ImageData imageData) {
     var rect = sourceRectangle;
-    var context = renderTexture.canvas!.context2D;
+    var context = renderTexture.canvas.context2D;
     context.putImageData(imageData, rect.left, rect.top);
   }
 }
