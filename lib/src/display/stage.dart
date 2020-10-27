@@ -304,52 +304,52 @@ class Stage extends DisplayObjectContainer {
   }
 
   @override
-  set x(num? value) {
+  set x(num value) {
     _throwStageException();
   }
 
   @override
-  set y(num? value) {
+  set y(num value) {
     _throwStageException();
   }
 
   @override
-  set pivotX(num? value) {
+  set pivotX(num value) {
     _throwStageException();
   }
 
   @override
-  set pivotY(num? value) {
+  set pivotY(num value) {
     _throwStageException();
   }
 
   @override
-  set scaleX(num? value) {
+  set scaleX(num value) {
     _throwStageException();
   }
 
   @override
-  set scaleY(num? value) {
+  set scaleY(num value) {
     _throwStageException();
   }
 
   @override
-  set skewX(num? value) {
+  set skewX(num value) {
     _throwStageException();
   }
 
   @override
-  set skewY(num? value) {
+  set skewY(num value) {
     _throwStageException();
   }
 
   @override
-  set rotation(num? value) {
+  set rotation(num value) {
     _throwStageException();
   }
 
   @override
-  set alpha(num? value) {
+  set alpha(num value) {
     _throwStageException();
   }
 
