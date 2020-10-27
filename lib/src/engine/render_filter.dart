@@ -15,5 +15,5 @@ abstract class RenderFilter {
   }
 
   void renderFilter(
-      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass);
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass);
 }

@@ -34,7 +34,7 @@ abstract class RenderObject3D extends RenderObject {
 /// fallback if the [RenderTextureQuad] can't be rendered in the fast path.
 
 class _RenderTextureQuadObject implements RenderObject {
-  final RenderTextureQuad? renderTextureQuad;
+  final RenderTextureQuad renderTextureQuad;
 
   @override
   final List<RenderFilter> filters;
@@ -60,8 +60,8 @@ class _RenderTextureQuadObject implements RenderObject {
 
   @override
   Rectangle<num> get bounds {
-    var w = renderTextureQuad!.targetWidth;
-    var h = renderTextureQuad!.targetHeight;
+    var w = renderTextureQuad.targetWidth;
+    var h = renderTextureQuad.targetHeight;
     return Rectangle<num>(0.0, 0.0, w, h);
   }
 

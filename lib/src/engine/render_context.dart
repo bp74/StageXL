@@ -52,7 +52,7 @@ abstract class RenderContext {
       RenderState renderState, Int16List ixList, Float32List vxList, int color);
 
   void renderTextureQuadFiltered(RenderState renderState,
-      RenderTextureQuad? renderTextureQuad, List<RenderFilter> renderFilters);
+      RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters);
 
   void renderObjectFiltered(RenderState renderState, RenderObject renderObject);
 }

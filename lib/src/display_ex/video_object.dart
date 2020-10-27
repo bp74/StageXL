@@ -30,16 +30,16 @@ class VideoObject extends InteractiveObject {
   EventStream<Event> get onError => VideoObject.errorEvent.forTarget(this);
   EventStream<Event> get onPlay => VideoObject.playEvent.forTarget(this);
 
-  Video? _video;
-  RenderTexture? _renderTexture;
-  RenderTextureQuad? _renderTextureQuad;
+  final Video _video;
+  final RenderTexture _renderTexture;
+  late final RenderTextureQuad _renderTextureQuad;
 
-  VideoObject(Video video, [bool autoplay = false]) {
-    _video = video;
-    _renderTexture = RenderTexture.fromVideoElement(video.videoElement);
-    _renderTextureQuad = _renderTexture!.quad;
+  VideoObject(this._video, [bool autoplay = false]) :
+    _renderTexture = RenderTexture.fromVideoElement(_video.videoElement) {
 
-    var videoElement = video.videoElement;
+    _renderTextureQuad = _renderTexture.quad;
+
+    var videoElement = _video.videoElement;
     videoElement.onEnded.listen((e) => dispatchEvent(Event('videoEnded')));
     videoElement.onPause.listen((e) => dispatchEvent(Event('videoPause')));
     videoElement.onError.listen((e) => dispatchEvent(Event('videoError')));
@@ -50,16 +50,16 @@ class VideoObject extends InteractiveObject {
 
   //----------------------------------------------------------------------------
 
-  Video? get video => _video;
-  RenderTexture? get renderTexture => _renderTexture;
-  RenderTextureQuad? get renderTextureQuad => _renderTextureQuad;
+  Video get video => _video;
+  RenderTexture get renderTexture => _renderTexture;
+  RenderTextureQuad get renderTextureQuad => _renderTextureQuad;
 
   //----------------------------------------------------------------------------
 
   @override
   Rectangle<num> get bounds {
-    var width = _renderTextureQuad!.targetWidth;
-    var height = _renderTextureQuad!.targetHeight;
+    var width = _renderTextureQuad.targetWidth;
+    var height = _renderTextureQuad.targetHeight;
     return Rectangle<num>(0.0, 0.0, width, height);
   }
 
@@ -76,30 +76,30 @@ class VideoObject extends InteractiveObject {
   //----------------------------------------------------------------------------
 
   void play() {
-    video!.play();
+    video.play();
   }
 
   void pause() {
-    video!.pause();
+    video.pause();
   }
 
-  bool get muted => video!.muted;
+  bool get muted => video.muted;
 
   set muted(bool value) {
-    video!.muted = value;
+    video.muted = value;
   }
 
-  bool get loop => video!.loop;
+  bool get loop => video.loop;
 
   set loop(bool value) {
-    video!.loop = value;
+    video.loop = value;
   }
 
-  num get volume => video!.volume;
+  num get volume => video.volume;
 
   set volume(num value) {
-    video!.volume = value;
+    video.volume = value;
   }
 
-  bool get isPlaying => video!.isPlaying;
+  bool get isPlaying => video.isPlaying;
 }

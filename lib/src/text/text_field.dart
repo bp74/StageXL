@@ -275,7 +275,7 @@ class TextField extends InteractiveObject {
         _cacheAsBitmap) {
       _refreshTextLineMetrics();
       _refreshCache(renderState.globalMatrix);
-      renderState.renderTextureQuadFiltered(_renderTextureQuad, filters);
+      renderState.renderTextureQuadFiltered(_renderTextureQuad!, filters);
     } else {
       super.renderFiltered(renderState);
     }

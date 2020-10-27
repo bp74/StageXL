@@ -235,7 +235,7 @@ class RenderContextWebGL extends RenderContext {
 
   @override
   void renderTextureQuadFiltered(RenderState renderState,
-      RenderTextureQuad? renderTextureQuad, List<RenderFilter> renderFilters) {
+      RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
     var firstFilter = renderFilters.length == 1 ? renderFilters[0] : null;
 
     if (renderFilters.isEmpty) {

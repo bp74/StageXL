@@ -108,7 +108,7 @@ class RenderState {
   }
 
   void renderTextureQuadFiltered(
-      RenderTextureQuad? renderTextureQuad, List<RenderFilter> renderFilters) {
+      RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
     _renderContext.renderTextureQuadFiltered(
         this, renderTextureQuad, renderFilters);
   }
