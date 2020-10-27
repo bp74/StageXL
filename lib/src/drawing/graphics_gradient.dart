@@ -11,12 +11,12 @@ enum GraphicsGradientType { Linear, Radial }
 class GraphicsGradient {
   static const int GRADIENT_TEXTURE_SIZE = 512;
 
-  static final SharedCache<String?, CanvasGradient?> _canvasGradientCache =
-      SharedCache<String?, CanvasGradient?>();
+  static final SharedCache<String, CanvasGradient> _canvasGradientCache =
+      SharedCache<String, CanvasGradient>();
 
-  static final SharedCache<String?, RenderTexture?> _gradientTextureCache =
-      SharedCache<String?, RenderTexture?>()
-        ..onObjectReleased.listen((e) => e.object!.dispose());
+  static final SharedCache<String, RenderTexture> _gradientTextureCache =
+      SharedCache<String, RenderTexture>()
+        ..onObjectReleased.listen((e) => e.object.dispose());
 
   /// cached by the Canvas2D renderer
   CanvasGradient? _canvasGradient;
@@ -125,20 +125,25 @@ class GraphicsGradient {
   }
 
   void disposeCachedRenderObjects([bool colorStopsChanged = true]) {
-    _canvasGradientCache.releaseObject(_canvasCacheKey);
+    if (_canvasCacheKey != null) {
+      _canvasGradientCache.releaseObject(_canvasCacheKey!);
+    }
+
     _canvasGradient = null;
     _canvasCacheKey = null;
     if (colorStopsChanged && _gradientTexture != null) {
-      _gradientTextureCache.releaseObject(_textureCacheKey);
+      if (_textureCacheKey != null) {
+        _gradientTextureCache.releaseObject(_textureCacheKey!);
+      }
       _gradientTexture = null;
       _textureCacheKey = null;
     }
   }
 
-  CanvasGradient? getCanvasGradient(CanvasRenderingContext2D context) {
+  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
     if (_canvasGradient == null) {
       _canvasCacheKey = _createCanvasCacheKey();
-      _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey);
+      _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey!);
     }
 
     if (_canvasGradient == null && _type == GraphicsGradientType.Linear) {
@@ -146,7 +151,7 @@ class GraphicsGradient {
           context.createLinearGradient(_startX, _startY, _endX, _endY);
       _colorStops.forEach((cs) =>
           _canvasGradient!.addColorStop(cs.offset, color2rgba(cs.color)));
-      _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
+      _canvasGradientCache.addObject(_canvasCacheKey!, _canvasGradient!);
     }
 
     if (_canvasGradient == null && _type == GraphicsGradientType.Radial) {
@@ -154,16 +159,16 @@ class GraphicsGradient {
           _startX, _startY, _startRadius, _endX, _endY, _endRadius);
       _colorStops.forEach((cs) =>
           _canvasGradient!.addColorStop(cs.offset, color2rgba(cs.color)));
-      _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
+      _canvasGradientCache.addObject(_canvasCacheKey!, _canvasGradient!);
     }
 
-    return _canvasGradient;
+    return _canvasGradient!;
   }
 
   RenderTexture getRenderTexture() {
     if (_gradientTexture == null) {
       _textureCacheKey = _createTextureCacheKey();
-      _gradientTexture = _gradientTextureCache.getObject(_textureCacheKey);
+      _gradientTexture = _gradientTextureCache.getObject(_textureCacheKey!);
     }
 
     if (_gradientTexture == null) {
@@ -175,7 +180,7 @@ class GraphicsGradient {
       canvas.context2D.fillStyle = canvasGradient;
       canvas.context2D.fillRect(0, 0, 1, GRADIENT_TEXTURE_SIZE);
       _gradientTexture = RenderTexture.fromCanvasElement(canvas);
-      _gradientTextureCache.addObject(_textureCacheKey, _gradientTexture);
+      _gradientTextureCache.addObject(_textureCacheKey!, _gradientTexture!);
     }
 
     return _gradientTexture!;
