@@ -139,8 +139,8 @@ class NormalMapFilterProgram extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext!.uniform1i(uniforms['uTexSampler'], 0);
-    renderingContext!.uniform1i(uniforms['uMapSampler'], 1);
+    renderingContext.uniform1i(uniforms['uTexSampler'], 0);
+    renderingContext.uniform1i(uniforms['uMapSampler'], 1);
 
     renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 76, 0);
     renderBufferVertex.bindAttribute(attributes['aVertexTexCoord'], 2, 76, 8);

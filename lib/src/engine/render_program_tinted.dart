@@ -41,7 +41,7 @@ class RenderProgramTinted extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext!.uniform1i(uniforms['uSampler'], 0);
+    renderingContext.uniform1i(uniforms['uSampler'], 0);
 
     renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 32, 0);
     renderBufferVertex.bindAttribute(attributes['aVertexTextCoord'], 2, 32, 8);

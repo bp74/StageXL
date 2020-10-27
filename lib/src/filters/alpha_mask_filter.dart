@@ -124,8 +124,8 @@ class AlphaMaskFilterProgram extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext!.uniform1i(uniforms['uTexSampler'], 0);
-    renderingContext!.uniform1i(uniforms['uMskSampler'], 1);
+    renderingContext.uniform1i(uniforms['uTexSampler'], 0);
+    renderingContext.uniform1i(uniforms['uMskSampler'], 1);
 
     renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 44, 0);
     renderBufferVertex.bindAttribute(attributes['aVertexTexCoord'], 2, 44, 8);

@@ -144,6 +144,6 @@ class FxaaFilterProgram extends RenderProgramSimple {
   void configure(num textureWidth, num textureHeight) {
     var texelX = 1.0 / textureWidth;
     var texelY = 1.0 / textureHeight;
-    renderingContext!.uniform2f(uniforms['uTexel'], texelX, texelY);
+    renderingContext.uniform2f(uniforms['uTexel'], texelX, texelY);
   }
 }

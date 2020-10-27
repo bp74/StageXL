@@ -112,8 +112,6 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
 
   @override
   void configure(RenderState renderState, GraphicsGradient gradient) {
-    if (renderingContext == null) return;
-
     var m = renderState.globalMatrix;
     var g = gradient;
 
@@ -125,9 +123,9 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
     // protect against zero length vector (linear gradient not defined for this case)
     if (vectorX == 0 && vectorY == 0) vectorY = 1;
 
-    renderingContext!.uniform1i(uniforms['uSampler'], 0);
-    renderingContext!.uniform2f(uniforms['uvGradientStart'], startX, startY);
-    renderingContext!.uniform2f(uniforms['uvGradientVector'], vectorX, vectorY);
+    renderingContext.uniform1i(uniforms['uSampler'], 0);
+    renderingContext.uniform2f(uniforms['uvGradientStart'], startX, startY);
+    renderingContext.uniform2f(uniforms['uvGradientVector'], vectorX, vectorY);
   }
 }
 
@@ -159,8 +157,6 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
 
   @override
   void configure(RenderState renderState, GraphicsGradient gradient) {
-    if (renderingContext == null) return;
-
     var m = renderState.globalMatrix;
     var g = gradient;
 
@@ -187,9 +183,9 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
     var c2 = startX * startX + startY * startY - startRadius * startRadius;
     var sign = radiusOffset >= 0 ? -1 : 1;
 
-    renderingContext!.uniform1i(uniforms['uSampler'], 0);
-    renderingContext!.uniform2f(uniforms['uvA'], a, sign);
-    renderingContext!.uniform3f(uniforms['uvB'], b0, b1, b2);
-    renderingContext!.uniform3f(uniforms['uvC'], c0, c1, c2);
+    renderingContext.uniform1i(uniforms['uSampler'], 0);
+    renderingContext.uniform2f(uniforms['uvA'], a, sign);
+    renderingContext.uniform3f(uniforms['uvB'], b0, b1, b2);
+    renderingContext.uniform3f(uniforms['uvC'], c0, c1, c2);
   }
 }

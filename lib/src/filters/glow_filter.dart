@@ -242,7 +242,7 @@ class GlowFilterProgram extends RenderProgramSimple {
     num b = colorGetB(color) / 255.0;
     num a = colorGetA(color) / 255.0 * alpha;
 
-    renderingContext!.uniform2f(uniforms['uRadius'], radiusX, radiusY);
-    renderingContext!.uniform4f(uniforms['uColor'], r, g, b, a);
+    renderingContext.uniform2f(uniforms['uRadius'], radiusX, radiusY);
+    renderingContext.uniform4f(uniforms['uColor'], r, g, b, a);
   }
 }

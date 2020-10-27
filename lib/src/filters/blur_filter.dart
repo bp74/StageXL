@@ -206,7 +206,7 @@ class BlurFilterProgram extends RenderProgramSimple {
   //---------------------------------------------------------------------------
 
   void configure(num alpha, num radiusX, num radiusY) {
-    renderingContext!.uniform1f(uniforms['uAlpha'], alpha);
-    renderingContext!.uniform2f(uniforms['uRadius'], radiusX, radiusY);
+    renderingContext.uniform1f(uniforms['uAlpha'], alpha);
+    renderingContext.uniform2f(uniforms['uRadius'], radiusX, radiusY);
   }
 }

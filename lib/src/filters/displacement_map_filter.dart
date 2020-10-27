@@ -180,11 +180,11 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
       1.0
     ]);
 
-    renderingContext!.uniform1i(uniforms['uTexSampler'], 0);
-    renderingContext!.uniform1i(uniforms['uMapSampler'], 1);
-    renderingContext!.uniformMatrix3fv(
+    renderingContext.uniform1i(uniforms['uTexSampler'], 0);
+    renderingContext.uniform1i(uniforms['uMapSampler'], 1);
+    renderingContext.uniformMatrix3fv(
         uniforms['uMapMatrix'], false, uMapMatrix);
-    renderingContext!.uniformMatrix3fv(
+    renderingContext.uniformMatrix3fv(
         uniforms['uDisMatrix'], false, uDisMatrix);
   }
 }
