@@ -120,7 +120,7 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
 
   @override
-  void beginRenderMask(RenderState renderState, RenderMask? mask) {
+  void beginRenderMask(RenderState renderState, RenderMask mask) {
     _activeRenderProgram.flush();
 
     // try to use the scissor rectangle for this mask
@@ -144,7 +144,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.INCR);
     _renderingContext.stencilFunc(gl.WebGL.EQUAL, stencil - 1, 0xFF);
     _renderingContext.colorMask(false, false, false, false);
-    mask!.renderMask(renderState);
+    mask.renderMask(renderState);
 
     _activeRenderProgram.flush();
     _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.KEEP);
@@ -154,7 +154,7 @@ class RenderContextWebGL extends RenderContext {
   }
 
   @override
-  void endRenderMask(RenderState renderState, RenderMask? mask) {
+  void endRenderMask(RenderState renderState, RenderMask mask) {
     _activeRenderProgram.flush();
 
     var maskState = _getMaskStates().removeLast();
@@ -165,7 +165,7 @@ class RenderContextWebGL extends RenderContext {
       _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.DECR);
       _renderingContext.stencilFunc(gl.WebGL.EQUAL, maskState.value, 0xFF);
       _renderingContext.colorMask(false, false, false, false);
-      mask!.renderMask(renderState);
+      mask.renderMask(renderState);
 
       _activeRenderProgram.flush();
       _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.KEEP);
@@ -179,10 +179,10 @@ class RenderContextWebGL extends RenderContext {
 
   @override
   void renderTextureQuad(
-      RenderState renderState, RenderTextureQuad? renderTextureQuad) {
+      RenderState renderState, RenderTextureQuad renderTextureQuad) {
     activateRenderProgram(renderProgramSimple);
     activateBlendMode(renderState.globalBlendMode);
-    activateRenderTexture(renderTextureQuad!.renderTexture);
+    activateRenderTexture(renderTextureQuad.renderTexture);
     renderProgramSimple.renderTextureQuad(renderState, renderTextureQuad);
   }
 
