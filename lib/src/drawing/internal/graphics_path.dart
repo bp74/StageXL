@@ -141,15 +141,15 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     num sinR = sin(delta / steps);
     num tx = x - x * cosR + y * sinR;
     num ty = y - x * sinR - y * cosR;
-    num ax = x + cos(start) * radius;
-    num ay = y + sin(start) * radius;
+    var ax = x + cos(start) * radius;
+    var ay = y + sin(start) * radius;
 
-    lineTo(ax as double, ay as double);
+    lineTo(ax, ay);
 
     for (var s = 1; s <= steps; s++) {
       var bx = ax * cosR - ay * sinR + tx;
       var by = ax * sinR + ay * cosR + ty;
-      _currentSegment!.addVertex((ax = bx) as double, (ay = by) as double);
+      _currentSegment!.addVertex((ax = bx), (ay = by));
     }
   }
 
@@ -184,9 +184,9 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     for (var s = 0; s <= steps; s++, angle += angleDelta) {
       num cx = cos(angle);
       num cy = sin(angle);
-      num rx = x + cx * cosRotationX - cy * sinRotationY;
-      num ry = y + cx * sinRotationX + cy * cosRotationY;
-      lineTo(rx as double, ry as double);
+      var rx = x + cx * cosRotationX - cy * sinRotationY;
+      var ry = y + cx * sinRotationX + cy * cosRotationY;
+      lineTo(rx, ry);
     }
   }
 
