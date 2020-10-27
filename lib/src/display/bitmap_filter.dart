@@ -18,7 +18,7 @@ abstract class BitmapFilter extends RenderFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     renderState.renderTextureQuad(renderTextureQuad);
   }
 }
