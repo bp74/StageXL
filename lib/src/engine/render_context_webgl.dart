@@ -8,7 +8,7 @@ class RenderContextWebGL extends RenderContext {
   final Matrix3D _projectionMatrix = Matrix3D.fromIdentity();
   final List<_MaskState> _maskStates = <_MaskState>[];
 
-  RenderProgram? _activeRenderProgram;
+  late RenderProgram _activeRenderProgram;
   RenderFrameBuffer? _activeRenderFrameBuffer;
   RenderStencilBuffer? _activeRenderStencilBuffer;
   BlendMode? _activeBlendMode;
@@ -58,7 +58,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.blendFunc(gl.WebGL.ONE, gl.WebGL.ONE_MINUS_SRC_ALPHA);
 
     _activeRenderProgram = renderProgramSimple;
-    _activeRenderProgram!.activate(this);
+    _activeRenderProgram.activate(this);
 
     _contextValid = true;
     _contextIdentifier = ++_globalContextIdentifier;
@@ -74,7 +74,7 @@ class RenderContextWebGL extends RenderContext {
   RenderEngine get renderEngine => RenderEngine.WebGL;
 
   RenderTexture? get activeRenderTexture => _activeRenderTextures[0];
-  RenderProgram? get activeRenderProgram => _activeRenderProgram;
+  RenderProgram get activeRenderProgram => _activeRenderProgram;
   RenderFrameBuffer? get activeRenderFrameBuffer => _activeRenderFrameBuffer;
   Matrix3D get activeProjectionMatrix => _projectionMatrix;
   BlendMode? get activeBlendMode => _activeBlendMode;
@@ -94,7 +94,7 @@ class RenderContextWebGL extends RenderContext {
     _projectionMatrix.setIdentity();
     _projectionMatrix.scale(2.0 / viewportWidth, -2.0 / viewportHeight, 1.0);
     _projectionMatrix.translate(-1.0, 1.0, 0.0);
-    _activeRenderProgram!.projectionMatrix = _projectionMatrix;
+    _activeRenderProgram.projectionMatrix = _projectionMatrix;
   }
 
   @override
@@ -114,14 +114,14 @@ class RenderContextWebGL extends RenderContext {
 
   @override
   void flush() {
-    _activeRenderProgram!.flush();
+    _activeRenderProgram.flush();
   }
 
   //---------------------------------------------------------------------------
 
   @override
   void beginRenderMask(RenderState renderState, RenderMask? mask) {
-    _activeRenderProgram!.flush();
+    _activeRenderProgram.flush();
 
     // try to use the scissor rectangle for this mask
 
@@ -146,7 +146,7 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.colorMask(false, false, false, false);
     mask!.renderMask(renderState);
 
-    _activeRenderProgram!.flush();
+    _activeRenderProgram.flush();
     _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.KEEP);
     _renderingContext.colorMask(true, true, true, true);
     _getMaskStates().add(_StencilMaskState(mask, stencil));
@@ -155,7 +155,7 @@ class RenderContextWebGL extends RenderContext {
 
   @override
   void endRenderMask(RenderState renderState, RenderMask? mask) {
-    _activeRenderProgram!.flush();
+    _activeRenderProgram.flush();
 
     var maskState = _getMaskStates().removeLast();
     if (maskState is _ScissorMaskState) {
@@ -167,7 +167,7 @@ class RenderContextWebGL extends RenderContext {
       _renderingContext.colorMask(false, false, false, false);
       mask!.renderMask(renderState);
 
-      _activeRenderProgram!.flush();
+      _activeRenderProgram.flush();
       _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.KEEP);
       _renderingContext.colorMask(true, true, true, true);
       _updateStencilTest(maskState.value - 1);
@@ -412,7 +412,7 @@ class RenderContextWebGL extends RenderContext {
   }
 
   void releaseRenderFrameBuffer(RenderFrameBuffer renderFrameBuffer) {
-    _activeRenderProgram!.flush();
+    _activeRenderProgram.flush();
     _renderFrameBufferPool.add(renderFrameBuffer);
   }
 
@@ -431,13 +431,13 @@ class RenderContextWebGL extends RenderContext {
   void activateRenderFrameBuffer(RenderFrameBuffer? renderFrameBuffer) {
     if (!identical(renderFrameBuffer, _activeRenderFrameBuffer)) {
       if (renderFrameBuffer is RenderFrameBuffer) {
-        _activeRenderProgram!.flush();
+        _activeRenderProgram.flush();
         _activeRenderFrameBuffer = renderFrameBuffer;
         _activeRenderFrameBuffer!.activate(this);
         _renderingContext.viewport(
             0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
       } else {
-        _activeRenderProgram!.flush();
+        _activeRenderProgram.flush();
         _activeRenderFrameBuffer = null;
         _renderingContext.bindFramebuffer(gl.WebGL.FRAMEBUFFER, null);
         _renderingContext.viewport(
@@ -450,24 +450,24 @@ class RenderContextWebGL extends RenderContext {
 
   void activateRenderStencilBuffer(RenderStencilBuffer? renderStencilBuffer) {
     if (!identical(renderStencilBuffer, _activeRenderStencilBuffer)) {
-      _activeRenderProgram!.flush();
+      _activeRenderProgram.flush();
       _activeRenderStencilBuffer = renderStencilBuffer;
       _activeRenderStencilBuffer!.activate(this);
     }
   }
 
-  void activateRenderProgram(RenderProgram? renderProgram) {
+  void activateRenderProgram(RenderProgram renderProgram) {
     if (!identical(renderProgram, _activeRenderProgram)) {
-      _activeRenderProgram!.flush();
+      _activeRenderProgram.flush();
       _activeRenderProgram = renderProgram;
-      _activeRenderProgram!.activate(this);
-      _activeRenderProgram!.projectionMatrix = _projectionMatrix;
+      _activeRenderProgram.activate(this);
+      _activeRenderProgram.projectionMatrix = _projectionMatrix;
     }
   }
 
   void activateBlendMode(BlendMode blendMode) {
     if (!identical(blendMode, _activeBlendMode)) {
-      _activeRenderProgram!.flush();
+      _activeRenderProgram.flush();
       _activeBlendMode = blendMode;
       _activeBlendMode!.blend(_renderingContext);
     }
@@ -475,7 +475,7 @@ class RenderContextWebGL extends RenderContext {
 
   void activateRenderTexture(RenderTexture? renderTexture) {
     if (!identical(renderTexture, _activeRenderTextures[0])) {
-      _activeRenderProgram!.flush();
+      _activeRenderProgram.flush();
       _activeRenderTextures[0] = renderTexture;
       renderTexture!.activate(this, gl.WebGL.TEXTURE0);
     }
@@ -483,7 +483,7 @@ class RenderContextWebGL extends RenderContext {
 
   void activateRenderTextureAt(RenderTexture? renderTexture, int index) {
     if (!identical(renderTexture, _activeRenderTextures[index])) {
-      _activeRenderProgram!.flush();
+      _activeRenderProgram.flush();
       _activeRenderTextures[index] = renderTexture;
       renderTexture!.activate(this, gl.WebGL.TEXTURE0 + index);
     }
@@ -491,8 +491,8 @@ class RenderContextWebGL extends RenderContext {
 
   void activateProjectionMatrix(Matrix3D matrix) {
     _projectionMatrix.copyFrom(matrix);
-    _activeRenderProgram!.flush();
-    _activeRenderProgram!.projectionMatrix = _projectionMatrix;
+    _activeRenderProgram.flush();
+    _activeRenderProgram.projectionMatrix = _projectionMatrix;
   }
 
   //---------------------------------------------------------------------------
