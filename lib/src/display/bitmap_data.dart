@@ -23,9 +23,8 @@ class BitmapData implements BitmapDrawable {
 
   static BitmapDataLoadOptions defaultLoadOptions = BitmapDataLoadOptions();
 
-  BitmapData.fromRenderTextureQuad(RenderTextureQuad renderTextureQuad)
-      : renderTextureQuad = renderTextureQuad,
-        width = renderTextureQuad.targetWidth,
+  BitmapData.fromRenderTextureQuad(this.renderTextureQuad)
+      : width = renderTextureQuad.targetWidth,
         height = renderTextureQuad.targetHeight;
 
   //----------------------------------------------------------------------------
@@ -40,7 +39,7 @@ class BitmapData implements BitmapDrawable {
   }
 
   factory BitmapData.fromImageElement(ImageElement imageElement,
-      [num? pixelRatio = 1.0]) {
+      [num pixelRatio = 1.0]) {
     var renderTexture = RenderTexture.fromImageElement(imageElement);
     var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return BitmapData.fromRenderTextureQuad(renderTextureQuad);
@@ -78,7 +77,7 @@ class BitmapData implements BitmapDrawable {
 
   BitmapData clone([num? pixelRatio]) {
     pixelRatio ??= renderTextureQuad.pixelRatio;
-    var bitmapData = BitmapData(width, height, Color.Transparent, pixelRatio!);
+    var bitmapData = BitmapData(width, height, Color.Transparent, pixelRatio);
     bitmapData.drawPixels(this, rectangle, Point<num>(0, 0));
     return bitmapData;
   }

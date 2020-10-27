@@ -122,7 +122,7 @@ class GlowFilter extends BitmapFilter {
     var width = ensureInt(imageData.width);
     var height = ensureInt(imageData.height);
 
-    var pixelRatio = renderTextureQuad.pixelRatio!;
+    var pixelRatio = renderTextureQuad.pixelRatio;
     var blurX = (this.blurX * pixelRatio).round();
     var blurY = (this.blurY * pixelRatio).round();
     var alphaChannel =

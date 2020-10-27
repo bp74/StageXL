@@ -153,7 +153,7 @@ class DropShadowFilter extends BitmapFilter {
     var shiftX = (distance! * cos(angle!)).round();
     var shiftY = (distance! * sin(angle!)).round();
 
-    var pixelRatio = renderTextureQuad.pixelRatio!;
+    var pixelRatio = renderTextureQuad.pixelRatio;
     var blurX = (this.blurX * pixelRatio).round();
     var blurY = (this.blurY * pixelRatio).round();
     var alphaChannel =

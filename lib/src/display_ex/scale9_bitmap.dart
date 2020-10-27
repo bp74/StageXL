@@ -12,7 +12,7 @@ class Scale9Bitmap extends Bitmap {
 
   final List<RenderTextureQuad?> _slices = List.filled(9, null);
 
-  Scale9Bitmap(BitmapData bitmapData, Rectangle<num> grid) : super(bitmapData) {
+  Scale9Bitmap(BitmapData bitmapData, Rectangle<num> grid) : _grid = grid, super(bitmapData) {
     _grid = grid;
     _width = ensureNum(bitmapData.width);
     _height = ensureNum(bitmapData.height);
@@ -113,13 +113,13 @@ class Scale9Bitmap extends Bitmap {
     var rtq = bitmapData!.renderTextureQuad;
 
     var x0 = 0;
-    var x1 = (rtq.pixelRatio! * grid!.left).round();
-    var x2 = (rtq.pixelRatio! * grid!.right).round();
+    var x1 = (rtq.pixelRatio * grid!.left).round();
+    var x2 = (rtq.pixelRatio * grid!.right).round();
     var x3 = (rtq.sourceRectangle.width);
 
     var y0 = 0;
-    var y1 = (rtq.pixelRatio! * grid!.top).round();
-    var y2 = (rtq.pixelRatio! * grid!.bottom).round();
+    var y1 = (rtq.pixelRatio * grid!.top).round();
+    var y2 = (rtq.pixelRatio * grid!.bottom).round();
     var y3 = (rtq.sourceRectangle.height);
 
     for (var j = 0; j < 3; j++) {

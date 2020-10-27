@@ -7,7 +7,7 @@ part of stagexl.resources;
 
 abstract class TextureAtlasLoader {
   /// Get the pixel ratio of the texture atlas.
-  double? getPixelRatio();
+  double getPixelRatio();
 
   /// Get the source of the texture atlas.
   Future<String> getSource();
@@ -29,7 +29,7 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
   }
 
   @override
-  double? getPixelRatio() => _loadInfo.pixelRatio;
+  double getPixelRatio() => _loadInfo.pixelRatio;
 
   @override
   Future<String> getSource() => HttpRequest.getString(_loadInfo.loaderUrl);
@@ -61,7 +61,7 @@ class _TextureAtlasLoaderTextureAtlas extends TextureAtlasLoader {
       this.textureAtlas, this.namePrefix, this.source);
 
   @override
-  double? getPixelRatio() => textureAtlas.pixelRatio;
+  double getPixelRatio() => textureAtlas.pixelRatio;
 
   @override
   Future<String> getSource() => Future.value(source);
@@ -84,7 +84,7 @@ class _TextureAtlasLoaderBitmapData extends TextureAtlasLoader {
   _TextureAtlasLoaderBitmapData(this.bitmapData, this.source);
 
   @override
-  double? getPixelRatio() => bitmapData.renderTextureQuad.pixelRatio as double?;
+  double getPixelRatio() => bitmapData.renderTextureQuad.pixelRatio as double;
 
   @override
   Future<String> getSource() => Future.value(source);

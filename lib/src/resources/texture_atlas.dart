@@ -5,7 +5,7 @@ class TextureAtlas {
   final List<TextureAtlasFrame> frames = <TextureAtlasFrame>[];
 
   /// The pixelRatio used for the BitmapDatas in the frames
-  final double? pixelRatio;
+  final double pixelRatio;
 
   TextureAtlas(this.pixelRatio);
 
