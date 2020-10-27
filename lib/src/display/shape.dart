@@ -14,7 +14,7 @@ part of stagexl.display;
 class Shape extends DisplayObject {
   /// Specifies the graphics object belonging to this Shape object, where vector
   /// drawing commands can occur.
-  var graphics = Graphics();
+  Graphics graphics = Graphics();
 
   @override
   Rectangle<num> get bounds => graphics.bounds;
