@@ -2,8 +2,10 @@ part of stagexl.engine;
 
 abstract class RenderProgram {
   int _contextIdentifier = -1;
-  late gl.RenderingContext _renderingContext; // this assumes activate() is called
-  gl.Program? _program;
+
+  // These assume activate() is called
+  late gl.RenderingContext _renderingContext;
+  late gl.Program _program;
 
   final Map<String, int> _attributes;
   final Map<String, gl.UniformLocation> _uniforms;
@@ -28,7 +30,7 @@ abstract class RenderProgram {
   RenderBufferVertex get renderBufferVertex => _renderBufferVertex;
   RenderStatistics get renderStatistics => _renderStatistics;
   gl.RenderingContext get renderingContext => _renderingContext;
-  gl.Program? get program => _program;
+  gl.Program get program => _program;
 
   Map<String, int> get attributes => _attributes;
   Map<String, gl.UniformLocation> get uniforms => _uniforms;
@@ -52,8 +54,8 @@ abstract class RenderProgram {
       _renderBufferIndex.activate(renderContext);
       _renderBufferVertex.activate(renderContext);
       _program = _createProgram(_renderingContext);
-      _updateAttributes(_renderingContext, _program!);
-      _updateUniforms(_renderingContext, _program!);
+      _updateAttributes(_renderingContext, _program);
+      _updateUniforms(_renderingContext, _program);
     }
 
     renderingContext.useProgram(program);
