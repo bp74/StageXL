@@ -13,14 +13,14 @@ class BitmapDataUpdateBatch {
 
   BitmapDataUpdateBatch(BitmapData bitmapData)
       : bitmapData = bitmapData,
-        _renderContext = RenderContextCanvas(bitmapData.renderTexture!.canvas!),
+        _renderContext = RenderContextCanvas(bitmapData.renderTexture.canvas!),
         _drawMatrix = bitmapData.renderTextureQuad.drawMatrix;
 
   //---------------------------------------------------------------------------
 
   /// Update the underlying rendering surface.
 
-  void update() => bitmapData.renderTexture!.update();
+  void update() => bitmapData.renderTexture.update();
 
   //---------------------------------------------------------------------------
 

@@ -48,8 +48,14 @@ class RenderFrameBuffer {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
       _framebuffer = renderContext.rawContext.createFramebuffer();
-      _renderContext.activateRenderTexture(_renderTexture);
-      _renderContext.activateRenderStencilBuffer(_renderStencilBuffer);
+
+      if (_renderTexture != null) {
+        _renderContext.activateRenderTexture(_renderTexture!);
+      }
+
+      if (_renderStencilBuffer != null) {
+        _renderContext.activateRenderStencilBuffer(_renderStencilBuffer!);
+      }
 
       var target = gl.WebGL.FRAMEBUFFER;
       var color = gl.WebGL.COLOR_ATTACHMENT0;

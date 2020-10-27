@@ -38,7 +38,7 @@ void main() {
       var x = index % 7;
       var y = index ~/ 7;
       var id1 = spritesheet!.frames[index].renderTextureQuad.getImageData();
-      var id2 = spiders!.renderTexture!.canvas!.context2D
+      var id2 = spiders!.renderTexture.canvas!.context2D
           .getImageData(x * 32, y * 32, 32, 32);
       expect(id1.data, equals(id2.data), reason: '@frame $index');
     }

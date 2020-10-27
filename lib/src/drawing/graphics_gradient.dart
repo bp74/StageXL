@@ -160,7 +160,7 @@ class GraphicsGradient {
     return _canvasGradient;
   }
 
-  RenderTexture? getRenderTexture() {
+  RenderTexture getRenderTexture() {
     if (_gradientTexture == null) {
       _textureCacheKey = _createTextureCacheKey();
       _gradientTexture = _gradientTextureCache.getObject(_textureCacheKey);
@@ -178,7 +178,7 @@ class GraphicsGradient {
       _gradientTextureCache.addObject(_textureCacheKey, _gradientTexture);
     }
 
-    return _gradientTexture;
+    return _gradientTexture!;
   }
 
   String _createCanvasCacheKey() {

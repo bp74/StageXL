@@ -61,7 +61,7 @@ class ResourceManager {
     var resourceManagerResource = _removeResource('BitmapData', name);
     var bitmapData = resourceManagerResource?.value;
     if (bitmapData is BitmapData && dispose) {
-      bitmapData.renderTexture!.dispose();
+      bitmapData.renderTexture.dispose();
     }
   }
 
@@ -86,7 +86,7 @@ class ResourceManager {
     var textureAtlas = resourceManagerResource?.value;
     if (textureAtlas is TextureAtlas && dispose) {
       for (var textureAtlasFrame in textureAtlas.frames) {
-        textureAtlasFrame.bitmapData!.renderTexture!.dispose();
+        textureAtlasFrame.bitmapData!.renderTexture.dispose();
       }
     }
   }

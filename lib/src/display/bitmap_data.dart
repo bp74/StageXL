@@ -86,7 +86,7 @@ class BitmapData implements BitmapDrawable {
   /// Return a dataUrl for this BitmapData.
 
   String toDataUrl([String type = 'image/png', num? quality]) {
-    return clone().renderTexture!.canvas!.toDataUrl(type, quality);
+    return clone().renderTexture.canvas!.toDataUrl(type, quality);
   }
 
   //----------------------------------------------------------------------------
@@ -132,7 +132,7 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   Rectangle<num> get rectangle => Rectangle<num>(0, 0, width, height);
-  RenderTexture? get renderTexture => renderTextureQuad.renderTexture;
+  RenderTexture get renderTexture => renderTextureQuad.renderTexture;
 
   //----------------------------------------------------------------------------
 

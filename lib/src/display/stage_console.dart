@@ -62,7 +62,7 @@ class StageConsole extends DisplayObject {
   //----------------------------------------------------------------------------
 
   void _calculateGlyphs(BitmapData fontBitmapData) {
-    fontBitmapData.renderTexture!.filtering = RenderTextureFiltering.NEAREST;
+    fontBitmapData.renderTexture.filtering = RenderTextureFiltering.NEAREST;
     for (var i = 0; i < 64; i++) {
       var rectangle = Rectangle<int>(i * 7, 0, 7, 14);
       _glyphs.add(fontBitmapData.renderTextureQuad.cut(rectangle));

@@ -187,12 +187,12 @@ class RenderContextWebGL extends RenderContext {
   }
 
   @override
-  void renderTextureMesh(RenderState renderState, RenderTexture? renderTexture,
-      Int16List ixList, Float32List? vxList) {
+  void renderTextureMesh(RenderState renderState, RenderTexture renderTexture,
+      Int16List ixList, Float32List vxList) {
     activateRenderProgram(renderProgramSimple);
     activateBlendMode(renderState.globalBlendMode);
     activateRenderTexture(renderTexture);
-    renderProgramSimple.renderTextureMesh(renderState, ixList, vxList!);
+    renderProgramSimple.renderTextureMesh(renderState, ixList, vxList);
   }
 
   @override
@@ -448,7 +448,7 @@ class RenderContextWebGL extends RenderContext {
     }
   }
 
-  void activateRenderStencilBuffer(RenderStencilBuffer? renderStencilBuffer) {
+  void activateRenderStencilBuffer(RenderStencilBuffer renderStencilBuffer) {
     if (!identical(renderStencilBuffer, _activeRenderStencilBuffer)) {
       _activeRenderProgram.flush();
       _activeRenderStencilBuffer = renderStencilBuffer;
@@ -473,19 +473,19 @@ class RenderContextWebGL extends RenderContext {
     }
   }
 
-  void activateRenderTexture(RenderTexture? renderTexture) {
+  void activateRenderTexture(RenderTexture renderTexture) {
     if (!identical(renderTexture, _activeRenderTextures[0])) {
       _activeRenderProgram.flush();
       _activeRenderTextures[0] = renderTexture;
-      renderTexture!.activate(this, gl.WebGL.TEXTURE0);
+      renderTexture.activate(this, gl.WebGL.TEXTURE0);
     }
   }
 
-  void activateRenderTextureAt(RenderTexture? renderTexture, int index) {
+  void activateRenderTextureAt(RenderTexture renderTexture, int index) {
     if (!identical(renderTexture, _activeRenderTextures[index])) {
       _activeRenderProgram.flush();
       _activeRenderTextures[index] = renderTexture;
-      renderTexture!.activate(this, gl.WebGL.TEXTURE0 + index);
+      renderTexture.activate(this, gl.WebGL.TEXTURE0 + index);
     }
   }
 

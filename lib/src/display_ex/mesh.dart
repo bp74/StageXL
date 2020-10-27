@@ -225,6 +225,6 @@ class Mesh extends DisplayObject {
     }
 
     renderContext.renderTextureMesh(
-        renderState, renderTexture, ixList, _vxListTemp);
+        renderState, renderTexture, ixList, _vxListTemp!);
   }
 }
