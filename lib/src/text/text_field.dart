@@ -331,8 +331,6 @@ class TextField extends InteractiveObject {
 
     for (var p = 0; p < paragraphs.length; p++) {
       var paragraph = paragraphs[p];
-      if (paragraph is! String) continue; // dart2js_hint
-
       paragraphLines.add(_textLineMetrics.length);
 
       if (_wordWrap == false) {
@@ -347,7 +345,6 @@ class TextField extends InteractiveObject {
 
         for (var w = 0; w < words.length; w++) {
           var word = words[w];
-          if (word is! String) continue; // dart2js_hint
 
           validLine = checkLine;
           checkLine = (validLine == null) ? word : '$validLine $word';
@@ -387,7 +384,6 @@ class TextField extends InteractiveObject {
 
     for (var line = 0; line < _textLineMetrics.length; line++) {
       var textLineMetrics = _textLineMetrics[line];
-      if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
 
       var indent = paragraphLines.contains(line) ? textFormatIndent : 0;
       var offsetX = textFormatLeftMargin + indent;
@@ -460,7 +456,6 @@ class TextField extends InteractiveObject {
 
     for (var line = 0; line < _textLineMetrics.length; line++) {
       var textLineMetrics = _textLineMetrics[line];
-      if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
 
       switch (textFormatAlign) {
         case TextFormatAlign.CENTER:
@@ -484,7 +479,6 @@ class TextField extends InteractiveObject {
     if (_type == TextFieldType.INPUT) {
       for (var line = _textLineMetrics.length - 1; line >= 0; line--) {
         var textLineMetrics = _textLineMetrics[line];
-        if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
 
         if (_caretIndex >= textLineMetrics._textIndex) {
           var textIndex = _caretIndex - textLineMetrics._textIndex;
@@ -520,8 +514,6 @@ class TextField extends InteractiveObject {
 
       for (var line = 0; line < _textLineMetrics.length; line++) {
         var textLineMetrics = _textLineMetrics[line];
-        if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
-
         textLineMetrics._x += shiftX;
         textLineMetrics._y += shiftY;
       }
@@ -792,7 +784,6 @@ class TextField extends InteractiveObject {
 
     for (var line = 0; line < _textLineMetrics.length; line++) {
       var textLineMetrics = _textLineMetrics[line];
-      if (textLineMetrics is! TextLineMetrics) continue; // dart2js_hint
 
       var text = textLineMetrics._text;
       var lineX = textLineMetrics.x;
