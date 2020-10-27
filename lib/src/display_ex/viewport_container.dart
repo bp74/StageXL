@@ -5,11 +5,13 @@ class ViewportContainer extends DisplayObjectContainer {
   Rectangle<num>? _viewportRectangle;
   final Matrix _viewportMatrix = Matrix.fromIdentity();
 
-  Rectangle<num> get viewport {
-    return _viewportRectangle!.clone();
+  Rectangle<num>? get viewport {
+    return _viewportRectangle?.clone();
   }
 
-  set viewport(Rectangle<num> value) {
+  set viewport(Rectangle<num>? value) {
+    if (value == null) return;
+
     _viewportRectangle = value.clone();
     _viewportMatrix.identity();
     _viewportMatrix.translate(0.0 - value.left, 0.0 - value.top);
