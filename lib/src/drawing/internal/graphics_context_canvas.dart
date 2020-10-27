@@ -2,16 +2,16 @@ part of stagexl.drawing;
 
 class _GraphicsContextCanvas extends GraphicsContext {
   final RenderState renderState;
-  final RenderContextCanvas? _renderContext;
+  final RenderContextCanvas _renderContext;
   final CanvasRenderingContext2D _canvasContext;
 
   _GraphicsContextCanvas(RenderState renderState)
       : renderState = renderState,
-        _renderContext = renderState.renderContext as RenderContextCanvas?,
+        _renderContext = renderState.renderContext as RenderContextCanvas,
         _canvasContext =
             (renderState.renderContext as RenderContextCanvas).rawContext {
-    _renderContext!.setTransform(renderState.globalMatrix);
-    _renderContext!.setAlpha(renderState.globalAlpha);
+    _renderContext.setTransform(renderState.globalMatrix);
+    _renderContext.setAlpha(renderState.globalAlpha);
     _canvasContext.beginPath();
   }
 
