@@ -435,7 +435,7 @@ class RenderContextWebGL extends RenderContext {
         _activeRenderFrameBuffer = renderFrameBuffer;
         _activeRenderFrameBuffer!.activate(this);
         _renderingContext.viewport(
-            0, 0, renderFrameBuffer.width, renderFrameBuffer.height);
+            0, 0, renderFrameBuffer.width!, renderFrameBuffer.height!);
       } else {
         _activeRenderProgram.flush();
         _activeRenderFrameBuffer = null;

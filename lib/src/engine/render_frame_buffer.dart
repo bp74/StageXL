@@ -18,8 +18,8 @@ class RenderFrameBuffer {
 
   //---------------------------------------------------------------------------
 
-  int get width => _renderTexture!.width;
-  int get height => _renderTexture!.height;
+  int? get width => _renderTexture?.width;
+  int? get height => _renderTexture?.height;
   int get contextIdentifier => _contextIdentifier;
 
   RenderTexture? get renderTexture => _renderTexture;
