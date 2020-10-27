@@ -146,8 +146,8 @@ class RenderTexture {
   /// Call the dispose method to release memory allocated by WebGL.
 
   void dispose() {
-    if (_renderingContext != null && _texture != null) {
-      _renderingContext!.deleteTexture(_texture);
+    if (_texture != null) {
+      _renderingContext?.deleteTexture(_texture);
     }
 
     _texture = null;
