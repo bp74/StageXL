@@ -47,7 +47,7 @@ class SharedCache<K, E> extends EventDispatcher {
 
     // copy the keys that map to unused nodes and then remove them from the map
     _cachedObjects.keys
-        .where((k) => _cachedObjects[k]._shareCount <= 0)
+        .where((k) => _cachedObjects[k]!._shareCount <= 0)
         .toList()
         .forEach(_releaseNode);
   }
@@ -69,7 +69,7 @@ class SharedCache<K, E> extends EventDispatcher {
     }
   }
 
-  E getObject(K key) {
+  E? getObject(K key) {
     var node = _cachedObjects[key];
     if (node != null) {
       node._shareCount += 1;

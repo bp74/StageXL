@@ -14,7 +14,7 @@ class DisplacementMapFilter extends BitmapFilter {
   final num scaleY;
 
   DisplacementMapFilter(BitmapData bitmapData,
-      [Matrix matrix, num scaleX = 16.0, num scaleY = 16.0])
+      [Matrix? matrix, num scaleX = 16.0, num scaleY = 16.0])
       : bitmapData = bitmapData,
         matrix = (matrix != null) ? matrix : Matrix.fromIdentity(),
         scaleX = scaleX,
@@ -37,7 +37,7 @@ class DisplacementMapFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -57,7 +57,7 @@ class DisplacementMapFilter extends BitmapFilter {
     var dstData = dstImageData.data;
 
     var vxList = renderTextureQuad.vxListQuad;
-    var pixelRatio = renderTextureQuad.pixelRatio;
+    var pixelRatio = renderTextureQuad.pixelRatio!;
     var scaleX = pixelRatio * this.scaleX;
     var scaleY = pixelRatio * this.scaleX;
     var channelX = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.RED);
@@ -107,9 +107,9 @@ class DisplacementMapFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    var renderTexture = renderTextureQuad!.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(
         r'$DisplacementMapFilterProgram', () => DisplacementMapFilterProgram());
@@ -157,34 +157,34 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
     disMatrix.scale(displacementMapFilter.scaleX, displacementMapFilter.scaleY);
 
     var uMapMatrix = Float32List.fromList(<double>[
-      mapMatrix.a,
-      mapMatrix.c,
-      mapMatrix.tx,
-      mapMatrix.b,
-      mapMatrix.d,
-      mapMatrix.ty,
+      mapMatrix.a as double,
+      mapMatrix.c as double,
+      mapMatrix.tx as double,
+      mapMatrix.b as double,
+      mapMatrix.d as double,
+      mapMatrix.ty as double,
       0.0,
       0.0,
       1.0
     ]);
 
     var uDisMatrix = Float32List.fromList(<double>[
-      disMatrix.a,
-      disMatrix.c,
+      disMatrix.a as double,
+      disMatrix.c as double,
       0.0,
-      disMatrix.b,
-      disMatrix.d,
+      disMatrix.b as double,
+      disMatrix.d as double,
       0.0,
       0.0,
       0.0,
       1.0
     ]);
 
-    renderingContext.uniform1i(uniforms['uTexSampler'], 0);
-    renderingContext.uniform1i(uniforms['uMapSampler'], 1);
-    renderingContext.uniformMatrix3fv(
+    renderingContext!.uniform1i(uniforms['uTexSampler'], 0);
+    renderingContext!.uniform1i(uniforms['uMapSampler'], 1);
+    renderingContext!.uniformMatrix3fv(
         uniforms['uMapMatrix'], false, uMapMatrix);
-    renderingContext.uniformMatrix3fv(
+    renderingContext!.uniformMatrix3fv(
         uniforms['uDisMatrix'], false, uDisMatrix);
   }
 }

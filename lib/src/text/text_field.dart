@@ -2,7 +2,7 @@ part of stagexl.text;
 
 class TextField extends InteractiveObject {
   String _text = '';
-  TextFormat _defaultTextFormat;
+  late TextFormat _defaultTextFormat;
 
   String _autoSize = TextFieldAutoSize.NONE;
   String _type = TextFieldType.DYNAMIC;
@@ -34,12 +34,12 @@ class TextField extends InteractiveObject {
   int _refreshPending = 3; // bit 0: textLineMetrics, bit 1: cache
   bool _cacheAsBitmap = true;
 
-  RenderTexture _renderTexture;
-  RenderTextureQuad _renderTextureQuad;
+  RenderTexture? _renderTexture;
+  RenderTextureQuad? _renderTextureQuad;
 
   //-------------------------------------------------------------------------------------------------
 
-  TextField([String text, TextFormat textFormat]) {
+  TextField([String? text, TextFormat? textFormat]) {
     this.text = (text != null) ? text : '';
     defaultTextFormat =
         (textFormat != null) ? textFormat : TextFormat('Arial', 12, 0x000000);
@@ -51,7 +51,7 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  RenderTexture get renderTexture => _renderTexture;
+  RenderTexture? get renderTexture => _renderTexture;
 
   String get text => _text;
   int get textColor => _defaultTextFormat.color;
@@ -226,7 +226,7 @@ class TextField extends InteractiveObject {
   }
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     if (localX < 0 || localX >= width) return null;
     if (localY < 0 || localY >= height) return null;
     return this;
@@ -297,8 +297,8 @@ class TextField extends InteractiveObject {
     // split lines
 
     var startIndex = 0;
-    var checkLine = '';
-    var validLine = '';
+    String? checkLine = '';
+    String? validLine = '';
     var lineWidth = 0.0;
     var lineIndent = 0;
 
@@ -342,7 +342,7 @@ class TextField extends InteractiveObject {
         startIndex += paragraph.length + 1;
       } else {
         checkLine = null;
-        lineIndent = textFormatIndent;
+        lineIndent = textFormatIndent as int;
 
         var words = paragraph.split(' ');
 
@@ -353,7 +353,7 @@ class TextField extends InteractiveObject {
           validLine = checkLine;
           checkLine = (validLine == null) ? word : '$validLine $word';
           checkLine = _passwordEncoder(checkLine);
-          lineWidth = canvasContext.measureText(checkLine).width.toDouble();
+          lineWidth = canvasContext.measureText(checkLine).width!.toDouble();
 
           if (lineIndent + lineWidth >= availableWidth) {
             if (validLine == null) {
@@ -397,7 +397,7 @@ class TextField extends InteractiveObject {
           line * (textFormatLeading + textFormatSize + fontStyleMetricsDescent);
 
       var width =
-          canvasContext.measureText(textLineMetrics._text).width.toDouble();
+          canvasContext.measureText(textLineMetrics._text).width!.toDouble();
 
       textLineMetrics._x = offsetX;
       textLineMetrics._y = offsetY;
@@ -492,7 +492,7 @@ class TextField extends InteractiveObject {
           var text = textLineMetrics._text.substring(0, textIndex);
           _caretLine = line;
           _caretX = textLineMetrics.x +
-              canvasContext.measureText(text).width.toDouble();
+              canvasContext.measureText(text).width!.toDouble();
           _caretY = textLineMetrics.y - fontStyleMetricsAscent * 0.9;
           _caretWidth = 2.0;
           _caretHeight = textFormatSize;
@@ -545,20 +545,20 @@ class TextField extends InteractiveObject {
 
     if (_renderTexture == null) {
       _renderTexture = RenderTexture(width, height, Color.Transparent);
-      _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatioGlobal);
+      _renderTextureQuad = _renderTexture!.quad.withPixelRatio(pixelRatioGlobal);
     } else {
-      _renderTexture.resize(width, height);
-      _renderTextureQuad = _renderTexture.quad.withPixelRatio(pixelRatioGlobal);
+      _renderTexture!.resize(width, height);
+      _renderTextureQuad = _renderTexture!.quad.withPixelRatio(pixelRatioGlobal);
     }
 
-    var matrix = _renderTextureQuad.drawMatrix;
-    var context = _renderTexture.canvas.context2D;
+    var matrix = _renderTextureQuad!.drawMatrix;
+    var context = _renderTexture!.canvas!.context2D;
     context.setTransform(
         matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     context.clearRect(0, 0, _width, _height);
 
     _renderText(context);
-    _renderTexture.update();
+    _renderTexture!.update();
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -596,7 +596,7 @@ class TextField extends InteractiveObject {
     context.lineWidth = lineWidth;
     context.strokeStyle = color2rgb(textFormat.color);
     context.fillStyle = textFormat.fillGradient != null
-        ? _getCanvasGradient(context, textFormat.fillGradient)
+        ? _getCanvasGradient(context, textFormat.fillGradient!)
         : color2rgb(textFormat.color);
 
     for (var i = 0; i < _textLineMetrics.length; i++) {
@@ -806,10 +806,10 @@ class TextField extends InteractiveObject {
 
         for (var c = 0; c <= text.length; c++) {
           var width =
-              canvasContext.measureText(text.substring(0, c)).width.toDouble();
-          var distance = (lineX + width - mouseX).abs();
+              canvasContext.measureText(text.substring(0, c)).width!.toDouble();
+          num distance = (lineX + width - mouseX).abs();
           if (distance < bestDistance) {
-            bestDistance = distance;
+            bestDistance = distance as double;
             bestIndex = c;
           }
         }

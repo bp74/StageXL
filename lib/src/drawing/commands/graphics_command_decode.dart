@@ -9,7 +9,7 @@ abstract class GraphicsCommandDecode extends GraphicsCommand {
   String get path => _path;
 
   set path(String value) {
-    _path = value ?? '';
+    _path = value;
     _commands.clear();
     _decodePath();
     _invalidate();
@@ -116,11 +116,11 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
     for (var commandMatch in _commandRegExp.allMatches(path)) {
       var command = commandMatch.group(1);
-      var parameter = commandMatch.group(2);
+      var parameter = commandMatch.group(2)!;
 
       p.clear();
       for (var parameterMatch in _parameterRegExp.allMatches(parameter)) {
-        p.add(double.parse(parameterMatch.group(0)).toDouble());
+        p.add(double.parse(parameterMatch.group(0)!).toDouble());
       }
 
       switch (command) {

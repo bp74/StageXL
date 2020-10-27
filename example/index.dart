@@ -8,8 +8,8 @@ void main() {
     ..stageScaleMode = StageScaleMode.NO_SCALE
     ..renderEngine = RenderEngine.WebGL;
 
-  var canvas = html.querySelector('#stage');
-  var stage = Stage(canvas, width: 990, height: 620, options: options);
+  var canvas = html.querySelector('#stage')!;
+  var stage = Stage(canvas as html.CanvasElement, width: 990, height: 620, options: options);
   var renderLoop = RenderLoop();
   renderLoop.addStage(stage);
 

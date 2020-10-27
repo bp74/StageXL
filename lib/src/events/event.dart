@@ -41,18 +41,18 @@ class Event {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  final String _type;
+  final String? _type;
   final bool _bubbles;
   // The following field is modified from various places in this library.
   // ignore: prefer_final_fields
   EventPhase _eventPhase = EventPhase.AT_TARGET;
-  EventDispatcher _target;
-  EventDispatcher _currentTarget;
+  EventDispatcher? _target;
+  EventDispatcher? _currentTarget;
   bool _isPropagationStopped = false;
   bool _isImmediatePropagationStopped = false;
 
   /// Creates an [Event] of specified [type].
-  Event(String type, [bool bubbles = false])
+  Event(String? type, [bool bubbles = false])
       : _type = type,
         _bubbles = bubbles;
 
@@ -106,7 +106,7 @@ class Event {
 
   /// The type of event.
 
-  String get type => _type;
+  String? get type => _type;
 
   /// Indicates whether an event is a bubbling event. If the event can bubble,
   /// this value is true; otherwise it is false.
@@ -138,7 +138,7 @@ class Event {
   /// This property contains the target node. For example, if a user clicks an
   /// OK button, the target node is the display list node containing that button.
 
-  EventDispatcher get target => _target;
+  EventDispatcher? get target => _target;
 
   /// The object that is actively processing the Event object with an event
   /// listener.
@@ -147,5 +147,5 @@ class Event {
   /// the node containing that button or one of its ancestors that has
   /// registered an event listener for that event.
 
-  EventDispatcher get currentTarget => _currentTarget;
+  EventDispatcher? get currentTarget => _currentTarget;
 }

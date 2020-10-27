@@ -71,7 +71,7 @@ class MouseEvent extends InputEvent {
   /// Creates a new [MouseEvent].
 
   MouseEvent(
-      String type,
+      String? type,
       bool bubbles,
       num localX,
       num localY,

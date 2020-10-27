@@ -8,9 +8,9 @@ class RenderBufferIndex {
   int count = 0; // count of indices
 
   int _contextIdentifier = -1;
-  gl.Buffer _buffer;
-  gl.RenderingContext _renderingContext;
-  RenderStatistics _renderStatistics;
+  gl.Buffer? _buffer;
+  gl.RenderingContext? _renderingContext;
+  late RenderStatistics _renderStatistics;
 
   //---------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ class RenderBufferIndex {
 
   void dispose() {
     if (_buffer != null && _renderingContext != null) {
-      _renderingContext.deleteBuffer(_buffer);
+      _renderingContext!.deleteBuffer(_buffer);
       _renderingContext = null;
       _buffer = null;
       _contextIdentifier = -1;
@@ -36,17 +36,17 @@ class RenderBufferIndex {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderStatistics = renderContext.renderStatistics;
       _renderingContext = renderContext.rawContext;
-      _buffer = _renderingContext.createBuffer();
-      _renderingContext.bindBuffer(gl.WebGL.ELEMENT_ARRAY_BUFFER, _buffer);
-      _renderingContext.bufferData(gl.WebGL.ELEMENT_ARRAY_BUFFER, data, usage);
+      _buffer = _renderingContext!.createBuffer();
+      _renderingContext!.bindBuffer(gl.WebGL.ELEMENT_ARRAY_BUFFER, _buffer);
+      _renderingContext!.bufferData(gl.WebGL.ELEMENT_ARRAY_BUFFER, data, usage);
     }
 
-    _renderingContext.bindBuffer(gl.WebGL.ELEMENT_ARRAY_BUFFER, _buffer);
+    _renderingContext!.bindBuffer(gl.WebGL.ELEMENT_ARRAY_BUFFER, _buffer);
   }
 
   void update() {
     var update = Int16List.view(data.buffer, 0, position);
-    _renderingContext.bufferSubData(gl.WebGL.ELEMENT_ARRAY_BUFFER, 0, update);
+    _renderingContext!.bufferSubData(gl.WebGL.ELEMENT_ARRAY_BUFFER, 0, update);
     _renderStatistics.indexCount += count;
   }
 }

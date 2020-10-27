@@ -118,7 +118,7 @@ class _RectangleMask extends _TransformedMask implements ScissorRenderMask {
   _RectangleMask(this.rectangle);
 
   @override
-  Rectangle<num> getScissorRectangle(RenderState renderState) {
+  Rectangle<num>? getScissorRectangle(RenderState renderState) {
     renderState.push(transformationMatrix, 1.0, null);
     var matrix = renderState.globalMatrix;
     var aligned = similar(matrix.b, 0.0) && similar(matrix.c, 0.0);

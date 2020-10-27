@@ -6,7 +6,7 @@ part of stagexl.display;
 /// children.
 
 class Sprite extends DisplayObjectContainer {
-  Graphics _graphics;
+  Graphics? _graphics;
 
   /// Specifies the Graphics object that belongs to this sprite where vector
   /// drawing commands can occur.
@@ -24,7 +24,7 @@ class Sprite extends DisplayObjectContainer {
   /// Specifies the display object over which the sprite is being dragged, or on
   /// which the sprite was dropped.
 
-  DisplayObject dropTarget;
+  DisplayObject? dropTarget;
 
   /// Lets the user drag this sprite with the mouse or the current touch point.
   ///
@@ -43,7 +43,7 @@ class Sprite extends DisplayObjectContainer {
   /// [bounds] is the value relative to the coordinates of the Sprite's
   /// parent that specify a constraint rectangle for the Sprite.
 
-  void startDrag([bool lockCenter = false, Rectangle<num> bounds]) {
+  void startDrag([bool lockCenter = false, Rectangle<num>? bounds]) {
     var stage = this.stage;
     var inputEvent = InputEvent.current;
     var globalPoint = Point<num>(0.0, 0.0);
@@ -67,7 +67,7 @@ class Sprite extends DisplayObjectContainer {
       globalToLocal(globalPoint, anchorPoint);
     }
 
-    stage._startDrag(this, globalPoint, anchorPoint, bounds, touchPointID);
+    stage!._startDrag(this, globalPoint, anchorPoint, bounds, touchPointID);
   }
 
   /// Ends the [startDrag] method.
@@ -86,7 +86,7 @@ class Sprite extends DisplayObjectContainer {
   @override
   List<DisplayObject> getObjectsUnderPoint(Point<num> point) {
     var result = super.getObjectsUnderPoint(point);
-    if (_graphics != null && _graphics.hitTest(point.x, point.y)) {
+    if (_graphics != null && _graphics!.hitTest(point.x, point.y)) {
       result.insert(0, this);
     }
     return result;
@@ -99,9 +99,9 @@ class Sprite extends DisplayObjectContainer {
     if (_graphics == null) {
       return super.bounds;
     } else if (numChildren == 0) {
-      return _graphics.bounds;
+      return _graphics!.bounds;
     } else {
-      return _graphics.bounds.boundingBox(super.bounds);
+      return _graphics!.bounds.boundingBox(super.bounds);
     }
   }
 
@@ -123,13 +123,13 @@ class Sprite extends DisplayObjectContainer {
   /// because the sprite designated as the hit area receives the user input
   /// events instead of your sprite button.
 
-  Sprite hitArea;
+  Sprite? hitArea;
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     var hitArea = this.hitArea;
     var graphics = _graphics;
-    DisplayObject target;
+    DisplayObject? target;
 
     if (hitArea != null) {
       var point = Point<num>(localX, localY);
@@ -152,7 +152,7 @@ class Sprite extends DisplayObjectContainer {
 
   @override
   void render(RenderState renderState) {
-    if (_graphics != null) _graphics.render(renderState);
+    if (_graphics != null) _graphics!.render(renderState);
     super.render(renderState);
   }
 }

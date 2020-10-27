@@ -17,7 +17,7 @@ class Graphics {
   final List<GraphicsCommand> _originalCommands = <GraphicsCommand>[];
   final List<GraphicsCommand> _compiledCommands = <GraphicsCommand>[];
 
-  Rectangle<num> _bounds;
+  Rectangle<num>? _bounds;
 
   //---------------------------------------------------------------------------
 
@@ -252,7 +252,7 @@ class Graphics {
       _updateContext(context, commands);
       _bounds = context.bounds;
     }
-    return _bounds.clone();
+    return _bounds!.clone();
   }
 
   bool hitTest(num localX, num localY) {

@@ -13,18 +13,18 @@ class BitmapDataUpdateBatch {
 
   BitmapDataUpdateBatch(BitmapData bitmapData)
       : bitmapData = bitmapData,
-        _renderContext = RenderContextCanvas(bitmapData.renderTexture.canvas),
+        _renderContext = RenderContextCanvas(bitmapData.renderTexture!.canvas!),
         _drawMatrix = bitmapData.renderTextureQuad.drawMatrix;
 
   //---------------------------------------------------------------------------
 
   /// Update the underlying rendering surface.
 
-  void update() => bitmapData.renderTexture.update();
+  void update() => bitmapData.renderTexture!.update();
 
   //---------------------------------------------------------------------------
 
-  void applyFilter(BitmapFilter filter, [Rectangle<num> rectangle]) {
+  void applyFilter(BitmapFilter filter, [Rectangle<num>? rectangle]) {
     filter.apply(bitmapData, rectangle);
   }
 
@@ -98,7 +98,7 @@ class BitmapDataUpdateBatch {
 
   //---------------------------------------------------------------------------
 
-  void draw(BitmapDrawable source, [Matrix matrix]) {
+  void draw(BitmapDrawable source, [Matrix? matrix]) {
     var renderState = RenderState(_renderContext, _drawMatrix);
     if (matrix != null) renderState.globalMatrix.prepend(matrix);
     source.render(renderState);
@@ -125,7 +125,7 @@ class BitmapDataUpdateBatch {
 
   void drawPixels(
       BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint,
-      [BlendMode blendMode]) {
+      [BlendMode? blendMode]) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderState = RenderState(_renderContext, _drawMatrix, 1.0, blendMode);
     renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);

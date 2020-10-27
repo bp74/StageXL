@@ -38,7 +38,7 @@ class BitmapContainer extends DisplayObject
   }
 
   @override
-  Bitmap getChildByName(String name) {
+  Bitmap? getChildByName(String name) {
     for (var i = 0; i < _children.length; i++) {
       var child = _children[i];
       if (child.name == name) return child;
@@ -98,7 +98,7 @@ class BitmapContainer extends DisplayObject
   }
 
   @override
-  void removeChildren([int beginIndex, int endIndex]) {
+  void removeChildren([int? beginIndex, int? endIndex]) {
     var length = _children.length;
     var i1 = beginIndex is int ? beginIndex : 0;
     var i2 = endIndex is int ? endIndex : length - 1;
@@ -138,7 +138,7 @@ class BitmapContainer extends DisplayObject
   }
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     return null;
   }
 
@@ -200,7 +200,7 @@ class BitmapContainer extends DisplayObject
   }
 
   void _renderCanvas2D(RenderState renderState) {
-    var context = renderState.renderContext as RenderContextCanvas;
+    var context = renderState.renderContext as RenderContextCanvas?;
 
     for (var i = 0; i < _children.length; i++) {
       var bitmap = _children[i];
@@ -209,7 +209,7 @@ class BitmapContainer extends DisplayObject
         if (bitmapData != null) {
           var matrix = bitmap.transformationMatrix;
           renderState.push(matrix, bitmap.alpha, bitmap.blendMode);
-          context.renderTextureQuad(renderState, bitmapData.renderTextureQuad);
+          context!.renderTextureQuad(renderState, bitmapData.renderTextureQuad);
           renderState.pop();
         }
       }
@@ -221,7 +221,7 @@ class BitmapContainer extends DisplayObject
 //-----------------------------------------------------------------------------
 
 class _BitmapContainerRenderState extends RenderState {
-  Bitmap bitmap;
+  late Bitmap bitmap;
   final BlendMode blendMode;
   final double alpha;
 
@@ -247,7 +247,7 @@ class _BitmapContainerRenderState extends RenderState {
   //---------------------------------------------------------------------------
 
   @override
-  void reset([Matrix matrix, num alpha, BlendMode blendMode]) {
+  void reset([Matrix? matrix, num? alpha, BlendMode? blendMode]) {
     throw StateError('Not supported');
   }
 
@@ -262,7 +262,7 @@ class _BitmapContainerRenderState extends RenderState {
   }
 
   @override
-  void push(Matrix matrix, num alpha, BlendMode blendMode) {
+  void push(Matrix matrix, num alpha, BlendMode? blendMode) {
     throw StateError('Not supported');
   }
 

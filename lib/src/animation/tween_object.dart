@@ -14,12 +14,12 @@ abstract class TweenObject {
 /// All display objects do implement this interface.
 
 abstract class TweenObject2D extends TweenObject {
-  num x, y;
-  num pivotX, pivotY;
-  num scaleX, scaleY;
-  num skewX, skewY;
-  num rotation;
-  num alpha;
+  num? x, y;
+  num? pivotX, pivotY;
+  num? scaleX, scaleY;
+  num? skewX, skewY;
+  num? rotation;
+  num? alpha;
 }
 
 /// The [TweenObject3D] class defines the interface for a class
@@ -28,10 +28,10 @@ abstract class TweenObject2D extends TweenObject {
 /// All 3D display objects do implement this interface.
 
 abstract class TweenObject3D extends TweenObject {
-  num offsetX;
-  num offsetY;
-  num offsetZ;
-  num rotationX;
-  num rotationY;
-  num rotationZ;
+  num? offsetX;
+  num? offsetY;
+  num? offsetZ;
+  num? rotationX;
+  num? rotationY;
+  num? rotationZ;
 }

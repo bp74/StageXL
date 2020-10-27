@@ -5,7 +5,7 @@ part of stagexl.animation;
 /// the [Tween.animate] and [Tween.animate3D] getters.
 
 abstract class TweenPropertyAccessor {
-  num _getValue(int propertyID);
+  num? _getValue(int propertyID);
   void _setValue(int propertyID, num value);
 }
 
@@ -31,7 +31,7 @@ class TweenPropertyAccessor2D implements TweenPropertyAccessor {
   TweenProperty get alpha => _tween._createTweenProperty(this, 9);
 
   @override
-  num _getValue(int propertyID) {
+  num? _getValue(int propertyID) {
     switch (propertyID) {
       case 0:
         return _tweenObject.x;
@@ -113,7 +113,7 @@ class TweenPropertyAccessor3D implements TweenPropertyAccessor {
   TweenProperty get rotationZ => _tween._createTweenProperty(this, 5);
 
   @override
-  num _getValue(int propertyID) {
+  num? _getValue(int propertyID) {
     switch (propertyID) {
       case 0:
         return _tweenObject.offsetX;

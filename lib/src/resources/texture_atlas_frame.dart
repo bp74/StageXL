@@ -2,8 +2,8 @@ part of stagexl.resources;
 
 class TextureAtlasFrame {
   final TextureAtlas textureAtlas;
-  final RenderTextureQuad textureAtlasQuad;
-  final String name;
+  final RenderTextureQuad? textureAtlasQuad;
+  final String? name;
   final int rotation;
 
   final int offsetX;
@@ -16,10 +16,10 @@ class TextureAtlasFrame {
   final int frameWidth;
   final int frameHeight;
 
-  final Float32List vxList;
-  final Int16List ixList;
+  final Float32List? vxList;
+  final Int16List? ixList;
 
-  BitmapData _bitmapData;
+  BitmapData? _bitmapData;
 
   //---------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ class TextureAtlasFrame {
       this.ixList) {
     var s = Rectangle<int>(frameX, frameY, frameWidth, frameHeight);
     var o = Rectangle<int>(-offsetX, -offsetY, originalWidth, originalHeight);
-    var q = RenderTextureQuad.slice(textureAtlasQuad, s, o, rotation);
+    var q = RenderTextureQuad.slice(textureAtlasQuad!, s, o, rotation);
 
     if (vxList != null && ixList != null) {
       q.setCustomVertices(vxList, ixList);
@@ -53,5 +53,5 @@ class TextureAtlasFrame {
 
   //---------------------------------------------------------------------------
 
-  BitmapData get bitmapData => _bitmapData;
+  BitmapData? get bitmapData => _bitmapData;
 }

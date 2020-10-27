@@ -40,7 +40,7 @@ class BitmapData implements BitmapDrawable {
   }
 
   factory BitmapData.fromImageElement(ImageElement imageElement,
-      [num pixelRatio = 1.0]) {
+      [num? pixelRatio = 1.0]) {
     var renderTexture = RenderTexture.fromImageElement(imageElement);
     var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return BitmapData.fromRenderTextureQuad(renderTextureQuad);
@@ -63,7 +63,7 @@ class BitmapData implements BitmapDrawable {
 
   /// Loads a BitmapData from the given url.
 
-  static Future<BitmapData> load(String url, [BitmapDataLoadOptions options]) {
+  static Future<BitmapData> load(String url, [BitmapDataLoadOptions? options]) {
     options = options ?? BitmapData.defaultLoadOptions;
     var bitmapDataFileInfo = BitmapDataLoadInfo(url, options.pixelRatios);
     var targetUrl = bitmapDataFileInfo.loaderUrl;
@@ -76,17 +76,17 @@ class BitmapData implements BitmapDrawable {
 
   /// Returns a new BitmapData with a copy of this BitmapData's texture.
 
-  BitmapData clone([num pixelRatio]) {
+  BitmapData clone([num? pixelRatio]) {
     pixelRatio ??= renderTextureQuad.pixelRatio;
-    var bitmapData = BitmapData(width, height, Color.Transparent, pixelRatio);
+    var bitmapData = BitmapData(width, height, Color.Transparent, pixelRatio!);
     bitmapData.drawPixels(this, rectangle, Point<num>(0, 0));
     return bitmapData;
   }
 
   /// Return a dataUrl for this BitmapData.
 
-  String toDataUrl([String type = 'image/png', num quality]) {
-    return clone().renderTexture.canvas.toDataUrl(type, quality);
+  String toDataUrl([String type = 'image/png', num? quality]) {
+    return clone().renderTexture!.canvas!.toDataUrl(type, quality);
   }
 
   //----------------------------------------------------------------------------
@@ -104,7 +104,7 @@ class BitmapData implements BitmapDrawable {
   /// margin parameter (in pixel).
 
   List<BitmapData> sliceIntoFrames(num frameWidth, num frameHeight,
-      {int frameCount, num frameSpacing = 0, num frameMargin = 0}) {
+      {int? frameCount, num frameSpacing = 0, num frameMargin = 0}) {
     var cols =
         (width - frameMargin + frameSpacing) ~/ (frameWidth + frameSpacing);
     var rows =
@@ -132,11 +132,11 @@ class BitmapData implements BitmapDrawable {
   //----------------------------------------------------------------------------
 
   Rectangle<num> get rectangle => Rectangle<num>(0, 0, width, height);
-  RenderTexture get renderTexture => renderTextureQuad.renderTexture;
+  RenderTexture? get renderTexture => renderTextureQuad.renderTexture;
 
   //----------------------------------------------------------------------------
 
-  void applyFilter(BitmapFilter filter, [Rectangle<num> rectangle]) {
+  void applyFilter(BitmapFilter filter, [Rectangle<num>? rectangle]) {
     var updateBatch = BitmapDataUpdateBatch(this);
     updateBatch.applyFilter(filter, rectangle);
     updateBatch.update();
@@ -162,7 +162,7 @@ class BitmapData implements BitmapDrawable {
     updateBatch.update();
   }
 
-  void draw(BitmapDrawable source, [Matrix matrix]) {
+  void draw(BitmapDrawable source, [Matrix? matrix]) {
     var updateBatch = BitmapDataUpdateBatch(this);
     updateBatch.draw(source, matrix);
     updateBatch.update();
@@ -190,7 +190,7 @@ class BitmapData implements BitmapDrawable {
 
   void drawPixels(
       BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint,
-      [BlendMode blendMode]) {
+      [BlendMode? blendMode]) {
     var updateBatch = BitmapDataUpdateBatch(this);
     updateBatch.drawPixels(source, sourceRect, destPoint, blendMode);
     updateBatch.update();

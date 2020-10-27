@@ -47,13 +47,13 @@ abstract class DisplayObject extends EventDispatcher
   bool _visible = true;
   bool _off = false;
 
-  Mask _mask;
-  BlendMode _blendMode;
+  Mask? _mask;
+  BlendMode? _blendMode;
   List<BitmapFilter> _filters = <BitmapFilter>[];
-  _DisplayObjectCache _cache;
+  _DisplayObjectCache? _cache;
 
   String _name = '';
-  DisplayObjectParent _parent;
+  DisplayObjectParent? _parent;
 
   final Matrix _transformationMatrix = Matrix.fromIdentity();
   bool _transformationMatrixRefresh = true;
@@ -180,7 +180,7 @@ abstract class DisplayObject extends EventDispatcher
   num get x => _x;
 
   @override
-  set x(num value) {
+  set x(num? value) {
     if (value is num) _x = value;
     _transformationMatrixRefresh = true;
   }
@@ -196,7 +196,7 @@ abstract class DisplayObject extends EventDispatcher
   num get y => _y;
 
   @override
-  set y(num value) {
+  set y(num? value) {
     if (value is num) _y = value;
     _transformationMatrixRefresh = true;
   }
@@ -213,7 +213,7 @@ abstract class DisplayObject extends EventDispatcher
   num get pivotX => _pivotX;
 
   @override
-  set pivotX(num value) {
+  set pivotX(num? value) {
     if (value is num) _pivotX = value;
     _transformationMatrixRefresh = true;
   }
@@ -230,7 +230,7 @@ abstract class DisplayObject extends EventDispatcher
   num get pivotY => _pivotY;
 
   @override
-  set pivotY(num value) {
+  set pivotY(num? value) {
     if (value is num) _pivotY = value;
     _transformationMatrixRefresh = true;
   }
@@ -247,7 +247,7 @@ abstract class DisplayObject extends EventDispatcher
   num get scaleX => _scaleX;
 
   @override
-  set scaleX(num value) {
+  set scaleX(num? value) {
     if (value is num) _scaleX = value;
     _transformationMatrixRefresh = true;
   }
@@ -264,7 +264,7 @@ abstract class DisplayObject extends EventDispatcher
   num get scaleY => _scaleY;
 
   @override
-  set scaleY(num value) {
+  set scaleY(num? value) {
     if (value is num) _scaleY = value;
     _transformationMatrixRefresh = true;
   }
@@ -275,7 +275,7 @@ abstract class DisplayObject extends EventDispatcher
   num get skewX => _skewX;
 
   @override
-  set skewX(num value) {
+  set skewX(num? value) {
     if (value is num) _skewX = value;
     _transformationMatrixRefresh = true;
   }
@@ -286,7 +286,7 @@ abstract class DisplayObject extends EventDispatcher
   num get skewY => _skewY;
 
   @override
-  set skewY(num value) {
+  set skewY(num? value) {
     if (value is num) _skewY = value;
     _transformationMatrixRefresh = true;
   }
@@ -304,7 +304,7 @@ abstract class DisplayObject extends EventDispatcher
   num get rotation => _rotation;
 
   @override
-  set rotation(num value) {
+  set rotation(num? value) {
     if (value is num) _rotation = value;
     _transformationMatrixRefresh = true;
   }
@@ -344,7 +344,7 @@ abstract class DisplayObject extends EventDispatcher
   num get alpha => _alpha;
 
   @override
-  set alpha(num value) {
+  set alpha(num? value) {
     if (value is num) {
       // Clamp values and convert possible integers to double.
       if (value <= 0) value = 0.0;
@@ -360,9 +360,9 @@ abstract class DisplayObject extends EventDispatcher
   /// to the parent display object.
 
   @override
-  Mask get mask => _mask;
+  Mask? get mask => _mask;
 
-  set mask(Mask value) {
+  set mask(Mask? value) {
     _mask = value;
   }
 
@@ -384,9 +384,9 @@ abstract class DisplayObject extends EventDispatcher
   /// pixel in the background.
 
   @override
-  BlendMode get blendMode => _blendMode;
+  BlendMode? get blendMode => _blendMode;
 
-  set blendMode(BlendMode value) {
+  set blendMode(BlendMode? value) {
     _blendMode = value;
   }
 
@@ -408,8 +408,8 @@ abstract class DisplayObject extends EventDispatcher
   /// See also [applyCache], [refreshCache] and [removeCache].
 
   @override
-  RenderTextureQuad get cache {
-    return _cache != null ? _cache.renderTextureQuad : null;
+  RenderTextureQuad? get cache {
+    return _cache != null ? _cache!.renderTextureQuad : null;
   }
 
   /// The [DisplayObjectContainer] object that contains this display object.
@@ -417,14 +417,14 @@ abstract class DisplayObject extends EventDispatcher
   /// Use the parent property to specify a relative path to display objects that
   /// are above the current display object in the display list hierarchy.
 
-  DisplayObjectParent get parent => _parent;
+  DisplayObjectParent? get parent => _parent;
 
   //----------------------------------------------------------------------------
 
   /// The position of the mouse relative to the local coordinate system of
   /// the display object.
 
-  Point<num> get mousePosition {
+  Point<num>? get mousePosition {
     var stage = this.stage;
     if (stage == null) return null;
     var localPoint = Point<num>(0.0, 0.0);
@@ -461,7 +461,7 @@ abstract class DisplayObject extends EventDispatcher
   DisplayObject get root {
     var obj = this;
     while (obj.parent != null) {
-      obj = obj.parent;
+      obj = obj.parent!;
     }
     return obj;
   }
@@ -471,7 +471,7 @@ abstract class DisplayObject extends EventDispatcher
   /// If this display object is not added to the display list,
   /// the [stage] property returns null.
 
-  Stage get stage {
+  Stage? get stage {
     var root = this.root;
     return (root is Stage) ? root : null;
   }
@@ -487,13 +487,13 @@ abstract class DisplayObject extends EventDispatcher
   /// directly instead of calling this method.
 
   void setTransform(num x, num y,
-      [num scaleX,
-      num scaleY,
-      num rotation,
-      num skewX,
-      num skewY,
-      num pivotX,
-      num pivotY]) {
+      [num? scaleX,
+      num? scaleY,
+      num? rotation,
+      num? skewX,
+      num? skewY,
+      num? pivotX,
+      num? pivotY]) {
     if (x is num) _x = x;
     if (y is num) _y = y;
     if (scaleX is num) _scaleX = scaleX;
@@ -520,8 +520,8 @@ abstract class DisplayObject extends EventDispatcher
     var matrix = transformationMatrix;
     var boundsTransformed = matrix.transformRectangle(bounds, bounds);
     var scale = value / boundsTransformed.width;
-    var ma = scale.isFinite ? matrix.a * scale : 1.0;
-    var mc = scale.isFinite ? matrix.c * scale : 0.0;
+    num ma = scale.isFinite ? matrix.a * scale : 1.0;
+    num mc = scale.isFinite ? matrix.c * scale : 0.0;
     _reverseMatrix(ma, matrix.b, mc, matrix.d);
   }
 
@@ -537,8 +537,8 @@ abstract class DisplayObject extends EventDispatcher
     var matrix = transformationMatrix;
     var boundsTransformed = matrix.transformRectangle(bounds, bounds);
     var scale = value / boundsTransformed.height;
-    var mb = scale.isFinite ? matrix.b * scale : 0.0;
-    var md = scale.isFinite ? matrix.d * scale : 1.0;
+    num mb = scale.isFinite ? matrix.b * scale : 0.0;
+    num md = scale.isFinite ? matrix.d * scale : 1.0;
     _reverseMatrix(matrix.a, mb, matrix.c, md);
   }
 
@@ -571,7 +571,7 @@ abstract class DisplayObject extends EventDispatcher
 
       // Having a scale of 0 is bad, the matrix.det gets zero which causes
       // infinite values on a inverted matrix. It also causes a bug on
-      // Firefox in some Linux distrubutions:
+      // Firefox in some Linux distributions:
       // https://bugzilla.mozilla.org/show_bug.cgi?id=661452
 
       if (scaleX > -0.0001 && scaleX < 0.0001) {
@@ -582,20 +582,20 @@ abstract class DisplayObject extends EventDispatcher
       }
 
       if (skewX != 0.0 || skewY != 0.0) {
-        var ma = scaleX * cos(skewY + rotation);
-        var mb = scaleX * sin(skewY + rotation);
-        var mc = -scaleY * sin(skewX + rotation);
-        var md = scaleY * cos(skewX + rotation);
+        num ma = scaleX * cos(skewY + rotation);
+        num mb = scaleX * sin(skewY + rotation);
+        num mc = -scaleY * sin(skewX + rotation);
+        num md = scaleY * cos(skewX + rotation);
         var mx = _x - _pivotX * ma - _pivotY * mc;
         var my = _y - _pivotX * mb - _pivotY * md;
         matrix.setTo(ma, mb, mc, md, mx, my);
       } else if (rotation != 0.0) {
         var cr = cos(rotation);
         var sr = sin(rotation);
-        var ma = scaleX * cr;
-        var mb = scaleX * sr;
-        var mc = -scaleY * sr;
-        var md = scaleY * cr;
+        num ma = scaleX * cr;
+        num mb = scaleX * sr;
+        num mc = -scaleY * sr;
+        num md = scaleY * cr;
         var mx = _x - _pivotX * ma - _pivotY * mc;
         var my = _y - _pivotX * mb - _pivotY * md;
         matrix.setTo(ma, mb, mc, md, mx, my);
@@ -621,7 +621,7 @@ abstract class DisplayObject extends EventDispatcher
   Matrix get globalTransformationMatrix {
     var result = Matrix.fromIdentity();
 
-    for (var obj = this; obj != null; obj = obj.parent) {
+    for (DisplayObject? obj = this; obj != null; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         throw StateError("Can't calculate 2D matrix for 3D display object.");
       } else {
@@ -642,7 +642,7 @@ abstract class DisplayObject extends EventDispatcher
   Matrix3D get globalTransformationMatrix3D {
     var result = Matrix3D.fromIdentity();
 
-    for (var obj = this; obj != null; obj = obj.parent) {
+    for (DisplayObject? obj = this; obj != null; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         result.concat(obj.projectionMatrix3D);
       }
@@ -662,28 +662,26 @@ abstract class DisplayObject extends EventDispatcher
   /// you are working with 3D display objects.
 
   Matrix getTransformationMatrix(DisplayObject targetSpace) {
-    if (targetSpace == null) return globalTransformationMatrix;
     if (targetSpace == this) return Matrix.fromIdentity();
 
     var ancestor = _getCommonAncestor(targetSpace);
-    if (ancestor == null) return null;
 
     var resultMatrix = Matrix.fromIdentity();
-    for (var obj = this; obj != ancestor; obj = obj.parent) {
+    for (DisplayObject? obj = this; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         throw StateError("Can't calculate 2D matrix for 3D display object.");
       }
-      resultMatrix.concat(obj.transformationMatrix);
+      resultMatrix.concat(obj!.transformationMatrix);
     }
 
     if (identical(targetSpace, ancestor)) return resultMatrix;
 
     var targetMatrix = Matrix.fromIdentity();
-    for (var obj = targetSpace; obj != ancestor; obj = obj.parent) {
+    for (DisplayObject? obj = targetSpace; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         throw StateError("Can't calculate 2D matrix for 3D display object.");
       }
-      targetMatrix.concat(obj.transformationMatrix);
+      targetMatrix.concat(obj!.transformationMatrix);
     }
 
     targetMatrix.invert();
@@ -699,28 +697,26 @@ abstract class DisplayObject extends EventDispatcher
   /// you are working with 3D display objects.
 
   Matrix3D getTransformationMatrix3D(DisplayObject targetSpace) {
-    if (targetSpace == null) return globalTransformationMatrix3D;
     if (targetSpace == this) return Matrix3D.fromIdentity();
 
     var ancestor = _getCommonAncestor(targetSpace);
-    if (ancestor == null) return null;
 
     var resultMatrix = Matrix3D.fromIdentity();
-    for (var obj = this; obj != ancestor; obj = obj.parent) {
+    for (DisplayObject? obj = this; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         resultMatrix.concat(obj.projectionMatrix3D);
       }
-      resultMatrix.concat2D(obj.transformationMatrix);
+      resultMatrix.concat2D(obj!.transformationMatrix);
     }
 
     if (identical(targetSpace, ancestor)) return resultMatrix;
 
     var targetMatrix = Matrix3D.fromIdentity();
-    for (var obj = targetSpace; obj != ancestor; obj = obj.parent) {
+    for (DisplayObject? obj = targetSpace; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         targetMatrix.concat(obj.projectionMatrix3D);
       }
-      targetMatrix.concat2D(obj.transformationMatrix);
+      targetMatrix.concat2D(obj!.transformationMatrix);
     }
 
     targetMatrix.invert();
@@ -740,7 +736,7 @@ abstract class DisplayObject extends EventDispatcher
 
   void removeFromParent() {
     if (parent != null) {
-      parent.removeChild(this);
+      parent!.removeChild(this);
     }
   }
 
@@ -772,7 +768,6 @@ abstract class DisplayObject extends EventDispatcher
   Rectangle<num> getBounds(DisplayObject targetSpace) {
     var rectangle = bounds;
     var matrix = getTransformationMatrix3D(targetSpace);
-    if (matrix == null) return null;
     return matrix.transformRectangle(rectangle, rectangle);
   }
 
@@ -797,8 +792,6 @@ abstract class DisplayObject extends EventDispatcher
 
   bool hitTestObject(DisplayObject other) {
     var otherBounds = other.getBounds(this);
-    if (otherBounds == null) return false;
-
     return bounds.intersects(otherBounds);
   }
 
@@ -834,7 +827,7 @@ abstract class DisplayObject extends EventDispatcher
   /// [localX] and [localY] are relative to to the origin (0,0) of this
   /// display object (local coordinates).
 
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     return bounds.contains(localX, localY) ? this : null;
   }
 
@@ -849,7 +842,7 @@ abstract class DisplayObject extends EventDispatcher
   /// local coordinates to values that are relative to the origin of this
   /// display object's parent coordinates.
 
-  Point<num> localToParent(Point<num> localPoint, [Point<num> returnPoint]) {
+  Point<num> localToParent(Point<num> localPoint, [Point<num>? returnPoint]) {
     var p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
     var x = localPoint.x.toDouble();
     var y = localPoint.y.toDouble();
@@ -861,7 +854,7 @@ abstract class DisplayObject extends EventDispatcher
     return p;
   }
 
-  /// Converts the point object from this display obejct's parent coordinates
+  /// Converts the point object from this display object's parent coordinates
   /// to this display object's local coordinates.
   ///
   /// This method allows you to convert any given x- and y-coordinates from
@@ -869,7 +862,7 @@ abstract class DisplayObject extends EventDispatcher
   /// parent coordinates to values that are relative to the origin of this
   /// display object's local coordinates.
 
-  Point<num> parentToLocal(Point<num> parentPoint, [Point<num> returnPoint]) {
+  Point<num> parentToLocal(Point<num> parentPoint, [Point<num>? returnPoint]) {
     var p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
     var x = parentPoint.x.toDouble();
     var y = parentPoint.y.toDouble();
@@ -889,12 +882,12 @@ abstract class DisplayObject extends EventDispatcher
   /// local coordinates to values that are relative to the origin of the
   /// [Stage]'s global coordinates.
 
-  Point<num> localToGlobal(Point<num> localPoint, [Point<num> returnPoint]) {
+  Point<num> localToGlobal(Point<num> localPoint, [Point<num>? returnPoint]) {
     var p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
     p.x = localPoint.x.toDouble();
     p.y = localPoint.y.toDouble();
 
-    for (var obj = this; obj != null; obj = obj.parent) {
+    for (DisplayObject? obj = this; obj != null; obj = obj.parent) {
       obj.localToParent(p, p);
     }
 
@@ -909,7 +902,7 @@ abstract class DisplayObject extends EventDispatcher
   /// coordinates to values that are relative to the origin of this display
   /// object's local coordinates.
 
-  Point<num> globalToLocal(Point<num> globalPoint, [Point<num> returnPoint]) {
+  Point<num> globalToLocal(Point<num> globalPoint, [Point<num>? returnPoint]) {
     var p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
     p.x = globalPoint.x.toDouble();
     p.y = globalPoint.y.toDouble();
@@ -919,7 +912,7 @@ abstract class DisplayObject extends EventDispatcher
   }
 
   void _globalToLocalRecursion(Point<num> point) {
-    if (parent != null) parent._globalToLocalRecursion(point);
+    if (parent != null) parent!._globalToLocalRecursion(point);
     parentToLocal(point, point);
   }
 
@@ -936,41 +929,41 @@ abstract class DisplayObject extends EventDispatcher
   void applyCache(num x, num y, num width, num height,
       {bool debugBorder = false, num pixelRatio = 1.0}) {
     _cache ??= _DisplayObjectCache(this);
-    _cache.debugBorder = debugBorder;
-    _cache.pixelRatio = pixelRatio;
-    _cache.bounds = Rectangle<num>(x, y, width, height);
-    _cache.update();
+    _cache!.debugBorder = debugBorder;
+    _cache!.pixelRatio = pixelRatio;
+    _cache!.bounds = Rectangle<num>(x, y, width, height);
+    _cache!.update();
   }
 
   /// Refreshes the cached area of this display object.
 
   void refreshCache() {
-    if (_cache != null) _cache.update();
+    if (_cache != null) _cache!.update();
   }
 
   /// Removes the previously cached area of this display object.
 
   void removeCache() {
-    if (_cache != null) _cache.dispose();
+    if (_cache != null) _cache!.dispose();
   }
 
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
   @override
-  void dispatchEvent(Event event) {
+  void dispatchEvent(Event? event) {
     var ancestors = <EventDispatcher>[];
 
-    for (DisplayObject p = parent; p != null; p = p.parent) {
+    for (DisplayObject? p = parent; p != null; p = p.parent) {
       ancestors.add(p);
     }
 
-    for (var i = ancestors.length - 1; i >= 0 && event.captures; i--) {
+    for (var i = ancestors.length - 1; i >= 0 && event!.captures; i--) {
       ancestors[i].dispatchEventRaw(event, this, EventPhase.CAPTURING_PHASE);
       if (event.isPropagationStopped) return;
     }
 
-    dispatchEventRaw(event, this, EventPhase.AT_TARGET);
+    dispatchEventRaw(event!, this, EventPhase.AT_TARGET);
     if (event.isPropagationStopped) return;
 
     for (var i = 0; i < ancestors.length && event.bubbles; i++) {
@@ -1010,25 +1003,24 @@ abstract class DisplayObject extends EventDispatcher
     var depth1 = 0;
     var depth2 = 0;
 
-    for (var o = obj1; o.parent != null; o = o.parent) {
+    for (var o = obj1; o.parent != null; o = o.parent!) {
       depth1 += 1;
     }
-    for (var o = obj2; o.parent != null; o = o.parent) {
+    for (var o = obj2; o.parent != null; o = o.parent!) {
       depth2 += 1;
     }
     while (depth1 > depth2) {
-      obj1 = obj1.parent;
+      obj1 = obj1.parent!;
       depth1 -= 1;
     }
-    // ignore: invariant_booleans
     while (depth2 > depth1) {
-      obj2 = obj2.parent;
+      obj2 = obj2.parent!;
       depth2 -= 1;
     }
 
     while (identical(obj1, obj2) == false) {
-      obj1 = obj1.parent;
-      obj2 = obj2.parent;
+      obj1 = obj1.parent!;
+      obj2 = obj2.parent!;
     }
 
     return obj1;

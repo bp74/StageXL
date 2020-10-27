@@ -316,7 +316,7 @@ void main() {
 Rectangle get rect1234 => Rectangle(1, 2, 3, 4);
 Rectangle get rect0000 => Rectangle(0, 0, 0, 0);
 
-void testRectangle(Rectangle rect, {num x, num y, num width, num height}) {
+void testRectangle(Rectangle rect, {num? x, num? y, num? width, num? height}) {
   if (x != null) expect(rect.left, equals(x));
   if (y != null) expect(rect.top, equals(y));
   if (width != null) expect(rect.width, equals(width));

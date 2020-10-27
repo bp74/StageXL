@@ -13,7 +13,7 @@ abstract class DisplayObjectParent<T extends DisplayObject>
   int get numChildren;
 
   T getChildAt(int index);
-  T getChildByName(String name);
+  T? getChildByName(String name);
   int getChildIndex(T child);
 
   void addChild(T child);
@@ -21,7 +21,7 @@ abstract class DisplayObjectParent<T extends DisplayObject>
 
   void removeChild(T child);
   void removeChildAt(int index);
-  void removeChildren([int beginIndex, int endIndex]);
+  void removeChildren([int? beginIndex, int? endIndex]);
 
   void replaceChildAt(T child, int index);
 }

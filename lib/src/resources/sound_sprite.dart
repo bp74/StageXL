@@ -13,22 +13,22 @@ part of stagexl.resources;
 
 class SoundSprite {
   final List<SoundSpriteSegment> _segments = <SoundSpriteSegment>[];
-  Sound _sound;
+  Sound? _sound;
 
   //----------------------------------------------------------------------------
 
   static Future<SoundSprite> load(String url,
-      [SoundLoadOptions soundLoadOptions]) async {
+      [SoundLoadOptions? soundLoadOptions]) async {
     var soundSprite = SoundSprite();
 
     var soundSpriteJson = await HttpRequest.getString(url);
     var data = json.decode(soundSpriteJson);
     var urls = data['urls'] as List<dynamic>;
     var segments = data['sprite'];
-    var soundUrls = <String>[];
+    var soundUrls = <String?>[];
 
     if (segments is Map) {
-      for (String segment in segments.keys) {
+      for (var segment in segments.keys as Iterable<String>) {
         var segmentList = segments[segment] as List;
         var startTime = ensureNum(segmentList[0]);
         var duration = ensureNum(segmentList[1]);
@@ -48,7 +48,7 @@ class SoundSprite {
 
   //----------------------------------------------------------------------------
 
-  Sound get sound => _sound;
+  Sound? get sound => _sound;
 
   List<SoundSpriteSegment> get segments {
     return _segments.toList(growable: false);
@@ -61,15 +61,15 @@ class SoundSprite {
   //----------------------------------------------------------------------------
 
   SoundSpriteSegment getSegment(String name) {
-    var segment = _segments.firstWhere((s) => s.name == name);
-    if (segment == null) {
-      throw ArgumentError("SoundSpriteSegment not found: '$name'");
-    } else {
+    try {
+      var segment = _segments.firstWhere((s) => s.name == name);
       return segment;
+    } on StateError catch (_) {
+      throw ArgumentError("SoundSpriteSegment not found: '$name'");
     }
   }
 
-  SoundChannel play(String name, [bool loop, SoundTransform soundTransform]) {
+  SoundChannel play(String name, [bool? loop, SoundTransform? soundTransform]) {
     return getSegment(name).play(loop, soundTransform);
   }
 }

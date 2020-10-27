@@ -7,15 +7,15 @@ class _DisplayObjectCache {
   bool debugBorder = true;
 
   Rectangle<num> bounds = Rectangle<num>(0, 0, 256, 256);
-  RenderTexture renderTexture;
-  RenderTextureQuad renderTextureQuad;
+  RenderTexture? renderTexture;
+  RenderTextureQuad? renderTextureQuad;
 
   _DisplayObjectCache(this.displayObject);
 
   //---------------------------------------------------------------------------
 
   void dispose() {
-    if (renderTexture != null) renderTexture.dispose();
+    if (renderTexture != null) renderTexture!.dispose();
     renderTexture = null;
     renderTextureQuad = null;
   }
@@ -40,14 +40,14 @@ class _DisplayObjectCache {
       renderTexture = RenderTexture(w, h, Color.Transparent);
       renderTextureQuad = RenderTextureQuad(renderTexture, sr, or, 0, pr);
     } else {
-      renderTexture.resize(w, h);
+      renderTexture!.resize(w, h);
       renderTextureQuad = RenderTextureQuad(renderTexture, sr, or, 0, pr);
     }
 
     // render display object to texture
 
-    var canvas = renderTexture.canvas;
-    var matrix = renderTextureQuad.drawMatrix;
+    var canvas = renderTexture!.canvas!;
+    var matrix = renderTextureQuad!.drawMatrix;
     var renderContext = RenderContextCanvas(canvas);
     var renderState = RenderState(renderContext, matrix);
 
@@ -57,9 +57,8 @@ class _DisplayObjectCache {
     // apply filters
 
     var filters = displayObject.filters;
-
-    if (filters != null && filters.isNotEmpty) {
-      var bitmapData = BitmapData.fromRenderTextureQuad(renderTextureQuad);
+    if (filters.isNotEmpty) {
+      var bitmapData = BitmapData.fromRenderTextureQuad(renderTextureQuad!);
       filters.forEach((filter) => filter.apply(bitmapData));
     }
 
@@ -72,9 +71,9 @@ class _DisplayObjectCache {
       context.lineJoin = 'miter';
       context.lineCap = 'butt';
       context.strokeStyle = '#FF00FF';
-      context.strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
+      context.strokeRect(0.5, 0.5, canvas.width! - 1, canvas.height! - 1);
     }
 
-    renderTexture.update();
+    renderTexture!.update();
   }
 }

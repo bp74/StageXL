@@ -5,7 +5,7 @@ class TextureAtlas {
   final List<TextureAtlasFrame> frames = <TextureAtlasFrame>[];
 
   /// The pixelRatio used for the BitmapDatas in the frames
-  final double pixelRatio;
+  final double? pixelRatio;
 
   TextureAtlas(this.pixelRatio);
 
@@ -13,7 +13,7 @@ class TextureAtlas {
 
   static Future<TextureAtlas> load(String url,
           [TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-          BitmapDataLoadOptions bitmapDataLoadOptions]) =>
+          BitmapDataLoadOptions? bitmapDataLoadOptions]) =>
       textureAtlasFormat
           .load(_TextureAtlasLoaderFile(url, bitmapDataLoadOptions));
 
@@ -40,12 +40,12 @@ class TextureAtlas {
 
   /// A list with the frame-names in this texture atlas.
 
-  List<String> get frameNames => frames.map((f) => f.name).toList();
+  List<String?> get frameNames => frames.map((f) => f.name).toList();
 
   /// Get a list of BitmapDatas of frames whose names starts with [namePrefix].
 
-  List<BitmapData> getBitmapDatas(String namePrefix) => frames
-      .where((f) => f.name.startsWith(namePrefix))
+  List<BitmapData?> getBitmapDatas(String namePrefix) => frames
+      .where((f) => f.name!.startsWith(namePrefix))
       .map((f) => f.bitmapData)
       .toList();
 
@@ -54,7 +54,7 @@ class TextureAtlas {
   /// The name of a frame is the original file name of the image
   /// without it's file extension.
 
-  BitmapData getBitmapData(String name) {
+  BitmapData? getBitmapData(String name) {
     for (var i = 0; i < frames.length; i++) {
       var frame = frames[i];
       if (frame.name == name) return frame.bitmapData;

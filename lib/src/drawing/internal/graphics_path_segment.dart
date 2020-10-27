@@ -1,7 +1,7 @@
 part of stagexl.drawing;
 
 class _GraphicsPathSegment extends _GraphicsMeshSegment {
-  bool _clockwise;
+  bool? _clockwise;
   bool _closed = false;
 
   _GraphicsPathSegment() : super(16, 32);
@@ -14,7 +14,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
 
   //---------------------------------------------------------------------------
 
-  bool get clockwise {
+  bool? get clockwise {
     if (_clockwise is! bool) _clockwise = _calculateArea() >= 0.0;
     return _clockwise;
   }
@@ -112,7 +112,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
 
       var u = 0.0, v = 0.0;
       var tmp = y31 * x21 - x31 * y21;
-      var earFound = clockwise ? tmp >= 0 : tmp <= 0;
+      var earFound = clockwise! ? tmp >= 0 : tmp <= 0;
 
       for (var j = 0; j < available.length && earFound; j++) {
         var vi = available[j];

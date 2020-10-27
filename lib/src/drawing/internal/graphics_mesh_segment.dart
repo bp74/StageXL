@@ -121,7 +121,7 @@ abstract class _GraphicsMeshSegment {
     var renderContext = renderState.renderContext as RenderContextWebGL;
     var renderTexture = gradient.getRenderTexture();
 
-    _GraphicsGradientProgram renderProgram;
+    _GraphicsGradientProgram? renderProgram;
 
     if (gradient.type == GraphicsGradientType.Linear) {
       renderProgram = renderContext.getRenderProgram(
@@ -135,7 +135,7 @@ abstract class _GraphicsMeshSegment {
           () => _RadialGraphicsGradientProgram());
     }
 
-    if (renderProgram.activeGradient != gradient) {
+    if (renderProgram!.activeGradient != gradient) {
       renderProgram.activeGradient = gradient;
       renderProgram.flush();
     }
@@ -151,15 +151,15 @@ abstract class _GraphicsMeshSegment {
 
   void fillPattern(RenderState renderState, GraphicsPattern pattern) {
     var matrix = _tmpMatrix;
-    var texture = pattern.patternTexture;
+    var texture = pattern.patternTexture!;
     var invWidth = 1.0 / texture.width;
     var invHeight = 1.0 / texture.height;
 
-    texture.wrappingX = pattern.type.wrappingX;
-    texture.wrappingY = pattern.type.wrappingY;
+    texture.wrappingX = pattern.type!.wrappingX;
+    texture.wrappingY = pattern.type!.wrappingY;
 
     if (pattern.matrix != null) {
-      matrix.copyFromAndInvert(pattern.matrix);
+      matrix.copyFromAndInvert(pattern.matrix!);
       matrix.scale(invWidth, invHeight);
     } else {
       matrix.setTo(invWidth, 0.0, 0.0, invHeight, 0.0, 0.0);

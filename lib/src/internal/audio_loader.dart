@@ -12,16 +12,16 @@ class AudioLoader {
   final AggregateError aggregateError = AggregateError('Error loading sound.');
   final Completer<AudioElement> _completer = Completer<AudioElement>();
 
-  StreamSubscription _onCanPlaySubscription;
-  StreamSubscription _onErrorSubscription;
-  final List<String> _urls = <String>[];
+  late StreamSubscription _onCanPlaySubscription;
+  late StreamSubscription _onErrorSubscription;
+  final List<String?> _urls = <String?>[];
   bool _loadData = false;
 
-  AudioLoader(List<String> urls, bool loadData, bool corsEnabled) {
+  AudioLoader(List<String?> urls, bool loadData, bool corsEnabled) {
     // we have to add the AudioElement to the document,
     // otherwise some browser won't start loading :(
 
-    document.body.children.add(audio);
+    document.body!.children.add(audio);
 
     if (corsEnabled) audio.crossOrigin = 'anonymous';
 
@@ -53,9 +53,9 @@ class AudioLoader {
     if (_urls.isEmpty) {
       _loadFailed();
     } else if (_loadData) {
-      _loadAudioData(_urls.removeAt(0));
+      _loadAudioData(_urls.removeAt(0)!);
     } else {
-      _loadAudioSource(_urls.removeAt(0));
+      _loadAudioSource(_urls.removeAt(0)!);
     }
   }
 
@@ -73,7 +73,7 @@ class AudioLoader {
     HttpRequest.request(url, responseType: 'blob').then((request) {
       var reader = FileReader();
       reader.readAsDataUrl(request.response as Blob);
-      reader.onLoadEnd.first.then((e) => _loadAudioSource(reader.result));
+      reader.onLoadEnd.first.then((e) => _loadAudioSource(reader.result as String));
     }).catchError((error) {
       var loadError = LoadError('Failed to load $url.', error);
       aggregateError.errors.add(loadError);

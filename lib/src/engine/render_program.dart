@@ -2,8 +2,8 @@ part of stagexl.engine;
 
 abstract class RenderProgram {
   int _contextIdentifier = -1;
-  gl.RenderingContext _renderingContext;
-  gl.Program _program;
+  gl.RenderingContext? _renderingContext;
+  gl.Program? _program;
 
   final Map<String, int> _attributes;
   final Map<String, gl.UniformLocation> _uniforms;
@@ -27,8 +27,8 @@ abstract class RenderProgram {
   RenderBufferIndex get renderBufferIndex => _renderBufferIndex;
   RenderBufferVertex get renderBufferVertex => _renderBufferVertex;
   RenderStatistics get renderStatistics => _renderStatistics;
-  gl.RenderingContext get renderingContext => _renderingContext;
-  gl.Program get program => _program;
+  gl.RenderingContext? get renderingContext => _renderingContext;
+  gl.Program? get program => _program;
 
   Map<String, int> get attributes => _attributes;
   Map<String, gl.UniformLocation> get uniforms => _uniforms;
@@ -37,7 +37,7 @@ abstract class RenderProgram {
 
   set projectionMatrix(Matrix3D matrix) {
     var location = uniforms['uProjectionMatrix'];
-    renderingContext.uniformMatrix4fv(location, false, matrix.data);
+    renderingContext!.uniformMatrix4fv(location, false, matrix.data);
   }
 
   //---------------------------------------------------------------------------
@@ -51,12 +51,12 @@ abstract class RenderProgram {
       _renderBufferVertex = renderContext.renderBufferVertex;
       _renderBufferIndex.activate(renderContext);
       _renderBufferVertex.activate(renderContext);
-      _program = _createProgram(_renderingContext);
-      _updateAttributes(_renderingContext, _program);
-      _updateUniforms(_renderingContext, _program);
+      _program = _createProgram(_renderingContext!);
+      _updateAttributes(_renderingContext!, _program!);
+      _updateUniforms(_renderingContext!, _program!);
     }
 
-    renderingContext.useProgram(program);
+    renderingContext!.useProgram(program);
   }
 
   //---------------------------------------------------------------------------
@@ -70,7 +70,7 @@ abstract class RenderProgram {
       renderBufferVertex.update();
       renderBufferVertex.position = 0;
       renderBufferVertex.count = 0;
-      renderingContext.drawElements(
+      renderingContext!.drawElements(
           gl.WebGL.TRIANGLES, count, gl.WebGL.UNSIGNED_SHORT, 0);
       renderStatistics.drawCount += 1;
     }
@@ -93,7 +93,7 @@ abstract class RenderProgram {
     if (status == true) return program;
 
     var cl = rc.isContextLost();
-    throw StateError(cl ? 'ContextLost' : rc.getProgramInfoLog(program));
+    throw StateError(cl ? 'ContextLost' : rc.getProgramInfoLog(program)!);
   }
 
   //---------------------------------------------------------------------------
@@ -107,14 +107,14 @@ abstract class RenderProgram {
     if (status == true) return shader;
 
     var cl = rc.isContextLost();
-    throw StateError(cl ? 'ContextLost' : rc.getShaderInfoLog(shader));
+    throw StateError(cl ? 'ContextLost' : rc.getShaderInfoLog(shader)!);
   }
 
   //---------------------------------------------------------------------------
 
   void _updateAttributes(gl.RenderingContext rc, gl.Program program) {
     _attributes.clear();
-    int count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_ATTRIBUTES);
+    var count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_ATTRIBUTES) as int;
 
     for (var i = 0; i < count; i++) {
       var activeInfo = rc.getActiveAttrib(program, i);
@@ -128,7 +128,7 @@ abstract class RenderProgram {
 
   void _updateUniforms(gl.RenderingContext rc, gl.Program program) {
     _uniforms.clear();
-    int count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_UNIFORMS);
+    var count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_UNIFORMS) as int;
 
     for (var i = 0; i < count; i++) {
       var activeInfo = rc.getActiveUniform(program, i);

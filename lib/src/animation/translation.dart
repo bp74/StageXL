@@ -24,10 +24,10 @@ class Translation implements Animatable {
   final num _targetValue;
   final TransitionFunction _transition;
 
-  num _currentValue;
-  Function _onStart;
-  Function _onUpdate;
-  Function _onComplete;
+  num? _currentValue;
+  Function? _onStart;
+  Function? _onUpdate;
+  Function? _onComplete;
 
   num _totalTime = 0.0;
   num _currentTime = 0.0;
@@ -58,7 +58,7 @@ class Translation implements Animatable {
       if (_currentTime >= 0.0) {
         if (_started == false) {
           _started = true;
-          if (_onStart != null) _onStart();
+          if (_onStart != null) _onStart!();
         }
 
         num ratio = _currentTime / _totalTime;
@@ -67,10 +67,10 @@ class Translation implements Animatable {
         _currentValue = _startValue + transition * (_targetValue - _startValue);
 
         if (_onUpdate != null) {
-          _onUpdate(_roundToInt ? _currentValue.round() : _currentValue);
+          _onUpdate!(_roundToInt ? _currentValue!.round() : _currentValue);
         }
         if (_onComplete != null && _currentTime == _totalTime) {
-          _onComplete();
+          _onComplete!();
         }
       }
     }
@@ -90,7 +90,7 @@ class Translation implements Animatable {
   /// The current value.
   ///
   /// If [roundToInt] is true, this value will always be an [int].
-  num get currentValue => _roundToInt ? _currentValue.round() : _currentValue;
+  num? get currentValue => _roundToInt ? _currentValue!.round() : _currentValue;
 
   /// The total time of this [Animation].
   num get totalTime => _totalTime;

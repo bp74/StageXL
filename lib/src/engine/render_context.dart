@@ -27,16 +27,16 @@ abstract class RenderContext {
   void clear(int color);
   void flush();
 
-  void beginRenderMask(RenderState renderState, RenderMask mask);
-  void endRenderMask(RenderState renderState, RenderMask mask);
+  void beginRenderMask(RenderState renderState, RenderMask? mask);
+  void endRenderMask(RenderState renderState, RenderMask? mask);
 
   //---------------------------------------------------------------------------
 
   void renderTextureQuad(
-      RenderState renderState, RenderTextureQuad renderTextureQuad);
+      RenderState renderState, RenderTextureQuad? renderTextureQuad);
 
-  void renderTextureMesh(RenderState renderState, RenderTexture renderTexture,
-      Int16List ixList, Float32List vxList);
+  void renderTextureMesh(RenderState renderState, RenderTexture? renderTexture,
+      Int16List ixList, Float32List? vxList);
 
   void renderTextureMapping(
       RenderState renderState,
@@ -52,7 +52,7 @@ abstract class RenderContext {
       RenderState renderState, Int16List ixList, Float32List vxList, int color);
 
   void renderTextureQuadFiltered(RenderState renderState,
-      RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters);
+      RenderTextureQuad? renderTextureQuad, List<RenderFilter> renderFilters);
 
   void renderObjectFiltered(RenderState renderState, RenderObject renderObject);
 }

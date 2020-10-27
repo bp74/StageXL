@@ -8,7 +8,7 @@ class TweenProperty {
   final TweenPropertyAccessor _tweenPropertyAccessor;
   final int _propertyID;
 
-  num _startValue = double.nan;
+  num? _startValue = double.nan;
   num _targetValue = double.nan;
   num _deltaValue = double.nan;
 
@@ -30,16 +30,16 @@ class TweenProperty {
     _startValue = _tweenPropertyAccessor._getValue(_propertyID);
 
     if (_deltaValue.isNaN && _targetValue.isFinite) {
-      _deltaValue = _targetValue - _startValue;
+      _deltaValue = _targetValue - _startValue!;
     }
     if (_targetValue.isNaN && _deltaValue.isFinite) {
-      _targetValue = _startValue + _deltaValue;
+      _targetValue = _startValue! + _deltaValue;
     }
   }
 
   void _update(num transition, bool roundToInt) {
-    if (_startValue.isFinite && _targetValue.isFinite) {
-      var value = _startValue + transition * (_targetValue - _startValue);
+    if (_startValue!.isFinite && _targetValue.isFinite) {
+      var value = _startValue! + transition * (_targetValue - _startValue!);
       value = roundToInt ? value.roundToDouble() : value;
       _tweenPropertyAccessor._setValue(_propertyID, value);
     }

@@ -1,7 +1,7 @@
 part of stagexl.drawing;
 
 abstract class _GraphicsGradientProgram extends RenderProgram {
-  GraphicsGradient activeGradient;
+  GraphicsGradient? activeGradient;
 
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexAlpha:      Float32(alpha)
@@ -77,7 +77,7 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
     for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-      vxData[vxIndex + 0] = mx + ma * x + mc * y;
+      vxData[vxIndex + 0] = mx + ma * x + mc * (y as double);
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = alpha;
       vxIndex += 3;
@@ -123,9 +123,9 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
     // protect against zero length vector (linear gradient not defined for this case)
     if (vectorX == 0 && vectorY == 0) vectorY = 1;
 
-    renderingContext.uniform1i(uniforms['uSampler'], 0);
-    renderingContext.uniform2f(uniforms['uvGradientStart'], startX, startY);
-    renderingContext.uniform2f(uniforms['uvGradientVector'], vectorX, vectorY);
+    renderingContext!.uniform1i(uniforms['uSampler'], 0);
+    renderingContext!.uniform2f(uniforms['uvGradientStart'], startX, startY);
+    renderingContext!.uniform2f(uniforms['uvGradientVector'], vectorX, vectorY);
   }
 }
 
@@ -166,8 +166,8 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
     var startY = m.ty + m.b * g.startX + m.d * g.startY;
     var vectorX = (m.tx + m.a * g.endX + m.c * g.endY) - startX;
     var vectorY = (m.ty + m.b * g.endX + m.d * g.endY) - startY;
-    var startRadius = g.startRadius * scaleR;
-    var radiusOffset = (g.endRadius - g.startRadius) * scaleR;
+    num startRadius = g.startRadius * scaleR;
+    num radiusOffset = (g.endRadius - g.startRadius) * scaleR;
 
     // protect against equal start-end circles (radial gradient not defined for this case)
     if (vectorX == 0 && vectorY == 0 && radiusOffset == 0) radiusOffset = 1;
@@ -183,9 +183,9 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
     var c2 = startX * startX + startY * startY - startRadius * startRadius;
     var sign = radiusOffset >= 0 ? -1 : 1;
 
-    renderingContext.uniform1i(uniforms['uSampler'], 0);
-    renderingContext.uniform2f(uniforms['uvA'], a, sign);
-    renderingContext.uniform3f(uniforms['uvB'], b0, b1, b2);
-    renderingContext.uniform3f(uniforms['uvC'], c0, c1, c2);
+    renderingContext!.uniform1i(uniforms['uSampler'], 0);
+    renderingContext!.uniform2f(uniforms['uvA'], a, sign);
+    renderingContext!.uniform3f(uniforms['uvB'], b0, b1, b2);
+    renderingContext!.uniform3f(uniforms['uvC'], c0, c1, c2);
   }
 }

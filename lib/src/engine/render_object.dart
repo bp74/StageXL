@@ -7,14 +7,14 @@ part of stagexl.engine;
 
 abstract class RenderObject {
   Matrix get transformationMatrix;
-  BlendMode get blendMode;
+  BlendMode? get blendMode;
   num get alpha;
 
   List<RenderFilter> get filters;
-  RenderTextureQuad get cache;
-  RenderMask get mask;
+  RenderTextureQuad? get cache;
+  RenderMask? get mask;
 
-  Rectangle<num> get bounds;
+  Rectangle<num>? get bounds;
 
   void render(RenderState renderState);
   void renderFiltered(RenderState renderState);
@@ -34,7 +34,7 @@ abstract class RenderObject3D extends RenderObject {
 /// fallback if the [RenderTextureQuad] can't be rendered in the fast path.
 
 class _RenderTextureQuadObject implements RenderObject {
-  final RenderTextureQuad renderTextureQuad;
+  final RenderTextureQuad? renderTextureQuad;
 
   @override
   final List<RenderFilter> filters;
@@ -46,10 +46,10 @@ class _RenderTextureQuadObject implements RenderObject {
   final BlendMode blendMode = BlendMode.NORMAL;
 
   @override
-  final RenderTextureQuad cache;
+  final RenderTextureQuad? cache;
 
   @override
-  final RenderMask mask;
+  final RenderMask? mask;
 
   @override
   final num alpha = 1.0;
@@ -60,8 +60,8 @@ class _RenderTextureQuadObject implements RenderObject {
 
   @override
   Rectangle<num> get bounds {
-    var w = renderTextureQuad.targetWidth;
-    var h = renderTextureQuad.targetHeight;
+    var w = renderTextureQuad!.targetWidth;
+    var h = renderTextureQuad!.targetHeight;
     return Rectangle<num>(0.0, 0.0, w, h);
   }
 

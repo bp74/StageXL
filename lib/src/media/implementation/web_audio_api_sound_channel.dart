@@ -1,12 +1,12 @@
 part of stagexl.media;
 
 class WebAudioApiSoundChannel extends SoundChannel {
-  WebAudioApiSound _webAudioApiSound;
-  SoundTransform _soundTransform;
-  WebAudioApiMixer _mixer;
+  WebAudioApiSound? _webAudioApiSound;
+  SoundTransform? _soundTransform;
+  late WebAudioApiMixer _mixer;
 
-  AudioBufferSourceNode _sourceNode;
-  StreamSubscription<html.Event> _sourceNodeEndedSubscription;
+  late AudioBufferSourceNode _sourceNode;
+  StreamSubscription<html.Event>? _sourceNodeEndedSubscription;
 
   bool _stopped = false;
   bool _paused = true;
@@ -17,15 +17,15 @@ class WebAudioApiSoundChannel extends SoundChannel {
   num _timeOffset = 0.0;
 
   WebAudioApiSoundChannel(WebAudioApiSound webAudioApiSound, num startTime,
-      num duration, bool loop, SoundTransform soundTransform) {
+      num duration, bool loop, SoundTransform? soundTransform) {
     _soundTransform = soundTransform ?? SoundTransform();
     _webAudioApiSound = webAudioApiSound;
     _startTime = startTime.toDouble();
     _duration = duration.toDouble();
     _loop = loop;
 
-    _mixer = WebAudioApiMixer(SoundMixer._webAudioApiMixer.inputNode);
-    _mixer.applySoundTransform(_soundTransform);
+    _mixer = WebAudioApiMixer(SoundMixer._webAudioApiMixer!.inputNode);
+    _mixer.applySoundTransform(_soundTransform!);
 
     paused = false;
   }
@@ -39,7 +39,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
   bool get stopped => _stopped;
 
   @override
-  Sound get sound => _webAudioApiSound;
+  Sound? get sound => _webAudioApiSound;
 
   //---------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
     if (_paused || _stopped) {
       return _position;
     } else {
-      var currentTime = WebAudioApiMixer.audioContext.currentTime;
+      var currentTime = WebAudioApiMixer.audioContext.currentTime!;
       var position = currentTime - _timeOffset;
       return _loop ? position % _duration : position.clamp(0.0, _duration);
     }
@@ -88,32 +88,32 @@ class WebAudioApiSoundChannel extends SoundChannel {
     } else if (_loop) {
       _paused = false;
       _sourceNode = WebAudioApiMixer.audioContext.createBufferSource();
-      _sourceNode.buffer = _webAudioApiSound._audioBuffer;
+      _sourceNode.buffer = _webAudioApiSound!._audioBuffer;
       _sourceNode.loop = true;
       _sourceNode.loopStart = _startTime;
       _sourceNode.loopEnd = _startTime + _duration;
-      _sourceNode.connectNode(_mixer.inputNode);
+      _sourceNode.connectNode(_mixer.inputNode!);
       _sourceNode.start(0, _startTime + _position);
-      _timeOffset = WebAudioApiMixer.audioContext.currentTime - _position;
+      _timeOffset = WebAudioApiMixer.audioContext.currentTime! - _position;
     } else {
       _paused = false;
       _sourceNode = WebAudioApiMixer.audioContext.createBufferSource();
-      _sourceNode.buffer = _webAudioApiSound._audioBuffer;
+      _sourceNode.buffer = _webAudioApiSound!._audioBuffer;
       _sourceNode.loop = false;
-      _sourceNode.connectNode(_mixer.inputNode);
+      _sourceNode.connectNode(_mixer.inputNode!);
       _sourceNode.start(0, _startTime + _position, _duration - _position);
       _sourceNodeEndedSubscription = _sourceNode.onEnded.listen(_onEnded);
-      _timeOffset = WebAudioApiMixer.audioContext.currentTime - _position;
+      _timeOffset = WebAudioApiMixer.audioContext.currentTime! - _position;
     }
   }
 
   @override
-  SoundTransform get soundTransform => _soundTransform;
+  SoundTransform? get soundTransform => _soundTransform;
 
   @override
-  set soundTransform(SoundTransform value) {
+  set soundTransform(SoundTransform? value) {
     _soundTransform = value ?? SoundTransform();
-    _mixer.applySoundTransform(_soundTransform);
+    _mixer.applySoundTransform(_soundTransform!);
   }
 
   //---------------------------------------------------------------------------
@@ -129,7 +129,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
 
   //---------------------------------------------------------------------------
 
-  void _onEnded(html.Event e) {
+  void _onEnded(html.Event? e) {
     if (_paused == false && _stopped == false && _loop == false) {
       _position = position;
       _stopped = true;

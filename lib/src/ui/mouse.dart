@@ -81,7 +81,7 @@ class Mouse {
     var style = cursorName;
 
     if (_cursorDatas.containsKey(cursorName)) {
-      var cursorData = _cursorDatas[cursorName];
+      var cursorData = _cursorDatas[cursorName]!;
       var cursorDataUrl = cursorData.url;
       var cursorDataX = cursorData.hotSpot.x;
       var cursorDataY = cursorData.hotSpot.y;

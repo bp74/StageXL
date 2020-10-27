@@ -86,7 +86,7 @@ class ColorMatrixFilter extends BitmapFilter {
   }
 
   void adjustHue(num value) {
-    var v = min(max(value, -1), 1) * pi;
+    num v = min(max(value, -1), 1) * pi;
     var cv = cos(v);
     var sv = sin(v);
 
@@ -200,7 +200,7 @@ class ColorMatrixFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     //dstR = (m[ 0] * srcR) + (m[ 1] * srcG) + (m[ 2] * srcB) + (m[ 3] * srcA) + o[0]
     //dstG = (m[ 4] * srcR) + (m[ 5] * srcG) + (m[ 6] * srcB) + (m[ 7] * srcA) + o[1]
     //dstB = (m[ 8] * srcR) + (m[ 9] * srcG) + (m[10] * srcB) + (m[11] * srcA) + o[2]
@@ -255,9 +255,9 @@ class ColorMatrixFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    var renderTexture = renderTextureQuad!.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(
         r'$ColorMatrixFilterProgram', () => ColorMatrixFilterProgram());
@@ -331,7 +331,7 @@ class ColorMatrixFilterProgram extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext.uniform1i(uniforms['uSampler'], 0);
+    renderingContext!.uniform1i(uniforms['uSampler'], 0);
 
     renderBufferVertex.bindAttribute(attributes['aPosition'], 2, 96, 0);
     renderBufferVertex.bindAttribute(attributes['aTexCoord'], 2, 96, 8);
@@ -350,8 +350,8 @@ class ColorMatrixFilterProgram extends RenderProgram {
       ColorMatrixFilter colorMatrixFilter) {
     var alpha = renderState.globalAlpha;
     var matrix = renderState.globalMatrix;
-    var ixList = renderTextureQuad.ixList;
-    var vxList = renderTextureQuad.vxList;
+    var ixList = renderTextureQuad.ixList!;
+    var vxList = renderTextureQuad.vxList!;
     var indexCount = ixList.length;
     var vertexCount = vxList.length >> 2;
 
@@ -393,7 +393,7 @@ class ColorMatrixFilterProgram extends RenderProgram {
     for (var i = 0, o = 0; i < vertexCount; i++, o += 4) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-      vxData[vxIndex + 00] = mx + ma * x + mc * y;
+      vxData[vxIndex + 00] = mx + ma * x + mc * (y as double);
       vxData[vxIndex + 01] = my + mb * x + md * y;
       vxData[vxIndex + 02] = vxList[o + 2];
       vxData[vxIndex + 03] = vxList[o + 3];

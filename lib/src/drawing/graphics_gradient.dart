@@ -11,20 +11,20 @@ enum GraphicsGradientType { Linear, Radial }
 class GraphicsGradient {
   static const int GRADIENT_TEXTURE_SIZE = 512;
 
-  static final SharedCache<String, CanvasGradient> _canvasGradientCache =
-      SharedCache<String, CanvasGradient>();
+  static final SharedCache<String?, CanvasGradient?> _canvasGradientCache =
+      SharedCache<String?, CanvasGradient?>();
 
-  static final SharedCache<String, RenderTexture> _gradientTextureCache =
-      SharedCache<String, RenderTexture>()
-        ..onObjectReleased.listen((e) => e.object.dispose());
+  static final SharedCache<String?, RenderTexture?> _gradientTextureCache =
+      SharedCache<String?, RenderTexture?>()
+        ..onObjectReleased.listen((e) => e.object!.dispose());
 
   /// cached by the Canvas2D renderer
-  CanvasGradient _canvasGradient;
-  String _canvasCacheKey;
+  CanvasGradient? _canvasGradient;
+  String? _canvasCacheKey;
 
   /// cached by the WebGL renderer
-  RenderTexture _gradientTexture;
-  String _textureCacheKey;
+  RenderTexture? _gradientTexture;
+  String? _textureCacheKey;
 
   num _startX;
   num _startY;
@@ -111,7 +111,7 @@ class GraphicsGradient {
   set colorStops(List<GraphicsGradientColorStop> value) {
     disposeCachedRenderObjects();
     _colorStops.clear();
-    _colorStops.addAll(value ?? <GraphicsGradientColorStop>[]);
+    _colorStops.addAll(value);
   }
 
   List<GraphicsGradientColorStop> get colorStops {
@@ -135,7 +135,7 @@ class GraphicsGradient {
     }
   }
 
-  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
+  CanvasGradient? getCanvasGradient(CanvasRenderingContext2D context) {
     if (_canvasGradient == null) {
       _canvasCacheKey = _createCanvasCacheKey();
       _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey);
@@ -145,7 +145,7 @@ class GraphicsGradient {
       _canvasGradient =
           context.createLinearGradient(_startX, _startY, _endX, _endY);
       _colorStops.forEach((cs) =>
-          _canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
+          _canvasGradient!.addColorStop(cs.offset, color2rgba(cs.color)));
       _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
     }
 
@@ -153,14 +153,14 @@ class GraphicsGradient {
       _canvasGradient = context.createRadialGradient(
           _startX, _startY, _startRadius, _endX, _endY, _endRadius);
       _colorStops.forEach((cs) =>
-          _canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));
+          _canvasGradient!.addColorStop(cs.offset, color2rgba(cs.color)));
       _canvasGradientCache.addObject(_canvasCacheKey, _canvasGradient);
     }
 
     return _canvasGradient;
   }
 
-  RenderTexture getRenderTexture() {
+  RenderTexture? getRenderTexture() {
     if (_gradientTexture == null) {
       _textureCacheKey = _createTextureCacheKey();
       _gradientTexture = _gradientTextureCache.getObject(_textureCacheKey);

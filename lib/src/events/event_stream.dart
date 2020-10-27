@@ -12,7 +12,7 @@ class EventStream<T extends Event> extends Stream<T> {
   // If subscriptions are added or canceled we create a new list.
   // This is safe and gives good performance in JavaScript.
 
-  List<EventStreamSubscription<T>> _subscriptions = List(0);
+  List<EventStreamSubscription<T>?> _subscriptions = [];
   int _capturingSubscriptionCount = 0;
 
   EventStream._(this.target, this.eventType);
@@ -24,8 +24,8 @@ class EventStream<T extends Event> extends Stream<T> {
 
   @override
   Stream<T> asBroadcastStream(
-          {void Function(StreamSubscription<T> subscription) onListen,
-          void Function(StreamSubscription<T> subscription) onCancel}) =>
+          {void Function(StreamSubscription<T> subscription)? onListen,
+          void Function(StreamSubscription<T> subscription)? onCancel}) =>
       this;
 
   bool get hasSubscriptions => _subscriptions.isNotEmpty;
@@ -54,10 +54,10 @@ class EventStream<T extends Event> extends Stream<T> {
   /// as the stream has no errors and is never done.
 
   @override
-  EventStreamSubscription<T> listen(void Function(T event) onData,
-      {Function onError,
-      void Function() onDone,
-      bool cancelOnError = false,
+  EventStreamSubscription<T> listen(void Function(T event)? onData,
+      {Function? onError,
+      void Function()? onDone,
+      bool? cancelOnError = false,
       int priority = 0}) {
     return _subscribe(onData, false, priority);
   }
@@ -92,7 +92,7 @@ class EventStream<T extends Event> extends Stream<T> {
     var subscriptions = _subscriptions;
 
     for (var i = 0; i < subscriptions.length; i++) {
-      _cancelSubscription(subscriptions[i]);
+      _cancelSubscription(subscriptions[i]!);
     }
   }
 
@@ -100,7 +100,7 @@ class EventStream<T extends Event> extends Stream<T> {
   //----------------------------------------------------------------------------
 
   EventStreamSubscription<T> _subscribe(
-      EventListener<T> eventListener, bool captures, int priority) {
+      EventListener<T>? eventListener, bool captures, int priority) {
     var subscription =
         EventStreamSubscription<T>._(this, eventListener, captures, priority);
 
@@ -108,12 +108,12 @@ class EventStream<T extends Event> extends Stream<T> {
 
     var oldSubscriptions = _subscriptions;
     var newSubscriptions =
-        List<EventStreamSubscription<T>>(oldSubscriptions.length + 1);
+        List<EventStreamSubscription<T>?>.filled(oldSubscriptions.length + 1, null);
     var index = newSubscriptions.length - 1;
 
     for (var o = 0, n = 0; o < oldSubscriptions.length; o++) {
       var oldSubscription = oldSubscriptions[o];
-      if (o == n && oldSubscription.priority < priority) index = n++;
+      if (o == n && oldSubscription!.priority < priority) index = n++;
       newSubscriptions[n++] = oldSubscription;
     }
 
@@ -145,7 +145,7 @@ class EventStream<T extends Event> extends Stream<T> {
     var subscriptions = _subscriptions;
 
     for (var i = 0; i < subscriptions.length; i++) {
-      var subscription = subscriptions[i];
+      var subscription = subscriptions[i]!;
       if (subscription.eventListener == eventListener &&
           subscription.isCapturing == captures) {
         _cancelSubscription(subscription);
@@ -162,7 +162,7 @@ class EventStream<T extends Event> extends Stream<T> {
     if (oldSubscriptions.isEmpty) return;
 
     var newSubscriptions =
-        List<EventStreamSubscription<T>>(oldSubscriptions.length - 1);
+        List<EventStreamSubscription<T>?>.filled(oldSubscriptions.length - 1, null);
 
     for (var o = 0, n = 0; o < oldSubscriptions.length; o++) {
       var oldSubscription = oldSubscriptions[o];
@@ -184,10 +184,10 @@ class EventStream<T extends Event> extends Stream<T> {
       T event, EventDispatcher target, EventPhase eventPhase) {
     var subscriptions = _subscriptions;
     var isCapturing = eventPhase == EventPhase.CAPTURING_PHASE;
-    InputEvent inputEvent = event is InputEvent ? event : null;
+    InputEvent? inputEvent = event is InputEvent ? event : null;
 
     for (var i = 0; i < subscriptions.length; i++) {
-      var subscription = subscriptions[i];
+      var subscription = subscriptions[i]!;
       if (subscription.isCanceled ||
           subscription.isPaused ||
           subscription.isCapturing != isCapturing) continue;
@@ -197,7 +197,7 @@ class EventStream<T extends Event> extends Stream<T> {
       event._eventPhase = eventPhase;
 
       InputEvent.current = inputEvent;
-      subscription.eventListener(event);
+      subscription.eventListener!(event);
       InputEvent.current = null;
 
       if (event.isImmediatePropagationStopped) return;

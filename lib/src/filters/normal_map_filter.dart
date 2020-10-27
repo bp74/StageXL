@@ -27,15 +27,15 @@ class NormalMapFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {}
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {}
 
   //-----------------------------------------------------------------------------------------------
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    var renderTexture = renderTextureQuad!.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(
         r'$NormalMapFilterProgram', () => NormalMapFilterProgram());
@@ -139,8 +139,8 @@ class NormalMapFilterProgram extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext.uniform1i(uniforms['uTexSampler'], 0);
-    renderingContext.uniform1i(uniforms['uMapSampler'], 1);
+    renderingContext!.uniform1i(uniforms['uTexSampler'], 0);
+    renderingContext!.uniform1i(uniforms['uMapSampler'], 1);
 
     renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 76, 0);
     renderBufferVertex.bindAttribute(attributes['aVertexTexCoord'], 2, 76, 8);
@@ -162,8 +162,8 @@ class NormalMapFilterProgram extends RenderProgram {
     var mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
     var texMatrix = renderTextureQuad.samplerMatrix;
     var posMatrix = renderState.globalMatrix;
-    var ixList = renderTextureQuad.ixList;
-    var vxList = renderTextureQuad.vxList;
+    var ixList = renderTextureQuad.ixList!;
+    var vxList = renderTextureQuad.vxList!;
     var indexCount = ixList.length;
     var vertexCount = vxList.length >> 2;
 
@@ -216,12 +216,12 @@ class NormalMapFilterProgram extends RenderProgram {
     for (var i = 0, o = 0; i < vertexCount; i++, o += 4) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-      vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
-      vxData[vxIndex + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
-      vxData[vxIndex + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;
-      vxData[vxIndex + 03] = texMatrix.ty + x * texMatrix.b + y * texMatrix.d;
-      vxData[vxIndex + 04] = mapMatrix.tx + x * mapMatrix.a + y * mapMatrix.c;
-      vxData[vxIndex + 05] = mapMatrix.ty + x * mapMatrix.b + y * mapMatrix.d;
+      vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * (posMatrix.c as double);
+      vxData[vxIndex + 01] = posMatrix.ty + x * posMatrix.b + y * (posMatrix.d as double);
+      vxData[vxIndex + 02] = texMatrix.tx + x * texMatrix.a + y * (texMatrix.c as double);
+      vxData[vxIndex + 03] = texMatrix.ty + x * texMatrix.b + y * (texMatrix.d as double);
+      vxData[vxIndex + 04] = mapMatrix.tx + x * mapMatrix.a + y * (mapMatrix.c as double);
+      vxData[vxIndex + 05] = mapMatrix.ty + x * mapMatrix.b + y * (mapMatrix.d as double);
       vxData[vxIndex + 06] = ambientR;
       vxData[vxIndex + 07] = ambientG;
       vxData[vxIndex + 08] = ambientB;
@@ -230,8 +230,8 @@ class NormalMapFilterProgram extends RenderProgram {
       vxData[vxIndex + 11] = lightG;
       vxData[vxIndex + 12] = lightB;
       vxData[vxIndex + 13] = lightA;
-      vxData[vxIndex + 14] = lightX;
-      vxData[vxIndex + 15] = lightY;
+      vxData[vxIndex + 14] = lightX as double;
+      vxData[vxIndex + 15] = lightY as double;
       vxData[vxIndex + 16] = lightZ;
       vxData[vxIndex + 17] = lightRadius;
       vxData[vxIndex + 18] = alpha;

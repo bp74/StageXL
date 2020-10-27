@@ -8,7 +8,7 @@ class AlphaMaskFilter extends BitmapFilter {
   final BitmapData bitmapData;
   final Matrix matrix;
 
-  AlphaMaskFilter(this.bitmapData, [Matrix matrix])
+  AlphaMaskFilter(this.bitmapData, [Matrix? matrix])
       : matrix = matrix ?? Matrix.fromIdentity();
 
   @override
@@ -17,14 +17,14 @@ class AlphaMaskFilter extends BitmapFilter {
   //---------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
     var matrix = renderTextureQuad.drawMatrix;
-    var vxList = renderTextureQuad.vxList;
-    var canvas = renderTextureQuad.renderTexture.canvas;
+    var vxList = renderTextureQuad.vxList!;
+    var canvas = renderTextureQuad.renderTexture!.canvas!;
     var renderContext = RenderContextCanvas(canvas);
     var renderState = RenderState(renderContext, matrix);
     var context = renderContext.rawContext;
@@ -45,9 +45,9 @@ class AlphaMaskFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    var renderTexture = renderTextureQuad!.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(
         r'$AlphaMaskFilterProgram', () => AlphaMaskFilterProgram());
@@ -124,8 +124,8 @@ class AlphaMaskFilterProgram extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext.uniform1i(uniforms['uTexSampler'], 0);
-    renderingContext.uniform1i(uniforms['uMskSampler'], 1);
+    renderingContext!.uniform1i(uniforms['uTexSampler'], 0);
+    renderingContext!.uniform1i(uniforms['uMskSampler'], 1);
 
     renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 44, 0);
     renderBufferVertex.bindAttribute(attributes['aVertexTexCoord'], 2, 44, 8);
@@ -139,8 +139,8 @@ class AlphaMaskFilterProgram extends RenderProgram {
   void renderAlphaMaskFilterQuad(RenderState renderState,
       RenderTextureQuad renderTextureQuad, AlphaMaskFilter alphaMaskFilter) {
     var alpha = renderState.globalAlpha;
-    var ixList = renderTextureQuad.ixList;
-    var vxList = renderTextureQuad.vxList;
+    var ixList = renderTextureQuad.ixList!;
+    var vxList = renderTextureQuad.vxList!;
     var indexCount = ixList.length;
     var vertexCount = vxList.length >> 2;
 
@@ -150,7 +150,7 @@ class AlphaMaskFilterProgram extends RenderProgram {
 
     // Calculate mask bounds and transformation matrix
 
-    var bounds = mskQuad.vxList;
+    var bounds = mskQuad.vxList!;
     var mskBoundsX1 = bounds[2] < bounds[10] ? bounds[2] : bounds[10];
     var mskBoundsX2 = bounds[2] > bounds[10] ? bounds[2] : bounds[10];
     var mskBoundsY1 = bounds[3] < bounds[11] ? bounds[3] : bounds[11];

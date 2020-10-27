@@ -51,7 +51,7 @@ class _TextureAtlasFormatStarlingXml extends TextureAtlasFormat {
 
   //---------------------------------------------------------------------------
 
-  String _getAttributeValue(XmlElement xml, String name) {
+  String? _getAttributeValue(XmlElement xml, String name) {
     for (var attribute in xml.attributes) {
       if (attribute.name.local == name) return attribute.value;
     }

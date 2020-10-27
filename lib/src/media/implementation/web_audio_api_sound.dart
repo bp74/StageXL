@@ -8,7 +8,7 @@ class WebAudioApiSound extends Sound {
   //---------------------------------------------------------------------------
 
   static Future<Sound> load(String url,
-      [SoundLoadOptions soundLoadOptions]) async {
+      [SoundLoadOptions? soundLoadOptions]) async {
     var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     var audioUrls = options.getOptimalAudioUrls(url);
     var audioContext = WebAudioApiMixer.audioContext;
@@ -17,7 +17,7 @@ class WebAudioApiSound extends Sound {
     for (var audioUrl in audioUrls) {
       try {
         var httpRequest =
-            await HttpRequest.request(audioUrl, responseType: 'arraybuffer');
+            await HttpRequest.request(audioUrl!, responseType: 'arraybuffer');
         var audioData = httpRequest.response as ByteBuffer;
         var audioBuffer = await audioContext.decodeAudioData(audioData);
         return WebAudioApiSound._(audioBuffer);
@@ -37,7 +37,7 @@ class WebAudioApiSound extends Sound {
   //---------------------------------------------------------------------------
 
   static Future<Sound> loadDataUrl(String dataUrl,
-      [SoundLoadOptions soundLoadOptions]) async {
+      [SoundLoadOptions? soundLoadOptions]) async {
     var options = soundLoadOptions ?? Sound.defaultLoadOptions;
     var audioContext = WebAudioApiMixer.audioContext;
     var start = dataUrl.indexOf(',') + 1;
@@ -62,16 +62,16 @@ class WebAudioApiSound extends Sound {
   SoundEngine get engine => SoundEngine.WebAudioApi;
 
   @override
-  num get length => _audioBuffer.duration;
+  num? get length => _audioBuffer.duration;
 
   @override
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
-    return WebAudioApiSoundChannel(this, 0, length, loop, soundTransform);
+  SoundChannel play([bool loop = false, SoundTransform? soundTransform]) {
+    return WebAudioApiSoundChannel(this, 0, length!, loop, soundTransform);
   }
 
   @override
   SoundChannel playSegment(num startTime, num duration,
-      [bool loop = false, SoundTransform soundTransform]) {
+      [bool loop = false, SoundTransform? soundTransform]) {
     return WebAudioApiSoundChannel(
         this, startTime, duration, loop, soundTransform);
   }

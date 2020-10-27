@@ -41,7 +41,7 @@ class RenderProgramTinted extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext.uniform1i(uniforms['uSampler'], 0);
+    renderingContext!.uniform1i(uniforms['uSampler'], 0);
 
     renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 32, 0);
     renderBufferVertex.bindAttribute(attributes['aVertexTextCoord'], 2, 32, 8);
@@ -53,8 +53,8 @@ class RenderProgramTinted extends RenderProgram {
   void renderTextureQuad(RenderState renderState,
       RenderTextureQuad renderTextureQuad, double r, double g, num b, num a) {
     if (renderTextureQuad.hasCustomVertices) {
-      var ixList = renderTextureQuad.ixList;
-      var vxList = renderTextureQuad.vxList;
+      var ixList = renderTextureQuad.ixList!;
+      var vxList = renderTextureQuad.vxList!;
       renderTextureMesh(renderState, ixList, vxList, r, g, b, a);
       return;
     }
@@ -102,7 +102,7 @@ class RenderProgramTinted extends RenderProgram {
     var md1 = vxList[1] * matrix.d;
     var md2 = vxList[9] * matrix.d;
 
-    var colorA = a * alpha;
+    num colorA = a * alpha;
     var colorR = r * colorA;
     var colorG = g * colorA;
     var colorB = b * colorA;
@@ -113,8 +113,8 @@ class RenderProgramTinted extends RenderProgram {
     vxData[vxIndex + 03] = vxList[3];
     vxData[vxIndex + 04] = colorR;
     vxData[vxIndex + 05] = colorG;
-    vxData[vxIndex + 06] = colorB;
-    vxData[vxIndex + 07] = colorA;
+    vxData[vxIndex + 06] = colorB as double;
+    vxData[vxIndex + 07] = colorA as double;
 
     vxData[vxIndex + 08] = ma2 + mc1;
     vxData[vxIndex + 09] = mb2 + md1;
@@ -188,7 +188,7 @@ class RenderProgramTinted extends RenderProgram {
     var mx = matrix.tx;
     var my = matrix.ty;
 
-    var colorA = a * alpha;
+    num colorA = a * alpha;
     var colorR = r * colorA;
     var colorG = g * colorA;
     var colorB = b * colorA;
@@ -196,14 +196,14 @@ class RenderProgramTinted extends RenderProgram {
     for (var i = 0, o = 0; i < vxListCount; i++, o += 4) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-      vxData[vxIndex + 0] = mx + ma * x + mc * y;
+      vxData[vxIndex + 0] = mx + ma * x + mc * (y as double);
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = vxList[o + 2];
       vxData[vxIndex + 3] = vxList[o + 3];
-      vxData[vxIndex + 4] = colorR;
-      vxData[vxIndex + 5] = colorG;
-      vxData[vxIndex + 6] = colorB;
-      vxData[vxIndex + 7] = colorA;
+      vxData[vxIndex + 4] = colorR as double;
+      vxData[vxIndex + 5] = colorG as double;
+      vxData[vxIndex + 6] = colorB as double;
+      vxData[vxIndex + 7] = colorA as double;
       vxIndex += 8;
     }
 

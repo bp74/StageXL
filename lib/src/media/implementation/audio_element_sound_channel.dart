@@ -1,11 +1,11 @@
 part of stagexl.media;
 
 class AudioElementSoundChannel extends SoundChannel {
-  AudioElementSound _audioElementSound;
-  SoundTransform _soundTransform;
-  AudioElement _audioElement;
-  StreamSubscription _volumeChangedSubscription;
-  Timer _completeTimer;
+  AudioElementSound? _audioElementSound;
+  SoundTransform? _soundTransform;
+  AudioElement? _audioElement;
+  StreamSubscription? _volumeChangedSubscription;
+  Timer? _completeTimer;
 
   bool _stopped = false;
   bool _paused = false;
@@ -15,7 +15,7 @@ class AudioElementSoundChannel extends SoundChannel {
   num _position = 0.0;
 
   AudioElementSoundChannel(AudioElementSound audioElementSound, num startTime,
-      num duration, bool loop, SoundTransform soundTransform) {
+      num duration, bool loop, SoundTransform? soundTransform) {
     _soundTransform = soundTransform ?? SoundTransform();
     _audioElementSound = audioElementSound;
     _startTime = startTime.toDouble();
@@ -35,7 +35,7 @@ class AudioElementSoundChannel extends SoundChannel {
   bool get stopped => _stopped;
 
   @override
-  Sound get sound => _audioElementSound;
+  Sound? get sound => _audioElementSound;
 
   //---------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ class AudioElementSoundChannel extends SoundChannel {
     if (_paused || _stopped || _audioElement == null) {
       return _position;
     } else {
-      var currentTime = _audioElement.currentTime;
+      var currentTime = _audioElement!.currentTime;
       return (currentTime - _startTime).clamp(0.0, _duration);
     }
   }
@@ -59,7 +59,7 @@ class AudioElementSoundChannel extends SoundChannel {
     } else {
       _stopCompleteTimer();
       _position = position;
-      _audioElement.currentTime = _startTime + _position;
+      _audioElement!.currentTime = _startTime + _position;
       _startCompleteTimer(_duration - _position);
     }
   }
@@ -81,30 +81,30 @@ class AudioElementSoundChannel extends SoundChannel {
     } else if (value) {
       _position = position;
       _paused = true;
-      _audioElement.pause();
+      _audioElement!.pause();
       _stopCompleteTimer();
     } else {
       _paused = false;
-      _audioElement.currentTime = _startTime + _position;
-      _audioElement.play();
+      _audioElement!.currentTime = _startTime + _position;
+      _audioElement!.play();
       _startCompleteTimer(_duration - _position);
     }
   }
 
   @override
-  SoundTransform get soundTransform {
+  SoundTransform? get soundTransform {
     return _soundTransform;
   }
 
   @override
-  set soundTransform(SoundTransform value) {
+  set soundTransform(SoundTransform? value) {
     _soundTransform = value ?? SoundTransform();
     if (_audioElement == null) {
       // we can't set the audio element
     } else {
-      var volume1 = _soundTransform.volume;
-      var volume2 = SoundMixer._audioElementMixer.volume;
-      _audioElement.volume = volume1 * volume2;
+      var volume1 = _soundTransform!.volume;
+      var volume2 = SoundMixer._audioElementMixer!.volume;
+      _audioElement!.volume = volume1 * volume2;
     }
   }
 
@@ -114,13 +114,13 @@ class AudioElementSoundChannel extends SoundChannel {
   void stop() {
     if (_audioElement != null) {
       _position = position;
-      _audioElement.pause();
-      _audioElement.currentTime = 0;
-      _audioElementSound._releaseAudioElement(_audioElement);
+      _audioElement!.pause();
+      _audioElement!.currentTime = 0;
+      _audioElementSound!._releaseAudioElement(_audioElement!);
       _audioElement = null;
     }
     if (_volumeChangedSubscription != null) {
-      _volumeChangedSubscription.cancel();
+      _volumeChangedSubscription!.cancel();
       _volumeChangedSubscription = null;
     }
     if (_stopped == false) {
@@ -137,15 +137,15 @@ class AudioElementSoundChannel extends SoundChannel {
     var mixer = SoundMixer._audioElementMixer;
 
     if (_stopped) {
-      _audioElementSound._releaseAudioElement(audioElement);
+      _audioElementSound!._releaseAudioElement(audioElement);
     } else {
       _audioElement = audioElement;
-      _audioElement.volume = _soundTransform.volume * mixer.volume;
+      _audioElement!.volume = _soundTransform!.volume * mixer!.volume;
       _volumeChangedSubscription =
           mixer.onVolumeChanged.listen(_onVolumeChanged);
       if (_paused == false) {
-        _audioElement.currentTime = _startTime + _position;
-        _audioElement.play();
+        _audioElement!.currentTime = _startTime + _position;
+        _audioElement!.play();
         _startCompleteTimer(_duration - _position);
       }
     }
@@ -168,8 +168,8 @@ class AudioElementSoundChannel extends SoundChannel {
     if (paused) {
       // called by accident
     } else if (loop) {
-      _audioElement.currentTime = _startTime;
-      _audioElement.play();
+      _audioElement!.currentTime = _startTime;
+      _audioElement!.play();
       _startCompleteTimer(_duration);
     } else {
       stop();
@@ -177,7 +177,7 @@ class AudioElementSoundChannel extends SoundChannel {
   }
 
   void _onVolumeChanged(num volume) {
-    _audioElement.volume = _soundTransform.volume * volume;
+    _audioElement!.volume = _soundTransform!.volume * volume;
   }
 
   void _onAudioEnded() {

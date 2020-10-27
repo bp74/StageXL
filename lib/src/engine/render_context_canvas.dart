@@ -40,13 +40,13 @@ class RenderContextCanvas extends RenderContext {
 
     if (alpha < 255) {
       _renderingContext.clearRect(
-          0, 0, _canvasElement.width, _canvasElement.height);
+          0, 0, _canvasElement.width!, _canvasElement.height!);
     }
 
     if (alpha > 0) {
       _renderingContext.fillStyle = color2rgba(color);
       _renderingContext.fillRect(
-          0, 0, _canvasElement.width, _canvasElement.height);
+          0, 0, _canvasElement.width!, _canvasElement.height!);
     }
   }
 
@@ -58,23 +58,23 @@ class RenderContextCanvas extends RenderContext {
   //---------------------------------------------------------------------------
 
   @override
-  void beginRenderMask(RenderState renderState, RenderMask mask) {
+  void beginRenderMask(RenderState renderState, RenderMask? mask) {
     var matrix = renderState.globalMatrix;
     _renderingContext.setTransform(
         matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     _renderingContext.beginPath();
-    mask.renderMask(renderState);
+    mask!.renderMask(renderState);
     _renderingContext.save();
     _renderingContext.clip();
   }
 
   @override
-  void endRenderMask(RenderState renderState, RenderMask mask) {
+  void endRenderMask(RenderState renderState, RenderMask? mask) {
     _renderingContext.restore();
     _renderingContext.globalAlpha = _activeAlpha;
     _renderingContext.globalCompositeOperation =
         _activeBlendMode.compositeOperation;
-    if (mask.border) {
+    if (mask!.border) {
       _renderingContext.strokeStyle = color2rgba(mask.borderColor);
       _renderingContext.lineWidth = mask.borderWidth;
       _renderingContext.lineCap = 'round';
@@ -87,17 +87,17 @@ class RenderContextCanvas extends RenderContext {
 
   @override
   void renderTextureQuad(
-      RenderState renderState, RenderTextureQuad renderTextureQuad) {
-    if (renderTextureQuad.hasCustomVertices) {
-      var renderTexture = renderTextureQuad.renderTexture;
-      var ixList = renderTextureQuad.ixList;
+      RenderState renderState, RenderTextureQuad? renderTextureQuad) {
+    if (renderTextureQuad!.hasCustomVertices) {
+      var renderTexture = renderTextureQuad.renderTexture!;
+      var ixList = renderTextureQuad.ixList!;
       var vxList = renderTextureQuad.vxList;
       renderTextureMesh(renderState, renderTexture, ixList, vxList);
       return;
     }
 
     var context = _renderingContext;
-    var source = renderTextureQuad.renderTexture.source;
+    var source = renderTextureQuad.renderTexture!.source;
     var rotation = renderTextureQuad.rotation;
     var sourceRect = renderTextureQuad.sourceRectangle;
     var vxList = renderTextureQuad.vxListQuad;
@@ -119,7 +119,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(
           matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(
-          source,
+          source!,
           sourceRect.left,
           sourceRect.top,
           sourceRect.width,
@@ -132,7 +132,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(
           -matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(
-          source,
+          source!,
           sourceRect.left,
           sourceRect.top,
           sourceRect.width,
@@ -145,7 +145,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(
           -matrix.a, -matrix.b, -matrix.c, -matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(
-          source,
+          source!,
           sourceRect.left,
           sourceRect.top,
           sourceRect.width,
@@ -158,7 +158,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(
           matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(
-          source,
+          source!,
           sourceRect.left,
           sourceRect.top,
           sourceRect.width,
@@ -173,10 +173,10 @@ class RenderContextCanvas extends RenderContext {
   //---------------------------------------------------------------------------
 
   @override
-  void renderTextureMesh(RenderState renderState, RenderTexture renderTexture,
-      Int16List ixList, Float32List vxList) {
+  void renderTextureMesh(RenderState renderState, RenderTexture? renderTexture,
+      Int16List ixList, Float32List? vxList) {
     var context = _renderingContext;
-    var source = renderTexture.source;
+    var source = renderTexture!.source;
     var matrix = renderState.globalMatrix;
     var alpha = renderState.globalAlpha;
     var blendMode = renderState.globalBlendMode;
@@ -201,7 +201,7 @@ class RenderContextCanvas extends RenderContext {
       var i2 = ixList[i + 1] << 2;
       var i3 = ixList[i + 2] << 2;
 
-      num x1 = vxList[i1 + 0];
+      num x1 = vxList![i1 + 0];
       num y1 = vxList[i1 + 1];
       num u1 = vxList[i1 + 2];
       num v1 = vxList[i1 + 3];
@@ -238,11 +238,11 @@ class RenderContextCanvas extends RenderContext {
       var mb = id * (v3 * y2 - v2 * y3);
       var mc = id * (u2 * x3 - u3 * x2);
       var md = id * (u2 * y3 - u3 * y2);
-      var mx = x1 - ma * u1 - mc * v1;
-      var my = y1 - mb * u1 - md * v1;
+      num mx = x1 - ma * u1 - mc * v1;
+      num my = y1 - mb * u1 - md * v1;
 
       context.transform(ma * iw, mb * iw, mc * ih, md * ih, mx, my);
-      context.drawImage(source, 0, 0);
+      context.drawImage(source!, 0, 0);
       context.restore();
     }
   }
@@ -338,7 +338,7 @@ class RenderContextCanvas extends RenderContext {
 
   @override
   void renderTextureQuadFiltered(RenderState renderState,
-      RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
+      RenderTextureQuad? renderTextureQuad, List<RenderFilter> renderFilters) {
     // It would be to slow to render filters in real time using the
     // Canvas2D context. This is only feasible with the WebGL context.
     this.renderTextureQuad(renderState, renderTextureQuad);

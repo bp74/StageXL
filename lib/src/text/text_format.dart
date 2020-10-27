@@ -6,7 +6,7 @@ class TextFormat {
   int color;
   num strokeWidth;
   int strokeColor;
-  GraphicsGradient fillGradient;
+  GraphicsGradient? fillGradient;
 
   int weight;
   bool bold;

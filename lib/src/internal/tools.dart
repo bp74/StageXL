@@ -66,7 +66,7 @@ int clampInt(int value, int lower, int upper) {
 
 //-----------------------------------------------------------------------------
 
-bool ensureBool(bool value) {
+bool ensureBool(bool? value) {
   if (value is bool) {
     return value;
   } else {
@@ -74,7 +74,7 @@ bool ensureBool(bool value) {
   }
 }
 
-int ensureInt(int value) {
+int ensureInt(int? value) {
   if (value is int) {
     return value;
   } else {
@@ -106,17 +106,17 @@ bool similar(num a, num b, [num epsilon = 0.0001]) {
 
 //-----------------------------------------------------------------------------
 
-String getFilenameWithoutExtension(String filename) {
+String? getFilenameWithoutExtension(String filename) {
   var regex = RegExp(r'(.+?)(\.[^.]*$|$)');
-  var match = regex.firstMatch(filename);
+  var match = regex.firstMatch(filename)!;
   return match.group(1);
 }
 
 //-----------------------------------------------------------------------------
 
-String replaceFilename(String url, String filename) {
+String? replaceFilename(String url, String? filename) {
   var regex = RegExp(r'^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))');
-  var match = regex.firstMatch(url);
+  var match = regex.firstMatch(url)!;
   var path = match.group(1);
   return (path == null) ? filename : '$path$filename';
 }

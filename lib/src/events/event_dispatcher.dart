@@ -27,7 +27,7 @@ part of stagexl.events;
 /// can instead use the [EventDispatcher] as a mixin.
 
 class EventDispatcher {
-  Map<String, EventStream<Event>> _eventStreams;
+  Map<String, EventStream<Event>>? _eventStreams;
 
   //----------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ class EventDispatcher {
       _eventStreams = eventStreams;
     }
 
-    EventStream<T> eventStream = eventStreams[eventType];
+    var eventStream = eventStreams[eventType] as EventStream<T>?;
     if (eventStream == null) {
       eventStream = EventStream<T>._(this, eventType);
       eventStreams[eventType] = eventStream;
@@ -61,10 +61,10 @@ class EventDispatcher {
   /// [useCapture] paramenter defines if the event listeners should be
   /// registered for the capturing event phase or not.
 
-  bool hasEventListener(String eventType, {bool useCapture = false}) {
+  bool hasEventListener(String? eventType, {bool useCapture = false}) {
     var eventStreams = _eventStreams;
     if (eventStreams == null) return false;
-    var eventStream = eventStreams[eventType];
+    var eventStream = eventStreams[eventType!];
     if (eventStream == null) return false;
 
     return useCapture
@@ -147,7 +147,7 @@ class EventDispatcher {
 
     var eventStreams = _eventStreams;
     if (eventStreams == null) return;
-    var eventStream = eventStreams[event.type];
+    var eventStream = eventStreams[event.type!];
     if (eventStream == null) return;
 
     eventStream._dispatchEventInternal(event, target, eventPhase);

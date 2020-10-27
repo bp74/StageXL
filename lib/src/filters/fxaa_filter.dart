@@ -26,7 +26,7 @@ class FxaaFilter extends BitmapFilter {
   //----------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     // not supported with BitmapDatas
   }
 
@@ -34,9 +34,9 @@ class FxaaFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    RenderContextWebGL renderContext = renderState.renderContext;
-    var renderTexture = renderTextureQuad.renderTexture;
+      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
+    var renderContext = renderState.renderContext as RenderContextWebGL;
+    var renderTexture = renderTextureQuad!.renderTexture!;
 
     var renderProgram = renderContext.getRenderProgram(
         r'$FxaaFilterProgram', () => FxaaFilterProgram());
@@ -144,6 +144,6 @@ class FxaaFilterProgram extends RenderProgramSimple {
   void configure(num textureWidth, num textureHeight) {
     var texelX = 1.0 / textureWidth;
     var texelY = 1.0 / textureHeight;
-    renderingContext.uniform2f(uniforms['uTexel'], texelX, texelY);
+    renderingContext!.uniform2f(uniforms['uTexel'], texelX, texelY);
   }
 }

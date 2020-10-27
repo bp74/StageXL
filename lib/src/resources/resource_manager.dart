@@ -52,7 +52,7 @@ class ResourceManager {
     return _containsResource('BitmapData', name);
   }
 
-  void addBitmapData(String name, String url, [BitmapDataLoadOptions options]) {
+  void addBitmapData(String name, String url, [BitmapDataLoadOptions? options]) {
     var loader = BitmapData.load(url, options);
     _addResource('BitmapData', name, url, loader);
   }
@@ -61,12 +61,12 @@ class ResourceManager {
     var resourceManagerResource = _removeResource('BitmapData', name);
     var bitmapData = resourceManagerResource?.value;
     if (bitmapData is BitmapData && dispose) {
-      bitmapData.renderTexture.dispose();
+      bitmapData.renderTexture!.dispose();
     }
   }
 
-  BitmapData getBitmapData(String name) =>
-      _getResourceValue('BitmapData', name) as BitmapData;
+  BitmapData? getBitmapData(String name) =>
+      _getResourceValue('BitmapData', name) as BitmapData?;
 
   //----------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ class ResourceManager {
 
   void addTextureAtlas(String name, String url,
       [TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-      BitmapDataLoadOptions options]) {
+      BitmapDataLoadOptions? options]) {
     var loader = TextureAtlas.load(url, textureAtlasFormat, options);
     _addResource('TextureAtlas', name, url, loader);
   }
@@ -86,13 +86,13 @@ class ResourceManager {
     var textureAtlas = resourceManagerResource?.value;
     if (textureAtlas is TextureAtlas && dispose) {
       for (var textureAtlasFrame in textureAtlas.frames) {
-        textureAtlasFrame.bitmapData.renderTexture.dispose();
+        textureAtlasFrame.bitmapData!.renderTexture!.dispose();
       }
     }
   }
 
-  TextureAtlas getTextureAtlas(String name) {
-    return _getResourceValue('TextureAtlas', name) as TextureAtlas;
+  TextureAtlas? getTextureAtlas(String name) {
+    return _getResourceValue('TextureAtlas', name) as TextureAtlas?;
   }
 
   //----------------------------------------------------------------------------
@@ -101,7 +101,7 @@ class ResourceManager {
     return _containsResource('Video', name);
   }
 
-  void addVideo(String name, String url, [VideoLoadOptions options]) {
+  void addVideo(String name, String url, [VideoLoadOptions? options]) {
     var loader = Video.load(url, options);
     _addResource('Video', name, url, loader);
   }
@@ -110,8 +110,8 @@ class ResourceManager {
     _removeResource('Video', name);
   }
 
-  Video getVideo(String name) {
-    return _getResourceValue('Video', name) as Video;
+  Video? getVideo(String name) {
+    return _getResourceValue('Video', name) as Video?;
   }
 
   //----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ class ResourceManager {
     return _containsResource('Sound', name);
   }
 
-  void addSound(String name, String url, [SoundLoadOptions options]) {
+  void addSound(String name, String url, [SoundLoadOptions? options]) {
     var loader = Sound.load(url, options);
     _addResource('Sound', name, url, loader);
   }
@@ -129,8 +129,8 @@ class ResourceManager {
     _removeResource('Sound', name);
   }
 
-  Sound getSound(String name) {
-    return _getResourceValue('Sound', name) as Sound;
+  Sound? getSound(String name) {
+    return _getResourceValue('Sound', name) as Sound?;
   }
 
   //----------------------------------------------------------------------------
@@ -139,7 +139,7 @@ class ResourceManager {
     return _containsResource('SoundSprite', name);
   }
 
-  void addSoundSprite(String name, String url, [SoundLoadOptions options]) {
+  void addSoundSprite(String name, String url, [SoundLoadOptions? options]) {
     var loader = SoundSprite.load(url, options);
     _addResource('SoundSprite', name, url, loader);
   }
@@ -148,8 +148,8 @@ class ResourceManager {
     _removeResource('SoundSprite', name);
   }
 
-  SoundSprite getSoundSprite(String name) {
-    return _getResourceValue('SoundSprite', name) as SoundSprite;
+  SoundSprite? getSoundSprite(String name) {
+    return _getResourceValue('SoundSprite', name) as SoundSprite?;
   }
 
   //----------------------------------------------------------------------------
@@ -166,8 +166,8 @@ class ResourceManager {
     _removeResource('Text', name);
   }
 
-  String getText(String name) {
-    return _getResourceValue('Text', name) as String;
+  String? getText(String name) {
+    return _getResourceValue('Text', name) as String?;
   }
 
   //----------------------------------------------------------------------------
@@ -178,7 +178,7 @@ class ResourceManager {
 
   void addTextFile(String name, String url) {
     var loader =
-        HttpRequest.getString(url).then((text) => text, onError: (error) {
+        HttpRequest.getString(url).then(((text) => text) as FutureOr<String> Function(String), onError: (error) {
       throw StateError('Failed to load text file.');
     });
     _addResource('TextFile', name, url, loader);
@@ -188,8 +188,8 @@ class ResourceManager {
     _removeResource('TextFile', name);
   }
 
-  String getTextFile(String name) {
-    return _getResourceValue('TextFile', name) as String;
+  String? getTextFile(String name) {
+    return _getResourceValue('TextFile', name) as String?;
   }
 
   //----------------------------------------------------------------------------
@@ -217,7 +217,7 @@ class ResourceManager {
     return _resourceMap.containsKey(key);
   }
 
-  ResourceManagerResource _removeResource(String kind, String name) {
+  ResourceManagerResource? _removeResource(String kind, String name) {
     var key = '$kind.$name';
     return _resourceMap.remove(key);
   }

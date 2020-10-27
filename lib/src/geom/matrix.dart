@@ -42,8 +42,8 @@ class Matrix {
     var b = -this.b / det;
     var c = -this.c / det;
     var d = this.a / det;
-    var tx = -this.tx * a - this.ty * c;
-    var ty = -this.tx * b - this.ty * d;
+    num tx = -this.tx * a - this.ty * c;
+    num ty = -this.tx * b - this.ty * d;
 
     return Matrix(a, b, c, d, tx, ty);
   }
@@ -101,7 +101,7 @@ class Matrix {
   }
 
   Point<num> deltaTransformPoint(math.Point<num> point,
-      [Point<num> returnPoint]) {
+      [Point<num>? returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
     var tx = px * a + py * c;
@@ -117,7 +117,7 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
-  Point<num> transformPoint(math.Point<num> point, [Point<num> returnPoint]) {
+  Point<num> transformPoint(math.Point<num> point, [Point<num>? returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
     var tx = px * a + py * c + this.tx;
@@ -132,7 +132,7 @@ class Matrix {
   }
 
   Point<num> transformPointInverse(math.Point<num> point,
-      [Point<num> returnPoint]) {
+      [Point<num>? returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
     var tx = (d * (px - this.tx) - c * (py - this.ty)) / det;
@@ -149,7 +149,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle<num> transformRectangle(math.Rectangle<num> rectangle,
-      [Rectangle<num> returnRectangle]) {
+      [Rectangle<num>? returnRectangle]) {
     num rl = rectangle.left.toDouble();
     num rr = rectangle.right.toDouble();
     num rt = rectangle.top.toDouble();
@@ -286,8 +286,8 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void scale(num scaleX, num scaleY) {
-    _data[0] = a * scaleX;
-    _data[1] = b * scaleY;
+    _data[0] = a * (scaleX as double);
+    _data[1] = b * (scaleY as double);
     _data[2] = c * scaleX;
     _data[3] = d * scaleY;
     _data[4] = tx * scaleX;
@@ -297,13 +297,13 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void translate(num translationX, num translationY) {
-    _data[4] = tx + translationX;
-    _data[5] = ty + translationY;
+    _data[4] = tx + (translationX as double);
+    _data[5] = ty + (translationY as double);
   }
 
   void prependTranslation(num translationX, num translationY) {
-    _data[4] = translationX * a + translationY * c + tx;
-    _data[5] = translationX * b + translationY * d + ty;
+    _data[4] = translationX * a + translationY * c + (tx as double);
+    _data[5] = translationX * b + translationY * d + (ty as double);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -320,12 +320,12 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void copyFrom(Matrix matrix) {
-    _data[0] = matrix.a;
-    _data[1] = matrix.b;
-    _data[2] = matrix.c;
-    _data[3] = matrix.d;
-    _data[4] = matrix.tx;
-    _data[5] = matrix.ty;
+    _data[0] = matrix.a as double;
+    _data[1] = matrix.b as double;
+    _data[2] = matrix.c as double;
+    _data[3] = matrix.d as double;
+    _data[4] = matrix.tx as double;
+    _data[5] = matrix.ty as double;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -353,8 +353,8 @@ class Matrix {
     var tx2 = concatMatrix.tx;
     var ty2 = concatMatrix.ty;
 
-    _data[0] = a1 * a2 + b1 * c2;
-    _data[1] = a1 * b2 + b1 * d2;
+    _data[0] = a1 * a2 + b1 * (c2 as double);
+    _data[1] = a1 * b2 + b1 * (d2 as double);
     _data[2] = c1 * a2 + d1 * c2;
     _data[3] = c1 * b2 + d1 * d2;
     _data[4] = tx1 * a2 + ty1 * c2 + tx2;
@@ -369,8 +369,8 @@ class Matrix {
     var b1 = -b / det;
     var c1 = -c / det;
     var d1 = a / det;
-    var tx1 = -tx * a1 - ty * c1;
-    var ty1 = -tx * b1 - ty * d1;
+    num tx1 = -tx * a1 - ty * c1;
+    num ty1 = -tx * b1 - ty * d1;
 
     var a2 = concatMatrix.a;
     var b2 = concatMatrix.b;
@@ -383,8 +383,8 @@ class Matrix {
     _data[1] = a1 * b2 + b1 * d2;
     _data[2] = c1 * a2 + d1 * c2;
     _data[3] = c1 * b2 + d1 * d2;
-    _data[4] = tx1 * a2 + ty1 * c2 + tx2;
-    _data[5] = tx1 * b2 + ty1 * d2 + ty2;
+    _data[4] = tx1 * a2 + ty1 * c2 + (tx2 as double);
+    _data[5] = tx1 * b2 + ty1 * d2 + (ty2 as double);
   }
 
   //-------------------------------------------------------------------------------------------------

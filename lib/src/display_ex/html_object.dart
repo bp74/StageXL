@@ -35,7 +35,7 @@ part of stagexl.display_ex;
 class HtmlObject extends DisplayObject {
   final Element element;
 
-  CssStyleDeclaration _style;
+  late final CssStyleDeclaration _style;
   String _styleOpacity = '';
   String _styleTransform = '';
   String _styleVisibility = '';

@@ -172,8 +172,8 @@ class Polygon {
     var depth = 0;
 
     for (var i = 0; i < points.length; i++) {
-      ax = bx;
-      ay = by;
+      ax = bx as int;
+      ay = by as int;
       bx = points[i].x - px;
       by = points[i].y - py;
 
@@ -205,7 +205,7 @@ class Polygon {
 
   //-----------------------------------------------------------------------------------------------
 
-  Point<num> _getLineIntersection(
+  Point<num>? _getLineIntersection(
       Point<num> a1, Point<num> a2, Point<num> b1, Point<num> b2) {
     var dax = (a1.x - a2.x);
     var dbx = (b1.x - b2.x);
@@ -249,8 +249,8 @@ class Polygon {
     var dot12 = v1x * v2x + v1y * v2y;
 
     var invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-    var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-    var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+    num u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    num v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
     return (u >= 0) && (v >= 0) && (u + v < 1);
   }

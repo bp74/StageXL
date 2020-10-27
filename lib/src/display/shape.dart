@@ -14,22 +14,19 @@ part of stagexl.display;
 class Shape extends DisplayObject {
   /// Specifies the graphics object belonging to this Shape object, where vector
   /// drawing commands can occur.
-  Graphics graphics = Graphics();
+  var graphics = Graphics();
 
   @override
-  Rectangle<num> get bounds {
-    return graphics != null ? graphics.bounds : super.bounds;
-  }
+  Rectangle<num> get bounds => graphics.bounds;
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
-    if (graphics == null) return null;
+  DisplayObject? hitTestInput(num localX, num localY) {
     if (graphics.hitTest(localX, localY)) return this;
     return null;
   }
 
   @override
   void render(RenderState renderState) {
-    if (graphics != null) graphics.render(renderState);
+    graphics.render(renderState);
   }
 }

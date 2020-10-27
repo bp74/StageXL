@@ -37,7 +37,7 @@ class SoundLoadOptions {
   /// browser. If this value is null, the alternative urls are calculated
   /// automatically based on the mp3, mp4, ogg, opus, ac3 and wav properties.
 
-  List<String> alternativeUrls;
+  List<String?>? alternativeUrls;
 
   /// Ignore loading errors and use a silent audio sample instead.
 
@@ -50,7 +50,7 @@ class SoundLoadOptions {
 
   /// Ignore the [SoundMixer.engine] and use this sound engine instead.
 
-  SoundEngine engine;
+  SoundEngine? engine;
 
   //---------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ class SoundLoadOptions {
   /// Determine which audio files are the most likely to play smoothly,
   /// based on the supported types and formats available.
 
-  List<String> getOptimalAudioUrls(String primaryUrl) {
+  List<String?> getOptimalAudioUrls(String primaryUrl) {
     var availableTypes = AudioLoader.supportedTypes.toList();
     if (!mp3) availableTypes.remove('mp3');
     if (!mp4) availableTypes.remove('mp4');
@@ -86,7 +86,7 @@ class SoundLoadOptions {
     if (!ac3) availableTypes.remove('ac3');
     if (!wav) availableTypes.remove('wav');
 
-    var urls = <String>[];
+    var urls = <String?>[];
     var regex =
         RegExp(r'([A-Za-z0-9]+)$', multiLine: false, caseSensitive: true);
     var primaryMatch = regex.firstMatch(primaryUrl);
@@ -94,8 +94,8 @@ class SoundLoadOptions {
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
 
     if (alternativeUrls != null) {
-      for (var alternativeUrl in alternativeUrls) {
-        var alternativeMatch = regex.firstMatch(alternativeUrl);
+      for (var alternativeUrl in alternativeUrls!) {
+        var alternativeMatch = regex.firstMatch(alternativeUrl!);
         if (alternativeMatch == null) continue;
         if (availableTypes.contains(alternativeMatch.group(1))) {
           urls.add(alternativeUrl);

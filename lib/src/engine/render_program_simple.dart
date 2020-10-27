@@ -41,7 +41,7 @@ class RenderProgramSimple extends RenderProgram {
   void activate(RenderContextWebGL renderContext) {
     super.activate(renderContext);
 
-    renderingContext.uniform1i(uniforms['uSampler'], 0);
+    renderingContext!.uniform1i(uniforms['uSampler'], 0);
 
     renderBufferVertex.bindAttribute(attributes['aVertexPosition'], 2, 20, 0);
     renderBufferVertex.bindAttribute(attributes['aVertexTextCoord'], 2, 20, 8);
@@ -53,8 +53,8 @@ class RenderProgramSimple extends RenderProgram {
   void renderTextureQuad(
       RenderState renderState, RenderTextureQuad renderTextureQuad) {
     if (renderTextureQuad.hasCustomVertices) {
-      var ixList = renderTextureQuad.ixList;
-      var vxList = renderTextureQuad.vxList;
+      var ixList = renderTextureQuad.ixList!;
+      var vxList = renderTextureQuad.vxList!;
       renderTextureMesh(renderState, ixList, vxList);
       return;
     }
@@ -174,7 +174,7 @@ class RenderProgramSimple extends RenderProgram {
     for (var i = 0, o = 0; i < vxListCount; i++, o += 4) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-      vxData[vxIndex + 0] = mx + ma * x + mc * y;
+      vxData[vxIndex + 0] = mx + ma * x + mc * (y as double);
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = vxList[o + 2];
       vxData[vxIndex + 3] = vxList[o + 3];
@@ -237,7 +237,7 @@ class RenderProgramSimple extends RenderProgram {
     for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
       num x = vxList[o + 0];
       num y = vxList[o + 1];
-      vxData[vxIndex + 0] = mx + ma * x + mc * y;
+      vxData[vxIndex + 0] = mx + ma * x + mc * (y as double);
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = tx + ta * x + tc * y;
       vxData[vxIndex + 3] = ty + tb * x + td * y;

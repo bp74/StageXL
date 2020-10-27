@@ -9,9 +9,9 @@ import '../internal/filter_helpers.dart';
 import '../internal/tools.dart';
 
 class BlurFilter extends BitmapFilter {
-  int _blurX;
-  int _blurY;
-  int _quality;
+  late int _blurX;
+  late int _blurY;
+  late int _quality;
 
   final List<int> _renderPassSources = <int>[];
   final List<int> _renderPassTargets = <int>[];
@@ -89,7 +89,7 @@ class BlurFilter extends BitmapFilter {
   //---------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -99,7 +99,7 @@ class BlurFilter extends BitmapFilter {
     var width = ensureInt(imageData.width);
     var height = ensureInt(imageData.height);
 
-    var pixelRatio = renderTextureQuad.pixelRatio;
+    var pixelRatio = renderTextureQuad.pixelRatio!;
     var blurX = (this.blurX * pixelRatio).round();
     var blurY = (this.blurY * pixelRatio).round();
     var stride = width * 4;
@@ -129,9 +129,9 @@ class BlurFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    var renderTexture = renderTextureQuad!.renderTexture;
     var passCount = _renderPassSources.length;
     var passScale = pow(0.5, pass >> 1);
     var pixelRatio = sqrt(renderState.globalMatrix.det.abs());
@@ -145,8 +145,8 @@ class BlurFilter extends BitmapFilter {
 
     renderProgram.configure(
         pass == passCount - 1 ? renderState.globalAlpha : 1.0,
-        pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
-        pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);
+        pass.isEven ? pixelRatioScale * blurX / renderTexture!.width : 0.0,
+        pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture!.height);
 
     renderProgram.renderTextureQuad(renderState, renderTextureQuad);
     renderProgram.flush();
@@ -206,7 +206,7 @@ class BlurFilterProgram extends RenderProgramSimple {
   //---------------------------------------------------------------------------
 
   void configure(num alpha, num radiusX, num radiusY) {
-    renderingContext.uniform1f(uniforms['uAlpha'], alpha);
-    renderingContext.uniform2f(uniforms['uRadius'], radiusX, radiusY);
+    renderingContext!.uniform1f(uniforms['uAlpha'], alpha);
+    renderingContext!.uniform2f(uniforms['uRadius'], radiusX, radiusY);
   }
 }

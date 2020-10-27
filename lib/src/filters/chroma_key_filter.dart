@@ -29,12 +29,12 @@ import '../internal/tools.dart';
 ///
 
 class ChromaKeyFilter extends BitmapFilter {
-  int _backgroundColor;
-  int _solidThreshold;
-  int _invisibleThreshold;
+  int? _backgroundColor;
+  late int _solidThreshold;
+  late int _invisibleThreshold;
 
   ChromaKeyFilter(
-      {int backgroundColor = 0xFF00FF00,
+      {int? backgroundColor = 0xFF00FF00,
       int solidThreshold = 140,
       int invisibleThreshold = 20}) {
     if (invisibleThreshold < 0) {
@@ -50,11 +50,11 @@ class ChromaKeyFilter extends BitmapFilter {
     _invisibleThreshold = invisibleThreshold;
   }
 
-  int get backgroundColor => _backgroundColor;
+  int? get backgroundColor => _backgroundColor;
   int get solidThreshold => _solidThreshold;
   int get invisibleThreshold => _invisibleThreshold;
 
-  set backgroundColor(int backgroundColor) {
+  set backgroundColor(int? backgroundColor) {
     _backgroundColor = backgroundColor;
   }
 
@@ -82,7 +82,7 @@ class ChromaKeyFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -96,9 +96,9 @@ class ChromaKeyFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    var renderTexture = renderTextureQuad!.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(
         r'$ChromaKeyFilterProgram', () => ChromaKeyFilterProgram());
@@ -106,7 +106,7 @@ class ChromaKeyFilter extends BitmapFilter {
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
     renderProgram.configure(
-        backgroundColor, solidThreshold, invisibleThreshold);
+        backgroundColor!, solidThreshold, invisibleThreshold);
     renderProgram.renderTextureQuad(renderState, renderTextureQuad);
     renderProgram.flush();
   }
@@ -184,16 +184,16 @@ class ChromaKeyFilterProgram extends RenderProgramSimple {
     num g = colorGetG(backgroundColor) / 255.0;
     num b = colorGetB(backgroundColor) / 255.0;
 
-    renderingContext.uniform4f(uniforms['backgroundColor'], r, g, b, 1.0);
+    renderingContext!.uniform4f(uniforms['backgroundColor'], r, g, b, 1.0);
 
-    renderingContext.uniform1f(
+    renderingContext!.uniform1f(
         uniforms['solidThreshold'], solidThreshold / 255.0);
-    renderingContext.uniform1f(
+    renderingContext!.uniform1f(
         uniforms['invisibleThreshold'], invisibleThreshold / 255.0);
 
     // this affect the color correction on semi transparent pixel,
     // for now not public it is quite experimental
 
-    renderingContext.uniform1f(uniforms['weight'], 0.8);
+    renderingContext!.uniform1f(uniforms['weight'], 0.8);
   }
 }
