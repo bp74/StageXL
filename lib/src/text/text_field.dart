@@ -39,9 +39,8 @@ class TextField extends InteractiveObject {
 
   //-------------------------------------------------------------------------------------------------
 
-  TextField([String? text = '', TextFormat? textFormat]) {
-    defaultTextFormat =
-        (textFormat != null) ? textFormat : TextFormat('Arial', 12, 0x000000);
+  TextField([String text = '', TextFormat? textFormat]) : _text = text {
+    defaultTextFormat = textFormat ?? TextFormat('Arial', 12, 0x000000);
 
     onKeyDown.listen(_onKeyDown);
     onTextInput.listen(_onTextInput);
