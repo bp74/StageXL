@@ -45,52 +45,52 @@ class CanvasShadowWrapper extends DisplayObject {
   }
 
   @override
-  set x(num? value) {
+  set x(num value) {
     _throwUnsupportedError();
   }
 
   @override
-  set y(num? value) {
+  set y(num value) {
     _throwUnsupportedError();
   }
 
   @override
-  set pivotX(num? value) {
+  set pivotX(num value) {
     _throwUnsupportedError();
   }
 
   @override
-  set pivotY(num? value) {
+  set pivotY(num value) {
     _throwUnsupportedError();
   }
 
   @override
-  set scaleX(num? value) {
+  set scaleX(num value) {
     _throwUnsupportedError();
   }
 
   @override
-  set scaleY(num? value) {
+  set scaleY(num value) {
     _throwUnsupportedError();
   }
 
   @override
-  set skewX(num? value) {
+  set skewX(num value) {
     _throwUnsupportedError();
   }
 
   @override
-  set skewY(num? value) {
+  set skewY(num value) {
     _throwUnsupportedError();
   }
 
   @override
-  set rotation(num? value) {
+  set rotation(num value) {
     _throwUnsupportedError();
   }
 
   @override
-  set alpha(num? value) {
+  set alpha(num value) {
     _throwUnsupportedError();
   }
 
