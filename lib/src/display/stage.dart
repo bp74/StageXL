@@ -56,7 +56,7 @@ class Stage extends DisplayObjectContainer {
   late CanvasElement _canvas;
   late final RenderContext _renderContext;
   RenderLoop? _renderLoop;
-  StageConsole? _console;
+  late final StageConsole _console;
 
   int _sourceWidth = 0;
   int _sourceHeight = 0;
@@ -215,7 +215,7 @@ class Stage extends DisplayObjectContainer {
   /// Gets the [StageConsole] to show render information about the previous
   /// frame as well as other custom information.
 
-  StageConsole? get console => _console;
+  StageConsole get console => _console;
 
   /// Gets the last known mouse position in Stage coordinates.
 
@@ -412,17 +412,17 @@ class Stage extends DisplayObjectContainer {
       _avgIdexCount = _avgIdexCount * 0.75 + stats.indexCount * 0.25;
       _avgFrameTime = _avgFrameTime * 0.95 + frameTime * 0.05;
 
-      if (_console!.visible && _console!.off == false) {
-        _console!.clear();
-        _console!
+      if (_console.visible && _console.off == false) {
+        _console.clear();
+        _console
             .print('FRAMETIME${_avgFrameTime.round().toString().padLeft(6)}');
-        _console!
+        _console
             .print('DRAWCALLS${_avgDrawCalls.round().toString().padLeft(6)}');
-        _console!
+        _console
             .print('VERTICES${_avgVertexCount.round().toString().padLeft(7)}');
-        _console!.print('INDICES${_avgIdexCount.round().toString().padLeft(8)}');
+        _console.print('INDICES${_avgIdexCount.round().toString().padLeft(8)}');
         _renderState.reset(_consoleTransformation);
-        _renderState.renderObject(_console!);
+        _renderState.renderObject(_console);
         _renderState.flush();
       }
     }
