@@ -3,7 +3,7 @@ part of stagexl.resources;
 class TextureAtlasFrame {
   final TextureAtlas textureAtlas;
   final RenderTextureQuad? textureAtlasQuad;
-  final String? name;
+  final String name;
   final int rotation;
 
   final int offsetX;
@@ -19,7 +19,7 @@ class TextureAtlasFrame {
   final Float32List? vxList;
   final Int16List? ixList;
 
-  BitmapData? _bitmapData;
+  late final BitmapData _bitmapData;
 
   //---------------------------------------------------------------------------
 
@@ -53,5 +53,5 @@ class TextureAtlasFrame {
 
   //---------------------------------------------------------------------------
 
-  BitmapData? get bitmapData => _bitmapData;
+  BitmapData get bitmapData => _bitmapData;
 }

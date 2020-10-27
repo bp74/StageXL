@@ -12,7 +12,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     var json = jsonDecode(source);
     var frames = json['frames'];
     var meta = json['meta'] as Map;
-    var image = meta['image'] as String?;
+    var image = meta['image'] as String;
     var renderTextureQuad = await loader.getRenderTextureQuad(image);
 
     if (frames is List) {
@@ -42,7 +42,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
   void _createFrame(
       TextureAtlas textureAtlas,
       RenderTextureQuad renderTextureQuad,
-      String? frameName,
+      String frameName,
       Map frameMap,
       Map metaMap) {
     var rotation = ensureBool(frameMap['rotated'] as bool?) ? 1 : 0;

@@ -86,7 +86,7 @@ class ResourceManager {
     var textureAtlas = resourceManagerResource?.value;
     if (textureAtlas is TextureAtlas && dispose) {
       for (var textureAtlasFrame in textureAtlas.frames) {
-        textureAtlasFrame.bitmapData!.renderTexture.dispose();
+        textureAtlasFrame.bitmapData.renderTexture.dispose();
       }
     }
   }

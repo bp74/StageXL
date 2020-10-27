@@ -106,10 +106,10 @@ bool similar(num a, num b, [num epsilon = 0.0001]) {
 
 //-----------------------------------------------------------------------------
 
-String? getFilenameWithoutExtension(String filename) {
+String getFilenameWithoutExtension(String filename) {
   var regex = RegExp(r'(.+?)(\.[^.]*$|$)');
   var match = regex.firstMatch(filename)!;
-  return match.group(1);
+  return match.group(1)!;
 }
 
 //-----------------------------------------------------------------------------

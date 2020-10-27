@@ -13,7 +13,7 @@ abstract class TextureAtlasLoader {
   Future<String> getSource();
 
   /// Get the RenderTextureQuad for the texture atlas.
-  Future<RenderTextureQuad> getRenderTextureQuad(String? filename);
+  Future<RenderTextureQuad> getRenderTextureQuad(String filename);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -67,9 +67,9 @@ class _TextureAtlasLoaderTextureAtlas extends TextureAtlasLoader {
   Future<String> getSource() => Future.value(source);
 
   @override
-  Future<RenderTextureQuad> getRenderTextureQuad(String? filename) async {
-    var name = namePrefix + getFilenameWithoutExtension(filename!)!;
-    var bitmapData = textureAtlas.getBitmapData(name)!;
+  Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
+    var name = namePrefix + getFilenameWithoutExtension(filename);
+    var bitmapData = textureAtlas.getBitmapData(name);
     return bitmapData.renderTextureQuad;
   }
 }
