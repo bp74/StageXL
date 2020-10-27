@@ -155,8 +155,8 @@ abstract class _GraphicsMeshSegment {
     var invWidth = 1.0 / texture.width;
     var invHeight = 1.0 / texture.height;
 
-    texture.wrappingX = pattern.type!.wrappingX;
-    texture.wrappingY = pattern.type!.wrappingY;
+    texture.wrappingX = pattern.type.wrappingX;
+    texture.wrappingY = pattern.type.wrappingY;
 
     if (pattern.matrix != null) {
       matrix.copyFromAndInvert(pattern.matrix!);

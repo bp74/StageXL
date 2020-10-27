@@ -23,8 +23,8 @@ class GraphicsPatternType {
 //------------------------------------------------------------------------------
 
 class _CanvasPatternKey {
-  final RenderTextureQuad? renderTextureQuad;
-  final GraphicsPatternType? type;
+  final RenderTextureQuad renderTextureQuad;
+  final GraphicsPatternType type;
 
   _CanvasPatternKey(this.renderTextureQuad, this.type);
 
@@ -57,16 +57,13 @@ class GraphicsPattern {
   /// cached by both the canvas2D and the webgl renderer
   RenderTexture? _patternTexture;
 
-  RenderTextureQuad? _renderTextureQuad;
-  GraphicsPatternType? _type;
+  RenderTextureQuad _renderTextureQuad;
+  GraphicsPatternType _type;
   Matrix? _matrix;
 
   GraphicsPattern(RenderTextureQuad renderTextureQuad, GraphicsPatternType type,
-      [Matrix? matrix]) {
-    _renderTextureQuad = renderTextureQuad;
-    _matrix = matrix;
-    _type = type;
-  }
+      [Matrix? matrix])
+      : _renderTextureQuad = renderTextureQuad, _matrix = matrix, _type = type;
 
   GraphicsPattern.repeat(RenderTextureQuad renderTextureQuad, [Matrix? matrix])
       : this(renderTextureQuad, GraphicsPatternType.Repeat, matrix);
@@ -82,9 +79,9 @@ class GraphicsPattern {
 
   //----------------------------------------------------------------------------
 
-  GraphicsPatternType? get type => _type;
+  GraphicsPatternType get type => _type;
 
-  set type(GraphicsPatternType? value) {
+  set type(GraphicsPatternType value) {
     disposeCachedRenderObjects(false);
     _type = value;
   }
@@ -95,12 +92,12 @@ class GraphicsPattern {
     _matrix = value;
   }
 
-  RenderTextureQuad? get renderTextureQuad {
+  RenderTextureQuad get renderTextureQuad {
     disposeCachedRenderObjects(true);
     return _renderTextureQuad;
   }
 
-  set renderTextureQuad(RenderTextureQuad? texture) {
+  set renderTextureQuad(RenderTextureQuad texture) {
     disposeCachedRenderObjects(true);
     _renderTextureQuad = texture;
   }
@@ -112,14 +109,14 @@ class GraphicsPattern {
     _canvasPatternCache.releaseObject(cacheKey);
     _canvasPattern = null;
     if (patternTextureChanged && _patternTexture != null) {
-      if (_patternTexture != _renderTextureQuad!.renderTexture) {
+      if (_patternTexture != _renderTextureQuad.renderTexture) {
         _patternTextureCache.releaseObject(_renderTextureQuad);
       }
       _patternTexture = null;
     }
   }
 
-  CanvasPattern? getCanvasPattern(CanvasRenderingContext2D context) {
+  CanvasPattern getCanvasPattern(CanvasRenderingContext2D context) {
     // try to get the canvasPattern from the cache
     if (_canvasPattern == null) {
       var cacheKey = _CanvasPatternKey(_renderTextureQuad, _type);
@@ -130,29 +127,27 @@ class GraphicsPattern {
     if (_canvasPattern == null) {
       var cacheKey = _CanvasPatternKey(_renderTextureQuad, _type);
       _canvasPattern =
-          context.createPattern(patternTexture!.source!, _type!.value);
+          context.createPattern(patternTexture!.source!, _type.value);
       _canvasPatternCache.addObject(cacheKey, _canvasPattern);
     }
 
-    return _canvasPattern;
+    return _canvasPattern!;
   }
 
   RenderTexture? get patternTexture {
     // try to get the patternTexture from the texture cache
-    if (_patternTexture == null && _renderTextureQuad != null) {
-      _patternTexture = _patternTextureCache.getObject(_renderTextureQuad);
-    }
+    _patternTexture ??= _patternTextureCache.getObject(_renderTextureQuad);
 
     // try to use the original texture as patternTexture
-    if (_patternTexture == null && _renderTextureQuad!.isEquivalentToSource) {
-      _patternTexture = _renderTextureQuad!.renderTexture;
+    if (_patternTexture == null && _renderTextureQuad.isEquivalentToSource) {
+      _patternTexture = _renderTextureQuad.renderTexture;
     }
 
     // clone the original texture to get the patternTexture
     if (_patternTexture == null) {
-      var pixelRatio = _renderTextureQuad!.pixelRatio;
-      var textureWidth = _renderTextureQuad!.offsetRectangle.width;
-      var textureHeight = _renderTextureQuad!.offsetRectangle.height;
+      var pixelRatio = _renderTextureQuad.pixelRatio;
+      var textureWidth = _renderTextureQuad.offsetRectangle.width;
+      var textureHeight = _renderTextureQuad.offsetRectangle.height;
       var renderTexture = RenderTexture(textureWidth, textureHeight, 0);
       var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
       var renderContext = RenderContextCanvas(renderTexture.canvas);
