@@ -213,18 +213,19 @@ class Mesh extends DisplayObject {
     var mx = matrix.tx;
     var my = matrix.tx;
 
-    _vxListTemp = _vxListTemp ?? Float32List(vxList.length);
+    final vxListTemp = _vxListTemp ?? Float32List(vxList.length);
+    _vxListTemp = vxListTemp;
 
-    for (var i = 0; i < _vxListTemp!.length - 3; i += 4) {
+    for (var i = 0; i < vxListTemp.length - 3; i += 4) {
       var x = vxList[i + 2];
       var y = vxList[i + 3];
-      _vxListTemp![i + 0] = vxList[i + 0];
-      _vxListTemp![i + 1] = vxList[i + 1];
-      _vxListTemp![i + 2] = mx + x * ma + y * mc;
-      _vxListTemp![i + 3] = my + x * mb + y * md;
+      vxListTemp[i + 0] = vxList[i + 0];
+      vxListTemp[i + 1] = vxList[i + 1];
+      vxListTemp[i + 2] = mx + x * ma + y * mc;
+      vxListTemp[i + 3] = my + x * mb + y * md;
     }
 
     renderContext.renderTextureMesh(
-        renderState, renderTexture, ixList, _vxListTemp!);
+        renderState, renderTexture, ixList, vxListTemp);
   }
 }
