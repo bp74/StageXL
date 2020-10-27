@@ -156,8 +156,8 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       jointStyle = JointStyle.BEVEL;
     }
 
-    num vmx = ax - it * ay; // miter-x
-    num vmy = ay + it * ax; // miter-y
+    var vmx = ax - it * ay; // miter-x
+    var vmy = ay + it * ax; // miter-y
     var isOverlap = itAbs > al || itAbs > bl;
     var isCloseJoint = _jointIndex1 < 0;
 
@@ -272,15 +272,15 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
     var cosR = cos(delta / steps);
     var sinR = sin(delta / steps);
-    num tx = vx - vx * cosR + vy * sinR;
-    num ty = vy - vx * sinR - vy * cosR;
+    var tx = vx - vx * cosR + vy * sinR;
+    var ty = vy - vx * sinR - vy * cosR;
     var ax = vx + n1x;
     var ay = vy + n1y;
 
     for (var s = 0; s < steps; s++) {
-      num bx = ax * cosR - ay * sinR + tx;
-      num by = ax * sinR + ay * cosR + ty;
-      var index = addVertex((ax = bx) as double, (ay = by) as double);
+      var bx = ax * cosR - ay * sinR + tx;
+      var by = ax * sinR + ay * cosR + ty;
+      var index = addVertex((ax = bx), (ay = by));
       addIndices(index1, index3, index);
       index3 = index;
     }
