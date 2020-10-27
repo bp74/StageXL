@@ -87,7 +87,7 @@ class Stage extends DisplayObjectContainer {
   InteractiveObject? _mouseTarget;
 
   final List<_Drag> _drags = <_Drag>[];
-  final Map<int?, _TouchPoint> _touchPoints = <int?, _TouchPoint>{};
+  final Map<int, _TouchPoint> _touchPoints = {};
   final List<_MouseButton> _mouseButtons = _MouseButton.createDefaults();
 
   //----------------------------------------------------------------------------
@@ -865,8 +865,12 @@ class Stage extends DisplayObjectContainer {
     var ctrlKey = event.ctrlKey;
     var shiftKey = event.shiftKey;
 
-    for (var changedTouch in event.changedTouches!) {
-      var identifier = changedTouch.identifier;
+    if (event.changedTouches == null) return;
+
+    var touches = event.changedTouches!.where((touch) => touch.identifier != null);
+    for (var changedTouch in touches) {
+      var identifier = changedTouch.identifier!;
+
       var clientPoint = changedTouch.client;
       var stagePoint = _clientTransformation.transformPoint(clientPoint);
       var localPoint = Point<num>(0.0, 0.0);
