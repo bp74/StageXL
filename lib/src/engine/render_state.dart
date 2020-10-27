@@ -184,7 +184,7 @@ class RenderState {
     var cs1 = _currentContextState!;
     var cs2 = _currentContextState!.nextContextState;
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
-    cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
+    cs2.blendMode = blendMode ?? cs1.blendMode;
     cs2.alpha = alpha * cs1.alpha;
     _currentContextState = cs2;
   }
