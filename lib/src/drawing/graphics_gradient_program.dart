@@ -168,8 +168,8 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
     var startY = m.ty + m.b * g.startX + m.d * g.startY;
     var vectorX = (m.tx + m.a * g.endX + m.c * g.endY) - startX;
     var vectorY = (m.ty + m.b * g.endX + m.d * g.endY) - startY;
-    num startRadius = g.startRadius * scaleR;
-    num radiusOffset = (g.endRadius - g.startRadius) * scaleR;
+    var startRadius = g.startRadius * scaleR;
+    var radiusOffset = (g.endRadius - g.startRadius) * scaleR;
 
     // protect against equal start-end circles (radial gradient not defined for this case)
     if (vectorX == 0 && vectorY == 0 && radiusOffset == 0) radiusOffset = 1;
