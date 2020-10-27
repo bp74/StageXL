@@ -6,7 +6,7 @@ part of stagexl.display_ex;
 /// moving/animated body.
 
 class FlipBook extends InteractiveObject implements Animatable {
-  late List<BitmapData> _bitmapDatas;
+  final List<BitmapData> _bitmapDatas;
   List<double>? _frameDurations;
 
   int? _currentFrame;
@@ -19,9 +19,8 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   //---------------------------------------------------------------------------
 
-  FlipBook(List<BitmapData> bitmapDatas,
+  FlipBook(this._bitmapDatas,
       [int frameRate = 30, bool loop = true]) {
-    _bitmapDatas = bitmapDatas;
     _frameDurations = List.filled(_bitmapDatas.length, 1.0 / frameRate);
 
     _currentFrame = 0;
