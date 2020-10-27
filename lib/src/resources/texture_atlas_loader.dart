@@ -32,11 +32,11 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
   double? getPixelRatio() => _loadInfo.pixelRatio;
 
   @override
-  Future<String> getSource() => HttpRequest.getString(_loadInfo.loaderUrl!);
+  Future<String> getSource() => HttpRequest.getString(_loadInfo.loaderUrl);
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String? filename) async {
-    var loaderUrl = _loadInfo.loaderUrl!;
+    var loaderUrl = _loadInfo.loaderUrl;
     var pixelRatio = _loadInfo.pixelRatio;
     var webpAvailable = _loadOptions.webp;
     var corsEnabled = _loadOptions.corsEnabled;
