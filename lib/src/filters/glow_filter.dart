@@ -9,24 +9,24 @@ import '../internal/filter_helpers.dart';
 import '../internal/tools.dart';
 
 class GlowFilter extends BitmapFilter {
-  int? _color;
+  int _color = 0xFF000000;
   late int _blurX;
   late int _blurY;
   late int _quality;
 
-  bool? knockout;
-  bool? hideObject;
+  bool knockout = false;
+  bool hideObject = false;
 
   final List<int> _renderPassSources = <int>[];
   final List<int> _renderPassTargets = <int>[];
 
   GlowFilter(
-      [int? color = 0xFF000000,
+      [int color = 0xFF000000,
       int blurX = 4,
       int blurY = 4,
       int quality = 1,
-      bool? knockout = false,
-      bool? hideObject = false]) {
+      bool knockout = false,
+      bool hideObject = false]) {
     this.color = color;
     this.blurX = blurX;
     this.blurY = blurY;
@@ -57,9 +57,9 @@ class GlowFilter extends BitmapFilter {
 
   /// The color of the glow.
 
-  int? get color => _color;
+  int get color => _color;
 
-  set color(int? value) {
+  set color(int value) {
     _color = value;
   }
 
@@ -113,7 +113,7 @@ class GlowFilter extends BitmapFilter {
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var sourceImageData = hideObject == false || knockout!
+    var sourceImageData = hideObject == false || knockout
         ? renderTextureQuad.getImageData()
         : null;
 
@@ -137,10 +137,10 @@ class GlowFilter extends BitmapFilter {
       blur(data, y * stride + alphaChannel, width, 4, blurX);
     }
 
-    if (knockout!) {
+    if (knockout) {
       setColorKnockout(data, color, sourceImageData!.data);
-    } else if (hideObject!) {
-      setColor(data, color!);
+    } else if (hideObject) {
+      setColor(data, color);
     } else {
       setColorBlend(data, color, sourceImageData!.data);
     }
@@ -161,7 +161,7 @@ class GlowFilter extends BitmapFilter {
     var pixelRatioScale = pixelRatio * passScale;
 
     if (pass == passCount - 1) {
-      if (!knockout! && !hideObject!) {
+      if (!knockout && !hideObject) {
         renderContext!.renderTextureQuad(renderState, renderTextureQuad);
       }
     } else {
@@ -172,7 +172,7 @@ class GlowFilter extends BitmapFilter {
       renderContext.activateRenderTexture(renderTexture);
 
       renderProgram.configure(
-          pass == passCount - 2 ? color! : color! | 0xFF000000,
+          pass == passCount - 2 ? color : color | 0xFF000000,
           pass == passCount - 2 ? renderState.globalAlpha : 1.0,
           pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
           pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);

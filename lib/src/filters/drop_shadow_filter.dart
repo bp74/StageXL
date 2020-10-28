@@ -9,28 +9,28 @@ import '../internal/filter_helpers.dart';
 import '../internal/tools.dart';
 
 class DropShadowFilter extends BitmapFilter {
-  num? _distance;
-  num? _angle;
-  late int _blurX;
-  late int _blurY;
-  late int _quality;
-  int? _color;
+  num _distance = 8;
+  num _angle = pi / 4;
+  int _blurX = 4;
+  int _blurY = 4;
+  int _quality = 1;
+  int _color = 0xFF000000;
 
-  bool? knockout;
-  bool? hideObject;
+  bool knockout = false;
+  bool hideObject = false;
 
   final List<int> _renderPassSources = <int>[];
   final List<int> _renderPassTargets = <int>[];
 
   DropShadowFilter(
-      [num? distance = 8,
-      num? angle = pi / 4,
-      int? color = 0xFF000000,
+      [num distance = 8,
+      num angle = pi / 4,
+      int color = 0xFF000000,
       int blurX = 4,
       int blurY = 4,
       int quality = 1,
-      bool? knockout = false,
-      bool? hideObject = false]) {
+      bool knockout = false,
+      bool hideObject = false]) {
     this.distance = distance;
     this.angle = angle;
     this.color = color;
@@ -52,8 +52,8 @@ class DropShadowFilter extends BitmapFilter {
 
   @override
   Rectangle<int> get overlap {
-    var shiftX = (distance! * cos(angle!)).round();
-    var shiftY = (distance! * sin(angle!)).round();
+    var shiftX = (distance * cos(angle)).round();
+    var shiftY = (distance * sin(angle)).round();
     var sRect = Rectangle<int>(-1, -1, 2, 2);
     var dRect =
         Rectangle<int>(shiftX - blurX, shiftY - blurY, 2 * blurX, 2 * blurY);
@@ -70,25 +70,25 @@ class DropShadowFilter extends BitmapFilter {
 
   /// The distance from the object to the shadow.
 
-  num? get distance => _distance;
+  num get distance => _distance;
 
-  set distance(num? value) {
+  set distance(num value) {
     _distance = value;
   }
 
   /// The angle where the shadow is casted to.
 
-  num? get angle => _angle;
+  num get angle => _angle;
 
-  set angle(num? value) {
+  set angle(num value) {
     _angle = value;
   }
 
   /// The color of the shadow.
 
-  int? get color => _color;
+  int get color => _color;
 
-  set color(int? value) {
+  set color(int value) {
     _color = value;
   }
 
@@ -142,7 +142,7 @@ class DropShadowFilter extends BitmapFilter {
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var sourceImageData = hideObject == false || knockout!
+    var sourceImageData = hideObject == false || knockout
         ? renderTextureQuad.getImageData()
         : null;
 
@@ -150,8 +150,8 @@ class DropShadowFilter extends BitmapFilter {
     List<int> data = imageData.data;
     var width = imageData.width;
     var height = imageData.height;
-    var shiftX = (distance! * cos(angle!)).round();
-    var shiftY = (distance! * sin(angle!)).round();
+    var shiftX = (distance * cos(angle)).round();
+    var shiftY = (distance * sin(angle)).round();
 
     var pixelRatio = renderTextureQuad.pixelRatio;
     var blurX = (this.blurX * pixelRatio).round();
@@ -170,10 +170,10 @@ class DropShadowFilter extends BitmapFilter {
       blur(data, y * stride + alphaChannel, width, 4, blurX);
     }
 
-    if (knockout!) {
+    if (knockout) {
       setColorKnockout(data, color, sourceImageData!.data);
-    } else if (hideObject!) {
-      setColor(data, color!);
+    } else if (hideObject) {
+      setColor(data, color);
     } else {
       setColorBlend(data, color, sourceImageData!.data);
     }
@@ -192,10 +192,10 @@ class DropShadowFilter extends BitmapFilter {
     var passScale = pow(0.5, pass >> 1);
     var pixelRatio = sqrt(renderState.globalMatrix.det.abs());
     var pixelRatioScale = pixelRatio * passScale;
-    var pixelRatioDistance = pixelRatio * distance!;
+    var pixelRatioDistance = pixelRatio * distance;
 
     if (pass == passCount - 1) {
-      if (!knockout! && !hideObject!) {
+      if (!knockout && !hideObject) {
         renderContext!.renderTextureQuad(renderState, renderTextureQuad);
       }
     } else {
@@ -206,13 +206,13 @@ class DropShadowFilter extends BitmapFilter {
       renderContext.activateRenderTexture(renderTexture);
 
       renderProgram.configure(
-          pass == passCount - 2 ? color! : color! | 0xFF000000,
+          pass == passCount - 2 ? color : color | 0xFF000000,
           pass == passCount - 2 ? renderState.globalAlpha : 1.0,
           pass == 0
-              ? pixelRatioDistance * cos(angle!) / renderTexture.width
+              ? pixelRatioDistance * cos(angle) / renderTexture.width
               : 0.0,
           pass == 0
-              ? pixelRatioDistance * sin(angle!) / renderTexture.height
+              ? pixelRatioDistance * sin(angle) / renderTexture.height
               : 0.0,
           pass.isEven ? pixelRatioScale * blurX / renderTexture.width : 0.0,
           pass.isEven ? 0.0 : pixelRatioScale * blurY / renderTexture.height);
