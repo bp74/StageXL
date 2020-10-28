@@ -59,12 +59,12 @@ class TintFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
     var renderProgram = renderContext.renderProgramTinted;
 
     renderContext.activateRenderProgram(renderProgram);
-    renderContext.activateRenderTexture(renderTextureQuad!.renderTexture);
+    renderContext.activateRenderTexture(renderTextureQuad.renderTexture);
     renderProgram.renderTextureQuad(
         renderState, renderTextureQuad, factorR.toDouble(), factorG.toDouble(), factorB, factorA);
   }
