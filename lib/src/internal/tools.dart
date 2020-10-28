@@ -54,16 +54,6 @@ num maxNum(num a, num b) {
   }
 }
 
-int clampInt(int value, int lower, int upper) {
-  if (value <= lower) {
-    return lower;
-  } else if (value >= upper) {
-    return upper;
-  } else {
-    return value;
-  }
-}
-
 //-----------------------------------------------------------------------------
 
 bool similar(num a, num b, [num epsilon = 0.0001]) {

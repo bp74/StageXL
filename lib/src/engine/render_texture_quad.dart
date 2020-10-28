@@ -134,10 +134,10 @@ class RenderTextureQuad {
       tmpSourceB = oldSourceB - oldOffsetL - ourceL;
     }
 
-    ourceL = clampInt(tmpSourceL, oldSourceL, oldSourceR);
-    ourceT = clampInt(tmpSourceT, oldSourceT, oldSourceB);
-    ourceR = clampInt(tmpSourceR, oldSourceL, oldSourceR);
-    ourceB = clampInt(tmpSourceB, oldSourceT, oldSourceB);
+    ourceL = tmpSourceL.clamp(oldSourceL, oldSourceR);
+    ourceT = tmpSourceT.clamp(oldSourceT, oldSourceB);
+    ourceR = tmpSourceR.clamp(oldSourceL, oldSourceR);
+    ourceB = tmpSourceB.clamp(oldSourceT, oldSourceB);
 
     if (otation == 0) {
       ffsetL += tmpSourceL - ourceL;
