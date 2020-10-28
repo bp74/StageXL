@@ -75,9 +75,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   @override
   void pause([Future? resumeSignal]) {
     _pauseCount++;
-    if (resumeSignal != null) {
-      resumeSignal.whenComplete(resume);
-    }
+    resumeSignal?.whenComplete(resume);
   }
 
   @override
