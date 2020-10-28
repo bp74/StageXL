@@ -29,14 +29,17 @@ import '../internal/tools.dart';
 ///
 
 class ChromaKeyFilter extends BitmapFilter {
-  int? _backgroundColor;
-  late int _solidThreshold;
-  late int _invisibleThreshold;
+  int _backgroundColor;
+  int _solidThreshold;
+  int _invisibleThreshold;
 
   ChromaKeyFilter(
-      {int? backgroundColor = 0xFF00FF00,
+      {int backgroundColor = 0xFF00FF00,
       int solidThreshold = 140,
-      int invisibleThreshold = 20}) {
+      int invisibleThreshold = 20}) :
+        _backgroundColor = backgroundColor,
+        _solidThreshold = solidThreshold,
+        _invisibleThreshold = invisibleThreshold {
     if (invisibleThreshold < 0) {
       throw ArgumentError('The minimum solidThreshold is 0.');
     }
@@ -44,17 +47,13 @@ class ChromaKeyFilter extends BitmapFilter {
       throw ArgumentError(
           'solidThreshold cannot be lower than invisibleThreshold');
     }
-
-    _backgroundColor = backgroundColor;
-    _solidThreshold = solidThreshold;
-    _invisibleThreshold = invisibleThreshold;
   }
 
-  int? get backgroundColor => _backgroundColor;
+  int get backgroundColor => _backgroundColor;
   int get solidThreshold => _solidThreshold;
   int get invisibleThreshold => _invisibleThreshold;
 
-  set backgroundColor(int? backgroundColor) {
+  set backgroundColor(int backgroundColor) {
     _backgroundColor = backgroundColor;
   }
 
@@ -96,9 +95,9 @@ class ChromaKeyFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
     var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad!.renderTexture;
+    var renderTexture = renderTextureQuad.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(
         r'$ChromaKeyFilterProgram', () => ChromaKeyFilterProgram());
@@ -106,7 +105,7 @@ class ChromaKeyFilter extends BitmapFilter {
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);
     renderProgram.configure(
-        backgroundColor!, solidThreshold, invisibleThreshold);
+        backgroundColor, solidThreshold, invisibleThreshold);
     renderProgram.renderTextureQuad(renderState, renderTextureQuad);
     renderProgram.flush();
   }
