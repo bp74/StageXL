@@ -165,15 +165,15 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   bool contains(num px, num py) {
-    var ax = 0;
-    var ay = 0;
+    num ax = 0;
+    num ay = 0;
     var bx = points[points.length - 1].x - px;
     var by = points[points.length - 1].y - py;
     var depth = 0;
 
     for (var i = 0; i < points.length; i++) {
-      ax = bx as int;
-      ay = by as int;
+      ax = bx;
+      ay = by;
       bx = points[i].x - px;
       by = points[i].y - py;
 
