@@ -192,9 +192,11 @@ class EventStream<T extends Event> extends Stream<T> {
 
     for (var i = 0; i < subscriptions.length; i++) {
       var subscription = subscriptions[i];
-      if (subscription?.isCanceled == true ||
-          subscription?.isPaused == true ||
-          subscription?.isCapturing != isCapturing) continue;
+      if (subscription == null) continue;
+
+      if (subscription.isCanceled == true ||
+          subscription.isPaused == true ||
+          subscription.isCapturing != isCapturing) continue;
 
       event._target = target;
       event._currentTarget = this.target;
@@ -202,8 +204,8 @@ class EventStream<T extends Event> extends Stream<T> {
 
       InputEvent.current = inputEvent;
 
-      if (subscription?.eventListener != null) {
-        subscription!.eventListener!(event);
+      if (subscription.eventListener != null) {
+        subscription.eventListener!(event);
       }
       InputEvent.current = null;
 

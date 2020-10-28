@@ -69,11 +69,12 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
       _eventStream._cancelSubscription(this);
       _canceled = true;
     }
+
     return null!;
   }
 
   @override
-  void pause([Future? resumeSignal]) {
+  void pause([Future<void>? resumeSignal]) {
     _pauseCount++;
     resumeSignal?.whenComplete(resume);
   }

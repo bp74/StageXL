@@ -942,19 +942,19 @@ abstract class DisplayObject extends EventDispatcher
   //----------------------------------------------------------------------------
 
   @override
-  void dispatchEvent(Event? event) {
+  void dispatchEvent(Event event) {
     var ancestors = <EventDispatcher>[];
 
     for (DisplayObject? p = parent; p != null; p = p.parent) {
       ancestors.add(p);
     }
 
-    for (var i = ancestors.length - 1; i >= 0 && event!.captures; i--) {
+    for (var i = ancestors.length - 1; i >= 0 && event.captures; i--) {
       ancestors[i].dispatchEventRaw(event, this, EventPhase.CAPTURING_PHASE);
       if (event.isPropagationStopped) return;
     }
 
-    dispatchEventRaw(event!, this, EventPhase.AT_TARGET);
+    dispatchEventRaw(event, this, EventPhase.AT_TARGET);
     if (event.isPropagationStopped) return;
 
     for (var i = 0; i < ancestors.length && event.bubbles; i++) {
