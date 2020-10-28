@@ -36,7 +36,7 @@ String getFilenameWithoutExtension(String filename) {
 
 //-----------------------------------------------------------------------------
 
-String? replaceFilename(String url, String? filename) {
+String replaceFilename(String url, String filename) {
   var regex = RegExp(r'^(.*/)?(?:$|(.+?)(?:(\.[^.]*$)|$))');
   var match = regex.firstMatch(url)!;
   var path = match.group(1);
