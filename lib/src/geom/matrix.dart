@@ -42,8 +42,8 @@ class Matrix {
     var b = -this.b / det;
     var c = -this.c / det;
     var d = this.a / det;
-    num tx = -this.tx * a - this.ty * c;
-    num ty = -this.tx * b - this.ty * d;
+    var tx = -this.tx * a - this.ty * c;
+    var ty = -this.tx * b - this.ty * d;
 
     return Matrix(a, b, c, d, tx, ty);
   }
@@ -286,8 +286,8 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void scale(num scaleX, num scaleY) {
-    _data[0] = a * scaleX.toDouble();
-    _data[1] = b * scaleY.toDouble();
+    _data[0] = a * scaleX;
+    _data[1] = b * scaleY;
     _data[2] = c * scaleX;
     _data[3] = d * scaleY;
     _data[4] = tx * scaleX;
@@ -297,8 +297,8 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   void translate(num translationX, num translationY) {
-    _data[4] = tx + translationX.toDouble();
-    _data[5] = ty + translationY.toDouble();
+    _data[4] = tx + translationX;
+    _data[5] = ty + translationY;
   }
 
   void prependTranslation(num translationX, num translationY) {
@@ -369,8 +369,8 @@ class Matrix {
     var b1 = -b / det;
     var c1 = -c / det;
     var d1 = a / det;
-    num tx1 = -tx * a1 - ty * c1;
-    num ty1 = -tx * b1 - ty * d1;
+    var tx1 = -tx * a1 - ty * c1;
+    var ty1 = -tx * b1 - ty * d1;
 
     var a2 = concatMatrix.a;
     var b2 = concatMatrix.b;
