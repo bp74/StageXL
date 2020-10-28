@@ -77,7 +77,7 @@ class SoundLoadOptions {
   /// Determine which audio files are the most likely to play smoothly,
   /// based on the supported types and formats available.
 
-  List<String?> getOptimalAudioUrls(String primaryUrl) {
+  List<String> getOptimalAudioUrls(String primaryUrl) {
     var availableTypes = AudioLoader.supportedTypes.toList();
     if (!mp3) availableTypes.remove('mp3');
     if (!mp4) availableTypes.remove('mp4');
@@ -86,7 +86,7 @@ class SoundLoadOptions {
     if (!ac3) availableTypes.remove('ac3');
     if (!wav) availableTypes.remove('wav');
 
-    var urls = <String?>[];
+    var urls = <String>[];
     var regex =
         RegExp(r'([A-Za-z0-9]+)$', multiLine: false, caseSensitive: true);
     var primaryMatch = regex.firstMatch(primaryUrl);

@@ -17,7 +17,7 @@ class AudioLoader {
   final List<String?> _urls = <String?>[];
   bool _loadData = false;
 
-  AudioLoader(List<String?> urls, bool loadData, bool corsEnabled) {
+  AudioLoader(List<String> urls, bool loadData, bool corsEnabled) {
     // we have to add the AudioElement to the document,
     // otherwise some browser won't start loading :(
 
