@@ -74,7 +74,7 @@ final List<EventStreamSubscription<RenderEvent>> _renderSubscriptions =
     <EventStreamSubscription<RenderEvent>>[];
 
 void _dispatchBroadcastEvent<T extends BroadcastEvent>(
-    BroadcastEvent broadcastEvent,
+    T broadcastEvent,
     List<EventStreamSubscription<T>> subscriptions) {
   // Dispatch event to current subscriptions.
   // Do not dispatch events to newly added subscriptions.
@@ -91,7 +91,7 @@ void _dispatchBroadcastEvent<T extends BroadcastEvent>(
       broadcastEvent._target = subscription.eventStream.target;
       broadcastEvent._currentTarget = subscription.eventStream.target;
       broadcastEvent._eventPhase = EventPhase.AT_TARGET;
-      subscription.eventListener!(broadcastEvent as T);
+      subscription.eventListener!(broadcastEvent);
     } else {
       subscriptions.removeAt(i);
       length--;
