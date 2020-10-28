@@ -64,7 +64,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  Future cancel() {
+  Future<void> cancel() {
     if (_canceled == false) {
       _eventStream._cancelSubscription(this);
       _canceled = true;
