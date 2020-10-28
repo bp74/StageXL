@@ -539,14 +539,14 @@ class RenderContextWebGL extends RenderContext {
       var x2 = value.right.round();
       var y2 = value.bottom.round();
       _renderingContext.enable(gl.WebGL.SCISSOR_TEST);
-      _renderingContext.scissor(x1, y1, maxInt(x2 - x1, 0), maxInt(y2 - y1, 0));
+      _renderingContext.scissor(x1, y1, math.max(x2 - x1, 0), math.max(y2 - y1, 0));
     } else {
       var x1 = value.left.round();
       var y1 = _canvasElement.height! - value.bottom.round();
       var x2 = value.right.round();
       var y2 = _canvasElement.height! - value.top.round();
       _renderingContext.enable(gl.WebGL.SCISSOR_TEST);
-      _renderingContext.scissor(x1, y1, maxInt(x2 - x1, 0), maxInt(y2 - y1, 0));
+      _renderingContext.scissor(x1, y1, math.max(x2 - x1, 0), math.max(y2 - y1, 0));
     }
   }
 

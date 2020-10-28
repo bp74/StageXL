@@ -22,40 +22,6 @@ String color2rgba(int color) {
 
 //-----------------------------------------------------------------------------
 
-int minInt(int a, int b) {
-  if (a <= b) {
-    return a;
-  } else {
-    return b;
-  }
-}
-
-int maxInt(int a, int b) {
-  if (a >= b) {
-    return a;
-  } else {
-    return b;
-  }
-}
-
-num minNum(num a, num b) {
-  if (a <= b) {
-    return a;
-  } else {
-    return b;
-  }
-}
-
-num maxNum(num a, num b) {
-  if (a >= b) {
-    return a;
-  } else {
-    return b;
-  }
-}
-
-//-----------------------------------------------------------------------------
-
 bool similar(num a, num b, [num epsilon = 0.0001]) {
   return (a - epsilon < b) && (a + epsilon > b);
 }

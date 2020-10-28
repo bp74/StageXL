@@ -156,7 +156,7 @@ class Stage extends DisplayObjectContainer {
 
     _sourceWidth = width;
     _sourceHeight = height;
-    _pixelRatio = minNum(options.maxPixelRatio, env.devicePixelRatio);
+    _pixelRatio = min(options.maxPixelRatio, env.devicePixelRatio);
     _renderContext = _createRenderContext(canvas, options);
     _renderState = RenderState(_renderContext);
     _console = StageConsole()..visible = false;
