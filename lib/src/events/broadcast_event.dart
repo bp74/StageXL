@@ -91,7 +91,9 @@ void _dispatchBroadcastEvent<T extends BroadcastEvent>(
       broadcastEvent._target = subscription.eventStream.target;
       broadcastEvent._currentTarget = subscription.eventStream.target;
       broadcastEvent._eventPhase = EventPhase.AT_TARGET;
-      subscription.eventListener!(broadcastEvent);
+      if (subscription.eventListener != null) {
+        subscription.eventListener!(broadcastEvent);
+      }
     } else {
       subscriptions.removeAt(i);
       length--;
