@@ -2,11 +2,10 @@ part of stagexl.media;
 
 class AudioElementSound extends Sound {
   final AudioElement _audioElement;
-  final Map<AudioElement, AudioElementSoundChannel?> _soundChannels;
+  final Map<AudioElement, AudioElementSoundChannel?> _soundChannels = {};
 
   AudioElementSound._(AudioElement audioElement)
-      : _audioElement = audioElement,
-        _soundChannels = <AudioElement, AudioElementSoundChannel?>{} {
+      : _audioElement = audioElement {
     _audioElement.onEnded.listen(_onAudioEnded);
     _soundChannels[audioElement] = null;
   }
