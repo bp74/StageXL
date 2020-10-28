@@ -92,7 +92,9 @@ class EventStream<T extends Event> extends Stream<T> {
     var subscriptions = _subscriptions;
 
     for (var i = 0; i < subscriptions.length; i++) {
-      _cancelSubscription(subscriptions[i]!);
+      if (subscriptions[i] != null) {
+        _cancelSubscription(subscriptions[i]!);
+      }
     }
   }
 
@@ -145,10 +147,12 @@ class EventStream<T extends Event> extends Stream<T> {
     var subscriptions = _subscriptions;
 
     for (var i = 0; i < subscriptions.length; i++) {
-      var subscription = subscriptions[i]!;
-      if (subscription.eventListener == eventListener &&
-          subscription.isCapturing == captures) {
-        _cancelSubscription(subscription);
+      if (subscriptions[i] != null) {
+        var subscription = subscriptions[i]!;
+        if (subscription.eventListener == eventListener &&
+            subscription.isCapturing == captures) {
+          _cancelSubscription(subscription);
+        }
       }
     }
   }
@@ -187,17 +191,20 @@ class EventStream<T extends Event> extends Stream<T> {
     InputEvent? inputEvent = event is InputEvent ? event : null;
 
     for (var i = 0; i < subscriptions.length; i++) {
-      var subscription = subscriptions[i]!;
-      if (subscription.isCanceled ||
-          subscription.isPaused ||
-          subscription.isCapturing != isCapturing) continue;
+      var subscription = subscriptions[i];
+      if (subscription?.isCanceled == true ||
+          subscription?.isPaused == true ||
+          subscription?.isCapturing != isCapturing) continue;
 
       event._target = target;
       event._currentTarget = this.target;
       event._eventPhase = eventPhase;
 
       InputEvent.current = inputEvent;
-      subscription.eventListener!(event);
+
+      if (subscription?.eventListener != null) {
+        subscription!.eventListener!(event);
+      }
       InputEvent.current = null;
 
       if (event.isImmediatePropagationStopped) return;
