@@ -13,8 +13,8 @@ class Scale9Bitmap extends Bitmap {
   final List<RenderTextureQuad?> _slices = List.filled(9, null);
 
   Scale9Bitmap(BitmapData bitmapData, Rectangle<num> grid) : _grid = grid, super(bitmapData) {
-    _width = ensureNum(bitmapData.width);
-    _height = ensureNum(bitmapData.height);
+    _width = bitmapData.width;
+    _height = bitmapData.height;
     _updateRenderTextureQuads();
   }
 
@@ -28,7 +28,7 @@ class Scale9Bitmap extends Bitmap {
 
   @override
   set width(num value) {
-    _width = ensureNum(value);
+    _width = value;
   }
 
   /// Gets and sets the height of this Scale9Bitmap. In contrast to other
@@ -39,7 +39,7 @@ class Scale9Bitmap extends Bitmap {
 
   @override
   set height(num value) {
-    _height = ensureNum(value);
+    _height = value;
   }
 
   /// Gets and sets the grid rectangle within the BitmapData to be scaled.

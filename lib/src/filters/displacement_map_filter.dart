@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import '../display.dart';
 import '../engine.dart';
 import '../geom.dart';
-import '../internal/tools.dart';
 
 class DisplacementMapFilter extends BitmapFilter {
   final BitmapData bitmapData;
@@ -45,12 +44,12 @@ class DisplacementMapFilter extends BitmapFilter {
     var mapImageData = this.bitmapData.renderTextureQuad.getImageData();
     var srcImageData = renderTextureQuad.getImageData();
     var dstImageData = renderTextureQuad.createImageData();
-    var mapWidth = ensureInt(mapImageData.width);
-    var mapHeight = ensureInt(mapImageData.height);
-    var srcWidth = ensureInt(srcImageData.width);
-    var srcHeight = ensureInt(srcImageData.height);
-    var dstWidth = ensureInt(dstImageData.width);
-    var dstHeight = ensureInt(dstImageData.height);
+    var mapWidth = mapImageData.width;
+    var mapHeight = mapImageData.height;
+    var srcWidth = srcImageData.width;
+    var srcHeight = srcImageData.height;
+    var dstWidth = dstImageData.width;
+    var dstHeight = dstImageData.height;
 
     var mapData = mapImageData.data;
     var srcData = srcImageData.data;

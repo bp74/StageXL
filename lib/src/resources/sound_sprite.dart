@@ -30,9 +30,9 @@ class SoundSprite {
     if (segments is Map) {
       for (var segment in segments.keys as Iterable<String>) {
         var segmentList = segments[segment] as List;
-        var startTime = ensureNum(segmentList[0]);
-        var duration = ensureNum(segmentList[1]);
-        var loop = ensureBool(segmentList.length > 2 && segmentList[2]);
+        var startTime = segmentList[0] as num;
+        var duration = segmentList[1] as num;
+        var loop = segmentList.length > 2 && segmentList[2] as bool;
         var sss =
             SoundSpriteSegment(soundSprite, segment, startTime, duration, loop);
         soundSprite._segments.add(sss);

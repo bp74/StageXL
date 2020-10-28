@@ -6,7 +6,6 @@ import '../display.dart';
 import '../engine.dart';
 import '../geom.dart';
 import '../internal/filter_helpers.dart';
-import '../internal/tools.dart';
 
 class BlurFilter extends BitmapFilter {
   late int _blurX;
@@ -96,8 +95,8 @@ class BlurFilter extends BitmapFilter {
 
     var imageData = renderTextureQuad.getImageData();
     var data = imageData.data;
-    var width = ensureInt(imageData.width);
-    var height = ensureInt(imageData.height);
+    var width = imageData.width;
+    var height = imageData.height;
 
     var pixelRatio = renderTextureQuad.pixelRatio;
     var blurX = (this.blurX * pixelRatio).round();

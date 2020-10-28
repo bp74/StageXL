@@ -22,8 +22,8 @@ class RenderTexture {
     if (width <= 0) throw ArgumentError('width');
     if (height <= 0) throw ArgumentError('height');
 
-    _width = ensureInt(width);
-    _height = ensureInt(height);
+    _width = width;
+    _height = height;
     _source = _canvas = CanvasElement(width: _width, height: _height);
 
     if (fillColor != 0) {
@@ -34,29 +34,28 @@ class RenderTexture {
   }
 
   RenderTexture.fromImageElement(ImageElement imageElement) {
-    _width = ensureInt(imageElement.width);
-    _height = ensureInt(imageElement.height);
+    _width = imageElement.width!;
+    _height = imageElement.height!;
     _source = imageElement;
   }
 
   RenderTexture.fromCanvasElement(CanvasElement canvasElement) {
-    _width = ensureInt(canvasElement.width);
-    _height = ensureInt(canvasElement.height);
+    _width = canvasElement.width!;
+    _height = canvasElement.height!;
     _source = _canvas = canvasElement;
   }
 
   RenderTexture.fromVideoElement(VideoElement videoElement) {
     if (videoElement.readyState < 3) throw ArgumentError('videoElement');
-    _width = ensureInt(videoElement.videoWidth);
-    _height = ensureInt(videoElement.videoHeight);
+    _width = videoElement.videoWidth;
+    _height = videoElement.videoHeight;
     _source = videoElement;
     _globalFrameListeners.insert(0, _onGlobalFrame);
   }
 
-  RenderTexture.rawWebGL(int width, int height) {
-    _width = ensureInt(width);
-    _height = ensureInt(height);
-  }
+  RenderTexture.rawWebGL(int width, int height) :
+    _width = width,
+    _height = height;
 
   //-----------------------------------------------------------------------------------------------
 

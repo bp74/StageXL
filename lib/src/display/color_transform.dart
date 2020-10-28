@@ -78,8 +78,6 @@ class ColorTransform {
   int get color => (redOffset << 16) + (greenOffset << 8) + (blueOffset << 0);
 
   set color(int value) {
-    value = ensureInt(value);
-
     redOffset = (value & 0x00FF0000) >> 16;
     greenOffset = (value & 0x0000FF00) >> 8;
     blueOffset = (value & 0x000000FF);

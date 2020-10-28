@@ -10,10 +10,9 @@ class RenderStencilBuffer {
   gl.RenderingContext? _renderingContext;
   gl.Renderbuffer? _renderbuffer;
 
-  RenderStencilBuffer.rawWebGL(int width, int height) {
-    _width = ensureInt(width);
-    _height = ensureInt(height);
-  }
+  RenderStencilBuffer.rawWebGL(int width, int height) :
+    _width = width,
+    _height = height;
 
   //-----------------------------------------------------------------------------------------------
 

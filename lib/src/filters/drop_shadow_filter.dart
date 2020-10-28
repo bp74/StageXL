@@ -148,8 +148,8 @@ class DropShadowFilter extends BitmapFilter {
 
     var imageData = renderTextureQuad.getImageData();
     List<int> data = imageData.data;
-    var width = ensureInt(imageData.width);
-    var height = ensureInt(imageData.height);
+    var width = imageData.width;
+    var height = imageData.height;
     var shiftX = (distance! * cos(angle!)).round();
     var shiftY = (distance! * sin(angle!)).round();
 

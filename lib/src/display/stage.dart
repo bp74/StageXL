@@ -139,8 +139,8 @@ class Stage extends DisplayObjectContainer {
     if (canvas.tabIndex! <= 0) canvas.tabIndex = 1;
     if (canvas.style.outline == '') canvas.style.outline = 'none';
     options ??= Stage.defaultOptions;
-    width ??= canvas.width;
-    height ??= canvas.height;
+    width ??= canvas.width!;
+    height ??= canvas.height!;
 
     backgroundColor = options.backgroundColor;
     preventDefaultOnTouch = options.preventDefaultOnTouch;
@@ -154,8 +154,8 @@ class Stage extends DisplayObjectContainer {
     _stageRenderMode = options.stageRenderMode;
     _inputEventMode = options.inputEventMode;
 
-    _sourceWidth = ensureInt(width);
-    _sourceHeight = ensureInt(height);
+    _sourceWidth = width;
+    _sourceHeight = height;
     _pixelRatio = minNum(options.maxPixelRatio, env.devicePixelRatio);
     _renderContext = _createRenderContext(canvas, options);
     _renderState = RenderState(_renderContext);
@@ -243,7 +243,7 @@ class Stage extends DisplayObjectContainer {
   int get sourceWidth => _sourceWidth;
 
   set sourceWidth(int value) {
-    _sourceWidth = ensureInt(value);
+    _sourceWidth = value;
     _updateCanvasSize();
   }
 
@@ -254,7 +254,7 @@ class Stage extends DisplayObjectContainer {
   int get sourceHeight => _sourceHeight;
 
   set sourceHeight(int value) {
-    _sourceHeight = ensureInt(value);
+    _sourceHeight = value;
     _updateCanvasSize();
   }
 
@@ -263,7 +263,7 @@ class Stage extends DisplayObjectContainer {
   num get pixelRatio => _pixelRatio;
 
   set pixelRatio(num value) {
-    _pixelRatio = ensureNum(value);
+    _pixelRatio = value;
     _updateCanvasSize();
   }
 
@@ -399,8 +399,8 @@ class Stage extends DisplayObjectContainer {
       _renderContext.renderStatistics.reset();
       _renderContext.clear(backgroundColor);
       _renderState.reset(_stageTransformation);
-      _renderState.currentTime = ensureNum(currentTime);
-      _renderState.deltaTime = ensureNum(deltaTime);
+      _renderState.currentTime = currentTime;
+      _renderState.deltaTime = deltaTime;
       _renderState.renderObject(this);
       _renderState.flush();
       _invalid = false;

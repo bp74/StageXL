@@ -301,21 +301,21 @@ class TextField extends InteractiveObject {
     var lineIndent = 0;
 
     var textFormat = _defaultTextFormat;
-    var textFormatSize = ensureNum(textFormat.size);
-    var textFormatStrokeWidth = ensureNum(textFormat.strokeWidth);
-    var textFormatLeftMargin = ensureNum(textFormat.leftMargin);
-    var textFormatRightMargin = ensureNum(textFormat.rightMargin);
-    var textFormatTopMargin = ensureNum(textFormat.topMargin);
-    var textFormatBottomMargin = ensureNum(textFormat.bottomMargin);
-    var textFormatIndent = ensureNum(textFormat.indent);
-    var textFormatLeading = ensureNum(textFormat.leading);
-    var textFormatAlign = ensureString(textFormat.align);
-    var textFormatVerticalAlign = ensureString(textFormat.verticalAlign);
+    var textFormatSize = textFormat.size;
+    var textFormatStrokeWidth = textFormat.strokeWidth;
+    var textFormatLeftMargin = textFormat.leftMargin;
+    var textFormatRightMargin = textFormat.rightMargin;
+    var textFormatTopMargin = textFormat.topMargin;
+    var textFormatBottomMargin = textFormat.bottomMargin;
+    var textFormatIndent = textFormat.indent;
+    var textFormatLeading = textFormat.leading;
+    var textFormatAlign = textFormat.align;
+    var textFormatVerticalAlign = textFormat.verticalAlign;
 
     var fontStyle = textFormat._cssFontStyle;
     var fontStyleMetrics = _getFontStyleMetrics(textFormat);
-    var fontStyleMetricsAscent = ensureNum(fontStyleMetrics.ascent);
-    var fontStyleMetricsDescent = ensureNum(fontStyleMetrics.descent);
+    var fontStyleMetricsAscent = fontStyleMetrics.ascent;
+    var fontStyleMetricsDescent = fontStyleMetrics.descent;
 
     var availableWidth = _width - textFormatLeftMargin - textFormatRightMargin;
     var canvasContext = _dummyCanvasContext;

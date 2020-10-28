@@ -66,40 +66,6 @@ int clampInt(int value, int lower, int upper) {
 
 //-----------------------------------------------------------------------------
 
-bool ensureBool(bool? value) {
-  if (value is bool) {
-    return value;
-  } else {
-    throw ArgumentError('The supplied value ($value) is not a bool.');
-  }
-}
-
-int ensureInt(int? value) {
-  if (value is int) {
-    return value;
-  } else {
-    throw ArgumentError('The supplied value ($value) is not an int.');
-  }
-}
-
-num ensureNum(Object value) {
-  if (value is num) {
-    return value;
-  } else {
-    throw ArgumentError('The supplied value ($value) is not a number.');
-  }
-}
-
-String ensureString(Object value) {
-  if (value is String) {
-    return value;
-  } else {
-    throw ArgumentError('The supplied value ($value) is not a string.');
-  }
-}
-
-//-----------------------------------------------------------------------------
-
 bool similar(num a, num b, [num epsilon = 0.0001]) {
   return (a - epsilon < b) && (a + epsilon > b);
 }
