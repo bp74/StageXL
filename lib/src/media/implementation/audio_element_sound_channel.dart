@@ -1,8 +1,8 @@
 part of stagexl.media;
 
 class AudioElementSoundChannel extends SoundChannel {
-  AudioElementSound? _audioElementSound;
-  SoundTransform? _soundTransform;
+  final AudioElementSound _audioElementSound;
+  late SoundTransform _soundTransform;
   AudioElement? _audioElement;
   StreamSubscription? _volumeChangedSubscription;
   Timer? _completeTimer;
@@ -15,9 +15,9 @@ class AudioElementSoundChannel extends SoundChannel {
   num _position = 0.0;
 
   AudioElementSoundChannel(AudioElementSound audioElementSound, num startTime,
-      num duration, bool loop, SoundTransform? soundTransform) {
+      num duration, bool loop, [SoundTransform? soundTransform]) :
+    _audioElementSound = audioElementSound {
     _soundTransform = soundTransform ?? SoundTransform();
-    _audioElementSound = audioElementSound;
     _startTime = startTime.toDouble();
     _duration = duration.toDouble();
     _loop = loop;
@@ -35,7 +35,7 @@ class AudioElementSoundChannel extends SoundChannel {
   bool get stopped => _stopped;
 
   @override
-  Sound? get sound => _audioElementSound;
+  Sound get sound => _audioElementSound;
 
   //---------------------------------------------------------------------------
 
@@ -92,17 +92,17 @@ class AudioElementSoundChannel extends SoundChannel {
   }
 
   @override
-  SoundTransform? get soundTransform {
+  SoundTransform get soundTransform {
     return _soundTransform;
   }
 
   @override
-  set soundTransform(SoundTransform? value) {
-    _soundTransform = value ?? SoundTransform();
+  set soundTransform(SoundTransform value) {
+    _soundTransform = value;
     if (_audioElement == null) {
       // we can't set the audio element
     } else {
-      var volume1 = _soundTransform!.volume;
+      var volume1 = _soundTransform.volume;
       var volume2 = SoundMixer._audioElementMixer!.volume;
       _audioElement!.volume = volume1 * volume2;
     }
@@ -116,7 +116,7 @@ class AudioElementSoundChannel extends SoundChannel {
       _position = position;
       _audioElement!.pause();
       _audioElement!.currentTime = 0;
-      _audioElementSound!._releaseAudioElement(_audioElement!);
+      _audioElementSound._releaseAudioElement(_audioElement!);
       _audioElement = null;
     }
     if (_volumeChangedSubscription != null) {
@@ -137,10 +137,10 @@ class AudioElementSoundChannel extends SoundChannel {
     var mixer = SoundMixer._audioElementMixer;
 
     if (_stopped) {
-      _audioElementSound!._releaseAudioElement(audioElement);
+      _audioElementSound._releaseAudioElement(audioElement);
     } else {
       _audioElement = audioElement;
-      _audioElement!.volume = _soundTransform!.volume * mixer!.volume;
+      _audioElement!.volume = _soundTransform.volume * mixer!.volume;
       _volumeChangedSubscription =
           mixer.onVolumeChanged.listen(_onVolumeChanged);
       if (_paused == false) {
@@ -168,8 +168,8 @@ class AudioElementSoundChannel extends SoundChannel {
     if (paused) {
       // called by accident
     } else if (loop) {
-      _audioElement!.currentTime = _startTime;
-      _audioElement!.play();
+      _audioElement?.currentTime = _startTime;
+      _audioElement?.play();
       _startCompleteTimer(_duration);
     } else {
       stop();
@@ -177,7 +177,7 @@ class AudioElementSoundChannel extends SoundChannel {
   }
 
   void _onVolumeChanged(num volume) {
-    _audioElement!.volume = _soundTransform!.volume * volume;
+    _audioElement?.volume = _soundTransform.volume * volume;
   }
 
   void _onAudioEnded() {

@@ -129,8 +129,8 @@ class ResourceManager {
     _removeResource('Sound', name);
   }
 
-  Sound? getSound(String name) {
-    return _getResourceValue('Sound', name) as Sound?;
+  Sound getSound(String name) {
+    return _getResourceValue('Sound', name) as Sound;
   }
 
   //----------------------------------------------------------------------------
@@ -148,8 +148,8 @@ class ResourceManager {
     _removeResource('SoundSprite', name);
   }
 
-  SoundSprite? getSoundSprite(String name) {
-    return _getResourceValue('SoundSprite', name) as SoundSprite?;
+  SoundSprite getSoundSprite(String name) {
+    return _getResourceValue('SoundSprite', name) as SoundSprite;
   }
 
   //----------------------------------------------------------------------------
@@ -166,8 +166,8 @@ class ResourceManager {
     _removeResource('Text', name);
   }
 
-  String? getText(String name) {
-    return _getResourceValue('Text', name) as String?;
+  String getText(String name) {
+    return _getResourceValue('Text', name) as String;
   }
 
   //----------------------------------------------------------------------------
