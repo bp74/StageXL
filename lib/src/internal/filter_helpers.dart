@@ -228,14 +228,14 @@ void knockout(List<int> dstData, List<int> srcData) {
 
 //-----------------------------------------------------------------------------------------------
 
-void setColorBlend(List<int> dstData, int? color, List<int> srcData) {
+void setColorBlend(List<int> dstData, int color, List<int> srcData) {
   // optimized version for:
   //   _setColor(data, this.color, this.alpha);
   //   _blend(data, sourceImageData.data);
 
   if (dstData.length != srcData.length) return;
 
-  var rColor = colorGetR(color!);
+  var rColor = colorGetR(color);
   var gColor = colorGetG(color);
   var bColor = colorGetB(color);
   var aColor = colorGetA(color);
@@ -277,14 +277,14 @@ void setColorBlend(List<int> dstData, int? color, List<int> srcData) {
 
 //-----------------------------------------------------------------------------------------------
 
-void setColorKnockout(List<int> dstData, int? color, List<int> srcData) {
+void setColorKnockout(List<int> dstData, int color, List<int> srcData) {
   // optimized version for:
   //   _setColor(data, this.color, this.alpha);
   //   _knockout(data, sourceImageData.data);
 
   if (dstData.length != srcData.length) return;
 
-  var rColor = colorGetR(color!);
+  var rColor = colorGetR(color);
   var gColor = colorGetG(color);
   var bColor = colorGetB(color);
   var aColor = colorGetA(color);
