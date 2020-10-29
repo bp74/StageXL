@@ -513,8 +513,8 @@ abstract class DisplayObject extends EventDispatcher
     var matrix = transformationMatrix;
     var boundsTransformed = matrix.transformRectangle(bounds, bounds);
     var scale = value / boundsTransformed.width;
-    num ma = scale.isFinite ? matrix.a * scale : 1.0;
-    num mc = scale.isFinite ? matrix.c * scale : 0.0;
+    var ma = scale.isFinite ? matrix.a * scale : 1.0;
+    var mc = scale.isFinite ? matrix.c * scale : 0.0;
     _reverseMatrix(ma, matrix.b, mc, matrix.d);
   }
 
@@ -530,8 +530,8 @@ abstract class DisplayObject extends EventDispatcher
     var matrix = transformationMatrix;
     var boundsTransformed = matrix.transformRectangle(bounds, bounds);
     var scale = value / boundsTransformed.height;
-    num mb = scale.isFinite ? matrix.b * scale : 0.0;
-    num md = scale.isFinite ? matrix.d * scale : 1.0;
+    var mb = scale.isFinite ? matrix.b * scale : 0.0;
+    var md = scale.isFinite ? matrix.d * scale : 1.0;
     _reverseMatrix(matrix.a, mb, matrix.c, md);
   }
 
@@ -575,20 +575,20 @@ abstract class DisplayObject extends EventDispatcher
       }
 
       if (skewX != 0.0 || skewY != 0.0) {
-        num ma = scaleX * cos(skewY + rotation);
-        num mb = scaleX * sin(skewY + rotation);
-        num mc = -scaleY * sin(skewX + rotation);
-        num md = scaleY * cos(skewX + rotation);
+        var ma = scaleX * cos(skewY + rotation);
+        var mb = scaleX * sin(skewY + rotation);
+        var mc = -scaleY * sin(skewX + rotation);
+        var md = scaleY * cos(skewX + rotation);
         var mx = _x - _pivotX * ma - _pivotY * mc;
         var my = _y - _pivotX * mb - _pivotY * md;
         matrix.setTo(ma, mb, mc, md, mx, my);
       } else if (rotation != 0.0) {
         var cr = cos(rotation);
         var sr = sin(rotation);
-        num ma = scaleX * cr;
-        num mb = scaleX * sr;
-        num mc = -scaleY * sr;
-        num md = scaleY * cr;
+        var ma = scaleX * cr;
+        var mb = scaleX * sr;
+        var mc = -scaleY * sr;
+        var md = scaleY * cr;
         var mx = _x - _pivotX * ma - _pivotY * mc;
         var my = _y - _pivotX * mb - _pivotY * md;
         matrix.setTo(ma, mb, mc, md, mx, my);

@@ -238,8 +238,8 @@ class RenderContextCanvas extends RenderContext {
       var mb = id * (v3 * y2 - v2 * y3);
       var mc = id * (u2 * x3 - u3 * x2);
       var md = id * (u2 * y3 - u3 * y2);
-      num mx = x1 - ma * u1 - mc * v1;
-      num my = y1 - mb * u1 - md * v1;
+      var mx = x1 - ma * u1 - mc * v1;
+      var my = y1 - mb * u1 - md * v1;
 
       context.transform(ma * iw, mb * iw, mc * ih, md * ih, mx, my);
       context.drawImage(source!, 0, 0);
