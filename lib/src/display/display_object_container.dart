@@ -316,10 +316,11 @@ abstract class DisplayObjectContainer extends InteractiveObject
   /// [DisplayObjectContainer] instance. Grandchildren, great-grandchildren,
   /// and so on each return true.
 
-  bool contains(DisplayObject? child) {
-    while (child != null) {
-      if (child == this) return true;
-      child = child.parent;
+  bool contains(DisplayObject child) {
+    DisplayObject? localChild = child;
+    while (localChild != null) {
+      if (localChild == this) return true;
+      localChild = localChild.parent;
     }
     return false;
   }
