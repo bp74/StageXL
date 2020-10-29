@@ -919,11 +919,11 @@ abstract class DisplayObject extends EventDispatcher
 
   void applyCache(num x, num y, num width, num height,
       {bool debugBorder = false, num pixelRatio = 1.0}) {
-    _cache ??= _DisplayObjectCache(this);
-    _cache!.debugBorder = debugBorder;
-    _cache!.pixelRatio = pixelRatio;
-    _cache!.bounds = Rectangle<num>(x, y, width, height);
-    _cache!.update();
+    final cache = _cache ??= _DisplayObjectCache(this);
+    cache.debugBorder = debugBorder;
+    cache.pixelRatio = pixelRatio;
+    cache.bounds = Rectangle<num>(x, y, width, height);
+    cache.update();
   }
 
   /// Refreshes the cached area of this display object.
