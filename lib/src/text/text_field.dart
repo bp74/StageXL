@@ -614,7 +614,6 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   String _passwordEncoder(String text) {
-    if (text is! String) return text;
     if (_displayAsPassword == false) return text;
 
     var newText = '';
