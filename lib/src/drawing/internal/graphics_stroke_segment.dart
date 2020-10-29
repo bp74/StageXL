@@ -280,7 +280,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     for (var s = 0; s < steps; s++) {
       var bx = ax * cosR - ay * sinR + tx;
       var by = ax * sinR + ay * cosR + ty;
-      var index = addVertex((ax = bx), (ay = by));
+      var index = addVertex(ax = bx, ay = by);
       addIndices(index1, index3, index);
       index3 = index;
     }
