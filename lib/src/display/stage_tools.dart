@@ -62,11 +62,12 @@ class _Drag {
     sprite.globalToLocal(stagePoint, localPoint);
 
     if (bounds != null) {
+      final bounds = this.bounds!;
       sprite.localToParent(localPoint, parentPoint);
-      if (parentPoint.x < bounds!.left) parentPoint.x = bounds!.left;
-      if (parentPoint.x > bounds!.right) parentPoint.x = bounds!.right;
-      if (parentPoint.y < bounds!.top) parentPoint.y = bounds!.top;
-      if (parentPoint.y > bounds!.bottom) parentPoint.y = bounds!.bottom;
+      if (parentPoint.x < bounds.left) parentPoint.x = bounds.left;
+      if (parentPoint.x > bounds.right) parentPoint.x = bounds.right;
+      if (parentPoint.y < bounds.top) parentPoint.y = bounds.top;
+      if (parentPoint.y > bounds.bottom) parentPoint.y = bounds.bottom;
       sprite.parentToLocal(parentPoint, localPoint);
     }
 

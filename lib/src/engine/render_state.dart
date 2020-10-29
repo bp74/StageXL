@@ -60,10 +60,10 @@ class RenderState {
   //---------------------------------------------------------------------------
 
   void reset([Matrix? matrix, num? alpha, BlendMode? blendMode]) {
-    _currentContextState = _firstContextState;
-    _currentContextState!.matrix.identity();
-    _currentContextState!.alpha = 1.0;
-    _currentContextState!.blendMode = BlendMode.NORMAL;
+    final currentContextState = _currentContextState = _firstContextState;
+    currentContextState.matrix.identity();
+    currentContextState.alpha = 1.0;
+    currentContextState.blendMode = BlendMode.NORMAL;
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
     if (alpha is num) _firstContextState.alpha = alpha.toDouble();
@@ -71,10 +71,10 @@ class RenderState {
   }
 
   void copyFrom(RenderState renderState) {
-    _currentContextState = _firstContextState;
-    _currentContextState!.matrix.copyFrom(renderState.globalMatrix);
-    _currentContextState!.alpha = renderState.globalAlpha;
-    _currentContextState!.blendMode = renderState.globalBlendMode;
+    final currentContextState = _currentContextState = _firstContextState;
+    currentContextState.matrix.copyFrom(renderState.globalMatrix);
+    currentContextState.alpha = renderState.globalAlpha;
+    currentContextState.blendMode = renderState.globalBlendMode;
   }
 
   //---------------------------------------------------------------------------
