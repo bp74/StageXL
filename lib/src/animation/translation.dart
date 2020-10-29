@@ -19,18 +19,21 @@ part of stagexl.animation;
 ///       print('the value changed to $v'));
 ///     });
 
+typedef VoidFunction = void Function();
+typedef NumUpdateFunction = void Function(num);
+
 class Translation implements Animatable {
   final num _startValue;
   final num _targetValue;
   final TransitionFunction _transition;
 
   late num _currentValue;
-  Function? _onStart;
-  Function? _onUpdate;
-  Function? _onComplete;
+  VoidFunction? _onStart;
+  NumUpdateFunction? _onUpdate;
+  VoidFunction? _onComplete;
 
-  num _totalTime = 0.0;
-  num _currentTime = 0.0;
+  double _totalTime = 0.0;
+  double _currentTime = 0.0;
   num _delay = 0.0;
   bool _roundToInt = false;
   bool _started = false;
@@ -42,7 +45,7 @@ class Translation implements Animatable {
         _targetValue = targetValue,
         _transition = transition {
     _currentValue = startValue;
-    _totalTime = max(0.0001, time);
+    _totalTime = max(0.0001, time.toDouble());
   }
 
   //----------------------------------------------------------------------------
@@ -93,10 +96,10 @@ class Translation implements Animatable {
   num get currentValue => _roundToInt ? _currentValue.round() : _currentValue;
 
   /// The total time of this [Animation].
-  num get totalTime => _totalTime;
+  double get totalTime => _totalTime;
 
   /// The current time of this [Animation].
-  num get currentTime => _currentTime;
+  double get currentTime => _currentTime;
 
   /// The delay before the translation actually starts.
   ///
@@ -127,17 +130,17 @@ class Translation implements Animatable {
   /// The function that is called when this [Translation] starts.
   ///
   /// This happens after the specified [delay].
-  set onStart(void Function() function) {
-    _onStart = function;
+  set onStart(VoidFunction value) {
+    _onStart = value;
   }
 
   /// The function that is called every time this [Translation] updates the value.
-  set onUpdate(void Function(num value) function) {
-    _onUpdate = function;
+  set onUpdate(NumUpdateFunction value) {
+    _onUpdate = value;
   }
 
   /// The function that is called when this [Translation] is completed.
-  set onComplete(void Function() function) {
-    _onComplete = function;
+  set onComplete(VoidFunction value) {
+    _onComplete = value;
   }
 }
