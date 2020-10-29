@@ -90,7 +90,7 @@ class _TextureAtlasLoaderBitmapData extends TextureAtlasLoader {
   Future<String> getSource() => Future.value(source);
 
   @override
-  Future<RenderTextureQuad> getRenderTextureQuad(String? filename) {
+  Future<RenderTextureQuad> getRenderTextureQuad(String filename) {
     return Future.value(bitmapData.renderTextureQuad);
   }
 }

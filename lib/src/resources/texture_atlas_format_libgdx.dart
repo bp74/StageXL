@@ -71,7 +71,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
 
         var textureAtlasFrame = TextureAtlasFrame(
             textureAtlas,
-            renderTextureQuad,
+            renderTextureQuad!,
             frameName,
             frameRotation,
             offsetX,

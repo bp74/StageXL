@@ -60,7 +60,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
 
     if (frameMap.containsKey('vertices')) {
       var vertices = frameMap['vertices'] as List;
-      var verticesUV = frameMap['verticesUV'] as List?;
+      var verticesUV = frameMap['verticesUV'] as List;
       var triangles = frameMap['triangles'] as List;
       var width = metaMap['size']['w'].toInt();
       var height = metaMap['size']['h'].toInt();
@@ -71,7 +71,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
       for (var i = 0, j = 0; i <= vxList.length - 4; i += 4, j += 1) {
         vxList[i + 0] = vertices[j][0] * 1.0;
         vxList[i + 1] = vertices[j][1] * 1.0;
-        vxList[i + 2] = verticesUV![j][0] / width;
+        vxList[i + 2] = verticesUV[j][0] / width;
         vxList[i + 3] = verticesUV[j][1] / height;
       }
 

@@ -3,11 +3,11 @@ part of stagexl.resources;
 class SpriteSheet {
   int width;
   int height;
-  BitmapData? source;
+  BitmapData source;
   late List<BitmapData> frames;
 
   SpriteSheet(this.source, this.width, this.height) {
-    frames = source!.sliceIntoFrames(width, height);
+    frames = source.sliceIntoFrames(width, height);
   }
 
   BitmapData frameAt(int index) {

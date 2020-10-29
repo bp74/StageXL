@@ -193,7 +193,7 @@ class RenderTextureQuad {
     return Rectangle<num>(l, t, w, h);
   }
 
-  RenderTextureQuad withPixelRatio([num pixelRatio = 1.0]) {
+  RenderTextureQuad withPixelRatio(num pixelRatio) {
     return RenderTextureQuad(
         renderTexture, sourceRectangle, offsetRectangle, rotation, pixelRatio);
   }

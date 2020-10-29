@@ -2,7 +2,7 @@ part of stagexl.resources;
 
 class TextureAtlasFrame {
   final TextureAtlas textureAtlas;
-  final RenderTextureQuad? textureAtlasQuad;
+  final RenderTextureQuad textureAtlasQuad;
   final String name;
   final int rotation;
 
@@ -40,7 +40,7 @@ class TextureAtlasFrame {
       this.ixList) {
     var s = Rectangle<int>(frameX, frameY, frameWidth, frameHeight);
     var o = Rectangle<int>(-offsetX, -offsetY, originalWidth, originalHeight);
-    var q = RenderTextureQuad.slice(textureAtlasQuad!, s, o, rotation);
+    var q = RenderTextureQuad.slice(textureAtlasQuad, s, o, rotation);
 
     if (vxList != null && ixList != null) {
       q.setCustomVertices(vxList!, ixList!);

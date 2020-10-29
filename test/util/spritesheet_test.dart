@@ -14,7 +14,7 @@ void main() {
     resourceManager!.addBitmapData('spiders', '../common/images/spider.png');
     await resourceManager!.load();
     spiders = resourceManager!.getBitmapData('spiders');
-    spritesheet = SpriteSheet(spiders, 32, 32);
+    spritesheet = SpriteSheet(spiders!, 32, 32);
   });
 
   tearDown(() {
