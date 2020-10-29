@@ -87,7 +87,7 @@ class Stage extends DisplayObjectContainer {
   InteractiveObject? _mouseTarget;
 
   final List<_Drag> _drags = <_Drag>[];
-  final Map<int, _TouchPoint> _touchPoints = {};
+  final Map<int, _TouchPoint> _touchPoints = <int, _TouchPoint>{};
   final List<_MouseButton> _mouseButtons = _MouseButton.createDefaults();
 
   //----------------------------------------------------------------------------
