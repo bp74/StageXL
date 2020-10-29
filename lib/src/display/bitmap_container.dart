@@ -200,7 +200,7 @@ class BitmapContainer extends DisplayObject
   }
 
   void _renderCanvas2D(RenderState renderState) {
-    var context = renderState.renderContext as RenderContextCanvas?;
+    var context = renderState.renderContext as RenderContextCanvas;
 
     for (var i = 0; i < _children.length; i++) {
       var bitmap = _children[i];
@@ -209,7 +209,7 @@ class BitmapContainer extends DisplayObject
         if (bitmapData != null) {
           var matrix = bitmap.transformationMatrix;
           renderState.push(matrix, bitmap.alpha, bitmap.blendMode);
-          context!.renderTextureQuad(renderState, bitmapData.renderTextureQuad);
+          context.renderTextureQuad(renderState, bitmapData.renderTextureQuad);
           renderState.pop();
         }
       }
