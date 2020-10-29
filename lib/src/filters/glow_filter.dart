@@ -152,9 +152,9 @@ class GlowFilter extends BitmapFilter {
 
   @override
   void renderFilter(
-      RenderState renderState, RenderTextureQuad? renderTextureQuad, int pass) {
-    var renderContext = renderState.renderContext as RenderContextWebGL?;
-    var renderTexture = renderTextureQuad!.renderTexture;
+      RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+    var renderContext = renderState.renderContext as RenderContextWebGL;
+    var renderTexture = renderTextureQuad.renderTexture;
     var passCount = _renderPassSources.length;
     var passScale = pow(0.5, pass >> 1);
     var pixelRatio = sqrt(renderState.globalMatrix.det.abs());
@@ -162,10 +162,10 @@ class GlowFilter extends BitmapFilter {
 
     if (pass == passCount - 1) {
       if (!knockout && !hideObject) {
-        renderContext!.renderTextureQuad(renderState, renderTextureQuad);
+        renderContext.renderTextureQuad(renderState, renderTextureQuad);
       }
     } else {
-      var renderProgram = renderContext!.getRenderProgram(
+      var renderProgram = renderContext.getRenderProgram(
           r'$GlowFilterProgram', () => GlowFilterProgram());
 
       renderContext.activateRenderProgram(renderProgram);
