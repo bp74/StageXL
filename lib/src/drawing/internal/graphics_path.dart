@@ -149,7 +149,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     for (var s = 1; s <= steps; s++) {
       var bx = ax * cosR - ay * sinR + tx;
       var by = ax * sinR + ay * cosR + ty;
-      _currentSegment!.addVertex((ax = bx), (ay = by));
+      _currentSegment!.addVertex(ax = bx, ay = by);
     }
   }
 
