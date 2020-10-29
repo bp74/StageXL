@@ -39,7 +39,7 @@ class _FontStyleMetrics {
       height = block.offsetTop - text.offsetTop;
       descent = height - ascent;
     } catch (e) {
-      height = textFormat.size as int;
+      height = textFormat.size.toInt();
       ascent = textFormat.size * 7 ~/ 8;
       descent = textFormat.size * 2 ~/ 8;
     } finally {

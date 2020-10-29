@@ -338,7 +338,7 @@ class TextField extends InteractiveObject {
         startIndex += paragraph.length + 1;
       } else {
         checkLine = null;
-        lineIndent = textFormatIndent as int;
+        lineIndent = textFormatIndent.toInt();
 
         var words = paragraph.split(' ');
 
