@@ -262,7 +262,7 @@ class _BitmapContainerRenderState extends RenderState {
   }
 
   @override
-  void push(Matrix matrix, num alpha, BlendMode? blendMode) {
+  void push(Matrix matrix, num alpha, [BlendMode? blendMode]) {
     throw StateError('Not supported');
   }
 

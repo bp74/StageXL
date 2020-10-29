@@ -180,7 +180,7 @@ class RenderState {
 
   //---------------------------------------------------------------------------
 
-  void push(Matrix matrix, num alpha, BlendMode? blendMode) {
+  void push(Matrix matrix, num alpha, [BlendMode? blendMode]) {
     var cs1 = _currentContextState!;
     var cs2 = _currentContextState!.nextContextState;
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
