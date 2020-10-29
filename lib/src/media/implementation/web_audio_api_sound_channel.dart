@@ -129,7 +129,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
 
   //---------------------------------------------------------------------------
 
-  void _onEnded(html.Event? e) {
+  void _onEnded(html.Event? _) {
     if (_paused == false && _stopped == false && _loop == false) {
       _position = position;
       _stopped = true;
