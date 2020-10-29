@@ -65,8 +65,8 @@ class ResourceManager {
     }
   }
 
-  BitmapData? getBitmapData(String name) =>
-      _getResourceValue('BitmapData', name) as BitmapData?;
+  BitmapData getBitmapData(String name) =>
+      _getResourceValue('BitmapData', name) as BitmapData;
 
   //----------------------------------------------------------------------------
 
@@ -91,8 +91,8 @@ class ResourceManager {
     }
   }
 
-  TextureAtlas? getTextureAtlas(String name) {
-    return _getResourceValue('TextureAtlas', name) as TextureAtlas?;
+  TextureAtlas getTextureAtlas(String name) {
+    return _getResourceValue('TextureAtlas', name) as TextureAtlas;
   }
 
   //----------------------------------------------------------------------------
@@ -110,8 +110,8 @@ class ResourceManager {
     _removeResource('Video', name);
   }
 
-  Video? getVideo(String name) {
-    return _getResourceValue('Video', name) as Video?;
+  Video getVideo(String name) {
+    return _getResourceValue('Video', name) as Video;
   }
 
   //----------------------------------------------------------------------------
@@ -178,7 +178,7 @@ class ResourceManager {
 
   void addTextFile(String name, String url) {
     var loader =
-        HttpRequest.getString(url).then(((text) => text) as FutureOr<String> Function(String), onError: (error) {
+        HttpRequest.getString(url).then(((text) => text), onError: (error) {
       throw StateError('Failed to load text file.');
     });
     _addResource('TextFile', name, url, loader);
@@ -188,8 +188,8 @@ class ResourceManager {
     _removeResource('TextFile', name);
   }
 
-  String? getTextFile(String name) {
-    return _getResourceValue('TextFile', name) as String?;
+  String getTextFile(String name) {
+    return _getResourceValue('TextFile', name) as String;
   }
 
   //----------------------------------------------------------------------------

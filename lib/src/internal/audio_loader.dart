@@ -14,7 +14,7 @@ class AudioLoader {
 
   late StreamSubscription _onCanPlaySubscription;
   late StreamSubscription _onErrorSubscription;
-  final List<String?> _urls = <String?>[];
+  final List<String> _urls = <String>[];
   bool _loadData = false;
 
   AudioLoader(List<String> urls, bool loadData, bool corsEnabled) {
@@ -53,9 +53,9 @@ class AudioLoader {
     if (_urls.isEmpty) {
       _loadFailed();
     } else if (_loadData) {
-      _loadAudioData(_urls.removeAt(0)!);
+      _loadAudioData(_urls.removeAt(0));
     } else {
-      _loadAudioSource(_urls.removeAt(0)!);
+      _loadAudioSource(_urls.removeAt(0));
     }
   }
 

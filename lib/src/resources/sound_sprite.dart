@@ -13,7 +13,7 @@ part of stagexl.resources;
 
 class SoundSprite {
   final List<SoundSpriteSegment> _segments = <SoundSpriteSegment>[];
-  Sound? _sound;
+  late final Sound _sound;
 
   //----------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ class SoundSprite {
     var data = json.decode(soundSpriteJson);
     var urls = data['urls'] as List<dynamic>;
     var segments = data['sprite'];
-    var soundUrls = <String?>[];
+    var soundUrls = <String>[];
 
     if (segments is Map) {
       for (var segment in segments.keys as Iterable<String>) {
@@ -48,7 +48,7 @@ class SoundSprite {
 
   //----------------------------------------------------------------------------
 
-  Sound? get sound => _sound;
+  Sound get sound => _sound;
 
   List<SoundSpriteSegment> get segments {
     return _segments.toList(growable: false);

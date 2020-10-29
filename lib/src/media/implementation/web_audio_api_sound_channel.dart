@@ -92,7 +92,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
       _sourceNode.loop = true;
       _sourceNode.loopStart = _startTime;
       _sourceNode.loopEnd = _startTime + _duration;
-      _sourceNode.connectNode(_mixer.inputNode!);
+      _sourceNode.connectNode(_mixer.inputNode);
       _sourceNode.start(0, _startTime + _position);
       _timeOffset = WebAudioApiMixer.audioContext.currentTime! - _position;
     } else {
@@ -100,7 +100,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
       _sourceNode = WebAudioApiMixer.audioContext.createBufferSource();
       _sourceNode.buffer = _webAudioApiSound._audioBuffer;
       _sourceNode.loop = false;
-      _sourceNode.connectNode(_mixer.inputNode!);
+      _sourceNode.connectNode(_mixer.inputNode);
       _sourceNode.start(0, _startTime + _position, _duration - _position);
       _sourceNodeEndedSubscription = _sourceNode.onEnded.listen(_onEnded);
       _timeOffset = WebAudioApiMixer.audioContext.currentTime! - _position;

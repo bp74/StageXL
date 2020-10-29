@@ -17,12 +17,12 @@ class SoundMixer {
   /// different one. Setting the engine to `null` will switch back to the
   /// automatically detected engine.
 
-  static SoundEngine? get engine {
+  static SoundEngine get engine {
     _initEngine();
-    return _engineOverride ?? _engineDetected;
+    return _engineOverride ?? _engineDetected!;
   }
 
-  static set engine(SoundEngine? value) {
+  static set engine(SoundEngine value) {
     _engineOverride = value;
     _initEngine();
   }

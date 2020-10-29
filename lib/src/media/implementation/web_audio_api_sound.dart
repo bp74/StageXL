@@ -3,7 +3,7 @@ part of stagexl.media;
 class WebAudioApiSound extends Sound {
   final AudioBuffer _audioBuffer;
 
-  WebAudioApiSound._(AudioBuffer audioBuffer) : _audioBuffer = audioBuffer;
+  WebAudioApiSound._(this._audioBuffer);
 
   //---------------------------------------------------------------------------
 
@@ -62,11 +62,11 @@ class WebAudioApiSound extends Sound {
   SoundEngine get engine => SoundEngine.WebAudioApi;
 
   @override
-  num? get length => _audioBuffer.duration;
+  num get length => _audioBuffer.duration!;
 
   @override
   SoundChannel play([bool loop = false, SoundTransform? soundTransform]) {
-    return WebAudioApiSoundChannel(this, 0, length!, loop, soundTransform);
+    return WebAudioApiSoundChannel(this, 0, length, loop, soundTransform);
   }
 
   @override

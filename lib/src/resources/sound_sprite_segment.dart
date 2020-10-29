@@ -11,7 +11,7 @@ class SoundSpriteSegment {
       this.soundSprite, this.name, this.startTime, this.duration, this.loop);
 
   SoundChannel play([bool? loop, SoundTransform? soundTransform]) {
-    return soundSprite.sound!
+    return soundSprite.sound
         .playSegment(startTime, duration, loop ?? this.loop, soundTransform);
   }
 }
