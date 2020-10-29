@@ -636,12 +636,13 @@ class TextField extends InteractiveObject {
 
     CanvasGradient canvasGradient;
 
-    if (gradient.type == GraphicsGradientType.Linear) {
-      canvasGradient = context.createLinearGradient(sx, sy, ex, ey);
-    } else if (gradient.type == GraphicsGradientType.Radial) {
-      canvasGradient = context.createRadialGradient(sx, sy, sr, ex, ey, er);
-    } else {
-      throw StateError('Unknown gradient kind');
+    switch (gradient.type) {
+      case GraphicsGradientType.Linear:
+        canvasGradient = context.createLinearGradient(sx, sy, ex, ey);
+        break;
+      case GraphicsGradientType.Radial:
+        canvasGradient = context.createRadialGradient(sx, sy, sr, ex, ey, er);
+        break;
     }
 
     for (var colorStop in gradient.colorStops) {
