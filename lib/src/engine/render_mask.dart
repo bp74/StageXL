@@ -18,7 +18,7 @@ abstract class RenderMask {
 /// A specialized [RenderMask] that supports the WebGL scissor feature.
 
 abstract class ScissorRenderMask implements RenderMask {
-  Rectangle<num> getScissorRectangle(RenderState renderState);
+  Rectangle<num>? getScissorRectangle(RenderState renderState);
 }
 
 //------------------------------------------------------------------------------

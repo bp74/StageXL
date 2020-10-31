@@ -26,7 +26,7 @@ class FxaaFilter extends BitmapFilter {
   //----------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     // not supported with BitmapDatas
   }
 
@@ -35,7 +35,7 @@ class FxaaFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    RenderContextWebGL renderContext = renderState.renderContext;
+    var renderContext = renderState.renderContext as RenderContextWebGL;
     var renderTexture = renderTextureQuad.renderTexture;
 
     var renderProgram = renderContext.getRenderProgram(

@@ -38,7 +38,7 @@ class BitmapContainer extends DisplayObject
   }
 
   @override
-  Bitmap getChildByName(String name) {
+  Bitmap? getChildByName(String name) {
     for (var i = 0; i < _children.length; i++) {
       var child = _children[i];
       if (child.name == name) return child;
@@ -98,10 +98,10 @@ class BitmapContainer extends DisplayObject
   }
 
   @override
-  void removeChildren([int beginIndex, int endIndex]) {
+  void removeChildren([int beginIndex = 0, int? endIndex]) {
     var length = _children.length;
-    var i1 = beginIndex is int ? beginIndex : 0;
-    var i2 = endIndex is int ? endIndex : length - 1;
+    var i1 = beginIndex;
+    var i2 = endIndex ?? length - 1;
     if (i1 > i2) {
       // do nothing
     } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
@@ -138,7 +138,7 @@ class BitmapContainer extends DisplayObject
   }
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     return null;
   }
 
@@ -221,7 +221,7 @@ class BitmapContainer extends DisplayObject
 //-----------------------------------------------------------------------------
 
 class _BitmapContainerRenderState extends RenderState {
-  Bitmap bitmap;
+  late Bitmap bitmap;
   final BlendMode blendMode;
   final double alpha;
 
@@ -247,7 +247,7 @@ class _BitmapContainerRenderState extends RenderState {
   //---------------------------------------------------------------------------
 
   @override
-  void reset([Matrix matrix, num alpha, BlendMode blendMode]) {
+  void reset([Matrix? matrix, num? alpha, BlendMode? blendMode]) {
     throw StateError('Not supported');
   }
 
@@ -262,7 +262,7 @@ class _BitmapContainerRenderState extends RenderState {
   }
 
   @override
-  void push(Matrix matrix, num alpha, BlendMode blendMode) {
+  void push(Matrix matrix, num alpha, [BlendMode? blendMode]) {
     throw StateError('Not supported');
   }
 

@@ -1,7 +1,7 @@
 part of stagexl.drawing;
 
 abstract class _GraphicsGradientProgram extends RenderProgram {
-  GraphicsGradient activeGradient;
+  GraphicsGradient? activeGradient;
 
   // aVertexPosition:   Float32(x), Float32(y)
   // aVertexAlpha:      Float32(alpha)
@@ -75,8 +75,8 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
     var my = matrix.ty;
 
     for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
-      num x = vxList[o + 0];
-      num y = vxList[o + 1];
+      var x = vxList[o + 0];
+      var y = vxList[o + 1];
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = alpha;

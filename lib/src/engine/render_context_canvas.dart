@@ -40,13 +40,13 @@ class RenderContextCanvas extends RenderContext {
 
     if (alpha < 255) {
       _renderingContext.clearRect(
-          0, 0, _canvasElement.width, _canvasElement.height);
+          0, 0, _canvasElement.width!, _canvasElement.height!);
     }
 
     if (alpha > 0) {
       _renderingContext.fillStyle = color2rgba(color);
       _renderingContext.fillRect(
-          0, 0, _canvasElement.width, _canvasElement.height);
+          0, 0, _canvasElement.width!, _canvasElement.height!);
     }
   }
 
@@ -119,7 +119,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(
           matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(
-          source,
+          source!,
           sourceRect.left,
           sourceRect.top,
           sourceRect.width,
@@ -132,7 +132,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(
           -matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(
-          source,
+          source!,
           sourceRect.left,
           sourceRect.top,
           sourceRect.width,
@@ -145,7 +145,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(
           -matrix.a, -matrix.b, -matrix.c, -matrix.d, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(
-          source,
+          source!,
           sourceRect.left,
           sourceRect.top,
           sourceRect.width,
@@ -158,7 +158,7 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(
           matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
       context.drawImageScaledFromSource(
-          source,
+          source!,
           sourceRect.left,
           sourceRect.top,
           sourceRect.width,
@@ -242,7 +242,7 @@ class RenderContextCanvas extends RenderContext {
       var my = y1 - mb * u1 - md * v1;
 
       context.transform(ma * iw, mb * iw, mc * ih, md * ih, mx, my);
-      context.drawImage(source, 0, 0);
+      context.drawImage(source!, 0, 0);
       context.restore();
     }
   }

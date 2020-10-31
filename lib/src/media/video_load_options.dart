@@ -25,7 +25,7 @@ class VideoLoadOptions {
   /// browser. If this value is null, the alternative urls are calcualted
   /// automatically based on the mp3, mp4, ogg, ac3 and wav properties.
 
-  List<String> alternativeUrls;
+  List<String>? alternativeUrls;
 
   /// Do not stream the video but download the video file as a whole.
   /// A DataUrl string will be used for the VideoElement source.
@@ -72,7 +72,7 @@ class VideoLoadOptions {
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
 
     if (alternativeUrls != null) {
-      for (var alternativeUrl in alternativeUrls) {
+      for (var alternativeUrl in alternativeUrls!) {
         var alternativeMatch = regex.firstMatch(alternativeUrl);
         if (alternativeMatch == null) continue;
         if (availableTypes.contains(alternativeMatch.group(1))) {

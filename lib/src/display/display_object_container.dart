@@ -167,10 +167,10 @@ abstract class DisplayObjectContainer extends InteractiveObject
   /// objects are garbage collected if no other references to the children exist.
 
   @override
-  void removeChildren([int beginIndex, int endIndex]) {
+  void removeChildren([int beginIndex = 0, int? endIndex]) {
     var length = _children.length;
-    var i1 = beginIndex is int ? beginIndex : 0;
-    var i2 = endIndex is int ? endIndex : length - 1;
+    var i1 = beginIndex;
+    var i2 = endIndex ?? length - 1;
     if (i1 > i2) {
       // do nothing
     } else if (i1 < 0 || i1 >= length || i2 < 0 || i2 >= length) {
@@ -230,7 +230,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
   /// [getChildByName] method has to traverse a list to access a child.
 
   @override
-  DisplayObject getChildByName(String name) {
+  DisplayObject? getChildByName(String name) {
     for (var i = 0; i < _children.length; i++) {
       var child = _children[i];
       if (child.name == name) return child;
@@ -317,9 +317,10 @@ abstract class DisplayObjectContainer extends InteractiveObject
   /// and so on each return true.
 
   bool contains(DisplayObject child) {
-    while (child != null) {
-      if (child == this) return true;
-      child = child.parent;
+    DisplayObject? localChild = child;
+    while (localChild != null) {
+      if (localChild == this) return true;
+      localChild = localChild.parent;
     }
     return false;
   }
@@ -374,11 +375,11 @@ abstract class DisplayObjectContainer extends InteractiveObject
   //----------------------------------------------------------------------------
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     localX = localX.toDouble();
     localY = localY.toDouble();
 
-    DisplayObject hit;
+    DisplayObject? hit;
 
     for (var i = _children.length - 1; i >= 0; i--) {
       var child = _children[i];
@@ -400,8 +401,8 @@ abstract class DisplayObjectContainer extends InteractiveObject
         if (child is DisplayObjectContainer3D) {
           var point = Point<num>(childX, childY);
           child.projectionMatrix3D.transformPointInverse(point, point);
-          childX = point.x;
-          childY = point.y;
+          childX = point.x.toDouble();
+          childY = point.y.toDouble();
         }
 
         var displayObject = child.hitTestInput(childX, childY);
@@ -434,7 +435,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
   //----------------------------------------------------------------------------
 
   void _throwIfAncestors(DisplayObject child) {
-    for (var a = this; a != null; a = a.parent) {
+    for (DisplayObjectContainer? a = this; a != null; a = a.parent as DisplayObjectContainer?) {
       if (a == child) {
         throw ArgumentError(
             "An object cannot be added as a child to one of it's children "
@@ -484,7 +485,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
     // only if necessary.
 
     var captured = false;
-    for (DisplayObject obj = this;
+    for (DisplayObject? obj = this;
         obj != null && captured == false;
         obj = obj.parent) {
       if (obj.hasEventListener(eventType, useCapture: true)) captured = true;

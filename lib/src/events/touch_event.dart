@@ -40,9 +40,9 @@ class TouchEvent extends InputEvent {
       num localY,
       num stageX,
       num stageY,
-      bool altKey,
-      bool ctrlKey,
-      bool shiftKey,
+      bool? altKey,
+      bool? ctrlKey,
+      bool? shiftKey,
       this.touchPointID,
       this.isPrimaryTouchPoint)
       : super(type, bubbles, localX, localY, stageX, stageY, altKey, ctrlKey,

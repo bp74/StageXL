@@ -3,11 +3,11 @@ part of stagexl.drawing;
 /// The base class for all graphics commands
 
 abstract class GraphicsCommand {
-  Graphics _graphics;
+  Graphics? _graphics;
 
   //---------------------------------------------------------------------------
 
-  Graphics get graphics => _graphics;
+  Graphics? get graphics => _graphics;
 
   void updateContext(GraphicsContext context);
 
@@ -15,7 +15,7 @@ abstract class GraphicsCommand {
 
   //---------------------------------------------------------------------------
 
-  void _setGraphics(Graphics graphics) {
+  void _setGraphics(Graphics? graphics) {
     if (_graphics != null && graphics != null) {
       throw ArgumentError('Command is already assigned to graphics.');
     } else {

@@ -20,10 +20,10 @@ abstract class TextureAtlasLoader {
 //-------------------------------------------------------------------------------------------------
 
 class _TextureAtlasLoaderFile extends TextureAtlasLoader {
-  BitmapDataLoadOptions _loadOptions;
-  BitmapDataLoadInfo _loadInfo;
+  late BitmapDataLoadOptions _loadOptions;
+  late BitmapDataLoadInfo _loadInfo;
 
-  _TextureAtlasLoaderFile(String url, BitmapDataLoadOptions options) {
+  _TextureAtlasLoaderFile(String url, BitmapDataLoadOptions? options) {
     _loadOptions = options ?? BitmapData.defaultLoadOptions;
     _loadInfo = BitmapDataLoadInfo(url, _loadOptions.pixelRatios);
   }
@@ -84,7 +84,7 @@ class _TextureAtlasLoaderBitmapData extends TextureAtlasLoader {
   _TextureAtlasLoaderBitmapData(this.bitmapData, this.source);
 
   @override
-  double getPixelRatio() => bitmapData.renderTextureQuad.pixelRatio;
+  double getPixelRatio() => bitmapData.renderTextureQuad.pixelRatio.toDouble();
 
   @override
   Future<String> getSource() => Future.value(source);

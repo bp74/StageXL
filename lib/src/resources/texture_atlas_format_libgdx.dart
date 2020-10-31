@@ -15,7 +15,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
     var lines = source.split(splitRexExp);
     var lineIndex = 0;
     var imageBlock = true;
-    RenderTextureQuad renderTextureQuad;
+    RenderTextureQuad? renderTextureQuad;
 
     //-----------------------------------------------------
 
@@ -50,7 +50,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
           if (frameMatch == null) break;
 
           var key = frameMatch[1];
-          var values = frameMatch[2].split(',').map((s) => s.trim()).toList();
+          var values = frameMatch[2]!.split(',').map((s) => s.trim()).toList();
 
           if (key == 'rotate' && values.length == 1) {
             frameRotation = (values[0] == 'true') ? 3 : 0;
@@ -71,7 +71,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
 
         var textureAtlasFrame = TextureAtlasFrame(
             textureAtlas,
-            renderTextureQuad,
+            renderTextureQuad!,
             frameName,
             frameRotation,
             offsetX,

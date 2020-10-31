@@ -1,12 +1,12 @@
 part of stagexl.media;
 
 class SoundMixer {
-  static SoundEngine _engineDetected;
-  static SoundEngine _engineOverride;
+  static SoundEngine? _engineDetected;
+  static SoundEngine? _engineOverride;
   static SoundTransform _soundTransform = SoundTransform();
 
-  static WebAudioApiMixer _webAudioApiMixer;
-  static AudioElementMixer _audioElementMixer;
+  static WebAudioApiMixer? _webAudioApiMixer;
+  static AudioElementMixer? _audioElementMixer;
 
   //---------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ class SoundMixer {
 
   static SoundEngine get engine {
     _initEngine();
-    return _engineOverride ?? _engineDetected;
+    return _engineOverride ?? _engineDetected!;
   }
 
   static set engine(SoundEngine value) {
@@ -35,7 +35,7 @@ class SoundMixer {
 
   static set soundTransform(SoundTransform value) {
     _initEngine();
-    _soundTransform = value ?? SoundTransform();
+    _soundTransform = value;
     _webAudioApiMixer?.applySoundTransform(_soundTransform);
     _audioElementMixer?.applySoundTransform(_soundTransform);
   }
@@ -58,7 +58,7 @@ class SoundMixer {
         var context = WebAudioApiMixer.audioContext;
         var source = context.createBufferSource();
         source.buffer = context.createBuffer(1, 1, 22050);
-        source.connectNode(context.destination);
+        source.connectNode(context.destination!);
         source.start(0);
       } catch (e) {
         // There is nothing we can do :(

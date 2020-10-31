@@ -1,7 +1,7 @@
 part of stagexl.drawing;
 
 class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
-  _GraphicsPathSegment _currentSegment;
+  _GraphicsPathSegment? _currentSegment;
 
   _GraphicsPath();
 
@@ -16,22 +16,22 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   void close() {
     if (_currentSegment != null) {
-      _currentSegment.closed = true;
+      _currentSegment!.closed = true;
       _currentSegment = null;
     }
   }
 
   void moveTo(double x, double y) {
     _currentSegment = _GraphicsPathSegment();
-    _currentSegment.addVertex(x, y);
-    segments.add(_currentSegment);
+    _currentSegment!.addVertex(x, y);
+    segments.add(_currentSegment!);
   }
 
   void lineTo(double x, double y) {
     if (_currentSegment == null) {
       moveTo(x, y);
     } else {
-      _currentSegment.addVertex(x, y);
+      _currentSegment!.addVertex(x, y);
     }
   }
 
@@ -40,8 +40,8 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     if (_currentSegment == null) {
       moveTo(controlX, controlY);
     } else {
-      var v1x = controlX - _currentSegment.lastVertexX;
-      var v1y = controlY - _currentSegment.lastVertexY;
+      var v1x = controlX - _currentSegment!.lastVertexX;
+      var v1y = controlY - _currentSegment!.lastVertexY;
       var v1l = sqrt(v1x * v1x + v1y * v1y);
       var v1a = atan2(v1y, v1x);
 
@@ -75,8 +75,8 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
       moveTo(endY, endY);
     } else {
       var steps = 20;
-      var vx = _currentSegment.lastVertexX;
-      var vy = _currentSegment.lastVertexY;
+      var vx = _currentSegment!.lastVertexX;
+      var vy = _currentSegment!.lastVertexY;
 
       for (var s = 1; s <= steps; s++) {
         var t0 = s / steps;
@@ -86,7 +86,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
         var b2 = t0 * t0;
         var x = b0 * vx + b1 * controlX + b2 * endX;
         var y = b0 * vy + b1 * controlY + b2 * endY;
-        _currentSegment.addVertex(x, y);
+        _currentSegment!.addVertex(x, y);
       }
     }
   }
@@ -97,8 +97,8 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
       moveTo(endY, endY);
     } else {
       var steps = 20;
-      var vx = _currentSegment.lastVertexX;
-      var vy = _currentSegment.lastVertexY;
+      var vx = _currentSegment!.lastVertexX;
+      var vy = _currentSegment!.lastVertexY;
 
       for (var s = 1; s <= steps; s++) {
         var t0 = s / steps;
@@ -109,7 +109,7 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
         var b3 = t0 * t0 * t0;
         var x = b0 * vx + b1 * controlX1 + b2 * controlX2 + b3 * endX;
         var y = b0 * vy + b1 * controlY1 + b2 * controlY2 + b3 * endY;
-        _currentSegment.addVertex(x, y);
+        _currentSegment!.addVertex(x, y);
       }
     }
   }
@@ -141,15 +141,15 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     num sinR = sin(delta / steps);
     num tx = x - x * cosR + y * sinR;
     num ty = y - x * sinR - y * cosR;
-    num ax = x + cos(start) * radius;
-    num ay = y + sin(start) * radius;
+    var ax = x + cos(start) * radius;
+    var ay = y + sin(start) * radius;
 
     lineTo(ax, ay);
 
     for (var s = 1; s <= steps; s++) {
       var bx = ax * cosR - ay * sinR + tx;
       var by = ax * sinR + ay * cosR + ty;
-      _currentSegment.addVertex(ax = bx, ay = by);
+      _currentSegment!.addVertex(ax = bx, ay = by);
     }
   }
 
@@ -184,8 +184,8 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     for (var s = 0; s <= steps; s++, angle += angleDelta) {
       num cx = cos(angle);
       num cy = sin(angle);
-      num rx = x + cx * cosRotationX - cy * sinRotationY;
-      num ry = y + cx * sinRotationX + cy * cosRotationY;
+      var rx = x + cx * cosRotationX - cy * sinRotationY;
+      var ry = y + cx * sinRotationX + cy * cosRotationY;
       lineTo(rx, ry);
     }
   }

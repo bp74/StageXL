@@ -5,14 +5,13 @@ part of stagexl.display;
 /// display configuration.
 
 class BitmapDataLoadInfo {
-  String _sourceUrl;
+  final String _sourceUrl;
   String _loaderUrl;
-  double _pixelRatio;
+  double _pixelRatio = 1.0;
 
-  BitmapDataLoadInfo(String url, List<double> pixelRatios) {
-    _sourceUrl = url;
-    _loaderUrl = url;
-    _pixelRatio = 1.0;
+  BitmapDataLoadInfo(String url, List<double> pixelRatios) :
+    _sourceUrl = url,
+    _loaderUrl = url {
 
     var pixelRatioRegexp = RegExp(r'@(\d+(.\d+)?)x');
     var pixelRatioMatch = pixelRatioRegexp.firstMatch(sourceUrl);
@@ -20,7 +19,7 @@ class BitmapDataLoadInfo {
     if (pixelRatioMatch != null) {
       var match = pixelRatioMatch;
       var originPixelRatioFractions = (match.group(2) ?? '.').length - 1;
-      var originPixelRatio = double.parse(match.group(1));
+      var originPixelRatio = double.parse(match.group(1)!);
       var devicePixelRatio = env.devicePixelRatio;
       var loaderPixelRatio = pixelRatios.fold<num>(0.0, (num a, num b) {
         var aDelta = (a - devicePixelRatio).abs();

@@ -27,7 +27,7 @@ part of stagexl.events;
 /// can instead use the [EventDispatcher] as a mixin.
 
 class EventDispatcher {
-  Map<String, EventStream<Event>> _eventStreams;
+  final Map<String, EventStream<Event>> _eventStreams = {};
 
   //----------------------------------------------------------------------------
 
@@ -40,19 +40,13 @@ class EventDispatcher {
   ///     sprite.onMouseClick.capture(_onMouseClick);
   ///     sprite.on("CustomEvent").listen(_onCustomEvent);
   EventStream<T> on<T extends Event>(String eventType) {
-    var eventStreams = _eventStreams;
-    if (eventStreams == null) {
-      eventStreams = <String, EventStream<Event>>{};
-      _eventStreams = eventStreams;
-    }
-
-    EventStream<T> eventStream = eventStreams[eventType];
+    var eventStream = _eventStreams[eventType];
     if (eventStream == null) {
       eventStream = EventStream<T>._(this, eventType);
-      eventStreams[eventType] = eventStream;
+      _eventStreams[eventType] = eventStream;
     }
 
-    return eventStream;
+    return eventStream as EventStream<T>;
   }
 
   //----------------------------------------------------------------------------
@@ -62,9 +56,7 @@ class EventDispatcher {
   /// registered for the capturing event phase or not.
 
   bool hasEventListener(String eventType, {bool useCapture = false}) {
-    var eventStreams = _eventStreams;
-    if (eventStreams == null) return false;
-    var eventStream = eventStreams[eventType];
+    var eventStream = _eventStreams[eventType];
     if (eventStream == null) return false;
 
     return useCapture
@@ -145,9 +137,7 @@ class EventDispatcher {
     event._isPropagationStopped = false;
     event._isImmediatePropagationStopped = false;
 
-    var eventStreams = _eventStreams;
-    if (eventStreams == null) return;
-    var eventStream = eventStreams[event.type];
+    var eventStream = _eventStreams[event.type];
     if (eventStream == null) return;
 
     eventStream._dispatchEventInternal(event, target, eventPhase);

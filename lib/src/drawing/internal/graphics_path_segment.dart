@@ -1,7 +1,7 @@
 part of stagexl.drawing;
 
 class _GraphicsPathSegment extends _GraphicsMeshSegment {
-  bool _clockwise;
+  bool? _clockwise;
   bool _closed = false;
 
   _GraphicsPathSegment() : super(16, 32);
@@ -15,8 +15,8 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   bool get clockwise {
-    if (_clockwise is! bool) _clockwise = _calculateArea() >= 0.0;
-    return _clockwise;
+    _clockwise ??= _calculateArea() >= 0.0;
+    return _clockwise!;
   }
 
   bool get closed {

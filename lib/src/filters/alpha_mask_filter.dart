@@ -8,7 +8,7 @@ class AlphaMaskFilter extends BitmapFilter {
   final BitmapData bitmapData;
   final Matrix matrix;
 
-  AlphaMaskFilter(this.bitmapData, [Matrix matrix])
+  AlphaMaskFilter(this.bitmapData, [Matrix? matrix])
       : matrix = matrix ?? Matrix.fromIdentity();
 
   @override
@@ -17,7 +17,7 @@ class AlphaMaskFilter extends BitmapFilter {
   //---------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);

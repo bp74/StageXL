@@ -103,7 +103,7 @@ abstract class _TransformedMask extends Mask {
 
   @override
   void renderMask(RenderState renderState) {
-    renderState.push(transformationMatrix, 1.0, null);
+    renderState.push(transformationMatrix, 1.0);
     renderMaskTransformed(renderState);
     renderState.pop();
   }
@@ -118,8 +118,8 @@ class _RectangleMask extends _TransformedMask implements ScissorRenderMask {
   _RectangleMask(this.rectangle);
 
   @override
-  Rectangle<num> getScissorRectangle(RenderState renderState) {
-    renderState.push(transformationMatrix, 1.0, null);
+  Rectangle<num>? getScissorRectangle(RenderState renderState) {
+    renderState.push(transformationMatrix, 1.0);
     var matrix = renderState.globalMatrix;
     var aligned = similar(matrix.b, 0.0) && similar(matrix.c, 0.0);
     var result = aligned ? matrix.transformRectangle(rectangle) : null;

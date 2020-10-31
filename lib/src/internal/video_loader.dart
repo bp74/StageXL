@@ -12,8 +12,8 @@ class VideoLoader {
   final AggregateError aggregateError = AggregateError('Error loading video.');
   final Completer<VideoElement> _completer = Completer<VideoElement>();
 
-  StreamSubscription _onCanPlaySubscription;
-  StreamSubscription _onErrorSubscription;
+  late StreamSubscription _onCanPlaySubscription;
+  late StreamSubscription _onErrorSubscription;
   final List<String> _urls = <String>[];
   bool _loadData = false;
 
@@ -69,7 +69,7 @@ class VideoLoader {
     HttpRequest.request(url, responseType: 'blob').then((request) {
       var reader = FileReader();
       reader.readAsDataUrl(request.response);
-      reader.onLoadEnd.first.then((e) => _loadVideoSource(reader.result));
+      reader.onLoadEnd.first.then((e) => _loadVideoSource(reader.result as String));
     }).catchError((error) {
       var loadError = LoadError('Failed to load $url.', error);
       aggregateError.errors.add(loadError);

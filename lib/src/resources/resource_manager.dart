@@ -52,7 +52,7 @@ class ResourceManager {
     return _containsResource('BitmapData', name);
   }
 
-  void addBitmapData(String name, String url, [BitmapDataLoadOptions options]) {
+  void addBitmapData(String name, String url, [BitmapDataLoadOptions? options]) {
     var loader = BitmapData.load(url, options);
     _addResource('BitmapData', name, url, loader);
   }
@@ -76,7 +76,7 @@ class ResourceManager {
 
   void addTextureAtlas(String name, String url,
       [TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-      BitmapDataLoadOptions options]) {
+      BitmapDataLoadOptions? options]) {
     var loader = TextureAtlas.load(url, textureAtlasFormat, options);
     _addResource('TextureAtlas', name, url, loader);
   }
@@ -101,7 +101,7 @@ class ResourceManager {
     return _containsResource('Video', name);
   }
 
-  void addVideo(String name, String url, [VideoLoadOptions options]) {
+  void addVideo(String name, String url, [VideoLoadOptions? options]) {
     var loader = Video.load(url, options);
     _addResource('Video', name, url, loader);
   }
@@ -120,7 +120,7 @@ class ResourceManager {
     return _containsResource('Sound', name);
   }
 
-  void addSound(String name, String url, [SoundLoadOptions options]) {
+  void addSound(String name, String url, [SoundLoadOptions? options]) {
     var loader = Sound.load(url, options);
     _addResource('Sound', name, url, loader);
   }
@@ -139,7 +139,7 @@ class ResourceManager {
     return _containsResource('SoundSprite', name);
   }
 
-  void addSoundSprite(String name, String url, [SoundLoadOptions options]) {
+  void addSoundSprite(String name, String url, [SoundLoadOptions? options]) {
     var loader = SoundSprite.load(url, options);
     _addResource('SoundSprite', name, url, loader);
   }
@@ -178,7 +178,7 @@ class ResourceManager {
 
   void addTextFile(String name, String url) {
     var loader =
-        HttpRequest.getString(url).then((text) => text, onError: (error) {
+        HttpRequest.getString(url).then(((text) => text), onError: (error) {
       throw StateError('Failed to load text file.');
     });
     _addResource('TextFile', name, url, loader);
@@ -217,7 +217,7 @@ class ResourceManager {
     return _resourceMap.containsKey(key);
   }
 
-  ResourceManagerResource _removeResource(String kind, String name) {
+  ResourceManagerResource? _removeResource(String kind, String name) {
     var key = '$kind.$name';
     return _resourceMap.remove(key);
   }

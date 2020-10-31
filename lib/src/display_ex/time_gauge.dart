@@ -14,7 +14,7 @@ class TimeGauge extends Gauge implements Animatable {
   bool _isStarted = false;
   num _totalTime = 0.0;
 
-  Map<String, num> _alarms;
+  late Map<String, num> _alarms;
   bool _alarmsEnabled = true;
 
   TimeGauge(num time, BitmapData bitmapData,

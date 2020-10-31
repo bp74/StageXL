@@ -31,7 +31,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
 
   @override
   set offsetX(num value) {
-    if (value is num) _offsetX = value;
+    _offsetX = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -42,7 +42,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
 
   @override
   set offsetY(num value) {
-    if (value is num) _offsetY = value;
+    _offsetY = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -53,7 +53,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
 
   @override
   set offsetZ(num value) {
-    if (value is num) _offsetZ = value;
+    _offsetZ = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -64,7 +64,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
 
   @override
   set rotationX(num value) {
-    if (value is num) _rotationX = value;
+    _rotationX = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -75,7 +75,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
 
   @override
   set rotationY(num value) {
-    if (value is num) _rotationY = value;
+    _rotationY = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -86,7 +86,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
 
   @override
   set rotationZ(num value) {
-    if (value is num) _rotationZ = value;
+    _rotationZ = value;
     _transformationMatrix3DRefresh = true;
   }
 
@@ -152,7 +152,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   //---------------------------------------------------------------------------
 
   @override
-  Point<num> localToParent(Point<num> localPoint, [Point<num> returnPoint]) {
+  Point<num> localToParent(Point<num> localPoint, [Point<num>? returnPoint]) {
     _calculateProjectionMatrix(transformationMatrix);
     return _projectionMatrix3D.transformPoint(localPoint, returnPoint);
   }
@@ -160,7 +160,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   //---------------------------------------------------------------------------
 
   @override
-  Point<num> parentToLocal(Point<num> parentPoint, [Point<num> returnPoint]) {
+  Point<num> parentToLocal(Point<num> parentPoint, [Point<num>? returnPoint]) {
     _calculateProjectionMatrix(transformationMatrix);
     return _projectionMatrix3D.transformPointInverse(parentPoint, returnPoint);
   }

@@ -165,8 +165,8 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   bool contains(num px, num py) {
-    var ax = 0;
-    var ay = 0;
+    num ax = 0;
+    num ay = 0;
     var bx = points[points.length - 1].x - px;
     var by = points[points.length - 1].y - py;
     var depth = 0;
@@ -205,7 +205,7 @@ class Polygon {
 
   //-----------------------------------------------------------------------------------------------
 
-  Point<num> _getLineIntersection(
+  Point<num>? _getLineIntersection(
       Point<num> a1, Point<num> a2, Point<num> b1, Point<num> b2) {
     var dax = (a1.x - a2.x);
     var dbx = (b1.x - b2.x);
@@ -249,8 +249,8 @@ class Polygon {
     var dot12 = v1x * v2x + v1y * v2y;
 
     var invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-    var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-    var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+    num u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    num v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
     return (u >= 0) && (v >= 0) && (u + v < 1);
   }

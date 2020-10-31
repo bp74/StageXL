@@ -9,13 +9,13 @@ import '../internal/filter_helpers.dart';
 import '../internal/tools.dart';
 
 class GlowFilter extends BitmapFilter {
-  int _color;
-  int _blurX;
-  int _blurY;
-  int _quality;
+  int _color = 0xFF000000;
+  late int _blurX;
+  late int _blurY;
+  late int _quality;
 
-  bool knockout;
-  bool hideObject;
+  bool knockout = false;
+  bool hideObject = false;
 
   final List<int> _renderPassSources = <int>[];
   final List<int> _renderPassTargets = <int>[];
@@ -108,7 +108,7 @@ class GlowFilter extends BitmapFilter {
   //---------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -119,8 +119,8 @@ class GlowFilter extends BitmapFilter {
 
     var imageData = renderTextureQuad.getImageData();
     var data = imageData.data;
-    var width = ensureInt(imageData.width);
-    var height = ensureInt(imageData.height);
+    var width = imageData.width;
+    var height = imageData.height;
 
     var pixelRatio = renderTextureQuad.pixelRatio;
     var blurX = (this.blurX * pixelRatio).round();
@@ -138,11 +138,11 @@ class GlowFilter extends BitmapFilter {
     }
 
     if (knockout) {
-      setColorKnockout(data, color, sourceImageData.data);
+      setColorKnockout(data, color, sourceImageData!.data);
     } else if (hideObject) {
       setColor(data, color);
     } else {
-      setColorBlend(data, color, sourceImageData.data);
+      setColorBlend(data, color, sourceImageData!.data);
     }
 
     renderTextureQuad.putImageData(imageData);

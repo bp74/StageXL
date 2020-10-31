@@ -52,7 +52,7 @@ bool _checkAutoHiDPI() {
   // only recent devices (> iPhone4) and hi-dpi desktops
 
   if (isMobileDevice && screen != null) {
-    autoHiDPI = autoHiDPI && (screen.width > 480 || screen.height > 480);
+    autoHiDPI = autoHiDPI && (screen.width! > 480 || screen.height! > 480);
   }
 
   return autoHiDPI;

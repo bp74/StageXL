@@ -9,15 +9,15 @@ import '../internal/filter_helpers.dart';
 import '../internal/tools.dart';
 
 class DropShadowFilter extends BitmapFilter {
-  num _distance;
-  num _angle;
-  int _blurX;
-  int _blurY;
-  int _quality;
-  int _color;
+  num _distance = 8;
+  num _angle = pi / 4;
+  int _blurX = 4;
+  int _blurY = 4;
+  int _quality = 1;
+  int _color = 0xFF000000;
 
-  bool knockout;
-  bool hideObject;
+  bool knockout = false;
+  bool hideObject = false;
 
   final List<int> _renderPassSources = <int>[];
   final List<int> _renderPassTargets = <int>[];
@@ -137,7 +137,7 @@ class DropShadowFilter extends BitmapFilter {
   //---------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -148,8 +148,8 @@ class DropShadowFilter extends BitmapFilter {
 
     var imageData = renderTextureQuad.getImageData();
     List<int> data = imageData.data;
-    var width = ensureInt(imageData.width);
-    var height = ensureInt(imageData.height);
+    var width = imageData.width;
+    var height = imageData.height;
     var shiftX = (distance * cos(angle)).round();
     var shiftY = (distance * sin(angle)).round();
 
@@ -171,11 +171,11 @@ class DropShadowFilter extends BitmapFilter {
     }
 
     if (knockout) {
-      setColorKnockout(data, color, sourceImageData.data);
+      setColorKnockout(data, color, sourceImageData!.data);
     } else if (hideObject) {
       setColor(data, color);
     } else {
-      setColorBlend(data, color, sourceImageData.data);
+      setColorBlend(data, color, sourceImageData!.data);
     }
 
     renderTextureQuad.putImageData(imageData);
@@ -186,7 +186,7 @@ class DropShadowFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    RenderContextWebGL renderContext = renderState.renderContext;
+    var renderContext = renderState.renderContext as RenderContextWebGL;
     var renderTexture = renderTextureQuad.renderTexture;
     var passCount = _renderPassSources.length;
     var passScale = pow(0.5, pass >> 1);

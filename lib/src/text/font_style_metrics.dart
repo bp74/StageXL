@@ -30,7 +30,7 @@ class _FontStyleMetrics {
     div.append(block);
     div.append(text);
 
-    html.document.body.append(div);
+    html.document.body!.append(div);
 
     try {
       block.style.verticalAlign = 'baseline';
@@ -39,7 +39,7 @@ class _FontStyleMetrics {
       height = block.offsetTop - text.offsetTop;
       descent = height - ascent;
     } catch (e) {
-      height = textFormat.size;
+      height = textFormat.size.toInt();
       ascent = textFormat.size * 7 ~/ 8;
       descent = textFormat.size * 2 ~/ 8;
     } finally {

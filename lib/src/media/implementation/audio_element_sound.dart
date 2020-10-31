@@ -2,11 +2,10 @@ part of stagexl.media;
 
 class AudioElementSound extends Sound {
   final AudioElement _audioElement;
-  final Map<AudioElement, AudioElementSoundChannel> _soundChannels;
+  final Map<AudioElement, AudioElementSoundChannel?> _soundChannels = {};
 
   AudioElementSound._(AudioElement audioElement)
-      : _audioElement = audioElement,
-        _soundChannels = <AudioElement, AudioElementSoundChannel>{} {
+      : _audioElement = audioElement {
     _audioElement.onEnded.listen(_onAudioEnded);
     _soundChannels[audioElement] = null;
   }
@@ -14,7 +13,7 @@ class AudioElementSound extends Sound {
   //---------------------------------------------------------------------------
 
   static Future<Sound> load(String url,
-      [SoundLoadOptions soundLoadOptions]) async {
+      [SoundLoadOptions? soundLoadOptions]) async {
     try {
       var options = soundLoadOptions ?? Sound.defaultLoadOptions;
       var audioUrls = options.getOptimalAudioUrls(url);
@@ -34,7 +33,7 @@ class AudioElementSound extends Sound {
   }
 
   static Future<Sound> loadDataUrl(String dataUrl,
-      [SoundLoadOptions soundLoadOptions]) async {
+      [SoundLoadOptions? soundLoadOptions]) async {
     try {
       var audioUrls = <String>[dataUrl];
       var audioLoader = AudioLoader(audioUrls, false, false);
@@ -59,7 +58,7 @@ class AudioElementSound extends Sound {
   num get length => _audioElement.duration;
 
   @override
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
+  SoundChannel play([bool loop = false, SoundTransform? soundTransform]) {
     var startTime = 0.0;
     var duration = _audioElement.duration;
     if (duration.isInfinite) duration = 3600.0;
@@ -69,7 +68,7 @@ class AudioElementSound extends Sound {
 
   @override
   SoundChannel playSegment(num startTime, num duration,
-      [bool loop = false, SoundTransform soundTransform]) {
+      [bool loop = false, SoundTransform? soundTransform]) {
     return AudioElementSoundChannel(
         this, startTime, duration, loop, soundTransform);
   }
@@ -100,7 +99,8 @@ class AudioElementSound extends Sound {
 
   void _onAudioEnded(html.Event event) {
     var audioElement = event.target;
-    var soundChannel = _soundChannels[audioElement];
-    if (soundChannel != null) soundChannel._onAudioEnded();
+    if (audioElement is! AudioElement) return;
+
+    _soundChannels[audioElement]?._onAudioEnded();
   }
 }

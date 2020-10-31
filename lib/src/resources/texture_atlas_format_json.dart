@@ -26,7 +26,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     }
 
     if (frames is Map) {
-      for (String fileName in frames.keys) {
+      for (var fileName in frames.keys as Iterable<String>) {
         var frameMap = frames[fileName] as Map;
         var frameName = getFilenameWithoutExtension(fileName);
         _createFrame(
@@ -45,18 +45,18 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
       String frameName,
       Map frameMap,
       Map metaMap) {
-    var rotation = ensureBool(frameMap['rotated'] as bool) ? 1 : 0;
-    var offsetX = ensureInt(frameMap['spriteSourceSize']['x']);
-    var offsetY = ensureInt(frameMap['spriteSourceSize']['y']);
-    var originalWidth = ensureInt(frameMap['sourceSize']['w']);
-    var originalHeight = ensureInt(frameMap['sourceSize']['h']);
-    var frameX = ensureInt(frameMap['frame']['x']);
-    var frameY = ensureInt(frameMap['frame']['y']);
-    var frameWidth = ensureInt(frameMap['frame'][rotation == 0 ? 'w' : 'h']);
-    var frameHeight = ensureInt(frameMap['frame'][rotation == 0 ? 'h' : 'w']);
+    var rotation = (frameMap['rotated'] as bool? ?? false) ? 1 : 0;
+    var offsetX = frameMap['spriteSourceSize']['x'] as int;
+    var offsetY = frameMap['spriteSourceSize']['y'] as int;
+    var originalWidth = frameMap['sourceSize']['w'] as int;
+    var originalHeight = frameMap['sourceSize']['h'] as int;
+    var frameX = frameMap['frame']['x'] as int;
+    var frameY = frameMap['frame']['y'] as int;
+    var frameWidth = frameMap['frame'][rotation == 0 ? 'w' : 'h'] as int;
+    var frameHeight = frameMap['frame'][rotation == 0 ? 'h' : 'w'] as int;
 
-    Float32List vxList;
-    Int16List ixList;
+    Float32List? vxList;
+    Int16List? ixList;
 
     if (frameMap.containsKey('vertices')) {
       var vertices = frameMap['vertices'] as List;

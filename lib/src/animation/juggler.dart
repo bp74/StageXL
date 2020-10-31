@@ -1,8 +1,8 @@
 part of stagexl.animation;
 
 class _AnimatableLink {
-  Animatable animatable;
-  _AnimatableLink nextAnimatableLink;
+  Animatable? animatable;
+  _AnimatableLink? nextAnimatableLink;
 }
 
 /// The [Juggler] controls the progress of your application by
@@ -30,14 +30,13 @@ class _AnimatableLink {
 ///     stage.juggler.remove(gameJuggler);
 
 class Juggler implements Animatable {
-  _AnimatableLink _firstAnimatableLink;
-  _AnimatableLink _lastAnimatableLink;
+  final _AnimatableLink _firstAnimatableLink;
+  late _AnimatableLink _lastAnimatableLink;
 
   num _elapsedTime = 0.0;
   final _elapsedTimeChangedEvent = StreamController<num>.broadcast();
 
-  Juggler() {
-    _firstAnimatableLink = _AnimatableLink();
+  Juggler() : _firstAnimatableLink = _AnimatableLink() {
     _lastAnimatableLink = _firstAnimatableLink;
   }
 
@@ -47,10 +46,10 @@ class Juggler implements Animatable {
   /// Check whether this Juggler has active animatables or not.
 
   bool get hasAnimatables {
-    var link = _firstAnimatableLink;
+    _AnimatableLink? link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
-      if (link.animatable != null) return true;
-      link = link.nextAnimatableLink;
+      if (link?.animatable != null) return true;
+      link = link?.nextAnimatableLink;
     }
     return false;
   }
@@ -172,11 +171,6 @@ class Juggler implements Animatable {
   /// returns false.
 
   void add(Animatable animatable) {
-    if (animatable is! Animatable) {
-      throw ArgumentError(
-          'The supplied animatable does not extend type Animatable.');
-    }
-
     if (contains(animatable) == false) {
       var animatableLink = _AnimatableLink();
       _lastAnimatableLink.animatable = animatable;
@@ -188,27 +182,23 @@ class Juggler implements Animatable {
   /// Removes the specified [animatable] from this juggler.
 
   void remove(Animatable animatable) {
-    if (animatable != null) {
-      var link = _firstAnimatableLink;
-      while (identical(link, _lastAnimatableLink) == false) {
-        if (identical(link.animatable, animatable)) {
-          link.animatable = null;
-          break;
-        }
-        link = link.nextAnimatableLink;
+    _AnimatableLink? link = _firstAnimatableLink;
+    while (identical(link, _lastAnimatableLink) == false) {
+      if (identical(link?.animatable, animatable)) {
+        link?.animatable = null;
+        break;
       }
+      link = link?.nextAnimatableLink;
     }
   }
 
   /// Returns true if this juggler contains the specified [animatable].
 
   bool contains(Animatable animatable) {
-    if (animatable != null) {
-      var link = _firstAnimatableLink;
-      while (identical(link, _lastAnimatableLink) == false) {
-        if (identical(link.animatable, animatable)) return true;
-        link = link.nextAnimatableLink;
-      }
+    _AnimatableLink? link = _firstAnimatableLink;
+    while (identical(link, _lastAnimatableLink) == false) {
+      if (identical(link?.animatable, animatable)) return true;
+      link = link?.nextAnimatableLink;
     }
 
     return false;
@@ -217,10 +207,10 @@ class Juggler implements Animatable {
   /// Removes all [Animatable]s from this juggler.
 
   void clear() {
-    var link = _firstAnimatableLink;
+    _AnimatableLink? link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
-      link.animatable = null;
-      link = link.nextAnimatableLink;
+      link?.animatable = null;
+      link = link?.nextAnimatableLink;
     }
 
     _lastAnimatableLink = _firstAnimatableLink;
@@ -232,14 +222,14 @@ class Juggler implements Animatable {
   /// Removes all tweens from the specified [tweenObject].
 
   void removeTweens(TweenObject tweenObject) {
-    var link = _firstAnimatableLink;
+    _AnimatableLink? link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
-      var animatable = link.animatable;
+      var animatable = link?.animatable;
       if (animatable is Tween &&
           identical(animatable.tweenObject, tweenObject)) {
-        link.animatable = null;
+        link?.animatable = null;
       }
-      link = link.nextAnimatableLink;
+      link = link?.nextAnimatableLink;
     }
   }
 
@@ -247,14 +237,14 @@ class Juggler implements Animatable {
   /// [tweenObject].
 
   bool containsTweens(TweenObject tweenObject) {
-    var link = _firstAnimatableLink;
+    _AnimatableLink? link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
-      var animatable = link.animatable;
+      var animatable = link?.animatable;
       if (animatable is Tween &&
           identical(animatable.tweenObject, tweenObject)) {
         return true;
       }
-      link = link.nextAnimatableLink;
+      link = link?.nextAnimatableLink;
     }
 
     return false;
@@ -364,24 +354,24 @@ class Juggler implements Animatable {
     // Call advanceTime of current animatables.
     // Do not call advanceTime of newly added animatables.
 
-    var link = _firstAnimatableLink;
-    var lastLink = _lastAnimatableLink;
+    _AnimatableLink? link = _firstAnimatableLink;
+    _AnimatableLink? lastLink = _lastAnimatableLink;
 
     while (identical(link, lastLink) == false) {
-      var animatable = link.animatable;
+      var animatable = link?.animatable;
       if (animatable == null) {
-        var nextLink = link.nextAnimatableLink;
-        link.animatable = nextLink.animatable;
-        link.nextAnimatableLink = nextLink.nextAnimatableLink;
+        var nextLink = link?.nextAnimatableLink;
+        link?.animatable = nextLink?.animatable;
+        link?.nextAnimatableLink = nextLink?.nextAnimatableLink;
 
         if (identical(nextLink, lastLink)) lastLink = link;
         if (identical(nextLink, _lastAnimatableLink)) {
-          _lastAnimatableLink = link;
+          _lastAnimatableLink = link!;
         }
       } else if (animatable.advanceTime(time) == false) {
-        link.animatable = null;
+        link?.animatable = null;
       } else {
-        link = link.nextAnimatableLink;
+        link = link?.nextAnimatableLink;
       }
     }
 

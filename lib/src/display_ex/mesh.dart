@@ -37,7 +37,7 @@ class Mesh extends DisplayObject {
   final Int16List ixList;
   final Float32List vxList;
 
-  Float32List _vxListTemp;
+  Float32List? _vxListTemp;
 
   /// Create a new Mesh with [vertexCount] vertices and [triangleCount]
   /// triangles.
@@ -159,7 +159,7 @@ class Mesh extends DisplayObject {
   }
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     for (var i = 0; i < ixList.length - 2; i += 3) {
       var i1 = ixList[i + 0] << 2;
       var i2 = ixList[i + 1] << 2;
@@ -213,18 +213,19 @@ class Mesh extends DisplayObject {
     var mx = matrix.tx;
     var my = matrix.tx;
 
-    _vxListTemp = _vxListTemp ?? Float32List(vxList.length);
+    final vxListTemp = _vxListTemp ?? Float32List(vxList.length);
+    _vxListTemp = vxListTemp;
 
-    for (var i = 0; i < _vxListTemp.length - 3; i += 4) {
+    for (var i = 0; i < vxListTemp.length - 3; i += 4) {
       var x = vxList[i + 2];
       var y = vxList[i + 3];
-      _vxListTemp[i + 0] = vxList[i + 0];
-      _vxListTemp[i + 1] = vxList[i + 1];
-      _vxListTemp[i + 2] = mx + x * ma + y * mc;
-      _vxListTemp[i + 3] = my + x * mb + y * md;
+      vxListTemp[i + 0] = vxList[i + 0];
+      vxListTemp[i + 1] = vxList[i + 1];
+      vxListTemp[i + 2] = mx + x * ma + y * mc;
+      vxListTemp[i + 3] = my + x * mb + y * md;
     }
 
     renderContext.renderTextureMesh(
-        renderState, renderTexture, ixList, _vxListTemp);
+        renderState, renderTexture, ixList, vxListTemp);
   }
 }

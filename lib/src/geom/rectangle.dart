@@ -57,25 +57,25 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   bool get isEmpty => width <= 0 || height <= 0;
 
   @override
-  T get right => left + width;
+  T get right => left + width as T;
 
   set right(T value) {
-    width = value - left;
+    width = value - left as T;
   }
 
   @override
-  T get bottom => top + height;
+  T get bottom => top + height as T;
 
   set bottom(T value) {
-    height = value - top;
+    height = value - top as T;
   }
 
   @override
   Point<T> get topLeft => Point<T>(left, top);
 
   set topLeft(Point<T> point) {
-    width = width + left - point.x;
-    height = height + top - point.y;
+    width = width + left - point.x as T;
+    height = height + top - point.y as T;
     left = point.x;
     top = point.y;
   }
@@ -84,8 +84,8 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   Point<T> get topRight => Point<T>(right, top);
 
   set topRight(Point<T> point) {
-    width = point.x - left;
-    height = height + top - point.y;
+    width = point.x - left as T;
+    height = height + top - point.y as T;
     top = point.y;
   }
 
@@ -93,8 +93,8 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   Point<T> get bottomLeft => Point<T>(left, bottom);
 
   set bottomLeft(Point<T> point) {
-    width = width + left - point.x;
-    height = point.y - top;
+    width = width + left - point.x as T;
+    height = point.y - top as T;
     left = point.x;
   }
 
@@ -102,8 +102,8 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   Point<T> get bottomRight => Point<T>(right, bottom);
 
   set bottomRight(Point<T> point) {
-    width = point.x - left;
-    height = point.y - top;
+    width = point.x - left as T;
+    height = point.y - top as T;
   }
 
   Point<T> get size => Point<T>(width, height);
@@ -137,7 +137,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     var rTop = min(top, other.top);
     var rRight = max(right, other.right);
     var rBottom = max(bottom, other.bottom);
-    return Rectangle<T>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
+    return Rectangle<T>(rLeft, rTop, rRight - rLeft as T, rBottom - rTop as T);
   }
 
   /// Tests whether `this` entirely contains [another].
@@ -157,8 +157,8 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   }
 
   void inflate(T dx, T dy) {
-    width += dx;
-    height += dy;
+    width = width + dx as T;
+    height = height + dy as T;
   }
 
   void inflatePoint(math.Point<T> p) {
@@ -166,8 +166,8 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
   }
 
   void offset(T dx, T dy) {
-    left += dx;
-    top += dy;
+    left = left + dx as T;
+    top = top + dy as T;
   }
 
   void offsetPoint(Point<T> p) {
@@ -187,7 +187,7 @@ class Rectangle<T extends num> implements math.MutableRectangle<T> {
     var rTop = max(top, rect.top);
     var rRight = min(right, rect.right);
     var rBottom = min(bottom, rect.bottom);
-    return Rectangle<T>(rLeft, rTop, rRight - rLeft, rBottom - rTop);
+    return Rectangle<T>(rLeft, rTop, rRight - rLeft as T, rBottom - rTop as T);
   }
 
   Rectangle<int> align() {

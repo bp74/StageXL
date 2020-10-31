@@ -6,11 +6,11 @@ class _ContextState {
 
   final Matrix matrix = Matrix.fromIdentity();
   final Matrix3D matrix3D = Matrix3D.fromIdentity();
-  final _ContextState previousContextState;
+  final _ContextState? previousContextState;
 
   _ContextState(this.previousContextState);
 
-  _ContextState _nextContextState;
+  _ContextState? _nextContextState;
   _ContextState get nextContextState {
     return _nextContextState ??= _ContextState(this);
   }
@@ -35,16 +35,16 @@ class RenderState {
   final RenderContext _renderContext;
   final _ContextState _firstContextState;
 
-  _ContextState _currentContextState;
+  _ContextState? _currentContextState;
 
   RenderState(RenderContext renderContext,
-      [Matrix matrix, num alpha, BlendMode blendMode])
+      [Matrix? matrix, num? alpha, BlendMode? blendMode])
       : _renderContext = renderContext,
         _firstContextState = _ContextState(null) {
     _currentContextState = _firstContextState;
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
-    if (alpha is num) _firstContextState.alpha = alpha;
+    if (alpha is num) _firstContextState.alpha = alpha.toDouble();
     if (blendMode is BlendMode) _firstContextState.blendMode = blendMode;
   }
 
@@ -53,28 +53,28 @@ class RenderState {
 
   RenderContext get renderContext => _renderContext;
 
-  Matrix get globalMatrix => _currentContextState.matrix;
-  double get globalAlpha => _currentContextState.alpha;
-  BlendMode get globalBlendMode => _currentContextState.blendMode;
+  Matrix get globalMatrix => _currentContextState!.matrix;
+  double get globalAlpha => _currentContextState!.alpha;
+  BlendMode get globalBlendMode => _currentContextState!.blendMode;
 
   //---------------------------------------------------------------------------
 
-  void reset([Matrix matrix, num alpha, BlendMode blendMode]) {
-    _currentContextState = _firstContextState;
-    _currentContextState.matrix.identity();
-    _currentContextState.alpha = 1.0;
-    _currentContextState.blendMode = BlendMode.NORMAL;
+  void reset([Matrix? matrix, num? alpha, BlendMode? blendMode]) {
+    final currentContextState = _currentContextState = _firstContextState;
+    currentContextState.matrix.identity();
+    currentContextState.alpha = 1.0;
+    currentContextState.blendMode = BlendMode.NORMAL;
 
     if (matrix is Matrix) _firstContextState.matrix.copyFrom(matrix);
-    if (alpha is num) _firstContextState.alpha = alpha;
+    if (alpha is num) _firstContextState.alpha = alpha.toDouble();
     if (blendMode is BlendMode) _firstContextState.blendMode = blendMode;
   }
 
   void copyFrom(RenderState renderState) {
-    _currentContextState = _firstContextState;
-    _currentContextState.matrix.copyFrom(renderState.globalMatrix);
-    _currentContextState.alpha = renderState.globalAlpha;
-    _currentContextState.blendMode = renderState.globalBlendMode;
+    final currentContextState = _currentContextState = _firstContextState;
+    currentContextState.matrix.copyFrom(renderState.globalMatrix);
+    currentContextState.alpha = renderState.globalAlpha;
+    currentContextState.blendMode = renderState.globalBlendMode;
   }
 
   //---------------------------------------------------------------------------
@@ -127,14 +127,14 @@ class RenderState {
     var cache = renderObject.cache;
     var mask = renderObject.mask;
 
-    var cs1 = _currentContextState;
-    var cs2 = _currentContextState.nextContextState;
+    var cs1 = _currentContextState!;
+    var cs2 = _currentContextState!.nextContextState;
     var maskBefore = mask != null && mask.relativeToParent == true;
     var maskAfter = mask != null && mask.relativeToParent == false;
 
     //-----------
 
-    if (maskBefore) renderContext.beginRenderMask(this, mask);
+    if (maskBefore) renderContext.beginRenderMask(this, mask!);
 
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
     cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
@@ -154,7 +154,7 @@ class RenderState {
 
     //-----------
 
-    if (maskAfter) renderContext.beginRenderMask(this, mask);
+    if (maskAfter) renderContext.beginRenderMask(this, mask!);
 
     if (cache != null) {
       renderTextureQuad(cache);
@@ -164,7 +164,7 @@ class RenderState {
       renderObject.render(this);
     }
 
-    if (maskAfter) renderContext.endRenderMask(this, mask);
+    if (maskAfter) renderContext.endRenderMask(this, mask!);
 
     //-----------
 
@@ -175,21 +175,21 @@ class RenderState {
       renderContextWebGL.activateProjectionMatrix(cs1.matrix3D);
     }
 
-    if (maskBefore) renderContext.endRenderMask(this, mask);
+    if (maskBefore) renderContext.endRenderMask(this, mask!);
   }
 
   //---------------------------------------------------------------------------
 
-  void push(Matrix matrix, num alpha, BlendMode blendMode) {
-    var cs1 = _currentContextState;
-    var cs2 = _currentContextState.nextContextState;
+  void push(Matrix matrix, num alpha, [BlendMode? blendMode]) {
+    var cs1 = _currentContextState!;
+    var cs2 = _currentContextState!.nextContextState;
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
-    cs2.blendMode = (blendMode is BlendMode) ? blendMode : cs1.blendMode;
+    cs2.blendMode = blendMode ?? cs1.blendMode;
     cs2.alpha = alpha * cs1.alpha;
     _currentContextState = cs2;
   }
 
   void pop() {
-    _currentContextState = _currentContextState.previousContextState;
+    _currentContextState = _currentContextState!.previousContextState;
   }
 }

@@ -9,19 +9,19 @@ class SimpleButton extends InteractiveObject {
   /// button up state — the state that the button is in when the pointer is not
   /// positioned over the button.
 
-  DisplayObject upState;
+  DisplayObject? upState;
 
   /// Specifies a display object that is used as the visual object for the
   /// button over state — the state that the button is in when the pointer is
   /// positioned over the button.
 
-  DisplayObject overState;
+  DisplayObject? overState;
 
   /// Specifies a display object that is used as the visual object for the
   /// button down state - the state that the button is in when the user
   /// selects the [hitTestState] object.
 
-  DisplayObject downState;
+  DisplayObject? downState;
 
   /// Specifies a display object that is used as the hit testing object for the
   /// button.
@@ -31,7 +31,7 @@ class SimpleButton extends InteractiveObject {
   /// property, the [SimpleButton] is inactive — it does not respond to user
   /// input events.
 
-  DisplayObject hitTestState;
+  DisplayObject? hitTestState;
 
   /// Creates a new [SimpleButton] instance.
   ///
@@ -91,23 +91,21 @@ class SimpleButton extends InteractiveObject {
   @override
   Rectangle<num> get bounds {
     var displayObject = _getDisplayObject();
-    return displayObject != null
-        ? displayObject.boundsTransformed
-        : super.bounds;
+    return displayObject?.boundsTransformed ?? super.bounds;
   }
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     if (hitTestState == null) return null;
 
-    var matrix = hitTestState.transformationMatrix;
+    var matrix = hitTestState!.transformationMatrix;
 
     var deltaX = localX - matrix.tx;
     var deltaY = localY - matrix.ty;
     var childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
     var childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
 
-    return hitTestState.hitTestInput(childX, childY) != null ? this : null;
+    return hitTestState!.hitTestInput(childX, childY) != null ? this : null;
   }
 
   @override
@@ -120,7 +118,7 @@ class SimpleButton extends InteractiveObject {
 
   //---------------------------------------------------------------------------
 
-  DisplayObject _getDisplayObject() {
+  DisplayObject? _getDisplayObject() {
     switch (_state) {
       case SimpleButtonState.Up:
         return upState;

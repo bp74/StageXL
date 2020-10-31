@@ -58,7 +58,7 @@ class Point<T extends num> implements math.Point<T> {
 
   @override
   Point<T> operator +(math.Point<T> other) {
-    return Point<T>(x + other.x, y + other.y);
+    return Point<T>(x + other.x as T, y + other.y as T);
   }
 
   /// Subtract [other] from `this`, as if both points were vectors.
@@ -67,7 +67,7 @@ class Point<T extends num> implements math.Point<T> {
 
   @override
   Point<T> operator -(math.Point<T> other) {
-    return Point<T>(x - other.x, y - other.y);
+    return Point<T>(x - other.x as T, y - other.y as T);
   }
 
   /// Scale this point by [factor] as if it were a vector.
@@ -110,8 +110,8 @@ class Point<T extends num> implements math.Point<T> {
   /// Offsets this Point by the specified amount.
 
   void offset(T dx, T dy) {
-    x += dx;
-    y += dy;
+    x = x + dx as T;
+    y = y + dy as T;
   }
 
   /// Returns the distance between `this` and [other].
@@ -132,6 +132,6 @@ class Point<T extends num> implements math.Point<T> {
   T squaredDistanceTo(math.Point<T> other) {
     var dx = x - other.x;
     var dy = y - other.y;
-    return dx * dx + dy * dy;
+    return dx * dx + dy * dy as T;
   }
 }

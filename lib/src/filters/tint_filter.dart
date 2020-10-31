@@ -26,7 +26,7 @@ class TintFilter extends BitmapFilter {
   //---------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var isLittleEndianSystem = env.isLittleEndianSystem;
 
     var d0 = ((isLittleEndianSystem ? factorR : factorA) * 65536).round();
@@ -66,6 +66,6 @@ class TintFilter extends BitmapFilter {
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTextureQuad.renderTexture);
     renderProgram.renderTextureQuad(
-        renderState, renderTextureQuad, factorR, factorG, factorB, factorA);
+        renderState, renderTextureQuad, factorR.toDouble(), factorG.toDouble(), factorB, factorA);
   }
 }

@@ -25,8 +25,8 @@ part of stagexl.animation;
 class AnimationChain implements Animatable {
   final List<Animatable> _animatables = <Animatable>[];
 
-  Function _onStart;
-  Function _onComplete;
+  Function? _onStart;
+  Function? _onComplete;
 
   num _time = 0.0;
   num _delay = 0.0;
@@ -47,7 +47,7 @@ class AnimationChain implements Animatable {
     if (_started == false) {
       if (_time > _delay) {
         _started = true;
-        if (_onStart != null) _onStart();
+        if (_onStart != null) _onStart!();
       } else {
         return true;
       }
@@ -61,7 +61,7 @@ class AnimationChain implements Animatable {
 
     if (_animatables.isEmpty) {
       _completed = true;
-      if (_onComplete != null) _onComplete();
+      if (_onComplete != null) _onComplete!();
       return false;
     } else {
       return true;

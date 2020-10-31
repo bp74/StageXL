@@ -10,8 +10,8 @@ class RenderTextureQuad {
   final Int16List ixListQuad = Int16List(6);
   final Float32List vxListQuad = Float32List(16);
 
-  Int16List _ixList;
-  Float32List _vxList;
+  late Int16List _ixList;
+  late Float32List _vxList;
   bool _hasCustomVertices = false;
 
   //---------------------------------------------------------------------------
@@ -97,15 +97,15 @@ class RenderTextureQuad {
     var oldOffsetL = renderTextureQuad.offsetRectangle.left;
     var oldOffsetT = renderTextureQuad.offsetRectangle.top;
 
-    var otation = (renderTextureQuad.rotation + rotation) % 4;
-    var ourceL = sourceRectangle.left;
-    var ourceT = sourceRectangle.top;
-    var ourceR = sourceRectangle.right;
-    var ourceB = sourceRectangle.bottom;
-    var ffsetL = offsetRectangle.left;
-    var ffsetT = offsetRectangle.top;
-    var ffsetW = offsetRectangle.width;
-    var ffsetH = offsetRectangle.height;
+    rotation = (renderTextureQuad.rotation + rotation) % 4;
+    var sourceL = sourceRectangle.left;
+    var sourceT = sourceRectangle.top;
+    var sourceR = sourceRectangle.right;
+    var sourceB = sourceRectangle.bottom;
+    var offsetL = offsetRectangle.left;
+    var offsetT = offsetRectangle.top;
+    var offsetW = offsetRectangle.width;
+    var offsetH = offsetRectangle.height;
 
     var tmpSourceL = 0;
     var tmpSourceT = 0;
@@ -113,61 +113,61 @@ class RenderTextureQuad {
     var tmpSourceB = 0;
 
     if (oldRotation == 0) {
-      tmpSourceL = oldSourceL + oldOffsetL + ourceL;
-      tmpSourceT = oldSourceT + oldOffsetT + ourceT;
-      tmpSourceR = oldSourceL + oldOffsetL + ourceR;
-      tmpSourceB = oldSourceT + oldOffsetT + ourceB;
+      tmpSourceL = oldSourceL + oldOffsetL + sourceL;
+      tmpSourceT = oldSourceT + oldOffsetT + sourceT;
+      tmpSourceR = oldSourceL + oldOffsetL + sourceR;
+      tmpSourceB = oldSourceT + oldOffsetT + sourceB;
     } else if (oldRotation == 1) {
-      tmpSourceL = oldSourceR - oldOffsetT - ourceB;
-      tmpSourceT = oldSourceT + oldOffsetL + ourceL;
-      tmpSourceR = oldSourceR - oldOffsetT - ourceT;
-      tmpSourceB = oldSourceT + oldOffsetL + ourceR;
+      tmpSourceL = oldSourceR - oldOffsetT - sourceB;
+      tmpSourceT = oldSourceT + oldOffsetL + sourceL;
+      tmpSourceR = oldSourceR - oldOffsetT - sourceT;
+      tmpSourceB = oldSourceT + oldOffsetL + sourceR;
     } else if (oldRotation == 2) {
-      tmpSourceL = oldSourceR - oldOffsetL - ourceR;
-      tmpSourceT = oldSourceB - oldOffsetT - ourceB;
-      tmpSourceR = oldSourceR - oldOffsetL - ourceL;
-      tmpSourceB = oldSourceB - oldOffsetT - ourceT;
+      tmpSourceL = oldSourceR - oldOffsetL - sourceR;
+      tmpSourceT = oldSourceB - oldOffsetT - sourceB;
+      tmpSourceR = oldSourceR - oldOffsetL - sourceL;
+      tmpSourceB = oldSourceB - oldOffsetT - sourceT;
     } else if (oldRotation == 3) {
-      tmpSourceL = oldSourceL + oldOffsetT + ourceT;
-      tmpSourceT = oldSourceB - oldOffsetL - ourceR;
-      tmpSourceR = oldSourceL + oldOffsetT + ourceB;
-      tmpSourceB = oldSourceB - oldOffsetL - ourceL;
+      tmpSourceL = oldSourceL + oldOffsetT + sourceT;
+      tmpSourceT = oldSourceB - oldOffsetL - sourceR;
+      tmpSourceR = oldSourceL + oldOffsetT + sourceB;
+      tmpSourceB = oldSourceB - oldOffsetL - sourceL;
     }
 
-    ourceL = clampInt(tmpSourceL, oldSourceL, oldSourceR);
-    ourceT = clampInt(tmpSourceT, oldSourceT, oldSourceB);
-    ourceR = clampInt(tmpSourceR, oldSourceL, oldSourceR);
-    ourceB = clampInt(tmpSourceB, oldSourceT, oldSourceB);
+    sourceL = tmpSourceL.clamp(oldSourceL, oldSourceR);
+    sourceT = tmpSourceT.clamp(oldSourceT, oldSourceB);
+    sourceR = tmpSourceR.clamp(oldSourceL, oldSourceR);
+    sourceB = tmpSourceB.clamp(oldSourceT, oldSourceB);
 
-    if (otation == 0) {
-      ffsetL += tmpSourceL - ourceL;
-      ffsetT += tmpSourceT - ourceT;
-    } else if (otation == 1) {
-      ffsetL += tmpSourceT - ourceT;
-      ffsetT += ourceR - tmpSourceR;
-    } else if (otation == 2) {
-      ffsetL += ourceR - tmpSourceR;
-      ffsetT += tmpSourceB - ourceB;
-    } else if (otation == 3) {
-      ffsetL += ourceB - tmpSourceB;
-      ffsetT += ourceL - tmpSourceL;
+    if (rotation == 0) {
+      offsetL += tmpSourceL - sourceL;
+      offsetT += tmpSourceT - sourceT;
+    } else if (rotation == 1) {
+      offsetL += tmpSourceT - sourceT;
+      offsetT += sourceR - tmpSourceR;
+    } else if (rotation == 2) {
+      offsetL += sourceR - tmpSourceR;
+      offsetT += tmpSourceB - sourceB;
+    } else if (rotation == 3) {
+      offsetL += sourceB - tmpSourceB;
+      offsetT += sourceL - tmpSourceL;
     }
 
-    var ourceW = ourceR - ourceL;
-    var ourceH = ourceB - ourceT;
+    var sourceW = sourceR - sourceL;
+    var sourceH = sourceB - sourceT;
 
     return RenderTextureQuad(
         renderTexture,
-        Rectangle<int>(ourceL, ourceT, ourceW, ourceH),
-        Rectangle<int>(ffsetL, ffsetT, ffsetW, ffsetH),
-        otation,
+        Rectangle<int>(sourceL, sourceT, sourceW, sourceH),
+        Rectangle<int>(offsetL, offsetT, offsetW, offsetH),
+        rotation,
         pixelRatio);
   }
 
   //---------------------------------------------------------------------------
 
   bool get isEquivalentToSource {
-    return (renderTexture != null) &&
+    return
         (rotation == 0) &&
         !_hasCustomVertices &&
         (sourceRectangle.left == 0 &&

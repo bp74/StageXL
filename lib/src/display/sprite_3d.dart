@@ -15,7 +15,7 @@ part of stagexl.display;
 ///
 class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   @override
-  Graphics _graphics;
+  Graphics? _graphics;
 
   /// Specifies the Graphics object that belongs to this sprite where vector
   /// drawing commands can occur.
@@ -36,7 +36,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// which the sprite was dropped.
 
   @override
-  DisplayObject dropTarget;
+  DisplayObject? dropTarget;
 
   /// Lets the user drag this sprite with the mouse or the current touch point.
   ///
@@ -56,7 +56,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// parent that specify a constraint rectangle for the Sprite.
 
   @override
-  void startDrag([bool lockCenter = false, Rectangle<num> bounds]) {
+  void startDrag([bool lockCenter = false, Rectangle<num>? bounds]) {
     var stage = this.stage;
     var inputEvent = InputEvent.current;
     var globalPoint = Point<num>(0.0, 0.0);
@@ -80,7 +80,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
       globalToLocal(globalPoint, anchorPoint);
     }
 
-    stage._startDrag(this, globalPoint, anchorPoint, bounds, touchPointID);
+    stage!._startDrag(this, globalPoint, anchorPoint, bounds, touchPointID);
   }
 
   /// Ends the [startDrag] method.
@@ -92,7 +92,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   @override
   void stopDrag() {
     var stage = this.stage;
-    if (stage != null) stage._stopDrag(this);
+    stage?._stopDrag(this);
   }
 
   //----------------------------------------------------------------------------
@@ -100,7 +100,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   @override
   Rectangle<num> get bounds {
     var bounds = super.bounds;
-    return _graphics == null ? bounds : bounds.boundingBox(_graphics.bounds);
+    return _graphics == null ? bounds : bounds.boundingBox(_graphics!.bounds);
   }
 
   //----------------------------------------------------------------------------
@@ -122,13 +122,13 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// events instead of your sprite button.
 
   @override
-  Sprite hitArea;
+  Sprite? hitArea;
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     var hitArea = this.hitArea;
     var graphics = _graphics;
-    DisplayObject target;
+    DisplayObject? target;
 
     if (hitArea != null) {
       var point = Point<num>(localX, localY);
@@ -151,7 +151,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
   @override
   void render(RenderState renderState) {
-    if (_graphics != null) _graphics.render(renderState);
+    _graphics?.render(renderState);
     super.render(renderState);
   }
 }

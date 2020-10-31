@@ -75,7 +75,7 @@ class Video {
   /// for the ResourceManager.addVideo method.
 
   static Future<Video> load(String url,
-      [VideoLoadOptions videoLoadOptions]) async {
+      [VideoLoadOptions? videoLoadOptions]) async {
     var options = videoLoadOptions ?? Video.defaultLoadOptions;
     var loadData = options.loadData;
     var corsEnabled = options.corsEnabled;
@@ -91,8 +91,8 @@ class Video {
   Future<Video> clone() {
     var videoElement = this.videoElement.clone(true) as VideoElement;
     var completer = Completer<Video>();
-    StreamSubscription onCanPlaySubscription;
-    StreamSubscription onErrorSubscription;
+    late StreamSubscription onCanPlaySubscription;
+    late StreamSubscription onErrorSubscription;
 
     void onCanPlay(html.Event e) {
       var video = Video._(videoElement);

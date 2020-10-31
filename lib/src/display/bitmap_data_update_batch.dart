@@ -11,9 +11,8 @@ class BitmapDataUpdateBatch {
   final RenderContextCanvas _renderContext;
   final Matrix _drawMatrix;
 
-  BitmapDataUpdateBatch(BitmapData bitmapData)
-      : bitmapData = bitmapData,
-        _renderContext = RenderContextCanvas(bitmapData.renderTexture.canvas),
+  BitmapDataUpdateBatch(this.bitmapData)
+      : _renderContext = RenderContextCanvas(bitmapData.renderTexture.canvas),
         _drawMatrix = bitmapData.renderTextureQuad.drawMatrix;
 
   //---------------------------------------------------------------------------
@@ -24,7 +23,7 @@ class BitmapDataUpdateBatch {
 
   //---------------------------------------------------------------------------
 
-  void applyFilter(BitmapFilter filter, [Rectangle<num> rectangle]) {
+  void applyFilter(BitmapFilter filter, [Rectangle<num>? rectangle]) {
     filter.apply(bitmapData, rectangle);
   }
 
@@ -63,11 +62,6 @@ class BitmapDataUpdateBatch {
       var c2 = data[i + 2];
       var c3 = data[i + 3];
 
-      if (c0 is! num) continue; // dart2js hint
-      if (c1 is! num) continue; // dart2js hint
-      if (c2 is! num) continue; // dart2js hint
-      if (c3 is! num) continue; // dart2js hint
-
       data[i + 0] = offset0 + (((c0 * mulitplier0) | 0) >> 10);
       data[i + 1] = offset1 + (((c1 * mulitplier1) | 0) >> 10);
       data[i + 2] = offset2 + (((c2 * mulitplier2) | 0) >> 10);
@@ -98,7 +92,7 @@ class BitmapDataUpdateBatch {
 
   //---------------------------------------------------------------------------
 
-  void draw(BitmapDrawable source, [Matrix matrix]) {
+  void draw(BitmapDrawable source, [Matrix? matrix]) {
     var renderState = RenderState(_renderContext, _drawMatrix);
     if (matrix != null) renderState.globalMatrix.prepend(matrix);
     source.render(renderState);
@@ -125,7 +119,7 @@ class BitmapDataUpdateBatch {
 
   void drawPixels(
       BitmapData source, Rectangle<num> sourceRect, Point<num> destPoint,
-      [BlendMode blendMode]) {
+      [BlendMode? blendMode]) {
     var sourceQuad = source.renderTextureQuad.cut(sourceRect);
     var renderState = RenderState(_renderContext, _drawMatrix, 1.0, blendMode);
     renderState.globalMatrix.prependTranslation(destPoint.x, destPoint.y);

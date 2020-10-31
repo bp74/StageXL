@@ -17,7 +17,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   final bool _captures;
 
   final EventStream<T> _eventStream;
-  EventListener<T> _eventListener;
+  EventListener<T>? _eventListener;
 
   EventStreamSubscription._(
       this._eventStream, this._eventListener, this._captures, this._priority);
@@ -34,29 +34,29 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   bool get isCapturing => _captures;
 
   EventStream<T> get eventStream => _eventStream;
-  EventListener<T> get eventListener => _eventListener;
+  EventListener<T>? get eventListener => _eventListener;
 
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void onData(void Function(T event) handleData) {
+  void onData(void Function(T event)? handleData) {
     _eventListener = handleData;
   }
 
   @override
-  void onError(Function handleError) {
+  void onError(Function? handleError) {
     // This stream has no errors.
   }
 
   @override
-  void onDone(void Function() handleDone) {
+  void onDone(void Function()? handleDone) {
     // This stream is never done.
   }
 
   //-----------------------------------------------------------------------------------------------
 
   @override
-  Future<E> asFuture<E>([E futureValue]) {
+  Future<E> asFuture<E>([E? futureValue]) {
     // This stream is never done and has no errors.
     return Completer<E>().future;
   }
@@ -64,20 +64,17 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  Future cancel() {
+  Future<void> cancel() async {
     if (_canceled == false) {
       _eventStream._cancelSubscription(this);
       _canceled = true;
     }
-    return null;
   }
 
   @override
-  void pause([Future resumeSignal]) {
+  void pause([Future<void>? resumeSignal]) {
     _pauseCount++;
-    if (resumeSignal != null) {
-      resumeSignal.whenComplete(resume);
-    }
+    resumeSignal?.whenComplete(resume);
   }
 
   @override

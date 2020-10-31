@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import '../display.dart';
 import '../engine.dart';
 import '../geom.dart';
-import '../internal/tools.dart';
 
 class DisplacementMapFilter extends BitmapFilter {
   final BitmapData bitmapData;
@@ -14,7 +13,7 @@ class DisplacementMapFilter extends BitmapFilter {
   final num scaleY;
 
   DisplacementMapFilter(BitmapData bitmapData,
-      [Matrix matrix, num scaleX = 16.0, num scaleY = 16.0])
+      [Matrix? matrix, num scaleX = 16.0, num scaleY = 16.0])
       : bitmapData = bitmapData,
         matrix = (matrix != null) ? matrix : Matrix.fromIdentity(),
         scaleX = scaleX,
@@ -37,7 +36,7 @@ class DisplacementMapFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
@@ -45,12 +44,12 @@ class DisplacementMapFilter extends BitmapFilter {
     var mapImageData = this.bitmapData.renderTextureQuad.getImageData();
     var srcImageData = renderTextureQuad.getImageData();
     var dstImageData = renderTextureQuad.createImageData();
-    var mapWidth = ensureInt(mapImageData.width);
-    var mapHeight = ensureInt(mapImageData.height);
-    var srcWidth = ensureInt(srcImageData.width);
-    var srcHeight = ensureInt(srcImageData.height);
-    var dstWidth = ensureInt(dstImageData.width);
-    var dstHeight = ensureInt(dstImageData.height);
+    var mapWidth = mapImageData.width;
+    var mapHeight = mapImageData.height;
+    var srcWidth = srcImageData.width;
+    var srcHeight = srcImageData.height;
+    var dstWidth = dstImageData.width;
+    var dstHeight = dstImageData.height;
 
     var mapData = mapImageData.data;
     var srcData = srcImageData.data;
@@ -156,7 +155,7 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
     disMatrix.copyFrom(renderTextureQuad.samplerMatrix);
     disMatrix.scale(displacementMapFilter.scaleX, displacementMapFilter.scaleY);
 
-    var uMapMatrix = Float32List.fromList(<double>[
+    var uMapMatrix = Float32List.fromList([
       mapMatrix.a,
       mapMatrix.c,
       mapMatrix.tx,
@@ -168,7 +167,7 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
       1.0
     ]);
 
-    var uDisMatrix = Float32List.fromList(<double>[
+    var uDisMatrix = Float32List.fromList([
       disMatrix.a,
       disMatrix.c,
       0.0,

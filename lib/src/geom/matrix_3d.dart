@@ -51,7 +51,7 @@ class Matrix3D {
 
   //-----------------------------------------------------------------------------------------------
 
-  Point<num> transformPoint(math.Point<num> point, [Point<num> returnPoint]) {
+  Point<num> transformPoint(math.Point<num> point, [Point<num>? returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
 
@@ -68,7 +68,7 @@ class Matrix3D {
   }
 
   Point<num> transformPointInverse(math.Point<num> point,
-      [Point<num> returnPoint]) {
+      [Point<num>? returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
 
@@ -96,7 +96,7 @@ class Matrix3D {
   //-----------------------------------------------------------------------------------------------
 
   Rectangle<num> transformRectangle(math.Rectangle<num> rectangle,
-      [Rectangle<num> returnRectangle]) {
+      [Rectangle<num>? returnRectangle]) {
     num rl = rectangle.left.toDouble();
     num rr = rectangle.right.toDouble();
     num rt = rectangle.top.toDouble();

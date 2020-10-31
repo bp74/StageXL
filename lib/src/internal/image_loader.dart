@@ -11,8 +11,8 @@ class ImageLoader {
   final Completer<ImageElement> _completer = Completer<ImageElement>();
 
   final String _url;
-  StreamSubscription _onLoadSubscription;
-  StreamSubscription _onErrorSubscription;
+  late StreamSubscription _onLoadSubscription;
+  late StreamSubscription _onErrorSubscription;
 
   ImageLoader(String url, bool webpAvailable, bool corsEnabled) : _url = url {
     _onLoadSubscription = image.onLoad.listen(_onImageLoad);

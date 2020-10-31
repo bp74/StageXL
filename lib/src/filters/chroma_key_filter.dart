@@ -36,7 +36,10 @@ class ChromaKeyFilter extends BitmapFilter {
   ChromaKeyFilter(
       {int backgroundColor = 0xFF00FF00,
       int solidThreshold = 140,
-      int invisibleThreshold = 20}) {
+      int invisibleThreshold = 20}) :
+        _backgroundColor = backgroundColor,
+        _solidThreshold = solidThreshold,
+        _invisibleThreshold = invisibleThreshold {
     if (invisibleThreshold < 0) {
       throw ArgumentError('The minimum solidThreshold is 0.');
     }
@@ -44,10 +47,6 @@ class ChromaKeyFilter extends BitmapFilter {
       throw ArgumentError(
           'solidThreshold cannot be lower than invisibleThreshold');
     }
-
-    _backgroundColor = backgroundColor;
-    _solidThreshold = solidThreshold;
-    _invisibleThreshold = invisibleThreshold;
   }
 
   int get backgroundColor => _backgroundColor;
@@ -82,7 +81,7 @@ class ChromaKeyFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     var renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);

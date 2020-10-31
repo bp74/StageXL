@@ -95,14 +95,14 @@ class CanvasShadowWrapper extends DisplayObject {
   }
 
   @override
-  set mask(Mask mask) {
+  set mask(Mask? mask) {
     _throwUnsupportedError();
   }
 
   //-----------------------------------------------------------------------------------------------
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     var matrix = displayObject.transformationMatrix;
     var deltaX = localX - matrix.tx;
     var deltaY = localY - matrix.ty;

@@ -32,9 +32,9 @@ class Tween implements Animatable {
   final TransitionFunction _transition;
   final List<TweenProperty> _tweenPropertyList = <TweenProperty>[];
 
-  Function _onStart;
-  Function _onUpdate;
-  Function _onComplete;
+  Function? _onStart;
+  Function? _onUpdate;
+  Function? _onComplete;
 
   num _totalTime = 0.0;
   num _currentTime = 0.0;
@@ -114,7 +114,7 @@ class Tween implements Animatable {
             _tweenPropertyList[i]._init();
           }
           if (_onStart != null) {
-            _onStart();
+            _onStart!();
           }
         }
 
@@ -127,10 +127,10 @@ class Tween implements Animatable {
           _tweenPropertyList[i]._update(transition, _roundToInt);
         }
         if (_onUpdate != null) {
-          _onUpdate();
+          _onUpdate!();
         }
         if (_onComplete != null && _currentTime == _totalTime) {
-          _onComplete();
+          _onComplete!();
         }
       }
     }

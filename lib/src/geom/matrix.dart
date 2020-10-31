@@ -51,43 +51,43 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  num get a => _data[0];
+  double get a => _data[0];
 
   set a(num n) {
     _data[0] = n.toDouble();
   }
 
-  num get b => _data[1];
+  double get b => _data[1];
 
   set b(num n) {
     _data[1] = n.toDouble();
   }
 
-  num get c => _data[2];
+  double get c => _data[2];
 
   set c(num n) {
     _data[2] = n.toDouble();
   }
 
-  num get d => _data[3];
+  double get d => _data[3];
 
   set d(num n) {
     _data[3] = n.toDouble();
   }
 
-  num get tx => _data[4];
+  double get tx => _data[4];
 
   set tx(num n) {
     _data[4] = n.toDouble();
   }
 
-  num get ty => _data[5];
+  double get ty => _data[5];
 
   set ty(num n) {
     _data[5] = n.toDouble();
   }
 
-  num get det => a * d - b * c;
+  double get det => a * d - b * c;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -101,7 +101,7 @@ class Matrix {
   }
 
   Point<num> deltaTransformPoint(math.Point<num> point,
-      [Point<num> returnPoint]) {
+      [Point<num>? returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
     var tx = px * a + py * c;
@@ -117,7 +117,7 @@ class Matrix {
 
   //-------------------------------------------------------------------------------------------------
 
-  Point<num> transformPoint(math.Point<num> point, [Point<num> returnPoint]) {
+  Point<num> transformPoint(math.Point<num> point, [Point<num>? returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
     var tx = px * a + py * c + this.tx;
@@ -132,7 +132,7 @@ class Matrix {
   }
 
   Point<num> transformPointInverse(math.Point<num> point,
-      [Point<num> returnPoint]) {
+      [Point<num>? returnPoint]) {
     var px = point.x.toDouble();
     var py = point.y.toDouble();
     var tx = (d * (px - this.tx) - c * (py - this.ty)) / det;
@@ -149,7 +149,7 @@ class Matrix {
   //-------------------------------------------------------------------------------------------------
 
   Rectangle<num> transformRectangle(math.Rectangle<num> rectangle,
-      [Rectangle<num> returnRectangle]) {
+      [Rectangle<num>? returnRectangle]) {
     num rl = rectangle.left.toDouble();
     num rr = rectangle.right.toDouble();
     num rt = rectangle.top.toDouble();

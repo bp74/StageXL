@@ -12,7 +12,7 @@ abstract class BitmapFilter extends RenderFilter {
   @override
   List<int> get renderPassTargets => const [1];
 
-  void apply(BitmapData bitmapData, [Rectangle<num> rectangle]) {
+  void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
     // do nothing by default
   }
 

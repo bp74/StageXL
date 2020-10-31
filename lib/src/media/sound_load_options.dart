@@ -37,7 +37,7 @@ class SoundLoadOptions {
   /// browser. If this value is null, the alternative urls are calculated
   /// automatically based on the mp3, mp4, ogg, opus, ac3 and wav properties.
 
-  List<String> alternativeUrls;
+  List<String>? alternativeUrls;
 
   /// Ignore loading errors and use a silent audio sample instead.
 
@@ -50,7 +50,7 @@ class SoundLoadOptions {
 
   /// Ignore the [SoundMixer.engine] and use this sound engine instead.
 
-  SoundEngine engine;
+  SoundEngine? engine;
 
   //---------------------------------------------------------------------------
 
@@ -94,7 +94,7 @@ class SoundLoadOptions {
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
 
     if (alternativeUrls != null) {
-      for (var alternativeUrl in alternativeUrls) {
+      for (var alternativeUrl in alternativeUrls!) {
         var alternativeMatch = regex.firstMatch(alternativeUrl);
         if (alternativeMatch == null) continue;
         if (availableTypes.contains(alternativeMatch.group(1))) {

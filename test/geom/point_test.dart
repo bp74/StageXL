@@ -118,7 +118,7 @@ void main() {
 Point point12() => Point<num>(1, 2);
 Point point00() => Point<num>(0, 0);
 
-void testPoint(Point point, {num x, num y}) {
+void testPoint(Point point, {num? x, num? y}) {
   if (x != null) expect(point.x, closeTo(x, 0.001));
   if (y != null) expect(point.y, closeTo(y, 0.001));
 }

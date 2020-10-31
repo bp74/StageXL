@@ -6,31 +6,25 @@ part of stagexl.display_ex;
 /// moving/animated body.
 
 class FlipBook extends InteractiveObject implements Animatable {
-  List<BitmapData> _bitmapDatas;
-  List<double> _frameDurations;
+  final List<BitmapData> _bitmapDatas;
+  final List<num> _frameDurations;
 
-  int _currentFrame;
-  double _frameTime;
+  int _currentFrame = 0;
+  double? _frameTime;
 
-  bool _play;
+  bool _play = false;
   bool _loop;
-  Event _progressEvent;
-  Event _completeEvent;
+  final Event _progressEvent;
+  final Event _completeEvent;
 
   //---------------------------------------------------------------------------
 
-  FlipBook(List<BitmapData> bitmapDatas,
-      [int frameRate = 30, bool loop = true]) {
-    _bitmapDatas = bitmapDatas;
-    _frameDurations = List.filled(_bitmapDatas.length, 1.0 / frameRate);
-
-    _currentFrame = 0;
-    _frameTime = null;
-    _play = false;
-    _loop = loop;
-    _progressEvent = Event(Event.PROGRESS);
+  FlipBook(this._bitmapDatas,
+      [int frameRate = 30, loop = true]) :
+    _frameDurations = List.filled(_bitmapDatas.length, 1.0 / frameRate),
+    _loop = loop,
+    _progressEvent = Event(Event.PROGRESS),
     _completeEvent = Event(Event.COMPLETE);
-  }
 
   //---------------------------------------------------------------------------
 
@@ -109,7 +103,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   ///  * the optionally specified argument [stopFrame] was reached.
   ///  * the [stop] method was called.
 
-  Future playWith(Juggler juggler, {int gotoFrame, int stopFrame}) {
+  Future playWith(Juggler juggler, {int? gotoFrame, int? stopFrame}) {
     _play = true;
     _frameTime = null;
     _currentFrame = gotoFrame ?? currentFrame;
@@ -159,11 +153,11 @@ class FlipBook extends InteractiveObject implements Animatable {
       _frameTime = 0.0;
       dispatchEvent(_progressEvent);
     } else {
-      _frameTime += time;
+      _frameTime = _frameTime! + time;
 
       while (_play) {
         var frameDuration = _frameDurations[_currentFrame];
-        if (frameDuration > _frameTime) break;
+        if (frameDuration > _frameTime!) break;
 
         var lastFrame = totalFrames - 1;
         var prevFrame = _currentFrame;
@@ -171,7 +165,7 @@ class FlipBook extends InteractiveObject implements Animatable {
         if (nextFrame > lastFrame) nextFrame = loop ? 0 : lastFrame;
 
         _currentFrame = nextFrame;
-        _frameTime -= frameDuration;
+        _frameTime = _frameTime! - frameDuration;
 
         // dispatch progress event on every new frame
         if (nextFrame != prevFrame) {
@@ -199,7 +193,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   }
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     var bitmapData = _bitmapDatas[_currentFrame];
     if (localX < 0.0 || localX >= bitmapData.width) return null;
     if (localY < 0.0 || localY >= bitmapData.height) return null;

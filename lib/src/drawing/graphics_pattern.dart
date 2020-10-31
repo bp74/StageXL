@@ -44,40 +44,37 @@ class _CanvasPatternKey {
 //------------------------------------------------------------------------------
 
 class GraphicsPattern {
-  static final SharedCache<_CanvasPatternKey, CanvasPattern>
-      _canvasPatternCache = SharedCache<_CanvasPatternKey, CanvasPattern>();
+  static final SharedCache<_CanvasPatternKey, CanvasPattern?>
+      _canvasPatternCache = SharedCache<_CanvasPatternKey, CanvasPattern?>();
 
-  static final SharedCache<RenderTextureQuad, RenderTexture>
-      _patternTextureCache = SharedCache<RenderTextureQuad, RenderTexture>()
-        ..onObjectReleased.listen((e) => e.object.dispose());
+  static final SharedCache<RenderTextureQuad?, RenderTexture?>
+      _patternTextureCache = SharedCache<RenderTextureQuad?, RenderTexture?>()
+        ..onObjectReleased.listen((e) => e.object!.dispose());
 
   /// cached by the canvas2D renderer
-  CanvasPattern _canvasPattern;
+  CanvasPattern? _canvasPattern;
 
   /// cached by both the canvas2D and the webgl renderer
-  RenderTexture _patternTexture;
+  RenderTexture? _patternTexture;
 
   RenderTextureQuad _renderTextureQuad;
   GraphicsPatternType _type;
-  Matrix _matrix;
+  Matrix? _matrix;
 
   GraphicsPattern(RenderTextureQuad renderTextureQuad, GraphicsPatternType type,
-      [Matrix matrix]) {
-    _renderTextureQuad = renderTextureQuad;
-    _matrix = matrix;
-    _type = type;
-  }
+      [Matrix? matrix])
+      : _renderTextureQuad = renderTextureQuad, _matrix = matrix, _type = type;
 
-  GraphicsPattern.repeat(RenderTextureQuad renderTextureQuad, [Matrix matrix])
+  GraphicsPattern.repeat(RenderTextureQuad renderTextureQuad, [Matrix? matrix])
       : this(renderTextureQuad, GraphicsPatternType.Repeat, matrix);
 
-  GraphicsPattern.repeatX(RenderTextureQuad renderTextureQuad, [Matrix matrix])
+  GraphicsPattern.repeatX(RenderTextureQuad renderTextureQuad, [Matrix? matrix])
       : this(renderTextureQuad, GraphicsPatternType.RepeatX, matrix);
 
-  GraphicsPattern.repeatY(RenderTextureQuad renderTextureQuad, [Matrix matrix])
+  GraphicsPattern.repeatY(RenderTextureQuad renderTextureQuad, [Matrix? matrix])
       : this(renderTextureQuad, GraphicsPatternType.RepeatY, matrix);
 
-  GraphicsPattern.noRepeat(RenderTextureQuad renderTextureQuad, [Matrix matrix])
+  GraphicsPattern.noRepeat(RenderTextureQuad renderTextureQuad, [Matrix? matrix])
       : this(renderTextureQuad, GraphicsPatternType.NoRepeat, matrix);
 
   //----------------------------------------------------------------------------
@@ -89,9 +86,9 @@ class GraphicsPattern {
     _type = value;
   }
 
-  Matrix get matrix => _matrix;
+  Matrix? get matrix => _matrix;
 
-  set matrix(Matrix value) {
+  set matrix(Matrix? value) {
     _matrix = value;
   }
 
@@ -130,18 +127,16 @@ class GraphicsPattern {
     if (_canvasPattern == null) {
       var cacheKey = _CanvasPatternKey(_renderTextureQuad, _type);
       _canvasPattern =
-          context.createPattern(patternTexture.source, _type.value);
+          context.createPattern(patternTexture.source!, _type.value);
       _canvasPatternCache.addObject(cacheKey, _canvasPattern);
     }
 
-    return _canvasPattern;
+    return _canvasPattern!;
   }
 
   RenderTexture get patternTexture {
     // try to get the patternTexture from the texture cache
-    if (_patternTexture == null && _renderTextureQuad != null) {
-      _patternTexture = _patternTextureCache.getObject(_renderTextureQuad);
-    }
+    _patternTexture ??= _patternTextureCache.getObject(_renderTextureQuad);
 
     // try to use the original texture as patternTexture
     if (_patternTexture == null && _renderTextureQuad.isEquivalentToSource) {
@@ -163,6 +158,6 @@ class GraphicsPattern {
       _patternTextureCache.addObject(_renderTextureQuad, _patternTexture);
     }
 
-    return _patternTexture;
+    return _patternTexture!;
   }
 }

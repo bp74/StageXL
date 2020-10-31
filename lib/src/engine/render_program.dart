@@ -2,8 +2,10 @@ part of stagexl.engine;
 
 abstract class RenderProgram {
   int _contextIdentifier = -1;
-  gl.RenderingContext _renderingContext;
-  gl.Program _program;
+
+  // These assume activate() is called
+  late gl.RenderingContext _renderingContext;
+  late gl.Program _program;
 
   final Map<String, int> _attributes;
   final Map<String, gl.UniformLocation> _uniforms;
@@ -93,7 +95,7 @@ abstract class RenderProgram {
     if (status == true) return program;
 
     var cl = rc.isContextLost();
-    throw StateError(cl ? 'ContextLost' : rc.getProgramInfoLog(program));
+    throw StateError(cl ? 'ContextLost' : rc.getProgramInfoLog(program)!);
   }
 
   //---------------------------------------------------------------------------
@@ -107,14 +109,14 @@ abstract class RenderProgram {
     if (status == true) return shader;
 
     var cl = rc.isContextLost();
-    throw StateError(cl ? 'ContextLost' : rc.getShaderInfoLog(shader));
+    throw StateError(cl ? 'ContextLost' : rc.getShaderInfoLog(shader)!);
   }
 
   //---------------------------------------------------------------------------
 
   void _updateAttributes(gl.RenderingContext rc, gl.Program program) {
     _attributes.clear();
-    int count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_ATTRIBUTES);
+    var count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_ATTRIBUTES) as int;
 
     for (var i = 0; i < count; i++) {
       var activeInfo = rc.getActiveAttrib(program, i);
@@ -128,7 +130,7 @@ abstract class RenderProgram {
 
   void _updateUniforms(gl.RenderingContext rc, gl.Program program) {
     _uniforms.clear();
-    int count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_UNIFORMS);
+    var count = rc.getProgramParameter(program, gl.WebGL.ACTIVE_UNIFORMS) as int;
 
     for (var i = 0; i < count; i++) {
       var activeInfo = rc.getActiveUniform(program, i);

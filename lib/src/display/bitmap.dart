@@ -20,14 +20,14 @@ part of stagexl.display;
 
 class Bitmap extends DisplayObject {
   /// The BitmapData object being referenced.
-  BitmapData _bitmapData;
+  BitmapData? _bitmapData;
 
-  BitmapData get bitmapData => _bitmapData;
-  set bitmapData(BitmapData value) {
+  BitmapData? get bitmapData => _bitmapData;
+  set bitmapData(BitmapData? value) {
     _bitmapData = value;
   }
 
-  Bitmap([BitmapData bitmapData]) : _bitmapData = bitmapData;
+  Bitmap([BitmapData? bitmapData]) : _bitmapData = bitmapData;
 
   //---------------------------------------------------------------------------
 
@@ -35,27 +35,27 @@ class Bitmap extends DisplayObject {
   Rectangle<num> get bounds {
     return bitmapData == null
         ? Rectangle<num>(0.0, 0.0, 0.0, 0.0)
-        : Rectangle<num>(0.0, 0.0, bitmapData.width, bitmapData.height);
+        : Rectangle<num>(0.0, 0.0, bitmapData!.width, bitmapData!.height);
   }
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     // We override the hitTestInput method for optimal performance.
     if (bitmapData == null) return null;
-    if (localX < 0.0 || localX >= bitmapData.width) return null;
-    if (localY < 0.0 || localY >= bitmapData.height) return null;
+    if (localX < 0.0 || localX >= bitmapData!.width) return null;
+    if (localY < 0.0 || localY >= bitmapData!.height) return null;
     return this;
   }
 
   @override
   void render(RenderState renderState) {
-    if (bitmapData != null) bitmapData.render(renderState);
+    if (bitmapData != null) bitmapData!.render(renderState);
   }
 
   @override
   void renderFiltered(RenderState renderState) {
     if (bitmapData != null) {
-      var renderTextureQuad = bitmapData.renderTextureQuad;
+      var renderTextureQuad = bitmapData!.renderTextureQuad;
       renderState.renderTextureQuadFiltered(renderTextureQuad, filters);
     }
   }

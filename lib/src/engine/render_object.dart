@@ -7,12 +7,12 @@ part of stagexl.engine;
 
 abstract class RenderObject {
   Matrix get transformationMatrix;
-  BlendMode get blendMode;
+  BlendMode? get blendMode;
   num get alpha;
 
   List<RenderFilter> get filters;
-  RenderTextureQuad get cache;
-  RenderMask get mask;
+  RenderTextureQuad? get cache;
+  RenderMask? get mask;
 
   Rectangle<num> get bounds;
 
@@ -46,10 +46,10 @@ class _RenderTextureQuadObject implements RenderObject {
   final BlendMode blendMode = BlendMode.NORMAL;
 
   @override
-  final RenderTextureQuad cache;
+  final RenderTextureQuad? cache;
 
   @override
-  final RenderMask mask;
+  final RenderMask? mask;
 
   @override
   final num alpha = 1.0;

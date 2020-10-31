@@ -57,7 +57,7 @@ abstract class InteractiveObject extends DisplayObject {
   }
 
   set useHandCursor(bool value) {
-    mouseCursor = value ? MouseCursor.POINTER : null;
+    mouseCursor = value ? MouseCursor.POINTER : MouseCursor.AUTO;
   }
 
   // mouse events

@@ -10,12 +10,11 @@ class Scale9Bitmap extends Bitmap {
   num _width = 0.0;
   num _height = 0.0;
 
-  final List<RenderTextureQuad> _slices = List<RenderTextureQuad>(9);
+  final List<RenderTextureQuad?> _slices = List.filled(9, null);
 
-  Scale9Bitmap(BitmapData bitmapData, Rectangle<num> grid) : super(bitmapData) {
-    _grid = grid;
-    _width = ensureNum(bitmapData.width);
-    _height = ensureNum(bitmapData.height);
+  Scale9Bitmap(BitmapData bitmapData, Rectangle<num> grid) : _grid = grid, super(bitmapData) {
+    _width = bitmapData.width;
+    _height = bitmapData.height;
     _updateRenderTextureQuads();
   }
 
@@ -29,7 +28,7 @@ class Scale9Bitmap extends Bitmap {
 
   @override
   set width(num value) {
-    _width = ensureNum(value);
+    _width = value;
   }
 
   /// Gets and sets the height of this Scale9Bitmap. In contrast to other
@@ -40,7 +39,7 @@ class Scale9Bitmap extends Bitmap {
 
   @override
   set height(num value) {
-    _height = ensureNum(value);
+    _height = value;
   }
 
   /// Gets and sets the grid rectangle within the BitmapData to be scaled.
@@ -55,7 +54,7 @@ class Scale9Bitmap extends Bitmap {
   /// Gets and sets the BitmapData of this Scale9Bitmap.
 
   @override
-  set bitmapData(BitmapData value) {
+  set bitmapData(BitmapData? value) {
     super.bitmapData = value;
     _updateRenderTextureQuads();
   }
@@ -68,7 +67,7 @@ class Scale9Bitmap extends Bitmap {
   }
 
   @override
-  DisplayObject hitTestInput(num localX, num localY) {
+  DisplayObject? hitTestInput(num localX, num localY) {
     if (localX < 0.0 || localX >= _width) return null;
     if (localY < 0.0 || localY >= _height) return null;
     return this;
@@ -79,16 +78,19 @@ class Scale9Bitmap extends Bitmap {
     // We could use renderState.renderTextureMesh, it would work great with
     // the WebGL renderer but not so good with the Canvas2D renderer.
 
+    // If first slice set, all the rest should be too
+    if (_slices.first == null) return;
+
     var globalMatrix = renderState.globalMatrix;
     var renderContext = renderState.renderContext;
     var tempMatrix = globalMatrix.clone();
 
-    var w0 = _slices[0].targetWidth;
-    var h0 = _slices[0].targetHeight;
-    var w1 = _slices[4].targetWidth;
-    var h1 = _slices[4].targetHeight;
-    var w2 = _slices[8].targetWidth;
-    var h2 = _slices[8].targetHeight;
+    var w0 = _slices[0]!.targetWidth;
+    var h0 = _slices[0]!.targetHeight;
+    var w1 = _slices[4]!.targetWidth;
+    var h1 = _slices[4]!.targetHeight;
+    var w2 = _slices[8]!.targetWidth;
+    var h2 = _slices[8]!.targetHeight;
 
     for (var j = 0; j < 3; j++) {
       var sh = j == 0 ? h0 : j == 2 ? h2 : h1;
@@ -100,7 +102,7 @@ class Scale9Bitmap extends Bitmap {
         var tx = i == 0 ? 0 : i == 1 ? w0 : width - w2;
         globalMatrix.setTo(tw / sw, 0, 0, th / sh, tx, ty);
         globalMatrix.concat(tempMatrix);
-        renderContext.renderTextureQuad(renderState, _slices[i + j * 3]);
+        renderContext.renderTextureQuad(renderState, _slices[i + j * 3]!);
       }
     }
 
@@ -110,7 +112,9 @@ class Scale9Bitmap extends Bitmap {
   //---------------------------------------------------------------------------
 
   void _updateRenderTextureQuads() {
-    var rtq = bitmapData.renderTextureQuad;
+    if (bitmapData == null) return;
+
+    var rtq = bitmapData!.renderTextureQuad;
 
     var x0 = 0;
     var x1 = (rtq.pixelRatio * grid.left).round();

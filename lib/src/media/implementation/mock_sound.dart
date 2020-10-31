@@ -6,12 +6,12 @@ class MockSound extends Sound {
   //-------------------------------------------------------------------------------------------------
   //-------------------------------------------------------------------------------------------------
 
-  static Future<Sound> load(String url, [SoundLoadOptions soundLoadOptions]) {
+  static Future<Sound> load(String url, [SoundLoadOptions? soundLoadOptions]) {
     return Future<Sound>.value(MockSound._());
   }
 
   static Future<Sound> loadDataUrl(String dataUrl,
-      [SoundLoadOptions soundLoadOptions]) {
+      [SoundLoadOptions? soundLoadOptions]) {
     return Future<Sound>.value(MockSound._());
   }
 
@@ -28,13 +28,13 @@ class MockSound extends Sound {
   }
 
   @override
-  SoundChannel play([bool loop = false, SoundTransform soundTransform]) {
+  SoundChannel play([bool loop = false, SoundTransform? soundTransform]) {
     return MockSoundChannel(this, 0, length, loop, soundTransform);
   }
 
   @override
   SoundChannel playSegment(num startTime, num duration,
-      [bool loop = false, SoundTransform soundTransform]) {
+      [bool loop = false, SoundTransform? soundTransform]) {
     return MockSoundChannel(this, startTime, duration, loop, soundTransform);
   }
 }
