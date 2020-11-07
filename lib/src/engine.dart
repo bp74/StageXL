@@ -22,7 +22,9 @@ import 'dart:html'
         CanvasRenderingContext2D,
         CanvasImageSource,
         ImageData,
+        ImageBitmap,
         VideoElement;
+import 'dart:js_util' as js_util;
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:web_gl' as gl;
