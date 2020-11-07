@@ -18,6 +18,7 @@ import 'package:xml/xml.dart';
 import 'display.dart';
 import 'engine.dart';
 import 'geom.dart';
+import 'internal/image_bitmap_loader.dart';
 import 'internal/image_loader.dart';
 import 'internal/tools.dart';
 import 'media.dart';

@@ -43,6 +43,13 @@ class BitmapData implements BitmapDrawable {
     return BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
+  factory BitmapData.fromImageBitmap(ImageBitmap imageBitmap,
+      [num pixelRatio = 1.0]) {
+    var renderTexture = RenderTexture.fromImageBitmap(imageBitmap);
+    var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
+    return BitmapData.fromRenderTextureQuad(renderTextureQuad);
+  }
+
   factory BitmapData.fromVideoElement(VideoElement videoElement,
       [num pixelRatio = 1.0]) {
     final renderTexture = RenderTexture.fromVideoElement(videoElement);
@@ -60,11 +67,18 @@ class BitmapData implements BitmapDrawable {
 
   /// Loads a BitmapData from the given url.
 
-  static Future<BitmapData> load(String url, [BitmapDataLoadOptions? options]) {
+  static Future<BitmapData> load(String url, [BitmapDataLoadOptions? options]) async {
     options = options ?? BitmapData.defaultLoadOptions;
     final bitmapDataFileInfo = BitmapDataLoadInfo(url, options.pixelRatios);
     final targetUrl = bitmapDataFileInfo.loaderUrl;
     final pixelRatio = bitmapDataFileInfo.pixelRatio;
+
+    if (options.imageBitmap) {
+      final loader = ImageBitmapLoader(targetUrl, options.webp);
+      final imageBitmap = await loader.done;
+      return BitmapData.fromImageBitmap(imageBitmap, pixelRatio);
+    }
+
     final loader = ImageLoader(targetUrl, options.webp, options.corsEnabled);
     return loader.done.then((i) => BitmapData.fromImageElement(i, pixelRatio));
   }
