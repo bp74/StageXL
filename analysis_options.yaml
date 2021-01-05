@@ -1,5 +1,1 @@
-analyzer:
-  enable-experiment:
-    - non-nullable
-
 include: package:pedantic/analysis_options.yaml
