@@ -1,18 +1,15 @@
 name: stagexl
-version: 1.4.7
+version: 2.0.0-nullsafety.0
 description: A fast and universal 2D rendering engine for HTML5 and Dart.
 homepage: http://www.stagexl.org
 
 environment:
-  sdk: '>=2.10.0 <3.0.0'
+  sdk: '>=2.12.0-0 <3.0.0'
 
 documentation: http://www.stagexl.org/docs/api/index.html
 
 dependencies:
-  xml:
-    git:
-      url: https://github.com/renggli/dart-xml.git
-      ref: nullsafety
+  xml: '^5.0.0-nullsafety.1'
 
 dev_dependencies:
   test: any
