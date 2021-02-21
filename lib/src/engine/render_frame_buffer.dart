@@ -19,10 +19,13 @@ class RenderFrameBuffer {
   //---------------------------------------------------------------------------
 
   int? get width => _renderTexture?.width;
+
   int? get height => _renderTexture?.height;
+
   int get contextIdentifier => _contextIdentifier;
 
   RenderTexture? get renderTexture => _renderTexture;
+
   RenderStencilBuffer? get renderStencilBuffer => _renderStencilBuffer;
 
   //---------------------------------------------------------------------------
@@ -32,8 +35,9 @@ class RenderFrameBuffer {
   void dispose() {
     _renderTexture?.dispose();
     _renderStencilBuffer?.dispose();
-    if (_framebuffer != null) _renderingContext?.deleteFramebuffer(_framebuffer);
-
+    if (_framebuffer != null) {
+      _renderingContext?.deleteFramebuffer(_framebuffer);
+    }
     _contextIdentifier = -1;
     _renderTexture = null;
     _renderStencilBuffer = null;
@@ -57,19 +61,19 @@ class RenderFrameBuffer {
         _renderContext.activateRenderStencilBuffer(_renderStencilBuffer!);
       }
 
-      var target = gl.WebGL.FRAMEBUFFER;
-      var color = gl.WebGL.COLOR_ATTACHMENT0;
-      var colorTarget = gl.WebGL.TEXTURE_2D;
-      var colorData = _renderTexture!.texture;
-      var stencil = gl.WebGL.DEPTH_STENCIL_ATTACHMENT;
-      var stencilTarget = gl.WebGL.RENDERBUFFER;
-      var stencilData = _renderStencilBuffer!.renderbuffer;
+      final target = gl.WebGL.FRAMEBUFFER;
+      final color = gl.WebGL.COLOR_ATTACHMENT0;
+      final colorTarget = gl.WebGL.TEXTURE_2D;
+      final colorData = _renderTexture!.texture;
+      final stencil = gl.WebGL.DEPTH_STENCIL_ATTACHMENT;
+      final stencilTarget = gl.WebGL.RENDERBUFFER;
+      final stencilData = _renderStencilBuffer!.renderbuffer;
 
       _renderingContext!.bindFramebuffer(target, _framebuffer);
-      _renderingContext!.framebufferTexture2D(
-          target, color, colorTarget, colorData, 0);
-      _renderingContext!.framebufferRenderbuffer(
-          target, stencil, stencilTarget, stencilData);
+      _renderingContext!
+          .framebufferTexture2D(target, color, colorTarget, colorData, 0);
+      _renderingContext!
+          .framebufferRenderbuffer(target, stencil, stencilTarget, stencilData);
     } else {
       _renderingContext!.bindFramebuffer(gl.WebGL.FRAMEBUFFER, _framebuffer);
     }

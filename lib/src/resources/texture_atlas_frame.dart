@@ -38,9 +38,9 @@ class TextureAtlasFrame {
       this.frameHeight,
       this.vxList,
       this.ixList) {
-    var s = Rectangle<int>(frameX, frameY, frameWidth, frameHeight);
-    var o = Rectangle<int>(-offsetX, -offsetY, originalWidth, originalHeight);
-    var q = RenderTextureQuad.slice(textureAtlasQuad, s, o, rotation);
+    final s = Rectangle<int>(frameX, frameY, frameWidth, frameHeight);
+    final o = Rectangle<int>(-offsetX, -offsetY, originalWidth, originalHeight);
+    final q = RenderTextureQuad.slice(textureAtlasQuad, s, o, rotation);
 
     if (vxList != null && ixList != null) {
       q.setCustomVertices(vxList!, ixList!);

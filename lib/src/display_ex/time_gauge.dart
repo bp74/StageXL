@@ -101,7 +101,7 @@ class TimeGauge extends Gauge implements Animatable {
 
   @override
   set ratio(num value) {
-    var oldRatio = ratio;
+    final oldRatio = ratio;
     super.ratio = value;
     if (_alarmsEnabled) {
       _alarms.forEach((alarmName, alarmRatio) {

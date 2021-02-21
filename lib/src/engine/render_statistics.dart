@@ -12,7 +12,6 @@ class RenderStatistics {
   }
 
   @override
-  String toString() {
-    return 'RenderStatistics: $drawCount draws, $vertexCount verices, $indexCount indices';
-  }
+  String toString() =>
+      'RenderStatistics: $drawCount draws, $vertexCount verices, $indexCount indices';
 }

@@ -1,20 +1,21 @@
 import 'dart:html' as html;
-import 'package:stagexl/stagexl.dart';
 import 'dart:math' as math;
 
+import 'package:stagexl/stagexl.dart';
+
 void main() {
-  var options = StageOptions()
+  final options = StageOptions()
     ..stageAlign = StageAlign.TOP_LEFT
     ..stageScaleMode = StageScaleMode.NO_SCALE
     ..renderEngine = RenderEngine.WebGL;
 
-  var canvas = html.querySelector('#stage') as html.CanvasElement;
-  var stage = Stage(canvas, width: 990, height: 620, options: options);
-  var renderLoop = RenderLoop();
+  final canvas = html.querySelector('#stage') as html.CanvasElement;
+  final stage = Stage(canvas, width: 990, height: 620, options: options);
+  final renderLoop = RenderLoop();
   renderLoop.addStage(stage);
 
-  var bitmapData = BitmapData(100, 100, Color.Red);
-  var bitmap = Bitmap(bitmapData);
+  final bitmapData = BitmapData(100, 100, Color.Red);
+  final bitmap = Bitmap(bitmapData);
   bitmap.x = 100;
   bitmap.y = 100;
   bitmap.rotation = math.pi / 4;

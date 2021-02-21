@@ -7,19 +7,19 @@ import 'package:stagexl/stagexl.dart';
 
 void main() {
   test('VectorIsZero', () {
-    var vector = Vector(0, 0);
+    final vector = Vector(0, 0);
     expect(vector.x, equals(0));
     expect(vector.y, equals(0));
     expect(vector.isZero, isTrue);
   });
 
   test('VectorOperators', () {
-    var v1 = Vector(10, 20);
-    var v2 = Vector(30, 40);
-    var vAdd = v1 + v2;
-    var vSub = v1 - v2;
-    var vMul = v1 * v2;
-    var vDiv = v1 / v2;
+    final v1 = Vector(10, 20);
+    final v2 = Vector(30, 40);
+    final vAdd = v1 + v2;
+    final vSub = v1 - v2;
+    final vMul = v1 * v2;
+    final vDiv = v1 / v2;
 
     expect(vAdd.x, equals(10 + 30));
     expect(vAdd.y, equals(20 + 40));
@@ -34,8 +34,8 @@ void main() {
   });
 
   test('VectorScale', () {
-    var v1 = Vector(10, 20);
-    var v2 = v1.normalize();
+    final v1 = Vector(10, 20);
+    final v2 = v1.normalize();
 
     expect(v1.isNormalized, isFalse);
     expect(v2.isNormalized, isTrue);
@@ -44,9 +44,9 @@ void main() {
   });
 
   test('VectorDistance', () {
-    var v1 = Vector(10, 20);
-    var v2 = Vector(30, 40);
-    var v3 = Vector(20, 20);
+    final v1 = Vector(10, 20);
+    final v2 = Vector(30, 40);
+    final v3 = Vector(20, 20);
 
     expect(v1.length, equals(22.360679774997898));
     expect(v1.lengthSqr, equals(10 * 10 + 20 * 20));

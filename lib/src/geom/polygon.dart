@@ -45,20 +45,20 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   bool isSimple() {
-    var length = points.length;
+    final length = points.length;
     if (length <= 3) return true;
 
     for (var i = 0; i < length; i++) {
-      var a1 = points[i];
-      var a2 = points[i + 1 < length ? i + 1 : 0];
+      final a1 = points[i];
+      final a2 = points[i + 1 < length ? i + 1 : 0];
 
       for (var j = 0; j < length; j++) {
         if ((i - j).abs() < 2) continue;
         if (j == length - 1 && i == 0) continue;
         if (i == length - 1 && j == 0) continue;
 
-        var b1 = points[j];
-        var b2 = points[j + 1 < length ? j + 1 : 0];
+        final b1 = points[j];
+        final b2 = points[j + 1 < length ? j + 1 : 0];
 
         if (_getLineIntersection(a1, a2, b1, b2) != null) return false;
       }
@@ -70,13 +70,13 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   bool isConvex() {
-    var length = points.length;
+    final length = points.length;
     if (length <= 3) return true;
 
     for (var i = 0; i < length; i++) {
-      var p1 = points[(i + 0) % length];
-      var p2 = points[(i + 1) % length];
-      var p3 = points[(i + 2) % length];
+      final p1 = points[(i + 0) % length];
+      final p2 = points[(i + 1) % length];
+      final p3 = points[(i + 2) % length];
       if (!_convex(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)) return false;
     }
 
@@ -92,7 +92,7 @@ class Polygon {
     num minY = double.infinity;
 
     for (var i = 0; i < points.length; i++) {
-      var point = points[i];
+      final point = points[i];
       maxX = max(maxX, point.x);
       minX = min(minX, point.x);
       maxY = max(maxY, point.y);
@@ -107,24 +107,24 @@ class Polygon {
   List<int> triangulate() {
     var i = 0;
     var al = points.length;
-    var result = <int>[];
-    var available = <int>[];
+    final result = <int>[];
+    final available = <int>[];
 
     for (var p = 0; p < points.length; p++) {
       available.add(p);
     }
 
     while (al > 3) {
-      var i0 = available[(i + 0) % al];
-      var i1 = available[(i + 1) % al];
-      var i2 = available[(i + 2) % al];
+      final i0 = available[(i + 0) % al];
+      final i1 = available[(i + 1) % al];
+      final i2 = available[(i + 2) % al];
 
-      var ax = points[i0].x;
-      var ay = points[i0].y;
-      var bx = points[i1].x;
-      var by = points[i1].y;
-      var cx = points[i2].x;
-      var cy = points[i2].y;
+      final ax = points[i0].x;
+      final ay = points[i0].y;
+      final bx = points[i1].x;
+      final by = points[i1].y;
+      final cx = points[i2].x;
+      final cy = points[i2].y;
 
       var earFound = false;
 
@@ -132,7 +132,7 @@ class Polygon {
         earFound = true;
 
         for (var j = 0; j < al; j++) {
-          var vi = available[j];
+          final vi = available[j];
           if (vi == i0 || vi == i1 || vi == i2) continue;
           if (_pointInTriangle(
               points[vi].x, points[vi].y, ax, ay, bx, by, cx, cy)) {
@@ -181,7 +181,7 @@ class Polygon {
       if (ay > 0 && by > 0) continue; // both 'up' or both 'down'
       if (ax < 0 && bx < 0) continue; // both points on left
 
-      num lx = ax - ay * (bx - ax) / (by - ay);
+      final num lx = ax - ay * (bx - ax) / (by - ay);
 
       if (lx == 0) return true; // point on edge
       if (lx > 0) depth++;
@@ -193,12 +193,12 @@ class Polygon {
   //-----------------------------------------------------------------------------------------------
 
   bool _inRect(Point<num> point, Point<num> a1, Point<num> a2) {
-    var x = point.x;
-    var y = point.y;
-    var left = a1.x < a2.x ? a1.x : a2.x;
-    var top = a1.y < a2.y ? a1.y : a2.y;
-    var right = a1.x > a2.x ? a1.x : a2.x;
-    var bottom = a1.y > a2.y ? a1.y : a2.y;
+    final x = point.x;
+    final y = point.y;
+    final left = a1.x < a2.x ? a1.x : a2.x;
+    final top = a1.y < a2.y ? a1.y : a2.y;
+    final right = a1.x > a2.x ? a1.x : a2.x;
+    final bottom = a1.y > a2.y ? a1.y : a2.y;
 
     return x >= left && x <= right && y >= top && y <= bottom;
   }
@@ -207,50 +207,49 @@ class Polygon {
 
   Point<num>? _getLineIntersection(
       Point<num> a1, Point<num> a2, Point<num> b1, Point<num> b2) {
-    var dax = (a1.x - a2.x);
-    var dbx = (b1.x - b2.x);
-    var day = (a1.y - a2.y);
-    var dby = (b1.y - b2.y);
+    final dax = a1.x - a2.x;
+    final dbx = b1.x - b2.x;
+    final day = a1.y - a2.y;
+    final dby = b1.y - b2.y;
 
-    var den = dax * dby - day * dbx;
+    final den = dax * dby - day * dbx;
     if (den == 0) return null; // parallel
 
-    var a = (a1.x * a2.y - a1.y * a2.x);
-    var b = (b1.x * b2.y - b1.y * b2.x);
+    final a = a1.x * a2.y - a1.y * a2.x;
+    final b = b1.x * b2.y - b1.y * b2.x;
 
-    var x = (a * dbx - dax * b) / den;
-    var y = (a * dby - day * b) / den;
-    var point = Point<num>(x, y);
+    final x = (a * dbx - dax * b) / den;
+    final y = (a * dby - day * b) / den;
+    final point = Point<num>(x, y);
 
     return _inRect(point, a1, a2) && _inRect(point, b1, b2) ? point : null;
   }
 
   //-----------------------------------------------------------------------------------------------
 
-  bool _convex(num ax, num ay, num bx, num by, num cx, num cy) {
-    return (ay - by) * (cx - bx) + (bx - ax) * (cy - by) >= 0;
-  }
+  bool _convex(num ax, num ay, num bx, num by, num cx, num cy) =>
+      (ay - by) * (cx - bx) + (bx - ax) * (cy - by) >= 0;
 
   //-----------------------------------------------------------------------------------------------
 
   bool _pointInTriangle(
       num px, num py, num ax, num ay, num bx, num by, num cx, num cy) {
-    var v0x = cx - ax;
-    var v0y = cy - ay;
-    var v1x = bx - ax;
-    var v1y = by - ay;
-    var v2x = px - ax;
-    var v2y = py - ay;
+    final v0x = cx - ax;
+    final v0y = cy - ay;
+    final v1x = bx - ax;
+    final v1y = by - ay;
+    final v2x = px - ax;
+    final v2y = py - ay;
 
-    var dot00 = v0x * v0x + v0y * v0y;
-    var dot01 = v0x * v1x + v0y * v1y;
-    var dot02 = v0x * v2x + v0y * v2y;
-    var dot11 = v1x * v1x + v1y * v1y;
-    var dot12 = v1x * v2x + v1y * v2y;
+    final dot00 = v0x * v0x + v0y * v0y;
+    final dot01 = v0x * v1x + v0y * v1y;
+    final dot02 = v0x * v2x + v0y * v2y;
+    final dot11 = v1x * v1x + v1y * v1y;
+    final dot12 = v1x * v2x + v1y * v2y;
 
-    var invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-    num u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-    num v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+    final invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+    final num u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    final num v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
     return (u >= 0) && (v >= 0) && (u + v < 1);
   }

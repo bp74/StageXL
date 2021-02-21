@@ -39,8 +39,8 @@ class VideoLoader {
   }
 
   void _onVideoError(Event event) {
-    var ve = event.target as VideoElement;
-    var loadError = LoadError('Failed to load ${ve.src}.', ve.error);
+    final ve = event.target as VideoElement;
+    final loadError = LoadError('Failed to load ${ve.src}.', ve.error);
     aggregateError.errors.add(loadError);
     _loadNextUrl();
   }
@@ -59,7 +59,7 @@ class VideoLoader {
     _onCanPlaySubscription.cancel();
     _onErrorSubscription.cancel();
     if (aggregateError.errors.isEmpty) {
-      var loadError = LoadError('No configured video type is supported.');
+      final loadError = LoadError('No configured video type is supported.');
       aggregateError.errors.add(loadError);
     }
     _completer.completeError(aggregateError);
@@ -67,11 +67,12 @@ class VideoLoader {
 
   void _loadVideoData(String url) {
     HttpRequest.request(url, responseType: 'blob').then((request) {
-      var reader = FileReader();
-      reader.readAsDataUrl(request.response);
-      reader.onLoadEnd.first.then((e) => _loadVideoSource(reader.result as String));
+      final reader = FileReader();
+      reader.readAsDataUrl(request.response as Blob);
+      reader.onLoadEnd.first
+          .then((e) => _loadVideoSource(reader.result as String));
     }).catchError((error) {
-      var loadError = LoadError('Failed to load $url.', error);
+      final loadError = LoadError('Failed to load $url.', error);
       aggregateError.errors.add(loadError);
       _loadNextUrl();
     });
@@ -86,9 +87,9 @@ class VideoLoader {
   //---------------------------------------------------------------------------
 
   static List<String> _getSupportedTypes() {
-    var supportedTypes = <String>[];
-    var video = VideoElement();
-    var valid = ['maybe', 'probably'];
+    final supportedTypes = <String>[];
+    final video = VideoElement();
+    final valid = ['maybe', 'probably'];
 
     if (valid.contains(video.canPlayType('video/webm'))) {
       supportedTypes.add('webm');

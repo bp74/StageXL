@@ -7,8 +7,8 @@ int _globalFrameCallbackId = -1;
 void _globalFrameRequest() {
   if (_globalFrameCallbackId == -1) {
     _globalFrameCallbackId = window.requestAnimationFrame((num frameTime) {
-      var currentFrameTime = frameTime / 1000.0;
-      var deltaTime = currentFrameTime - _globalFrameTime;
+      final currentFrameTime = frameTime / 1000.0;
+      final deltaTime = currentFrameTime - _globalFrameTime;
       _globalFrameTime = currentFrameTime;
       _globalFrameCallbackId = -1;
       _globalFrameRequest();

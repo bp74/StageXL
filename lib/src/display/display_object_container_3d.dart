@@ -117,24 +117,24 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
   //---------------------------------------------------------------------------
 
   bool get isForwardFacing {
-    var matrix = globalTransformationMatrix3D;
+    final matrix = globalTransformationMatrix3D;
 
-    num m00 = matrix.m00;
-    num m10 = matrix.m10;
-    num m30 = matrix.m30;
-    num m01 = matrix.m01;
-    num m11 = matrix.m11;
-    num m31 = matrix.m31;
-    num m03 = matrix.m03;
-    num m13 = matrix.m13;
-    num m33 = matrix.m33;
+    final num m00 = matrix.m00;
+    final num m10 = matrix.m10;
+    final num m30 = matrix.m30;
+    final num m01 = matrix.m01;
+    final num m11 = matrix.m11;
+    final num m31 = matrix.m31;
+    final num m03 = matrix.m03;
+    final num m13 = matrix.m13;
+    final num m33 = matrix.m33;
 
-    num x1 = (0.0 + m30) / (0.0 + m33);
-    num y1 = (0.0 + m31) / (0.0 + m33);
-    num x2 = (m00 + m30) / (m03 + m33);
-    num y2 = (m01 + m31) / (m03 + m33);
-    num x3 = (m10 + m30) / (m13 + m33);
-    num y3 = (m11 + m31) / (m13 + m33);
+    final num x1 = (0.0 + m30) / (0.0 + m33);
+    final num y1 = (0.0 + m31) / (0.0 + m33);
+    final num x2 = (m00 + m30) / (m03 + m33);
+    final num y2 = (m01 + m31) / (m03 + m33);
+    final num x3 = (m10 + m30) / (m13 + m33);
+    final num y3 = (m11 + m31) / (m13 + m33);
 
     return x1 * (y3 - y2) + x2 * (y1 - y3) + x3 * (y2 - y1) <= 0;
   }
@@ -144,7 +144,7 @@ abstract class DisplayObjectContainer3D extends DisplayObjectContainer
 
   @override
   Rectangle<num> get boundsTransformed {
-    var rectangle = bounds;
+    final rectangle = bounds;
     _calculateProjectionMatrix(transformationMatrix);
     return _projectionMatrix3D.transformRectangle(rectangle, rectangle);
   }

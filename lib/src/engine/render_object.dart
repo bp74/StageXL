@@ -60,8 +60,8 @@ class _RenderTextureQuadObject implements RenderObject {
 
   @override
   Rectangle<num> get bounds {
-    var w = renderTextureQuad.targetWidth;
-    var h = renderTextureQuad.targetHeight;
+    final w = renderTextureQuad.targetWidth;
+    final h = renderTextureQuad.targetHeight;
     return Rectangle<num>(0.0, 0.0, w, h);
   }
 

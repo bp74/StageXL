@@ -18,10 +18,10 @@ class RenderTextureQuad {
 
   RenderTextureQuad(this.renderTexture, this.sourceRectangle,
       this.offsetRectangle, this.rotation, this.pixelRatio) {
-    var sr = sourceRectangle;
-    var or = offsetRectangle;
-    var rt = renderTexture;
-    var pr = pixelRatio;
+    final sr = sourceRectangle;
+    final or = offsetRectangle;
+    final rt = renderTexture;
+    final pr = pixelRatio;
 
     // Vertex list [x/y]
 
@@ -86,16 +86,16 @@ class RenderTextureQuad {
   factory RenderTextureQuad.slice(RenderTextureQuad renderTextureQuad,
       Rectangle<int> sourceRectangle, Rectangle<int> offsetRectangle,
       [int rotation = 0]) {
-    var renderTexture = renderTextureQuad.renderTexture;
-    var pixelRatio = renderTextureQuad.pixelRatio;
+    final renderTexture = renderTextureQuad.renderTexture;
+    final pixelRatio = renderTextureQuad.pixelRatio;
 
-    var oldRotation = renderTextureQuad.rotation;
-    var oldSourceL = renderTextureQuad.sourceRectangle.left;
-    var oldSourceT = renderTextureQuad.sourceRectangle.top;
-    var oldSourceR = renderTextureQuad.sourceRectangle.right;
-    var oldSourceB = renderTextureQuad.sourceRectangle.bottom;
-    var oldOffsetL = renderTextureQuad.offsetRectangle.left;
-    var oldOffsetT = renderTextureQuad.offsetRectangle.top;
+    final oldRotation = renderTextureQuad.rotation;
+    final oldSourceL = renderTextureQuad.sourceRectangle.left;
+    final oldSourceT = renderTextureQuad.sourceRectangle.top;
+    final oldSourceR = renderTextureQuad.sourceRectangle.right;
+    final oldSourceB = renderTextureQuad.sourceRectangle.bottom;
+    final oldOffsetL = renderTextureQuad.offsetRectangle.left;
+    final oldOffsetT = renderTextureQuad.offsetRectangle.top;
 
     rotation = (renderTextureQuad.rotation + rotation) % 4;
     var sourceL = sourceRectangle.left;
@@ -104,8 +104,8 @@ class RenderTextureQuad {
     var sourceB = sourceRectangle.bottom;
     var offsetL = offsetRectangle.left;
     var offsetT = offsetRectangle.top;
-    var offsetW = offsetRectangle.width;
-    var offsetH = offsetRectangle.height;
+    final offsetW = offsetRectangle.width;
+    final offsetH = offsetRectangle.height;
 
     var tmpSourceL = 0;
     var tmpSourceT = 0;
@@ -153,8 +153,8 @@ class RenderTextureQuad {
       offsetT += sourceL - tmpSourceL;
     }
 
-    var sourceW = sourceR - sourceL;
-    var sourceH = sourceB - sourceT;
+    final sourceW = sourceR - sourceL;
+    final sourceH = sourceB - sourceT;
 
     return RenderTextureQuad(
         renderTexture,
@@ -166,37 +166,36 @@ class RenderTextureQuad {
 
   //---------------------------------------------------------------------------
 
-  bool get isEquivalentToSource {
-    return
-        (rotation == 0) &&
-        !_hasCustomVertices &&
-        (sourceRectangle.left == 0 &&
-            sourceRectangle.top == 0 &&
-            sourceRectangle.width == renderTexture.width &&
-            sourceRectangle.height == renderTexture.height);
-  }
+  bool get isEquivalentToSource =>
+      (rotation == 0) &&
+      !_hasCustomVertices &&
+      (sourceRectangle.left == 0 &&
+          sourceRectangle.top == 0 &&
+          sourceRectangle.width == renderTexture.width &&
+          sourceRectangle.height == renderTexture.height);
 
   //---------------------------------------------------------------------------
 
   num get targetWidth => offsetRectangle.width / pixelRatio;
+
   num get targetHeight => offsetRectangle.height / pixelRatio;
 
   Float32List get vxList => _vxList;
+
   Int16List get ixList => _ixList;
+
   bool get hasCustomVertices => _hasCustomVertices;
 
   Rectangle<num> get targetRectangle {
-    num l = offsetRectangle.left / pixelRatio;
-    num t = offsetRectangle.top / pixelRatio;
-    num w = offsetRectangle.width / pixelRatio;
-    num h = offsetRectangle.height / pixelRatio;
+    final num l = offsetRectangle.left / pixelRatio;
+    final num t = offsetRectangle.top / pixelRatio;
+    final num w = offsetRectangle.width / pixelRatio;
+    final num h = offsetRectangle.height / pixelRatio;
     return Rectangle<num>(l, t, w, h);
   }
 
-  RenderTextureQuad withPixelRatio(num pixelRatio) {
-    return RenderTextureQuad(
-        renderTexture, sourceRectangle, offsetRectangle, rotation, pixelRatio);
-  }
+  RenderTextureQuad withPixelRatio(num pixelRatio) => RenderTextureQuad(
+      renderTexture, sourceRectangle, offsetRectangle, rotation, pixelRatio);
 
   //---------------------------------------------------------------------------
 
@@ -221,23 +220,23 @@ class RenderTextureQuad {
   /// Target coordinates take the [pixelRatio] into account.
 
   Matrix get drawMatrix {
-    var pr = pixelRatio;
+    final pr = pixelRatio;
 
     if (rotation == 0) {
-      var tx = sourceRectangle.left + offsetRectangle.left;
-      var ty = sourceRectangle.top + offsetRectangle.top;
+      final tx = sourceRectangle.left + offsetRectangle.left;
+      final ty = sourceRectangle.top + offsetRectangle.top;
       return Matrix(pr, 0.0, 0.0, pr, tx, ty);
     } else if (rotation == 1) {
-      var tx = sourceRectangle.right - offsetRectangle.top;
-      var ty = sourceRectangle.top + offsetRectangle.left;
+      final tx = sourceRectangle.right - offsetRectangle.top;
+      final ty = sourceRectangle.top + offsetRectangle.left;
       return Matrix(0.0, pr, 0.0 - pr, 0.0, tx, ty);
     } else if (rotation == 2) {
-      var tx = sourceRectangle.right - offsetRectangle.left;
-      var ty = sourceRectangle.bottom - offsetRectangle.top;
+      final tx = sourceRectangle.right - offsetRectangle.left;
+      final ty = sourceRectangle.bottom - offsetRectangle.top;
       return Matrix(0.0 - pr, 0.0, 0.0, 0.0 - pr, tx, ty);
     } else if (rotation == 3) {
-      var tx = sourceRectangle.left + offsetRectangle.top;
-      var ty = sourceRectangle.bottom - offsetRectangle.left;
+      final tx = sourceRectangle.left + offsetRectangle.top;
+      final ty = sourceRectangle.bottom - offsetRectangle.left;
       return Matrix(0.0, 0.0 - pr, pr, 0.0, tx, ty);
     } else {
       throw Error();
@@ -253,25 +252,25 @@ class RenderTextureQuad {
   /// Target coordinates take the [pixelRatio] into account.
 
   Matrix get samplerMatrix {
-    var pr = pixelRatio;
-    var sx = 1.0 / renderTexture.width;
-    var sy = 1.0 / renderTexture.height;
+    final pr = pixelRatio;
+    final sx = 1.0 / renderTexture.width;
+    final sy = 1.0 / renderTexture.height;
 
     if (rotation == 0) {
-      var tx = sourceRectangle.left + offsetRectangle.left;
-      var ty = sourceRectangle.top + offsetRectangle.top;
+      final tx = sourceRectangle.left + offsetRectangle.left;
+      final ty = sourceRectangle.top + offsetRectangle.top;
       return Matrix(sx * pr, 0.0, 0.0, sy * pr, sx * tx, sy * ty);
     } else if (rotation == 1) {
-      var tx = sourceRectangle.right - offsetRectangle.top;
-      var ty = sourceRectangle.top + offsetRectangle.left;
+      final tx = sourceRectangle.right - offsetRectangle.top;
+      final ty = sourceRectangle.top + offsetRectangle.left;
       return Matrix(0.0, sy * pr, 0.0 - sx * pr, 0.0, sx * tx, sy * ty);
     } else if (rotation == 2) {
-      var tx = sourceRectangle.right - offsetRectangle.left;
-      var ty = sourceRectangle.bottom - offsetRectangle.top;
+      final tx = sourceRectangle.right - offsetRectangle.left;
+      final ty = sourceRectangle.bottom - offsetRectangle.top;
       return Matrix(0.0 - sx * pr, 0.0, 0.0, 0.0 - sy * pr, sx * tx, sy * ty);
     } else if (rotation == 3) {
-      var tx = sourceRectangle.left + offsetRectangle.top;
-      var ty = sourceRectangle.bottom - offsetRectangle.left;
+      final tx = sourceRectangle.left + offsetRectangle.top;
+      final ty = sourceRectangle.bottom - offsetRectangle.left;
       return Matrix(0.0, 0.0 - sy * pr, sx * pr, 0.0, sx * tx, sy * ty);
     } else {
       throw Error();
@@ -289,14 +288,14 @@ class RenderTextureQuad {
   /// learn more about this topic.
 
   RenderTextureQuad clip(Rectangle<num> rectangle) {
-    var rL = (rectangle.left * pixelRatio).round();
-    var rT = (rectangle.top * pixelRatio).round();
-    var rR = (rectangle.right * pixelRatio).round();
-    var rB = (rectangle.bottom * pixelRatio).round();
-    var ow = this.offsetRectangle.width;
-    var oh = this.offsetRectangle.height;
-    var sourceRectangle = Rectangle<int>(rL, rT, rR - rL, rB - rT);
-    var offsetRectangle = Rectangle<int>(0 - rL, 0 - rT, ow, oh);
+    final rL = (rectangle.left * pixelRatio).round();
+    final rT = (rectangle.top * pixelRatio).round();
+    final rR = (rectangle.right * pixelRatio).round();
+    final rB = (rectangle.bottom * pixelRatio).round();
+    final ow = this.offsetRectangle.width;
+    final oh = this.offsetRectangle.height;
+    final sourceRectangle = Rectangle<int>(rL, rT, rR - rL, rB - rT);
+    final offsetRectangle = Rectangle<int>(0 - rL, 0 - rT, ow, oh);
     return RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);
   }
 
@@ -309,32 +308,32 @@ class RenderTextureQuad {
   /// learn more about this topic.
 
   RenderTextureQuad cut(Rectangle<num> rectangle) {
-    var rL = (rectangle.left * pixelRatio).round();
-    var rT = (rectangle.top * pixelRatio).round();
-    var rR = (rectangle.right * pixelRatio).round();
-    var rB = (rectangle.bottom * pixelRatio).round();
-    var sourceRectangle = Rectangle<int>(rL, rT, rR - rL, rB - rT);
-    var offsetRectangle = Rectangle<int>(0, 0, rR - rL, rB - rT);
+    final rL = (rectangle.left * pixelRatio).round();
+    final rT = (rectangle.top * pixelRatio).round();
+    final rR = (rectangle.right * pixelRatio).round();
+    final rB = (rectangle.bottom * pixelRatio).round();
+    final sourceRectangle = Rectangle<int>(rL, rT, rR - rL, rB - rT);
+    final offsetRectangle = Rectangle<int>(0, 0, rR - rL, rB - rT);
     return RenderTextureQuad.slice(this, sourceRectangle, offsetRectangle);
   }
 
   //---------------------------------------------------------------------------
 
   ImageData createImageData() {
-    var rect = sourceRectangle;
-    var context = renderTexture.canvas.context2D;
+    final rect = sourceRectangle;
+    final context = renderTexture.canvas.context2D;
     return context.createImageData(rect.width, rect.height);
   }
 
   ImageData getImageData() {
-    var rect = sourceRectangle;
-    var context = renderTexture.canvas.context2D;
+    final rect = sourceRectangle;
+    final context = renderTexture.canvas.context2D;
     return context.getImageData(rect.left, rect.top, rect.width, rect.height);
   }
 
   void putImageData(ImageData imageData) {
-    var rect = sourceRectangle;
-    var context = renderTexture.canvas.context2D;
+    final rect = sourceRectangle;
+    final context = renderTexture.canvas.context2D;
     context.putImageData(imageData, rect.left, rect.top);
   }
 }

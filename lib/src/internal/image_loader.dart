@@ -3,8 +3,8 @@ library stagexl.internal.image_loader;
 import 'dart:async';
 import 'dart:html';
 
-import 'environment.dart' as env;
 import '../errors.dart';
+import 'environment.dart' as env;
 
 class ImageLoader {
   final ImageElement image = ImageElement();
@@ -36,7 +36,7 @@ class ImageLoader {
   //---------------------------------------------------------------------------
 
   void _onWebpSupported(bool webpSupported) {
-    var match = RegExp(r'(png|jpg|jpeg)$').firstMatch(_url);
+    final match = RegExp(r'(png|jpg|jpeg)$').firstMatch(_url);
     if (webpSupported && match != null) {
       image.src = _url.substring(0, match.start) + 'webp';
     } else {

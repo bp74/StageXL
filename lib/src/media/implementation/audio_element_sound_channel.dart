@@ -15,8 +15,9 @@ class AudioElementSoundChannel extends SoundChannel {
   num _position = 0.0;
 
   AudioElementSoundChannel(AudioElementSound audioElementSound, num startTime,
-      num duration, bool loop, [SoundTransform? soundTransform]) :
-    _audioElementSound = audioElementSound {
+      num duration, bool loop,
+      [SoundTransform? soundTransform])
+      : _audioElementSound = audioElementSound {
     _soundTransform = soundTransform ?? SoundTransform();
     _startTime = startTime.toDouble();
     _duration = duration.toDouble();
@@ -44,14 +45,14 @@ class AudioElementSoundChannel extends SoundChannel {
     if (_paused || _stopped || _audioElement == null) {
       return _position;
     } else {
-      var currentTime = _audioElement!.currentTime;
+      final currentTime = _audioElement!.currentTime;
       return (currentTime - _startTime).clamp(0.0, _duration);
     }
   }
 
   @override
   set position(num value) {
-    var position = _loop ? value % _duration : value.clamp(0.0, _duration);
+    final position = _loop ? value % _duration : value.clamp(0.0, _duration);
     if (_stopped) {
       // do nothing
     } else if (_paused || _audioElement == null) {
@@ -67,9 +68,7 @@ class AudioElementSoundChannel extends SoundChannel {
   //---------------------------------------------------------------------------
 
   @override
-  bool get paused {
-    return _paused;
-  }
+  bool get paused => _paused;
 
   @override
   set paused(bool value) {
@@ -92,9 +91,7 @@ class AudioElementSoundChannel extends SoundChannel {
   }
 
   @override
-  SoundTransform get soundTransform {
-    return _soundTransform;
-  }
+  SoundTransform get soundTransform => _soundTransform;
 
   @override
   set soundTransform(SoundTransform value) {
@@ -102,8 +99,8 @@ class AudioElementSoundChannel extends SoundChannel {
     if (_audioElement == null) {
       // we can't set the audio element
     } else {
-      var volume1 = _soundTransform.volume;
-      var volume2 = SoundMixer._audioElementMixer!.volume;
+      final volume1 = _soundTransform.volume;
+      final volume2 = SoundMixer._audioElementMixer!.volume;
       _audioElement!.volume = volume1 * volume2;
     }
   }
@@ -134,7 +131,7 @@ class AudioElementSoundChannel extends SoundChannel {
   //---------------------------------------------------------------------------
 
   void _onAudioElement(AudioElement audioElement) {
-    var mixer = SoundMixer._audioElementMixer;
+    final mixer = SoundMixer._audioElementMixer;
 
     if (_stopped) {
       _audioElementSound._releaseAudioElement(audioElement);
@@ -155,7 +152,7 @@ class AudioElementSoundChannel extends SoundChannel {
 
   void _startCompleteTimer(num time) {
     time = time.clamp(0.0, _duration) * 1000.0;
-    var duration = Duration(milliseconds: time.toInt());
+    final duration = Duration(milliseconds: time.toInt());
     _completeTimer = Timer(duration, _onCompleteTimer);
   }
 

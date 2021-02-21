@@ -10,9 +10,9 @@ class ResourceManager {
   //----------------------------------------------------------------------------
 
   Future<ResourceManager> load() async {
-    var futures = pendingResources.map((r) => r.complete);
+    final futures = pendingResources.map((r) => r.complete);
     await Future.wait(futures);
-    var errors = failedResources.length;
+    final errors = failedResources.length;
     if (errors > 0) {
       throw StateError('Failed to load $errors resource(s).');
     } else {
@@ -23,9 +23,9 @@ class ResourceManager {
   void dispose() {
     for (var resource in _resourceMap.values.toList(growable: false)) {
       if (resource.kind == 'BitmapData') {
-        removeBitmapData(resource.name, dispose: true);
+        removeBitmapData(resource.name);
       } else if (resource.kind == 'TextureAtlas') {
-        removeTextureAtlas(resource.name, dispose: true);
+        removeTextureAtlas(resource.name);
       } else {
         _removeResource(resource.kind, resource.name);
       }
@@ -48,18 +48,17 @@ class ResourceManager {
 
   //----------------------------------------------------------------------------
 
-  bool containsBitmapData(String name) {
-    return _containsResource('BitmapData', name);
-  }
+  bool containsBitmapData(String name) => _containsResource('BitmapData', name);
 
-  void addBitmapData(String name, String url, [BitmapDataLoadOptions? options]) {
-    var loader = BitmapData.load(url, options);
+  void addBitmapData(String name, String url,
+      [BitmapDataLoadOptions? options]) {
+    final loader = BitmapData.load(url, options);
     _addResource('BitmapData', name, url, loader);
   }
 
   void removeBitmapData(String name, {bool dispose = true}) {
-    var resourceManagerResource = _removeResource('BitmapData', name);
-    var bitmapData = resourceManagerResource?.value;
+    final resourceManagerResource = _removeResource('BitmapData', name);
+    final bitmapData = resourceManagerResource?.value;
     if (bitmapData is BitmapData && dispose) {
       bitmapData.renderTexture.dispose();
     }
@@ -70,20 +69,19 @@ class ResourceManager {
 
   //----------------------------------------------------------------------------
 
-  bool containsTextureAtlas(String name) {
-    return _containsResource('TextureAtlas', name);
-  }
+  bool containsTextureAtlas(String name) =>
+      _containsResource('TextureAtlas', name);
 
   void addTextureAtlas(String name, String url,
       [TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
       BitmapDataLoadOptions? options]) {
-    var loader = TextureAtlas.load(url, textureAtlasFormat, options);
+    final loader = TextureAtlas.load(url, textureAtlasFormat, options);
     _addResource('TextureAtlas', name, url, loader);
   }
 
   void removeTextureAtlas(String name, {bool dispose = true}) {
-    var resourceManagerResource = _removeResource('TextureAtlas', name);
-    var textureAtlas = resourceManagerResource?.value;
+    final resourceManagerResource = _removeResource('TextureAtlas', name);
+    final textureAtlas = resourceManagerResource?.value;
     if (textureAtlas is TextureAtlas && dispose) {
       for (var textureAtlasFrame in textureAtlas.frames) {
         textureAtlasFrame.bitmapData.renderTexture.dispose();
@@ -91,18 +89,15 @@ class ResourceManager {
     }
   }
 
-  TextureAtlas getTextureAtlas(String name) {
-    return _getResourceValue('TextureAtlas', name) as TextureAtlas;
-  }
+  TextureAtlas getTextureAtlas(String name) =>
+      _getResourceValue('TextureAtlas', name) as TextureAtlas;
 
   //----------------------------------------------------------------------------
 
-  bool containsVideo(String name) {
-    return _containsResource('Video', name);
-  }
+  bool containsVideo(String name) => _containsResource('Video', name);
 
   void addVideo(String name, String url, [VideoLoadOptions? options]) {
-    var loader = Video.load(url, options);
+    final loader = Video.load(url, options);
     _addResource('Video', name, url, loader);
   }
 
@@ -110,18 +105,14 @@ class ResourceManager {
     _removeResource('Video', name);
   }
 
-  Video getVideo(String name) {
-    return _getResourceValue('Video', name) as Video;
-  }
+  Video getVideo(String name) => _getResourceValue('Video', name) as Video;
 
   //----------------------------------------------------------------------------
 
-  bool containsSound(String name) {
-    return _containsResource('Sound', name);
-  }
+  bool containsSound(String name) => _containsResource('Sound', name);
 
   void addSound(String name, String url, [SoundLoadOptions? options]) {
-    var loader = Sound.load(url, options);
+    final loader = Sound.load(url, options);
     _addResource('Sound', name, url, loader);
   }
 
@@ -129,18 +120,15 @@ class ResourceManager {
     _removeResource('Sound', name);
   }
 
-  Sound getSound(String name) {
-    return _getResourceValue('Sound', name) as Sound;
-  }
+  Sound getSound(String name) => _getResourceValue('Sound', name) as Sound;
 
   //----------------------------------------------------------------------------
 
-  bool containsSoundSprite(String name) {
-    return _containsResource('SoundSprite', name);
-  }
+  bool containsSoundSprite(String name) =>
+      _containsResource('SoundSprite', name);
 
   void addSoundSprite(String name, String url, [SoundLoadOptions? options]) {
-    var loader = SoundSprite.load(url, options);
+    final loader = SoundSprite.load(url, options);
     _addResource('SoundSprite', name, url, loader);
   }
 
@@ -148,15 +136,12 @@ class ResourceManager {
     _removeResource('SoundSprite', name);
   }
 
-  SoundSprite getSoundSprite(String name) {
-    return _getResourceValue('SoundSprite', name) as SoundSprite;
-  }
+  SoundSprite getSoundSprite(String name) =>
+      _getResourceValue('SoundSprite', name) as SoundSprite;
 
   //----------------------------------------------------------------------------
 
-  bool containsText(String name) {
-    return _containsResource('Text', name);
-  }
+  bool containsText(String name) => _containsResource('Text', name);
 
   void addText(String name, String text) {
     _addResource('Text', name, '', Future.value(text));
@@ -166,19 +151,15 @@ class ResourceManager {
     _removeResource('Text', name);
   }
 
-  String getText(String name) {
-    return _getResourceValue('Text', name) as String;
-  }
+  String getText(String name) => _getResourceValue('Text', name) as String;
 
   //----------------------------------------------------------------------------
 
-  bool containsTextFile(String name) {
-    return _containsResource('TextFile', name);
-  }
+  bool containsTextFile(String name) => _containsResource('TextFile', name);
 
   void addTextFile(String name, String url) {
-    var loader =
-        HttpRequest.getString(url).then(((text) => text), onError: (error) {
+    final loader =
+        HttpRequest.getString(url).then((text) => text, onError: (error) {
       throw StateError('Failed to load text file.');
     });
     _addResource('TextFile', name, url, loader);
@@ -188,15 +169,13 @@ class ResourceManager {
     _removeResource('TextFile', name);
   }
 
-  String getTextFile(String name) {
-    return _getResourceValue('TextFile', name) as String;
-  }
+  String getTextFile(String name) =>
+      _getResourceValue('TextFile', name) as String;
 
   //----------------------------------------------------------------------------
 
-  bool containsCustomObject(String name) {
-    return _containsResource('CustomObject', name);
-  }
+  bool containsCustomObject(String name) =>
+      _containsResource('CustomObject', name);
 
   void addCustomObject(String name, Future loader) {
     _addResource('CustomObject', name, '', loader);
@@ -206,25 +185,24 @@ class ResourceManager {
     _removeResource('CustomObject', name);
   }
 
-  dynamic getCustomObject(String name) {
-    return _getResourceValue('CustomObject', name);
-  }
+  dynamic getCustomObject(String name) =>
+      _getResourceValue('CustomObject', name);
 
   //----------------------------------------------------------------------------
 
   bool _containsResource(String kind, String name) {
-    var key = '$kind.$name';
+    final key = '$kind.$name';
     return _resourceMap.containsKey(key);
   }
 
   ResourceManagerResource? _removeResource(String kind, String name) {
-    var key = '$kind.$name';
+    final key = '$kind.$name';
     return _resourceMap.remove(key);
   }
 
   void _addResource(String kind, String name, String url, Future loader) {
-    var key = '$kind.$name';
-    var resource = ResourceManagerResource(kind, name, url, loader);
+    final key = '$kind.$name';
+    final resource = ResourceManagerResource(kind, name, url, loader);
 
     if (_resourceMap.containsKey(key)) {
       throw StateError(
@@ -234,21 +212,21 @@ class ResourceManager {
     }
 
     resource.complete.then((_) {
-      var finished = finishedResources.length;
-      var progress = finished / _resourceMap.length;
+      final finished = finishedResources.length;
+      final progress = finished / _resourceMap.length;
       _progressEvent.add(progress);
     });
   }
 
   dynamic _getResourceValue(String kind, String name) {
-    var key = '$kind.$name';
-    var resource = _resourceMap[key];
+    final key = '$kind.$name';
+    final resource = _resourceMap[key];
     if (resource == null) {
       throw StateError("Resource '$name' does not exist.");
     } else if (resource.value != null) {
       return resource.value;
     } else if (resource.error != null) {
-      throw resource.error;
+      throw resource.error!;
     } else {
       throw StateError("Resource '$name' has not finished loading yet.");
     }

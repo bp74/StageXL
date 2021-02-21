@@ -12,8 +12,8 @@ dependencies:
   xml: '^5.0.0-nullsafety.1'
 
 dev_dependencies:
-  test: any
-  pedantic: any
-  build_test: any
   build_runner: any
+  build_test: any
   build_web_compilers: any
+  pedantic: any
+  test: any

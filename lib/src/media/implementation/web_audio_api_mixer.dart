@@ -13,8 +13,8 @@ class WebAudioApiMixer {
   }
 
   void applySoundTransform(SoundTransform soundTransform) {
-    var time = audioContext.currentTime!;
-    var value = pow(soundTransform.volume, 2);
+    final time = audioContext.currentTime!;
+    final value = pow(soundTransform.volume, 2);
     _volumeNode.gain!.setValueAtTime(value, time);
   }
 

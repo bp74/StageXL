@@ -64,8 +64,8 @@ class Translation implements Animatable {
           if (_onStart != null) _onStart!();
         }
 
-        num ratio = _currentTime / _totalTime;
-        var transition = _transition(ratio);
+        final num ratio = _currentTime / _totalTime;
+        final transition = _transition(ratio);
 
         _currentValue = _startValue + transition * (_targetValue - _startValue);
 

@@ -15,15 +15,15 @@ class AudioElementSound extends Sound {
   static Future<Sound> load(String url,
       [SoundLoadOptions? soundLoadOptions]) async {
     try {
-      var options = soundLoadOptions ?? Sound.defaultLoadOptions;
-      var audioUrls = options.getOptimalAudioUrls(url);
-      var corsEnabled = options.corsEnabled;
-      var loadData = false; // options.loadData;
-      var audioLoader = AudioLoader(audioUrls, loadData, corsEnabled);
-      var audioElement = await audioLoader.done;
+      final options = soundLoadOptions ?? Sound.defaultLoadOptions;
+      final audioUrls = options.getOptimalAudioUrls(url);
+      final corsEnabled = options.corsEnabled;
+      const loadData = false; // options.loadData;
+      final audioLoader = AudioLoader(audioUrls, loadData, corsEnabled);
+      final audioElement = await audioLoader.done;
       return AudioElementSound._(audioElement);
     } catch (e) {
-      var options = soundLoadOptions ?? Sound.defaultLoadOptions;
+      final options = soundLoadOptions ?? Sound.defaultLoadOptions;
       if (options.ignoreErrors) {
         return MockSound.load(url, options);
       } else {
@@ -35,12 +35,12 @@ class AudioElementSound extends Sound {
   static Future<Sound> loadDataUrl(String dataUrl,
       [SoundLoadOptions? soundLoadOptions]) async {
     try {
-      var audioUrls = <String>[dataUrl];
-      var audioLoader = AudioLoader(audioUrls, false, false);
-      var audioElement = await audioLoader.done;
+      final audioUrls = <String>[dataUrl];
+      final audioLoader = AudioLoader(audioUrls, false, false);
+      final audioElement = await audioLoader.done;
       return AudioElementSound._(audioElement);
     } catch (e) {
-      var options = soundLoadOptions ?? Sound.defaultLoadOptions;
+      final options = soundLoadOptions ?? Sound.defaultLoadOptions;
       if (options.ignoreErrors) {
         return MockSound.loadDataUrl(dataUrl, options);
       } else {
@@ -59,7 +59,7 @@ class AudioElementSound extends Sound {
 
   @override
   SoundChannel play([bool loop = false, SoundTransform? soundTransform]) {
-    var startTime = 0.0;
+    const startTime = 0.0;
     var duration = _audioElement.duration;
     if (duration.isInfinite) duration = 3600.0;
     return AudioElementSoundChannel(
@@ -68,10 +68,8 @@ class AudioElementSound extends Sound {
 
   @override
   SoundChannel playSegment(num startTime, num duration,
-      [bool loop = false, SoundTransform? soundTransform]) {
-    return AudioElementSoundChannel(
-        this, startTime, duration, loop, soundTransform);
-  }
+          [bool loop = false, SoundTransform? soundTransform]) =>
+      AudioElementSoundChannel(this, startTime, duration, loop, soundTransform);
 
   //---------------------------------------------------------------------------
 
@@ -84,8 +82,8 @@ class AudioElementSound extends Sound {
       }
     }
 
-    var audioElement = _audioElement.clone(true) as AudioElement;
-    var audioCanPlay = audioElement.onCanPlay.first;
+    final audioElement = _audioElement.clone(true) as AudioElement;
+    final audioCanPlay = audioElement.onCanPlay.first;
     if (audioElement.readyState == 0) await audioCanPlay;
     audioElement.onEnded.listen(_onAudioEnded);
 
@@ -98,7 +96,7 @@ class AudioElementSound extends Sound {
   }
 
   void _onAudioEnded(html.Event event) {
-    var audioElement = event.target;
+    final audioElement = event.target;
     if (audioElement is! AudioElement) return;
 
     _soundChannels[audioElement]?._onAudioEnded();

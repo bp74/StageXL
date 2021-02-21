@@ -42,10 +42,8 @@ class Mesh extends DisplayObject {
   /// Create a new Mesh with [vertexCount] vertices and [triangleCount]
   /// triangles.
 
-  Mesh(this.bitmapData, int vertexCount, int triangleCount)
+  Mesh(this.bitmapData, this.vertexCount, this.triangleCount)
       : indexCount = triangleCount * 3,
-        triangleCount = triangleCount,
-        vertexCount = vertexCount,
         ixList = Int16List(triangleCount * 3),
         vxList = Float32List(vertexCount * 4);
 
@@ -53,28 +51,28 @@ class Mesh extends DisplayObject {
   /// and [rows]. A 2x2 grid will create 9 vertices.
 
   factory Mesh.fromGrid(BitmapData bitmapData, int columns, int rows) {
-    var width = bitmapData.width;
-    var height = bitmapData.height;
-    var vertexCount = (columns + 1) * (rows + 1);
-    var triangleCount = 2 * columns * rows;
-    var mesh = Mesh(bitmapData, vertexCount, triangleCount);
+    final width = bitmapData.width;
+    final height = bitmapData.height;
+    final vertexCount = (columns + 1) * (rows + 1);
+    final triangleCount = 2 * columns * rows;
+    final mesh = Mesh(bitmapData, vertexCount, triangleCount);
 
     for (var r = 0, vertex = 0; r <= rows; r++) {
       for (var c = 0; c <= columns; c++) {
-        var u = c / columns;
-        var v = r / rows;
-        var x = width * u;
-        var y = height * v;
+        final u = c / columns;
+        final v = r / rows;
+        final x = width * u;
+        final y = height * v;
         mesh.setVertex(vertex++, x, y, u, v);
       }
     }
 
     for (var r = 0, triangle = 0; r < rows; r++) {
       for (var c = 0; c < columns; c++) {
-        var v0 = (r + 0) * (columns + 1) + c + 0;
-        var v1 = (r + 0) * (columns + 1) + c + 1;
-        var v2 = (r + 1) * (columns + 1) + c + 1;
-        var v3 = (r + 1) * (columns + 1) + c + 0;
+        final v0 = (r + 0) * (columns + 1) + c + 0;
+        final v1 = (r + 0) * (columns + 1) + c + 1;
+        final v2 = (r + 1) * (columns + 1) + c + 1;
+        final v3 = (r + 1) * (columns + 1) + c + 0;
         mesh.setTriangleIndices(triangle++, v0, v1, v3);
         mesh.setTriangleIndices(triangle++, v1, v3, v2);
       }
@@ -92,7 +90,7 @@ class Mesh extends DisplayObject {
   /// a 0.0 to 1.0 coordinate system of the BitmapData.
 
   void setVertex(int vertex, num x, num y, num u, num v) {
-    var offset = vertex << 2;
+    final offset = vertex << 2;
     vxList[offset + 0] = x.toDouble();
     vxList[offset + 1] = y.toDouble();
     vxList[offset + 2] = u.toDouble();
@@ -105,7 +103,7 @@ class Mesh extends DisplayObject {
   /// system of the Display Object.
 
   void setVertexXY(int vertex, num x, num y) {
-    var offset = vertex << 2;
+    final offset = vertex << 2;
     vxList[offset + 0] = x.toDouble();
     vxList[offset + 1] = y.toDouble();
   }
@@ -116,7 +114,7 @@ class Mesh extends DisplayObject {
   /// of the BitmapData.
 
   void setVertexUV(int vertex, num u, num v) {
-    var offset = vertex << 2;
+    final offset = vertex << 2;
     vxList[offset + 2] = u.toDouble();
     vxList[offset + 3] = v.toDouble();
   }
@@ -130,7 +128,7 @@ class Mesh extends DisplayObject {
   /// Set the corresponding vertices for the triangle indices.
 
   void setTriangleIndices(int triangle, int v1, int v2, int v3) {
-    var offset = triangle * 3;
+    final offset = triangle * 3;
     ixList[offset + 0] = v1;
     ixList[offset + 1] = v2;
     ixList[offset + 2] = v3;
@@ -146,9 +144,9 @@ class Mesh extends DisplayObject {
     var bottom = double.negativeInfinity;
 
     for (var i = 0; i < ixList.length; i++) {
-      var index = ixList[i + 0];
-      var vertexX = vxList[(index << 2) + 0];
-      var vertexY = vxList[(index << 2) + 1];
+      final index = ixList[i + 0];
+      final vertexX = vxList[(index << 2) + 0];
+      final vertexY = vxList[(index << 2) + 1];
       if (left > vertexX) left = vertexX;
       if (right < vertexX) right = vertexX;
       if (top > vertexY) top = vertexY;
@@ -161,37 +159,39 @@ class Mesh extends DisplayObject {
   @override
   DisplayObject? hitTestInput(num localX, num localY) {
     for (var i = 0; i < ixList.length - 2; i += 3) {
-      var i1 = ixList[i + 0] << 2;
-      var i2 = ixList[i + 1] << 2;
-      var i3 = ixList[i + 2] << 2;
+      final i1 = ixList[i + 0] << 2;
+      final i2 = ixList[i + 1] << 2;
+      final i3 = ixList[i + 2] << 2;
 
-      var x1 = vxList[i1 + 0];
-      var y1 = vxList[i1 + 1];
-      var x2 = vxList[i2 + 0];
-      var y2 = vxList[i2 + 1];
-      var x3 = vxList[i3 + 0];
-      var y3 = vxList[i3 + 1];
+      final x1 = vxList[i1 + 0];
+      final y1 = vxList[i1 + 1];
+      final x2 = vxList[i2 + 0];
+      final y2 = vxList[i2 + 1];
+      final x3 = vxList[i3 + 0];
+      final y3 = vxList[i3 + 1];
 
       if (localX < x1 && localX < x2 && localX < x3) continue;
       if (localX > x1 && localX > x2 && localX > x3) continue;
       if (localY < y1 && localY < y2 && localY < y3) continue;
       if (localY > y1 && localY > y2 && localY > y3) continue;
 
-      var vx1 = x3 - x1;
-      var vy1 = y3 - y1;
-      var vx2 = x2 - x1;
-      var vy2 = y2 - y1;
-      var vx3 = localX - x1;
-      var vy3 = localY - y1;
+      final vx1 = x3 - x1;
+      final vy1 = y3 - y1;
+      final vx2 = x2 - x1;
+      final vy2 = y2 - y1;
+      final vx3 = localX - x1;
+      final vy3 = localY - y1;
 
-      var dot11 = vx1 * vx1 + vy1 * vy1;
-      var dot12 = vx1 * vx2 + vy1 * vy2;
-      var dot13 = vx1 * vx3 + vy1 * vy3;
-      var dot22 = vx2 * vx2 + vy2 * vy2;
-      var dot23 = vx2 * vx3 + vy2 * vy3;
+      final dot11 = vx1 * vx1 + vy1 * vy1;
+      final dot12 = vx1 * vx2 + vy1 * vy2;
+      final dot13 = vx1 * vx3 + vy1 * vy3;
+      final dot22 = vx2 * vx2 + vy2 * vy2;
+      final dot23 = vx2 * vx3 + vy2 * vy3;
 
-      var u = (dot22 * dot13 - dot12 * dot23) / (dot11 * dot22 - dot12 * dot12);
-      var v = (dot11 * dot23 - dot12 * dot13) / (dot11 * dot22 - dot12 * dot12);
+      final u =
+          (dot22 * dot13 - dot12 * dot23) / (dot11 * dot22 - dot12 * dot12);
+      final v =
+          (dot11 * dot23 - dot12 * dot13) / (dot11 * dot22 - dot12 * dot12);
 
       if ((u >= 0) && (v >= 0) && (u + v < 1)) return this;
     }
@@ -201,24 +201,24 @@ class Mesh extends DisplayObject {
 
   @override
   void render(RenderState renderState) {
-    var renderContext = renderState.renderContext;
-    var renderTextureQuad = bitmapData.renderTextureQuad;
-    var renderTexture = bitmapData.renderTexture;
+    final renderContext = renderState.renderContext;
+    final renderTextureQuad = bitmapData.renderTextureQuad;
+    final renderTexture = bitmapData.renderTexture;
 
-    var matrix = renderTextureQuad.samplerMatrix;
-    var ma = matrix.a * bitmapData.width;
-    var mb = matrix.b * bitmapData.width;
-    var mc = matrix.c * bitmapData.height;
-    var md = matrix.d * bitmapData.height;
-    var mx = matrix.tx;
-    var my = matrix.tx;
+    final matrix = renderTextureQuad.samplerMatrix;
+    final ma = matrix.a * bitmapData.width;
+    final mb = matrix.b * bitmapData.width;
+    final mc = matrix.c * bitmapData.height;
+    final md = matrix.d * bitmapData.height;
+    final mx = matrix.tx;
+    final my = matrix.tx;
 
     final vxListTemp = _vxListTemp ?? Float32List(vxList.length);
     _vxListTemp = vxListTemp;
 
     for (var i = 0; i < vxListTemp.length - 3; i += 4) {
-      var x = vxList[i + 2];
-      var y = vxList[i + 3];
+      final x = vxList[i + 2];
+      final y = vxList[i + 3];
       vxListTemp[i + 0] = vxList[i + 0];
       vxListTemp[i + 1] = vxList[i + 1];
       vxListTemp[i + 2] = mx + x * ma + y * mc;

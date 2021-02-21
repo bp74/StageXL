@@ -37,13 +37,8 @@ class RenderContextWebGL extends RenderContext {
     _canvasElement.onWebGlContextLost.listen(_onContextLost);
     _canvasElement.onWebGlContextRestored.listen(_onContextRestored);
 
-    var renderingContext = _canvasElement.getContext3d(
-        alpha: alpha,
-        antialias: antialias,
-        depth: false,
-        stencil: true,
-        premultipliedAlpha: true,
-        preserveDrawingBuffer: false);
+    final renderingContext = _canvasElement.getContext3d(
+        alpha: alpha, antialias: antialias, depth: false, stencil: true);
 
     if (renderingContext is! gl.RenderingContext) {
       throw StateError('Failed to get WebGL context.');
@@ -86,8 +81,8 @@ class RenderContextWebGL extends RenderContext {
 
   @override
   void reset() {
-    var viewportWidth = _canvasElement.width!;
-    var viewportHeight = _canvasElement.height!;
+    final viewportWidth = _canvasElement.width!;
+    final viewportHeight = _canvasElement.height!;
     _activeRenderFrameBuffer = null;
     _renderingContext.bindFramebuffer(gl.WebGL.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, viewportWidth, viewportHeight);
@@ -102,10 +97,10 @@ class RenderContextWebGL extends RenderContext {
     _getMaskStates().clear();
     _updateScissorTest(null);
     _updateStencilTest(0);
-    num r = colorGetR(color) / 255.0;
-    num g = colorGetG(color) / 255.0;
-    num b = colorGetB(color) / 255.0;
-    num a = colorGetA(color) / 255.0;
+    final num r = colorGetR(color) / 255.0;
+    final num g = colorGetG(color) / 255.0;
+    final num b = colorGetB(color) / 255.0;
+    final num a = colorGetA(color) / 255.0;
     _renderingContext.colorMask(true, true, true, true);
     _renderingContext.clearColor(r * a, g * a, b * a, a);
     _renderingContext
@@ -126,10 +121,10 @@ class RenderContextWebGL extends RenderContext {
     // try to use the scissor rectangle for this mask
 
     if (mask is ScissorRenderMask) {
-      var scissor = mask.getScissorRectangle(renderState);
+      final scissor = mask.getScissorRectangle(renderState);
       if (scissor != null) {
-        var last = _getLastScissorValue();
-        var next = last == null ? scissor : scissor.intersection(last);
+        final last = _getLastScissorValue();
+        final next = last == null ? scissor : scissor.intersection(last);
         _getMaskStates().add(_ScissorMaskState(mask, next));
         _updateScissorTest(next);
         return;
@@ -138,7 +133,7 @@ class RenderContextWebGL extends RenderContext {
 
     // update the stencil buffer for this mask
 
-    var stencil = _getLastStencilValue() + 1;
+    final stencil = _getLastStencilValue() + 1;
 
     _renderingContext.enable(gl.WebGL.STENCIL_TEST);
     _renderingContext.stencilOp(gl.WebGL.KEEP, gl.WebGL.KEEP, gl.WebGL.INCR);
@@ -157,7 +152,7 @@ class RenderContextWebGL extends RenderContext {
   void endRenderMask(RenderState renderState, RenderMask mask) {
     _activeRenderProgram.flush();
 
-    var maskState = _getMaskStates().removeLast();
+    final maskState = _getMaskStates().removeLast();
     if (maskState is _ScissorMaskState) {
       _updateScissorTest(_getLastScissorValue());
     } else if (maskState is _StencilMaskState) {
@@ -236,14 +231,14 @@ class RenderContextWebGL extends RenderContext {
   @override
   void renderTextureQuadFiltered(RenderState renderState,
       RenderTextureQuad renderTextureQuad, List<RenderFilter> renderFilters) {
-    var firstFilter = renderFilters.length == 1 ? renderFilters[0] : null;
+    final firstFilter = renderFilters.length == 1 ? renderFilters[0] : null;
 
     if (renderFilters.isEmpty) {
       // Don't render anything
     } else if (firstFilter is RenderFilter && firstFilter.isSimple) {
       firstFilter.renderFilter(renderState, renderTextureQuad, 0);
     } else {
-      var renderObject =
+      final renderObject =
           _RenderTextureQuadObject(renderTextureQuad, renderFilters);
       renderObjectFiltered(renderState, renderObject);
     }
@@ -254,9 +249,9 @@ class RenderContextWebGL extends RenderContext {
   @override
   void renderObjectFiltered(
       RenderState renderState, RenderObject renderObject) {
-    var bounds = renderObject.bounds;
+    final bounds = renderObject.bounds;
     var filters = renderObject.filters;
-    var pixelRatio = math.sqrt(renderState.globalMatrix.det.abs());
+    final pixelRatio = math.sqrt(renderState.globalMatrix.det.abs());
 
     var boundsLeft = bounds.left.floor();
     var boundsTop = bounds.top.floor();
@@ -264,7 +259,7 @@ class RenderContextWebGL extends RenderContext {
     var boundsBottom = bounds.bottom.ceil();
 
     for (var i = 0; i < filters.length; i++) {
-      var overlap = filters[i].overlap;
+      final overlap = filters[i].overlap;
       boundsLeft += overlap.left;
       boundsTop += overlap.top;
       boundsRight += overlap.right;
@@ -276,15 +271,15 @@ class RenderContextWebGL extends RenderContext {
     boundsRight = (boundsRight * pixelRatio).ceil();
     boundsBottom = (boundsBottom * pixelRatio).ceil();
 
-    var boundsWidth = boundsRight - boundsLeft;
-    var boundsHeight = boundsBottom - boundsTop;
+    final boundsWidth = boundsRight - boundsLeft;
+    final boundsHeight = boundsBottom - boundsTop;
 
-    var initialRenderFrameBuffer = activeRenderFrameBuffer;
-    var initialProjectionMatrix = activeProjectionMatrix.clone();
+    final initialRenderFrameBuffer = activeRenderFrameBuffer;
+    final initialProjectionMatrix = activeProjectionMatrix.clone();
     RenderFrameBuffer? filterRenderFrameBuffer =
         getRenderFrameBuffer(boundsWidth, boundsHeight);
 
-    var filterProjectionMatrix = Matrix3D.fromIdentity();
+    final filterProjectionMatrix = Matrix3D.fromIdentity();
     filterProjectionMatrix.scale(2.0 / boundsWidth, 2.0 / boundsHeight, 1.0);
     filterProjectionMatrix.translate(-1.0, -1.0, 0.0);
 
@@ -292,7 +287,7 @@ class RenderContextWebGL extends RenderContext {
     filterRenderState.globalMatrix.scale(pixelRatio, pixelRatio);
     filterRenderState.globalMatrix.translate(-boundsLeft, -boundsTop);
 
-    var renderFrameBufferMap = <int, RenderFrameBuffer?>{};
+    final renderFrameBufferMap = <int, RenderFrameBuffer?>{};
     renderFrameBufferMap[0] = filterRenderFrameBuffer;
 
     //----------------------------------------------
@@ -306,7 +301,7 @@ class RenderContextWebGL extends RenderContext {
       // Don't render anything
     } else if (filters[0].isSimple &&
         renderObject is _RenderTextureQuadObject) {
-      var renderTextureQuad = renderObject.renderTextureQuad;
+      final renderTextureQuad = renderObject.renderTextureQuad;
       renderTextureQuadFiltered(
           filterRenderState, renderTextureQuad, [filters[0]]);
       filters = filters.sublist(1);
@@ -319,14 +314,14 @@ class RenderContextWebGL extends RenderContext {
     for (var i = 0; i < filters.length; i++) {
       RenderTextureQuad sourceRenderTextureQuad;
       RenderFrameBuffer? sourceRenderFrameBuffer;
-      var filter = filters[i];
+      final filter = filters[i];
 
-      var renderPassSources = filter.renderPassSources;
-      var renderPassTargets = filter.renderPassTargets;
+      final renderPassSources = filter.renderPassSources;
+      final renderPassTargets = filter.renderPassTargets;
 
       for (var pass = 0; pass < renderPassSources.length; pass++) {
-        var renderPassSource = renderPassSources[pass];
-        var renderPassTarget = renderPassTargets[pass];
+        final renderPassSource = renderPassSources[pass];
+        final renderPassTarget = renderPassTargets[pass];
 
         // get sourceRenderTextureQuad
 
@@ -391,17 +386,16 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
 
   T getRenderProgram<T extends RenderProgram>(
-      String name, T Function() ifAbsent) {
-    return _renderPrograms.putIfAbsent(name, ifAbsent) as T;
-  }
+          String name, T Function() ifAbsent) =>
+      _renderPrograms.putIfAbsent(name, ifAbsent) as T;
 
   RenderFrameBuffer getRenderFrameBuffer(int width, int height) {
     if (_renderFrameBufferPool.isEmpty) {
       return RenderFrameBuffer.rawWebGL(width, height);
     } else {
-      var renderFrameBuffer = _renderFrameBufferPool.removeLast();
-      var renderTexture = renderFrameBuffer.renderTexture!;
-      var renderStencilBuffer = renderFrameBuffer.renderStencilBuffer;
+      final renderFrameBuffer = _renderFrameBufferPool.removeLast();
+      final renderTexture = renderFrameBuffer.renderTexture!;
+      final renderStencilBuffer = renderFrameBuffer.renderStencilBuffer;
       if (renderTexture.width != width || renderTexture.height != height) {
         releaseRenderTexture(renderTexture);
         renderTexture.resize(width, height);
@@ -499,23 +493,23 @@ class RenderContextWebGL extends RenderContext {
   //---------------------------------------------------------------------------
 
   List<_MaskState> _getMaskStates() {
-    var rfb = _activeRenderFrameBuffer;
+    final rfb = _activeRenderFrameBuffer;
     return rfb is RenderFrameBuffer ? rfb._maskStates : _maskStates;
   }
 
   int _getLastStencilValue() {
-    var maskStates = _getMaskStates();
+    final maskStates = _getMaskStates();
     for (var i = maskStates.length - 1; i >= 0; i--) {
-      var maskState = maskStates[i];
+      final maskState = maskStates[i];
       if (maskState is _StencilMaskState) return maskState.value;
     }
     return 0;
   }
 
   Rectangle<num>? _getLastScissorValue() {
-    var maskStates = _getMaskStates();
+    final maskStates = _getMaskStates();
     for (var i = maskStates.length - 1; i >= 0; i--) {
-      var maskState = maskStates[i];
+      final maskState = maskStates[i];
       if (maskState is _ScissorMaskState) return maskState.value;
     }
     return null;
@@ -534,19 +528,21 @@ class RenderContextWebGL extends RenderContext {
     if (value == null) {
       _renderingContext.disable(gl.WebGL.SCISSOR_TEST);
     } else if (_activeRenderFrameBuffer is RenderFrameBuffer) {
-      var x1 = value.left.round();
-      var y1 = value.top.round();
-      var x2 = value.right.round();
-      var y2 = value.bottom.round();
+      final x1 = value.left.round();
+      final y1 = value.top.round();
+      final x2 = value.right.round();
+      final y2 = value.bottom.round();
       _renderingContext.enable(gl.WebGL.SCISSOR_TEST);
-      _renderingContext.scissor(x1, y1, math.max(x2 - x1, 0), math.max(y2 - y1, 0));
+      _renderingContext.scissor(
+          x1, y1, math.max(x2 - x1, 0), math.max(y2 - y1, 0));
     } else {
-      var x1 = value.left.round();
-      var y1 = _canvasElement.height! - value.bottom.round();
-      var x2 = value.right.round();
-      var y2 = _canvasElement.height! - value.top.round();
+      final x1 = value.left.round();
+      final y1 = _canvasElement.height! - value.bottom.round();
+      final x2 = value.right.round();
+      final y2 = _canvasElement.height! - value.top.round();
       _renderingContext.enable(gl.WebGL.SCISSOR_TEST);
-      _renderingContext.scissor(x1, y1, math.max(x2 - x1, 0), math.max(y2 - y1, 0));
+      _renderingContext.scissor(
+          x1, y1, math.max(x2 - x1, 0), math.max(y2 - y1, 0));
     }
   }
 

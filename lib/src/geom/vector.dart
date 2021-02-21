@@ -36,14 +36,13 @@ class Vector {
   Vector operator -() => Vector(-x, -y);
 
   @override
-  bool operator ==(Object other) {
-    return other is Vector && x == other.x && y == other.y;
-  }
+  bool operator ==(Object other) =>
+      other is Vector && x == other.x && y == other.y;
 
   @override
   int get hashCode {
-    var a = x.hashCode;
-    var b = y.hashCode;
+    final a = x.hashCode;
+    final b = y.hashCode;
     return JenkinsHash.hash2(a, b);
   }
 
@@ -53,7 +52,7 @@ class Vector {
   // Queries
 
   bool get isNormalized => ((x * x + y * y) - 1).abs() < EpsilonSqr;
-  bool get isZero => (x == 0 && y == 0);
+  bool get isZero => x == 0 && y == 0;
   bool get isValid =>
       (x.isNaN || y.isNaN || x.isInfinite || y.isInfinite) == false;
 
@@ -70,17 +69,15 @@ class Vector {
   //-----------------------------------------------------------------------------------------------
   // Scale
 
-  Vector scale(num scale) {
-    return Vector(x * scale, y * scale);
-  }
+  Vector scale(num scale) => Vector(x * scale, y * scale);
 
   Vector scaleLength(num value) {
-    var scale = value / length;
+    final scale = value / length;
     return Vector(x * scale, y * scale);
   }
 
   Vector normalize() {
-    num nf = 1 / length;
+    final num nf = 1 / length;
     return Vector(x * nf, y * nf);
   }
 
@@ -91,26 +88,26 @@ class Vector {
   num get lengthSqr => x * x + y * y;
 
   num distance(Vector vec) {
-    var xd = x - vec.x;
-    var yd = y - vec.y;
+    final xd = x - vec.x;
+    final yd = y - vec.y;
     return sqrt(xd * xd + yd * yd);
   }
 
   num distanceXY(num x, num y) {
-    var xd = this.x - x;
-    var yd = this.y - y;
+    final xd = this.x - x;
+    final yd = this.y - y;
     return sqrt(xd * xd + yd * yd);
   }
 
   num distanceSqr(Vector vec) {
-    var xd = x - vec.x;
-    var yd = y - vec.y;
+    final xd = x - vec.x;
+    final yd = y - vec.y;
     return xd * xd + yd * yd;
   }
 
   num distanceXYSqr(num x, num y) {
-    var xd = this.x - x;
-    var yd = this.y - y;
+    final xd = this.x - x;
+    final yd = this.y - y;
     return xd * xd + yd * yd;
   }
 
@@ -130,53 +127,45 @@ class Vector {
   // Rotate
 
   Vector rotate(num rads) {
-    num s = sin(rads);
-    num c = cos(rads);
+    final num s = sin(rads);
+    final num c = cos(rads);
     return Vector(x * c - y * s, x * s + y * c);
   }
 
-  Vector normalRight() {
-    return Vector(-y, x);
-  }
+  Vector normalRight() => Vector(-y, x);
 
-  Vector normalLeft() {
-    return Vector(y, -x);
-  }
+  Vector normalLeft() => Vector(y, -x);
 
-  Vector negate() {
-    return Vector(-x, -y);
-  }
+  Vector negate() => Vector(-x, -y);
 
   //-----------------------------------------------------------------------------------------------
   // Spinor rotation
 
-  Vector rotateSpinor(Vector vec) {
-    return Vector(x * vec.x - y * vec.y, x * vec.y + y * vec.x);
-  }
+  Vector rotateSpinor(Vector vec) =>
+      Vector(x * vec.x - y * vec.y, x * vec.y + y * vec.x);
 
   Vector spinorBetween(Vector vec) {
-    var d = lengthSqr;
-    var r = (vec.x * x + vec.y * y) / d;
-    var i = (vec.y * x - vec.x * y) / d;
+    final d = lengthSqr;
+    final r = (vec.x * x + vec.y * y) / d;
+    final i = (vec.y * x - vec.x * y) / d;
     return Vector(r, i);
   }
 
   //-----------------------------------------------------------------------------------------------
   // Lerp / slerp
 
-  Vector lerp(Vector to, num t) {
-    return Vector(x + t * (to.x - x), y + t * (to.y - y));
-  }
+  Vector lerp(Vector to, num t) =>
+      Vector(x + t * (to.x - x), y + t * (to.y - y));
 
   Vector slerp(Vector vec, num t) {
-    var cosTheta = dot(vec);
-    var theta = acos(cosTheta);
-    var sinTheta = sin(theta);
+    final cosTheta = dot(vec);
+    final theta = acos(cosTheta);
+    final sinTheta = sin(theta);
 
     if (sinTheta <= Epsilon) return vec.clone();
 
-    var w1 = sin((1 - t) * theta) / sinTheta;
-    var w2 = sin(t * theta) / sinTheta;
+    final w1 = sin((1 - t) * theta) / sinTheta;
+    final w2 = sin(t * theta) / sinTheta;
     return scale(w1) + vec.scale(w2);
   }
 
@@ -184,7 +173,7 @@ class Vector {
   // Reflect
 
   Vector reflect(Vector normal) {
-    var d = 2 * (x * normal.x + y * normal.y);
+    final d = 2 * (x * normal.x + y * normal.y);
     return Vector(x - d * normal.x, y - d * normal.y);
   }
 }

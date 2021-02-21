@@ -90,7 +90,7 @@ class SimpleButton extends InteractiveObject {
 
   @override
   Rectangle<num> get bounds {
-    var displayObject = _getDisplayObject();
+    final displayObject = _getDisplayObject();
     return displayObject?.boundsTransformed ?? super.bounds;
   }
 
@@ -98,19 +98,19 @@ class SimpleButton extends InteractiveObject {
   DisplayObject? hitTestInput(num localX, num localY) {
     if (hitTestState == null) return null;
 
-    var matrix = hitTestState!.transformationMatrix;
+    final matrix = hitTestState!.transformationMatrix;
 
-    var deltaX = localX - matrix.tx;
-    var deltaY = localY - matrix.ty;
-    var childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
-    var childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
+    final deltaX = localX - matrix.tx;
+    final deltaY = localY - matrix.ty;
+    final childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
+    final childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
 
     return hitTestState!.hitTestInput(childX, childY) != null ? this : null;
   }
 
   @override
   void render(RenderState renderState) {
-    var displayObject = _getDisplayObject();
+    final displayObject = _getDisplayObject();
     if (displayObject != null) {
       renderState.renderObject(displayObject);
     }

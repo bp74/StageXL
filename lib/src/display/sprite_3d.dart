@@ -21,9 +21,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
   /// drawing commands can occur.
 
   @override
-  Graphics get graphics {
-    return _graphics ??= Graphics();
-  }
+  Graphics get graphics => _graphics ??= Graphics();
 
   @override
   set graphics(Graphics value) {
@@ -57,9 +55,9 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
   @override
   void startDrag([bool lockCenter = false, Rectangle<num>? bounds]) {
-    var stage = this.stage;
-    var inputEvent = InputEvent.current;
-    var globalPoint = Point<num>(0.0, 0.0);
+    final stage = this.stage;
+    final inputEvent = InputEvent.current;
+    final globalPoint = Point<num>(0.0, 0.0);
     var anchorPoint = Point<num>(0.0, 0.0);
     var touchPointID = 0;
 
@@ -91,7 +89,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
   @override
   void stopDrag() {
-    var stage = this.stage;
+    final stage = this.stage;
     stage?._stopDrag(this);
   }
 
@@ -99,7 +97,7 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
   @override
   Rectangle<num> get bounds {
-    var bounds = super.bounds;
+    final bounds = super.bounds;
     return _graphics == null ? bounds : bounds.boundingBox(_graphics!.bounds);
   }
 
@@ -126,12 +124,12 @@ class Sprite3D extends DisplayObjectContainer3D implements Sprite {
 
   @override
   DisplayObject? hitTestInput(num localX, num localY) {
-    var hitArea = this.hitArea;
-    var graphics = _graphics;
+    final hitArea = this.hitArea;
+    final graphics = _graphics;
     DisplayObject? target;
 
     if (hitArea != null) {
-      var point = Point<num>(localX, localY);
+      final point = Point<num>(localX, localY);
       localToGlobal(point, point);
       hitArea.globalToLocal(point, point);
       target = hitArea.hitTestInput(point.x, point.y);

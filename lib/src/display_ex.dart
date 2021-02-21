@@ -4,17 +4,17 @@
 library stagexl.display_ex;
 
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:math' hide Point, Rectangle;
 import 'dart:html' show CssStyleDeclaration, Element;
+import 'dart:math' hide Point, Rectangle;
+import 'dart:typed_data';
 
 import 'animation.dart';
+import 'display.dart';
 import 'engine.dart';
 import 'events.dart';
-import 'display.dart';
 import 'geom.dart';
-import 'media.dart' show Video;
 import 'internal/tools.dart';
+import 'media.dart' show Video;
 import 'ui/color.dart';
 
 part 'display_ex/canvas_shadow_wrapper.dart';

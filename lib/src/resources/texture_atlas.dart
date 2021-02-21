@@ -56,7 +56,7 @@ class TextureAtlas {
 
   BitmapData getBitmapData(String name) {
     for (var i = 0; i < frames.length; i++) {
-      var frame = frames[i];
+      final frame = frames[i];
       if (frame.name == name) return frame.bitmapData;
     }
     throw ArgumentError("TextureAtlasFrame not found: '$name'");

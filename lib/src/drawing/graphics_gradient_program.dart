@@ -37,26 +37,26 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
 
   void renderGradient(
       RenderState renderState, Int16List ixList, Float32List vxList) {
-    var alpha = renderState.globalAlpha;
-    var matrix = renderState.globalMatrix;
-    var ixListCount = ixList.length;
-    var vxListCount = vxList.length >> 1;
+    final alpha = renderState.globalAlpha;
+    final matrix = renderState.globalMatrix;
+    final ixListCount = ixList.length;
+    final vxListCount = vxList.length >> 1;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + ixListCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vxListCount * 3 >= vxData.length) flush();
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
+    final ixIndex = renderBufferIndex.position;
     var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final vxCount = renderBufferVertex.count;
 
     for (var i = 0; i < ixListCount; i++) {
       ixData[ixIndex + i] = vxCount + ixList[i];
@@ -67,16 +67,16 @@ abstract class _GraphicsGradientProgram extends RenderProgram {
 
     // copy vertex list
 
-    var ma = matrix.a;
-    var mb = matrix.b;
-    var mc = matrix.c;
-    var md = matrix.d;
-    var mx = matrix.tx;
-    var my = matrix.ty;
+    final ma = matrix.a;
+    final mb = matrix.b;
+    final mc = matrix.c;
+    final md = matrix.d;
+    final mx = matrix.tx;
+    final my = matrix.ty;
 
     for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
-      var x = vxList[o + 0];
-      var y = vxList[o + 1];
+      final x = vxList[o + 0];
+      final y = vxList[o + 1];
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = alpha;
@@ -112,12 +112,12 @@ class _LinearGraphicsGradientProgram extends _GraphicsGradientProgram {
 
   @override
   void configure(RenderState renderState, GraphicsGradient gradient) {
-    var m = renderState.globalMatrix;
-    var g = gradient;
+    final m = renderState.globalMatrix;
+    final g = gradient;
 
-    var startX = m.tx + m.a * g.startX + m.c * g.startY;
-    var startY = m.ty + m.b * g.startX + m.d * g.startY;
-    var vectorX = (m.tx + m.a * g.endX + m.c * g.endY) - startX;
+    final startX = m.tx + m.a * g.startX + m.c * g.startY;
+    final startY = m.ty + m.b * g.startX + m.d * g.startY;
+    final vectorX = (m.tx + m.a * g.endX + m.c * g.endY) - startX;
     var vectorY = (m.ty + m.b * g.endX + m.d * g.endY) - startY;
 
     // protect against zero length vector (linear gradient not defined for this case)
@@ -157,31 +157,32 @@ class _RadialGraphicsGradientProgram extends _GraphicsGradientProgram {
 
   @override
   void configure(RenderState renderState, GraphicsGradient gradient) {
-    var m = renderState.globalMatrix;
-    var g = gradient;
+    final m = renderState.globalMatrix;
+    final g = gradient;
 
-    var scaleR = sqrt(m.a * m.a +
+    final scaleR = sqrt(m.a * m.a +
         m.c * m.c); // we are simplifying here, assuming uniform scale
-    var startX = m.tx + m.a * g.startX + m.c * g.startY;
-    var startY = m.ty + m.b * g.startX + m.d * g.startY;
-    var vectorX = (m.tx + m.a * g.endX + m.c * g.endY) - startX;
-    var vectorY = (m.ty + m.b * g.endX + m.d * g.endY) - startY;
-    var startRadius = g.startRadius * scaleR;
+    final startX = m.tx + m.a * g.startX + m.c * g.startY;
+    final startY = m.ty + m.b * g.startX + m.d * g.startY;
+    final vectorX = (m.tx + m.a * g.endX + m.c * g.endY) - startX;
+    final vectorY = (m.ty + m.b * g.endX + m.d * g.endY) - startY;
+    final startRadius = g.startRadius * scaleR;
     var radiusOffset = (g.endRadius - g.startRadius) * scaleR;
 
     // protect against equal start-end circles (radial gradient not defined for this case)
     if (vectorX == 0 && vectorY == 0 && radiusOffset == 0) radiusOffset = 1;
 
-    var a = vectorX * vectorX + vectorY * vectorY - radiusOffset * radiusOffset;
-    var b0 = -2 * vectorX;
-    var b1 = -2 * vectorY;
-    var b2 = 2 * startX * vectorX +
+    final a =
+        vectorX * vectorX + vectorY * vectorY - radiusOffset * radiusOffset;
+    final b0 = -2 * vectorX;
+    final b1 = -2 * vectorY;
+    final b2 = 2 * startX * vectorX +
         2 * startY * vectorY -
         2 * startRadius * radiusOffset;
-    var c0 = -2 * startX;
-    var c1 = -2 * startY;
-    var c2 = startX * startX + startY * startY - startRadius * startRadius;
-    var sign = radiusOffset >= 0 ? -1 : 1;
+    final c0 = -2 * startX;
+    final c1 = -2 * startY;
+    final c2 = startX * startX + startY * startY - startRadius * startRadius;
+    final sign = radiusOffset >= 0 ? -1 : 1;
 
     renderingContext.uniform1i(uniforms['uSampler'], 0);
     renderingContext.uniform2f(uniforms['uvA'], a, sign);

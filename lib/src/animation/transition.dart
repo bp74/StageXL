@@ -27,17 +27,11 @@ class Transition {
 
   static final Random _random = Random();
 
-  static num linear(num ratio) {
-    return ratio;
-  }
+  static num linear(num ratio) => ratio;
 
-  static num sine(num ratio) {
-    return 0.5 - 0.5 * cos(ratio * 2.0 * pi);
-  }
+  static num sine(num ratio) => 0.5 - 0.5 * cos(ratio * 2.0 * pi);
 
-  static num cosine(num ratio) {
-    return 0.5 + 0.5 * cos(ratio * 2.0 * pi);
-  }
+  static num cosine(num ratio) => 0.5 + 0.5 * cos(ratio * 2.0 * pi);
 
   static num random(num ratio) {
     if (ratio == 0.0 || ratio == 1.0) return ratio;
@@ -59,9 +53,7 @@ class Transition {
 
   // Quadratic
 
-  static num easeInQuadratic(num ratio) {
-    return ratio * ratio;
-  }
+  static num easeInQuadratic(num ratio) => ratio * ratio;
 
   static num easeOutQuadratic(num ratio) {
     ratio = 1.0 - ratio;
@@ -84,9 +76,7 @@ class Transition {
 
   // Cubic
 
-  static num easeInCubic(num ratio) {
-    return ratio * ratio * ratio;
-  }
+  static num easeInCubic(num ratio) => ratio * ratio * ratio;
 
   static num easeOutCubic(num ratio) {
     ratio = 1.0 - ratio;
@@ -109,9 +99,7 @@ class Transition {
 
   // Quartic
 
-  static num easeInQuartic(num ratio) {
-    return ratio * ratio * ratio * ratio;
-  }
+  static num easeInQuartic(num ratio) => ratio * ratio * ratio * ratio;
 
   static num easeOutQuartic(num ratio) {
     ratio = 1.0 - ratio;
@@ -134,9 +122,7 @@ class Transition {
 
   // Quintic
 
-  static num easeInQuintic(num ratio) {
-    return ratio * ratio * ratio * ratio * ratio;
-  }
+  static num easeInQuintic(num ratio) => ratio * ratio * ratio * ratio * ratio;
 
   static num easeOutQuintic(num ratio) {
     ratio = 1.0 - ratio;
@@ -159,9 +145,7 @@ class Transition {
 
   // Circular
 
-  static num easeInCircular(num ratio) {
-    return 1.0 - sqrt(1.0 - ratio * ratio);
-  }
+  static num easeInCircular(num ratio) => 1.0 - sqrt(1.0 - ratio * ratio);
 
   static num easeOutCircular(num ratio) {
     ratio = 1.0 - ratio;
@@ -184,13 +168,9 @@ class Transition {
 
   // Sine
 
-  static num easeInSine(num ratio) {
-    return 1.0 - cos(ratio * (pi / 2.0));
-  }
+  static num easeInSine(num ratio) => 1.0 - cos(ratio * (pi / 2.0));
 
-  static num easeOutSine(num ratio) {
-    return sin(ratio * (pi / 2.0));
-  }
+  static num easeOutSine(num ratio) => sin(ratio * (pi / 2.0));
 
   static num easeInOutSine(num ratio) {
     ratio = ratio * 2.0;
@@ -235,12 +215,12 @@ class Transition {
   // Back
 
   static num easeInBack(num ratio) {
-    num s = 1.70158;
+    const num s = 1.70158;
     return ratio * ratio * ((s + 1.0) * ratio - s);
   }
 
   static num easeOutBack(num ratio) {
-    num s = 1.70158;
+    const num s = 1.70158;
     ratio = ratio - 1.0;
     return ratio * ratio * ((s + 1.0) * ratio + s) + 1.0;
   }
@@ -291,9 +271,7 @@ class Transition {
 
   // Bounce
 
-  static num easeInBounce(num ratio) {
-    return 1.0 - easeOutBounce(1.0 - ratio);
-  }
+  static num easeInBounce(num ratio) => 1.0 - easeOutBounce(1.0 - ratio);
 
   static num easeOutBounce(num ratio) {
     if (ratio < 1 / 2.75) {

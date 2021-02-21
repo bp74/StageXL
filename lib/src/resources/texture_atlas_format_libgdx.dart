@@ -5,14 +5,14 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
 
   @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
-    var source = await loader.getSource();
-    var pixelRatio = loader.getPixelRatio();
-    var textureAtlas = TextureAtlas(pixelRatio);
+    final source = await loader.getSource();
+    final pixelRatio = loader.getPixelRatio();
+    final textureAtlas = TextureAtlas(pixelRatio);
 
-    var splitRexExp = RegExp(r'\r\n|\r|\n');
-    var dataRexExp = RegExp(r'^\s*([a-z]+):\s([A-Za-z0-9\s,]+)');
+    final splitRexExp = RegExp(r'\r\n|\r|\n');
+    final dataRexExp = RegExp(r'^\s*([a-z]+):\s([A-Za-z0-9\s,]+)');
 
-    var lines = source.split(splitRexExp);
+    final lines = source.split(splitRexExp);
     var lineIndex = 0;
     var imageBlock = true;
     RenderTextureQuad? renderTextureQuad;
@@ -20,7 +20,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
     //-----------------------------------------------------
 
     while (lineIndex < lines.length) {
-      var line = lines[lineIndex].trim();
+      final line = lines[lineIndex].trim();
 
       if (line.isEmpty) {
         imageBlock = true;
@@ -30,7 +30,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
         renderTextureQuad = await loader.getRenderTextureQuad(line);
 
         while (++lineIndex < lines.length) {
-          var imageMatch = dataRexExp.firstMatch(lines[lineIndex]);
+          final imageMatch = dataRexExp.firstMatch(lines[lineIndex]);
           if (imageMatch == null) break;
           // size: 355,139
           // format: RGBA8888
@@ -38,7 +38,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
           // repeat: none
         }
       } else {
-        var frameName = line;
+        final frameName = line;
         var frameRotation = 0;
         var frameX = 0, frameY = 0;
         var frameWidth = 0, frameHeight = 0;
@@ -46,11 +46,12 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
         var offsetX = 0, offsetY = 0;
 
         while (++lineIndex < lines.length) {
-          var frameMatch = dataRexExp.firstMatch(lines[lineIndex]);
+          final frameMatch = dataRexExp.firstMatch(lines[lineIndex]);
           if (frameMatch == null) break;
 
-          var key = frameMatch[1];
-          var values = frameMatch[2]!.split(',').map((s) => s.trim()).toList();
+          final key = frameMatch[1];
+          final values =
+              frameMatch[2]!.split(',').map((s) => s.trim()).toList();
 
           if (key == 'rotate' && values.length == 1) {
             frameRotation = (values[0] == 'true') ? 3 : 0;
@@ -69,7 +70,7 @@ class _TextureAtlasFormatLibGDX extends TextureAtlasFormat {
           }
         }
 
-        var textureAtlasFrame = TextureAtlasFrame(
+        final textureAtlasFrame = TextureAtlasFrame(
             textureAtlas,
             renderTextureQuad!,
             frameName,

@@ -14,25 +14,25 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   bool hitTest(double px, double py) {
     for (var i = 0; i < _indexCount - 2; i += 3) {
-      var o1 = _indexBuffer[i + 0] * 2;
-      var o2 = _indexBuffer[i + 1] * 2;
-      var o3 = _indexBuffer[i + 2] * 2;
+      final o1 = _indexBuffer[i + 0] * 2;
+      final o2 = _indexBuffer[i + 1] * 2;
+      final o3 = _indexBuffer[i + 2] * 2;
 
-      var x1 = _vertexBuffer[o1 + 0] - px;
-      var x2 = _vertexBuffer[o2 + 0] - px;
-      var x3 = _vertexBuffer[o3 + 0] - px;
+      final x1 = _vertexBuffer[o1 + 0] - px;
+      final x2 = _vertexBuffer[o2 + 0] - px;
+      final x3 = _vertexBuffer[o3 + 0] - px;
       if (x1 > 0 && x2 > 0 && x3 > 0) continue;
       if (x1 < 0 && x2 < 0 && x3 < 0) continue;
 
-      var y1 = _vertexBuffer[o1 + 1] - py;
-      var y2 = _vertexBuffer[o2 + 1] - py;
-      var y3 = _vertexBuffer[o3 + 1] - py;
+      final y1 = _vertexBuffer[o1 + 1] - py;
+      final y2 = _vertexBuffer[o2 + 1] - py;
+      final y3 = _vertexBuffer[o3 + 1] - py;
       if (y1 > 0 && y2 > 0 && y3 > 0) continue;
       if (y1 < 0 && y2 < 0 && y3 < 0) continue;
 
-      var ab = x1 * y2 - x2 * y1;
-      var bc = x2 * y3 - x3 * y2;
-      var ca = x3 * y1 - x1 * y3;
+      final ab = x1 * y2 - x2 * y1;
+      final bc = x2 * y3 - x3 * y2;
+      final ca = x3 * y1 - x1 * y3;
       if (ab >= 0 && bc >= 0 && ca >= 0) return true;
       if (ab <= 0 && bc <= 0 && ca <= 0) return true;
     }
@@ -44,19 +44,19 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   void _calculateStroke(_GraphicsPathSegment pathSegment) {
-    var width = stroke.width;
-    var jointStyle = stroke.jointStyle;
-    var capsStyle = stroke.capsStyle;
+    final width = stroke.width;
+    final jointStyle = stroke.jointStyle;
+    final capsStyle = stroke.capsStyle;
 
-    var vertices = pathSegment._vertexBuffer;
+    final vertices = pathSegment._vertexBuffer;
     var length = pathSegment.vertexCount;
-    var closed = pathSegment.closed;
+    final closed = pathSegment.closed;
 
     if (pathSegment.closed && length >= 2) {
-      var ax = pathSegment.firstVertexX;
-      var ay = pathSegment.firstVertexY;
-      var bx = pathSegment.lastVertexX;
-      var by = pathSegment.lastVertexY;
+      final ax = pathSegment.firstVertexX;
+      final ay = pathSegment.firstVertexY;
+      final bx = pathSegment.lastVertexX;
+      final by = pathSegment.lastVertexY;
       if (ax == bx && ay == by) length -= 1;
     }
 
@@ -69,13 +69,13 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
     for (var i = -2; i <= length; i++) {
       // get next vertex
-      var offset = ((i + 1) % length) * 2;
+      final offset = ((i + 1) % length) * 2;
       v2x = vertices[offset + 0];
       v2y = vertices[offset + 1];
 
       // calculate next normal
-      num vx = v2x - v1x;
-      num vy = v1y - v2y;
+      final num vx = v2x - v1x;
+      final num vy = v1y - v2y;
       v2l = sqrt(vx * vx + vy * vy) / (0.5 * width);
       n2x = vy / v2l;
       n2y = vx / v2l;
@@ -117,7 +117,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   void _addCapEnd(double vx, double vy, num nx, num ny, CapsStyle capsStyle) {
-    var i1 = _jointIndex1, i2 = _jointIndex2;
+    final i1 = _jointIndex1, i2 = _jointIndex2;
     if (capsStyle == CapsStyle.SQUARE) {
       _jointIndex1 = addVertex(vx + nx + ny, vy + ny - nx);
       _jointIndex2 = addVertex(vx - nx + ny, vy - ny - nx);
@@ -137,7 +137,7 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   void _addJoint(double vx, double vy, num al, num bl, num ax, num ay, num bx,
       num by, JointStyle jointStyle) {
-    var id = (bx * ay - by * ax);
+    final id = bx * ay - by * ax;
     var it = (bx * (ax - bx) + by * (ay - by)) / id;
     var itAbs = it.abs();
 
@@ -156,13 +156,13 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       jointStyle = JointStyle.BEVEL;
     }
 
-    var vmx = ax - it * ay; // miter-x
-    var vmy = ay + it * ax; // miter-y
-    var isOverlap = itAbs > al || itAbs > bl;
-    var isCloseJoint = _jointIndex1 < 0;
+    final vmx = ax - it * ay; // miter-x
+    final vmy = ay + it * ax; // miter-y
+    final isOverlap = itAbs > al || itAbs > bl;
+    final isCloseJoint = _jointIndex1 < 0;
 
-    var i1 = it >= 0.0 ? _jointIndex1 : _jointIndex2;
-    var i2 = it >= 0.0 ? _jointIndex2 : _jointIndex1;
+    final i1 = it >= 0.0 ? _jointIndex1 : _jointIndex2;
+    final i2 = it >= 0.0 ? _jointIndex2 : _jointIndex1;
     var i3 = 0, i4 = 0, i5 = 0;
 
     if (jointStyle == JointStyle.MITER) {
@@ -236,10 +236,10 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
     }
 
     if (isCloseJoint) {
-      var x1 = _vertexBuffer[_jointIndex1 * 2 + 0];
-      var y1 = _vertexBuffer[_jointIndex1 * 2 + 1];
-      var x2 = _vertexBuffer[_jointIndex2 * 2 + 0];
-      var y2 = _vertexBuffer[_jointIndex2 * 2 + 1];
+      final x1 = _vertexBuffer[_jointIndex1 * 2 + 0];
+      final y1 = _vertexBuffer[_jointIndex1 * 2 + 1];
+      final x2 = _vertexBuffer[_jointIndex2 * 2 + 0];
+      final y2 = _vertexBuffer[_jointIndex2 * 2 + 1];
       _vertexCount = 0;
       _indexCount = 0;
       _jointIndex1 = addVertex(x1, y1);
@@ -251,10 +251,10 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
 
   int _addArc(num vx, num vy, num n1x, num n1y, num n2x, num n2y, int index1,
       int index2, bool antiClockwise) {
-    var tau = 2.0 * pi;
-    var startAngle = atan2(n1y, n1x);
-    var endAngle = atan2(n2y, n2x);
-    var start = (startAngle % tau);
+    const tau = 2.0 * pi;
+    final startAngle = atan2(n1y, n1x);
+    final endAngle = atan2(n2y, n2x);
+    final start = startAngle % tau;
     var delta = (endAngle % tau) - start;
 
     if (antiClockwise && endAngle > startAngle) {
@@ -267,20 +267,20 @@ class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
       delta %= tau;
     }
 
-    var steps = (10 * delta / pi).abs().ceil();
+    final steps = (10 * delta / pi).abs().ceil();
     var index3 = index2;
 
-    var cosR = cos(delta / steps);
-    var sinR = sin(delta / steps);
-    var tx = vx - vx * cosR + vy * sinR;
-    var ty = vy - vx * sinR - vy * cosR;
+    final cosR = cos(delta / steps);
+    final sinR = sin(delta / steps);
+    final tx = vx - vx * cosR + vy * sinR;
+    final ty = vy - vx * sinR - vy * cosR;
     var ax = vx + n1x;
     var ay = vy + n1y;
 
     for (var s = 0; s < steps; s++) {
-      var bx = ax * cosR - ay * sinR + tx;
-      var by = ax * sinR + ay * cosR + ty;
-      var index = addVertex(ax = bx, ay = by);
+      final bx = ax * cosR - ay * sinR + tx;
+      final by = ax * sinR + ay * cosR + ty;
+      final index = addVertex(ax = bx, ay = by);
       addIndices(index1, index3, index);
       index3 = index;
     }

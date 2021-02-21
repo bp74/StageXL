@@ -12,24 +12,20 @@ class DisplacementMapFilter extends BitmapFilter {
   final num scaleX;
   final num scaleY;
 
-  DisplacementMapFilter(BitmapData bitmapData,
-      [Matrix? matrix, num scaleX = 16.0, num scaleY = 16.0])
-      : bitmapData = bitmapData,
-        matrix = (matrix != null) ? matrix : Matrix.fromIdentity(),
-        scaleX = scaleX,
-        scaleY = scaleY;
+  DisplacementMapFilter(this.bitmapData,
+      [Matrix? matrix, this.scaleX = 16.0, this.scaleY = 16.0])
+      : matrix = (matrix != null) ? matrix : Matrix.fromIdentity();
 
   //-----------------------------------------------------------------------------------------------
 
   @override
-  BitmapFilter clone() {
-    return DisplacementMapFilter(bitmapData, matrix.clone(), scaleX, scaleY);
-  }
+  BitmapFilter clone() =>
+      DisplacementMapFilter(bitmapData, matrix.clone(), scaleX, scaleY);
 
   @override
   Rectangle<int> get overlap {
-    var x = (0.5 * scaleX).abs().ceil();
-    var y = (0.5 * scaleY).abs().ceil();
+    final x = (0.5 * scaleX).abs().ceil();
+    final y = (0.5 * scaleY).abs().ceil();
     return Rectangle<int>(-x, -y, x + x, y + y);
   }
 
@@ -37,36 +33,36 @@ class DisplacementMapFilter extends BitmapFilter {
 
   @override
   void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
-    var renderTextureQuad = rectangle == null
+    final renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var mapImageData = this.bitmapData.renderTextureQuad.getImageData();
-    var srcImageData = renderTextureQuad.getImageData();
-    var dstImageData = renderTextureQuad.createImageData();
-    var mapWidth = mapImageData.width;
-    var mapHeight = mapImageData.height;
-    var srcWidth = srcImageData.width;
-    var srcHeight = srcImageData.height;
-    var dstWidth = dstImageData.width;
-    var dstHeight = dstImageData.height;
+    final mapImageData = this.bitmapData.renderTextureQuad.getImageData();
+    final srcImageData = renderTextureQuad.getImageData();
+    final dstImageData = renderTextureQuad.createImageData();
+    final mapWidth = mapImageData.width;
+    final mapHeight = mapImageData.height;
+    final srcWidth = srcImageData.width;
+    final srcHeight = srcImageData.height;
+    final dstWidth = dstImageData.width;
+    final dstHeight = dstImageData.height;
 
-    var mapData = mapImageData.data;
-    var srcData = srcImageData.data;
-    var dstData = dstImageData.data;
+    final mapData = mapImageData.data;
+    final srcData = srcImageData.data;
+    final dstData = dstImageData.data;
 
-    var vxList = renderTextureQuad.vxListQuad;
-    var pixelRatio = renderTextureQuad.pixelRatio;
-    var scaleX = pixelRatio * this.scaleX;
-    var scaleY = pixelRatio * this.scaleX;
-    var channelX = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.RED);
-    var channelY = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.GREEN);
+    final vxList = renderTextureQuad.vxListQuad;
+    final pixelRatio = renderTextureQuad.pixelRatio;
+    final scaleX = pixelRatio * this.scaleX;
+    final scaleY = pixelRatio * this.scaleX;
+    final channelX = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.RED);
+    final channelY = BitmapDataChannel.getCanvasIndex(BitmapDataChannel.GREEN);
 
     // dstPixel[x, y] = srcPixel[
     //     x + ((colorR(x, y) - 128) * scaleX) / 256,
     //     y + ((colorG(x, y) - 128) * scaleY) / 256)];
 
-    var matrix = this.matrix.cloneInvert();
+    final matrix = this.matrix.cloneInvert();
     matrix.prependTranslation(vxList[0], vxList[1]);
 
     for (var dstY = 0; dstY < dstHeight; dstY++) {
@@ -81,14 +77,14 @@ class DisplacementMapFilter extends BitmapFilter {
         if (mapY < 0) mapY = 0;
         if (mapX >= mapWidth) mapX = mapWidth - 1;
         if (mapY >= mapHeight) mapY = mapHeight - 1;
-        var mapOffset = (mapX + mapY * mapWidth) << 2;
-        var srcX =
+        final mapOffset = (mapX + mapY * mapWidth) << 2;
+        final srcX =
             dstX + ((mapData[mapOffset + channelX] - 127) * scaleX) ~/ 256;
-        var srcY =
+        final srcY =
             dstY + ((mapData[mapOffset + channelY] - 127) * scaleY) ~/ 256;
         if (srcX >= 0 && srcY >= 0 && srcX < srcWidth && srcY < srcHeight) {
-          var srcOffset = (srcX + srcY * srcWidth) << 2;
-          var dstOffset = (dstX + dstY * dstWidth) << 2;
+          final srcOffset = (srcX + srcY * srcWidth) << 2;
+          final dstOffset = (dstX + dstY * dstWidth) << 2;
           if (srcOffset > srcData.length - 4) continue;
           if (dstOffset > dstData.length - 4) continue;
           dstData[dstOffset + 0] = srcData[srcOffset + 0];
@@ -107,10 +103,10 @@ class DisplacementMapFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    final renderContext = renderState.renderContext as RenderContextWebGL;
+    final renderTexture = renderTextureQuad.renderTexture;
 
-    var renderProgram = renderContext.getRenderProgram(
+    final renderProgram = renderContext.getRenderProgram(
         r'$DisplacementMapFilterProgram', () => DisplacementMapFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
@@ -145,17 +141,17 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
 
   void configure(DisplacementMapFilter displacementMapFilter,
       RenderTextureQuad renderTextureQuad) {
-    var mapMatrix = Matrix.fromIdentity();
+    final mapMatrix = Matrix.fromIdentity();
     mapMatrix.copyFromAndConcat(
         displacementMapFilter.matrix, renderTextureQuad.samplerMatrix);
     mapMatrix.invertAndConcat(
         displacementMapFilter.bitmapData.renderTextureQuad.samplerMatrix);
 
-    var disMatrix = Matrix.fromIdentity();
+    final disMatrix = Matrix.fromIdentity();
     disMatrix.copyFrom(renderTextureQuad.samplerMatrix);
     disMatrix.scale(displacementMapFilter.scaleX, displacementMapFilter.scaleY);
 
-    var uMapMatrix = Float32List.fromList([
+    final uMapMatrix = Float32List.fromList([
       mapMatrix.a,
       mapMatrix.c,
       mapMatrix.tx,
@@ -167,7 +163,7 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
       1.0
     ]);
 
-    var uDisMatrix = Float32List.fromList([
+    final uDisMatrix = Float32List.fromList([
       disMatrix.a,
       disMatrix.c,
       0.0,

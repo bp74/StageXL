@@ -77,7 +77,7 @@ class Juggler implements Animatable {
   ///     await juggler.delay(1.0);
 
   Future delay(num time) async {
-    var nextTime = elapsedTime + time;
+    final nextTime = elapsedTime + time;
     await for (var elapsedTime in onElapsedTimeChange) {
       if (elapsedTime >= nextTime) break;
     }
@@ -125,10 +125,10 @@ class Juggler implements Animatable {
   ///     stream.listen((value) => print(value));
 
   Stream<num> timespan(num time) async* {
-    var startTime = elapsedTime;
+    final startTime = elapsedTime;
     await for (var elapsedTime in onElapsedTimeChange) {
-      var currentTime = elapsedTime - startTime;
-      var clampedTime = currentTime < time ? currentTime : time;
+      final currentTime = elapsedTime - startTime;
+      final clampedTime = currentTime < time ? currentTime : time;
       yield clampedTime;
       if (currentTime >= time) break;
     }
@@ -150,11 +150,11 @@ class Juggler implements Animatable {
 
   Stream<num> translation(num startValue, num targetValue, num time,
       [TransitionFunction transition = Transition.linear]) async* {
-    var startTime = elapsedTime;
-    var deltaValue = targetValue - startValue;
+    final startTime = elapsedTime;
+    final deltaValue = targetValue - startValue;
     await for (var elapsedTime in onElapsedTimeChange) {
-      var currentTime = elapsedTime - startTime;
-      var clampedTime = currentTime < time ? currentTime : time;
+      final currentTime = elapsedTime - startTime;
+      final clampedTime = currentTime < time ? currentTime : time;
       yield startValue + deltaValue * transition(clampedTime / time);
       if (currentTime >= time) break;
     }
@@ -172,7 +172,7 @@ class Juggler implements Animatable {
 
   void add(Animatable animatable) {
     if (contains(animatable) == false) {
-      var animatableLink = _AnimatableLink();
+      final animatableLink = _AnimatableLink();
       _lastAnimatableLink.animatable = animatable;
       _lastAnimatableLink.nextAnimatableLink = animatableLink;
       _lastAnimatableLink = animatableLink;
@@ -224,7 +224,7 @@ class Juggler implements Animatable {
   void removeTweens(TweenObject tweenObject) {
     _AnimatableLink? link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
-      var animatable = link?.animatable;
+      final animatable = link?.animatable;
       if (animatable is Tween &&
           identical(animatable.tweenObject, tweenObject)) {
         link?.animatable = null;
@@ -239,7 +239,7 @@ class Juggler implements Animatable {
   bool containsTweens(TweenObject tweenObject) {
     _AnimatableLink? link = _firstAnimatableLink;
     while (identical(link, _lastAnimatableLink) == false) {
-      var animatable = link?.animatable;
+      final animatable = link?.animatable;
       if (animatable is Tween &&
           identical(animatable.tweenObject, tweenObject)) {
         return true;
@@ -262,7 +262,7 @@ class Juggler implements Animatable {
   ///     juggler.delayCall(action, 5.0);
 
   DelayedCall delayCall(Function action, num delay) {
-    var delayedCall = DelayedCall(action, delay);
+    final delayedCall = DelayedCall(action, delay);
     add(delayedCall);
     return delayedCall;
   }
@@ -279,7 +279,7 @@ class Juggler implements Animatable {
 
   Tween addTween(TweenObject tweenObject, num time,
       [TransitionFunction transition = Transition.linear]) {
-    var tween = Tween(tweenObject, time, transition);
+    final tween = Tween(tweenObject, time, transition);
     add(tween);
     return tween;
   }
@@ -297,7 +297,7 @@ class Juggler implements Animatable {
 
   Translation addTranslation(num startValue, num targetValue, num time,
       TransitionFunction transition, void Function(num value) onUpdate) {
-    var translation = Translation(startValue, targetValue, time, transition);
+    final translation = Translation(startValue, targetValue, time, transition);
     translation.onUpdate = onUpdate;
     add(translation);
     return translation;
@@ -315,7 +315,7 @@ class Juggler implements Animatable {
   ///     animationGroup.onComplete = () => print("complete");
 
   AnimationGroup addGroup(List<Animatable> animatables) {
-    var animationGroup = AnimationGroup();
+    final animationGroup = AnimationGroup();
     for (var i = 0; i < animatables.length; i++) {
       animationGroup.add(animatables[i]);
     }
@@ -335,7 +335,7 @@ class Juggler implements Animatable {
   ///     animationChain.onComplete = () => print("complete");
 
   AnimationChain addChain(List<Animatable> animatables) {
-    var animationChain = AnimationChain();
+    final animationChain = AnimationChain();
     for (var i = 0; i < animatables.length; i++) {
       animationChain.add(animatables[i]);
     }
@@ -358,9 +358,9 @@ class Juggler implements Animatable {
     _AnimatableLink? lastLink = _lastAnimatableLink;
 
     while (identical(link, lastLink) == false) {
-      var animatable = link?.animatable;
+      final animatable = link?.animatable;
       if (animatable == null) {
-        var nextLink = link?.nextAnimatableLink;
+        final nextLink = link?.nextAnimatableLink;
         link?.animatable = nextLink?.animatable;
         link?.nextAnimatableLink = nextLink?.nextAnimatableLink;
 

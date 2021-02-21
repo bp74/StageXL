@@ -9,46 +9,48 @@ class _GraphicsContextCompiler extends _GraphicsContextBase {
 
   @override
   void fillColor(int color) {
-    var mesh = _GraphicsPath.clone(_path);
-    var command = _GraphicsCommandMeshColor(mesh, color);
+    final mesh = _GraphicsPath.clone(_path);
+    final command = _GraphicsCommandMeshColor(mesh, color);
     commands.add(command);
   }
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    var mesh = _GraphicsPath.clone(_path);
-    var command = _GraphicsCommandMeshGradient(mesh, gradient);
+    final mesh = _GraphicsPath.clone(_path);
+    final command = _GraphicsCommandMeshGradient(mesh, gradient);
     commands.add(command);
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-    var mesh = _GraphicsPath.clone(_path);
-    var command = _GraphicsCommandMeshPattern(mesh, pattern);
+    final mesh = _GraphicsPath.clone(_path);
+    final command = _GraphicsCommandMeshPattern(mesh, pattern);
     commands.add(command);
   }
 
   @override
   void strokeColor(
       int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    var mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
-    var command = _GraphicsCommandMeshColor(mesh, color);
+    final mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    final command = _GraphicsCommandMeshColor(mesh, color);
     commands.add(command);
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double width,
       JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
-    var command = _GraphicsCommandMeshGradient(mesh, gradient);
+    final _GraphicsMesh mesh =
+        _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    final command = _GraphicsCommandMeshGradient(mesh, gradient);
     commands.add(command);
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double width,
       JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
-    var command = _GraphicsCommandMeshPattern(mesh, pattern);
+    final _GraphicsMesh mesh =
+        _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    final command = _GraphicsCommandMeshPattern(mesh, pattern);
     commands.add(command);
   }
 

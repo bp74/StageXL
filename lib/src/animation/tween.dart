@@ -66,7 +66,7 @@ class Tween implements Animatable {
   /// can be animated with this tween. Works for all display objects.
 
   TweenPropertyAccessor2D get animate {
-    var tweenObject = _tweenObject;
+    final tweenObject = _tweenObject;
     if (tweenObject is TweenObject2D) {
       return TweenPropertyAccessor2D._(this, tweenObject);
     } else {
@@ -78,7 +78,7 @@ class Tween implements Animatable {
   /// can be animated with this tween. Works for all 3D display objects.
 
   TweenPropertyAccessor3D get animate3D {
-    var tweenObject = _tweenObject;
+    final tweenObject = _tweenObject;
     if (tweenObject is TweenObject3D) {
       return TweenPropertyAccessor3D._(this, tweenObject);
     } else {
@@ -88,7 +88,7 @@ class Tween implements Animatable {
 
   TweenProperty _createTweenProperty(
       TweenPropertyAccessor accessor, int propertyID) {
-    var tweenProperty = TweenProperty._(accessor, propertyID);
+    final tweenProperty = TweenProperty._(accessor, propertyID);
     if (_started == false) _tweenPropertyList.add(tweenProperty);
     return tweenProperty;
   }
@@ -120,8 +120,8 @@ class Tween implements Animatable {
 
         // calculate transition ratio and value
 
-        num ratio = _currentTime / _totalTime;
-        num transition = _transition(ratio).toDouble();
+        final num ratio = _currentTime / _totalTime;
+        final num transition = _transition(ratio).toDouble();
 
         for (var i = 0; i < _tweenPropertyList.length; i++) {
           _tweenPropertyList[i]._update(transition, _roundToInt);

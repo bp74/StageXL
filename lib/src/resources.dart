@@ -10,16 +10,17 @@ library stagexl.resources;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:html' show HttpRequest;
+import 'dart:typed_data';
+
 import 'package:xml/xml.dart';
 
 import 'display.dart';
 import 'engine.dart';
 import 'geom.dart';
-import 'media.dart';
-import 'internal/tools.dart';
 import 'internal/image_loader.dart';
+import 'internal/tools.dart';
+import 'media.dart';
 
 part 'resources/resource_manager.dart';
 part 'resources/resource_manager_resource.dart';

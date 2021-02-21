@@ -41,9 +41,8 @@ class BitmapDataLoadOptions {
   ///     resourceManager.addBitmapData("test", "images/test@1x.png");
 
   @deprecated
-  int get maxPixelRatio {
-    return pixelRatios.fold(0.0, (num a, b) => a > b ? a : b).round();
-  }
+  int get maxPixelRatio =>
+      pixelRatios.fold(0.0, (num a, b) => a > b ? a : b).round();
 
   @deprecated
   set maxPixelRatio(int value) {
@@ -81,7 +80,7 @@ class BitmapDataLoadOptions {
   /// Create a deep clone of this [BitmapDataLoadOptions].
 
   BitmapDataLoadOptions clone() {
-    var options = BitmapDataLoadOptions();
+    final options = BitmapDataLoadOptions();
     options.png = png;
     options.jpg = jpg;
     options.webp = webp;

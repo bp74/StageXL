@@ -36,8 +36,8 @@ class ChromaKeyFilter extends BitmapFilter {
   ChromaKeyFilter(
       {int backgroundColor = 0xFF00FF00,
       int solidThreshold = 140,
-      int invisibleThreshold = 20}) :
-        _backgroundColor = backgroundColor,
+      int invisibleThreshold = 20})
+      : _backgroundColor = backgroundColor,
         _solidThreshold = solidThreshold,
         _invisibleThreshold = invisibleThreshold {
     if (invisibleThreshold < 0) {
@@ -82,11 +82,11 @@ class ChromaKeyFilter extends BitmapFilter {
 
   @override
   void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
-    var renderTextureQuad = rectangle == null
+    final renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var imageData = renderTextureQuad.getImageData();
+    final imageData = renderTextureQuad.getImageData();
     // this filter is only WebGL compliant
     renderTextureQuad.putImageData(imageData);
   }
@@ -96,10 +96,10 @@ class ChromaKeyFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    final renderContext = renderState.renderContext as RenderContextWebGL;
+    final renderTexture = renderTextureQuad.renderTexture;
 
-    var renderProgram = renderContext.getRenderProgram(
+    final renderProgram = renderContext.getRenderProgram(
         r'$ChromaKeyFilterProgram', () => ChromaKeyFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
@@ -179,9 +179,9 @@ class ChromaKeyFilterProgram extends RenderProgramSimple {
 
   void configure(
       int backgroundColor, int solidThreshold, int invisibleThreshold) {
-    num r = colorGetR(backgroundColor) / 255.0;
-    num g = colorGetG(backgroundColor) / 255.0;
-    num b = colorGetB(backgroundColor) / 255.0;
+    final num r = colorGetR(backgroundColor) / 255.0;
+    final num g = colorGetG(backgroundColor) / 255.0;
+    final num b = colorGetB(backgroundColor) / 255.0;
 
     renderingContext.uniform4f(uniforms['backgroundColor'], r, g, b, 1.0);
 

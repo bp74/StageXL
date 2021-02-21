@@ -53,31 +53,31 @@ class RenderProgramSimple extends RenderProgram {
   void renderTextureQuad(
       RenderState renderState, RenderTextureQuad renderTextureQuad) {
     if (renderTextureQuad.hasCustomVertices) {
-      var ixList = renderTextureQuad.ixList;
-      var vxList = renderTextureQuad.vxList;
+      final ixList = renderTextureQuad.ixList;
+      final vxList = renderTextureQuad.vxList;
       renderTextureMesh(renderState, ixList, vxList);
       return;
     }
 
-    var alpha = renderState.globalAlpha;
-    var matrix = renderState.globalMatrix;
-    var vxList = renderTextureQuad.vxListQuad;
-    var ixListCount = 6;
-    var vxListCount = 4;
+    final alpha = renderState.globalAlpha;
+    final matrix = renderState.globalMatrix;
+    final vxList = renderTextureQuad.vxListQuad;
+    const ixListCount = 6;
+    const vxListCount = 4;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + ixListCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vxListCount * 5 >= vxData.length) flush();
 
-    var ixIndex = renderBufferIndex.position;
-    var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final ixIndex = renderBufferIndex.position;
+    final vxIndex = renderBufferVertex.position;
+    final vxCount = renderBufferVertex.count;
 
     // copy index list
 
@@ -93,14 +93,14 @@ class RenderProgramSimple extends RenderProgram {
 
     // copy vertex list
 
-    var ma1 = vxList[0] * matrix.a + matrix.tx;
-    var ma2 = vxList[8] * matrix.a + matrix.tx;
-    var mb1 = vxList[0] * matrix.b + matrix.ty;
-    var mb2 = vxList[8] * matrix.b + matrix.ty;
-    var mc1 = vxList[1] * matrix.c;
-    var mc2 = vxList[9] * matrix.c;
-    var md1 = vxList[1] * matrix.d;
-    var md2 = vxList[9] * matrix.d;
+    final ma1 = vxList[0] * matrix.a + matrix.tx;
+    final ma2 = vxList[8] * matrix.a + matrix.tx;
+    final mb1 = vxList[0] * matrix.b + matrix.ty;
+    final mb2 = vxList[8] * matrix.b + matrix.ty;
+    final mc1 = vxList[1] * matrix.c;
+    final mc2 = vxList[9] * matrix.c;
+    final md1 = vxList[1] * matrix.d;
+    final md2 = vxList[9] * matrix.d;
 
     vxData[vxIndex + 00] = ma1 + mc1;
     vxData[vxIndex + 01] = mb1 + md1;
@@ -134,24 +134,24 @@ class RenderProgramSimple extends RenderProgram {
 
   void renderTextureMesh(
       RenderState renderState, Int16List ixList, Float32List vxList) {
-    var alpha = renderState.globalAlpha;
-    var matrix = renderState.globalMatrix;
-    var ixListCount = ixList.length;
-    var vxListCount = vxList.length >> 2;
+    final alpha = renderState.globalAlpha;
+    final matrix = renderState.globalMatrix;
+    final ixListCount = ixList.length;
+    final vxListCount = vxList.length >> 2;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + ixListCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vxListCount * 5 >= vxData.length) flush();
 
-    var ixIndex = renderBufferIndex.position;
+    final ixIndex = renderBufferIndex.position;
     var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final vxCount = renderBufferVertex.count;
 
     // copy index list
 
@@ -164,16 +164,16 @@ class RenderProgramSimple extends RenderProgram {
 
     // copy vertex list
 
-    var ma = matrix.a;
-    var mb = matrix.b;
-    var mc = matrix.c;
-    var md = matrix.d;
-    var mx = matrix.tx;
-    var my = matrix.ty;
+    final ma = matrix.a;
+    final mb = matrix.b;
+    final mc = matrix.c;
+    final md = matrix.d;
+    final mx = matrix.tx;
+    final my = matrix.ty;
 
     for (var i = 0, o = 0; i < vxListCount; i++, o += 4) {
-      var x = vxList[o + 0];
-      var y = vxList[o + 1];
+      final x = vxList[o + 0];
+      final y = vxList[o + 1];
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = vxList[o + 2];
@@ -190,26 +190,26 @@ class RenderProgramSimple extends RenderProgram {
 
   void renderTextureMapping(RenderState renderState, Matrix mappingMatrix,
       Int16List ixList, Float32List vxList) {
-    var alpha = renderState.globalAlpha;
-    var globalMatrix = renderState.globalMatrix;
-    var ixListCount = ixList.length;
-    var vxListCount = vxList.length >> 1;
+    final alpha = renderState.globalAlpha;
+    final globalMatrix = renderState.globalMatrix;
+    final ixListCount = ixList.length;
+    final vxListCount = vxList.length >> 1;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + ixListCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vxListCount * 5 >= vxData.length) flush();
 
     // copy index list
 
-    var ixIndex = renderBufferIndex.position;
+    final ixIndex = renderBufferIndex.position;
     var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final vxCount = renderBufferVertex.count;
 
     for (var i = 0; i < ixListCount; i++) {
       ixData[ixIndex + i] = vxCount + ixList[i];
@@ -220,23 +220,23 @@ class RenderProgramSimple extends RenderProgram {
 
     // copy vertex list
 
-    var ma = globalMatrix.a;
-    var mb = globalMatrix.b;
-    var mc = globalMatrix.c;
-    var md = globalMatrix.d;
-    var mx = globalMatrix.tx;
-    var my = globalMatrix.ty;
+    final ma = globalMatrix.a;
+    final mb = globalMatrix.b;
+    final mc = globalMatrix.c;
+    final md = globalMatrix.d;
+    final mx = globalMatrix.tx;
+    final my = globalMatrix.ty;
 
-    var ta = mappingMatrix.a;
-    var tb = mappingMatrix.b;
-    var tc = mappingMatrix.c;
-    var td = mappingMatrix.d;
-    var tx = mappingMatrix.tx;
-    var ty = mappingMatrix.ty;
+    final ta = mappingMatrix.a;
+    final tb = mappingMatrix.b;
+    final tc = mappingMatrix.c;
+    final td = mappingMatrix.d;
+    final tx = mappingMatrix.tx;
+    final ty = mappingMatrix.ty;
 
     for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
-      var x = vxList[o + 0];
-      var y = vxList[o + 1];
+      final x = vxList[o + 0];
+      final y = vxList[o + 1];
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = tx + ta * x + tc * y;

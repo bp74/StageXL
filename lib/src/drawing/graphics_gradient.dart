@@ -172,8 +172,8 @@ class GraphicsGradient {
     }
 
     if (_gradientTexture == null) {
-      var canvas = CanvasElement(width: 1, height: GRADIENT_TEXTURE_SIZE);
-      var canvasGradient =
+      final canvas = CanvasElement(width: 1, height: GRADIENT_TEXTURE_SIZE);
+      final canvasGradient =
           canvas.context2D.createLinearGradient(0, 0, 0, GRADIENT_TEXTURE_SIZE);
       _colorStops.forEach(
           (cs) => canvasGradient.addColorStop(cs.offset, color2rgba(cs.color)));

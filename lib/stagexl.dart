@@ -17,8 +17,8 @@ library stagexl;
 //==========================================================
 
 import 'src/display.dart';
-import 'src/media.dart';
 import 'src/internal/environment.dart' as env;
+import 'src/media.dart';
 
 export 'src/animation.dart';
 export 'src/display.dart';
@@ -103,9 +103,7 @@ class StageXL {
   /// the [Stage] constructor. Please note that this property is
   /// just a forward to [Stage.defaultOptions].
 
-  static StageOptions get stageOptions {
-    return Stage.defaultOptions;
-  }
+  static StageOptions get stageOptions => Stage.defaultOptions;
 
   static set stageOptions(StageOptions options) {
     Stage.defaultOptions = options;
@@ -117,9 +115,8 @@ class StageXL {
   /// the [BitmapData.load] method. Please note that this property is
   /// just a forward to [BitmapData.defaultLoadOptions].
 
-  static BitmapDataLoadOptions get bitmapDataLoadOptions {
-    return BitmapData.defaultLoadOptions;
-  }
+  static BitmapDataLoadOptions get bitmapDataLoadOptions =>
+      BitmapData.defaultLoadOptions;
 
   static set bitmapDataLoadOptions(BitmapDataLoadOptions options) {
     BitmapData.defaultLoadOptions = options;
@@ -131,9 +128,7 @@ class StageXL {
   /// the [Sound.load] method. Please note that this property is
   /// just a forward to [Sound.defaultLoadOptions].
 
-  static SoundLoadOptions get soundLoadOptions {
-    return Sound.defaultLoadOptions;
-  }
+  static SoundLoadOptions get soundLoadOptions => Sound.defaultLoadOptions;
 
   static set soundLoadOptions(SoundLoadOptions options) {
     Sound.defaultLoadOptions = options;
@@ -145,9 +140,7 @@ class StageXL {
   /// the [Video.load] method. Please note that this property is
   /// just a forward to [Video.defaultLoadOptions].
 
-  static VideoLoadOptions get videoLoadOptions {
-    return Video.defaultLoadOptions;
-  }
+  static VideoLoadOptions get videoLoadOptions => Video.defaultLoadOptions;
 
   static set videoLoadOptions(VideoLoadOptions options) {
     Video.defaultLoadOptions = options;

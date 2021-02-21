@@ -56,7 +56,7 @@ class EventDispatcher {
   /// registered for the capturing event phase or not.
 
   bool hasEventListener(String eventType, {bool useCapture = false}) {
-    var eventStream = _eventStreams[eventType];
+    final eventStream = _eventStreams[eventType];
     if (eventStream == null) return false;
 
     return useCapture
@@ -87,7 +87,7 @@ class EventDispatcher {
   StreamSubscription<T> addEventListener<T extends Event>(
       String eventType, EventListener<T> eventListener,
       {bool useCapture = false, int priority = 0}) {
-    var eventStream = on<T>(eventType);
+    final eventStream = on<T>(eventType);
     return eventStream._subscribe(eventListener, useCapture, priority);
   }
 
@@ -110,7 +110,7 @@ class EventDispatcher {
   void removeEventListener<T extends Event>(
       String eventType, EventListener<T> eventListener,
       {bool useCapture = false}) {
-    var eventStream = on<T>(eventType);
+    final eventStream = on<T>(eventType);
     eventStream._unsubscribe(eventListener, useCapture);
   }
 
@@ -137,7 +137,7 @@ class EventDispatcher {
     event._isPropagationStopped = false;
     event._isImmediatePropagationStopped = false;
 
-    var eventStream = _eventStreams[event.type];
+    final eventStream = _eventStreams[event.type];
     if (eventStream == null) return;
 
     eventStream._dispatchEventInternal(event, target, eventPhase);

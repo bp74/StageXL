@@ -52,14 +52,14 @@ class Graphics {
 
   /// Start drawing a freeform path.
   GraphicsCommandBeginPath beginPath() {
-    var command = GraphicsCommandBeginPath();
+    final command = GraphicsCommandBeginPath();
     addCommand(command);
     return command;
   }
 
   /// Stop drawing a freeform path.
   GraphicsCommandClosePath closePath() {
-    var command = GraphicsCommandClosePath();
+    final command = GraphicsCommandClosePath();
     addCommand(command);
     return command;
   }
@@ -68,14 +68,14 @@ class Graphics {
 
   /// Moves the next point in the path to [x] and [y]
   GraphicsCommandMoveTo moveTo(num x, num y) {
-    var command = GraphicsCommandMoveTo(x, y);
+    final command = GraphicsCommandMoveTo(x, y);
     addCommand(command);
     return command;
   }
 
   /// From the current point in the path, draw a line to [x] and [y]
   GraphicsCommandLineTo lineTo(num x, num y) {
-    var command = GraphicsCommandLineTo(x, y);
+    final command = GraphicsCommandLineTo(x, y);
     addCommand(command);
     return command;
   }
@@ -83,7 +83,8 @@ class Graphics {
   /// From the current point in the path, draw an arc to [endX] and [endY]
   GraphicsCommandArcTo arcTo(
       num controlX, num controlY, num endX, num endY, num radius) {
-    var command = GraphicsCommandArcTo(controlX, controlY, endX, endY, radius);
+    final command =
+        GraphicsCommandArcTo(controlX, controlY, endX, endY, radius);
     addCommand(command);
     return command;
   }
@@ -91,7 +92,7 @@ class Graphics {
   /// From the current point in the path, draw a quadratic curve to [endX] and [endY]
   GraphicsCommandQuadraticCurveTo quadraticCurveTo(
       num controlX, num controlY, num endX, num endY) {
-    var command =
+    final command =
         GraphicsCommandQuadraticCurveTo(controlX, controlY, endX, endY);
     addCommand(command);
     return command;
@@ -100,7 +101,7 @@ class Graphics {
   /// From the current point in the path, draw a bezier curve to [endX] and [endY]
   GraphicsCommandBezierCurveTo bezierCurveTo(num controlX1, num controlY1,
       num controlX2, num controlY2, num endX, num endY) {
-    var command = GraphicsCommandBezierCurveTo(
+    final command = GraphicsCommandBezierCurveTo(
         controlX1, controlY1, controlX2, controlY2, endX, endY);
     addCommand(command);
     return command;
@@ -110,7 +111,7 @@ class Graphics {
 
   /// Draw a rectangle at [x] and [y]
   GraphicsCommandRect rect(num x, num y, num width, num height) {
-    var command = GraphicsCommandRect(x, y, width, height);
+    final command = GraphicsCommandRect(x, y, width, height);
     addCommand(command);
     return command;
   }
@@ -118,7 +119,7 @@ class Graphics {
   /// Draw a rounded rectangle at [x] and [y].
   GraphicsCommandRectRound rectRound(num x, num y, num width, num height,
       num ellipseWidth, num ellipseHeight) {
-    var command = GraphicsCommandRectRound(
+    final command = GraphicsCommandRectRound(
         x, y, width, height, ellipseWidth, ellipseHeight);
     addCommand(command);
     return command;
@@ -127,7 +128,7 @@ class Graphics {
   /// Draw an arc at [x] and [y].
   GraphicsCommandArc arc(num x, num y, num radius, num startAngle, num endAngle,
       [bool antiClockwise = false]) {
-    var command =
+    final command =
         GraphicsCommandArc(x, y, radius, startAngle, endAngle, antiClockwise);
     addCommand(command);
     return command;
@@ -137,7 +138,7 @@ class Graphics {
   GraphicsCommandArcElliptical arcElliptical(double x, double y, double radiusX,
       double radiusY, double rotation, double startAngle, double endAngle,
       [bool antiClockwise = false]) {
-    var command = GraphicsCommandArcElliptical(
+    final command = GraphicsCommandArcElliptical(
         x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise);
     addCommand(command);
     return command;
@@ -146,14 +147,14 @@ class Graphics {
   /// Draw a circle at [x] and [y]
   GraphicsCommandCircle circle(num x, num y, num radius,
       [bool antiClockwise = false]) {
-    var command = GraphicsCommandCircle(x, y, radius, antiClockwise);
+    final command = GraphicsCommandCircle(x, y, radius, antiClockwise);
     addCommand(command);
     return command;
   }
 
   /// Draw an ellipse at [x] and [y]
   GraphicsCommandEllipse ellipse(num x, num y, num width, num height) {
-    var command = GraphicsCommandEllipse(x, y, width, height);
+    final command = GraphicsCommandEllipse(x, y, width, height);
     addCommand(command);
     return command;
   }
@@ -162,21 +163,21 @@ class Graphics {
 
   /// Apply a fill color to the **previously drawn** vector object.
   GraphicsCommandFillColor fillColor(int color) {
-    var command = GraphicsCommandFillColor(color);
+    final command = GraphicsCommandFillColor(color);
     addCommand(command);
     return command;
   }
 
   /// Apply a fill gradient to the **previously drawn** vector object.
   GraphicsCommandFillGradient fillGradient(GraphicsGradient gradient) {
-    var command = GraphicsCommandFillGradient(gradient);
+    final command = GraphicsCommandFillGradient(gradient);
     addCommand(command);
     return command;
   }
 
   /// Apply a fill pattern to the **previously drawn** vector object.
   GraphicsCommandFillPattern fillPattern(GraphicsPattern pattern) {
-    var command = GraphicsCommandFillPattern(pattern);
+    final command = GraphicsCommandFillPattern(pattern);
     addCommand(command);
     return command;
   }
@@ -188,7 +189,7 @@ class Graphics {
       [num width = 1.0,
       JointStyle jointStyle = JointStyle.MITER,
       CapsStyle capsStyle = CapsStyle.NONE]) {
-    var command =
+    final command =
         GraphicsCommandStrokeColor(color, width, jointStyle, capsStyle);
     addCommand(command);
     return command;
@@ -199,7 +200,7 @@ class Graphics {
       [num width = 1.0,
       JointStyle jointStyle = JointStyle.MITER,
       CapsStyle capsStyle = CapsStyle.NONE]) {
-    var command =
+    final command =
         GraphicsCommandStrokeGradient(gradient, width, jointStyle, capsStyle);
     addCommand(command);
     return command;
@@ -210,7 +211,7 @@ class Graphics {
       [num width = 1.0,
       JointStyle jointStyle = JointStyle.MITER,
       CapsStyle capsStyle = CapsStyle.NONE]) {
-    var command =
+    final command =
         GraphicsCommandStrokePattern(pattern, width, jointStyle, capsStyle);
     addCommand(command);
     return command;
@@ -223,7 +224,7 @@ class Graphics {
 
   @deprecated
   GraphicsCommandDecode decode(String text) {
-    var command = GraphicsCommandDecodeEaselJS(text);
+    final command = GraphicsCommandDecodeEaselJS(text);
     addCommand(command);
     return command;
   }
@@ -247,8 +248,8 @@ class Graphics {
 
   Rectangle<num> get bounds {
     if (_bounds == null) {
-      var commands = _getCommands(true);
-      var context = _GraphicsContextBounds();
+      final commands = _getCommands(true);
+      final context = _GraphicsContextBounds();
       _updateContext(context, commands);
       _bounds = context.bounds;
     }
@@ -257,8 +258,8 @@ class Graphics {
 
   bool hitTest(num localX, num localY) {
     if (bounds.contains(localX, localY)) {
-      var commands = _getCommands(true);
-      var context = _GraphicsContextHitTest(localX, localY);
+      final commands = _getCommands(true);
+      final context = _GraphicsContextHitTest(localX, localY);
       _updateContext(context, commands);
       return context.hit;
     } else {
@@ -268,24 +269,24 @@ class Graphics {
 
   void render(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
-      var commands = _getCommands(false);
-      var context = _GraphicsContextCanvas(renderState);
+      final commands = _getCommands(false);
+      final context = _GraphicsContextCanvas(renderState);
       _updateContext(context, commands);
     } else {
-      var commands = _getCommands(true);
-      var context = _GraphicsContextRender(renderState);
+      final commands = _getCommands(true);
+      final context = _GraphicsContextRender(renderState);
       _updateContext(context, commands);
     }
   }
 
   void renderMask(RenderState renderState) {
     if (renderState.renderContext is RenderContextCanvas) {
-      var commands = _getCommands(false);
-      var context = _GraphicsContextCanvasMask(renderState);
+      final commands = _getCommands(false);
+      final context = _GraphicsContextCanvasMask(renderState);
       _updateContext(context, commands);
     } else {
-      var commands = _getCommands(true);
-      var context = GraphicsContextRenderMask(renderState);
+      final commands = _getCommands(true);
+      final context = GraphicsContextRenderMask(renderState);
       _updateContext(context, commands);
     }
   }
@@ -294,7 +295,7 @@ class Graphics {
 
   List<GraphicsCommand> _getCommands(bool useCompiled) {
     if (useCompiled && _compiledCommands.isEmpty) {
-      var context = _GraphicsContextCompiler(_compiledCommands);
+      final context = _GraphicsContextCompiler(_compiledCommands);
       for (var c in _originalCommands) {
         c.updateContext(context);
       }

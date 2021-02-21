@@ -11,8 +11,8 @@ void main() {
 
   setUp(() async {
     resourceManager = ResourceManager();
-    resourceManager!.addBitmapData(
-        'monster', '../common/images/brainmonster.png');
+    resourceManager!
+        .addBitmapData('monster', '../common/images/brainmonster.png');
     await resourceManager!.load();
     monster = resourceManager!.getBitmapData('monster');
     bitmapDatas = monster!.sliceIntoFrames(32, 64);
@@ -39,10 +39,10 @@ void main() {
 
     test('has created the expected BitmapDatas', () {
       for (var index = 0; index < bitmapDatas!.length; index++) {
-        var x = index % 3;
-        var y = index ~/ 3;
-        var id1 = bitmapDatas![index].renderTextureQuad.getImageData();
-        var id2 = monster!.renderTexture.canvas.context2D
+        final x = index % 3;
+        final y = index ~/ 3;
+        final id1 = bitmapDatas![index].renderTextureQuad.getImageData();
+        final id2 = monster!.renderTexture.canvas.context2D
             .getImageData(x * 32, y * 64, 32, 64);
         expect(id1.data, equals(id2.data), reason: '@frame $index');
       }
