@@ -64,7 +64,7 @@ class ColorMatrixFilter extends BitmapFilter {
 
   factory ColorMatrixFilter.adjust(
       {num hue = 0, num saturation = 0, num brightness = 0, num contrast = 0}) {
-    var colorMatrixFilter = ColorMatrixFilter.identity();
+    final colorMatrixFilter = ColorMatrixFilter.identity();
     colorMatrixFilter.adjustHue(hue);
     colorMatrixFilter.adjustSaturation(saturation);
     colorMatrixFilter.adjustBrightness(brightness);
@@ -86,9 +86,9 @@ class ColorMatrixFilter extends BitmapFilter {
   }
 
   void adjustHue(num value) {
-    var v = min(max(value, -1), 1) * pi;
-    var cv = cos(v);
-    var sv = sin(v);
+    final v = min(max(value, -1), 1) * pi;
+    final cv = cos(v);
+    final sv = sin(v);
 
     _concat([
       _lumaR - cv * _lumaR - sv * _lumaR + cv,
@@ -116,34 +116,34 @@ class ColorMatrixFilter extends BitmapFilter {
   }
 
   void adjustSaturation(num value) {
-    var v = min(max(value, -1), 1) + 1;
-    var i = 1 - v;
-    var r = i * _lumaR;
-    var g = i * _lumaG;
-    var b = i * _lumaB;
+    final v = min(max(value, -1), 1) + 1;
+    final i = 1 - v;
+    final r = i * _lumaR;
+    final g = i * _lumaG;
+    final b = i * _lumaB;
 
     _concat([r + v, g, b, 0, r, g + v, b, 0, r, g, b + v, 0, 0, 0, 0, 1],
         [0, 0, 0, 0]);
   }
 
   void adjustContrast(num value) {
-    var v = min(max(value, -1), 1) + 1;
-    var o = 128 * (1 - v);
+    final v = min(max(value, -1), 1) + 1;
+    final o = 128 * (1 - v);
 
     _concat([v, 0, 0, 0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0, 1], [o, o, o, 0]);
   }
 
   void adjustBrightness(num value) {
-    var v = 255 * min(max(value, -1), 1);
+    final v = 255 * min(max(value, -1), 1);
 
     _concat([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], [v, v, v, 0]);
   }
 
   void adjustColoration(int color, [num strength = 1.0]) {
-    num r = colorGetR(color) * strength / 255.0;
-    num g = colorGetG(color) * strength / 255.0;
-    num b = colorGetB(color) * strength / 255.0;
-    num i = 1.0 - strength;
+    final num r = colorGetR(color) * strength / 255.0;
+    final num g = colorGetG(color) * strength / 255.0;
+    final num b = colorGetB(color) * strength / 255.0;
+    final num i = 1.0 - strength;
 
     _concat([
       r * _lumaR + i,
@@ -173,8 +173,8 @@ class ColorMatrixFilter extends BitmapFilter {
   //-----------------------------------------------------------------------------------------------
 
   void _concat(List<num> colorMatrix, List<num> colorOffset) {
-    var newColorMatrix = Float32List(16);
-    var newColorOffset = Float32List(4);
+    final newColorMatrix = Float32List(16);
+    final newColorOffset = Float32List(4);
 
     for (var y = 0, i = 0; y < 4; y++, i += 4) {
       if (i > 12) continue; // dart2js_hint
@@ -206,42 +206,42 @@ class ColorMatrixFilter extends BitmapFilter {
     //dstB = (m[ 8] * srcR) + (m[ 9] * srcG) + (m[10] * srcB) + (m[11] * srcA) + o[2]
     //dstA = (m[12] * srcR) + (m[13] * srcG) + (m[14] * srcB) + (m[15] * srcA) + o[3]
 
-    var isLittleEndianSystem = env.isLittleEndianSystem;
+    final isLittleEndianSystem = env.isLittleEndianSystem;
 
-    num m00 = _colorMatrixList[isLittleEndianSystem ? 00 : 15];
-    num m01 = _colorMatrixList[isLittleEndianSystem ? 01 : 14];
-    num m02 = _colorMatrixList[isLittleEndianSystem ? 02 : 13];
-    num m03 = _colorMatrixList[isLittleEndianSystem ? 03 : 12];
-    num m10 = _colorMatrixList[isLittleEndianSystem ? 04 : 11];
-    num m11 = _colorMatrixList[isLittleEndianSystem ? 05 : 10];
-    num m12 = _colorMatrixList[isLittleEndianSystem ? 06 : 09];
-    num m13 = _colorMatrixList[isLittleEndianSystem ? 07 : 08];
-    num m20 = _colorMatrixList[isLittleEndianSystem ? 08 : 07];
-    num m21 = _colorMatrixList[isLittleEndianSystem ? 09 : 06];
-    num m22 = _colorMatrixList[isLittleEndianSystem ? 10 : 05];
-    num m23 = _colorMatrixList[isLittleEndianSystem ? 11 : 04];
-    num m30 = _colorMatrixList[isLittleEndianSystem ? 12 : 03];
-    num m31 = _colorMatrixList[isLittleEndianSystem ? 13 : 02];
-    num m32 = _colorMatrixList[isLittleEndianSystem ? 14 : 01];
-    num m33 = _colorMatrixList[isLittleEndianSystem ? 15 : 00];
+    final num m00 = _colorMatrixList[isLittleEndianSystem ? 00 : 15];
+    final num m01 = _colorMatrixList[isLittleEndianSystem ? 01 : 14];
+    final num m02 = _colorMatrixList[isLittleEndianSystem ? 02 : 13];
+    final num m03 = _colorMatrixList[isLittleEndianSystem ? 03 : 12];
+    final num m10 = _colorMatrixList[isLittleEndianSystem ? 04 : 11];
+    final num m11 = _colorMatrixList[isLittleEndianSystem ? 05 : 10];
+    final num m12 = _colorMatrixList[isLittleEndianSystem ? 06 : 09];
+    final num m13 = _colorMatrixList[isLittleEndianSystem ? 07 : 08];
+    final num m20 = _colorMatrixList[isLittleEndianSystem ? 08 : 07];
+    final num m21 = _colorMatrixList[isLittleEndianSystem ? 09 : 06];
+    final num m22 = _colorMatrixList[isLittleEndianSystem ? 10 : 05];
+    final num m23 = _colorMatrixList[isLittleEndianSystem ? 11 : 04];
+    final num m30 = _colorMatrixList[isLittleEndianSystem ? 12 : 03];
+    final num m31 = _colorMatrixList[isLittleEndianSystem ? 13 : 02];
+    final num m32 = _colorMatrixList[isLittleEndianSystem ? 14 : 01];
+    final num m33 = _colorMatrixList[isLittleEndianSystem ? 15 : 00];
 
-    num o0 = _colorOffsetList[isLittleEndianSystem ? 00 : 03];
-    num o1 = _colorOffsetList[isLittleEndianSystem ? 01 : 02];
-    num o2 = _colorOffsetList[isLittleEndianSystem ? 02 : 01];
-    num o3 = _colorOffsetList[isLittleEndianSystem ? 03 : 00];
+    final num o0 = _colorOffsetList[isLittleEndianSystem ? 00 : 03];
+    final num o1 = _colorOffsetList[isLittleEndianSystem ? 01 : 02];
+    final num o2 = _colorOffsetList[isLittleEndianSystem ? 02 : 01];
+    final num o3 = _colorOffsetList[isLittleEndianSystem ? 03 : 00];
 
-    var renderTextureQuad = rectangle == null
+    final renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var imageData = renderTextureQuad.getImageData();
-    List<int> data = imageData.data;
+    final imageData = renderTextureQuad.getImageData();
+    final List<int> data = imageData.data;
 
     for (var i = 0; i <= data.length - 4; i += 4) {
-      var c0 = data[i + 0];
-      var c1 = data[i + 1];
-      var c2 = data[i + 2];
-      var c3 = data[i + 3];
+      final c0 = data[i + 0];
+      final c1 = data[i + 1];
+      final c2 = data[i + 2];
+      final c3 = data[i + 3];
       data[i + 0] = (m00 * c0 + m01 * c1 + m02 * c2 + m03 * c3 + o0).round();
       data[i + 1] = (m10 * c0 + m11 * c1 + m12 * c2 + m13 * c3 + o1).round();
       data[i + 2] = (m20 * c0 + m21 * c1 + m22 * c2 + m23 * c3 + o2).round();
@@ -256,10 +256,10 @@ class ColorMatrixFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    final renderContext = renderState.renderContext as RenderContextWebGL;
+    final renderTexture = renderTextureQuad.renderTexture;
 
-    var renderProgram = renderContext.getRenderProgram(
+    final renderProgram = renderContext.getRenderProgram(
         r'$ColorMatrixFilterProgram', () => ColorMatrixFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
@@ -348,29 +348,29 @@ class ColorMatrixFilterProgram extends RenderProgram {
       RenderState renderState,
       RenderTextureQuad renderTextureQuad,
       ColorMatrixFilter colorMatrixFilter) {
-    var alpha = renderState.globalAlpha;
-    var matrix = renderState.globalMatrix;
-    var ixList = renderTextureQuad.ixList;
-    var vxList = renderTextureQuad.vxList;
-    var indexCount = ixList.length;
-    var vertexCount = vxList.length >> 2;
+    final alpha = renderState.globalAlpha;
+    final matrix = renderState.globalMatrix;
+    final ixList = renderTextureQuad.ixList;
+    final vxList = renderTextureQuad.vxList;
+    final indexCount = ixList.length;
+    final vertexCount = vxList.length >> 2;
 
-    var colorMatrixList = colorMatrixFilter._colorMatrixList;
-    var colorOffsetList = colorMatrixFilter._colorOffsetList;
+    final colorMatrixList = colorMatrixFilter._colorMatrixList;
+    final colorOffsetList = colorMatrixFilter._colorOffsetList;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + indexCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vertexCount * 24 >= vxData.length) flush();
 
-    var ixIndex = renderBufferIndex.position;
+    final ixIndex = renderBufferIndex.position;
     var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final vxCount = renderBufferVertex.count;
 
     // copy index list
 
@@ -383,16 +383,16 @@ class ColorMatrixFilterProgram extends RenderProgram {
 
     // copy vertex list
 
-    var ma = matrix.a;
-    var mb = matrix.b;
-    var mc = matrix.c;
-    var md = matrix.d;
-    var mx = matrix.tx;
-    var my = matrix.ty;
+    final ma = matrix.a;
+    final mb = matrix.b;
+    final mc = matrix.c;
+    final md = matrix.d;
+    final mx = matrix.tx;
+    final my = matrix.ty;
 
     for (var i = 0, o = 0; i < vertexCount; i++, o += 4) {
-      var x = vxList[o + 0];
-      var y = vxList[o + 1];
+      final x = vxList[o + 0];
+      final y = vxList[o + 1];
       vxData[vxIndex + 00] = mx + ma * x + mc * y;
       vxData[vxIndex + 01] = my + mb * x + md * y;
       vxData[vxIndex + 02] = vxList[o + 2];

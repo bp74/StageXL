@@ -52,12 +52,12 @@ class Matrix3D {
   //-----------------------------------------------------------------------------------------------
 
   Point<num> transformPoint(math.Point<num> point, [Point<num>? returnPoint]) {
-    var px = point.x.toDouble();
-    var py = point.y.toDouble();
+    final px = point.x.toDouble();
+    final py = point.y.toDouble();
 
-    var td = m03 * px + m13 * py + m33;
-    var tx = m00 * px + m10 * py + m30;
-    var ty = m01 * px + m11 * py + m31;
+    final td = m03 * px + m13 * py + m33;
+    final tx = m00 * px + m10 * py + m30;
+    final ty = m01 * px + m11 * py + m31;
 
     if (returnPoint is Point) {
       returnPoint.setTo(tx / td, ty / td);
@@ -69,18 +69,18 @@ class Matrix3D {
 
   Point<num> transformPointInverse(math.Point<num> point,
       [Point<num>? returnPoint]) {
-    var px = point.x.toDouble();
-    var py = point.y.toDouble();
+    final px = point.x.toDouble();
+    final py = point.y.toDouble();
 
-    var td = px * (m01 * m13 - m03 * m11) +
+    final td = px * (m01 * m13 - m03 * m11) +
         py * (m10 * m03 - m00 * m13) +
         m00 * m11 -
         m10 * m01;
-    var tx = px * (m11 * m33 - m13 * m31) +
+    final tx = px * (m11 * m33 - m13 * m31) +
         py * (m30 * m13 - m10 * m33) +
         m10 * m31 -
         m30 * m11;
-    var ty = px * (m03 * m31 - m01 * m33) +
+    final ty = px * (m03 * m31 - m01 * m33) +
         py * (m00 * m33 - m30 * m03) +
         m30 * m01 -
         m00 * m31;
@@ -97,25 +97,25 @@ class Matrix3D {
 
   Rectangle<num> transformRectangle(math.Rectangle<num> rectangle,
       [Rectangle<num>? returnRectangle]) {
-    num rl = rectangle.left.toDouble();
-    num rr = rectangle.right.toDouble();
-    num rt = rectangle.top.toDouble();
-    num rb = rectangle.bottom.toDouble();
+    final num rl = rectangle.left.toDouble();
+    final num rr = rectangle.right.toDouble();
+    final num rt = rectangle.top.toDouble();
+    final num rb = rectangle.bottom.toDouble();
 
     // transform rectangle corners
 
-    num d1 = (m03 * rl + m13 * rt + m33);
-    num x1 = (m00 * rl + m10 * rt + m30) / d1;
-    num y1 = (m01 * rl + m11 * rt + m31) / d1;
-    num d2 = (m03 * rr + m13 * rt + m33);
-    num x2 = (m00 * rr + m10 * rt + m30) / d2;
-    num y2 = (m01 * rr + m11 * rt + m31) / d2;
-    num d3 = (m03 * rr + m13 * rb + m33);
-    num x3 = (m00 * rr + m10 * rb + m30) / d3;
-    num y3 = (m01 * rr + m11 * rb + m31) / d3;
-    num d4 = (m03 * rl + m13 * rb + m33);
-    num x4 = (m00 * rl + m10 * rb + m30) / d4;
-    num y4 = (m01 * rl + m11 * rb + m31) / d4;
+    final num d1 = m03 * rl + m13 * rt + m33;
+    final num x1 = (m00 * rl + m10 * rt + m30) / d1;
+    final num y1 = (m01 * rl + m11 * rt + m31) / d1;
+    final num d2 = m03 * rr + m13 * rt + m33;
+    final num x2 = (m00 * rr + m10 * rt + m30) / d2;
+    final num y2 = (m01 * rr + m11 * rt + m31) / d2;
+    final num d3 = m03 * rr + m13 * rb + m33;
+    final num x3 = (m00 * rr + m10 * rb + m30) / d3;
+    final num y3 = (m01 * rr + m11 * rb + m31) / d3;
+    final num d4 = m03 * rl + m13 * rb + m33;
+    final num x4 = (m00 * rl + m10 * rb + m30) / d4;
+    final num y4 = (m01 * rl + m11 * rb + m31) / d4;
 
     // find minima and maxima
 
@@ -139,8 +139,8 @@ class Matrix3D {
     if (bottom < y3) bottom = y3;
     if (bottom < y4) bottom = y4;
 
-    var width = right - left;
-    var heigth = bottom - top;
+    final width = right - left;
+    final heigth = bottom - top;
 
     if (returnRectangle is Rectangle) {
       returnRectangle.setTo(left, top, width, heigth);
@@ -228,16 +228,16 @@ class Matrix3D {
   //-----------------------------------------------------------------------------------------------
 
   void rotateX(num angle) {
-    var cos = math.cos(angle);
-    var sin = math.sin(angle);
-    var m01 = this.m01;
-    var m11 = this.m11;
-    var m21 = this.m21;
-    var m31 = this.m31;
-    var m02 = this.m02;
-    var m12 = this.m12;
-    var m22 = this.m22;
-    var m32 = this.m32;
+    final cos = math.cos(angle);
+    final sin = math.sin(angle);
+    final m01 = this.m01;
+    final m11 = this.m11;
+    final m21 = this.m21;
+    final m31 = this.m31;
+    final m02 = this.m02;
+    final m12 = this.m12;
+    final m22 = this.m22;
+    final m32 = this.m32;
 
     _data[04] = m01 * cos + m02 * sin;
     _data[05] = m11 * cos + m12 * sin;
@@ -250,16 +250,16 @@ class Matrix3D {
   }
 
   void rotateY(num angle) {
-    var cos = math.cos(angle);
-    var sin = math.sin(angle);
-    var m00 = this.m00;
-    var m10 = this.m10;
-    var m20 = this.m20;
-    var m30 = this.m30;
-    var m02 = this.m02;
-    var m12 = this.m12;
-    var m22 = this.m22;
-    var m32 = this.m32;
+    final cos = math.cos(angle);
+    final sin = math.sin(angle);
+    final m00 = this.m00;
+    final m10 = this.m10;
+    final m20 = this.m20;
+    final m30 = this.m30;
+    final m02 = this.m02;
+    final m12 = this.m12;
+    final m22 = this.m22;
+    final m32 = this.m32;
 
     _data[00] = m00 * cos + m02 * sin;
     _data[01] = m10 * cos + m12 * sin;
@@ -272,16 +272,16 @@ class Matrix3D {
   }
 
   void rotateZ(num angle) {
-    var cos = math.cos(angle);
-    var sin = math.sin(angle);
-    var m00 = this.m00;
-    var m10 = this.m10;
-    var m20 = this.m20;
-    var m30 = this.m30;
-    var m01 = this.m01;
-    var m11 = this.m11;
-    var m21 = this.m21;
-    var m31 = this.m31;
+    final cos = math.cos(angle);
+    final sin = math.sin(angle);
+    final m00 = this.m00;
+    final m10 = this.m10;
+    final m20 = this.m20;
+    final m30 = this.m30;
+    final m01 = this.m01;
+    final m11 = this.m11;
+    final m21 = this.m21;
+    final m31 = this.m31;
 
     _data[00] = m00 * cos + m01 * sin;
     _data[01] = m10 * cos + m11 * sin;
@@ -336,41 +336,41 @@ class Matrix3D {
   //-----------------------------------------------------------------------------------------------
 
   void invert() {
-    var a00 = _data[00];
-    var a10 = _data[01];
-    var a20 = _data[02];
-    var a30 = _data[03];
-    var a01 = _data[04];
-    var a11 = _data[05];
-    var a21 = _data[06];
-    var a31 = _data[07];
-    var a02 = _data[08];
-    var a12 = _data[09];
-    var a22 = _data[10];
-    var a32 = _data[11];
-    var a03 = _data[12];
-    var a13 = _data[13];
-    var a23 = _data[14];
-    var a33 = _data[15];
+    final a00 = _data[00];
+    final a10 = _data[01];
+    final a20 = _data[02];
+    final a30 = _data[03];
+    final a01 = _data[04];
+    final a11 = _data[05];
+    final a21 = _data[06];
+    final a31 = _data[07];
+    final a02 = _data[08];
+    final a12 = _data[09];
+    final a22 = _data[10];
+    final a32 = _data[11];
+    final a03 = _data[12];
+    final a13 = _data[13];
+    final a23 = _data[14];
+    final a33 = _data[15];
 
-    var b00 = a00 * a11 - a01 * a10;
-    var b01 = a00 * a12 - a02 * a10;
-    var b02 = a00 * a13 - a03 * a10;
-    var b03 = a01 * a12 - a02 * a11;
-    var b04 = a01 * a13 - a03 * a11;
-    var b05 = a02 * a13 - a03 * a12;
-    var b06 = a20 * a31 - a21 * a30;
-    var b07 = a20 * a32 - a22 * a30;
-    var b08 = a20 * a33 - a23 * a30;
-    var b09 = a21 * a32 - a22 * a31;
-    var b10 = a21 * a33 - a23 * a31;
-    var b11 = a22 * a33 - a23 * a32;
+    final b00 = a00 * a11 - a01 * a10;
+    final b01 = a00 * a12 - a02 * a10;
+    final b02 = a00 * a13 - a03 * a10;
+    final b03 = a01 * a12 - a02 * a11;
+    final b04 = a01 * a13 - a03 * a11;
+    final b05 = a02 * a13 - a03 * a12;
+    final b06 = a20 * a31 - a21 * a30;
+    final b07 = a20 * a32 - a22 * a30;
+    final b08 = a20 * a33 - a23 * a30;
+    final b09 = a21 * a32 - a22 * a31;
+    final b10 = a21 * a33 - a23 * a31;
+    final b11 = a22 * a33 - a23 * a32;
 
-    var det =
-        (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06);
+    final det =
+        b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 
     if (det != 0.0) {
-      var invDet = 1.0 / det;
+      final invDet = 1.0 / det;
       _data[00] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
       _data[01] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
       _data[02] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
@@ -401,25 +401,25 @@ class Matrix3D {
   }
 
   void concat2D(Matrix matrix) {
-    var m00 = this.m00;
-    var m10 = this.m10;
-    var m20 = this.m20;
-    var m30 = this.m30;
-    var m01 = this.m01;
-    var m11 = this.m11;
-    var m21 = this.m21;
-    var m31 = this.m31;
-    var m03 = this.m03;
-    var m13 = this.m13;
-    var m23 = this.m23;
-    var m33 = this.m33;
+    final m00 = this.m00;
+    final m10 = this.m10;
+    final m20 = this.m20;
+    final m30 = this.m30;
+    final m01 = this.m01;
+    final m11 = this.m11;
+    final m21 = this.m21;
+    final m31 = this.m31;
+    final m03 = this.m03;
+    final m13 = this.m13;
+    final m23 = this.m23;
+    final m33 = this.m33;
 
-    var n00 = matrix.a;
-    var n10 = matrix.c;
-    var n30 = matrix.tx;
-    var n01 = matrix.b;
-    var n11 = matrix.d;
-    var n31 = matrix.ty;
+    final n00 = matrix.a;
+    final n10 = matrix.c;
+    final n30 = matrix.tx;
+    final n01 = matrix.b;
+    final n11 = matrix.d;
+    final n31 = matrix.ty;
 
     _data[00] = m00 * n00 + m01 * n10 + m03 * n30;
     _data[01] = m10 * n00 + m11 * n10 + m13 * n30;
@@ -432,25 +432,25 @@ class Matrix3D {
   }
 
   void concatInverse2D(Matrix matrix) {
-    var m00 = this.m00;
-    var m10 = this.m10;
-    var m20 = this.m20;
-    var m30 = this.m30;
-    var m01 = this.m01;
-    var m11 = this.m11;
-    var m21 = this.m21;
-    var m31 = this.m31;
-    var m03 = this.m03;
-    var m13 = this.m13;
-    var m23 = this.m23;
-    var m33 = this.m33;
+    final m00 = this.m00;
+    final m10 = this.m10;
+    final m20 = this.m20;
+    final m30 = this.m30;
+    final m01 = this.m01;
+    final m11 = this.m11;
+    final m21 = this.m21;
+    final m31 = this.m31;
+    final m03 = this.m03;
+    final m13 = this.m13;
+    final m23 = this.m23;
+    final m33 = this.m33;
 
-    num n00 = 0.0 + matrix.d / matrix.det;
-    num n10 = 0.0 - matrix.c / matrix.det;
-    num n30 = 0.0 - matrix.tx * n00 - matrix.ty * n10;
-    num n01 = 0.0 - matrix.b / matrix.det;
-    num n11 = 0.0 + matrix.a / matrix.det;
-    num n31 = 0.0 - matrix.tx * n01 - matrix.ty * n11;
+    final num n00 = 0.0 + matrix.d / matrix.det;
+    final num n10 = 0.0 - matrix.c / matrix.det;
+    final num n30 = 0.0 - matrix.tx * n00 - matrix.ty * n10;
+    final num n01 = 0.0 - matrix.b / matrix.det;
+    final num n11 = 0.0 + matrix.a / matrix.det;
+    final num n31 = 0.0 - matrix.tx * n01 - matrix.ty * n11;
 
     _data[00] = m00 * n00 + m01 * n10 + m03 * n30;
     _data[01] = m10 * n00 + m11 * n10 + m13 * n30;
@@ -463,25 +463,25 @@ class Matrix3D {
   }
 
   void prepend2D(Matrix matrix) {
-    var m00 = matrix.a;
-    var m10 = matrix.c;
-    var m30 = matrix.tx;
-    var m01 = matrix.b;
-    var m11 = matrix.d;
-    var m31 = matrix.ty;
+    final m00 = matrix.a;
+    final m10 = matrix.c;
+    final m30 = matrix.tx;
+    final m01 = matrix.b;
+    final m11 = matrix.d;
+    final m31 = matrix.ty;
 
-    var n00 = this.m00;
-    var n10 = this.m10;
-    var n30 = this.m30;
-    var n01 = this.m01;
-    var n11 = this.m11;
-    var n31 = this.m31;
-    var n02 = m02;
-    var n12 = m12;
-    var n32 = m32;
-    var n03 = m03;
-    var n13 = m13;
-    var n33 = m33;
+    final n00 = this.m00;
+    final n10 = this.m10;
+    final n30 = this.m30;
+    final n01 = this.m01;
+    final n11 = this.m11;
+    final n31 = this.m31;
+    final n02 = m02;
+    final n12 = m12;
+    final n32 = m32;
+    final n03 = m03;
+    final n13 = m13;
+    final n33 = m33;
 
     _data[00] = m00 * n00 + m01 * n10;
     _data[01] = m10 * n00 + m11 * n10;
@@ -498,25 +498,25 @@ class Matrix3D {
   }
 
   void prependInverse2D(Matrix matrix) {
-    var m00 = 0.0 + matrix.d / matrix.det;
-    var m10 = 0.0 - matrix.c / matrix.det;
-    var m30 = 0.0 - matrix.tx * m00 - matrix.ty * m10;
-    var m01 = 0.0 - matrix.b / matrix.det;
-    var m11 = 0.0 + matrix.a / matrix.det;
-    var m31 = 0.0 - matrix.tx * m01 - matrix.ty * m11;
+    final m00 = 0.0 + matrix.d / matrix.det;
+    final m10 = 0.0 - matrix.c / matrix.det;
+    final m30 = 0.0 - matrix.tx * m00 - matrix.ty * m10;
+    final m01 = 0.0 - matrix.b / matrix.det;
+    final m11 = 0.0 + matrix.a / matrix.det;
+    final m31 = 0.0 - matrix.tx * m01 - matrix.ty * m11;
 
-    var n00 = this.m00;
-    var n10 = this.m10;
-    var n30 = this.m30;
-    var n01 = this.m01;
-    var n11 = this.m11;
-    var n31 = this.m31;
-    var n02 = m02;
-    var n12 = m12;
-    var n32 = m32;
-    var n03 = m03;
-    var n13 = m13;
-    var n33 = m33;
+    final n00 = this.m00;
+    final n10 = this.m10;
+    final n30 = this.m30;
+    final n01 = this.m01;
+    final n11 = this.m11;
+    final n31 = this.m31;
+    final n02 = m02;
+    final n12 = m12;
+    final n32 = m32;
+    final n03 = m03;
+    final n13 = m13;
+    final n33 = m33;
 
     _data[00] = m00 * n00 + m01 * n10;
     _data[01] = m10 * n00 + m11 * n10;
@@ -533,29 +533,29 @@ class Matrix3D {
   }
 
   void copyFromAndConcat2D(Matrix3D copyMatrix, Matrix concatMatrix) {
-    var m00 = copyMatrix.m00;
-    var m10 = copyMatrix.m10;
-    var m20 = copyMatrix.m20;
-    var m30 = copyMatrix.m30;
-    var m01 = copyMatrix.m01;
-    var m11 = copyMatrix.m11;
-    var m21 = copyMatrix.m21;
-    var m31 = copyMatrix.m31;
-    var m02 = copyMatrix.m02;
-    var m12 = copyMatrix.m12;
-    var m22 = copyMatrix.m22;
-    var m32 = copyMatrix.m32;
-    var m03 = copyMatrix.m03;
-    var m13 = copyMatrix.m13;
-    var m23 = copyMatrix.m23;
-    var m33 = copyMatrix.m33;
+    final m00 = copyMatrix.m00;
+    final m10 = copyMatrix.m10;
+    final m20 = copyMatrix.m20;
+    final m30 = copyMatrix.m30;
+    final m01 = copyMatrix.m01;
+    final m11 = copyMatrix.m11;
+    final m21 = copyMatrix.m21;
+    final m31 = copyMatrix.m31;
+    final m02 = copyMatrix.m02;
+    final m12 = copyMatrix.m12;
+    final m22 = copyMatrix.m22;
+    final m32 = copyMatrix.m32;
+    final m03 = copyMatrix.m03;
+    final m13 = copyMatrix.m13;
+    final m23 = copyMatrix.m23;
+    final m33 = copyMatrix.m33;
 
-    var n00 = concatMatrix.a;
-    var n10 = concatMatrix.c;
-    var n30 = concatMatrix.tx;
-    var n01 = concatMatrix.b;
-    var n11 = concatMatrix.d;
-    var n31 = concatMatrix.ty;
+    final n00 = concatMatrix.a;
+    final n10 = concatMatrix.c;
+    final n30 = concatMatrix.tx;
+    final n01 = concatMatrix.b;
+    final n11 = concatMatrix.d;
+    final n31 = concatMatrix.ty;
 
     _data[00] = m00 * n00 + m01 * n10 + m03 * n30;
     _data[01] = m10 * n00 + m11 * n10 + m13 * n30;
@@ -576,29 +576,29 @@ class Matrix3D {
   }
 
   void copyFrom2DAndConcat(Matrix copyMatrix, Matrix3D concatMatrix) {
-    var m00 = copyMatrix.a;
-    var m10 = copyMatrix.c;
-    var m30 = copyMatrix.tx;
-    var m01 = copyMatrix.b;
-    var m11 = copyMatrix.d;
-    var m31 = copyMatrix.ty;
+    final m00 = copyMatrix.a;
+    final m10 = copyMatrix.c;
+    final m30 = copyMatrix.tx;
+    final m01 = copyMatrix.b;
+    final m11 = copyMatrix.d;
+    final m31 = copyMatrix.ty;
 
-    var n00 = concatMatrix.m00;
-    var n10 = concatMatrix.m10;
-    var n20 = concatMatrix.m20;
-    var n30 = concatMatrix.m30;
-    var n01 = concatMatrix.m01;
-    var n11 = concatMatrix.m11;
-    var n21 = concatMatrix.m21;
-    var n31 = concatMatrix.m31;
-    var n02 = concatMatrix.m02;
-    var n12 = concatMatrix.m12;
-    var n22 = concatMatrix.m22;
-    var n32 = concatMatrix.m32;
-    var n03 = concatMatrix.m03;
-    var n13 = concatMatrix.m13;
-    var n23 = concatMatrix.m23;
-    var n33 = concatMatrix.m33;
+    final n00 = concatMatrix.m00;
+    final n10 = concatMatrix.m10;
+    final n20 = concatMatrix.m20;
+    final n30 = concatMatrix.m30;
+    final n01 = concatMatrix.m01;
+    final n11 = concatMatrix.m11;
+    final n21 = concatMatrix.m21;
+    final n31 = concatMatrix.m31;
+    final n02 = concatMatrix.m02;
+    final n12 = concatMatrix.m12;
+    final n22 = concatMatrix.m22;
+    final n32 = concatMatrix.m32;
+    final n03 = concatMatrix.m03;
+    final n13 = concatMatrix.m13;
+    final n23 = concatMatrix.m23;
+    final n33 = concatMatrix.m33;
 
     _data[00] = m00 * n00 + m01 * n10;
     _data[01] = m10 * n00 + m11 * n10;
@@ -619,39 +619,39 @@ class Matrix3D {
   }
 
   void copyFromAndConcat(Matrix3D copyMatrix, Matrix3D concatMatrix) {
-    var m00 = copyMatrix.m00;
-    var m10 = copyMatrix.m10;
-    var m20 = copyMatrix.m20;
-    var m30 = copyMatrix.m30;
-    var m01 = copyMatrix.m01;
-    var m11 = copyMatrix.m11;
-    var m21 = copyMatrix.m21;
-    var m31 = copyMatrix.m31;
-    var m02 = copyMatrix.m02;
-    var m12 = copyMatrix.m12;
-    var m22 = copyMatrix.m22;
-    var m32 = copyMatrix.m32;
-    var m03 = copyMatrix.m03;
-    var m13 = copyMatrix.m13;
-    var m23 = copyMatrix.m23;
-    var m33 = copyMatrix.m33;
+    final m00 = copyMatrix.m00;
+    final m10 = copyMatrix.m10;
+    final m20 = copyMatrix.m20;
+    final m30 = copyMatrix.m30;
+    final m01 = copyMatrix.m01;
+    final m11 = copyMatrix.m11;
+    final m21 = copyMatrix.m21;
+    final m31 = copyMatrix.m31;
+    final m02 = copyMatrix.m02;
+    final m12 = copyMatrix.m12;
+    final m22 = copyMatrix.m22;
+    final m32 = copyMatrix.m32;
+    final m03 = copyMatrix.m03;
+    final m13 = copyMatrix.m13;
+    final m23 = copyMatrix.m23;
+    final m33 = copyMatrix.m33;
 
-    var n00 = concatMatrix.m00;
-    var n10 = concatMatrix.m10;
-    var n20 = concatMatrix.m20;
-    var n30 = concatMatrix.m30;
-    var n01 = concatMatrix.m01;
-    var n11 = concatMatrix.m11;
-    var n21 = concatMatrix.m21;
-    var n31 = concatMatrix.m31;
-    var n02 = concatMatrix.m02;
-    var n12 = concatMatrix.m12;
-    var n22 = concatMatrix.m22;
-    var n32 = concatMatrix.m32;
-    var n03 = concatMatrix.m03;
-    var n13 = concatMatrix.m13;
-    var n23 = concatMatrix.m23;
-    var n33 = concatMatrix.m33;
+    final n00 = concatMatrix.m00;
+    final n10 = concatMatrix.m10;
+    final n20 = concatMatrix.m20;
+    final n30 = concatMatrix.m30;
+    final n01 = concatMatrix.m01;
+    final n11 = concatMatrix.m11;
+    final n21 = concatMatrix.m21;
+    final n31 = concatMatrix.m31;
+    final n02 = concatMatrix.m02;
+    final n12 = concatMatrix.m12;
+    final n22 = concatMatrix.m22;
+    final n32 = concatMatrix.m32;
+    final n03 = concatMatrix.m03;
+    final n13 = concatMatrix.m13;
+    final n23 = concatMatrix.m23;
+    final n33 = concatMatrix.m33;
 
     _data[00] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
     _data[01] = m10 * n00 + m11 * n10 + m12 * n20 + m13 * n30;

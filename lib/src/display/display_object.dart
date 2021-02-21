@@ -418,9 +418,9 @@ abstract class DisplayObject extends EventDispatcher
   /// the display object.
 
   Point<num>? get mousePosition {
-    var stage = this.stage;
+    final stage = this.stage;
     if (stage == null) return null;
-    var localPoint = Point<num>(0.0, 0.0);
+    final localPoint = Point<num>(0.0, 0.0);
     return globalToLocal(stage.mousePosition, localPoint);
   }
 
@@ -431,7 +431,7 @@ abstract class DisplayObject extends EventDispatcher
   /// [mousePosition] getter.
 
   num get mouseX {
-    var mp = mousePosition;
+    final mp = mousePosition;
     return (mp != null) ? mp.x : 0.0;
   }
 
@@ -442,7 +442,7 @@ abstract class DisplayObject extends EventDispatcher
   /// [mousePosition] getter.
 
   num get mouseY {
-    var mp = mousePosition;
+    final mp = mousePosition;
     return (mp != null) ? mp.y : 0.0;
   }
 
@@ -465,7 +465,7 @@ abstract class DisplayObject extends EventDispatcher
   /// the [stage] property returns null.
 
   Stage? get stage {
-    var root = this.root;
+    final root = this.root;
     return (root is Stage) ? root : null;
   }
 
@@ -509,12 +509,12 @@ abstract class DisplayObject extends EventDispatcher
   num get width => boundsTransformed.width;
 
   set width(num value) {
-    var bounds = this.bounds;
-    var matrix = transformationMatrix;
-    var boundsTransformed = matrix.transformRectangle(bounds, bounds);
-    var scale = value / boundsTransformed.width;
-    var ma = scale.isFinite ? matrix.a * scale : 1.0;
-    var mc = scale.isFinite ? matrix.c * scale : 0.0;
+    final bounds = this.bounds;
+    final matrix = transformationMatrix;
+    final boundsTransformed = matrix.transformRectangle(bounds, bounds);
+    final scale = value / boundsTransformed.width;
+    final ma = scale.isFinite ? matrix.a * scale : 1.0;
+    final mc = scale.isFinite ? matrix.c * scale : 0.0;
     _reverseMatrix(ma, matrix.b, mc, matrix.d);
   }
 
@@ -526,12 +526,12 @@ abstract class DisplayObject extends EventDispatcher
   num get height => boundsTransformed.height;
 
   set height(num value) {
-    var bounds = this.bounds;
-    var matrix = transformationMatrix;
-    var boundsTransformed = matrix.transformRectangle(bounds, bounds);
-    var scale = value / boundsTransformed.height;
-    var mb = scale.isFinite ? matrix.b * scale : 0.0;
-    var md = scale.isFinite ? matrix.d * scale : 1.0;
+    final bounds = this.bounds;
+    final matrix = transformationMatrix;
+    final boundsTransformed = matrix.transformRectangle(bounds, bounds);
+    final scale = value / boundsTransformed.height;
+    final mb = scale.isFinite ? matrix.b * scale : 0.0;
+    final md = scale.isFinite ? matrix.d * scale : 1.0;
     _reverseMatrix(matrix.a, mb, matrix.c, md);
   }
 
@@ -555,12 +555,12 @@ abstract class DisplayObject extends EventDispatcher
     if (_transformationMatrixRefresh) {
       _transformationMatrixRefresh = false;
 
-      var matrix = _transformationMatrix;
-      var rotation = _rotation;
+      final matrix = _transformationMatrix;
+      final rotation = _rotation;
       var scaleX = _scaleX;
       var scaleY = _scaleY;
-      var skewX = _skewX;
-      var skewY = _skewY;
+      final skewX = _skewX;
+      final skewY = _skewY;
 
       // Having a scale of 0 is bad, the matrix.det gets zero which causes
       // infinite values on a inverted matrix. It also causes a bug on
@@ -575,26 +575,26 @@ abstract class DisplayObject extends EventDispatcher
       }
 
       if (skewX != 0.0 || skewY != 0.0) {
-        var ma = scaleX * cos(skewY + rotation);
-        var mb = scaleX * sin(skewY + rotation);
-        var mc = -scaleY * sin(skewX + rotation);
-        var md = scaleY * cos(skewX + rotation);
-        var mx = _x - _pivotX * ma - _pivotY * mc;
-        var my = _y - _pivotX * mb - _pivotY * md;
+        final ma = scaleX * cos(skewY + rotation);
+        final mb = scaleX * sin(skewY + rotation);
+        final mc = -scaleY * sin(skewX + rotation);
+        final md = scaleY * cos(skewX + rotation);
+        final mx = _x - _pivotX * ma - _pivotY * mc;
+        final my = _y - _pivotX * mb - _pivotY * md;
         matrix.setTo(ma, mb, mc, md, mx, my);
       } else if (rotation != 0.0) {
-        var cr = cos(rotation);
-        var sr = sin(rotation);
-        var ma = scaleX * cr;
-        var mb = scaleX * sr;
-        var mc = -scaleY * sr;
-        var md = scaleY * cr;
-        var mx = _x - _pivotX * ma - _pivotY * mc;
-        var my = _y - _pivotX * mb - _pivotY * md;
+        final cr = cos(rotation);
+        final sr = sin(rotation);
+        final ma = scaleX * cr;
+        final mb = scaleX * sr;
+        final mc = -scaleY * sr;
+        final md = scaleY * cr;
+        final mx = _x - _pivotX * ma - _pivotY * mc;
+        final my = _y - _pivotX * mb - _pivotY * md;
         matrix.setTo(ma, mb, mc, md, mx, my);
       } else {
-        var mx = _x - _pivotX * scaleX;
-        var my = _y - _pivotY * scaleY;
+        final mx = _x - _pivotX * scaleX;
+        final my = _y - _pivotY * scaleY;
         matrix.setTo(scaleX, 0.0, 0.0, scaleY, mx, my);
       }
     }
@@ -612,7 +612,7 @@ abstract class DisplayObject extends EventDispatcher
   /// you are working with 3D display objects.
 
   Matrix get globalTransformationMatrix {
-    var result = Matrix.fromIdentity();
+    final result = Matrix.fromIdentity();
 
     for (DisplayObject? obj = this; obj != null; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
@@ -633,7 +633,7 @@ abstract class DisplayObject extends EventDispatcher
   /// you are working with 3D display objects.
 
   Matrix3D get globalTransformationMatrix3D {
-    var result = Matrix3D.fromIdentity();
+    final result = Matrix3D.fromIdentity();
 
     for (DisplayObject? obj = this; obj != null; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
@@ -657,9 +657,9 @@ abstract class DisplayObject extends EventDispatcher
   Matrix getTransformationMatrix(DisplayObject targetSpace) {
     if (targetSpace == this) return Matrix.fromIdentity();
 
-    var ancestor = _getCommonAncestor(targetSpace);
+    final ancestor = _getCommonAncestor(targetSpace);
 
-    var resultMatrix = Matrix.fromIdentity();
+    final resultMatrix = Matrix.fromIdentity();
     for (DisplayObject? obj = this; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         throw StateError("Can't calculate 2D matrix for 3D display object.");
@@ -669,7 +669,7 @@ abstract class DisplayObject extends EventDispatcher
 
     if (identical(targetSpace, ancestor)) return resultMatrix;
 
-    var targetMatrix = Matrix.fromIdentity();
+    final targetMatrix = Matrix.fromIdentity();
     for (DisplayObject? obj = targetSpace; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         throw StateError("Can't calculate 2D matrix for 3D display object.");
@@ -692,9 +692,9 @@ abstract class DisplayObject extends EventDispatcher
   Matrix3D getTransformationMatrix3D(DisplayObject targetSpace) {
     if (targetSpace == this) return Matrix3D.fromIdentity();
 
-    var ancestor = _getCommonAncestor(targetSpace);
+    final ancestor = _getCommonAncestor(targetSpace);
 
-    var resultMatrix = Matrix3D.fromIdentity();
+    final resultMatrix = Matrix3D.fromIdentity();
     for (DisplayObject? obj = this; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         resultMatrix.concat(obj.projectionMatrix3D);
@@ -704,7 +704,7 @@ abstract class DisplayObject extends EventDispatcher
 
     if (identical(targetSpace, ancestor)) return resultMatrix;
 
-    var targetMatrix = Matrix3D.fromIdentity();
+    final targetMatrix = Matrix3D.fromIdentity();
     for (DisplayObject? obj = targetSpace; obj != ancestor; obj = obj.parent) {
       if (obj is DisplayObjectContainer3D) {
         targetMatrix.concat(obj.projectionMatrix3D);
@@ -737,16 +737,14 @@ abstract class DisplayObject extends EventDispatcher
   /// this display object's local coordinates.
 
   @override
-  Rectangle<num> get bounds {
-    return Rectangle<num>(0.0, 0.0, 0.0, 0.0);
-  }
+  Rectangle<num> get bounds => Rectangle<num>(0.0, 0.0, 0.0, 0.0);
 
   /// Returns a rectangle that defines the area of this display object in
   /// this display object's parent coordinates.
 
   Rectangle<num> get boundsTransformed {
-    var rectangle = bounds;
-    var matrix = transformationMatrix;
+    final rectangle = bounds;
+    final matrix = transformationMatrix;
     return matrix.transformRectangle(rectangle, rectangle);
   }
 
@@ -757,8 +755,8 @@ abstract class DisplayObject extends EventDispatcher
   /// relation to the [targetSpace].
 
   Rectangle<num> getBounds(DisplayObject targetSpace) {
-    var rectangle = bounds;
-    var matrix = getTransformationMatrix3D(targetSpace);
+    final rectangle = bounds;
+    final matrix = getTransformationMatrix3D(targetSpace);
     return matrix.transformRectangle(rectangle, rectangle);
   }
 
@@ -767,7 +765,7 @@ abstract class DisplayObject extends EventDispatcher
   void alignPivot(
       [HorizontalAlign hAlign = HorizontalAlign.Center,
       VerticalAlign vAlign = VerticalAlign.Center]) {
-    var b = bounds;
+    final b = bounds;
     if (hAlign == HorizontalAlign.Left) pivotX = b.left;
     if (hAlign == HorizontalAlign.Center) pivotX = b.left + b.width / 2;
     if (hAlign == HorizontalAlign.Right) pivotX = b.right;
@@ -782,7 +780,7 @@ abstract class DisplayObject extends EventDispatcher
   /// the bounding box of the [other] display object.
 
   bool hitTestObject(DisplayObject other) {
-    var otherBounds = other.getBounds(this);
+    final otherBounds = other.getBounds(this);
     return bounds.intersects(otherBounds);
   }
 
@@ -801,7 +799,7 @@ abstract class DisplayObject extends EventDispatcher
   /// specified point; false otherwise.
 
   bool hitTestPoint(num x, num y, [bool shapeFlag = false]) {
-    var point = Point<num>(x, y);
+    final point = Point<num>(x, y);
     globalToLocal(point, point);
 
     return shapeFlag
@@ -818,9 +816,8 @@ abstract class DisplayObject extends EventDispatcher
   /// [localX] and [localY] are relative to to the origin (0,0) of this
   /// display object (local coordinates).
 
-  DisplayObject? hitTestInput(num localX, num localY) {
-    return bounds.contains(localX, localY) ? this : null;
-  }
+  DisplayObject? hitTestInput(num localX, num localY) =>
+      bounds.contains(localX, localY) ? this : null;
 
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
@@ -834,10 +831,10 @@ abstract class DisplayObject extends EventDispatcher
   /// display object's parent coordinates.
 
   Point<num> localToParent(Point<num> localPoint, [Point<num>? returnPoint]) {
-    var p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
-    var x = localPoint.x.toDouble();
-    var y = localPoint.y.toDouble();
-    var m = transformationMatrix;
+    final p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
+    final x = localPoint.x.toDouble();
+    final y = localPoint.y.toDouble();
+    final m = transformationMatrix;
 
     p.x = x * m.a + y * m.c + m.tx;
     p.y = x * m.b + y * m.d + m.ty;
@@ -854,10 +851,10 @@ abstract class DisplayObject extends EventDispatcher
   /// display object's local coordinates.
 
   Point<num> parentToLocal(Point<num> parentPoint, [Point<num>? returnPoint]) {
-    var p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
-    var x = parentPoint.x.toDouble();
-    var y = parentPoint.y.toDouble();
-    var m = transformationMatrix;
+    final p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
+    final x = parentPoint.x.toDouble();
+    final y = parentPoint.y.toDouble();
+    final m = transformationMatrix;
 
     p.x = (m.d * (x - m.tx) - m.c * (y - m.ty)) / m.det;
     p.y = (m.a * (y - m.ty) - m.b * (x - m.tx)) / m.det;
@@ -874,7 +871,7 @@ abstract class DisplayObject extends EventDispatcher
   /// [Stage]'s global coordinates.
 
   Point<num> localToGlobal(Point<num> localPoint, [Point<num>? returnPoint]) {
-    var p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
+    final p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
     p.x = localPoint.x.toDouble();
     p.y = localPoint.y.toDouble();
 
@@ -894,7 +891,7 @@ abstract class DisplayObject extends EventDispatcher
   /// object's local coordinates.
 
   Point<num> globalToLocal(Point<num> globalPoint, [Point<num>? returnPoint]) {
-    var p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
+    final p = returnPoint is Point ? returnPoint : Point<num>(0.0, 0.0);
     p.x = globalPoint.x.toDouble();
     p.y = globalPoint.y.toDouble();
 
@@ -943,7 +940,7 @@ abstract class DisplayObject extends EventDispatcher
 
   @override
   void dispatchEvent(Event event) {
-    var ancestors = <EventDispatcher>[];
+    final ancestors = <EventDispatcher>[];
 
     for (DisplayObject? p = parent; p != null; p = p.parent) {
       ancestors.add(p);
@@ -1018,8 +1015,8 @@ abstract class DisplayObject extends EventDispatcher
   }
 
   void _reverseMatrix(num ma, num mb, num mc, num md) {
-    var skewX = atan2(-mc, md), cosX = cos(skewX), sinX = sin(skewX);
-    var skewY = atan2(mb, ma), cosY = cos(skewY), sinY = sin(skewY);
+    final skewX = atan2(-mc, md), cosX = cos(skewX), sinX = sin(skewX);
+    final skewY = atan2(mb, ma), cosY = cos(skewY), sinY = sin(skewY);
 
     _transformationMatrixRefresh = true;
     _scaleX = (cosY * cosY > sinY * sinY) ? ma / cosY : mb / sinY;

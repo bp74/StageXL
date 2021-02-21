@@ -49,7 +49,7 @@ class DelayedCall implements Animatable {
 
     _currentTime = newTime;
 
-    return (_repeatCount > 0);
+    return _repeatCount > 0;
   }
 
   //----------------------------------------------------------------------------

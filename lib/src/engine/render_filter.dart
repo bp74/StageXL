@@ -9,8 +9,8 @@ abstract class RenderFilter {
   List<int> get renderPassTargets;
 
   bool get isSimple {
-    var overlap = this.overlap;
-    var rps = renderPassSources;
+    final overlap = this.overlap;
+    final rps = renderPassSources;
     return overlap.width == 0 && overlap.height == 0 && rps.length == 1;
   }
 

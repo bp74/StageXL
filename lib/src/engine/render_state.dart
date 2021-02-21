@@ -11,9 +11,8 @@ class _ContextState {
   _ContextState(this.previousContextState);
 
   _ContextState? _nextContextState;
-  _ContextState get nextContextState {
-    return _nextContextState ??= _ContextState(this);
-  }
+  _ContextState get nextContextState =>
+      _nextContextState ??= _ContextState(this);
 }
 
 /// The [RenderState] class is used to render objects to a give render surface
@@ -120,17 +119,17 @@ class RenderState {
   //---------------------------------------------------------------------------
 
   void renderObject(RenderObject renderObject) {
-    var matrix = renderObject.transformationMatrix;
-    var blendMode = renderObject.blendMode;
-    var alpha = renderObject.alpha;
-    var filters = renderObject.filters;
-    var cache = renderObject.cache;
-    var mask = renderObject.mask;
+    final matrix = renderObject.transformationMatrix;
+    final blendMode = renderObject.blendMode;
+    final alpha = renderObject.alpha;
+    final filters = renderObject.filters;
+    final cache = renderObject.cache;
+    final mask = renderObject.mask;
 
-    var cs1 = _currentContextState!;
-    var cs2 = _currentContextState!.nextContextState;
-    var maskBefore = mask != null && mask.relativeToParent == true;
-    var maskAfter = mask != null && mask.relativeToParent == false;
+    final cs1 = _currentContextState!;
+    final cs2 = _currentContextState!.nextContextState;
+    final maskBefore = mask != null && mask.relativeToParent == true;
+    final maskAfter = mask != null && mask.relativeToParent == false;
 
     //-----------
 
@@ -141,8 +140,8 @@ class RenderState {
     cs2.alpha = alpha * cs1.alpha;
 
     if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
-      var renderObject3D = renderObject;
-      var renderContextWebGL = renderContext as RenderContextWebGL;
+      final renderObject3D = renderObject;
+      final renderContextWebGL = renderContext as RenderContextWebGL;
       cs1.matrix3D.copyFrom(renderContextWebGL.activeProjectionMatrix);
       cs2.matrix3D.copyFrom2DAndConcat(cs2.matrix, cs1.matrix3D);
       cs2.matrix3D.prepend(renderObject3D.projectionMatrix3D);
@@ -171,7 +170,7 @@ class RenderState {
     _currentContextState = cs1;
 
     if (renderObject is RenderObject3D && renderContext is RenderContextWebGL) {
-      var renderContextWebGL = renderContext as RenderContextWebGL;
+      final renderContextWebGL = renderContext as RenderContextWebGL;
       renderContextWebGL.activateProjectionMatrix(cs1.matrix3D);
     }
 
@@ -181,8 +180,8 @@ class RenderState {
   //---------------------------------------------------------------------------
 
   void push(Matrix matrix, num alpha, [BlendMode? blendMode]) {
-    var cs1 = _currentContextState!;
-    var cs2 = _currentContextState!.nextContextState;
+    final cs1 = _currentContextState!;
+    final cs2 = _currentContextState!.nextContextState;
     cs2.matrix.copyFromAndConcat(matrix, cs1.matrix);
     cs2.blendMode = blendMode ?? cs1.blendMode;
     cs2.alpha = alpha * cs1.alpha;

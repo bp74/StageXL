@@ -7,9 +7,8 @@ abstract class Sound {
 
   /// Get a list of the audio types supported by the browser.
 
-  static List<String> get supportedTypes {
-    return AudioLoader.supportedTypes.toList(growable: false);
-  }
+  static List<String> get supportedTypes =>
+      AudioLoader.supportedTypes.toList(growable: false);
 
   /// The default loading options for the [Sound.load] method.
 
@@ -27,7 +26,7 @@ abstract class Sound {
   ///     sound.play();
 
   static Future<Sound> load(String url, [SoundLoadOptions? soundLoadOptions]) {
-    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
+    final options = soundLoadOptions ?? Sound.defaultLoadOptions;
     switch (options.engine ?? SoundMixer.engine) {
       case SoundEngine.WebAudioApi:
         return WebAudioApiSound.load(url, options);
@@ -48,7 +47,7 @@ abstract class Sound {
 
   static Future<Sound> loadDataUrl(String dataUrl,
       [SoundLoadOptions? soundLoadOptions]) {
-    var options = soundLoadOptions ?? Sound.defaultLoadOptions;
+    final options = soundLoadOptions ?? Sound.defaultLoadOptions;
     switch (options.engine ?? SoundMixer.engine) {
       case SoundEngine.WebAudioApi:
         return WebAudioApiSound.loadDataUrl(dataUrl, options);

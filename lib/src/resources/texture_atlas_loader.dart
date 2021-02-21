@@ -36,15 +36,15 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
-    var loaderUrl = _loadInfo.loaderUrl;
-    var pixelRatio = _loadInfo.pixelRatio;
-    var webpAvailable = _loadOptions.webp;
-    var corsEnabled = _loadOptions.corsEnabled;
-    var imageUrl = replaceFilename(loaderUrl, filename);
-    var imageLoader = ImageLoader(imageUrl, webpAvailable, corsEnabled);
-    var imageElement = await imageLoader.done;
-    var renderTexture = RenderTexture.fromImageElement(imageElement);
-    var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
+    final loaderUrl = _loadInfo.loaderUrl;
+    final pixelRatio = _loadInfo.pixelRatio;
+    final webpAvailable = _loadOptions.webp;
+    final corsEnabled = _loadOptions.corsEnabled;
+    final imageUrl = replaceFilename(loaderUrl, filename);
+    final imageLoader = ImageLoader(imageUrl, webpAvailable, corsEnabled);
+    final imageElement = await imageLoader.done;
+    final renderTexture = RenderTexture.fromImageElement(imageElement);
+    final renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return renderTextureQuad;
   }
 }
@@ -68,8 +68,8 @@ class _TextureAtlasLoaderTextureAtlas extends TextureAtlasLoader {
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
-    var name = namePrefix + getFilenameWithoutExtension(filename);
-    var bitmapData = textureAtlas.getBitmapData(name);
+    final name = namePrefix + getFilenameWithoutExtension(filename);
+    final bitmapData = textureAtlas.getBitmapData(name);
     return bitmapData.renderTextureQuad;
   }
 }
@@ -90,7 +90,6 @@ class _TextureAtlasLoaderBitmapData extends TextureAtlasLoader {
   Future<String> getSource() => Future.value(source);
 
   @override
-  Future<RenderTextureQuad> getRenderTextureQuad(String filename) {
-    return Future.value(bitmapData.renderTextureQuad);
-  }
+  Future<RenderTextureQuad> getRenderTextureQuad(String filename) =>
+      Future.value(bitmapData.renderTextureQuad);
 }

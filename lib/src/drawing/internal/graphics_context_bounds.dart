@@ -25,58 +25,61 @@ class _GraphicsContextBounds extends _GraphicsContextBase {
 
   @override
   void fillColor(int color) {
-    _GraphicsMesh mesh = _path;
+    final _GraphicsMesh mesh = _path;
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void fillGradient(GraphicsGradient gradient) {
-    _GraphicsMesh mesh = _path;
+    final _GraphicsMesh mesh = _path;
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void fillPattern(GraphicsPattern pattern) {
-    _GraphicsMesh mesh = _path;
+    final _GraphicsMesh mesh = _path;
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void strokeColor(
       int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    final _GraphicsMesh mesh =
+        _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void strokeGradient(GraphicsGradient gradient, double width,
       JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    final _GraphicsMesh mesh =
+        _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void strokePattern(GraphicsPattern pattern, double width,
       JointStyle jointStyle, CapsStyle capsStyle) {
-    _GraphicsMesh mesh = _GraphicsStroke(_path, width, jointStyle, capsStyle);
+    final _GraphicsMesh mesh =
+        _GraphicsStroke(_path, width, jointStyle, capsStyle);
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void meshColor(_GraphicsCommandMeshColor command) {
-    var mesh = command.mesh;
+    final mesh = command.mesh;
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void meshGradient(_GraphicsCommandMeshGradient command) {
-    var mesh = command.mesh;
+    final mesh = command.mesh;
     _updateBoundsForMesh(mesh);
   }
 
   @override
   void meshPattern(_GraphicsCommandMeshPattern command) {
-    var mesh = command.mesh;
+    final mesh = command.mesh;
     _updateBoundsForMesh(mesh);
   }
 

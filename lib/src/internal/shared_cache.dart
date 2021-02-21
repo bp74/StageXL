@@ -24,9 +24,8 @@ class SharedCache<K, E> extends EventDispatcher {
     _autoReleaseUnusedObjects = autoReleaseUnusedObjects;
   }
 
-  EventStream<ObjectReleaseEvent<E>> get onObjectReleased {
-    return on<ObjectReleaseEvent<E>>('objectRelease');
-  }
+  EventStream<ObjectReleaseEvent<E>> get onObjectReleased =>
+      on<ObjectReleaseEvent<E>>('objectRelease');
 
   //----------------------------------------------------------------------------
 
@@ -57,9 +56,7 @@ class SharedCache<K, E> extends EventDispatcher {
     _cachedObjects.keys.toList().forEach(_releaseNode);
   }
 
-  bool containsObject(K key) {
-    return _cachedObjects.containsKey(key);
-  }
+  bool containsObject(K key) => _cachedObjects.containsKey(key);
 
   void addObject(K key, E value) {
     if (!containsObject(key)) {
@@ -70,7 +67,7 @@ class SharedCache<K, E> extends EventDispatcher {
   }
 
   E? getObject(K key) {
-    var node = _cachedObjects[key];
+    final node = _cachedObjects[key];
     if (node != null) {
       node._shareCount += 1;
       return node._cachedObject;
@@ -79,7 +76,7 @@ class SharedCache<K, E> extends EventDispatcher {
   }
 
   void releaseObject(K key) {
-    var node = _cachedObjects[key];
+    final node = _cachedObjects[key];
     if (node != null) {
       node._shareCount -= 1;
       if (node._shareCount == 0 && _autoReleaseUnusedObjects) {
@@ -90,7 +87,7 @@ class SharedCache<K, E> extends EventDispatcher {
   }
 
   void _releaseNode(K key) {
-    var node = _cachedObjects[key];
+    final node = _cachedObjects[key];
     _cachedObjects.remove(key);
     if (node != null) {
       _finalReleaseObject(node._cachedObject);

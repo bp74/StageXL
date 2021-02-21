@@ -43,8 +43,8 @@ class AudioLoader {
   }
 
   void _onAudioError(Event event) {
-    var ae = event.target as AudioElement;
-    var loadError = LoadError('Failed to load ${ae.src}.', ae.error);
+    final ae = event.target as AudioElement;
+    final loadError = LoadError('Failed to load ${ae.src}.', ae.error);
     aggregateError.errors.add(loadError);
     _loadNextUrl();
   }
@@ -63,7 +63,7 @@ class AudioLoader {
     _onCanPlaySubscription.cancel();
     _onErrorSubscription.cancel();
     if (aggregateError.errors.isEmpty) {
-      var loadError = LoadError('No configured audio type is supported.');
+      final loadError = LoadError('No configured audio type is supported.');
       aggregateError.errors.add(loadError);
     }
     _completer.completeError(aggregateError);
@@ -71,11 +71,12 @@ class AudioLoader {
 
   void _loadAudioData(String url) {
     HttpRequest.request(url, responseType: 'blob').then((request) {
-      var reader = FileReader();
+      final reader = FileReader();
       reader.readAsDataUrl(request.response as Blob);
-      reader.onLoadEnd.first.then((e) => _loadAudioSource(reader.result as String));
+      reader.onLoadEnd.first
+          .then((e) => _loadAudioSource(reader.result as String));
     }).catchError((error) {
-      var loadError = LoadError('Failed to load $url.', error);
+      final loadError = LoadError('Failed to load $url.', error);
       aggregateError.errors.add(loadError);
       _loadNextUrl();
     });
@@ -90,9 +91,9 @@ class AudioLoader {
   //-------------------------------------------------------------------------------------------------
 
   static List<String> _getSupportedTypes() {
-    var supportedTypes = <String>[];
-    var audio = AudioElement();
-    var valid = ['maybe', 'probably'];
+    final supportedTypes = <String>[];
+    final audio = AudioElement();
+    final valid = ['maybe', 'probably'];
 
     if (valid.contains(audio.canPlayType('audio/ogg; codecs=opus'))) {
       supportedTypes.add('opus');

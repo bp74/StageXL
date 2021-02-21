@@ -17,8 +17,8 @@ import 'drawing.dart';
 import 'engine.dart';
 import 'events.dart';
 import 'geom.dart';
-import 'ui.dart';
 import 'internal/tools.dart';
+import 'ui.dart';
 
 part 'text/font_style_metrics.dart';
 part 'text/text_field.dart';

@@ -8,8 +8,9 @@ class MockSoundChannel extends SoundChannel {
 
   late SoundTransform _soundTransform;
 
-  MockSoundChannel(MockSound mockSound, num startTime, num duration, bool loop,
-      [SoundTransform? soundTransform]) : _mockSound = mockSound {
+  MockSoundChannel(MockSound mockSound, bool loop,
+      [SoundTransform? soundTransform])
+      : _mockSound = mockSound {
     soundTransform ??= SoundTransform();
 
     _soundTransform = soundTransform;
@@ -32,16 +33,12 @@ class MockSoundChannel extends SoundChannel {
   Sound get sound => _mockSound;
 
   @override
-  set position(num value) {
-    return;
-  }
+  set position(num value) => Never;
 
   //---------------------------------------------------------------------------
 
   @override
-  bool get paused {
-    return _paused;
-  }
+  bool get paused => _paused;
 
   @override
   set paused(bool value) {
@@ -49,9 +46,7 @@ class MockSoundChannel extends SoundChannel {
   }
 
   @override
-  SoundTransform get soundTransform {
-    return _soundTransform;
-  }
+  SoundTransform get soundTransform => _soundTransform;
 
   @override
   set soundTransform(SoundTransform value) {

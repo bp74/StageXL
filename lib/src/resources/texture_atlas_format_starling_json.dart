@@ -5,29 +5,29 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
 
   @override
   Future<TextureAtlas> load(TextureAtlasLoader loader) async {
-    var source = await loader.getSource();
-    var pixelRatio = loader.getPixelRatio();
-    var textureAtlas = TextureAtlas(pixelRatio);
+    final source = await loader.getSource();
+    final pixelRatio = loader.getPixelRatio();
+    final textureAtlas = TextureAtlas(pixelRatio);
 
-    var json = jsonDecode(source) as Map;
-    var imagePath = _getString(json, 'imagePath', '');
-    var renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
+    final json = jsonDecode(source) as Map;
+    final imagePath = _getString(json, 'imagePath', '');
+    final renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
 
     for (Map subTextureMap in json['SubTexture']) {
-      var name = _getString(subTextureMap, 'name', '');
-      var rotation = _getBool(subTextureMap, 'rotated', false) ? 1 : 0;
+      final name = _getString(subTextureMap, 'name', '');
+      final rotation = _getBool(subTextureMap, 'rotated', false) ? 1 : 0;
 
-      var frameX = _getInt(subTextureMap, 'x', 0);
-      var frameY = _getInt(subTextureMap, 'y', 0);
-      var frameWidth = _getInt(subTextureMap, 'width', 0);
-      var frameHeight = _getInt(subTextureMap, 'height', 0);
+      final frameX = _getInt(subTextureMap, 'x', 0);
+      final frameY = _getInt(subTextureMap, 'y', 0);
+      final frameWidth = _getInt(subTextureMap, 'width', 0);
+      final frameHeight = _getInt(subTextureMap, 'height', 0);
 
-      var offsetX = 0 - _getInt(subTextureMap, 'frameX', 0);
-      var offsetY = 0 - _getInt(subTextureMap, 'frameY', 0);
-      var originalWidth = _getInt(subTextureMap, 'frameWidth', frameWidth);
-      var originalHeight = _getInt(subTextureMap, 'frameHeight', frameHeight);
+      final offsetX = 0 - _getInt(subTextureMap, 'frameX', 0);
+      final offsetY = 0 - _getInt(subTextureMap, 'frameY', 0);
+      final originalWidth = _getInt(subTextureMap, 'frameWidth', frameWidth);
+      final originalHeight = _getInt(subTextureMap, 'frameHeight', frameHeight);
 
-      var textureAtlasFrame = TextureAtlasFrame(
+      final textureAtlasFrame = TextureAtlasFrame(
           textureAtlas,
           renderTextureQuad,
           name,
@@ -52,17 +52,17 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
   //---------------------------------------------------------------------------
 
   String _getString(Map map, String name, String defaultValue) {
-    var value = map[name];
+    final value = map[name];
     return value is String ? value : defaultValue;
   }
 
   int _getInt(Map map, String name, int defaultValue) {
-    var value = map[name];
+    final value = map[name];
     return value is int ? value : defaultValue;
   }
 
   bool _getBool(Map map, String name, bool defaultValue) {
-    var value = map[name];
+    final value = map[name];
     return value is bool ? value : defaultValue;
   }
 }

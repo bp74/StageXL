@@ -18,16 +18,16 @@ class AlphaMaskFilter extends BitmapFilter {
 
   @override
   void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
-    var renderTextureQuad = rectangle == null
+    final renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var matrix = renderTextureQuad.drawMatrix;
-    var vxList = renderTextureQuad.vxList;
-    var canvas = renderTextureQuad.renderTexture.canvas;
-    var renderContext = RenderContextCanvas(canvas);
-    var renderState = RenderState(renderContext, matrix);
-    var context = renderContext.rawContext;
+    final matrix = renderTextureQuad.drawMatrix;
+    final vxList = renderTextureQuad.vxList;
+    final canvas = renderTextureQuad.renderTexture.canvas;
+    final renderContext = RenderContextCanvas(canvas);
+    final renderState = RenderState(renderContext, matrix);
+    final context = renderContext.rawContext;
 
     context.save();
     context.globalCompositeOperation = 'destination-in';
@@ -46,10 +46,10 @@ class AlphaMaskFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    final renderContext = renderState.renderContext as RenderContextWebGL;
+    final renderTexture = renderTextureQuad.renderTexture;
 
-    var renderProgram = renderContext.getRenderProgram(
+    final renderProgram = renderContext.getRenderProgram(
         r'$AlphaMaskFilterProgram', () => AlphaMaskFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
@@ -138,41 +138,41 @@ class AlphaMaskFilterProgram extends RenderProgram {
 
   void renderAlphaMaskFilterQuad(RenderState renderState,
       RenderTextureQuad renderTextureQuad, AlphaMaskFilter alphaMaskFilter) {
-    var alpha = renderState.globalAlpha;
-    var ixList = renderTextureQuad.ixList;
-    var vxList = renderTextureQuad.vxList;
-    var indexCount = ixList.length;
-    var vertexCount = vxList.length >> 2;
+    final alpha = renderState.globalAlpha;
+    final ixList = renderTextureQuad.ixList;
+    final vxList = renderTextureQuad.vxList;
+    final indexCount = ixList.length;
+    final vertexCount = vxList.length >> 2;
 
-    var mskQuad = alphaMaskFilter.bitmapData.renderTextureQuad;
-    var texMatrix = renderTextureQuad.samplerMatrix;
-    var posMatrix = renderState.globalMatrix;
+    final mskQuad = alphaMaskFilter.bitmapData.renderTextureQuad;
+    final texMatrix = renderTextureQuad.samplerMatrix;
+    final posMatrix = renderState.globalMatrix;
 
     // Calculate mask bounds and transformation matrix
 
-    var bounds = mskQuad.vxList;
-    var mskBoundsX1 = bounds[2] < bounds[10] ? bounds[2] : bounds[10];
-    var mskBoundsX2 = bounds[2] > bounds[10] ? bounds[2] : bounds[10];
-    var mskBoundsY1 = bounds[3] < bounds[11] ? bounds[3] : bounds[11];
-    var mskBoundsY2 = bounds[3] > bounds[11] ? bounds[3] : bounds[11];
+    final bounds = mskQuad.vxList;
+    final mskBoundsX1 = bounds[2] < bounds[10] ? bounds[2] : bounds[10];
+    final mskBoundsX2 = bounds[2] > bounds[10] ? bounds[2] : bounds[10];
+    final mskBoundsY1 = bounds[3] < bounds[11] ? bounds[3] : bounds[11];
+    final mskBoundsY2 = bounds[3] > bounds[11] ? bounds[3] : bounds[11];
 
-    var mskMatrix = mskQuad.samplerMatrix;
+    final mskMatrix = mskQuad.samplerMatrix;
     mskMatrix.invertAndConcat(alphaMaskFilter.matrix);
     mskMatrix.invert();
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + indexCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vertexCount * 11 >= vxData.length) flush();
 
-    var ixIndex = renderBufferIndex.position;
+    final ixIndex = renderBufferIndex.position;
     var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final vxCount = renderBufferVertex.count;
 
     // copy index list
 
@@ -186,8 +186,8 @@ class AlphaMaskFilterProgram extends RenderProgram {
     // copy vertex list
 
     for (var i = 0, o = 0; i < vertexCount; i++, o += 4) {
-      var x = vxList[o + 0];
-      var y = vxList[o + 1];
+      final x = vxList[o + 0];
+      final y = vxList[o + 1];
       vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
       vxData[vxIndex + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
       vxData[vxIndex + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;

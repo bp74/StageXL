@@ -11,9 +11,7 @@ class Sprite extends DisplayObjectContainer {
   /// Specifies the Graphics object that belongs to this sprite where vector
   /// drawing commands can occur.
 
-  Graphics get graphics {
-    return _graphics ??= Graphics();
-  }
+  Graphics get graphics => _graphics ??= Graphics();
 
   set graphics(Graphics value) {
     _graphics = value;
@@ -44,9 +42,9 @@ class Sprite extends DisplayObjectContainer {
   /// parent that specify a constraint rectangle for the Sprite.
 
   void startDrag([bool lockCenter = false, Rectangle<num>? bounds]) {
-    var stage = this.stage;
-    var inputEvent = InputEvent.current;
-    var globalPoint = Point<num>(0.0, 0.0);
+    final stage = this.stage;
+    final inputEvent = InputEvent.current;
+    final globalPoint = Point<num>(0.0, 0.0);
     var anchorPoint = Point<num>(0.0, 0.0);
     var touchPointID = 0;
 
@@ -77,7 +75,7 @@ class Sprite extends DisplayObjectContainer {
   /// with a different touch point.
 
   void stopDrag() {
-    var stage = this.stage;
+    final stage = this.stage;
     stage?._stopDrag(this);
   }
 
@@ -85,7 +83,7 @@ class Sprite extends DisplayObjectContainer {
 
   @override
   List<DisplayObject> getObjectsUnderPoint(Point<num> point) {
-    var result = super.getObjectsUnderPoint(point);
+    final result = super.getObjectsUnderPoint(point);
     if (_graphics != null && _graphics!.hitTest(point.x, point.y)) {
       result.insert(0, this);
     }
@@ -127,12 +125,12 @@ class Sprite extends DisplayObjectContainer {
 
   @override
   DisplayObject? hitTestInput(num localX, num localY) {
-    var hitArea = this.hitArea;
-    var graphics = _graphics;
+    final hitArea = this.hitArea;
+    final graphics = _graphics;
     DisplayObject? target;
 
     if (hitArea != null) {
-      var point = Point<num>(localX, localY);
+      final point = Point<num>(localX, localY);
       localToGlobal(point, point);
       hitArea.globalToLocal(point, point);
       target = hitArea.hitTestInput(point.x, point.y);

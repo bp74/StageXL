@@ -5,9 +5,8 @@ class _GraphicsContextCanvas extends GraphicsContext {
   final RenderContextCanvas _renderContext;
   final CanvasRenderingContext2D _canvasContext;
 
-  _GraphicsContextCanvas(RenderState renderState)
-      : renderState = renderState,
-        _renderContext = renderState.renderContext as RenderContextCanvas,
+  _GraphicsContextCanvas(this.renderState)
+      : _renderContext = renderState.renderContext as RenderContextCanvas,
         _canvasContext =
             (renderState.renderContext as RenderContextCanvas).rawContext {
     _renderContext.setTransform(renderState.globalMatrix);
@@ -94,7 +93,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
   void fillPattern(GraphicsPattern pattern) {
     _canvasContext.fillStyle = _getCanvasPattern(pattern);
 
-    var matrix = pattern.matrix;
+    final matrix = pattern.matrix;
     if (matrix != null) {
       _canvasContext.save();
       _canvasContext.transform(
@@ -136,7 +135,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
     _canvasContext.lineCap = _getLineCap(capsStyle);
 
-    var matrix = pattern.matrix;
+    final matrix = pattern.matrix;
     if (matrix != null) {
       _canvasContext.save();
       _canvasContext.transform(
@@ -164,13 +163,11 @@ class _GraphicsContextCanvas extends GraphicsContext {
     return lineCap;
   }
 
-  CanvasPattern _getCanvasPattern(GraphicsPattern pattern) {
-    return pattern.getCanvasPattern(_canvasContext);
-  }
+  CanvasPattern _getCanvasPattern(GraphicsPattern pattern) =>
+      pattern.getCanvasPattern(_canvasContext);
 
-  CanvasGradient _getCanvasGradient(GraphicsGradient gradient) {
-    return gradient.getCanvasGradient(_canvasContext);
-  }
+  CanvasGradient _getCanvasGradient(GraphicsGradient gradient) =>
+      gradient.getCanvasGradient(_canvasContext);
 }
 
 //-----------------------------------------------------------------------------

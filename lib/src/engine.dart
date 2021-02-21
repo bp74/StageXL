@@ -14,10 +14,6 @@
 library stagexl.engine;
 
 import 'dart:async';
-import 'dart:math' as math;
-import 'dart:web_gl' as gl;
-import 'dart:typed_data';
-
 import 'dart:html'
     show
         window,
@@ -27,6 +23,9 @@ import 'dart:html'
         CanvasImageSource,
         ImageData,
         VideoElement;
+import 'dart:math' as math;
+import 'dart:typed_data';
+import 'dart:web_gl' as gl;
 
 import 'geom/matrix.dart';
 import 'geom/matrix_3d.dart';
@@ -45,8 +44,8 @@ part 'engine/render_loop_base.dart';
 part 'engine/render_mask.dart';
 part 'engine/render_object.dart';
 part 'engine/render_program.dart';
-part 'engine/render_program_tinted.dart';
 part 'engine/render_program_simple.dart';
+part 'engine/render_program_tinted.dart';
 part 'engine/render_program_triangle.dart';
 part 'engine/render_state.dart';
 part 'engine/render_statistics.dart';

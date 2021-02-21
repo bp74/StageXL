@@ -25,27 +25,23 @@ class GlowFilter extends BitmapFilter {
       int blurX = 4,
       int blurY = 4,
       int quality = 1,
-      bool knockout = false,
-      bool hideObject = false]) {
+      this.knockout = false,
+      this.hideObject = false]) {
     this.color = color;
     this.blurX = blurX;
     this.blurY = blurY;
     this.quality = quality;
-    this.knockout = knockout;
-    this.hideObject = hideObject;
   }
 
   //---------------------------------------------------------------------------
 
   @override
-  BitmapFilter clone() {
-    return GlowFilter(color, blurX, blurY, quality, knockout, hideObject);
-  }
+  BitmapFilter clone() =>
+      GlowFilter(color, blurX, blurY, quality, knockout, hideObject);
 
   @override
-  Rectangle<int> get overlap {
-    return Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
-  }
+  Rectangle<int> get overlap =>
+      Rectangle<int>(-blurX, -blurY, 2 * blurX, 2 * blurY);
 
   @override
   List<int> get renderPassSources => _renderPassSources;
@@ -109,25 +105,25 @@ class GlowFilter extends BitmapFilter {
 
   @override
   void apply(BitmapData bitmapData, [Rectangle<num>? rectangle]) {
-    var renderTextureQuad = rectangle == null
+    final renderTextureQuad = rectangle == null
         ? bitmapData.renderTextureQuad
         : bitmapData.renderTextureQuad.cut(rectangle);
 
-    var sourceImageData = hideObject == false || knockout
+    final sourceImageData = hideObject == false || knockout
         ? renderTextureQuad.getImageData()
         : null;
 
-    var imageData = renderTextureQuad.getImageData();
-    var data = imageData.data;
-    var width = imageData.width;
-    var height = imageData.height;
+    final imageData = renderTextureQuad.getImageData();
+    final data = imageData.data;
+    final width = imageData.width;
+    final height = imageData.height;
 
-    var pixelRatio = renderTextureQuad.pixelRatio;
-    var blurX = (this.blurX * pixelRatio).round();
-    var blurY = (this.blurY * pixelRatio).round();
-    var alphaChannel =
+    final pixelRatio = renderTextureQuad.pixelRatio;
+    final blurX = (this.blurX * pixelRatio).round();
+    final blurY = (this.blurY * pixelRatio).round();
+    final alphaChannel =
         BitmapDataChannel.getCanvasIndex(BitmapDataChannel.ALPHA);
-    var stride = width * 4;
+    final stride = width * 4;
 
     for (var x = 0; x < width; x++) {
       blur(data, x * 4 + alphaChannel, height, stride, blurY);
@@ -153,19 +149,19 @@ class GlowFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
-    var passCount = _renderPassSources.length;
-    var passScale = pow(0.5, pass >> 1);
-    var pixelRatio = sqrt(renderState.globalMatrix.det.abs());
-    var pixelRatioScale = pixelRatio * passScale;
+    final renderContext = renderState.renderContext as RenderContextWebGL;
+    final renderTexture = renderTextureQuad.renderTexture;
+    final passCount = _renderPassSources.length;
+    final passScale = pow(0.5, pass >> 1);
+    final pixelRatio = sqrt(renderState.globalMatrix.det.abs());
+    final pixelRatioScale = pixelRatio * passScale;
 
     if (pass == passCount - 1) {
       if (!knockout && !hideObject) {
         renderContext.renderTextureQuad(renderState, renderTextureQuad);
       }
     } else {
-      var renderProgram = renderContext.getRenderProgram(
+      final renderProgram = renderContext.getRenderProgram(
           r'$GlowFilterProgram', () => GlowFilterProgram());
 
       renderContext.activateRenderProgram(renderProgram);
@@ -237,10 +233,10 @@ class GlowFilterProgram extends RenderProgramSimple {
   //---------------------------------------------------------------------------
 
   void configure(int color, num alpha, num radiusX, num radiusY) {
-    num r = colorGetR(color) / 255.0;
-    num g = colorGetG(color) / 255.0;
-    num b = colorGetB(color) / 255.0;
-    num a = colorGetA(color) / 255.0 * alpha;
+    final num r = colorGetR(color) / 255.0;
+    final num g = colorGetG(color) / 255.0;
+    final num b = colorGetB(color) / 255.0;
+    final num a = colorGetA(color) / 255.0 * alpha;
 
     renderingContext.uniform2f(uniforms['uRadius'], radiusX, radiusY);
     renderingContext.uniform4f(uniforms['uColor'], r, g, b, a);

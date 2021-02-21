@@ -4,7 +4,7 @@ final Map<String, _FontStyleMetrics> _fontStyleMetrics =
     <String, _FontStyleMetrics>{};
 
 _FontStyleMetrics _getFontStyleMetrics(TextFormat textFormat) {
-  var fontStyle = textFormat._cssFontStyle;
+  final fontStyle = textFormat._cssFontStyle;
   return _fontStyleMetrics.putIfAbsent(
       fontStyle, () => _FontStyleMetrics(textFormat));
 }
@@ -17,10 +17,10 @@ class _FontStyleMetrics {
   int height = 0;
 
   _FontStyleMetrics(TextFormat textFormat) {
-    var fontStyle = textFormat._cssFontStyle;
-    var text = html.Element.tag('span');
-    var block = html.Element.tag('div');
-    var div = html.Element.tag('div');
+    final fontStyle = textFormat._cssFontStyle;
+    final text = html.Element.tag('span');
+    final block = html.Element.tag('div');
+    final div = html.Element.tag('div');
 
     text.style.font = fontStyle;
     text.text = 'Hg';

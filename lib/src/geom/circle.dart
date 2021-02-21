@@ -1,7 +1,7 @@
 library stagexl.geom.circle;
 
-import 'point.dart';
 import '../internal/jenkins_hash.dart';
+import 'point.dart';
 
 class Circle<T extends num> {
   T x;
@@ -18,32 +18,28 @@ class Circle<T extends num> {
   //---------------------------------------------------------------------------
 
   @override
-  bool operator ==(Object other) {
-    return other is Circle &&
-        x == other.x &&
-        y == other.y &&
-        radius == other.radius;
-  }
+  bool operator ==(Object other) =>
+      other is Circle && x == other.x && y == other.y && radius == other.radius;
 
   @override
   int get hashCode {
-    var a = x.hashCode;
-    var b = y.hashCode;
-    var c = radius.hashCode;
+    final a = x.hashCode;
+    final b = y.hashCode;
+    final c = radius.hashCode;
     return JenkinsHash.hash3(a, b, c);
   }
 
   //---------------------------------------------------------------------------
 
   bool contains(num x, num y) {
-    var dx = this.x - x;
-    var dy = this.y - y;
+    final dx = this.x - x;
+    final dy = this.y - y;
     return dx * dx + dy * dy < radius * radius;
   }
 
   bool containsPoint(Point<num> p) {
-    var dx = x - p.x;
-    var dy = y - p.y;
+    final dx = x - p.x;
+    final dy = y - p.y;
     return dx * dx + dy * dy < radius * radius;
   }
 }

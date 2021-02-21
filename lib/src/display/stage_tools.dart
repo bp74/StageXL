@@ -35,10 +35,7 @@ class _TouchPoint {
 
   InteractiveObject currentTarget;
 
-  _TouchPoint(InteractiveObject target, bool primaryTouchPoint)
-      : target = target,
-        currentTarget = target,
-        primaryTouchPoint = primaryTouchPoint;
+  _TouchPoint(this.target, this.primaryTouchPoint) : currentTarget = target;
 }
 
 //------------------------------------------------------------------------------
@@ -55,9 +52,9 @@ class _Drag {
   void update(int touchPointID, Point<num> stagePoint) {
     if (touchPointID != this.touchPointID) return;
 
-    var localPoint = Point<num>(0.0, 0.0);
-    var parentPoint = Point<num>(0.0, 0.0);
-    var visible = sprite.visible;
+    final localPoint = Point<num>(0.0, 0.0);
+    final parentPoint = Point<num>(0.0, 0.0);
+    final visible = sprite.visible;
 
     sprite.globalToLocal(stagePoint, localPoint);
 

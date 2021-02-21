@@ -8,17 +8,17 @@ import 'package:stagexl/stagexl.dart';
 //-----------------------------------------------------------------------------
 
 Matcher equalsFloats(List<num> values) {
-  var doubles = values.map((v) => v.toDouble()).toList();
+  final doubles = values.map((v) => v.toDouble()).toList();
   return equals(Float32List.fromList(doubles));
 }
 
 void main() {
-  var rt = RenderTexture(50, 100, 0xFFFF00FF);
+  final rt = RenderTexture(50, 100, 0xFFFF00FF);
 
   test('CreateRenderTextureQuadRotation0', () {
-    var src = Rectangle<int>(5, 10, 30, 70);
-    var ofs = Rectangle<int>(0, 0, 35, 85);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final src = Rectangle<int>(5, 10, 30, 70);
+    final ofs = Rectangle<int>(0, 0, 35, 85);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
     expect(
         rtq.vxList,
         equalsFloats([
@@ -42,9 +42,9 @@ void main() {
   });
 
   test('CreateRenderTextureQuadRotation1', () {
-    var src = Rectangle<int>(5, 10, 30, 70);
-    var ofs = Rectangle<int>(0, 0, 85, 35);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final src = Rectangle<int>(5, 10, 30, 70);
+    final ofs = Rectangle<int>(0, 0, 85, 35);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
     expect(
         rtq.vxList,
         equalsFloats([
@@ -68,9 +68,9 @@ void main() {
   });
 
   test('CreateRenderTextureQuadRotation2', () {
-    var src = Rectangle<int>(5, 10, 30, 70);
-    var ofs = Rectangle<int>(0, 0, 35, 85);
-    var rtq = RenderTextureQuad(rt, src, ofs, 2, 1.0);
+    final src = Rectangle<int>(5, 10, 30, 70);
+    final ofs = Rectangle<int>(0, 0, 35, 85);
+    final rtq = RenderTextureQuad(rt, src, ofs, 2, 1.0);
     expect(
         rtq.vxList,
         equalsFloats([
@@ -94,9 +94,9 @@ void main() {
   });
 
   test('CreateRenderTextureQuadRotation3', () {
-    var src = Rectangle<int>(5, 10, 30, 70);
-    var ofs = Rectangle<int>(0, 0, 35, 85);
-    var rtq = RenderTextureQuad(rt, src, ofs, 3, 1.0);
+    final src = Rectangle<int>(5, 10, 30, 70);
+    final ofs = Rectangle<int>(0, 0, 35, 85);
+    final rtq = RenderTextureQuad(rt, src, ofs, 3, 1.0);
     expect(
         rtq.vxList,
         equalsFloats([
@@ -122,11 +122,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('SimpleClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(10, 20, 33, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(10, 20, 33, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -150,11 +150,11 @@ void main() {
   });
 
   test('SimpleClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(10, 20, 33, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(10, 20, 33, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -180,11 +180,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('RightOverlapClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(20, 10, 53, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(20, 10, 53, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -208,11 +208,11 @@ void main() {
   });
 
   test('RightOverlapClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(20, 10, 93, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(20, 10, 93, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -238,11 +238,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('LeftOverlapClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(-20, 10, 53, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(-20, 10, 53, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -266,11 +266,11 @@ void main() {
   });
 
   test('LeftOverlapClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(-20, 10, 93, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(-20, 10, 93, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -296,11 +296,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('TopOverlapClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(10, -13, 17, 62);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(10, -13, 17, 62);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -324,11 +324,11 @@ void main() {
   });
 
   test('TopOverlapClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(10, -13, 17, 62);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(10, -13, 17, 62);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -354,11 +354,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('BottomOverlapClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(10, 53, 17, 62);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(10, 53, 17, 62);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -382,11 +382,11 @@ void main() {
   });
 
   test('BottomOverlapClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(10, 13, 17, 62);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(10, 13, 17, 62);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -412,13 +412,13 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('ComplicatedClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect1 = Rectangle(5, 7, 43, 67);
-    var quad1 = rtq.clip(rect1);
-    var rect2 = Rectangle(2, 9, 53, 37);
-    var quad2 = quad1.clip(rect2);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect1 = Rectangle(5, 7, 43, 67);
+    final quad1 = rtq.clip(rect1);
+    final rect2 = Rectangle(2, 9, 53, 37);
+    final quad2 = quad1.clip(rect2);
     expect(
         quad1.vxList,
         equalsFloats([
@@ -462,13 +462,13 @@ void main() {
   });
 
   test('ComplicatedClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect1 = Rectangle(5, 7, 85, 30);
-    var quad1 = rtq.clip(rect1);
-    var rect2 = Rectangle(2, 9, 53, 37);
-    var quad2 = quad1.clip(rect2);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect1 = Rectangle(5, 7, 85, 30);
+    final quad1 = rtq.clip(rect1);
+    final rect2 = Rectangle(2, 9, 53, 37);
+    final quad2 = quad1.clip(rect2);
     expect(
         quad1.vxList,
         equalsFloats([
@@ -515,11 +515,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('OutsideLeftRightClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(-10, 20, 180, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(-10, 20, 180, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -543,11 +543,11 @@ void main() {
   });
 
   test('OutsideLeftRightClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(-10, 20, 180, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(-10, 20, 180, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -573,11 +573,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('OutsideTopBottomClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(20, -10, 23, 170);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(20, -10, 23, 170);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -601,11 +601,11 @@ void main() {
   });
 
   test('OutsideTopBottomClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(20, -10, 23, 170);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(20, -10, 23, 170);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -631,11 +631,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('OutsideTopLeftClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(-10, -20, 3, 7);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(-10, -20, 3, 7);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -659,11 +659,11 @@ void main() {
   });
 
   test('OutsideTopLeftClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(-10, -20, 3, 7);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(-10, -20, 3, 7);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -689,11 +689,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('OutsideBottomRightClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(60, 110, 3, 7);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(60, 110, 3, 7);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -717,11 +717,11 @@ void main() {
   });
 
   test('OutsideBottomRightClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(110, 60, 3, 7);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(110, 60, 3, 7);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -747,11 +747,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('OutsideLeftClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(-10, 20, 5, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(-10, 20, 5, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -775,11 +775,11 @@ void main() {
   });
 
   test('OutsideLeftClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(-10, 20, 5, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(-10, 20, 5, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -805,11 +805,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('OutsideRightClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(60, 20, 5, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(60, 20, 5, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -833,11 +833,11 @@ void main() {
   });
 
   test('OutsideRightClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(110, 20, 5, 27);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(110, 20, 5, 27);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -863,11 +863,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('OutsideTopClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(10, -20, 27, 5);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(10, -20, 27, 5);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -891,11 +891,11 @@ void main() {
   });
 
   test('OutsideTopClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(10, -20, 27, 5);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(10, -20, 27, 5);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -921,11 +921,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('OutsideBottomClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(10, 120, 27, 5);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(10, 120, 27, 5);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -949,11 +949,11 @@ void main() {
   });
 
   test('OutsideBottomClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(10, 120, 27, 5);
-    var quad = rtq.clip(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(10, 120, 27, 5);
+    final quad = rtq.clip(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -980,11 +980,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('SimpleCut', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(10, 20, 33, 27);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(10, 20, 33, 27);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1008,11 +1008,11 @@ void main() {
   });
 
   test('SimpleCutRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(10, 20, 33, 27);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(10, 20, 33, 27);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1038,11 +1038,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('RightOverlapCut', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(20, 10, 53, 27);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(20, 10, 53, 27);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1066,11 +1066,11 @@ void main() {
   });
 
   test('RightOverlapCutRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(20, 10, 93, 27);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(20, 10, 93, 27);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1096,11 +1096,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('LeftOverlapCut', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(-20, 10, 53, 27);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(-20, 10, 53, 27);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1124,11 +1124,11 @@ void main() {
   });
 
   test('LeftOverlapCutRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(-20, 10, 93, 27);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(-20, 10, 93, 27);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1154,11 +1154,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('TopOverlapCut', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(10, -13, 17, 62);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(10, -13, 17, 62);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1182,11 +1182,11 @@ void main() {
   });
 
   test('TopOverlapCutRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(10, -13, 17, 62);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(10, -13, 17, 62);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1212,11 +1212,11 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('BottomOverlapCut', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect = Rectangle(10, 53, 17, 62);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect = Rectangle(10, 53, 17, 62);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1240,11 +1240,11 @@ void main() {
   });
 
   test('BottomOverlapCutRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect = Rectangle(10, 13, 17, 62);
-    var quad = rtq.cut(rect);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect = Rectangle(10, 13, 17, 62);
+    final quad = rtq.cut(rect);
     expect(
         quad.vxList,
         equalsFloats([
@@ -1270,13 +1270,13 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('ComplicatedCut', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect1 = Rectangle(5, 7, 43, 67);
-    var quad1 = rtq.cut(rect1);
-    var rect2 = Rectangle(2, 9, 53, 37);
-    var quad2 = quad1.cut(rect2);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect1 = Rectangle(5, 7, 43, 67);
+    final quad1 = rtq.cut(rect1);
+    final rect2 = Rectangle(2, 9, 53, 37);
+    final quad2 = quad1.cut(rect2);
     expect(
         quad1.vxList,
         equalsFloats([
@@ -1320,13 +1320,13 @@ void main() {
   });
 
   test('ComplicatedCutRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect1 = Rectangle(5, 7, 85, 30);
-    var quad1 = rtq.cut(rect1);
-    var rect2 = Rectangle(2, 9, 53, 37);
-    var quad2 = quad1.cut(rect2);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect1 = Rectangle(5, 7, 85, 30);
+    final quad1 = rtq.cut(rect1);
+    final rect2 = Rectangle(2, 9, 53, 37);
+    final quad2 = quad1.cut(rect2);
     expect(
         quad1.vxList,
         equalsFloats([
@@ -1372,13 +1372,13 @@ void main() {
   //---------------------------------------------------------------------------
 
   test('ComplicatedClipCutClip', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 50, 100);
-    var rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
-    var rect1 = Rectangle(5, 7, 43, 67);
-    var quad1 = rtq.clip(rect1);
-    var rect2 = Rectangle(2, 9, 53, 37);
-    var quad2 = quad1.cut(rect2);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 50, 100);
+    final rtq = RenderTextureQuad(rt, src, ofs, 0, 1.0);
+    final rect1 = Rectangle(5, 7, 43, 67);
+    final quad1 = rtq.clip(rect1);
+    final rect2 = Rectangle(2, 9, 53, 37);
+    final quad2 = quad1.cut(rect2);
     expect(
         quad1.vxList,
         equalsFloats([
@@ -1422,13 +1422,13 @@ void main() {
   });
 
   test('ComplicatedClipCutClipRotated', () {
-    var src = Rectangle<int>(0, 0, 50, 100);
-    var ofs = Rectangle<int>(0, 0, 100, 50);
-    var rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
-    var rect1 = Rectangle(5, 7, 85, 30);
-    var quad1 = rtq.clip(rect1);
-    var rect2 = Rectangle(2, 9, 53, 37);
-    var quad2 = quad1.cut(rect2);
+    final src = Rectangle<int>(0, 0, 50, 100);
+    final ofs = Rectangle<int>(0, 0, 100, 50);
+    final rtq = RenderTextureQuad(rt, src, ofs, 1, 1.0);
+    final rect1 = Rectangle(5, 7, 85, 30);
+    final quad1 = rtq.clip(rect1);
+    final rect2 = Rectangle(2, 9, 53, 37);
+    final quad2 = quad1.cut(rect2);
     expect(
         quad1.vxList,
         equalsFloats([

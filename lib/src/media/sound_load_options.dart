@@ -57,8 +57,8 @@ class SoundLoadOptions {
   /// Create a deep clone of this [SoundLoadOptions].
 
   SoundLoadOptions clone() {
-    var options = SoundLoadOptions();
-    var urls = alternativeUrls;
+    final options = SoundLoadOptions();
+    final urls = alternativeUrls;
     options.mp3 = mp3;
     options.mp4 = mp4;
     options.ogg = ogg;
@@ -66,7 +66,7 @@ class SoundLoadOptions {
     options.ac3 = ac3;
     options.wav = wav;
     options.engine = engine;
-    options.alternativeUrls = urls == null ? null : urls.toList();
+    options.alternativeUrls = urls?.toList();
     options.ignoreErrors = ignoreErrors;
     options.corsEnabled = corsEnabled;
     return options;
@@ -78,7 +78,7 @@ class SoundLoadOptions {
   /// based on the supported types and formats available.
 
   List<String> getOptimalAudioUrls(String primaryUrl) {
-    var availableTypes = AudioLoader.supportedTypes.toList();
+    final availableTypes = AudioLoader.supportedTypes.toList();
     if (!mp3) availableTypes.remove('mp3');
     if (!mp4) availableTypes.remove('mp4');
     if (!ogg) availableTypes.remove('ogg');
@@ -86,16 +86,15 @@ class SoundLoadOptions {
     if (!ac3) availableTypes.remove('ac3');
     if (!wav) availableTypes.remove('wav');
 
-    var urls = <String>[];
-    var regex =
-        RegExp(r'([A-Za-z0-9]+)$', multiLine: false, caseSensitive: true);
-    var primaryMatch = regex.firstMatch(primaryUrl);
+    final urls = <String>[];
+    final regex = RegExp(r'([A-Za-z0-9]+)$');
+    final primaryMatch = regex.firstMatch(primaryUrl);
     if (primaryMatch == null) return urls;
     if (availableTypes.remove(primaryMatch.group(1))) urls.add(primaryUrl);
 
     if (alternativeUrls != null) {
       for (var alternativeUrl in alternativeUrls!) {
-        var alternativeMatch = regex.firstMatch(alternativeUrl);
+        final alternativeMatch = regex.firstMatch(alternativeUrl);
         if (alternativeMatch == null) continue;
         if (availableTypes.contains(alternativeMatch.group(1))) {
           urls.add(alternativeUrl);

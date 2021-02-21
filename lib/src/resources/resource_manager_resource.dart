@@ -25,7 +25,7 @@ class ResourceManagerResource {
   //---------------------------------------------------------------------------
 
   dynamic get value => _value;
-  dynamic get error => _error;
+  Object? get error => _error;
 
   Future get complete => _completer.future;
 }

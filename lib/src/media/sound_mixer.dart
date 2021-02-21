@@ -29,9 +29,7 @@ class SoundMixer {
 
   //---------------------------------------------------------------------------
 
-  static SoundTransform get soundTransform {
-    return _soundTransform;
-  }
+  static SoundTransform get soundTransform => _soundTransform;
 
   static set soundTransform(SoundTransform value) {
     _initEngine();
@@ -55,8 +53,8 @@ class SoundMixer {
   static void unlockMobileAudio() {
     if (engine == SoundEngine.WebAudioApi) {
       try {
-        var context = WebAudioApiMixer.audioContext;
-        var source = context.createBufferSource();
+        final context = WebAudioApiMixer.audioContext;
+        final source = context.createBufferSource();
         source.buffer = context.createBuffer(1, 1, 22050);
         source.connectNode(context.destination!);
         source.start(0);
@@ -80,7 +78,7 @@ class SoundMixer {
       _webAudioApiMixer = WebAudioApiMixer();
     }
 
-    var ua = html.window.navigator.userAgent;
+    final ua = html.window.navigator.userAgent;
 
     if (ua.contains('IEMobile')) {
       if (ua.contains('9.0')) {

@@ -74,8 +74,7 @@ final List<EventStreamSubscription<RenderEvent>> _renderSubscriptions =
     <EventStreamSubscription<RenderEvent>>[];
 
 void _dispatchBroadcastEvent<T extends BroadcastEvent>(
-    T broadcastEvent,
-    List<EventStreamSubscription<T>> subscriptions) {
+    T broadcastEvent, List<EventStreamSubscription<T>> subscriptions) {
   // Dispatch event to current subscriptions.
   // Do not dispatch events to newly added subscriptions.
   // It is guaranteed that this function is not called recursively.
@@ -84,7 +83,7 @@ void _dispatchBroadcastEvent<T extends BroadcastEvent>(
   var length = subscriptions.length;
 
   for (var i = 0; i < length; i++) {
-    var subscription = subscriptions[i];
+    final subscription = subscriptions[i];
     if (subscription.isCanceled == false) {
       broadcastEvent._isPropagationStopped = false;
       broadcastEvent._isImmediatePropagationStopped = false;

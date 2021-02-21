@@ -43,24 +43,24 @@ class RenderProgramTriangle extends RenderProgram {
 
   void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2,
       num x3, num y3, int color) {
-    var matrix = renderState.globalMatrix;
-    var alpha = renderState.globalAlpha;
-    var indexCount = 3;
-    var vertexCount = 3;
+    final matrix = renderState.globalMatrix;
+    final alpha = renderState.globalAlpha;
+    const indexCount = 3;
+    const vertexCount = 3;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + indexCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vertexCount * 6 >= vxData.length) flush();
 
-    var ixIndex = renderBufferIndex.position;
-    var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final ixIndex = renderBufferIndex.position;
+    final vxIndex = renderBufferVertex.position;
+    final vxCount = renderBufferVertex.count;
 
     // fill index buffer
 
@@ -73,18 +73,18 @@ class RenderProgramTriangle extends RenderProgram {
 
     // fill vertex buffer
 
-    var ma = matrix.a;
-    var mb = matrix.b;
-    var mc = matrix.c;
-    var md = matrix.d;
-    var mx = matrix.tx;
-    var my = matrix.ty;
+    final ma = matrix.a;
+    final mb = matrix.b;
+    final mc = matrix.c;
+    final md = matrix.d;
+    final mx = matrix.tx;
+    final my = matrix.ty;
 
-    var colorScale = 1 / 255.0;
-    var colorA = colorScale * colorGetA(color) * alpha;
-    var colorR = colorScale * colorGetR(color) * colorA;
-    var colorG = colorScale * colorGetG(color) * colorA;
-    var colorB = colorScale * colorGetB(color) * colorA;
+    const colorScale = 1 / 255.0;
+    final colorA = colorScale * colorGetA(color) * alpha;
+    final colorR = colorScale * colorGetR(color) * colorA;
+    final colorG = colorScale * colorGetG(color) * colorA;
+    final colorB = colorScale * colorGetB(color) * colorA;
 
     vxData[vxIndex + 00] = x1 * ma + y1 * mc + mx;
     vxData[vxIndex + 01] = x1 * mb + y1 * md + my;
@@ -115,24 +115,24 @@ class RenderProgramTriangle extends RenderProgram {
 
   void renderTriangleMesh(RenderState renderState, Int16List ixList,
       Float32List vxList, int color) {
-    var matrix = renderState.globalMatrix;
-    var alpha = renderState.globalAlpha;
-    var ixListCount = ixList.length;
-    var vxListCount = vxList.length >> 1;
+    final matrix = renderState.globalMatrix;
+    final alpha = renderState.globalAlpha;
+    final ixListCount = ixList.length;
+    final vxListCount = vxList.length >> 1;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + ixListCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vxListCount * 6 >= vxData.length) flush();
 
-    var ixIndex = renderBufferIndex.position;
+    final ixIndex = renderBufferIndex.position;
     var vxIndex = renderBufferVertex.position;
-    var vxOffset = renderBufferVertex.count;
+    final vxOffset = renderBufferVertex.count;
 
     // copy index list
 
@@ -145,22 +145,22 @@ class RenderProgramTriangle extends RenderProgram {
 
     // copy vertex list
 
-    var ma = matrix.a;
-    var mb = matrix.b;
-    var mc = matrix.c;
-    var md = matrix.d;
-    var mx = matrix.tx;
-    var my = matrix.ty;
+    final ma = matrix.a;
+    final mb = matrix.b;
+    final mc = matrix.c;
+    final md = matrix.d;
+    final mx = matrix.tx;
+    final my = matrix.ty;
 
-    var colorScale = 1 / 255.0;
-    var colorA = colorScale * colorGetA(color) * alpha;
-    var colorR = colorScale * colorGetR(color) * colorA;
-    var colorG = colorScale * colorGetG(color) * colorA;
-    var colorB = colorScale * colorGetB(color) * colorA;
+    const colorScale = 1 / 255.0;
+    final colorA = colorScale * colorGetA(color) * alpha;
+    final colorR = colorScale * colorGetR(color) * colorA;
+    final colorG = colorScale * colorGetG(color) * colorA;
+    final colorB = colorScale * colorGetB(color) * colorA;
 
     for (var i = 0, o = 0; i < vxListCount; i++, o += 2) {
-      var x = vxList[o + 0];
-      var y = vxList[o + 1];
+      final x = vxList[o + 0];
+      final y = vxList[o + 1];
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = colorR;

@@ -16,9 +16,10 @@ class WebAudioApiSoundChannel extends SoundChannel {
   num _position = 0.0;
   num _timeOffset = 0.0;
 
-  WebAudioApiSoundChannel(WebAudioApiSound webAudioApiSound, num startTime,
-      num duration, bool loop, [SoundTransform? soundTransform])
-        : _webAudioApiSound = webAudioApiSound {
+  WebAudioApiSoundChannel(
+      WebAudioApiSound webAudioApiSound, num startTime, num duration, bool loop,
+      [SoundTransform? soundTransform])
+      : _webAudioApiSound = webAudioApiSound {
     _soundTransform = soundTransform ?? SoundTransform();
     _startTime = startTime.toDouble();
     _duration = duration.toDouble();
@@ -48,15 +49,15 @@ class WebAudioApiSoundChannel extends SoundChannel {
     if (_paused || _stopped) {
       return _position;
     } else {
-      var currentTime = WebAudioApiMixer.audioContext.currentTime!;
-      var position = currentTime - _timeOffset;
+      final currentTime = WebAudioApiMixer.audioContext.currentTime!;
+      final position = currentTime - _timeOffset;
       return _loop ? position % _duration : position.clamp(0.0, _duration);
     }
   }
 
   @override
   set position(num value) {
-    var position = _loop ? value % _duration : value.clamp(0.0, _duration);
+    final position = _loop ? value % _duration : value.clamp(0.0, _duration);
     if (_stopped) {
       // do nothing
     } else if (_paused) {

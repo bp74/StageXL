@@ -49,22 +49,20 @@ abstract class _GraphicsMeshSegment {
   double get maxX => _maxX;
   double get maxY => _maxY;
 
-  Rectangle<num> get bounds {
-    return Rectangle<double>(minX, minY, maxX - minX, maxY - minY);
-  }
+  Rectangle<num> get bounds =>
+      Rectangle<double>(minX, minY, maxX - minX, maxY - minY);
 
   //---------------------------------------------------------------------------
 
-  bool checkBounds(num x, num y) {
-    return x >= _minX && x <= _maxX && y >= _minY && y <= _maxY;
-  }
+  bool checkBounds(num x, num y) =>
+      x >= _minX && x <= _maxX && y >= _minY && y <= _maxY;
 
   //---------------------------------------------------------------------------
 
   int addVertex(double x, double y) {
-    var offset = _vertexCount * 2;
-    var length = _vertexBuffer.length;
-    var buffer = _vertexBuffer;
+    final offset = _vertexCount * 2;
+    final length = _vertexBuffer.length;
+    final buffer = _vertexBuffer;
 
     if (offset + 2 > length) {
       var extend = length;
@@ -87,9 +85,9 @@ abstract class _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   void addIndices(int index1, int index2, int index3) {
-    var offset = _indexCount;
-    var length = _indexBuffer.length;
-    var buffer = _indexBuffer;
+    final offset = _indexCount;
+    final length = _indexBuffer.length;
+    final buffer = _indexBuffer;
 
     if (offset + 3 > length) {
       var extend = length;
@@ -108,18 +106,18 @@ abstract class _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   void fillColor(RenderState renderState, int color) {
-    var ixList = Int16List.view(_indexBuffer.buffer, 0, _indexCount);
-    var vxList = Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
+    final ixList = Int16List.view(_indexBuffer.buffer, 0, _indexCount);
+    final vxList = Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
     renderState.renderTriangleMesh(ixList, vxList, color);
   }
 
   //---------------------------------------------------------------------------
 
   void fillGradient(RenderState renderState, GraphicsGradient gradient) {
-    var ixList = Int16List.view(_indexBuffer.buffer, 0, _indexCount);
-    var vxList = Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
-    var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = gradient.getRenderTexture();
+    final ixList = Int16List.view(_indexBuffer.buffer, 0, _indexCount);
+    final vxList = Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
+    final renderContext = renderState.renderContext as RenderContextWebGL;
+    final renderTexture = gradient.getRenderTexture();
 
     _GraphicsGradientProgram renderProgram;
 
@@ -127,12 +125,12 @@ abstract class _GraphicsMeshSegment {
       case GraphicsGradientType.Linear:
         renderProgram = renderContext.getRenderProgram(
             r'$LinearGraphicsGradientProgram',
-                () => _LinearGraphicsGradientProgram());
+            () => _LinearGraphicsGradientProgram());
         break;
       case GraphicsGradientType.Radial:
         renderProgram = renderContext.getRenderProgram(
             r'$RadialGraphicsGradientProgram',
-                () => _RadialGraphicsGradientProgram());
+            () => _RadialGraphicsGradientProgram());
     }
 
     if (renderProgram.activeGradient != gradient) {
@@ -150,10 +148,10 @@ abstract class _GraphicsMeshSegment {
   //---------------------------------------------------------------------------
 
   void fillPattern(RenderState renderState, GraphicsPattern pattern) {
-    var matrix = _tmpMatrix;
-    var texture = pattern.patternTexture;
-    var invWidth = 1.0 / texture.width;
-    var invHeight = 1.0 / texture.height;
+    final matrix = _tmpMatrix;
+    final texture = pattern.patternTexture;
+    final invWidth = 1.0 / texture.width;
+    final invHeight = 1.0 / texture.height;
 
     texture.wrappingX = pattern.type.wrappingX;
     texture.wrappingY = pattern.type.wrappingY;
@@ -165,8 +163,8 @@ abstract class _GraphicsMeshSegment {
       matrix.setTo(invWidth, 0.0, 0.0, invHeight, 0.0, 0.0);
     }
 
-    var ixList = Int16List.view(_indexBuffer.buffer, 0, _indexCount);
-    var vxList = Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
+    final ixList = Int16List.view(_indexBuffer.buffer, 0, _indexCount);
+    final vxList = Float32List.view(_vertexBuffer.buffer, 0, _vertexCount * 2);
     renderState.renderTextureMapping(texture, matrix, ixList, vxList);
   }
 }

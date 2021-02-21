@@ -11,9 +11,7 @@ class PerspectiveProjection {
   /// Creates a default perspective projection which should be suitable for
   /// most use cases.
   ///
-  factory PerspectiveProjection() {
-    return PerspectiveProjection.fromDepth(10000, 10);
-  }
+  factory PerspectiveProjection() => PerspectiveProjection.fromDepth(10000, 10);
 
   /// Creates a perspective projection with custom [depth] and [scale] values.
   ///

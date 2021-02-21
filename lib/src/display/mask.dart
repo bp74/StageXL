@@ -48,14 +48,14 @@ abstract class Mask implements RenderMask {
   /// Create a rectangular mask.
 
   factory Mask.rectangle(num x, num y, num width, num height) {
-    var rectangle = Rectangle<num>(x, y, width, height);
+    final rectangle = Rectangle<num>(x, y, width, height);
     return _RectangleMask(rectangle);
   }
 
   /// Create a circular mask.
 
   factory Mask.circle(num x, num y, num radius) {
-    var graphics = Graphics();
+    final graphics = Graphics();
     graphics.circle(x, y, radius);
     graphics.fillColor(Color.Magenta);
     return _GraphicsMask(graphics);
@@ -64,7 +64,7 @@ abstract class Mask implements RenderMask {
   /// Create a custom mask with a polygonal shape defined by [points].
 
   factory Mask.custom(List<Point<num>> points) {
-    var graphics = Graphics();
+    final graphics = Graphics();
     points.forEach((p) => graphics.lineTo(p.x, p.y));
     graphics.fillColor(Color.Magenta);
     return _GraphicsMask(graphics);
@@ -72,15 +72,11 @@ abstract class Mask implements RenderMask {
 
   /// Create a custom mask defined by a [Graphics] object.
 
-  factory Mask.graphics(Graphics graphics) {
-    return _GraphicsMask(graphics);
-  }
+  factory Mask.graphics(Graphics graphics) => _GraphicsMask(graphics);
 
   /// Create a custom mask defined by a [Shape] object.
 
-  factory Mask.shape(Shape shape) {
-    return _ShapeMask(shape);
-  }
+  factory Mask.shape(Shape shape) => _ShapeMask(shape);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,11 +87,11 @@ abstract class _TransformedMask extends Mask {
 
   @override
   bool hitTest(num x, num y) {
-    var mtx = transformationMatrix;
-    var deltaX = x - mtx.tx;
-    var deltaY = y - mtx.ty;
-    var maskX = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
-    var maskY = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
+    final mtx = transformationMatrix;
+    final deltaX = x - mtx.tx;
+    final deltaY = y - mtx.ty;
+    final maskX = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
+    final maskY = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
     return hitTestTransformed(maskX, maskY);
   }
 
@@ -120,31 +116,29 @@ class _RectangleMask extends _TransformedMask implements ScissorRenderMask {
   @override
   Rectangle<num>? getScissorRectangle(RenderState renderState) {
     renderState.push(transformationMatrix, 1.0);
-    var matrix = renderState.globalMatrix;
-    var aligned = similar(matrix.b, 0.0) && similar(matrix.c, 0.0);
-    var result = aligned ? matrix.transformRectangle(rectangle) : null;
+    final matrix = renderState.globalMatrix;
+    final aligned = similar(matrix.b, 0.0) && similar(matrix.c, 0.0);
+    final result = aligned ? matrix.transformRectangle(rectangle) : null;
     renderState.pop();
     return result;
   }
 
   @override
-  bool hitTestTransformed(num x, num y) {
-    return rectangle.contains(x, y);
-  }
+  bool hitTestTransformed(num x, num y) => rectangle.contains(x, y);
 
   @override
   void renderMaskTransformed(RenderState renderState) {
-    var renderContext = renderState.renderContext;
+    final renderContext = renderState.renderContext;
 
     if (renderContext is RenderContextCanvas) {
       renderContext.setTransform(renderState.globalMatrix);
       renderContext.rawContext.rect(
           rectangle.left, rectangle.top, rectangle.width, rectangle.height);
     } else {
-      var l = rectangle.left;
-      var t = rectangle.top;
-      var r = rectangle.right;
-      var b = rectangle.bottom;
+      final l = rectangle.left;
+      final t = rectangle.top;
+      final r = rectangle.right;
+      final b = rectangle.bottom;
 
       renderState.renderTriangle(l, t, r, t, r, b, Color.Magenta);
       renderState.renderTriangle(l, t, r, b, l, b, Color.Magenta);
@@ -160,9 +154,7 @@ class _GraphicsMask extends _TransformedMask {
   _GraphicsMask(this.graphics);
 
   @override
-  bool hitTestTransformed(num x, num y) {
-    return graphics.hitTest(x, y);
-  }
+  bool hitTestTransformed(num x, num y) => graphics.hitTest(x, y);
 
   @override
   void renderMaskTransformed(RenderState renderState) {
@@ -179,11 +171,11 @@ class _ShapeMask extends _TransformedMask {
 
   @override
   bool hitTestTransformed(num x, num y) {
-    var mtx = shape.transformationMatrix;
-    var deltaX = x - mtx.tx;
-    var deltaY = y - mtx.ty;
-    var maskX = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
-    var maskY = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
+    final mtx = shape.transformationMatrix;
+    final deltaX = x - mtx.tx;
+    final deltaY = y - mtx.ty;
+    final maskX = (mtx.d * deltaX - mtx.c * deltaY) / mtx.det;
+    final maskY = (mtx.a * deltaY - mtx.b * deltaX) / mtx.det;
     return shape.graphics.hitTest(maskX, maskY);
   }
 

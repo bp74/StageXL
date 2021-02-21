@@ -21,9 +21,7 @@ class GlassPlate extends InteractiveObject {
   //---------------------------------------------------------------------------
 
   @override
-  Rectangle<num> get bounds {
-    return Rectangle<num>(0.0, 0.0, width, height);
-  }
+  Rectangle<num> get bounds => Rectangle<num>(0.0, 0.0, width, height);
 
   @override
   DisplayObject? hitTestInput(num localX, num localY) {

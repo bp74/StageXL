@@ -53,31 +53,31 @@ class RenderProgramTinted extends RenderProgram {
   void renderTextureQuad(RenderState renderState,
       RenderTextureQuad renderTextureQuad, double r, double g, num b, num a) {
     if (renderTextureQuad.hasCustomVertices) {
-      var ixList = renderTextureQuad.ixList;
-      var vxList = renderTextureQuad.vxList;
+      final ixList = renderTextureQuad.ixList;
+      final vxList = renderTextureQuad.vxList;
       renderTextureMesh(renderState, ixList, vxList, r, g, b, a);
       return;
     }
 
-    var alpha = renderState.globalAlpha;
-    var matrix = renderState.globalMatrix;
-    var vxList = renderTextureQuad.vxListQuad;
-    var ixListCount = 6;
-    var vxListCount = 4;
+    final alpha = renderState.globalAlpha;
+    final matrix = renderState.globalMatrix;
+    final vxList = renderTextureQuad.vxListQuad;
+    const ixListCount = 6;
+    const vxListCount = 4;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + ixListCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vxListCount * 8 >= vxData.length) flush();
 
-    var ixIndex = renderBufferIndex.position;
-    var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final ixIndex = renderBufferIndex.position;
+    final vxIndex = renderBufferVertex.position;
+    final vxCount = renderBufferVertex.count;
 
     // copy index list
 
@@ -93,19 +93,19 @@ class RenderProgramTinted extends RenderProgram {
 
     // copy vertex list
 
-    var ma1 = vxList[0] * matrix.a + matrix.tx;
-    var ma2 = vxList[8] * matrix.a + matrix.tx;
-    var mb1 = vxList[0] * matrix.b + matrix.ty;
-    var mb2 = vxList[8] * matrix.b + matrix.ty;
-    var mc1 = vxList[1] * matrix.c;
-    var mc2 = vxList[9] * matrix.c;
-    var md1 = vxList[1] * matrix.d;
-    var md2 = vxList[9] * matrix.d;
+    final ma1 = vxList[0] * matrix.a + matrix.tx;
+    final ma2 = vxList[8] * matrix.a + matrix.tx;
+    final mb1 = vxList[0] * matrix.b + matrix.ty;
+    final mb2 = vxList[8] * matrix.b + matrix.ty;
+    final mc1 = vxList[1] * matrix.c;
+    final mc2 = vxList[9] * matrix.c;
+    final md1 = vxList[1] * matrix.d;
+    final md2 = vxList[9] * matrix.d;
 
-    var colorA = a * alpha;
-    var colorR = r * colorA;
-    var colorG = g * colorA;
-    var colorB = b * colorA;
+    final colorA = a * alpha;
+    final colorR = r * colorA;
+    final colorG = g * colorA;
+    final colorB = b * colorA;
 
     vxData[vxIndex + 00] = ma1 + mc1;
     vxData[vxIndex + 01] = mb1 + md1;
@@ -151,24 +151,24 @@ class RenderProgramTinted extends RenderProgram {
 
   void renderTextureMesh(RenderState renderState, Int16List ixList,
       Float32List vxList, num r, num g, num b, num a) {
-    var matrix = renderState.globalMatrix;
-    var alpha = renderState.globalAlpha;
-    var ixListCount = ixList.length;
-    var vxListCount = vxList.length >> 2;
+    final matrix = renderState.globalMatrix;
+    final alpha = renderState.globalAlpha;
+    final ixListCount = ixList.length;
+    final vxListCount = vxList.length >> 2;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + ixListCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vxListCount * 8 >= vxData.length) flush();
 
-    var ixIndex = renderBufferIndex.position;
+    final ixIndex = renderBufferIndex.position;
     var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final vxCount = renderBufferVertex.count;
 
     // copy index list
 
@@ -181,21 +181,21 @@ class RenderProgramTinted extends RenderProgram {
 
     // copy vertex list
 
-    var ma = matrix.a;
-    var mb = matrix.b;
-    var mc = matrix.c;
-    var md = matrix.d;
-    var mx = matrix.tx;
-    var my = matrix.ty;
+    final ma = matrix.a;
+    final mb = matrix.b;
+    final mc = matrix.c;
+    final md = matrix.d;
+    final mx = matrix.tx;
+    final my = matrix.ty;
 
-    var colorA = a * alpha;
-    var colorR = r * colorA;
-    var colorG = g * colorA;
-    var colorB = b * colorA;
+    final colorA = a * alpha;
+    final colorR = r * colorA;
+    final colorG = g * colorA;
+    final colorB = b * colorA;
 
     for (var i = 0, o = 0; i < vxListCount; i++, o += 4) {
-      var x = vxList[o + 0];
-      var y = vxList[o + 1];
+      final x = vxList[o + 0];
+      final y = vxList[o + 1];
       vxData[vxIndex + 0] = mx + ma * x + mc * y;
       vxData[vxIndex + 1] = my + mb * x + md * y;
       vxData[vxIndex + 2] = vxList[o + 2];

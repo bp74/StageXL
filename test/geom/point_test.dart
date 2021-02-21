@@ -6,13 +6,13 @@ import 'package:stagexl/stagexl.dart';
 
 void main() {
   test('new point', () {
-    var p = point12();
+    final p = point12();
     testPoint(p, x: 1, y: 2);
   });
 
   test('new from point', () {
-    var source = point12();
-    var p = Point.from(source);
+    final source = point12();
+    final p = Point.from(source);
 
     p.x = 3;
 
@@ -21,8 +21,8 @@ void main() {
   });
 
   test('#clone', () {
-    var source = point12();
-    var p = source.clone();
+    final source = point12();
+    final p = source.clone();
 
     p.x = 3;
 
@@ -31,12 +31,12 @@ void main() {
   });
 
   test('#toString', () {
-    var p = point12();
+    final p = point12();
 
     expect(p.toString(), equals('Point<num> [x=1, y=2]'));
   });
 
-  var distanceTestTable = [
+  final distanceTestTable = [
     [0, 0, 0, 2, 2],
     [0, 0, 2, 0, 2],
     [0, 0, 2, 2, 2.828]
@@ -44,8 +44,8 @@ void main() {
 
   test('.distance', () {
     for (var r in distanceTestTable) {
-      var p1 = Point(r[0], r[1]);
-      var p2 = Point(r[2], r[3]);
+      final p1 = Point(r[0], r[1]);
+      final p2 = Point(r[2], r[3]);
 
       expect(Point.distance(p1, p2), closeTo(r[4], 0.001));
     }
@@ -53,8 +53,8 @@ void main() {
 
   test('#distanceTo', () {
     for (var r in distanceTestTable) {
-      var p1 = Point(r[0], r[1]);
-      var p2 = Point(r[2], r[3]);
+      final p1 = Point(r[0], r[1]);
+      final p2 = Point(r[2], r[3]);
 
       expect(p1.distanceTo(p2), closeTo(r[4], 0.001));
     }
@@ -85,8 +85,8 @@ void main() {
   });
 
   test('#copyFrom', () {
-    var source = point12();
-    var p = point00();
+    final source = point12();
+    final p = point00();
     p.copyFrom(source);
 
     p.x = 3;
@@ -96,7 +96,7 @@ void main() {
   });
 
   test('#setTo', () {
-    var p = point00();
+    final p = point00();
     p.setTo(1, 2);
 
     testPoint(p, x: 1, y: 2);
@@ -108,7 +108,7 @@ void main() {
   });
 
   test('#offset', () {
-    var p = point12();
+    final p = point12();
     p.offset(2, 3);
 
     testPoint(p, x: 3, y: 5);

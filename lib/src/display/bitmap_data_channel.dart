@@ -7,7 +7,7 @@ class BitmapDataChannel {
   static const int ALPHA = 8;
 
   static int getCanvasIndex(int bitmapDataChannel) {
-    var isLittleEndianSystem = env.isLittleEndianSystem;
+    final isLittleEndianSystem = env.isLittleEndianSystem;
     if (bitmapDataChannel & BitmapDataChannel.RED != 0) {
       return isLittleEndianSystem ? 0 : 3;
     }

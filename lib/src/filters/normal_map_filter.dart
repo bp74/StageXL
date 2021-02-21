@@ -5,8 +5,8 @@ import 'dart:math' as math;
 import '../display.dart';
 import '../engine.dart';
 import '../geom.dart';
-import '../ui/color.dart';
 import '../internal/tools.dart';
+import '../ui/color.dart';
 
 class NormalMapFilter extends BitmapFilter {
   final BitmapData bitmapData;
@@ -34,10 +34,10 @@ class NormalMapFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    final renderContext = renderState.renderContext as RenderContextWebGL;
+    final renderTexture = renderTextureQuad.renderTexture;
 
-    var renderProgram = renderContext.getRenderProgram(
+    final renderProgram = renderContext.getRenderProgram(
         r'$NormalMapFilterProgram', () => NormalMapFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
@@ -158,49 +158,50 @@ class NormalMapFilterProgram extends RenderProgram {
 
   void renderNormalMapQuad(RenderState renderState,
       RenderTextureQuad renderTextureQuad, NormalMapFilter normalMapFilter) {
-    var alpha = renderState.globalAlpha;
-    var mapMatrix = normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
-    var texMatrix = renderTextureQuad.samplerMatrix;
-    var posMatrix = renderState.globalMatrix;
-    var ixList = renderTextureQuad.ixList;
-    var vxList = renderTextureQuad.vxList;
-    var indexCount = ixList.length;
-    var vertexCount = vxList.length >> 2;
+    final alpha = renderState.globalAlpha;
+    final mapMatrix =
+        normalMapFilter.bitmapData.renderTextureQuad.samplerMatrix;
+    final texMatrix = renderTextureQuad.samplerMatrix;
+    final posMatrix = renderState.globalMatrix;
+    final ixList = renderTextureQuad.ixList;
+    final vxList = renderTextureQuad.vxList;
+    final indexCount = ixList.length;
+    final vertexCount = vxList.length >> 2;
 
     // Ambient color, light color, light position
 
-    var ambientColor = normalMapFilter.ambientColor;
-    var ambientR = colorGetA(ambientColor) / 255.0;
-    var ambientG = colorGetR(ambientColor) / 255.0;
-    var ambientB = colorGetG(ambientColor) / 255.0;
-    var ambientA = colorGetB(ambientColor) / 255.0;
+    final ambientColor = normalMapFilter.ambientColor;
+    final ambientR = colorGetA(ambientColor) / 255.0;
+    final ambientG = colorGetR(ambientColor) / 255.0;
+    final ambientB = colorGetG(ambientColor) / 255.0;
+    final ambientA = colorGetB(ambientColor) / 255.0;
 
-    var lightColor = normalMapFilter.lightColor;
-    var lightR = colorGetA(lightColor) / 255.0;
-    var lightG = colorGetR(lightColor) / 255.0;
-    var lightB = colorGetG(lightColor) / 255.0;
-    var lightA = colorGetB(lightColor) / 255.0;
+    final lightColor = normalMapFilter.lightColor;
+    final lightR = colorGetA(lightColor) / 255.0;
+    final lightG = colorGetR(lightColor) / 255.0;
+    final lightB = colorGetG(lightColor) / 255.0;
+    final lightA = colorGetB(lightColor) / 255.0;
 
-    var lx = normalMapFilter.lightX;
-    var ly = normalMapFilter.lightY;
-    var lightX = texMatrix.tx + lx * texMatrix.a + ly * texMatrix.c;
-    var lightY = texMatrix.ty + lx * texMatrix.b + ly * texMatrix.d;
-    var lightZ = math.sqrt(texMatrix.det) * normalMapFilter.lightZ;
-    var lightRadius = math.sqrt(texMatrix.det) * normalMapFilter.lightRadius;
+    final lx = normalMapFilter.lightX;
+    final ly = normalMapFilter.lightY;
+    final lightX = texMatrix.tx + lx * texMatrix.a + ly * texMatrix.c;
+    final lightY = texMatrix.ty + lx * texMatrix.b + ly * texMatrix.d;
+    final lightZ = math.sqrt(texMatrix.det) * normalMapFilter.lightZ;
+    final lightRadius = math.sqrt(texMatrix.det) * normalMapFilter.lightRadius;
 
     // check buffer sizes and flush if necessary
 
-    var ixData = renderBufferIndex.data;
-    var ixPosition = renderBufferIndex.position;
+    final ixData = renderBufferIndex.data;
+    final ixPosition = renderBufferIndex.position;
     if (ixPosition + indexCount >= ixData.length) flush();
 
-    var vxData = renderBufferVertex.data;
-    var vxPosition = renderBufferVertex.position;
+    final vxData = renderBufferVertex.data;
+    final vxPosition = renderBufferVertex.position;
     if (vxPosition + vertexCount * 19 >= vxData.length) flush();
 
-    var ixIndex = renderBufferIndex.position;
+    final ixIndex = renderBufferIndex.position;
     var vxIndex = renderBufferVertex.position;
-    var vxCount = renderBufferVertex.count;
+    final vxCount = renderBufferVertex.count;
 
     // copy index list
 
@@ -214,8 +215,8 @@ class NormalMapFilterProgram extends RenderProgram {
     // copy vertex list
 
     for (var i = 0, o = 0; i < vertexCount; i++, o += 4) {
-      num x = vxList[o + 0];
-      num y = vxList[o + 1];
+      final num x = vxList[o + 0];
+      final num y = vxList[o + 1];
       vxData[vxIndex + 00] = posMatrix.tx + x * posMatrix.a + y * posMatrix.c;
       vxData[vxIndex + 01] = posMatrix.ty + x * posMatrix.b + y * posMatrix.d;
       vxData[vxIndex + 02] = texMatrix.tx + x * texMatrix.a + y * texMatrix.c;

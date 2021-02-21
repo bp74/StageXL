@@ -23,18 +23,18 @@ class _DisplayObjectCache {
   //---------------------------------------------------------------------------
 
   void update() {
-    var l = (pixelRatio * bounds.left).floor();
-    var t = (pixelRatio * bounds.top).floor();
-    var r = (pixelRatio * bounds.right).ceil();
-    var b = (pixelRatio * bounds.bottom).ceil();
-    var w = r - l;
-    var h = b - t;
+    final l = (pixelRatio * bounds.left).floor();
+    final t = (pixelRatio * bounds.top).floor();
+    final r = (pixelRatio * bounds.right).ceil();
+    final b = (pixelRatio * bounds.bottom).ceil();
+    final w = r - l;
+    final h = b - t;
 
     // adjust size of texture and quad
 
-    var pr = pixelRatio;
-    var sr = Rectangle<int>(0, 0, w, h);
-    var or = Rectangle<int>(0 - l, 0 - t, w, h);
+    final pr = pixelRatio;
+    final sr = Rectangle<int>(0, 0, w, h);
+    final or = Rectangle<int>(0 - l, 0 - t, w, h);
 
     if (renderTexture == null) {
       renderTexture = RenderTexture(w, h, Color.Transparent);
@@ -46,26 +46,26 @@ class _DisplayObjectCache {
 
     // render display object to texture
 
-    var canvas = renderTexture!.canvas;
-    var matrix = renderTextureQuad!.drawMatrix;
-    var renderContext = RenderContextCanvas(canvas);
-    var renderState = RenderState(renderContext, matrix);
+    final canvas = renderTexture!.canvas;
+    final matrix = renderTextureQuad!.drawMatrix;
+    final renderContext = RenderContextCanvas(canvas);
+    final renderState = RenderState(renderContext, matrix);
 
     renderContext.clear(Color.Transparent);
     displayObject.render(renderState);
 
     // apply filters
 
-    var filters = displayObject.filters;
+    final filters = displayObject.filters;
     if (filters.isNotEmpty) {
-      var bitmapData = BitmapData.fromRenderTextureQuad(renderTextureQuad!);
+      final bitmapData = BitmapData.fromRenderTextureQuad(renderTextureQuad!);
       filters.forEach((filter) => filter.apply(bitmapData));
     }
 
     // draw optional debug border
 
     if (debugBorder) {
-      var context = canvas.context2D;
+      final context = canvas.context2D;
       context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
       context.lineWidth = 1;
       context.lineJoin = 'miter';

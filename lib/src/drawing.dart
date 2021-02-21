@@ -1,23 +1,15 @@
 library stagexl.drawing;
 
-import 'dart:typed_data';
-import 'dart:math' show pi, sqrt, sin, cos, tan, atan2, pow;
 import 'dart:html'
     show CanvasRenderingContext2D, CanvasElement, CanvasGradient, CanvasPattern;
+import 'dart:math' show pi, sqrt, sin, cos, tan, atan2, pow;
+import 'dart:typed_data';
 
-import 'geom.dart';
 import 'engine.dart';
-import 'internal/tools.dart';
+import 'geom.dart';
 import 'internal/jenkins_hash.dart';
 import 'internal/shared_cache.dart';
-
-part 'drawing/graphics.dart';
-part 'drawing/graphics_command.dart';
-part 'drawing/graphics_context.dart';
-part 'drawing/graphics_enums.dart';
-part 'drawing/graphics_gradient.dart';
-part 'drawing/graphics_gradient_program.dart';
-part 'drawing/graphics_pattern.dart';
+import 'internal/tools.dart';
 
 part 'drawing/commands/graphics_command_arc.dart';
 part 'drawing/commands/graphics_command_arc_elliptical.dart';
@@ -41,7 +33,13 @@ part 'drawing/commands/graphics_command_stroke.dart';
 part 'drawing/commands/graphics_command_stroke_color.dart';
 part 'drawing/commands/graphics_command_stroke_gradient.dart';
 part 'drawing/commands/graphics_command_stroke_pattern.dart';
-
+part 'drawing/graphics.dart';
+part 'drawing/graphics_command.dart';
+part 'drawing/graphics_context.dart';
+part 'drawing/graphics_enums.dart';
+part 'drawing/graphics_gradient.dart';
+part 'drawing/graphics_gradient_program.dart';
+part 'drawing/graphics_pattern.dart';
 part 'drawing/internal/graphics_command.dart';
 part 'drawing/internal/graphics_context_base.dart';
 part 'drawing/internal/graphics_context_bounds.dart';

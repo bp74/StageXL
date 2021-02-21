@@ -116,7 +116,7 @@ class StageOptions {
   /// Create a deep clone of this [StageOptions].
 
   StageOptions clone() {
-    var options = StageOptions();
+    final options = StageOptions();
     options.renderEngine = renderEngine;
     options.inputEventMode = inputEventMode;
     options.stageRenderMode = stageRenderMode;

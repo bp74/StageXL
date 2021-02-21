@@ -56,10 +56,7 @@ class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
   //-----------------------------------------------------------------------------------------------
 
   @override
-  Future<E> asFuture<E>([E? futureValue]) {
-    // This stream is never done and has no errors.
-    return Completer<E>().future;
-  }
+  Future<E> asFuture<E>([E? futureValue]) => Completer<E>().future;
 
   //-----------------------------------------------------------------------------------------------
 

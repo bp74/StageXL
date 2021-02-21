@@ -27,9 +27,7 @@ class DisplayObjectChildren<T extends DisplayObject> extends IterableBase<T> {
     }
   }
 
-  int indexOf(T displayObject) {
-    return _children.indexOf(displayObject);
-  }
+  int indexOf(T displayObject) => _children.indexOf(displayObject);
 
   void insert(int index, T displayObject) {
     parent.addChildAt(displayObject, index);
@@ -42,41 +40,31 @@ class DisplayObjectChildren<T extends DisplayObject> extends IterableBase<T> {
   }
 
   bool remove(T displayObject) {
-    var index = _children.indexOf(displayObject);
+    final index = _children.indexOf(displayObject);
     if (index >= 0) parent.removeChildAt(index);
     return index >= 0;
   }
 
   T removeAt(int index) {
-    var displayObject = _children[index];
+    final displayObject = _children[index];
     parent.removeChildAt(index);
     return displayObject;
   }
 
-  T removeLast() {
-    return removeAt(_children.length - 1);
-  }
+  T removeLast() => removeAt(_children.length - 1);
 
-  void removeRange(int start, int end) {
-    return parent.removeChildren(start, end);
-  }
+  void removeRange(int start, int end) => parent.removeChildren(start, end);
 
-  T operator [](int index) {
-    return _children[index];
-  }
+  T operator [](int index) => _children[index];
 
   void operator []=(int index, T displayObject) {
     parent.replaceChildAt(displayObject, index);
   }
 
-  Iterable<T> get reversed {
-    return _children.reversed;
-  }
+  Iterable<T> get reversed => _children.reversed;
 
   //---------------------------------------------------------------------------
 
   @override
-  Iterator<T> get iterator {
-    return _children.iterator;
-  }
+  Iterator<T> get iterator => _children.iterator;
 }

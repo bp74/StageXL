@@ -5,9 +5,7 @@ class ViewportContainer extends DisplayObjectContainer {
   Rectangle<num>? _viewportRectangle;
   final Matrix _viewportMatrix = Matrix.fromIdentity();
 
-  Rectangle<num>? get viewport {
-    return _viewportRectangle?.clone();
-  }
+  Rectangle<num>? get viewport => _viewportRectangle?.clone();
 
   set viewport(Rectangle<num>? value) {
     if (value == null) return;
@@ -34,8 +32,8 @@ class ViewportContainer extends DisplayObjectContainer {
     if (_viewportRectangle == null) {
       return super.hitTestInput(localX, localY);
     } else if (_viewportMask!.hitTest(localX, localY)) {
-      var x = localX + _viewportRectangle!.left;
-      var y = localY + _viewportRectangle!.top;
+      final x = localX + _viewportRectangle!.left;
+      final y = localY + _viewportRectangle!.top;
       return super.hitTestInput(x, y);
     } else {
       return null;

@@ -40,30 +40,30 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     if (_currentSegment == null) {
       moveTo(controlX, controlY);
     } else {
-      var v1x = controlX - _currentSegment!.lastVertexX;
-      var v1y = controlY - _currentSegment!.lastVertexY;
-      var v1l = sqrt(v1x * v1x + v1y * v1y);
-      var v1a = atan2(v1y, v1x);
+      final v1x = controlX - _currentSegment!.lastVertexX;
+      final v1y = controlY - _currentSegment!.lastVertexY;
+      final v1l = sqrt(v1x * v1x + v1y * v1y);
+      final v1a = atan2(v1y, v1x);
 
-      var v2x = endX - controlX;
-      var v2y = endY - controlY;
-      var v2l = sqrt(v2x * v2x + v2y * v2y);
-      var v2a = atan2(v2y, v2x);
+      final v2x = endX - controlX;
+      final v2y = endY - controlY;
+      final v2l = sqrt(v2x * v2x + v2y * v2y);
+      final v2a = atan2(v2y, v2x);
 
-      var t = tan((v1a - v2a) / 2.0);
-      var l = t > 0.0 ? radius : 0.0 - radius;
-      var point1x = controlX - t * l * v1x / v1l;
-      var point1y = controlY - t * l * v1y / v1l;
-      var point2x = controlX + t * l * v2x / v2l;
-      var point2y = controlY + t * l * v2y / v2l;
-      var centerX = point1x + l * v1y / v1l;
-      var centerY = point1y - l * v1x / v1l;
+      final t = tan((v1a - v2a) / 2.0);
+      final l = t > 0.0 ? radius : 0.0 - radius;
+      final point1x = controlX - t * l * v1x / v1l;
+      final point1y = controlY - t * l * v1y / v1l;
+      final point2x = controlX + t * l * v2x / v2l;
+      final point2y = controlY + t * l * v2y / v2l;
+      final centerX = point1x + l * v1y / v1l;
+      final centerY = point1y - l * v1x / v1l;
 
       if (centerX.isNaN || centerY.isNaN) {
         lineTo(controlX, controlY);
       } else {
-        var angle1 = atan2(point1y - centerY, point1x - centerX);
-        var angle2 = atan2(point2y - centerY, point2x - centerX);
+        final angle1 = atan2(point1y - centerY, point1x - centerX);
+        final angle2 = atan2(point2y - centerY, point2x - centerX);
         arc(centerX, centerY, radius, angle1, angle2, t > 0.0);
       }
     }
@@ -74,18 +74,18 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     if (_currentSegment == null) {
       moveTo(endY, endY);
     } else {
-      var steps = 20;
-      var vx = _currentSegment!.lastVertexX;
-      var vy = _currentSegment!.lastVertexY;
+      const steps = 20;
+      final vx = _currentSegment!.lastVertexX;
+      final vy = _currentSegment!.lastVertexY;
 
       for (var s = 1; s <= steps; s++) {
-        var t0 = s / steps;
-        var t1 = 1.0 - t0;
-        var b0 = t1 * t1;
-        var b1 = t1 * t0 * 2.0;
-        var b2 = t0 * t0;
-        var x = b0 * vx + b1 * controlX + b2 * endX;
-        var y = b0 * vy + b1 * controlY + b2 * endY;
+        final t0 = s / steps;
+        final t1 = 1.0 - t0;
+        final b0 = t1 * t1;
+        final b1 = t1 * t0 * 2.0;
+        final b2 = t0 * t0;
+        final x = b0 * vx + b1 * controlX + b2 * endX;
+        final y = b0 * vy + b1 * controlY + b2 * endY;
         _currentSegment!.addVertex(x, y);
       }
     }
@@ -96,19 +96,19 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
     if (_currentSegment == null) {
       moveTo(endY, endY);
     } else {
-      var steps = 20;
-      var vx = _currentSegment!.lastVertexX;
-      var vy = _currentSegment!.lastVertexY;
+      const steps = 20;
+      final vx = _currentSegment!.lastVertexX;
+      final vy = _currentSegment!.lastVertexY;
 
       for (var s = 1; s <= steps; s++) {
-        var t0 = s / steps;
-        var t1 = 1.0 - t0;
-        var b0 = t1 * t1 * t1;
-        var b1 = t0 * t1 * t1 * 3.0;
-        var b2 = t0 * t0 * t1 * 3.0;
-        var b3 = t0 * t0 * t0;
-        var x = b0 * vx + b1 * controlX1 + b2 * controlX2 + b3 * endX;
-        var y = b0 * vy + b1 * controlY1 + b2 * controlY2 + b3 * endY;
+        final t0 = s / steps;
+        final t1 = 1.0 - t0;
+        final b0 = t1 * t1 * t1;
+        final b1 = t0 * t1 * t1 * 3.0;
+        final b2 = t0 * t0 * t1 * 3.0;
+        final b3 = t0 * t0 * t0;
+        final x = b0 * vx + b1 * controlX1 + b2 * controlX2 + b3 * endX;
+        final y = b0 * vy + b1 * controlY1 + b2 * controlY2 + b3 * endY;
         _currentSegment!.addVertex(x, y);
       }
     }
@@ -118,8 +118,8 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
 
   void arc(double x, double y, double radius, double startAngle,
       double endAngle, bool antiClockwise) {
-    num tau = 2.0 * pi;
-    num start = (startAngle % tau);
+    const tau = 2.0 * pi;
+    final num start = startAngle % tau;
     num delta = (endAngle % tau) - start;
 
     if (antiClockwise && endAngle > startAngle) {
@@ -136,27 +136,27 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
       delta %= tau;
     }
 
-    var steps = (60 * delta / tau).abs().ceil();
-    num cosR = cos(delta / steps);
-    num sinR = sin(delta / steps);
-    num tx = x - x * cosR + y * sinR;
-    num ty = y - x * sinR - y * cosR;
+    final steps = (60 * delta / tau).abs().ceil();
+    final num cosR = cos(delta / steps);
+    final num sinR = sin(delta / steps);
+    final num tx = x - x * cosR + y * sinR;
+    final num ty = y - x * sinR - y * cosR;
     var ax = x + cos(start) * radius;
     var ay = y + sin(start) * radius;
 
     lineTo(ax, ay);
 
     for (var s = 1; s <= steps; s++) {
-      var bx = ax * cosR - ay * sinR + tx;
-      var by = ax * sinR + ay * cosR + ty;
+      final bx = ax * cosR - ay * sinR + tx;
+      final by = ax * sinR + ay * cosR + ty;
       _currentSegment!.addVertex(ax = bx, ay = by);
     }
   }
 
   void arcElliptical(double x, double y, double radiusX, double radiusY,
       double rotation, double startAngle, double endAngle, bool antiClockwise) {
-    num tau = 2.0 * pi;
-    num start = (startAngle % tau);
+    const tau = 2.0 * pi;
+    final num start = startAngle % tau;
     num delta = (endAngle % tau) - start;
 
     if (antiClockwise && endAngle > startAngle) {
@@ -173,19 +173,19 @@ class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
       delta %= tau;
     }
 
-    var steps = (60 * delta / tau).abs().ceil();
-    num sinRotationX = radiusX * sin(rotation);
-    num cosRotationX = radiusX * cos(rotation);
-    num sinRotationY = radiusY * sin(rotation);
-    num cosRotationY = radiusY * cos(rotation);
-    num angleDelta = delta / steps;
+    final steps = (60 * delta / tau).abs().ceil();
+    final num sinRotationX = radiusX * sin(rotation);
+    final num cosRotationX = radiusX * cos(rotation);
+    final num sinRotationY = radiusY * sin(rotation);
+    final num cosRotationY = radiusY * cos(rotation);
+    final num angleDelta = delta / steps;
     num angle = startAngle;
 
     for (var s = 0; s <= steps; s++, angle += angleDelta) {
-      num cx = cos(angle);
-      num cy = sin(angle);
-      var rx = x + cx * cosRotationX - cy * sinRotationY;
-      var ry = y + cx * sinRotationX + cy * cosRotationY;
+      final num cx = cos(angle);
+      final num cy = sin(angle);
+      final rx = x + cx * cosRotationX - cy * sinRotationY;
+      final ry = y + cx * sinRotationX + cy * cosRotationY;
       lineTo(rx, ry);
     }
   }

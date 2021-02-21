@@ -80,7 +80,7 @@ class ColorTransform {
   set color(int value) {
     redOffset = (value & 0x00FF0000) >> 16;
     greenOffset = (value & 0x0000FF00) >> 8;
-    blueOffset = (value & 0x000000FF);
+    blueOffset = value & 0x000000FF;
 
     redMultiplier = 0.0;
     greenMultiplier = 0.0;
@@ -132,10 +132,10 @@ class ColorTransform {
   //---------------------------------------------------------------------------
 
   void interpolate(ColorTransform c1, ColorTransform c2, double value) {
-    var c1m = c1.multipliers;
-    var c2m = c2.multipliers;
-    var c1o = c1.offsets;
-    var c2o = c2.offsets;
+    final c1m = c1.multipliers;
+    final c2m = c2.multipliers;
+    final c1o = c1.offsets;
+    final c2o = c2.offsets;
 
     multipliers[0] = c1m[0] + (c2m[0] - c1m[0]) * value;
     multipliers[1] = c1m[1] + (c2m[1] - c1m[1]) * value;

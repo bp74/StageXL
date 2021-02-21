@@ -32,11 +32,9 @@ class Bitmap extends DisplayObject {
   //---------------------------------------------------------------------------
 
   @override
-  Rectangle<num> get bounds {
-    return bitmapData == null
-        ? Rectangle<num>(0.0, 0.0, 0.0, 0.0)
-        : Rectangle<num>(0.0, 0.0, bitmapData!.width, bitmapData!.height);
-  }
+  Rectangle<num> get bounds => bitmapData == null
+      ? Rectangle<num>(0.0, 0.0, 0.0, 0.0)
+      : Rectangle<num>(0.0, 0.0, bitmapData!.width, bitmapData!.height);
 
   @override
   DisplayObject? hitTestInput(num localX, num localY) {
@@ -55,7 +53,7 @@ class Bitmap extends DisplayObject {
   @override
   void renderFiltered(RenderState renderState) {
     if (bitmapData != null) {
-      var renderTextureQuad = bitmapData!.renderTextureQuad;
+      final renderTextureQuad = bitmapData!.renderTextureQuad;
       renderState.renderTextureQuadFiltered(renderTextureQuad, filters);
     }
   }

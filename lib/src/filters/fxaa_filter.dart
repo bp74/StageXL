@@ -35,10 +35,10 @@ class FxaaFilter extends BitmapFilter {
   @override
   void renderFilter(
       RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
-    var renderContext = renderState.renderContext as RenderContextWebGL;
-    var renderTexture = renderTextureQuad.renderTexture;
+    final renderContext = renderState.renderContext as RenderContextWebGL;
+    final renderTexture = renderTextureQuad.renderTexture;
 
-    var renderProgram = renderContext.getRenderProgram(
+    final renderProgram = renderContext.getRenderProgram(
         r'$FxaaFilterProgram', () => FxaaFilterProgram());
 
     renderContext.activateRenderProgram(renderProgram);
@@ -142,8 +142,8 @@ class FxaaFilterProgram extends RenderProgramSimple {
   //---------------------------------------------------------------------------
 
   void configure(num textureWidth, num textureHeight) {
-    var texelX = 1.0 / textureWidth;
-    var texelY = 1.0 / textureHeight;
+    final texelX = 1.0 / textureWidth;
+    final texelY = 1.0 / textureHeight;
     renderingContext.uniform2f(uniforms['uTexel'], texelX, texelY);
   }
 }

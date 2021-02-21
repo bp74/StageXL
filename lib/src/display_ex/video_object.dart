@@ -34,12 +34,11 @@ class VideoObject extends InteractiveObject {
   final RenderTexture _renderTexture;
   late final RenderTextureQuad _renderTextureQuad;
 
-  VideoObject(this._video, [bool autoplay = false]) :
-    _renderTexture = RenderTexture.fromVideoElement(_video.videoElement) {
-
+  VideoObject(this._video, [bool autoplay = false])
+      : _renderTexture = RenderTexture.fromVideoElement(_video.videoElement) {
     _renderTextureQuad = _renderTexture.quad;
 
-    var videoElement = _video.videoElement;
+    final videoElement = _video.videoElement;
     videoElement.onEnded.listen((e) => dispatchEvent(Event('videoEnded')));
     videoElement.onPause.listen((e) => dispatchEvent(Event('videoPause')));
     videoElement.onError.listen((e) => dispatchEvent(Event('videoError')));
@@ -58,8 +57,8 @@ class VideoObject extends InteractiveObject {
 
   @override
   Rectangle<num> get bounds {
-    var width = _renderTextureQuad.targetWidth;
-    var height = _renderTextureQuad.targetHeight;
+    final width = _renderTextureQuad.targetWidth;
+    final height = _renderTextureQuad.targetHeight;
     return Rectangle<num>(0.0, 0.0, width, height);
   }
 

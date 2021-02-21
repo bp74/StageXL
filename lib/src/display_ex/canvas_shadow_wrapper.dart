@@ -103,11 +103,11 @@ class CanvasShadowWrapper extends DisplayObject {
 
   @override
   DisplayObject? hitTestInput(num localX, num localY) {
-    var matrix = displayObject.transformationMatrix;
-    var deltaX = localX - matrix.tx;
-    var deltaY = localY - matrix.ty;
-    var childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
-    var childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
+    final matrix = displayObject.transformationMatrix;
+    final deltaX = localX - matrix.tx;
+    final deltaY = localY - matrix.ty;
+    final childX = (matrix.d * deltaX - matrix.c * deltaY) / matrix.det;
+    final childY = (matrix.a * deltaY - matrix.b * deltaX) / matrix.det;
     return displayObject.hitTestInput(childX, childY);
   }
 
@@ -115,10 +115,10 @@ class CanvasShadowWrapper extends DisplayObject {
 
   @override
   void render(RenderState renderState) {
-    var renderContext = renderState.renderContext;
+    final renderContext = renderState.renderContext;
     if (renderContext is RenderContextCanvas) {
-      var rawContext = renderContext.rawContext;
-      var shadowMatrix = renderState.globalMatrix;
+      final rawContext = renderContext.rawContext;
+      final shadowMatrix = renderState.globalMatrix;
       rawContext.save();
       rawContext.shadowColor = color2rgba(shadowColor);
       rawContext.shadowBlur = sqrt(shadowMatrix.det) * shadowBlur;

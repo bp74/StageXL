@@ -45,7 +45,7 @@ class RenderBufferIndex {
   }
 
   void update() {
-    var update = Int16List.view(data.buffer, 0, position);
+    final update = Int16List.view(data.buffer, 0, position);
     _renderingContext!.bufferSubData(gl.WebGL.ELEMENT_ARRAY_BUFFER, 0, update);
     _renderStatistics.indexCount += count;
   }

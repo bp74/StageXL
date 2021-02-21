@@ -36,7 +36,7 @@ class RenderContextCanvas extends RenderContext {
     setBlendMode(BlendMode.NORMAL);
     setAlpha(1.0);
 
-    var alpha = colorGetA(color);
+    final alpha = colorGetA(color);
 
     if (alpha < 255) {
       _renderingContext.clearRect(
@@ -59,7 +59,7 @@ class RenderContextCanvas extends RenderContext {
 
   @override
   void beginRenderMask(RenderState renderState, RenderMask mask) {
-    var matrix = renderState.globalMatrix;
+    final matrix = renderState.globalMatrix;
     _renderingContext.setTransform(
         matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     _renderingContext.beginPath();
@@ -89,21 +89,21 @@ class RenderContextCanvas extends RenderContext {
   void renderTextureQuad(
       RenderState renderState, RenderTextureQuad renderTextureQuad) {
     if (renderTextureQuad.hasCustomVertices) {
-      var renderTexture = renderTextureQuad.renderTexture;
-      var ixList = renderTextureQuad.ixList;
-      var vxList = renderTextureQuad.vxList;
+      final renderTexture = renderTextureQuad.renderTexture;
+      final ixList = renderTextureQuad.ixList;
+      final vxList = renderTextureQuad.vxList;
       renderTextureMesh(renderState, renderTexture, ixList, vxList);
       return;
     }
 
-    var context = _renderingContext;
-    var source = renderTextureQuad.renderTexture.source;
-    var rotation = renderTextureQuad.rotation;
-    var sourceRect = renderTextureQuad.sourceRectangle;
-    var vxList = renderTextureQuad.vxListQuad;
-    var matrix = renderState.globalMatrix;
-    var alpha = renderState.globalAlpha;
-    var blendMode = renderState.globalBlendMode;
+    final context = _renderingContext;
+    final source = renderTextureQuad.renderTexture.source;
+    final rotation = renderTextureQuad.rotation;
+    final sourceRect = renderTextureQuad.sourceRectangle;
+    final vxList = renderTextureQuad.vxListQuad;
+    final matrix = renderState.globalMatrix;
+    final alpha = renderState.globalAlpha;
+    final blendMode = renderState.globalBlendMode;
 
     if (_activeAlpha != alpha) {
       _activeAlpha = alpha;
@@ -175,13 +175,13 @@ class RenderContextCanvas extends RenderContext {
   @override
   void renderTextureMesh(RenderState renderState, RenderTexture renderTexture,
       Int16List ixList, Float32List vxList) {
-    var context = _renderingContext;
-    var source = renderTexture.source;
-    var matrix = renderState.globalMatrix;
-    var alpha = renderState.globalAlpha;
-    var blendMode = renderState.globalBlendMode;
-    var iw = 1.0 / renderTexture.width;
-    var ih = 1.0 / renderTexture.height;
+    final context = _renderingContext;
+    final source = renderTexture.source;
+    final matrix = renderState.globalMatrix;
+    final alpha = renderState.globalAlpha;
+    final blendMode = renderState.globalBlendMode;
+    final iw = 1.0 / renderTexture.width;
+    final ih = 1.0 / renderTexture.height;
 
     if (_activeAlpha != alpha) {
       _activeAlpha = alpha;
@@ -197,14 +197,14 @@ class RenderContextCanvas extends RenderContext {
         matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
 
     for (var i = 0; i < ixList.length - 2; i += 3) {
-      var i1 = ixList[i + 0] << 2;
-      var i2 = ixList[i + 1] << 2;
-      var i3 = ixList[i + 2] << 2;
+      final i1 = ixList[i + 0] << 2;
+      final i2 = ixList[i + 1] << 2;
+      final i3 = ixList[i + 2] << 2;
 
-      num x1 = vxList[i1 + 0];
-      num y1 = vxList[i1 + 1];
-      num u1 = vxList[i1 + 2];
-      num v1 = vxList[i1 + 3];
+      final num x1 = vxList[i1 + 0];
+      final num y1 = vxList[i1 + 1];
+      final num u1 = vxList[i1 + 2];
+      final num v1 = vxList[i1 + 3];
 
       num x2 = vxList[i2 + 0];
       num y2 = vxList[i2 + 1];
@@ -233,13 +233,13 @@ class RenderContextCanvas extends RenderContext {
       u3 -= u1;
       v3 -= v1;
 
-      var id = 1.0 / (u2 * v3 - u3 * v2);
-      var ma = id * (v3 * x2 - v2 * x3);
-      var mb = id * (v3 * y2 - v2 * y3);
-      var mc = id * (u2 * x3 - u3 * x2);
-      var md = id * (u2 * y3 - u3 * y2);
-      var mx = x1 - ma * u1 - mc * v1;
-      var my = y1 - mb * u1 - md * v1;
+      final id = 1.0 / (u2 * v3 - u3 * v2);
+      final ma = id * (v3 * x2 - v2 * x3);
+      final mb = id * (v3 * y2 - v2 * y3);
+      final mc = id * (u2 * x3 - u3 * x2);
+      final md = id * (u2 * y3 - u3 * y2);
+      final mx = x1 - ma * u1 - mc * v1;
+      final my = y1 - mb * u1 - md * v1;
 
       context.transform(ma * iw, mb * iw, mc * ih, md * ih, mx, my);
       context.drawImage(source!, 0, 0);
@@ -264,10 +264,10 @@ class RenderContextCanvas extends RenderContext {
   @override
   void renderTriangle(RenderState renderState, num x1, num y1, num x2, num y2,
       num x3, num y3, int color) {
-    var context = _renderingContext;
-    var matrix = renderState.globalMatrix;
-    var alpha = renderState.globalAlpha;
-    var blendMode = renderState.globalBlendMode;
+    final context = _renderingContext;
+    final matrix = renderState.globalMatrix;
+    final alpha = renderState.globalAlpha;
+    final blendMode = renderState.globalBlendMode;
 
     if (_activeAlpha != alpha) {
       _activeAlpha = alpha;
@@ -296,10 +296,10 @@ class RenderContextCanvas extends RenderContext {
   @override
   void renderTriangleMesh(RenderState renderState, Int16List ixList,
       Float32List vxList, int color) {
-    var context = _renderingContext;
-    var matrix = renderState.globalMatrix;
-    var alpha = renderState.globalAlpha;
-    var blendMode = renderState.globalBlendMode;
+    final context = _renderingContext;
+    final matrix = renderState.globalMatrix;
+    final alpha = renderState.globalAlpha;
+    final blendMode = renderState.globalBlendMode;
 
     if (_activeAlpha != alpha) {
       _activeAlpha = alpha;
@@ -316,15 +316,15 @@ class RenderContextCanvas extends RenderContext {
     context.beginPath();
 
     for (var i = 0; i < ixList.length - 2; i += 3) {
-      var i0 = ixList[i + 0] << 1;
-      var i1 = ixList[i + 1] << 1;
-      var i2 = ixList[i + 2] << 1;
-      var x1 = vxList[i0 + 0];
-      var y1 = vxList[i0 + 1];
-      var x2 = vxList[i1 + 0];
-      var y2 = vxList[i1 + 1];
-      var x3 = vxList[i2 + 0];
-      var y3 = vxList[i2 + 1];
+      final i0 = ixList[i + 0] << 1;
+      final i1 = ixList[i + 1] << 1;
+      final i2 = ixList[i + 2] << 1;
+      final x1 = vxList[i0 + 0];
+      final y1 = vxList[i0 + 1];
+      final x2 = vxList[i1 + 0];
+      final y2 = vxList[i1 + 1];
+      final x3 = vxList[i2 + 0];
+      final y3 = vxList[i2 + 1];
       context.moveTo(x1, y1);
       context.lineTo(x2, y2);
       context.lineTo(x3, y3);
