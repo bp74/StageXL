@@ -261,7 +261,7 @@ class Juggler implements Animatable {
   ///     // Delay the call of action by 5.0 seconds.
   ///     juggler.delayCall(action, 5.0);
 
-  DelayedCall delayCall(Function action, num delay) {
+  DelayedCall delayCall(void Function() action, num delay) {
     final delayedCall = DelayedCall(action, delay);
     add(delayedCall);
     return delayedCall;

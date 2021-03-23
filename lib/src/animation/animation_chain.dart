@@ -25,8 +25,8 @@ part of stagexl.animation;
 class AnimationChain implements Animatable {
   final List<Animatable> _animatables = <Animatable>[];
 
-  Function? _onStart;
-  Function? _onComplete;
+  void Function()? _onStart;
+  void Function()? _onComplete;
 
   num _time = 0.0;
   num _delay = 0.0;

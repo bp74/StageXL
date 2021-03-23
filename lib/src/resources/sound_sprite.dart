@@ -22,7 +22,7 @@ class SoundSprite {
     final soundSprite = SoundSprite();
 
     final soundSpriteJson = await HttpRequest.getString(url);
-    final data = json.decode(soundSpriteJson);
+    final data = json.decode(soundSpriteJson) as Map;
     final urls = (data['urls'] as List).cast<String>();
     final segments = data['sprite'];
     final soundUrls = <String>[];

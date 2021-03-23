@@ -32,9 +32,9 @@ class Tween implements Animatable {
   final TransitionFunction _transition;
   final List<TweenProperty> _tweenPropertyList = <TweenProperty>[];
 
-  Function? _onStart;
-  Function? _onUpdate;
-  Function? _onComplete;
+  void Function()? _onStart;
+  void Function()? _onUpdate;
+  void Function()? _onComplete;
 
   num _totalTime = 0.0;
   num _currentTime = 0.0;
