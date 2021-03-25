@@ -3,6 +3,9 @@ include: package:pedantic/analysis_options.yaml
 analyzer:
   strong-mode:
     implicit-casts: false
+  errors:
+    unnecessary_getters_setters: ignore
+    unsafe_html: ignore
 
 linter:
   rules:
@@ -10,6 +13,7 @@ linter:
     #- avoid_catching_errors
     #- avoid_classes_with_only_static_members
     #- avoid_function_literals_in_foreach_calls
+    - avoid_dynamic_calls
     - avoid_private_typedef_functions
     - avoid_redundant_argument_values
     - avoid_renaming_method_parameters

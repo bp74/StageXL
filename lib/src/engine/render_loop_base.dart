@@ -1,6 +1,6 @@
 part of stagexl.engine;
 
-List _globalFrameListeners = [];
+final _globalFrameListeners = <void Function(double)>[];
 num _globalFrameTime = double.maxFinite;
 int _globalFrameCallbackId = -1;
 

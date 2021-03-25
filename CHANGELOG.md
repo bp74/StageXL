@@ -8,9 +8,9 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
-### 2.0.0-nullsafety.0
+### 2.0.0
   * Upgrade to null safety
-  * Update Dart SDK restraint to >= 2.12.0-0
+  * Update Dart SDK restraint to >= 2.12.0
   
 #### 1.4.6
   * Upgraded to latest package versions
