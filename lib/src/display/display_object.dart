@@ -985,9 +985,9 @@ abstract class DisplayObject extends EventDispatcher
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  DisplayObject _getCommonAncestor(DisplayObject other) {
-    var obj1 = this;
-    var obj2 = other;
+  DisplayObject? _getCommonAncestor(DisplayObject other) {
+    DisplayObject? obj1 = this;
+    DisplayObject? obj2 = other;
     var depth1 = 0;
     var depth2 = 0;
 
@@ -998,17 +998,17 @@ abstract class DisplayObject extends EventDispatcher
       depth2 += 1;
     }
     while (depth1 > depth2) {
-      obj1 = obj1.parent!;
+      obj1 = obj1?.parent;
       depth1 -= 1;
     }
     while (depth2 > depth1) {
-      obj2 = obj2.parent!;
+      obj2 = obj2?.parent;
       depth2 -= 1;
     }
 
     while (identical(obj1, obj2) == false) {
-      obj1 = obj1.parent!;
-      obj2 = obj2.parent!;
+      obj1 = obj1?.parent;
+      obj2 = obj2?.parent;
     }
 
     return obj1;

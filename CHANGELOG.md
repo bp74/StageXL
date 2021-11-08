@@ -8,6 +8,9 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+### 2.0.1
+  * Bug fix for common ancestor call for object to be null.
+
 ### 2.0.0
   * Upgrade to null safety
   * Update Dart SDK restraint to >= 2.12.0

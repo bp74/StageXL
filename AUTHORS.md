@@ -4,6 +4,7 @@ In alphabetical order:
 
 Alex Gann <https://github.com/alexgann>  
 Andrew Gerard <https://github.com/kinetifex>  
+Andrew Lugg <https://github.com/andrewlugg>  
 Arron Washington <https://github.com/radicaled>  
 Bernhard Pichler <https://github.com/bp74>  
 John Talley <https://github.com/jwt-sgg>  
