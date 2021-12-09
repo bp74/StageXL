@@ -15,6 +15,7 @@ Mark Nordine <https://github.com/mnordine>
 Michael Randolph <https://github.com/mrand01>  
 Nils Döhring <https://github.com/nilsdoehring>  
 Philippe Elsass <https://github.com/elsassph>  
+QuaverJosh <https://github.com/QuaverJosh>  
 Sébastien Geelen <https://github.com/sebgeelen>  
 Wilker Lúcio <https://github.com/wilkerlucio>  
 Xavier Hainaux <https://github.com/xavierhainaux>  
