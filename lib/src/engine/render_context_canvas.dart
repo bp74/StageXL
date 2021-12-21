@@ -22,6 +22,8 @@ class RenderContextCanvas extends RenderContext {
   RenderEngine get renderEngine => RenderEngine.Canvas2D;
 
   //---------------------------------------------------------------------------
+  @override
+  Object? getParameter(int parameter) => null;
 
   @override
   void reset() {

@@ -249,6 +249,14 @@ class Stage extends DisplayObjectContainer {
     _updateCanvasSize();
   }
 
+  /// Get the max texture size from the current WebGL canvas.
+  /// Will return null if called on Canvas2D
+  int? get maxTextureSize => _renderContext.maxTextureSize as int?;
+
+  /// Access WebGL parameters, you need to get the int's for access through
+  /// dart:web_gl. Will return null if called on Canvas2D
+  Object? getParameter(int parameter) => _renderContext.getParameter(parameter);
+
   /// Gets and sets the height of the Stage in world coordinates.
   /// The initial value of [sourceHeight] is the height of the canvas
   /// element or the height provided in the constructor of the Stage.

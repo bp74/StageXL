@@ -68,6 +68,9 @@ class RenderContextWebGL extends RenderContext {
   @override
   RenderEngine get renderEngine => RenderEngine.WebGL;
 
+  @override
+  Object? get maxTextureSize => _renderingContext.getParameter(gl.WebGL.MAX_TEXTURE_SIZE);
+
   RenderTexture? get activeRenderTexture => _activeRenderTextures[0];
   RenderProgram get activeRenderProgram => _activeRenderProgram;
   RenderFrameBuffer? get activeRenderFrameBuffer => _activeRenderFrameBuffer;
@@ -78,6 +81,8 @@ class RenderContextWebGL extends RenderContext {
   int get contextIdentifier => _contextIdentifier;
 
   //---------------------------------------------------------------------------
+  @override
+  Object? getParameter(int parameter) => _renderingContext.getParameter(parameter);
 
   @override
   void reset() {

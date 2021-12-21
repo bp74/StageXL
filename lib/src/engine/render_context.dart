@@ -23,6 +23,9 @@ abstract class RenderContext {
 
   RenderEngine get renderEngine;
 
+  Object? maxTextureSize;
+  Object? getParameter(int parameter);
+
   void reset();
   void clear(int color);
   void flush();
