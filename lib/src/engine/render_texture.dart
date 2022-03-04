@@ -174,9 +174,9 @@ class RenderTexture {
       if (_renderContext == null || _texture == null) return;
       if (_renderContext!.contextIdentifier != contextIdentifier) return;
 
-      final target = gl.WebGL.TEXTURE_2D;
-      final rgba = gl.WebGL.RGBA;
-      final type = gl.WebGL.UNSIGNED_BYTE;
+      const target = gl.WebGL.TEXTURE_2D;
+      const rgba = gl.WebGL.RGBA;
+      const type = gl.WebGL.UNSIGNED_BYTE;
 
       _renderContext!.activateRenderTexture(this);
       _renderingContext!
@@ -203,9 +203,9 @@ class RenderTexture {
     if (_renderContext == null || _texture == null) return;
     if (_renderContext!.contextIdentifier != contextIdentifier) return;
 
-    final target = gl.WebGL.TEXTURE_2D;
-    final rgba = gl.WebGL.RGBA;
-    final type = gl.WebGL.UNSIGNED_BYTE;
+    const target = gl.WebGL.TEXTURE_2D;
+    const rgba = gl.WebGL.RGBA;
+    const type = gl.WebGL.UNSIGNED_BYTE;
 
     _renderContext!.flush();
     _renderContext!.activateRenderTexture(this);
@@ -227,9 +227,9 @@ class RenderTexture {
 
   void activate(RenderContextWebGL renderContext, int textureSlot) {
     if (contextIdentifier != renderContext.contextIdentifier) {
-      final target = gl.WebGL.TEXTURE_2D;
-      final rgba = gl.WebGL.RGBA;
-      final type = gl.WebGL.UNSIGNED_BYTE;
+      const target = gl.WebGL.TEXTURE_2D;
+      const rgba = gl.WebGL.RGBA;
+      const type = gl.WebGL.UNSIGNED_BYTE;
 
       _renderContext = renderContext;
       _contextIdentifier = renderContext.contextIdentifier;

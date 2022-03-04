@@ -61,12 +61,12 @@ class RenderFrameBuffer {
         _renderContext.activateRenderStencilBuffer(_renderStencilBuffer!);
       }
 
-      final target = gl.WebGL.FRAMEBUFFER;
-      final color = gl.WebGL.COLOR_ATTACHMENT0;
-      final colorTarget = gl.WebGL.TEXTURE_2D;
+      const target = gl.WebGL.FRAMEBUFFER;
+      const color = gl.WebGL.COLOR_ATTACHMENT0;
+      const colorTarget = gl.WebGL.TEXTURE_2D;
       final colorData = _renderTexture!.texture;
-      final stencil = gl.WebGL.DEPTH_STENCIL_ATTACHMENT;
-      final stencilTarget = gl.WebGL.RENDERBUFFER;
+      const stencil = gl.WebGL.DEPTH_STENCIL_ATTACHMENT;
+      const stencilTarget = gl.WebGL.RENDERBUFFER;
       final stencilData = _renderStencilBuffer!.renderbuffer;
 
       _renderingContext!.bindFramebuffer(target, _framebuffer);
