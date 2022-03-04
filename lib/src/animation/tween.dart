@@ -53,10 +53,6 @@ class Tween implements Animatable {
       [TransitionFunction transition = Transition.linear])
       : _tweenObject = tweenObject,
         _transition = transition {
-    if (_tweenObject is! TweenObject) {
-      throw ArgumentError('tweenObject');
-    }
-
     _totalTime = max(0.0001, time);
   }
 
