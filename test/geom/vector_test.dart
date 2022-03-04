@@ -2,8 +2,8 @@
 library vector_test;
 
 import 'dart:math';
-import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('VectorIsZero', () {

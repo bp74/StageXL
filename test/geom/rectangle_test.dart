@@ -1,8 +1,8 @@
 @TestOn('browser')
 library rectangle_test;
 
-import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('new rectangle', () {

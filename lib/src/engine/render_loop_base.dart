@@ -41,9 +41,7 @@ abstract class RenderLoopBase {
 
   void _onGlobalFrame(num deltaTime) {
     if (_running && deltaTime >= 0) {
-      if (deltaTime is num) {
-        advanceTime(deltaTime);
-      }
+      advanceTime(deltaTime);
     }
   }
 }

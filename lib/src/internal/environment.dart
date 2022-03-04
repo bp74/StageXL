@@ -13,11 +13,7 @@ final bool isTouchEventSupported = _checkTouchEventSupport();
 
 //-------------------------------------------------------------------------------------
 
-num _checkDevicePixelRatio() {
-  var devicePixelRatio = window.devicePixelRatio;
-  if (devicePixelRatio is! num) devicePixelRatio = 1.0;
-  return devicePixelRatio;
-}
+num _checkDevicePixelRatio() => window.devicePixelRatio;
 
 //-------------------------------------------------------------------------------------
 
