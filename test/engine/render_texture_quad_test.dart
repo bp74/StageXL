@@ -2,8 +2,8 @@
 library render_texture_quad_test;
 
 import 'dart:typed_data';
-import 'package:test/test.dart';
 import 'package:stagexl/stagexl.dart';
+import 'package:test/test.dart';
 
 //-----------------------------------------------------------------------------
 
