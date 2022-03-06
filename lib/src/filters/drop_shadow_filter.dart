@@ -9,12 +9,16 @@ import '../internal/filter_helpers.dart';
 import '../internal/tools.dart';
 
 class DropShadowFilter extends BitmapFilter {
-  num _distance = 8;
-  num _angle = pi / 4;
+  /// The distance from the object to the shadow.
+  num distance;
+
+  /// The angle where the shadow is casted to.
+  num angle;
+
   int _blurX = 4;
   int _blurY = 4;
   int _quality = 1;
-  int _color = 0xFF000000;
+  int color;
 
   bool knockout = false;
   bool hideObject = false;
@@ -23,17 +27,14 @@ class DropShadowFilter extends BitmapFilter {
   final List<int> _renderPassTargets = <int>[];
 
   DropShadowFilter(
-      [num distance = 8,
-      num angle = pi / 4,
-      int color = 0xFF000000,
+      [this.distance = 8,
+      this.angle = pi / 4,
+      this.color = 0xFF000000,
       int blurX = 4,
       int blurY = 4,
       int quality = 1,
       this.knockout = false,
       this.hideObject = false]) {
-    this.distance = distance;
-    this.angle = angle;
-    this.color = color;
     this.blurX = blurX;
     this.blurY = blurY;
     this.quality = quality;
@@ -64,29 +65,6 @@ class DropShadowFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
-  /// The distance from the object to the shadow.
-
-  num get distance => _distance;
-
-  set distance(num value) {
-    _distance = value;
-  }
-
-  /// The angle where the shadow is casted to.
-
-  num get angle => _angle;
-
-  set angle(num value) {
-    _angle = value;
-  }
-
-  /// The color of the shadow.
-
-  int get color => _color;
-
-  set color(int value) {
-    _color = value;
-  }
 
   /// The horizontal blur radius in the range from 0 to 64.
 

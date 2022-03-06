@@ -120,7 +120,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
       p.clear();
       for (var parameterMatch in _parameterRegExp.allMatches(parameter)) {
-        p.add(double.parse(parameterMatch.group(0)!).toDouble());
+        p.add(double.parse(parameterMatch.group(0)!));
       }
 
       switch (command) {
@@ -373,7 +373,7 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       final cy = my + sinRotation * vx - cosRotation * vy;
       final a1 = atan2((uy + vy) * rx, (ux - vx) * ry);
       final a2 = atan2((vy - uy) * rx, (-ux - vx) * ry);
-      final antiClockwise = sweepFlag ? false : true;
+      final antiClockwise = !sweepFlag;
 
       _add(GraphicsCommandArcElliptical(
           cx, cy, rx, ry, rotation, a1, a2, antiClockwise));

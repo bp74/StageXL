@@ -13,15 +13,14 @@ class FlipBook extends InteractiveObject implements Animatable {
   double? _frameTime;
 
   bool _play = false;
-  bool _loop;
+  bool loop;
   final Event _progressEvent;
   final Event _completeEvent;
 
   //---------------------------------------------------------------------------
 
-  FlipBook(this._bitmapDatas, [int frameRate = 30, bool loop = true])
+  FlipBook(this._bitmapDatas, [int frameRate = 30, this.loop = true])
       : _frameDurations = List.filled(_bitmapDatas.length, 1.0 / frameRate),
-        _loop = loop,
         _progressEvent = Event(Event.PROGRESS),
         _completeEvent = Event(Event.COMPLETE);
 
@@ -41,11 +40,6 @@ class FlipBook extends InteractiveObject implements Animatable {
 
   int get currentFrame => _currentFrame;
   int get totalFrames => _bitmapDatas.length;
-
-  bool get loop => _loop;
-  set loop(bool value) {
-    _loop = value;
-  }
 
   bool get playing => _play;
 
@@ -102,7 +96,7 @@ class FlipBook extends InteractiveObject implements Animatable {
   ///  * the optionally specified argument [stopFrame] was reached.
   ///  * the [stop] method was called.
 
-  Future playWith(Juggler juggler, {int? gotoFrame, int? stopFrame}) {
+  Future<Event> playWith(Juggler juggler, {int? gotoFrame, int? stopFrame}) {
     _play = true;
     _frameTime = null;
     _currentFrame = gotoFrame ?? currentFrame;

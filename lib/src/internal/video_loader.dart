@@ -12,8 +12,8 @@ class VideoLoader {
   final AggregateError aggregateError = AggregateError('Error loading video.');
   final Completer<VideoElement> _completer = Completer<VideoElement>();
 
-  late StreamSubscription _onCanPlaySubscription;
-  late StreamSubscription _onErrorSubscription;
+  late StreamSubscription<Event> _onCanPlaySubscription;
+  late StreamSubscription<Event> _onErrorSubscription;
   final List<String> _urls = <String>[];
   bool _loadData = false;
 

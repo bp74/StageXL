@@ -1,7 +1,7 @@
 part of stagexl.engine;
 
 class _ContextState {
-  double alpha = 1.0;
+  double alpha = 1;
   BlendMode blendMode = BlendMode.NORMAL;
 
   final Matrix matrix = Matrix.fromIdentity();

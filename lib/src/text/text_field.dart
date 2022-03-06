@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings, use_string_buffers
+
 part of stagexl.text;
 
 class TextField extends InteractiveObject {
@@ -23,7 +25,7 @@ class TextField extends InteractiveObject {
   String _passwordChar = '•';
   int _backgroundColor = Color.White;
   int _borderColor = Color.Black;
-  int _maxChars = 0;
+  int maxChars = 0;
   num _width = 100;
   num _height = 100;
 
@@ -70,7 +72,6 @@ class TextField extends InteractiveObject {
   String get passwordChar => _passwordChar;
   int get backgroundColor => _backgroundColor;
   int get borderColor => _borderColor;
-  int get maxChars => _maxChars;
 
   //-------------------------------------------------------------------------------------------------
 
@@ -150,10 +151,6 @@ class TextField extends InteractiveObject {
   set borderColor(int value) {
     _borderColor = value;
     _refreshPending |= 2;
-  }
-
-  set maxChars(int value) {
-    _maxChars = value;
   }
 
   set cacheAsBitmap(bool value) {
@@ -757,7 +754,7 @@ class TextField extends InteractiveObject {
       if (newText == '\r') newText = '\n';
       if (newText == '\n' && _multiline == false) newText = '';
       if (newText == '') return;
-      if (_maxChars != 0 && textLength >= _maxChars) return;
+      if (maxChars != 0 && textLength >= maxChars) return;
 
       _text = _text.substring(0, caretIndex) +
           newText +

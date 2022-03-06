@@ -23,12 +23,6 @@ class BitmapData implements BitmapDrawable {
 
   static BitmapDataLoadOptions defaultLoadOptions = BitmapDataLoadOptions();
 
-  BitmapData.fromRenderTextureQuad(this.renderTextureQuad)
-      : width = renderTextureQuad.targetWidth,
-        height = renderTextureQuad.targetHeight;
-
-  //----------------------------------------------------------------------------
-
   factory BitmapData(num width, num height,
       [int fillColor = 0xFFFFFFFF, num pixelRatio = 1.0]) {
     final textureWidth = (width * pixelRatio).round();
@@ -37,6 +31,10 @@ class BitmapData implements BitmapDrawable {
     final renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
+
+  BitmapData.fromRenderTextureQuad(this.renderTextureQuad)
+      : width = renderTextureQuad.targetWidth,
+        height = renderTextureQuad.targetHeight;
 
   factory BitmapData.fromImageElement(ImageElement imageElement,
       [num pixelRatio = 1.0]) {

@@ -226,6 +226,7 @@ class ResourceManager {
     } else if (resource.value != null) {
       return resource.value;
     } else if (resource.error != null) {
+      // ignore: only_throw_errors
       throw resource.error!;
     } else {
       throw StateError("Resource '$name' has not finished loading yet.");

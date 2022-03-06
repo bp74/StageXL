@@ -16,20 +16,20 @@ void main() {
 
   test('EventDispatcher.addEventListener', () {
     expect(dispatcher.hasEventListener(eventType), isFalse);
-    dispatcher.addEventListener(eventType, (Event event) => Never);
+    dispatcher.addEventListener(eventType, (event) => Never);
     expect(dispatcher.hasEventListener(eventType), isTrue);
   });
 
   test('EventDispatcher.removeEventListeners', () {
-    dispatcher.addEventListener(eventType, (Event event) => Never);
-    dispatcher.addEventListener(eventType, (Event event) => Never);
+    dispatcher.addEventListener(eventType, (event) => Never);
+    dispatcher.addEventListener(eventType, (event) => Never);
     expect(dispatcher.hasEventListener(eventType), isTrue);
     dispatcher.removeEventListeners(eventType);
     expect(dispatcher.hasEventListener(eventType), isFalse);
   });
 
   test('EventDispatcher.removeListener - test correct removal', () {
-    final actual = [];
+    final actual = <String>[];
     final expected = ['listener1', 'listener3'];
 
     void listener1(Event event) => actual.add('listener1');
@@ -38,7 +38,7 @@ void main() {
     dispatcher.addEventListener(eventType, listener1);
     dispatcher.addEventListener(eventType, listener2);
     dispatcher.addEventListener(
-        eventType, (Event event) => actual.add('listener3'));
+        eventType, (event) => actual.add('listener3'));
     dispatcher.removeEventListener(eventType, listener2);
 
     dispatcher.dispatchEvent(Event(eventType));
@@ -48,7 +48,7 @@ void main() {
   test(
       'EventDispatcher.addEventListener - test with priorities and correct fire order',
       () {
-    final actual = [];
+    final actual = <int>[];
     final expected = [1, 2, 3, 4];
 
     void listener1(Event event) => actual.add(4);
@@ -67,19 +67,19 @@ void main() {
   //----------
 
   test('EventStream.listen', () {
-    dispatcher.on(eventType).listen((Event event) => Never);
+    dispatcher.on(eventType).listen((event) => Never);
     expect(dispatcher.hasEventListener(eventType), isTrue);
   });
 
   test('EventStreamSubscription.cancel', () {
     final subscription =
-        dispatcher.on(eventType).listen((Event event) => Never);
+        dispatcher.on(eventType).listen((event) => Never);
     subscription.cancel();
     expect(dispatcher.hasEventListener(eventType), isFalse);
   });
 
   test('EventStreamSubscription.cancel - test correct removal', () {
-    final actual = [];
+    final actual = <String>[];
     final expected = ['listener1', 'listener3'];
 
     void listener1(Event event) => actual.add('listener1');
@@ -89,7 +89,7 @@ void main() {
     final sub2 = dispatcher.on(eventType).listen(listener2);
     final sub3 = dispatcher
         .on(eventType)
-        .listen((Event event) => actual.add('listener3'));
+        .listen((event) => actual.add('listener3'));
 
     sub2.cancel();
     dispatcher.dispatchEvent(Event(eventType));
@@ -101,7 +101,7 @@ void main() {
   });
 
   test('EventStream.listen - test with priorities and correct fire order', () {
-    final actual = [];
+    final actual = <int>[];
     final expected = [1, 2, 3, 4];
 
     void listener1(Event event) => actual.add(4);

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings, use_string_buffers
+
 part of stagexl.drawing;
 
 class GraphicsGradientColorStop {
@@ -187,6 +189,7 @@ class GraphicsGradient {
   }
 
   String _createCanvasCacheKey() {
+    // TODO: Profile to see if using a StringBuffer is faster here.
     var key = '';
 
     if (_type == GraphicsGradientType.Linear) {

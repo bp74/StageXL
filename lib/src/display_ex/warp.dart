@@ -8,14 +8,8 @@ part of stagexl.display_ex;
 /// of the [transformationMatrix] on your own.
 
 class Warp extends DisplayObjectContainer {
-  Matrix _matrix = Matrix.fromIdentity();
+  Matrix matrix = Matrix.fromIdentity();
 
   @override
-  Matrix get transformationMatrix => _matrix;
-
-  Matrix get matrix => _matrix;
-
-  set matrix(Matrix value) {
-    _matrix = value;
-  }
+  Matrix get transformationMatrix => matrix;
 }

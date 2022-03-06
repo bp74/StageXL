@@ -29,16 +29,15 @@ import '../internal/tools.dart';
 ///
 
 class ChromaKeyFilter extends BitmapFilter {
-  int _backgroundColor;
+  int backgroundColor;
   int _solidThreshold;
   int _invisibleThreshold;
 
   ChromaKeyFilter(
-      {int backgroundColor = 0xFF00FF00,
+      {this.backgroundColor = 0xFF00FF00,
       int solidThreshold = 140,
       int invisibleThreshold = 20})
-      : _backgroundColor = backgroundColor,
-        _solidThreshold = solidThreshold,
+      : _solidThreshold = solidThreshold,
         _invisibleThreshold = invisibleThreshold {
     if (invisibleThreshold < 0) {
       throw ArgumentError('The minimum solidThreshold is 0.');
@@ -49,13 +48,8 @@ class ChromaKeyFilter extends BitmapFilter {
     }
   }
 
-  int get backgroundColor => _backgroundColor;
   int get solidThreshold => _solidThreshold;
   int get invisibleThreshold => _invisibleThreshold;
-
-  set backgroundColor(int backgroundColor) {
-    _backgroundColor = backgroundColor;
-  }
 
   set solidThreshold(int solidThreshold) {
     if (solidThreshold < _invisibleThreshold) {
@@ -74,7 +68,7 @@ class ChromaKeyFilter extends BitmapFilter {
 
   @override
   BitmapFilter clone() => ChromaKeyFilter(
-      backgroundColor: _backgroundColor,
+      backgroundColor: backgroundColor,
       solidThreshold: _solidThreshold,
       invisibleThreshold: _invisibleThreshold);
 

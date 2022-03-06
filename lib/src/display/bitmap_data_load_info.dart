@@ -7,7 +7,7 @@ part of stagexl.display;
 class BitmapDataLoadInfo {
   final String _sourceUrl;
   String _loaderUrl;
-  double _pixelRatio = 1.0;
+  double _pixelRatio = 1;
 
   BitmapDataLoadInfo(String url, List<double> pixelRatios)
       : _sourceUrl = url,
@@ -20,7 +20,7 @@ class BitmapDataLoadInfo {
       final originPixelRatioFractions = (match.group(2) ?? '.').length - 1;
       final originPixelRatio = double.parse(match.group(1)!);
       final devicePixelRatio = env.devicePixelRatio;
-      final loaderPixelRatio = pixelRatios.fold<num>(0.0, (num a, num b) {
+      final loaderPixelRatio = pixelRatios.fold<num>(0.0, (a, b) {
         final aDelta = (a - devicePixelRatio).abs();
         final bDelta = (b - devicePixelRatio).abs();
         return aDelta < bDelta && a > 0.0 ? a : b;

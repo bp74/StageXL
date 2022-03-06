@@ -318,7 +318,6 @@ class RenderContextWebGL extends RenderContext {
 
     for (var i = 0; i < filters.length; i++) {
       RenderTextureQuad sourceRenderTextureQuad;
-      RenderFrameBuffer? sourceRenderFrameBuffer;
       final filter = filters[i];
 
       final renderPassSources = filter.renderPassSources;
@@ -327,6 +326,8 @@ class RenderContextWebGL extends RenderContext {
       for (var pass = 0; pass < renderPassSources.length; pass++) {
         final renderPassSource = renderPassSources[pass];
         final renderPassTarget = renderPassTargets[pass];
+
+        final RenderFrameBuffer sourceRenderFrameBuffer;
 
         // get sourceRenderTextureQuad
 

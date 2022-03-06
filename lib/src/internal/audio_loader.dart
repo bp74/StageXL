@@ -12,8 +12,8 @@ class AudioLoader {
   final AggregateError aggregateError = AggregateError('Error loading sound.');
   final Completer<AudioElement> _completer = Completer<AudioElement>();
 
-  late StreamSubscription _onCanPlaySubscription;
-  late StreamSubscription _onErrorSubscription;
+  late StreamSubscription<Event> _onCanPlaySubscription;
+  late StreamSubscription<Event> _onErrorSubscription;
   final List<String> _urls = <String>[];
   bool _loadData = false;
 
