@@ -13,19 +13,6 @@ part of stagexl.display;
 abstract class DisplayObjectContainer extends InteractiveObject
     implements DisplayObjectParent<DisplayObject> {
   final List<DisplayObject> _children = <DisplayObject>[];
-  bool _mouseChildren = true;
-  bool _tabChildren = true;
-
-  //----------------------------------------------------------------------------
-
-  @override
-  DisplayObjectChildren<DisplayObject> get children =>
-      DisplayObjectChildren<DisplayObject>._(this, _children);
-
-  /// The number of children of this container.
-
-  @override
-  int get numChildren => _children.length;
 
   /// Determines whether or not the children of the object are mouse, or user
   /// input device, enabled.
@@ -46,22 +33,23 @@ abstract class DisplayObjectContainer extends InteractiveObject
   ///
   /// No event is dispatched by setting this property. You must use the on...()
   /// event methods to create interactive functionality.
-
-  bool get mouseChildren => _mouseChildren;
-
-  set mouseChildren(bool value) {
-    _mouseChildren = value;
-  }
+  bool mouseChildren = true;
 
   /// Determines whether the children of this container are tab enabled.
   ///
   /// The default is true.
+  bool tabChildren = true;
 
-  bool get tabChildren => _tabChildren;
+  //----------------------------------------------------------------------------
 
-  set tabChildren(bool value) {
-    _tabChildren = value;
-  }
+  @override
+  DisplayObjectChildren<DisplayObject> get children =>
+      DisplayObjectChildren<DisplayObject>._(this, _children);
+
+  /// The number of children of this container.
+
+  @override
+  int get numChildren => _children.length;
 
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
@@ -406,7 +394,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
         if (displayObject == null) continue;
 
         if (displayObject is InteractiveObject && displayObject.mouseEnabled) {
-          return _mouseChildren ? displayObject : this;
+          return mouseChildren ? displayObject : this;
         }
 
         hit = this;

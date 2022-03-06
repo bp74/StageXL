@@ -76,7 +76,7 @@ class Juggler implements Animatable {
   ///
   ///     await juggler.delay(1.0);
 
-  Future delay(num time) async {
+  Future<void> delay(num time) async {
     final nextTime = elapsedTime + time;
     await for (var elapsedTime in onElapsedTimeChange) {
       if (elapsedTime >= nextTime) break;

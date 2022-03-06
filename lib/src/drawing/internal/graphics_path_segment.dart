@@ -2,14 +2,14 @@ part of stagexl.drawing;
 
 class _GraphicsPathSegment extends _GraphicsMeshSegment {
   bool? _clockwise;
-  bool _closed = false;
+  bool closed = false;
 
   _GraphicsPathSegment() : super(16, 32);
 
   _GraphicsPathSegment.clone(_GraphicsPathSegment segment)
       : super.clone(segment) {
     _clockwise = segment.clockwise;
-    _closed = segment.closed;
+    closed = segment.closed;
   }
 
   //---------------------------------------------------------------------------
@@ -17,12 +17,6 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
   bool get clockwise {
     _clockwise ??= _calculateArea() >= 0.0;
     return _clockwise!;
-  }
-
-  bool get closed => _closed;
-
-  set closed(bool value) {
-    _closed = value;
   }
 
   //---------------------------------------------------------------------------
@@ -142,7 +136,7 @@ class _GraphicsPathSegment extends _GraphicsMeshSegment {
   double _calculateArea() {
     final buffer = _vertexBuffer;
     final count = _vertexCount;
-    if (count < 3) return 0.0;
+    if (count < 3) return 0;
 
     num value = 0.0;
     num x1 = buffer[(count - 1) * 2 + 0];

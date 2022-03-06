@@ -1,3 +1,5 @@
+// ignore_for_file: close_sinks
+
 part of stagexl.engine;
 
 /// The implementation kind of the render context.

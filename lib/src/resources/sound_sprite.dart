@@ -59,8 +59,8 @@ class SoundSprite {
 
   SoundSpriteSegment getSegment(String name) {
     try {
-      final segment = _segments.firstWhere((s) => s.name == name);
-      return segment;
+      return _segments.firstWhere((s) => s.name == name);
+    // ignore: avoid_catching_errors
     } on StateError catch (_) {
       throw ArgumentError("SoundSpriteSegment not found: '$name'");
     }

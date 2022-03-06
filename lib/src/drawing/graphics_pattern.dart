@@ -57,12 +57,11 @@ class GraphicsPattern {
 
   RenderTextureQuad _renderTextureQuad;
   GraphicsPatternType _type;
-  Matrix? _matrix;
+  Matrix? matrix;
 
   GraphicsPattern(RenderTextureQuad renderTextureQuad, GraphicsPatternType type,
-      [Matrix? matrix])
+      [this.matrix])
       : _renderTextureQuad = renderTextureQuad,
-        _matrix = matrix,
         _type = type;
 
   GraphicsPattern.repeat(RenderTextureQuad renderTextureQuad, [Matrix? matrix])
@@ -85,12 +84,6 @@ class GraphicsPattern {
   set type(GraphicsPatternType value) {
     disposeCachedRenderObjects(false);
     _type = value;
-  }
-
-  Matrix? get matrix => _matrix;
-
-  set matrix(Matrix? value) {
-    _matrix = value;
   }
 
   RenderTextureQuad get renderTextureQuad {

@@ -15,7 +15,7 @@ class TimeGauge extends Gauge implements Animatable {
   num _totalTime = 0.0;
 
   late Map<String, num> _alarms;
-  bool _alarmsEnabled = true;
+  bool alarmsEnabled = true;
 
   TimeGauge(num time, BitmapData bitmapData,
       [String direction = Gauge.DIRECTION_LEFT])
@@ -75,12 +75,6 @@ class TimeGauge extends Gauge implements Animatable {
   num get totalTime => _totalTime;
   bool get isStarted => _isStarted;
 
-  bool get alarmsEnabled => _alarmsEnabled;
-
-  set alarmsEnabled(bool value) {
-    _alarmsEnabled = value;
-  }
-
   num get restTime => ratio * totalTime;
 
   set restTime(num value) {
@@ -103,7 +97,7 @@ class TimeGauge extends Gauge implements Animatable {
   set ratio(num value) {
     final oldRatio = ratio;
     super.ratio = value;
-    if (_alarmsEnabled) {
+    if (alarmsEnabled) {
       _alarms.forEach((alarmName, alarmRatio) {
         if (alarmRatio < oldRatio && alarmRatio >= ratio) {
           dispatchEvent(Event(alarmName, true));

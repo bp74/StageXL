@@ -32,10 +32,15 @@ class Translation implements Animatable {
   NumUpdateFunction? _onUpdate;
   VoidFunction? _onComplete;
 
-  double _totalTime = 0.0;
-  double _currentTime = 0.0;
+  double _totalTime = 0;
+  double _currentTime = 0;
   num _delay = 0.0;
-  bool _roundToInt = false;
+
+  /// Specifies if the values should be rounded to an integer.
+  ///
+  /// Default is false.
+  bool roundToInt = false;
+
   bool _started = false;
 
   /// Creates a new [Translation].
@@ -70,7 +75,7 @@ class Translation implements Animatable {
         _currentValue = _startValue + transition * (_targetValue - _startValue);
 
         if (_onUpdate != null) {
-          _onUpdate!(_roundToInt ? _currentValue.round() : _currentValue);
+          _onUpdate!(roundToInt ? _currentValue.round() : _currentValue);
         }
         if (_onComplete != null && _currentTime == _totalTime) {
           _onComplete!();
@@ -93,7 +98,7 @@ class Translation implements Animatable {
   /// The current value.
   ///
   /// If [roundToInt] is true, this value will always be an [int].
-  num get currentValue => _roundToInt ? _currentValue.round() : _currentValue;
+  num get currentValue => roundToInt ? _currentValue.round() : _currentValue;
 
   /// The total time of this [Animation].
   double get totalTime => _totalTime;
@@ -111,15 +116,6 @@ class Translation implements Animatable {
       _currentTime = _currentTime + _delay - value;
       _delay = value;
     }
-  }
-
-  /// Specifies if the values should be rounded to an integer.
-  ///
-  /// Default is false.
-  bool get roundToInt => _roundToInt;
-
-  set roundToInt(bool value) {
-    _roundToInt = value;
   }
 
   /// Indicates if this [Translation] is completed.

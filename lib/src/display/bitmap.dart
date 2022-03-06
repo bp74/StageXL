@@ -20,14 +20,9 @@ part of stagexl.display;
 
 class Bitmap extends DisplayObject {
   /// The BitmapData object being referenced.
-  BitmapData? _bitmapData;
+  BitmapData? bitmapData;
 
-  BitmapData? get bitmapData => _bitmapData;
-  set bitmapData(BitmapData? value) {
-    _bitmapData = value;
-  }
-
-  Bitmap([BitmapData? bitmapData]) : _bitmapData = bitmapData;
+  Bitmap([this.bitmapData]);
 
   //---------------------------------------------------------------------------
 

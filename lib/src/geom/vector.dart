@@ -17,8 +17,8 @@ class Vector {
       : x = 0.0,
         y = 0.0;
   Vector.polar(num len, num angle)
-      : x = (len * cos(angle)).toDouble(),
-        y = (len * sin(angle)).toDouble();
+      : x = len * cos(angle),
+        y = len * sin(angle);
 
   Vector clone() => Vector(x, y);
 

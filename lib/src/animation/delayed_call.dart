@@ -18,7 +18,12 @@ class DelayedCall implements Animatable {
   final void Function() _action;
   num _currentTime = 0.0;
   num _totalTime = 0.0;
-  int _repeatCount = 1;
+
+
+  /// The number of times the delayed call should be executed.
+  ///
+  /// Default is 1.
+  int repeatCount = 1;
 
   /// Creates a new [DelayedCall].
   ///
@@ -27,9 +32,8 @@ class DelayedCall implements Animatable {
   ///
   /// The optional [repeatCount] specifies the number of times the delayed call
   /// should be executed.
-  DelayedCall(void Function() action, num delay, {int repeatCount = 1})
-      : _action = action,
-        _repeatCount = repeatCount {
+  DelayedCall(void Function() action, num delay, {this.repeatCount = 1})
+      : _action = action {
     _totalTime = max(delay, 0.0001);
   }
 
@@ -40,16 +44,16 @@ class DelayedCall implements Animatable {
   bool advanceTime(num time) {
     var newTime = _currentTime + time;
 
-    while (newTime >= _totalTime && _repeatCount > 0) {
+    while (newTime >= _totalTime && repeatCount > 0) {
       _currentTime = _totalTime;
-      _repeatCount--;
+      repeatCount--;
       _action();
       newTime -= _totalTime;
     }
 
     _currentTime = newTime;
 
-    return _repeatCount > 0;
+    return repeatCount > 0;
   }
 
   //----------------------------------------------------------------------------
@@ -59,13 +63,4 @@ class DelayedCall implements Animatable {
 
   /// The current time.
   num get currentTime => _currentTime;
-
-  /// The number of times the delayed call should be executed.
-  ///
-  /// Default is 1.
-  int get repeatCount => _repeatCount;
-
-  set repeatCount(int value) {
-    _repeatCount = value;
-  }
 }

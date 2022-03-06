@@ -44,15 +44,33 @@ abstract class DisplayObject extends EventDispatcher
   num _rotation = 0.0;
 
   num _alpha = 1.0;
-  bool _visible = true;
-  bool _off = false;
+
+  /// The visibility and availability of the display object.
+  ///
+  /// Display objects that are not visible are disabled. For example, if
+  /// visible=false for an [InteractiveObject] instance, it cannot be clicked.
+  bool visible = true;
+
+  /// The availability and visibility of the display object.
+  ///
+  /// Turning off a display object is similar to setting the [visible] property.
+  /// The [off] property is used by third party runtimes like StageXL_GAF and
+  /// StageXL_Toolkit to disable a DisplayObject without changing the [visible]
+  /// state or removing it from the container. It's recommended that users
+  /// do not use [off] but [visible] instead.
+  bool off = false;
 
   Mask? _mask;
   BlendMode? _blendMode;
   List<BitmapFilter> _filters = <BitmapFilter>[];
   _DisplayObjectCache? _cache;
 
-  String _name = '';
+  /// The instance name of this display object.
+  ///
+  /// The object can be identified in the child list of its parent display
+  /// object container by calling [DisplayObjectContainer.getChildByName].
+  String name = '';
+
   DisplayObjectParent? _parent;
 
   final Matrix _transformationMatrix = Matrix.fromIdentity();
@@ -309,31 +327,6 @@ abstract class DisplayObject extends EventDispatcher
     _transformationMatrixRefresh = true;
   }
 
-  /// The visibility and availability of the display object.
-  ///
-  /// Display objects that are not visible are disabled. For example, if
-  /// visible=false for an [InteractiveObject] instance, it cannot be clicked.
-
-  bool get visible => _visible;
-
-  set visible(bool value) {
-    _visible = value;
-  }
-
-  /// The availability and visibility of the display object.
-  ///
-  /// Turning off a display object is similar to setting the [visible] property.
-  /// The [off] property is used by third party runtimes like StageXL_GAF and
-  /// StageXL_Toolkit to disable a DisplayObject without changing the [visible]
-  /// state or removing it from the container. It's recommended that users
-  /// do not use [off] but [visible] instead.
-
-  bool get off => _off;
-
-  set off(bool value) {
-    _off = value;
-  }
-
   /// The alpha transparency value of the object specified.
   ///
   /// Valid values are 0 (fully transparent) to 1 (fully opaque). The default
@@ -383,17 +376,6 @@ abstract class DisplayObject extends EventDispatcher
 
   set blendMode(BlendMode? value) {
     _blendMode = value;
-  }
-
-  /// The instance name of this display object.
-  ///
-  /// The object can be identified in the child list of its parent display
-  /// object container by calling [DisplayObjectContainer.getChildByName].
-
-  String get name => _name;
-
-  set name(String value) {
-    _name = value;
   }
 
   /// This getter gives you access to the underlying [RenderTextureQuad] if
@@ -1001,6 +983,7 @@ abstract class DisplayObject extends EventDispatcher
       obj1 = obj1?.parent;
       depth1 -= 1;
     }
+    // ignore: invariant_booleans
     while (depth2 > depth1) {
       obj2 = obj2?.parent;
       depth2 -= 1;

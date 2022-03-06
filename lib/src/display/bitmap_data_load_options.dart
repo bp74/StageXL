@@ -40,11 +40,11 @@ class BitmapDataLoadOptions {
   ///     var resourceManager = new ResourceManager();
   ///     resourceManager.addBitmapData("test", "images/test@1x.png");
 
-  @deprecated
+  @Deprecated('Use pixelRatios instead')
   int get maxPixelRatio =>
-      pixelRatios.fold(0.0, (num a, b) => a > b ? a : b).round();
+      pixelRatios.fold<double>(0, (a, b) => a > b ? a : b).round();
 
-  @deprecated
+  @Deprecated('Use pixelRatios instead')
   set maxPixelRatio(int value) {
     pixelRatios = List<double>.generate(value, (v) => 1.0 + v);
   }
@@ -68,7 +68,7 @@ class BitmapDataLoadOptions {
   ///     var resourceManager = new ResourceManager();
   ///     resourceManager.addBitmapData("test", "images/test@1.00x.png");
 
-  List<double> pixelRatios = <double>[1.0, 2.0];
+  List<double> pixelRatios = <double>[1, 2];
 
   /// Use CORS to download the image. This is often necessary when you have
   /// to download images from a third party server.
