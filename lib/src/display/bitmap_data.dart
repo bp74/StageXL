@@ -73,7 +73,7 @@ class BitmapData implements BitmapDrawable {
     final targetUrl = bitmapDataFileInfo.loaderUrl;
     final pixelRatio = bitmapDataFileInfo.pixelRatio;
 
-    if (options.imageBitmap) {
+    if (env.isImageBitmapSupported) {
       final loader = ImageBitmapLoader(targetUrl, options.webp);
       final imageBitmap = await loader.done;
       return BitmapData.fromImageBitmap(imageBitmap, pixelRatio);

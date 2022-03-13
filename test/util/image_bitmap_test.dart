@@ -11,8 +11,6 @@ void main() {
   late BitmapData spiders;
 
   setUp(() async {
-    StageXL.bitmapDataLoadOptions.imageBitmap = true;
-
     final resourceManager = ResourceManager();
     resourceManager.addBitmapData('spiders', '../common/images/spider.png');
     await resourceManager.load();

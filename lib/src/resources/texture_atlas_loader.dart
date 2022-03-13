@@ -41,7 +41,7 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
     final imageUrl = replaceFilename(loaderUrl, filename);
     final RenderTexture renderTexture;
 
-    if (_loadOptions.imageBitmap) {
+    if (env.isImageBitmapSupported) {
       final loader = ImageBitmapLoader(imageUrl, webpAvailable);
       final imageBitmap = await loader.done;
       renderTexture = RenderTexture.fromImageBitmap(imageBitmap);
