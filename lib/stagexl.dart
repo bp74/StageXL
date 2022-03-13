@@ -185,4 +185,8 @@ class Environment {
   /// which support TouchEvents and therefore has a touch screen.
 
   final bool isTouchEventSupported = env.isTouchEventSupported;
+
+  /// This flag indicates whether bitmaps will be uploaded efficiently
+
+  final bool isImageBitmapSupported = env.isImageBitmapSupported;
 }
