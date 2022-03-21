@@ -37,15 +37,23 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {
     final loaderUrl = _loadInfo.loaderUrl;
-    final pixelRatio = _loadInfo.pixelRatio;
     final webpAvailable = _loadOptions.webp;
-    final corsEnabled = _loadOptions.corsEnabled;
     final imageUrl = replaceFilename(loaderUrl, filename);
-    final imageLoader = ImageLoader(imageUrl, webpAvailable, corsEnabled);
-    final imageElement = await imageLoader.done;
-    final renderTexture = RenderTexture.fromImageElement(imageElement);
-    final renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
-    return renderTextureQuad;
+    final RenderTexture renderTexture;
+
+    if (env.isImageBitmapSupported) {
+      final loader = ImageBitmapLoader(imageUrl, webpAvailable);
+      final imageBitmap = await loader.done;
+      renderTexture = RenderTexture.fromImageBitmap(imageBitmap);
+    } else {
+      final corsEnabled = _loadOptions.corsEnabled;
+      final loader = ImageLoader(imageUrl, webpAvailable, corsEnabled);
+      final imageElement = await loader.done;
+      renderTexture = RenderTexture.fromImageElement(imageElement);
+    }
+
+    final pixelRatio = _loadInfo.pixelRatio;
+    return renderTexture.quad.withPixelRatio(pixelRatio);
   }
 }
 

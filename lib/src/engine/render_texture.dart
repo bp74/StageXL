@@ -4,7 +4,10 @@ class RenderTexture {
   int _width = 0;
   int _height = 0;
 
-  CanvasImageSource? _source;
+  // TODO: Make CanvasImageSource again once
+  // https://github.com/dart-lang/sdk/issues/12379#issuecomment-572239799
+  // is addressed
+  /*CanvasImageSource*/dynamic _source;
   CanvasElement? _canvas;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
   RenderTextureWrapping _wrappingX = RenderTextureWrapping.CLAMP;
@@ -42,6 +45,12 @@ class RenderTexture {
     _source = imageElement;
   }
 
+  RenderTexture.fromImageBitmap(ImageBitmap image) {
+    _width = image.width!;
+    _height = image.height!;
+    _source = image;
+  }
+
   RenderTexture.fromCanvasElement(CanvasElement canvasElement) {
     _width = canvasElement.width!;
     _height = canvasElement.height!;
@@ -64,7 +73,11 @@ class RenderTexture {
 
   int get width => _width;
   int get height => _height;
-  CanvasImageSource? get source => _source;
+
+  CanvasImageSource? get source {
+    if (_source is CanvasImageSource) return _source as CanvasImageSource?;
+    return null;
+  }
 
   RenderTextureQuad get quad => RenderTextureQuad(
       this,
@@ -81,9 +94,29 @@ class RenderTexture {
       _canvas = _source = CanvasElement(width: _width, height: _height);
       _canvas!.context2D.drawImageScaled(imageElement, 0, 0, _width, _height);
       return _canvas!;
+    } else if (_source is ImageBitmap) {
+      final image = _source as ImageBitmap;
+      _canvas = _source = CanvasElement(width: _width, height: _height);
+
+      // Note: We need to use js_util.callMethod, because Dart SDK
+      // does not support ImageBitmap as a CanvasImageSource
+      js_util.callMethod(_canvas!.context2D, 'drawImage', [
+        image,
+        0,
+        0,
+        _width,
+        _height,
+      ]);
+
+      return _canvas!;
     } else {
       throw StateError('RenderTexture is read only.');
     }
+  }
+
+  ImageBitmap? get imageBitmap {
+    if (_source is ImageBitmap) return _source as ImageBitmap?;
+    return null;
   }
 
   gl.Texture? get texture => _texture;
@@ -170,6 +203,10 @@ class RenderTexture {
   void dispose() {
     if (_texture != null) {
       _renderingContext?.deleteTexture(_texture);
+    }
+
+    if (_source is ImageBitmap) {
+      (_source as ImageBitmap).close();
     }
 
     _texture = null;
