@@ -93,8 +93,9 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
 //------------------------------------------------------------------------------
 
 class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
-  static final RegExp _commandRegExp = RegExp(r'([a-zA-Z])([^a-zA-Z]+|$)');
-  static final RegExp _parameterRegExp = RegExp(r'\-?\d+(\.\d+)?');
+  static final RegExp _commandRegExp =
+      RegExp(r'([AaCcHhLlMmQqSsTtVvZz])([^a-df-zA-DF-Z]+|$)');
+  static final RegExp _parameterRegExp = RegExp(r'[, ]');
   static final RegExp _lineBreakRegExp = RegExp(r'\r\n|\r|\n');
 
   // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
@@ -119,8 +120,11 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       final parameter = commandMatch.group(2)!;
 
       p.clear();
-      for (var parameterMatch in _parameterRegExp.allMatches(parameter)) {
-        p.add(double.parse(parameterMatch.group(0)!));
+      for (var parameterMatch in parameter.split(_parameterRegExp)) {
+        parameterMatch = parameterMatch.trim();
+        if (parameterMatch.length > 0) {
+          p.add(double.parse(parameterMatch).toDouble());
+        }
       }
 
       switch (command) {
@@ -138,7 +142,11 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
         case 'm': // m dx dy
           for (var i = 0; i <= p.length - 2; i += 2) {
-            _add(GraphicsCommandMoveTo(cx += p[i + 0], cy += p[i + 1]));
+            if (i == 0) {
+              _add(GraphicsCommandMoveTo(cx += p[i + 0], cy += p[i + 1]));
+            } else {
+              _add(GraphicsCommandLineTo(cx += p[i + 0], cy += p[i + 1]));
+            }
             startPointX = startPointValid ? startPointX : cx;
             startPointY = startPointValid ? startPointY : cy;
             startPointValid = true;
@@ -147,7 +155,11 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
 
         case 'M': // M x y
           for (var i = 0; i <= p.length - 2; i += 2) {
-            _add(GraphicsCommandMoveTo(cx = p[i + 0], cy = p[i + 1]));
+            if (i == 0) {
+              _add(GraphicsCommandMoveTo(cx = p[i + 0], cy = p[i + 1]));
+            } else {
+              _add(GraphicsCommandLineTo(cx = p[i + 0], cy = p[i + 1]));
+            }
             startPointX = startPointValid ? startPointX : cx;
             startPointY = startPointValid ? startPointY : cy;
             startPointValid = true;
