@@ -8,8 +8,13 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+### 2.1.0
+* createImageBitmap support for Chrome, Edge, Firefox, and newer Safari (v15+).
+* Allowing pixel formats from sprite sheets
+* Fix a bug in SVG path decoder.
+
 ### 2.0.2
- * Exposing max texture size on WebGl canvas.
+ * Exposing max texture size on WebGL canvas.
  * Exposing getParameters call on WebGL canvas.
 
 ### 2.0.1

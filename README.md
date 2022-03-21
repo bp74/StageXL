@@ -14,8 +14,6 @@ rich animation framework, audio and video support, interaction events,
 3D transformations of 2D objects, resource management, text rendering 
 and many other features as well as extensibility for even more features.
 
-[![Build Status](https://travis-ci.org/bp74/StageXL.svg?branch=master)](https://travis-ci.org/bp74/StageXL)
-
 ## Extension Libraries
 
 StageXL provides a rich set of built-in features. Even more advanced use cases 
@@ -55,6 +53,11 @@ a particular feature.
 * GitHub repository: <https://github.com/bp74/StageXL_Samples>
 * StageXL homepage: <http://www.stagexl.org/samples> 
 
+## Support StageXL
+
+We encourage anyone to send in Pull Requests or issues that they find. We
+do our best to look at them as soon as we can.
+
 ## Roadmap
 
 Besides improving our existing features and improving performance as much
@@ -62,9 +65,10 @@ as possible, we are always thinking about new features we want to add next.
 Please send us your ideas and requests to make those things a reality you
 care about most. Some of the things we will tackle in the near future are:
 
-* Support for Flutter (native runtime environment for Android and iOS).
+* Support for Flutter (This is happening on a separate repo)
 * A new StageXL homepage with more articles / blog posts.
-* Runtime support for Tiled Map Editor.
+* Changing functions from positional parameters to named parameters.
+* Adding ability use Web Workers.
 
 ## Adobe Flash heritage
 
@@ -77,3 +81,10 @@ language is easy to use for everyone who is familiar with ActionScript.
 * ActionScript to Dart converter: <https://github.com/blockforest/stagexl-converter-pubglobal>
 * ActionScript to Dart comparison: <http://www.stagexl.org/docs/actionscript-dart.html>
 
+## Browser Support
+
+|  Chrome  |   Safari   |  Firefox  | Edge |
+|:--------:|:----------:|:---------:|:----:|
+|   v53+   |    v10+    |   v63+    | v79+ |
+
+Some features only work on newer browsers such as WebGL, but we intend to have fallbacks for most features.
