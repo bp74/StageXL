@@ -15,6 +15,9 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     final image = meta['image'] as String;
     final renderTextureQuad = await loader.getRenderTextureQuad(image);
 
+    //  Set texture info based on meta format
+    _setTextureFormat(renderTextureQuad.renderTexture, meta['format'] as String);
+
     if (frames is List) {
       for (var frame in frames) {
         final frameMap = frame as Map;
@@ -35,6 +38,45 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     }
 
     return textureAtlas;
+  }
+
+  void _setTextureFormat(RenderTexture texture, String format) {
+    switch (format) {
+      case 'RGBA8888':
+        texture.pixelFormat = gl.WebGL.RGBA;
+        texture.pixelType = gl.WebGL.UNSIGNED_BYTE;
+        break;
+
+      case 'RGBA4444':
+        texture.pixelFormat = gl.WebGL.RGBA;
+        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_4_4_4_4;
+        break;
+
+      case 'RGBA5551':
+        texture.pixelFormat = gl.WebGL.RGBA;
+        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_5_5_5_1;
+        break;
+
+      case 'RGB888':
+        texture.pixelFormat = gl.WebGL.RGB;
+        texture.pixelType = gl.WebGL.UNSIGNED_BYTE;
+        break;
+
+      case 'RGB565':
+        texture.pixelFormat = gl.WebGL.RGB;
+        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_5_6_5;
+        break;
+
+      case 'ALPHA':
+        texture.pixelFormat = gl.WebGL.ALPHA;
+        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_4_4_4_4;
+        break;
+
+      case 'ALPHA_INTENSITY':
+        texture.pixelFormat = gl.WebGL.LUMINANCE_ALPHA;
+        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_4_4_4_4;
+        break;
+    }
   }
 
   //---------------------------------------------------------------------------
