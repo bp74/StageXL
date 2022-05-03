@@ -16,7 +16,8 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
     final renderTextureQuad = await loader.getRenderTextureQuad(image);
 
     //  Set texture info based on meta format
-    _setTextureFormat(renderTextureQuad.renderTexture, meta['format'] as String);
+    final format = meta['format'] as String?;
+    if (format != null) _setTextureFormat(renderTextureQuad.renderTexture, format);
 
     if (frames is List) {
       for (var frame in frames) {
