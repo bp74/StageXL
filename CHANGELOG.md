@@ -8,6 +8,9 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+### 2.1.1
+ * Fix a bug where the `meta["format"]` key was assumed to be non-null in json texture atlas files.
+  
 ### 2.1.0
 * createImageBitmap support for Chrome, Edge, Firefox, and newer Safari (v15+).
 * Allowing pixel formats from sprite sheets
