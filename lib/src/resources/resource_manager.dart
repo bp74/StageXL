@@ -53,11 +53,15 @@ class ResourceManager {
   void addBitmapData(String name, String url,
       [BitmapDataLoadOptions? options]) {
     final loader = BitmapData.load(url, options);
-    _addResource('BitmapData', name, url, loader);
+    var bitmapFuture = loader.done.then((i) => loader.getBitmapData());
+    _addResource('BitmapData', name, url, bitmapFuture, cancel: loader.cancel, progress: loader.getProgress);
   }
 
   void removeBitmapData(String name, {bool dispose = true}) {
     final resourceManagerResource = _removeResource('BitmapData', name);
+    if (resourceManagerResource?.cancel != null) {
+      resourceManagerResource!.cancel!();
+    }
     final bitmapData = resourceManagerResource?.value;
     if (bitmapData is BitmapData && dispose) {
       bitmapData.renderTexture.dispose();
@@ -200,9 +204,9 @@ class ResourceManager {
     return _resourceMap.remove(key);
   }
 
-  void _addResource(String kind, String name, String url, Future loader) {
+  void _addResource(String kind, String name, String url, Future loader, {Function? cancel, Function? progress}) {
     final key = '$kind.$name';
-    final resource = ResourceManagerResource(kind, name, url, loader);
+    final resource = ResourceManagerResource(kind, name, url, loader, cancel: cancel, progress: progress);
 
     if (_resourceMap.containsKey(key)) {
       throw StateError(

@@ -13,7 +13,6 @@
 ///
 library stagexl.display;
 
-import 'dart:async';
 import 'dart:collection';
 import 'dart:html' as html;
 import 'dart:html' show CanvasElement, ImageElement, VideoElement, ImageBitmap;
@@ -25,6 +24,7 @@ import 'drawing.dart';
 import 'engine.dart';
 import 'events.dart';
 import 'geom.dart';
+import 'internal/image_asset_loader.dart';
 import 'internal/image_bitmap_loader.dart';
 import 'internal/environment.dart' as env;
 import 'internal/image_loader.dart';

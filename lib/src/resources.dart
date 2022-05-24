@@ -20,6 +20,7 @@ import 'display.dart';
 import 'engine.dart';
 import 'geom.dart';
 import 'internal/environment.dart' as env;
+import 'internal/image_asset_loader.dart';
 import 'internal/image_bitmap_loader.dart';
 import 'internal/image_loader.dart';
 import 'internal/tools.dart';

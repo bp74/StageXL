@@ -21,7 +21,11 @@ class StageConsole extends DisplayObject {
   int _consoleHeight = 0;
 
   StageConsole() {
-    BitmapData.load(_fontImage).then(_calculateGlyphs);
+    var loader = BitmapData.load(_fontImage);
+    loader.done
+      .then((_) {
+        _calculateGlyphs(loader.getBitmapData());
+      });
   }
 
   //----------------------------------------------------------------------------

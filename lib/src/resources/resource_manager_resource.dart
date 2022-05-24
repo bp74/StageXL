@@ -6,9 +6,11 @@ class ResourceManagerResource {
   final String url;
   dynamic _value;
   dynamic _error;
+  Function? cancel;
+  final Function? _progress;
   final Completer<ResourceManagerResource> _completer = Completer<ResourceManagerResource>();
 
-  ResourceManagerResource(this.kind, this.name, this.url, Future loader) {
+  ResourceManagerResource(this.kind, this.name, this.url, Future loader, {Function? progress, this.cancel,}) : _progress = progress {
     loader.then((resource) {
       _value = resource;
     }).catchError((error) {
@@ -26,6 +28,12 @@ class ResourceManagerResource {
 
   dynamic get value => _value;
   Object? get error => _error;
+  num? get progress {
+    if (_progress != null) {
+      return _progress!() as num?;
+    }
+    return null;
+  }
 
   Future<ResourceManagerResource> get complete => _completer.future;
 }

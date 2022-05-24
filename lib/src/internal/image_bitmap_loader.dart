@@ -4,14 +4,19 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:js_util';
 
-import 'environment.dart' as env;
+import 'package:stagexl/src/engine.dart';
 
-class ImageBitmapLoader {
+import 'image_asset_loader.dart';
+import 'environment.dart' as env;
+import '../display.dart';
+
+class ImageBitmapLoader extends ImageAssetLoader {
   final String _url;
   final _completer = Completer<ImageBitmap>();
   HttpRequest? _request;
+  ImageBitmap? imageBitmap;
 
-  ImageBitmapLoader(String url, bool webpAvailable) : _url = url {
+  ImageBitmapLoader(String url, bool webpAvailable, {num pixelRatio = 1.0}) : _url = url, super(pixelRatio)  {
     if (webpAvailable) {
       env.isWebpSupported.then(_onWebpSupported);
     } else {
@@ -22,6 +27,7 @@ class ImageBitmapLoader {
   void _load(String url) {
     final request = _request = HttpRequest();
     request
+      ..onProgress.listen(updateProgress)
       ..onReadyStateChange.listen((_) async {
         if (request.readyState == HttpRequest.DONE && request.status == 200) {
           try {
@@ -31,7 +37,7 @@ class ImageBitmapLoader {
             // use callMethod and convert from promise to future.
             // See https://github.com/dart-lang/sdk/issues/12379
             final promise = callMethod(window, 'createImageBitmap', [blob]);
-            final imageBitmap =
+            imageBitmap =
               await promiseToFuture<ImageBitmap>(promise as Object);
 
             _completer.complete(imageBitmap);
@@ -45,11 +51,28 @@ class ImageBitmapLoader {
       ..responseType = 'blob'
       ..send();
   }
+  void updateProgress(ProgressEvent progressEvent) {
+    if (progressEvent.lengthComputable)
+    {
+      progress = (progressEvent.loaded ?? 0) / (progressEvent.total ?? 1) * 100;
+    }
+  }
 
+  @override
   void cancel() => _request?.abort();
+
+  @override
+  BitmapData getBitmapData() => BitmapData.fromImageBitmap(imageBitmap!, pixelRatio);
+
+  @override
+  RenderTextureQuad getRenderTextureQuad() {
+    final renderTexture = RenderTexture.fromImageBitmap(imageBitmap!);
+    return renderTexture.quad.withPixelRatio(pixelRatio);
+  }
 
   //---------------------------------------------------------------------------
 
+  @override
   Future<ImageBitmap> get done => _completer.future;
 
   //---------------------------------------------------------------------------
@@ -60,4 +83,6 @@ class ImageBitmapLoader {
       _load(_url);
     }
   }
+
+
 }
