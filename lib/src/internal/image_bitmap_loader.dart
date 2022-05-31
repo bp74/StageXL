@@ -65,10 +65,7 @@ class ImageBitmapLoader extends ImageAssetLoader {
   BitmapData getBitmapData() => BitmapData.fromImageBitmap(imageBitmap!, pixelRatio);
 
   @override
-  RenderTextureQuad getRenderTextureQuad() {
-    final renderTexture = RenderTexture.fromImageBitmap(imageBitmap!);
-    return renderTexture.quad.withPixelRatio(pixelRatio);
-  }
+  RenderTexture getRenderTexture() => RenderTexture.fromImageBitmap(imageBitmap!);
 
   //---------------------------------------------------------------------------
 

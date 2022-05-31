@@ -69,10 +69,7 @@ class ImageLoader extends ImageAssetLoader{
   BitmapData getBitmapData() => BitmapData.fromImageElement(image, pixelRatio);
 
   @override
-  RenderTextureQuad getRenderTextureQuad() {
-    renderTexture = RenderTexture.fromImageElement(image);
-    return renderTexture!.quad.withPixelRatio(pixelRatio);
-  }
+  RenderTexture getRenderTexture() => RenderTexture.fromImageElement(image);
 
   void _onImageError(Event event) {
     _onLoadSubscription.cancel();

@@ -6,6 +6,9 @@ part of stagexl.resources;
 /// from a custom source by implementing a TextureAtlasLoader class.
 
 abstract class TextureAtlasLoader {
+  Future<ImageAssetLoader> get loaderCreated => creatingImageLoader.future;
+  ImageAssetLoader? imageLoader;
+  Completer<ImageAssetLoader> creatingImageLoader = Completer();
   /// Get the pixel ratio of the texture atlas.
   double getPixelRatio();
 
@@ -42,15 +45,14 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
     final RenderTexture renderTexture;
 
     if (env.isImageBitmapSupported) {
-      final loader = ImageBitmapLoader(imageUrl, webpAvailable);
-      final imageBitmap = await loader.done;
-      renderTexture = RenderTexture.fromImageBitmap(imageBitmap);
+      imageLoader = ImageBitmapLoader(imageUrl, webpAvailable);
+      creatingImageLoader.complete(imageLoader);
     } else {
       final corsEnabled = _loadOptions.corsEnabled;
-      final loader = ImageLoader(imageUrl, webpAvailable, corsEnabled);
-      final imageElement = await loader.done;
-      renderTexture = RenderTexture.fromImageElement(imageElement);
+      imageLoader = ImageLoader(imageUrl, webpAvailable, corsEnabled);
+      creatingImageLoader.complete(imageLoader);
     }
+    renderTexture = await imageLoader!.done.then((_) => imageLoader!.getRenderTexture());
 
     final pixelRatio = _loadInfo.pixelRatio;
     return renderTexture.quad.withPixelRatio(pixelRatio);

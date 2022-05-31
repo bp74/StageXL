@@ -7,7 +7,7 @@ class ResourceManagerResource {
   dynamic _value;
   dynamic _error;
   Function? cancel;
-  final Function? _progress;
+  Function? _progress;
   final Completer<ResourceManagerResource> _completer = Completer<ResourceManagerResource>();
 
   ResourceManagerResource(this.kind, this.name, this.url, Future loader, {Function? progress, this.cancel,}) : _progress = progress {
@@ -33,6 +33,9 @@ class ResourceManagerResource {
       return _progress!() as num?;
     }
     return null;
+  }
+  set progressLookup (Function? cb){
+    _progress = cb;
   }
 
   Future<ResourceManagerResource> get complete => _completer.future;

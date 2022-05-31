@@ -79,8 +79,20 @@ class ResourceManager {
   void addTextureAtlas(String name, String url,
       [TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
       BitmapDataLoadOptions? options]) {
-    final loader = TextureAtlas.load(url, textureAtlasFormat, options);
-    _addResource('TextureAtlas', name, url, loader);
+    final loaderCreated = TextureAtlas.load(url, textureAtlasFormat, options);
+    var imageLoaded = Completer();
+
+    loaderCreated.then((loader) {
+      final key = 'TextureAtlas.$name';
+      if (_resourceMap.containsKey(key)) {
+        _resourceMap[key]!.cancel = loader.cancel;
+        _resourceMap[key]!.progressLookup = loader.getProgress;
+      }
+      loader.done.then((_) {
+        imageLoaded.complete(loader.textureAtlas);
+      });
+    });
+    _addResource('TextureAtlas', name, url, imageLoaded.future);
   }
 
   void removeTextureAtlas(String name, {bool dispose = true}) {

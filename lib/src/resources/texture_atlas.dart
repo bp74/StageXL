@@ -3,7 +3,6 @@ part of stagexl.resources;
 class TextureAtlas {
   /// A list with the frames in this texture atlas.
   final List<TextureAtlasFrame> frames = <TextureAtlasFrame>[];
-
   /// The pixelRatio used for the BitmapDatas in the frames
   final double pixelRatio;
 
@@ -11,30 +10,48 @@ class TextureAtlas {
 
   //---------------------------------------------------------------------------
 
-  static Future<TextureAtlas> load(String url,
+  static Future<ImageAssetLoader> load(String url,
           [TextureAtlasFormat textureAtlasFormat = TextureAtlasFormat.JSONARRAY,
-          BitmapDataLoadOptions? bitmapDataLoadOptions]) =>
-      textureAtlasFormat
-          .load(_TextureAtlasLoaderFile(url, bitmapDataLoadOptions));
+          BitmapDataLoadOptions? bitmapDataLoadOptions]) {
+    var loaderFile = _TextureAtlasLoaderFile(url, bitmapDataLoadOptions);
+    textureAtlasFormat.load(loaderFile).then((textureAtlas) {
+      loaderFile.imageLoader!.textureAtlas = textureAtlas;
+    });
+    return loaderFile.loaderCreated;
+  }
 
-  static Future<TextureAtlas> fromTextureAtlas(
+
+  static ImageAssetLoader fromTextureAtlas(
           TextureAtlas textureAtlas, String namePrefix, String source,
           [TextureAtlasFormat textureAtlasFormat =
-              TextureAtlasFormat.JSONARRAY]) =>
-      textureAtlasFormat.load(
-          _TextureAtlasLoaderTextureAtlas(textureAtlas, namePrefix, source));
+              TextureAtlasFormat.JSONARRAY]) {
+    var loaderFile = _TextureAtlasLoaderTextureAtlas(textureAtlas, namePrefix, source);
+    textureAtlasFormat.load(loaderFile).then((textureAtlas) {
+      loaderFile.imageLoader!.textureAtlas = textureAtlas;
+    });
+    return loaderFile.imageLoader!;
+  }
 
-  static Future<TextureAtlas> fromBitmapData(
+  static ImageAssetLoader fromBitmapData(
           BitmapData bitmapData, String source,
           [TextureAtlasFormat textureAtlasFormat =
-              TextureAtlasFormat.JSONARRAY]) =>
-      textureAtlasFormat
-          .load(_TextureAtlasLoaderBitmapData(bitmapData, source));
+              TextureAtlasFormat.JSONARRAY]){
+    var loaderFile = _TextureAtlasLoaderBitmapData(bitmapData, source);
+    textureAtlasFormat.load(loaderFile).then((textureAtlas) {
+      loaderFile.imageLoader!.textureAtlas = textureAtlas;
+    });
+    return loaderFile.imageLoader!;
+  }
 
-  static Future<TextureAtlas> withLoader(TextureAtlasLoader textureAtlasLoader,
+  static ImageAssetLoader withLoader(TextureAtlasLoader textureAtlasLoader,
           [TextureAtlasFormat textureAtlasFormat =
-              TextureAtlasFormat.JSONARRAY]) =>
-      textureAtlasFormat.load(textureAtlasLoader);
+              TextureAtlasFormat.JSONARRAY]) {
+    var loaderFile = textureAtlasLoader;
+    textureAtlasFormat.load(loaderFile).then((textureAtlas) {
+      loaderFile.imageLoader!.textureAtlas = textureAtlas;
+    });
+    return loaderFile.imageLoader!;
+  }
 
   //---------------------------------------------------------------------------
 
