@@ -50,7 +50,7 @@ class AlphaMaskFilter extends BitmapFilter {
     final renderTexture = renderTextureQuad.renderTexture;
 
     final renderProgram = renderContext.getRenderProgram(
-        r'$AlphaMaskFilterProgram', () => AlphaMaskFilterProgram());
+        r'$AlphaMaskFilterProgram', AlphaMaskFilterProgram.new);
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTextureAt(renderTexture, 0);

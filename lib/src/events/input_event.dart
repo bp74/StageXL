@@ -59,9 +59,8 @@ abstract class InputEvent extends Event {
 
   /// Creates a new [InputEvent].
 
-  InputEvent(String type, bool bubbles, this.localX, this.localY, this.stageX,
-      this.stageY, this.altKey, this.ctrlKey, this.shiftKey)
-      : super(type, bubbles);
+  InputEvent(super.type, super.bubbles, this.localX, this.localY, this.stageX,
+      this.stageY, this.altKey, this.ctrlKey, this.shiftKey);
 
   //---------------------------------------------------------------------------
 

@@ -176,7 +176,6 @@ class Tween implements Animatable {
     }
   }
 
-
   /// Indicates if this [Tween] is completed.
 
   bool get isComplete => _currentTime >= _totalTime;

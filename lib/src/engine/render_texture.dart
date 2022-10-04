@@ -7,7 +7,7 @@ class RenderTexture {
   // TODO: Make CanvasImageSource again once
   // https://github.com/dart-lang/sdk/issues/12379#issuecomment-572239799
   // is addressed
-  /*CanvasImageSource*/dynamic _source;
+  /*CanvasImageSource*/ dynamic _source;
   CanvasElement? _canvas;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
   RenderTextureWrapping _wrappingX = RenderTextureWrapping.CLAMP;
@@ -224,7 +224,6 @@ class RenderTexture {
       throw StateError('RenderTexture is not resizeable.');
     } else if (_width == width && _height == height) {
       // there is no need to resize the texture
-
     } else if (_source == null) {
       _width = width;
       _height = height;
@@ -235,8 +234,8 @@ class RenderTexture {
       const target = gl.WebGL.TEXTURE_2D;
 
       _renderContext!.activateRenderTexture(this);
-      _renderingContext!
-          .texImage2D(target, 0, pixelFormat, _width, _height, 0, pixelFormat, pixelType);
+      _renderingContext!.texImage2D(
+          target, 0, pixelFormat, _width, _height, 0, pixelFormat, pixelType);
     } else {
       _width = width;
       _height = height;
@@ -269,9 +268,11 @@ class RenderTexture {
 
     if (_textureSourceWorkaround) {
       _canvas!.context2D.drawImage(source!, 0, 0);
-      _renderingContext!.texImage2D(target, 0, pixelFormat, pixelFormat, pixelType, _canvas);
+      _renderingContext!
+          .texImage2D(target, 0, pixelFormat, pixelFormat, pixelType, _canvas);
     } else {
-      _renderingContext!.texImage2D(target, 0, pixelFormat, pixelFormat, pixelType, _source);
+      _renderingContext!
+          .texImage2D(target, 0, pixelFormat, pixelFormat, pixelType, _source);
     }
 
     if (scissors) _renderingContext!.enable(gl.WebGL.SCISSOR_TEST);
@@ -295,18 +296,21 @@ class RenderTexture {
       if (scissors) renderingContext.disable(gl.WebGL.SCISSOR_TEST);
 
       if (_source != null) {
-        renderingContext.texImage2D(target, 0, pixelFormat, pixelFormat, pixelType, _source);
+        renderingContext.texImage2D(
+            target, 0, pixelFormat, pixelFormat, pixelType, _source);
         _textureSourceWorkaround =
             renderingContext.getError() == gl.WebGL.INVALID_VALUE;
       } else {
-        renderingContext.texImage2D(target, 0, pixelFormat, width, height, 0, pixelFormat, pixelType);
+        renderingContext.texImage2D(
+            target, 0, pixelFormat, width, height, 0, pixelFormat, pixelType);
       }
 
       if (_textureSourceWorkaround) {
         // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
         _canvas = CanvasElement(width: width, height: height);
         _canvas!.context2D.drawImage(source!, 0, 0);
-        renderingContext.texImage2D(target, 0, pixelFormat, pixelFormat, pixelType, _canvas);
+        renderingContext.texImage2D(
+            target, 0, pixelFormat, pixelFormat, pixelType, _canvas);
       }
 
       if (scissors) renderingContext.enable(gl.WebGL.SCISSOR_TEST);

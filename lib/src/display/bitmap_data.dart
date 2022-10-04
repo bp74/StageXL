@@ -67,7 +67,8 @@ class BitmapData implements BitmapDrawable {
 
   /// Loads a BitmapData from the given url.
 
-  static Future<BitmapData> load(String url, [BitmapDataLoadOptions? options]) async {
+  static Future<BitmapData> load(String url,
+      [BitmapDataLoadOptions? options]) async {
     options = options ?? BitmapData.defaultLoadOptions;
     final bitmapDataFileInfo = BitmapDataLoadInfo(url, options.pixelRatios);
     final targetUrl = bitmapDataFileInfo.loaderUrl;

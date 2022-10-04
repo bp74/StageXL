@@ -19,7 +19,7 @@ class TextEvent extends Event {
   final String text;
 
   /// Creates a new [TextEvent].
-  TextEvent(String type, bool bubbles, this.text) : super(type, bubbles);
+  TextEvent(super.type, super.bubbles, this.text);
 
   //---------------------------------------------------------------------------
 

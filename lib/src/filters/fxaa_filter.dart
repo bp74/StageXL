@@ -39,7 +39,7 @@ class FxaaFilter extends BitmapFilter {
     final renderTexture = renderTextureQuad.renderTexture;
 
     final renderProgram = renderContext.getRenderProgram(
-        r'$FxaaFilterProgram', () => FxaaFilterProgram());
+        r'$FxaaFilterProgram', FxaaFilterProgram.new);
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);

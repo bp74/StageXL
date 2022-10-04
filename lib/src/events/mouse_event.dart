@@ -71,19 +71,17 @@ class MouseEvent extends InputEvent {
   /// Creates a new [MouseEvent].
 
   MouseEvent(
-      String type,
-      bool bubbles,
-      num localX,
-      num localY,
-      num stageX,
-      num stageY,
-      bool altKey,
-      bool ctrlKey,
-      bool shiftKey,
+      super.type,
+      super.bubbles,
+      super.localX,
+      super.localY,
+      super.stageX,
+      super.stageY,
+      bool super.altKey,
+      bool super.ctrlKey,
+      bool super.shiftKey,
       this.deltaX,
       this.deltaY,
       this.buttonDown,
-      this.clickCount)
-      : super(type, bubbles, localX, localY, stageX, stageY, altKey, ctrlKey,
-            shiftKey);
+      this.clickCount);
 }

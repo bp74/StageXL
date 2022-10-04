@@ -13,7 +13,7 @@ class _TextureAtlasFormatStarlingJson extends TextureAtlasFormat {
     final imagePath = _getString(json, 'imagePath', '');
     final renderTextureQuad = await loader.getRenderTextureQuad(imagePath);
 
-    for (Map subTextureMap in json['SubTexture']) {
+    for (var subTextureMap in (json['SubTexture'] as List).cast<Map>()) {
       final name = _getString(subTextureMap, 'name', '');
       final rotation = _getBool(subTextureMap, 'rotated', false) ? 1 : 0;
 
