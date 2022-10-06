@@ -34,17 +34,15 @@ class TouchEvent extends InputEvent {
   /// Creates a new [TouchEvent].
 
   TouchEvent(
-      String type,
-      bool bubbles,
-      num localX,
-      num localY,
-      num stageX,
-      num stageY,
-      bool? altKey,
-      bool? ctrlKey,
-      bool? shiftKey,
+      super.type,
+      super.bubbles,
+      super.localX,
+      super.localY,
+      super.stageX,
+      super.stageY,
+      super.altKey,
+      super.ctrlKey,
+      super.shiftKey,
       this.touchPointID,
-      this.isPrimaryTouchPoint)
-      : super(type, bubbles, localX, localY, stageX, stageY, altKey, ctrlKey,
-            shiftKey);
+      this.isPrimaryTouchPoint);
 }

@@ -107,7 +107,7 @@ class DisplacementMapFilter extends BitmapFilter {
     final renderTexture = renderTextureQuad.renderTexture;
 
     final renderProgram = renderContext.getRenderProgram(
-        r'$DisplacementMapFilterProgram', () => DisplacementMapFilterProgram());
+        r'$DisplacementMapFilterProgram', DisplacementMapFilterProgram.new);
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTextureAt(renderTexture, 0);

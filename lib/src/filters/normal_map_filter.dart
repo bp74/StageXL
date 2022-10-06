@@ -38,7 +38,7 @@ class NormalMapFilter extends BitmapFilter {
     final renderTexture = renderTextureQuad.renderTexture;
 
     final renderProgram = renderContext.getRenderProgram(
-        r'$NormalMapFilterProgram', () => NormalMapFilterProgram());
+        r'$NormalMapFilterProgram', NormalMapFilterProgram.new);
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTextureAt(renderTexture, 0);

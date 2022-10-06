@@ -99,8 +99,8 @@ class RenderContextCanvas extends RenderContext {
     }
 
     final context = _renderingContext;
-    final source = renderTextureQuad.renderTexture.source
-      ?? renderTextureQuad.renderTexture.imageBitmap;
+    final source = renderTextureQuad.renderTexture.source ??
+        renderTextureQuad.renderTexture.imageBitmap;
 
     final rotation = renderTextureQuad.rotation;
     final sourceRect = renderTextureQuad.sourceRectangle;
@@ -126,57 +126,57 @@ class RenderContextCanvas extends RenderContext {
       context.setTransform(
           matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
       js_util.callMethod(context, 'drawImage', [
-          source!,
-          sourceRect.left,
-          sourceRect.top,
-          sourceRect.width,
-          sourceRect.height,
-          vxList[0],
-          vxList[1],
-          vxList[8] - vxList[0],
-          vxList[9] - vxList[1]
+        source,
+        sourceRect.left,
+        sourceRect.top,
+        sourceRect.width,
+        sourceRect.height,
+        vxList[0],
+        vxList[1],
+        vxList[8] - vxList[0],
+        vxList[9] - vxList[1]
       ]);
     } else if (rotation == 1) {
       context.setTransform(
           -matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
       js_util.callMethod(context, 'drawImage', [
-          source!,
-          sourceRect.left,
-          sourceRect.top,
-          sourceRect.width,
-          sourceRect.height,
-          0.0 - vxList[13],
-          vxList[12],
-          vxList[9] - vxList[1],
-          vxList[8] - vxList[0]
+        source,
+        sourceRect.left,
+        sourceRect.top,
+        sourceRect.width,
+        sourceRect.height,
+        0.0 - vxList[13],
+        vxList[12],
+        vxList[9] - vxList[1],
+        vxList[8] - vxList[0]
       ]);
     } else if (rotation == 2) {
       context.setTransform(
           -matrix.a, -matrix.b, -matrix.c, -matrix.d, matrix.tx, matrix.ty);
       js_util.callMethod(context, 'drawImage', [
-          source!,
-          sourceRect.left,
-          sourceRect.top,
-          sourceRect.width,
-          sourceRect.height,
-          0.0 - vxList[8],
-          0.0 - vxList[9],
-          vxList[8] - vxList[0],
-          vxList[9] - vxList[1]
+        source,
+        sourceRect.left,
+        sourceRect.top,
+        sourceRect.width,
+        sourceRect.height,
+        0.0 - vxList[8],
+        0.0 - vxList[9],
+        vxList[8] - vxList[0],
+        vxList[9] - vxList[1]
       ]);
     } else if (rotation == 3) {
       context.setTransform(
           matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
       js_util.callMethod(context, 'drawImage', [
-          source!,
-          sourceRect.left,
-          sourceRect.top,
-          sourceRect.width,
-          sourceRect.height,
-          vxList[5],
-          0.0 - vxList[4],
-          vxList[9] - vxList[1],
-          vxList[8] - vxList[0]
+        source,
+        sourceRect.left,
+        sourceRect.top,
+        sourceRect.width,
+        sourceRect.height,
+        vxList[5],
+        0.0 - vxList[4],
+        vxList[9] - vxList[1],
+        vxList[8] - vxList[0]
       ]);
     }
   }

@@ -37,8 +37,7 @@ void main() {
 
     dispatcher.addEventListener(eventType, listener1);
     dispatcher.addEventListener(eventType, listener2);
-    dispatcher.addEventListener(
-        eventType, (event) => actual.add('listener3'));
+    dispatcher.addEventListener(eventType, (event) => actual.add('listener3'));
     dispatcher.removeEventListener(eventType, listener2);
 
     dispatcher.dispatchEvent(Event(eventType));
@@ -72,8 +71,7 @@ void main() {
   });
 
   test('EventStreamSubscription.cancel', () {
-    final subscription =
-        dispatcher.on(eventType).listen((event) => Never);
+    final subscription = dispatcher.on(eventType).listen((event) => Never);
     subscription.cancel();
     expect(dispatcher.hasEventListener(eventType), isFalse);
   });
@@ -87,9 +85,8 @@ void main() {
 
     final sub1 = dispatcher.on(eventType).listen(listener1);
     final sub2 = dispatcher.on(eventType).listen(listener2);
-    final sub3 = dispatcher
-        .on(eventType)
-        .listen((event) => actual.add('listener3'));
+    final sub3 =
+        dispatcher.on(eventType).listen((event) => actual.add('listener3'));
 
     sub2.cancel();
     dispatcher.dispatchEvent(Event(eventType));

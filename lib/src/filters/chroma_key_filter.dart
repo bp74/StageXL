@@ -94,7 +94,7 @@ class ChromaKeyFilter extends BitmapFilter {
     final renderTexture = renderTextureQuad.renderTexture;
 
     final renderProgram = renderContext.getRenderProgram(
-        r'$ChromaKeyFilterProgram', () => ChromaKeyFilterProgram());
+        r'$ChromaKeyFilterProgram', ChromaKeyFilterProgram.new);
 
     renderContext.activateRenderProgram(renderProgram);
     renderContext.activateRenderTexture(renderTexture);

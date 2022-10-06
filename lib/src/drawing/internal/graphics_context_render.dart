@@ -74,7 +74,7 @@ class _GraphicsContextRender extends _GraphicsContextBase {
 //-----------------------------------------------------------------------------
 
 class GraphicsContextRenderMask extends _GraphicsContextRender {
-  GraphicsContextRenderMask(RenderState renderState) : super(renderState);
+  GraphicsContextRenderMask(super.renderState);
 
   @override
   void fillColor(int color) {

@@ -95,7 +95,7 @@ class GraphicsCommandDecodeEaselJS extends GraphicsCommandDecode {
 class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
   static final RegExp _commandRegExp =
       RegExp(r'([AaCcHhLlMmQqSsTtVvZz])([^a-df-zA-DF-Z]+|$)');
-  static final RegExp _parameterRegExp = RegExp(r'[, ]');
+  static final RegExp _parameterRegExp = RegExp('[, ]');
   static final RegExp _lineBreakRegExp = RegExp(r'\r\n|\r|\n');
 
   // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
@@ -122,8 +122,8 @@ class GraphicsCommandDecodeSVG extends GraphicsCommandDecode {
       p.clear();
       for (var parameterMatch in parameter.split(_parameterRegExp)) {
         parameterMatch = parameterMatch.trim();
-        if (parameterMatch.length > 0) {
-          p.add(double.parse(parameterMatch).toDouble());
+        if (parameterMatch.isNotEmpty) {
+          p.add(double.parse(parameterMatch));
         }
       }
 

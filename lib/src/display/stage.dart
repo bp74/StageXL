@@ -281,7 +281,6 @@ class Stage extends DisplayObjectContainer {
     _updateCanvasSize();
   }
 
-
   /// Gets and sets the scale mode of this Stage. You can choose between
   /// four different modes defined in [StageScaleMode].
 

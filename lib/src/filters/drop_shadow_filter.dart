@@ -65,7 +65,6 @@ class DropShadowFilter extends BitmapFilter {
 
   //---------------------------------------------------------------------------
 
-
   /// The horizontal blur radius in the range from 0 to 64.
 
   int get blurX => _blurX;
@@ -174,7 +173,7 @@ class DropShadowFilter extends BitmapFilter {
       }
     } else {
       final renderProgram = renderContext.getRenderProgram(
-          r'$DropShadowFilterProgram', () => DropShadowFilterProgram());
+          r'$DropShadowFilterProgram', DropShadowFilterProgram.new);
 
       renderContext.activateRenderProgram(renderProgram);
       renderContext.activateRenderTexture(renderTexture);

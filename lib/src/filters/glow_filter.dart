@@ -153,7 +153,7 @@ class GlowFilter extends BitmapFilter {
       }
     } else {
       final renderProgram = renderContext.getRenderProgram(
-          r'$GlowFilterProgram', () => GlowFilterProgram());
+          r'$GlowFilterProgram', GlowFilterProgram.new);
 
       renderContext.activateRenderProgram(renderProgram);
       renderContext.activateRenderTexture(renderTexture);
