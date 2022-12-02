@@ -123,8 +123,8 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
 
       for (var i = 0, j = 0; i <= vxList.length - 4; i += 4, j += 1) {
         final vj = vertices[j] as List;
-        vxList[i + 0] = (vj[0] as num).toDouble();
-        vxList[i + 1] = (vj[1] as num).toDouble();
+        vxList[i + 0] = (vj[0] as num).toDouble() / textureAtlas.pixelRatio;
+        vxList[i + 1] = (vj[1] as num).toDouble() / textureAtlas.pixelRatio;
 
         final vuvj = verticesUV[j] as List;
         vxList[i + 2] = (vuvj[0] as num) / width;
