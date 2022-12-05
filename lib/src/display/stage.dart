@@ -81,7 +81,7 @@ class Stage extends DisplayObjectContainer {
 
   /// Gets and sets the render mode of this Stage. You can choose between
   /// three different modes defined in [StageRenderMode].
-  StageRenderMode stageRenderMode = StageRenderMode.AUTO;
+  StageRenderMode renderMode = StageRenderMode.AUTO;
 
   StageScaleMode _stageScaleMode = StageScaleMode.SHOW_ALL;
   StageAlign _stageAlign = StageAlign.NONE;
@@ -157,7 +157,7 @@ class Stage extends DisplayObjectContainer {
     _canvas = canvas;
     _stageAlign = options.stageAlign;
     _stageScaleMode = options.stageScaleMode;
-    stageRenderMode = options.stageRenderMode;
+    renderMode = options.stageRenderMode;
     _inputEventMode = options.inputEventMode;
 
     _sourceWidth = width;
@@ -393,9 +393,9 @@ class Stage extends DisplayObjectContainer {
   /// on your own and therefore get full control of the rendering of this Stage.
 
   void materialize(num currentTime, num deltaTime) {
-    if (stageRenderMode == StageRenderMode.AUTO ||
-        stageRenderMode == StageRenderMode.AUTO_INVALID && _invalid ||
-        stageRenderMode == StageRenderMode.ONCE) {
+    if (renderMode == StageRenderMode.AUTO ||
+        renderMode == StageRenderMode.AUTO_INVALID && _invalid ||
+        renderMode == StageRenderMode.ONCE) {
       final stopwatch = Stopwatch()..start();
 
       _updateCanvasSize();
@@ -432,8 +432,8 @@ class Stage extends DisplayObjectContainer {
       }
     }
 
-    if (stageRenderMode == StageRenderMode.ONCE) {
-      stageRenderMode = StageRenderMode.STOP;
+    if (renderMode == StageRenderMode.ONCE) {
+      renderMode = StageRenderMode.STOP;
     }
   }
 
