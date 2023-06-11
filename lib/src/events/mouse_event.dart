@@ -34,6 +34,11 @@ class MouseEvent extends InputEvent {
   static const String ROLL_OUT = 'rollOut';
   static const String ROLL_OVER = 'rollOver';
 
+  static const String DRAG_ENTER = 'dragEnter';
+  static const String DRAG_LEAVE = 'dragLeave';
+  static const String DRAG_OVER = 'dragOver';
+  static const String DROP = 'drop';
+
   //---------------------------------------------------------------------------
 
   /// The amount that is expected to scroll horizontally.
