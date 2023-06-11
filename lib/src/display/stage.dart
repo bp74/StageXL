@@ -138,6 +138,28 @@ class Stage extends DisplayObjectContainer {
 
   EventStream<Event> get onMouseLeave => Stage.mouseLeaveEvent.forTarget(this);
 
+  /// Dispatched when an external HTML element was dragged entering the stage
+  /// canvas.
+  EventStream<MouseEvent> get onDragEnter =>
+      const EventStreamProvider<MouseEvent>(MouseEvent.DRAG_ENTER)
+          .forTarget(this);
+
+  /// Dispatched when an external HTML element was dragged leaving the stage
+  /// canvas.
+  EventStream<MouseEvent> get onDragLeave =>
+      const EventStreamProvider<MouseEvent>(MouseEvent.DRAG_LEAVE)
+          .forTarget(this);
+
+  /// Dispatched when an external HTML element was dragged over the stage
+  /// canvas.
+  EventStream<MouseEvent> get onDragOver =>
+      const EventStreamProvider<MouseEvent>(MouseEvent.DRAG_OVER)
+          .forTarget(this);
+
+  /// Dispatched when an external HTML element was dropped on stage canvas.
+  EventStream<MouseEvent> get onDrop =>
+      const EventStreamProvider<MouseEvent>(MouseEvent.DROP).forTarget(this);
+
   //----------------------------------------------------------------------------
 
   Stage(CanvasElement canvas,
@@ -183,6 +205,10 @@ class Stage extends DisplayObjectContainer {
       canvas.onMouseOut.listen(_onMouseEvent);
       canvas.onContextMenu.listen(_onMouseEvent);
       canvas.onMouseWheel.listen(_onMouseWheelEvent);
+      canvas.onDragEnter.listen(_onMouseEvent);
+      canvas.onDragLeave.listen(_onMouseEvent);
+      canvas.onDragOver.listen(_onMouseEvent);
+      canvas.onDrop.listen(_onMouseEvent);
     }
 
     final listenToTouchEvents = _inputEventMode == InputEventMode.TouchOnly ||
@@ -759,23 +785,25 @@ class Stage extends DisplayObjectContainer {
       mouseButton.target = target;
       mouseButton.clickTime = time;
       mouseButton.clickCount++;
-    }
-
-    if (event.type == 'mouseup') {
+    } else if (event.type == 'mouseup') {
       mouseEventType = mouseButton.mouseUpEventType;
       mouseButton.buttonDown = false;
       isClick = mouseButton.target == target;
       isDoubleClick = isClick &&
           mouseButton.clickCount.isEven &&
           (time < mouseButton.clickTime + 500);
-    }
-
-    if (event.type == 'mousemove') {
+    } else if (event.type == 'mousemove') {
       mouseEventType = MouseEvent.MOUSE_MOVE;
-    }
-
-    if (event.type == 'contextmenu') {
+    } else if (event.type == 'contextmenu') {
       mouseEventType = MouseEvent.CONTEXT_MENU;
+    } else if (event.type == 'dragenter') {
+      mouseEventType = MouseEvent.DRAG_ENTER;
+    } else if (event.type == 'dragleave') {
+      mouseEventType = MouseEvent.DRAG_LEAVE;
+    } else if (event.type == 'dragover') {
+      mouseEventType = MouseEvent.DRAG_OVER;
+    } else if (event.type == 'drop') {
+      mouseEventType = MouseEvent.DROP;
     }
 
     //-----------------------------------------------------------------
