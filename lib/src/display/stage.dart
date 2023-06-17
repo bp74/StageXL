@@ -138,28 +138,6 @@ class Stage extends DisplayObjectContainer {
 
   EventStream<Event> get onMouseLeave => Stage.mouseLeaveEvent.forTarget(this);
 
-  /// Dispatched when an external HTML element was dragged entering the stage
-  /// canvas.
-  EventStream<MouseEvent> get onDragEnter =>
-      const EventStreamProvider<MouseEvent>(MouseEvent.DRAG_ENTER)
-          .forTarget(this);
-
-  /// Dispatched when an external HTML element was dragged leaving the stage
-  /// canvas.
-  EventStream<MouseEvent> get onDragLeave =>
-      const EventStreamProvider<MouseEvent>(MouseEvent.DRAG_LEAVE)
-          .forTarget(this);
-
-  /// Dispatched when an external HTML element was dragged over the stage
-  /// canvas.
-  EventStream<MouseEvent> get onDragOver =>
-      const EventStreamProvider<MouseEvent>(MouseEvent.DRAG_OVER)
-          .forTarget(this);
-
-  /// Dispatched when an external HTML element was dropped on stage canvas.
-  EventStream<MouseEvent> get onDrop =>
-      const EventStreamProvider<MouseEvent>(MouseEvent.DROP).forTarget(this);
-
   //----------------------------------------------------------------------------
 
   Stage(CanvasElement canvas,
@@ -661,6 +639,11 @@ class Stage extends DisplayObjectContainer {
       dispatchEvent(Event(Event.MOUSE_LEAVE));
     }
 
+    var isDnD = event.type == 'dragenter' ||
+        event.type == 'dragleave' ||
+        event.type == 'dragover' ||
+        event.type == 'drop';
+
     //-----------------------------------------------------------------
     // MOUSE_OUT, ROLL_OUT, ROLL_OVER, MOUSE_OVER
 
@@ -702,7 +685,25 @@ class Stage extends DisplayObjectContainer {
             0.0,
             0.0,
             mouseButton.buttonDown,
-            0));
+            0,
+            null));
+        if (isDnD) {
+          oldTarget.dispatchEvent(MouseEvent(
+              MouseEvent.DRAG_LEAVE,
+              true,
+              localPoint.x,
+              localPoint.y,
+              stagePoint.x,
+              stagePoint.y,
+              event.altKey,
+              event.ctrlKey,
+              event.shiftKey,
+              0.0,
+              0.0,
+              mouseButton.buttonDown,
+              0,
+              event.dataTransfer));
+        }
       }
 
       for (var i = 0; i < oldTargetList.length - commonCount; i++) {
@@ -721,7 +722,8 @@ class Stage extends DisplayObjectContainer {
             0.0,
             0.0,
             mouseButton.buttonDown,
-            0));
+            0,
+            null));
       }
 
       for (var i = newTargetList.length - commonCount - 1; i >= 0; i--) {
@@ -740,7 +742,8 @@ class Stage extends DisplayObjectContainer {
             0.0,
             0.0,
             mouseButton.buttonDown,
-            0));
+            0,
+            null));
       }
 
       if (newTarget != null) {
@@ -758,7 +761,25 @@ class Stage extends DisplayObjectContainer {
             0.0,
             0.0,
             mouseButton.buttonDown,
-            0));
+            0,
+            null));
+        if (isDnD) {
+          newTarget.dispatchEvent(MouseEvent(
+              MouseEvent.DRAG_ENTER,
+              true,
+              localPoint.x,
+              localPoint.y,
+              stagePoint.x,
+              stagePoint.y,
+              event.altKey,
+              event.ctrlKey,
+              event.shiftKey,
+              0.0,
+              0.0,
+              mouseButton.buttonDown,
+              0,
+              event.dataTransfer));
+        }
       }
 
       _mouseTarget = newTarget;
@@ -800,8 +821,6 @@ class Stage extends DisplayObjectContainer {
       mouseEventType = MouseEvent.DRAG_ENTER;
     } else if (event.type == 'dragleave') {
       mouseEventType = MouseEvent.DRAG_LEAVE;
-    } else if (event.type == 'dragover') {
-      mouseEventType = MouseEvent.DRAG_OVER;
     } else if (event.type == 'drop') {
       mouseEventType = MouseEvent.DROP;
     }
@@ -823,7 +842,8 @@ class Stage extends DisplayObjectContainer {
           0.0,
           0.0,
           mouseButton.buttonDown,
-          mouseButton.clickCount));
+          mouseButton.clickCount,
+          isDnD ? event.dataTransfer : null));
 
       if (isClick) {
         mouseEventType = isDoubleClick && target.doubleClickEnabled
@@ -843,7 +863,8 @@ class Stage extends DisplayObjectContainer {
             0.0,
             0.0,
             mouseButton.buttonDown,
-            0));
+            0,
+            null));
       }
     }
   }
@@ -873,7 +894,8 @@ class Stage extends DisplayObjectContainer {
         event.deltaX,
         event.deltaY,
         false,
-        0);
+        0,
+        null);
 
     target.dispatchEvent(mouseEvent);
 

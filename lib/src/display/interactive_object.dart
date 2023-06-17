@@ -94,6 +94,12 @@ abstract class InteractiveObject extends DisplayObject {
       EventStreamProvider<MouseEvent>(MouseEvent.MOUSE_WHEEL);
   static const EventStreamProvider<MouseEvent> mouseContextMenu =
       EventStreamProvider<MouseEvent>(MouseEvent.CONTEXT_MENU);
+  static const EventStreamProvider<MouseEvent> dragEnter =
+      EventStreamProvider<MouseEvent>(MouseEvent.DRAG_ENTER);
+  static const EventStreamProvider<MouseEvent> dragLeave =
+      EventStreamProvider<MouseEvent>(MouseEvent.DRAG_LEAVE);
+  static const EventStreamProvider<MouseEvent> drop =
+      EventStreamProvider<MouseEvent>(MouseEvent.DROP);
 
   /// Dispatched when the user moves a pointing device away from an
   /// InteractiveObject instance.
@@ -281,6 +287,20 @@ abstract class InteractiveObject extends DisplayObject {
   /// this interactive object.
   EventStream<MouseEvent> get onMouseContextMenu =>
       InteractiveObject.mouseContextMenu.forTarget(this);
+
+  /// Dispatched when a HTML element was dragged entering an InteractiveObject
+  /// instance.
+  EventStream<MouseEvent> get onDragEnter =>
+      InteractiveObject.dragEnter.forTarget(this);
+
+  /// Dispatched when a HTML element was dragged leaving an InteractiveObject
+  /// instance.
+  EventStream<MouseEvent> get onDragLeave =>
+      InteractiveObject.dragLeave.forTarget(this);
+
+  /// Dispatched when a HTML element was dropped in an InteractiveObject
+  /// instance.
+  EventStream<MouseEvent> get onDrop => InteractiveObject.drop.forTarget(this);
 
   // touch events
 

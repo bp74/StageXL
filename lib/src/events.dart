@@ -8,6 +8,7 @@
 library stagexl.events;
 
 import 'dart:async';
+import 'dart:html';
 
 part 'events/broadcast_event.dart';
 part 'events/event.dart';
