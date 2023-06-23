@@ -36,7 +36,6 @@ class MouseEvent extends InputEvent {
 
   static const String DRAG_ENTER = 'dragEnter';
   static const String DRAG_LEAVE = 'dragLeave';
-  static const String DRAG_OVER = 'dragOver';
   static const String DROP = 'drop';
 
   //---------------------------------------------------------------------------
@@ -73,6 +72,8 @@ class MouseEvent extends InputEvent {
 
   final int clickCount;
 
+  final DataTransfer? dataTransfer;
+
   /// Creates a new [MouseEvent].
 
   MouseEvent(
@@ -88,5 +89,6 @@ class MouseEvent extends InputEvent {
       this.deltaX,
       this.deltaY,
       this.buttonDown,
-      this.clickCount);
+      this.clickCount,
+      this.dataTransfer);
 }
