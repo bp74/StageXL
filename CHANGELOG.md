@@ -8,6 +8,12 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+### 2.2.0
+* Support the latest version of `package:xml`.
+* Update Dart SDK restraint to  ^3.0.0
+* Add drag-drop support to interactive objects. (Pull #360)
+* Add drag-drop support to stage. (Pull #359)
+
 ### 2.1.2
  * Support the latest version of `package:xml`.
  * Update Dart SDK restraint to >= 2.18.0

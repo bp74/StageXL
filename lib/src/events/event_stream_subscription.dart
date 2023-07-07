@@ -10,7 +10,7 @@ typedef EventListener<T extends Event> = void Function(T event);
 /// used to handle the events. The subscription can also be used to unsubscribe
 /// from the events, or to temporarily pause the events from the stream.
 
-class EventStreamSubscription<T extends Event> extends StreamSubscription<T> {
+class EventStreamSubscription<T extends Event> implements StreamSubscription<T> {
   final int _priority;
   int _pauseCount = 0;
   bool _canceled = false;
