@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 abstract class BitmapFilter extends RenderFilter {
   BitmapFilter clone();

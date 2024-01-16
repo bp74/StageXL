@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsPath extends _GraphicsMesh<_GraphicsPathSegment> {
   _GraphicsPathSegment? _currentSegment;

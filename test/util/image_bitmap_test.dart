@@ -1,5 +1,5 @@
 @TestOn('browser')
-library image_bitmap_test;
+library;
 
 import 'dart:html' show ImageBitmap;
 import 'dart:math' show pi;

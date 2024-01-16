@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// The [Translation] class animates a value by continuously calling
 /// the [onUpdate] function.

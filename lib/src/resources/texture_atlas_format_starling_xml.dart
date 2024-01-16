@@ -1,4 +1,4 @@
-part of stagexl.resources;
+part of '../resources.dart';
 
 class _TextureAtlasFormatStarlingXml extends TextureAtlasFormat {
   const _TextureAtlasFormatStarlingXml();

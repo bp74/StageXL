@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 class RenderProgramTinted extends RenderProgram {
   // aVertexPosition:   Float32(x), Float32(y)

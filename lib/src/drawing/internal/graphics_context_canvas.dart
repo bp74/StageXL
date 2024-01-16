@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsContextCanvas extends GraphicsContext {
   final RenderState renderState;

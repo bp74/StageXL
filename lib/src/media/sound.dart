@@ -1,4 +1,4 @@
-part of stagexl.media;
+part of '../media.dart';
 
 abstract class Sound {
   Sound() {

@@ -1,4 +1,4 @@
-part of stagexl.resources;
+part of '../resources.dart';
 
 /// The base class for a custom texture atlas loader.
 ///

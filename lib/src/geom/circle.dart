@@ -1,5 +1,3 @@
-library stagexl.geom.circle;
-
 import '../internal/jenkins_hash.dart';
 import 'point.dart';
 

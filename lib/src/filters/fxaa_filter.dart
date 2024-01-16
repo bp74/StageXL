@@ -1,5 +1,3 @@
-library stagexl.filters.fxaa;
-
 import '../display.dart';
 import '../engine.dart';
 import '../geom.dart';

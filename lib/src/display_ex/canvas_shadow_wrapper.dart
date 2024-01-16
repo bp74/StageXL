@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 /// This class is a replacement for the deprecated shadow property of the
 /// DisplayObject class. Please consider to use the DropShadowFilter class

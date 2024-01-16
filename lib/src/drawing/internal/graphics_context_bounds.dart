@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsContextBounds extends _GraphicsContextBase {
   double _minX = 0.0 + double.maxFinite;

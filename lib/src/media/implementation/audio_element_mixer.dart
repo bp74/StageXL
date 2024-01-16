@@ -1,4 +1,4 @@
-part of stagexl.media;
+part of '../../media.dart';
 
 class AudioElementMixer {
   num _volume = 1.0;

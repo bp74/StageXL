@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsStrokeSegment extends _GraphicsMeshSegment {
   final _GraphicsStroke stroke;

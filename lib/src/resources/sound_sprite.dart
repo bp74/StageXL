@@ -1,4 +1,4 @@
-part of stagexl.resources;
+part of '../resources.dart';
 
 /// A SoundSprite combines multiple audio files into a single audio file.
 ///

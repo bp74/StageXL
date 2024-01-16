@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../drawing.dart';
 
 abstract class _GraphicsGradientProgram extends RenderProgram {
   GraphicsGradient? activeGradient;

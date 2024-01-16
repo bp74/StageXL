@@ -1,5 +1,5 @@
 @TestOn('browser')
-library rectangle_test;
+library;
 
 import 'package:stagexl/stagexl.dart';
 import 'package:test/test.dart';

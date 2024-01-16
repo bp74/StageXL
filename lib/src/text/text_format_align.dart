@@ -1,4 +1,4 @@
-part of stagexl.text;
+part of '../text.dart';
 
 class TextFormatAlign {
   static const String CENTER = 'center';

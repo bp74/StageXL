@@ -1,3 +1,3 @@
-part of stagexl.media;
+part of '../media.dart';
 
 enum SoundEngine { WebAudioApi, AudioElement, Mockup }

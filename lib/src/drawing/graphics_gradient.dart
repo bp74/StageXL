@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings, use_string_buffers
 
-part of stagexl.drawing;
+part of '../drawing.dart';
 
 class GraphicsGradientColorStop {
   num offset;

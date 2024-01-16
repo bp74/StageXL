@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 /// A [Gauge] specially designed to work in combination with the [Juggler].
 ///

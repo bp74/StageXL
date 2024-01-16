@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// A [Mask] describes a geometric shape to show only a portion of a
 /// [DisplayObject]. Pixels inside of the shape are visible and pixels

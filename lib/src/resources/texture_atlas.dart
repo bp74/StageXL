@@ -1,4 +1,4 @@
-part of stagexl.resources;
+part of '../resources.dart';
 
 class TextureAtlas {
   /// A list with the frames in this texture atlas.

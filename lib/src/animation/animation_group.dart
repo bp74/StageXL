@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// The [AnimationGroup] class is used to animate multiple Animatables.
 /// Those Animatables are animated in parallel and the onComplete

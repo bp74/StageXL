@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 /// The [Mesh] class allows free form deformations of a [BitmapData] instance
 /// by using triangles to form an arbitrary shape.

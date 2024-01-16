@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 abstract class _GraphicsMeshSegment {
   Float32List _vertexBuffer;

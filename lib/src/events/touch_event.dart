@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 /// The [TouchEvent] class lets you handle events on devices that detect user
 /// contact with the device (such as a finger on a touch screen).

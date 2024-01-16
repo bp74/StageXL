@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 /// Provides a stream of [Event]s.
 class EventStream<T extends Event> extends Stream<T> {

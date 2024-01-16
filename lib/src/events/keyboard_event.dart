@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 /// An [Event] that is dispatched in response to user input through a keyboard.
 ///

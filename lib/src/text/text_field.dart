@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings, use_string_buffers
 
-part of stagexl.text;
+part of '../text.dart';
 
 class TextField extends InteractiveObject {
   String _text = '';

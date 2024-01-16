@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// The [DelayedCall] class is used to delay the invocation of
 /// a function by a given time.

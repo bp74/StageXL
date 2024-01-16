@@ -1,5 +1,3 @@
-library stagexl.internal.tools;
-
 int colorGetA(int color) => (color >> 24) & 0xFF;
 int colorGetR(int color) => (color >> 16) & 0xFF;
 int colorGetG(int color) => (color >> 8) & 0xFF;

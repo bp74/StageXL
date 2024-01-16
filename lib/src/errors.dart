@@ -1,5 +1,3 @@
-library stagexl.errors;
-
 /// An AggregateError contains a list of errors that occur during execution.
 class AggregateError extends Error {
   final String message;

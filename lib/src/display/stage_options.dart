@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The options used by the [Stage] constructor to setup the stage.
 

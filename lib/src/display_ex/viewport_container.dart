@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 class ViewportContainer extends DisplayObjectContainer {
   Mask? _viewportMask;

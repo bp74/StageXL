@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// This class is returned by the [DisplayObjectParent.children] getter.
 ///

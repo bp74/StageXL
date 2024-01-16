@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsContextCompiler extends _GraphicsContextBase {
   final List<GraphicsCommand> commands;

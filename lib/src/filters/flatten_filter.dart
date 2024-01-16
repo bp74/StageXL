@@ -1,5 +1,3 @@
-library stagexl.filters.flatten;
-
 import '../display.dart';
 
 /// The FlattenFilter does not change the visual appearance of the BitmapData

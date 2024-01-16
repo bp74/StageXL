@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsStroke extends _GraphicsMesh<_GraphicsStrokeSegment> {
   final double width;

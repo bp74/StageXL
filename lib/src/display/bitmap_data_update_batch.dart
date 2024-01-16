@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The [BitmapDataUpdateBatch] class provides all the [BitmapData] update
 /// methods, but does not automatically update the underlying WebGL texture.

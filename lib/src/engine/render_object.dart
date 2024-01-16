@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 /// The abstract [RenderObject] class defines the interface for a class
 /// that can be rendered with the [RenderState.renderObject] method. All

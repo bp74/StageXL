@@ -1,7 +1,7 @@
 /// More advanced display objects for special use cases built on top of
 /// the basic display objects.
 ///
-library stagexl.display_ex;
+library;
 
 import 'dart:async';
 import 'dart:html' show CssStyleDeclaration, Element;

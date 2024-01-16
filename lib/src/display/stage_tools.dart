@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 class _MouseButton {
   final String mouseDownEventType;

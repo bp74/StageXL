@@ -5,7 +5,7 @@
 /// rectangle class of StageXL are mutable, so you can change the fields
 /// which is not possible with the dart:math classes.
 ///
-library stagexl.geom;
+library;
 
 export 'geom/circle.dart';
 export 'geom/matrix.dart';

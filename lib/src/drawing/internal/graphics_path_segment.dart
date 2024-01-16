@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsPathSegment extends _GraphicsMeshSegment {
   bool? _clockwise;

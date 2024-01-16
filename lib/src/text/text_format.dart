@@ -1,4 +1,4 @@
-part of stagexl.text;
+part of '../text.dart';
 
 class TextFormat {
   String font;

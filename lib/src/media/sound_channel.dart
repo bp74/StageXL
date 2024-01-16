@@ -1,4 +1,4 @@
-part of stagexl.media;
+part of '../media.dart';
 
 abstract class SoundChannel extends EventDispatcher {
   EventStream<Event> get onComplete => on<Event>(Event.COMPLETE);

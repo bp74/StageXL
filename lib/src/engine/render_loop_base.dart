@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 final _globalFrameListeners = <void Function(double)>[];
 num _globalFrameTime = double.maxFinite;

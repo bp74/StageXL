@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class GraphicsCommandFillGradient extends GraphicsCommandFill {
   GraphicsGradient _gradient;

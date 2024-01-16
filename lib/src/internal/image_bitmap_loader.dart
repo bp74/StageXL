@@ -1,5 +1,3 @@
-library stagexl.internal.image_bitmap_loader;
-
 import 'dart:async';
 import 'dart:html';
 import 'dart:js_util';
@@ -30,9 +28,9 @@ class ImageBitmapLoader {
             // Note: Dart SDK does not support createImageBitmap, so
             // use callMethod and convert from promise to future.
             // See https://github.com/dart-lang/sdk/issues/12379
-            final promise = callMethod(window, 'createImageBitmap', [blob]);
-            final imageBitmap =
-                await promiseToFuture<ImageBitmap>(promise as Object);
+            final promise =
+                callMethod<Object>(window, 'createImageBitmap', [blob]);
+            final imageBitmap = await promiseToFuture<ImageBitmap>(promise);
 
             _completer.complete(imageBitmap);
           } catch (e) {

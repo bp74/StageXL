@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// The abstract base class for [TweenPropertyAccessor2D] and
 /// [TweenPropertyAccessor3D]. Those accessors are returned by

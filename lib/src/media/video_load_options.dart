@@ -1,4 +1,4 @@
-part of stagexl.media;
+part of '../media.dart';
 
 /// The VideoLoadOptions class contains different options to configure
 /// how videos are loaded from the server.

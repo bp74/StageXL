@@ -1,5 +1,3 @@
-library stagexl.filters.displacement_map;
-
 import 'dart:typed_data';
 
 import '../display.dart';

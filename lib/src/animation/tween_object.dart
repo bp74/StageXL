@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// The abstract base class for [TweenObject2D] and [TweenObject3D].
 

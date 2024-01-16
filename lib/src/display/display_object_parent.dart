@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// An abstract class implemented by containers for display objects.
 ///

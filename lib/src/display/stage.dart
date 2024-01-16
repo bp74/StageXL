@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The StageRenderMode defines how often the Stage is rendered by
 /// the [RenderLoop] where the Stage is attached to.

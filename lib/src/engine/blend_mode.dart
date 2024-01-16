@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 /// A class that provides constant values for visual blend mode effects.
 class BlendMode {

@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The [Sprite3D] class enables 3D transformations of 2D display objects.
 ///

@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The Bitmap class represents display objects that represent bitmap images.
 ///

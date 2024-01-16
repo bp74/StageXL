@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 /// The abstract [RenderMask] class defines the interface for masks
 /// that can be rendered by the engine.

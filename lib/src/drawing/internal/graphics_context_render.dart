@@ -1,6 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsContextRender extends _GraphicsContextBase {
   final RenderState renderState;

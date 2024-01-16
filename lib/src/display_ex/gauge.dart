@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 /// A display object to show a section of a [BitmapData] according
 /// to the [ratio] property.

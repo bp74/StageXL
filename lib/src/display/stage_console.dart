@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 class StageConsole extends DisplayObject {
   final String _fontImage =

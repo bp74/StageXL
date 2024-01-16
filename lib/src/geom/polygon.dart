@@ -1,5 +1,3 @@
-library stagexl.geom.polygon;
-
 import 'dart:math' hide Point, Rectangle;
 
 import 'point.dart';

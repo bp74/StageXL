@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// This abstract [Animatable] class declares a common interface
 /// for other classes that can be added to the [Juggler].

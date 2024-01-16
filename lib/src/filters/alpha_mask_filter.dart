@@ -1,5 +1,3 @@
-library stagexl.filters.alpha_mask;
-
 import '../display.dart';
 import '../engine.dart';
 import '../geom.dart';
