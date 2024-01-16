@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 class RenderContextCanvas extends RenderContext {
   final CanvasElement _canvasElement;
@@ -125,7 +125,7 @@ class RenderContextCanvas extends RenderContext {
     if (rotation == 0) {
       context.setTransform(
           matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-      js_util.callMethod(context, 'drawImage', [
+      js_util.callMethod<void>(context, 'drawImage', [
         source,
         sourceRect.left,
         sourceRect.top,
@@ -139,7 +139,7 @@ class RenderContextCanvas extends RenderContext {
     } else if (rotation == 1) {
       context.setTransform(
           -matrix.c, -matrix.d, matrix.a, matrix.b, matrix.tx, matrix.ty);
-      js_util.callMethod(context, 'drawImage', [
+      js_util.callMethod<void>(context, 'drawImage', [
         source,
         sourceRect.left,
         sourceRect.top,
@@ -153,7 +153,7 @@ class RenderContextCanvas extends RenderContext {
     } else if (rotation == 2) {
       context.setTransform(
           -matrix.a, -matrix.b, -matrix.c, -matrix.d, matrix.tx, matrix.ty);
-      js_util.callMethod(context, 'drawImage', [
+      js_util.callMethod<void>(context, 'drawImage', [
         source,
         sourceRect.left,
         sourceRect.top,
@@ -167,7 +167,7 @@ class RenderContextCanvas extends RenderContext {
     } else if (rotation == 3) {
       context.setTransform(
           matrix.c, matrix.d, -matrix.a, -matrix.b, matrix.tx, matrix.ty);
-      js_util.callMethod(context, 'drawImage', [
+      js_util.callMethod<void>(context, 'drawImage', [
         source,
         sourceRect.left,
         sourceRect.top,

@@ -1,8 +1,6 @@
-library stagexl.internal.environment;
-
 import 'dart:async';
-import 'dart:js' as js;
 import 'dart:html';
+import 'dart:js' as js;
 import 'dart:typed_data';
 
 final bool autoHiDPI = _checkAutoHiDPI();

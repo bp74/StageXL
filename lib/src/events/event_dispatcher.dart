@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 /// The base class for all classes that dispatch events.
 ///

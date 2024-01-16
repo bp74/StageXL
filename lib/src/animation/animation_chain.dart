@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// The [AnimationChain] class is used to animate multiple [Animatable]s.
 ///

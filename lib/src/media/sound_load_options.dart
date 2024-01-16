@@ -1,4 +1,4 @@
-part of stagexl.media;
+part of '../media.dart';
 
 /// The SoundLoadOptions class contains different options to configure
 /// how audio files are loaded from the server.

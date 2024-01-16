@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The base class for all objects that can be placed on the display list.
 ///

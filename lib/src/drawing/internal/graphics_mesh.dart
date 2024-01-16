@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 abstract class _GraphicsMesh<T extends _GraphicsMeshSegment> {
   final List<T> segments = <T>[];

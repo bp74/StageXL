@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 /// The Scale9Bitmap display object divides it's BitmapData into a 3x3 grid
 /// defined by the [grid] rectangle. The corners of the grid are rendered

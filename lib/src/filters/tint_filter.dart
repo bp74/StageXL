@@ -1,5 +1,3 @@
-library stagexl.filters.tint;
-
 import '../display.dart';
 import '../engine.dart';
 import '../geom.dart';

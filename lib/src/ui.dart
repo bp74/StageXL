@@ -5,8 +5,7 @@
 ///
 /// Use the list of color values defined in [Color] to have
 /// easy access to the ARGB values of different colors.
-
-library stagexl.ui;
+library;
 
 export 'ui/align.dart';
 export 'ui/color.dart';

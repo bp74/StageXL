@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The BitmapData class lets you load or create arbitrarily sized transparent
 /// or opaque bitmap images and manipulate them in various ways at runtime.

@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 /// The abstract [RenderFilter] class defines the interface for filters
 /// that can be rendered by the engine.

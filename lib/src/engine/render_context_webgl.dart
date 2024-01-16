@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 class RenderContextWebGL extends RenderContext {
   static int _globalContextIdentifier = 0;

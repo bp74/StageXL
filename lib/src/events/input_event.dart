@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 enum InputEventMode { MouseOnly, TouchOnly, MouseAndTouch }
 

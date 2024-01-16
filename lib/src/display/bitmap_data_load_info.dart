@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The BitmapDataLoadInfo creates information about the best matching image
 /// file based on the specified image url, the pixelRatios and the current

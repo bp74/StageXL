@@ -1,4 +1,4 @@
-part of stagexl.resources;
+part of '../resources.dart';
 
 class SoundSpriteSegment {
   final SoundSprite soundSprite;

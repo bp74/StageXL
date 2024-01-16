@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// This class is used to create lightweight shapes.
 ///

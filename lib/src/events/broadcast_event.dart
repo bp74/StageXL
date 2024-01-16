@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 /// An event that has no specific [DisplayObject] as target but rather all
 /// [DisplayObject] instances, including those that are not on the display list.

@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The [InteractiveObject] class is the abstract base class for all display
 /// objects with which the user can interact, using the mouse, keyboard, or

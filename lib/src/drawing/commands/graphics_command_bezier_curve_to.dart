@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class GraphicsCommandBezierCurveTo extends GraphicsCommand {
   double _controlX1;

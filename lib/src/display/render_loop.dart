@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 class RenderLoop extends RenderLoopBase {
   final Juggler _juggler = Juggler();

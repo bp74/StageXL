@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class GraphicsCommandStrokePattern extends GraphicsCommandStroke {
   GraphicsPattern _pattern;

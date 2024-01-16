@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 /// The VideoObject class is a display object to show and control videos.
 ///

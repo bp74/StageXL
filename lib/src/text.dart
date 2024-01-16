@@ -6,10 +6,10 @@
 /// you can add it the display list. Use the [TextFormat] class to change
 /// the color, size, margin, style and more of your texts.
 ///
-library stagexl.text;
+library;
 
 import 'dart:html' as html;
-import 'dart:html' show CanvasElement, CanvasRenderingContext2D, CanvasGradient;
+import 'dart:html' show CanvasElement, CanvasGradient, CanvasRenderingContext2D;
 import 'dart:math' hide Point, Rectangle;
 
 import 'display.dart';

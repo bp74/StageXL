@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsCommandMeshColor extends GraphicsCommand {
   final _GraphicsMesh mesh;

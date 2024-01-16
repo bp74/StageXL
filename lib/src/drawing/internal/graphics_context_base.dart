@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 abstract class _GraphicsContextBase extends GraphicsContext {
   _GraphicsPath _path = _GraphicsPath();

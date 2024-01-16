@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 abstract class RenderProgram {
   int _contextIdentifier = -1;

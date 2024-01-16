@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 /// The HtmlObject adds a regular HTML element to the display list.
 /// You can set all the well known DisplayObject properties like x, y, scaleX,

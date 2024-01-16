@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 /// An event that is dispatched into the event flow whenever mouse events occur.
 ///

@@ -11,12 +11,12 @@
 /// please read the wiki article about the basics of StageXL here:
 /// [Introducing StageXL](http://www.stagexl.org/docs/wiki-articles.html?article=introduction)
 ///
-library stagexl.display;
+library;
 
 import 'dart:async';
 import 'dart:collection';
 import 'dart:html' as html;
-import 'dart:html' show CanvasElement, ImageElement, VideoElement, ImageBitmap;
+import 'dart:html' show CanvasElement, ImageBitmap, ImageElement, VideoElement;
 import 'dart:math' hide Point, Rectangle;
 import 'dart:typed_data';
 
@@ -25,8 +25,8 @@ import 'drawing.dart';
 import 'engine.dart';
 import 'events.dart';
 import 'geom.dart';
-import 'internal/image_bitmap_loader.dart';
 import 'internal/environment.dart' as env;
+import 'internal/image_bitmap_loader.dart';
 import 'internal/image_loader.dart';
 import 'internal/tools.dart';
 import 'ui.dart';

@@ -5,7 +5,7 @@
 /// All display objects extend the [EventDispatcher] class which is used
 /// to listen to events as well as dispatching new events.
 ///
-library stagexl.events;
+library;
 
 import 'dart:async';
 import 'dart:html';
@@ -18,8 +18,8 @@ part 'events/event_stream.dart';
 part 'events/event_stream_provider.dart';
 part 'events/event_stream_subscription.dart';
 part 'events/input_event.dart';
-part 'events/keyboard_event.dart';
 part 'events/key_location.dart';
+part 'events/keyboard_event.dart';
 part 'events/mouse_event.dart';
 part 'events/text_event.dart';
 part 'events/touch_event.dart';

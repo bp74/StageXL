@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// Use the [Tween] class to animate the properties of a display object like
 /// x, y, scaleX, scaleY, alpha, rotation etc. The animation starts with the

@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 /// A factory to expose [Event]s as streams.
 class EventStreamProvider<T extends Event> {

@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// A fast container for Bitmap instances.
 ///

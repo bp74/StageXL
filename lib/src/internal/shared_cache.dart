@@ -1,5 +1,3 @@
-library stagexl.internal.shared_cache;
-
 import '../events.dart';
 
 class ObjectReleaseEvent<E> extends Event {

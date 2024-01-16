@@ -1,4 +1,4 @@
-include: package:lints/recommended.yaml
+include: package:dart_flutter_team_lints/analysis_options.yaml
 
 analyzer:
   language:
@@ -17,6 +17,8 @@ analyzer:
     # Does not seem to work correctly with null-safety
     cancel_subscriptions: ignore
 
+    # too many to cleanup now
+    lines_longer_than_80_chars: ignore
     # Enable for StageXL 2.0
     avoid_positional_boolean_parameters: ignore
     constant_identifier_names: ignore
@@ -26,16 +28,13 @@ linter:
     - always_put_required_named_parameters_first
     - avoid_annotating_with_dynamic
     - avoid_bool_literals_in_conditional_expressions
-    - avoid_catching_errors
     - avoid_double_and_int_checks
-    - avoid_dynamic_calls
     - avoid_escaping_inner_quotes
     - avoid_field_initializers_in_const_classes
     - avoid_js_rounded_ints
     - avoid_positional_boolean_parameters
     - avoid_private_typedef_functions
     - avoid_redundant_argument_values
-    - avoid_returning_null_for_future
     - avoid_returning_this
     - avoid_type_to_string
     - avoid_types_on_closure_parameters
@@ -43,7 +42,6 @@ linter:
     - avoid_void_async
     - cancel_subscriptions
     - close_sinks
-    - comment_references
     - join_return_with_assignment
     - leading_newlines_in_multiline_strings
     - literal_only_boolean_expressions
@@ -51,11 +49,7 @@ linter:
     - no_adjacent_strings_in_list
     - no_runtimeType_toString
     - noop_primitive_operations
-    - omit_local_variable_types
-    - only_throw_errors
-    - prefer_asserts_in_initializer_lists
     - prefer_asserts_with_message
-    - prefer_const_constructors
     - prefer_const_constructors_in_immutables
     - prefer_const_declarations
     - prefer_constructors_over_static_methods
@@ -63,20 +57,12 @@ linter:
     - prefer_if_elements_to_conditional_expressions
     - prefer_int_literals
     - prefer_mixin
-    - prefer_single_quotes
     - sort_unnamed_constructors_first
-    - throw_in_finally
     - tighten_type_of_initializing_formals
-    - unawaited_futures
     - unnecessary_await_in_return
-    - unnecessary_lambdas
     - unnecessary_null_checks
-    - unnecessary_parenthesis
     - unnecessary_raw_strings
-    - unnecessary_statements
-    - use_is_even_rather_than_modulo
     - use_named_constants
     - use_raw_strings
     - use_setters_to_change_properties
     - use_string_buffers
-    - use_super_parameters

@@ -1,5 +1,3 @@
-library stagexl.geom.matrix;
-
 import 'dart:math' hide Point, Rectangle;
 import 'dart:math' as math;
 import 'dart:typed_data';

@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 class _AnimatableLink {
   Animatable? animatable;

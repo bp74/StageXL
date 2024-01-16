@@ -1,4 +1,4 @@
-part of stagexl.media;
+part of '../media.dart';
 
 /// The Video class is used to load and control videos.
 ///

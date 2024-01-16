@@ -1,4 +1,4 @@
-part of stagexl.resources;
+part of '../resources.dart';
 
 class ResourceManager {
   final Map<String, ResourceManagerResource> _resourceMap =

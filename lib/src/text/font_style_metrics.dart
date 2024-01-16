@@ -1,4 +1,4 @@
-part of stagexl.text;
+part of '../text.dart';
 
 final Map<String, _FontStyleMetrics> _fontStyleMetrics =
     <String, _FontStyleMetrics>{};

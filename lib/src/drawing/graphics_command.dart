@@ -1,7 +1,6 @@
-part of stagexl.drawing;
+part of '../drawing.dart';
 
 /// The base class for all graphics commands
-
 abstract class GraphicsCommand {
   Graphics? _graphics;
 

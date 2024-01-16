@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 /// An invisible and rectangular display object to catch input events.
 ///

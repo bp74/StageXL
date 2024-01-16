@@ -1,5 +1,3 @@
-library stagexl.geom.perspective_projection;
-
 import 'matrix_3d.dart';
 
 /// The [PerspectiveProjection] defines the matrix that is used to projection

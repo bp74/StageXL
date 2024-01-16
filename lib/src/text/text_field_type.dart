@@ -1,4 +1,4 @@
-part of stagexl.text;
+part of '../text.dart';
 
 class TextFieldType {
   static const String DYNAMIC = 'dynamic';

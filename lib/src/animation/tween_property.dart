@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// The [TweenProperty] class controls the value of a property while
 /// the tween is running. This class is returned by the getters of

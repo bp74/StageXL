@@ -1,5 +1,3 @@
-library stagexl.filters.color_matrix;
-
 import 'dart:math' hide Point, Rectangle;
 import 'dart:typed_data';
 

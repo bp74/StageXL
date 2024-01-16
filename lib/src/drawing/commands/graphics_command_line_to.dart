@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class GraphicsCommandLineTo extends GraphicsCommand {
   double _x;

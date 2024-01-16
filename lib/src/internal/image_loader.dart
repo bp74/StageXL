@@ -1,5 +1,3 @@
-library stagexl.internal.image_loader;
-
 import 'dart:async';
 import 'dart:html';
 

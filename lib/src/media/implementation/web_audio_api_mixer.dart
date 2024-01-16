@@ -1,4 +1,4 @@
-part of stagexl.media;
+part of '../../media.dart';
 
 class WebAudioApiMixer {
   static final AudioContext audioContext = AudioContext();

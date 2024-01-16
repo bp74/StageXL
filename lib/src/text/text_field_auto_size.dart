@@ -1,4 +1,4 @@
-part of stagexl.text;
+part of '../text.dart';
 
 class TextFieldAutoSize {
   static const String CENTER = 'center';

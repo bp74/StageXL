@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 /// The BitmapDataLoadOptions class contains different options to configure
 /// how BitmapDatas are loaded from the server.

@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 /// Provides constant values for the eventPhase property of the [Event] class.
 

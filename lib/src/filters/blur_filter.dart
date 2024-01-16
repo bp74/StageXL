@@ -1,5 +1,3 @@
-library stagexl.filters.blur;
-
 import 'dart:math' hide Point, Rectangle;
 
 import '../display.dart';

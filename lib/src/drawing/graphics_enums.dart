@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../drawing.dart';
 
 enum JointStyle { MITER, ROUND, BEVEL }
 

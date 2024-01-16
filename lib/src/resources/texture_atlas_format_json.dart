@@ -1,4 +1,4 @@
-part of stagexl.resources;
+part of '../resources.dart';
 
 class _TextureAtlasFormatJson extends TextureAtlasFormat {
   const _TextureAtlasFormatJson();

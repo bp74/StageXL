@@ -6,7 +6,7 @@
 /// performance of the WebGL renderer). The [SoundSprite] does a similar
 /// thing for Sounds as the texture altas does for BitmapDatas.
 ///
-library stagexl.resources;
+library;
 
 import 'dart:async';
 import 'dart:convert';

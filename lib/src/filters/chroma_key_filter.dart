@@ -1,5 +1,3 @@
-library stagexl.filters.chroma_key;
-
 import '../display.dart';
 import '../engine.dart';
 import '../geom.dart';

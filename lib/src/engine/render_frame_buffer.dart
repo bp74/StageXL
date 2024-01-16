@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 class RenderFrameBuffer {
   RenderTexture? _renderTexture;

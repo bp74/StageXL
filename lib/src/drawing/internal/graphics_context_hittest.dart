@@ -1,4 +1,4 @@
-part of stagexl.drawing;
+part of '../../drawing.dart';
 
 class _GraphicsContextHitTest extends _GraphicsContextBase {
   bool _hit = false;

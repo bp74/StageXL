@@ -1,4 +1,4 @@
-part of stagexl.display_ex;
+part of '../display_ex.dart';
 
 /// A display object with custom 2D transformation matrix.
 ///

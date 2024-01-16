@@ -1,4 +1,4 @@
-part of stagexl.engine;
+part of '../engine.dart';
 
 class RenderTexture {
   int _width = 0;
@@ -100,7 +100,7 @@ class RenderTexture {
 
       // Note: We need to use js_util.callMethod, because Dart SDK
       // does not support ImageBitmap as a CanvasImageSource
-      js_util.callMethod(_canvas!.context2D, 'drawImage', [
+      js_util.callMethod<void>(_canvas!.context2D, 'drawImage', [
         image,
         0,
         0,

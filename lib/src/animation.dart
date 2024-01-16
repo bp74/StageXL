@@ -6,7 +6,7 @@
 /// Built in transition function (easing functions) can be viewed here:
 /// [Transition Functions](http://www.stagexl.org/docs/transitions.html)
 ///
-library stagexl.animation;
+library;
 
 import 'dart:async';
 import 'dart:math';

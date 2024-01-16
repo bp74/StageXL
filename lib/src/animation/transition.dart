@@ -1,4 +1,4 @@
-part of stagexl.animation;
+part of '../animation.dart';
 
 /// The [TransitionFunction] is the function signature for transitions used
 /// in the [Tween] and [Translation] classes. The function takes the ratio

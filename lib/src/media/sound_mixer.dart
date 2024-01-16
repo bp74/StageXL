@@ -1,4 +1,4 @@
-part of stagexl.media;
+part of '../media.dart';
 
 class SoundMixer {
   static SoundEngine? _engineDetected;

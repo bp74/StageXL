@@ -1,4 +1,4 @@
-part of stagexl.events;
+part of '../events.dart';
 
 /// Defines the standard key locations returned by
 /// [KeyboardEvent.getKeyLocation].

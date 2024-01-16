@@ -1,4 +1,4 @@
-part of stagexl.resources;
+part of '../resources.dart';
 
 abstract class TextureAtlasFormat {
   static const TextureAtlasFormat JSON = _TextureAtlasFormatJson();

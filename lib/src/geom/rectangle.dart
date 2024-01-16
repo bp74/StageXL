@@ -1,5 +1,3 @@
-library stagexl.geom.rectangle;
-
 import 'dart:math' hide Point, Rectangle;
 import 'dart:math' as math;
 

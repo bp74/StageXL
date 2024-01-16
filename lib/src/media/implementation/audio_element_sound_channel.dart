@@ -1,4 +1,4 @@
-part of stagexl.media;
+part of '../../media.dart';
 
 class AudioElementSoundChannel extends SoundChannel {
   final AudioElementSound _audioElementSound;

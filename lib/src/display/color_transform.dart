@@ -1,4 +1,4 @@
-part of stagexl.display;
+part of '../display.dart';
 
 class ColorTransform {
   final Float32List multipliers = Float32List(4);
