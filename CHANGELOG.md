@@ -8,6 +8,10 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+### 2.2.1
+* Add support for loading audio from data url.
+* Update latest lints and cleanup
+
 ### 2.2.0
 * Support the latest version of `package:xml`.
 * Update Dart SDK restraint to  ^3.0.0
