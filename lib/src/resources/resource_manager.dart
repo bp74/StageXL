@@ -112,7 +112,12 @@ class ResourceManager {
   bool containsSound(String name) => _containsResource('Sound', name);
 
   void addSound(String name, String url, [SoundLoadOptions? options]) {
-    final loader = Sound.load(url, options);
+    var loader;
+    if (url.startsWith('data:')) {
+      loader = Sound.loadDataUrl(url, options);
+    } else {
+      loader = Sound.load(url, options);
+    }
     _addResource('Sound', name, url, loader);
   }
 
