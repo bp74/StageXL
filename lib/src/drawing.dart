@@ -1,6 +1,6 @@
 import 'dart:html'
-    show CanvasElement, CanvasGradient, CanvasPattern, CanvasRenderingContext2D;
-import 'dart:math' show atan2, cos, pi, pow, sin, sqrt, tan;
+    show CanvasRenderingContext2D, CanvasElement, CanvasGradient, CanvasPattern;
+import 'dart:math' show pi, sqrt, sin, cos, tan, atan2, pow;
 import 'dart:typed_data';
 
 import 'engine.dart';
@@ -27,6 +27,7 @@ part 'drawing/commands/graphics_command_move_to.dart';
 part 'drawing/commands/graphics_command_quadratic_curve_to.dart';
 part 'drawing/commands/graphics_command_rect.dart';
 part 'drawing/commands/graphics_command_rect_round.dart';
+part 'drawing/commands/graphics_command_set_line_dash.dart';
 part 'drawing/commands/graphics_command_stroke.dart';
 part 'drawing/commands/graphics_command_stroke_color.dart';
 part 'drawing/commands/graphics_command_stroke_gradient.dart';

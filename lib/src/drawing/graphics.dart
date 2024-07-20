@@ -64,6 +64,13 @@ class Graphics {
     return command;
   }
 
+  GraphicsCommandSetLineDash setLineDash(List<num> segments,
+      [num lineDashOffset = 0.0]) {
+    final command = GraphicsCommandSetLineDash(segments, lineDashOffset);
+    addCommand(command);
+    return command;
+  }
+
   //---------------------------------------------------------------------------
 
   /// Moves the next point in the path to [x] and [y]
