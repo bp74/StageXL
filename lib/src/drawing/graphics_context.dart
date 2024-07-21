@@ -5,6 +5,8 @@ abstract class GraphicsContext {
 
   void closePath();
 
+  void setLineDash(List<num> segments, [num lineDashOffset = 0.0]) {}
+
   //---------------------------------------------------------------------------
 
   void moveTo(double x, double y);

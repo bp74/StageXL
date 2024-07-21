@@ -26,6 +26,12 @@ class _GraphicsContextCanvas extends GraphicsContext {
     _canvasContext.closePath();
   }
 
+  @override
+  void setLineDash(List<num> segments, [num lineDashOffset = 0.0]) {
+    _canvasContext.setLineDash(segments);
+    _canvasContext.lineDashOffset = lineDashOffset;
+  }
+
   //---------------------------------------------------------------------------
 
   @override
