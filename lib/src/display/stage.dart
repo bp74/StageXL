@@ -914,7 +914,7 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
 
   void _onTouchEvent(html.TouchEvent event) {
-    if (preventDefaultOnTouch) event.preventDefault();
+    if (preventDefaultOnTouch && event.cancelable == true) event.preventDefault();
 
     final eventType = event.type;
     final altKey = event.altKey;
