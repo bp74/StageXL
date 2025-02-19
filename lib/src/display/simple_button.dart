@@ -126,8 +126,6 @@ class SimpleButton extends InteractiveObject {
         return overState;
       case SimpleButtonState.Down:
         return downState;
-      default:
-        return null;
     }
   }
 
