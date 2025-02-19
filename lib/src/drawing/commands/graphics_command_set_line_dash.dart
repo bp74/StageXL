@@ -1,8 +1,8 @@
 part of '../../drawing.dart';
 
 class GraphicsCommandSetLineDash extends GraphicsCommand {
-  List<num> _segments;
-  num _lineDashOffset;
+  final List<num> _segments;
+  final num _lineDashOffset;
 
   GraphicsCommandSetLineDash(this._segments, this._lineDashOffset);
 

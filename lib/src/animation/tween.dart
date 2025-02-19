@@ -36,6 +36,8 @@ class Tween implements Animatable {
   void Function()? _onUpdate;
   void Function()? _onComplete;
 
+  final Completer<void> completer = Completer<void>();
+
   num _totalTime = 0.0;
   num _currentTime = 0.0;
   num _delay = 0.0;
@@ -130,9 +132,15 @@ class Tween implements Animatable {
         if (_onUpdate != null) {
           _onUpdate!();
         }
-        if (_onComplete != null && _currentTime == _totalTime) {
-          _onComplete!();
+        if (_currentTime == _totalTime) {
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
+          if (_onComplete != null) {
+            _onComplete!();
+          }
         }
+
       }
     }
 
@@ -148,6 +156,9 @@ class Tween implements Animatable {
       advanceTime(_totalTime - _currentTime);
     }
   }
+
+  ///Future for when the tween is completed
+  Future completed() => completer.future;
 
   //---------------------------------------------------------------------------
 

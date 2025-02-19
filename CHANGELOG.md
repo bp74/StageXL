@@ -8,6 +8,9 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+### 2.2.3
+* Add futures for Tweens, DelayedCall, AnimationChains, and AnimationGroups.
+
 ### 2.2.2
 * Add graphics command for canvas2d setLineDash (Pull #363)
 * Fix bug with trying to cancel a non-cancelable event.

@@ -19,6 +19,8 @@ class DelayedCall implements Animatable {
   num _currentTime = 0.0;
   num _totalTime = 0.0;
 
+  final Completer<void> completer = Completer<void>();
+
   /// The number of times the delayed call should be executed.
   ///
   /// Default is 1.
@@ -46,6 +48,9 @@ class DelayedCall implements Animatable {
     while (newTime >= _totalTime && repeatCount > 0) {
       _currentTime = _totalTime;
       repeatCount--;
+      if (repeatCount == 0 && !completer.isCompleted) {
+        completer.complete();
+      }
       _action();
       newTime -= _totalTime;
     }
@@ -54,6 +59,9 @@ class DelayedCall implements Animatable {
 
     return repeatCount > 0;
   }
+
+  ///Future for when the tween is completed
+  Future completed() => completer.future;
 
   //----------------------------------------------------------------------------
 

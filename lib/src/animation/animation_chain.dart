@@ -28,6 +28,8 @@ class AnimationChain implements Animatable {
   void Function()? _onStart;
   void Function()? _onComplete;
 
+  final Completer<void> completer = Completer<void>();
+
   num _time = 0.0;
   num _delay = 0.0;
   bool _started = false;
@@ -61,6 +63,9 @@ class AnimationChain implements Animatable {
 
     if (_animatables.isEmpty) {
       _completed = true;
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
       if (_onComplete != null) _onComplete!();
       return false;
     } else {
@@ -84,6 +89,9 @@ class AnimationChain implements Animatable {
 
   /// Indicates if this [AnimatableChain] is completed.
   bool get isComplete => _completed;
+
+  ///Future for when the tween is completed
+  Future completed() => completer.future;
 
   //----------------------------------------------------------------------------
 
