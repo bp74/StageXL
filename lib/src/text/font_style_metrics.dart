@@ -18,9 +18,9 @@ class _FontStyleMetrics {
 
   _FontStyleMetrics(TextFormat textFormat) {
     final fontStyle = textFormat._cssFontStyle;
-    final text = html.Element.tag('span');
-    final block = html.Element.tag('div');
-    final div = html.Element.tag('div');
+    final text = web.HTMLSpanElement();
+    final block = web.HTMLDivElement();
+    final div = web.HTMLDivElement();
 
     text.style.font = fontStyle;
     text.text = 'Hg';
@@ -30,7 +30,7 @@ class _FontStyleMetrics {
     div.append(block);
     div.append(text);
 
-    html.document.body!.append(div);
+    web.document.body!.append(div);
 
     try {
       block.style.verticalAlign = 'baseline';

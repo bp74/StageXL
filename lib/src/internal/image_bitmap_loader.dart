@@ -1,13 +1,16 @@
 import 'dart:async';
-import 'dart:html';
-import 'dart:js_util';
+import 'dart:js_interop';
 
+import 'package:http/http.dart' as http;
+import 'package:web/web.dart';
+
+import '../../stagexl.dart';
 import 'environment.dart' as env;
 
 class ImageBitmapLoader {
   final String _url;
   final _completer = Completer<ImageBitmap>();
-  HttpRequest? _request;
+  bool _cancelled = false;
 
   ImageBitmapLoader(String url, bool webpAvailable) : _url = url {
     if (webpAvailable) {
@@ -18,33 +21,23 @@ class ImageBitmapLoader {
   }
 
   void _load(String url) {
-    final request = _request = HttpRequest();
-    request
-      ..onReadyStateChange.listen((_) async {
-        if (request.readyState == HttpRequest.DONE && request.status == 200) {
-          try {
-            final blob = request.response as Blob;
-
-            // Note: Dart SDK does not support createImageBitmap, so
-            // use callMethod and convert from promise to future.
-            // See https://github.com/dart-lang/sdk/issues/12379
-            final promise =
-                callMethod<Object>(window, 'createImageBitmap', [blob]);
-            final imageBitmap = await promiseToFuture<ImageBitmap>(promise);
-
-            _completer.complete(imageBitmap);
-          } catch (e) {
-            _completer.completeError(e);
-          }
+    http.get(Uri.parse(url)).then((response) {
+      if (_cancelled) {
+        _completer.completeError(LoadError('image bitmap load cancelled'));
+        return;
+      }
+      if (response.statusCode == 200) {
+        try {
+          final imageBitmap = window.createImageBitmap(Blob([response.bodyBytes.toJS].toJS)).toDart;
+          _completer.complete(imageBitmap);
+        } catch (e) {
+          _completer.completeError(e);
         }
-      })
-      ..onError.listen(_completer.completeError)
-      ..open('GET', url, async: true)
-      ..responseType = 'blob'
-      ..send();
+      }
+    });
   }
 
-  void cancel() => _request?.abort();
+  void cancel() => _cancelled = true;
 
   //---------------------------------------------------------------------------
 

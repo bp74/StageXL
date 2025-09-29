@@ -36,7 +36,7 @@ class BitmapData implements BitmapDrawable {
       : width = renderTextureQuad.targetWidth,
         height = renderTextureQuad.targetHeight;
 
-  factory BitmapData.fromImageElement(ImageElement imageElement,
+  factory BitmapData.fromImageElement(HTMLImageElement imageElement,
       [num pixelRatio = 1.0]) {
     final renderTexture = RenderTexture.fromImageElement(imageElement);
     final renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
@@ -50,7 +50,7 @@ class BitmapData implements BitmapDrawable {
     return BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  factory BitmapData.fromVideoElement(VideoElement videoElement,
+  factory BitmapData.fromVideoElement(HTMLVideoElement videoElement,
       [num pixelRatio = 1.0]) {
     final renderTexture = RenderTexture.fromVideoElement(videoElement);
     final renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);

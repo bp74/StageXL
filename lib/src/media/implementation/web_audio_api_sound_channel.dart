@@ -5,8 +5,8 @@ class WebAudioApiSoundChannel extends SoundChannel {
   late SoundTransform _soundTransform;
   late final WebAudioApiMixer _mixer;
 
-  late AudioBufferSourceNode _sourceNode;
-  StreamSubscription<html.Event>? _sourceNodeEndedSubscription;
+  late web.AudioBufferSourceNode _sourceNode;
+  StreamSubscription<web.Event>? _sourceNodeEndedSubscription;
 
   bool _stopped = false;
   bool _paused = true;
@@ -49,7 +49,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
     if (_paused || _stopped) {
       return _position;
     } else {
-      final currentTime = WebAudioApiMixer.audioContext.currentTime!;
+      final currentTime = WebAudioApiMixer.audioContext.currentTime;
       final position = currentTime - _timeOffset;
       return _loop ? position % _duration : position.clamp(0.0, _duration);
     }
@@ -93,18 +93,18 @@ class WebAudioApiSoundChannel extends SoundChannel {
       _sourceNode.loop = true;
       _sourceNode.loopStart = _startTime;
       _sourceNode.loopEnd = _startTime + _duration;
-      _sourceNode.connectNode(_mixer.inputNode);
+      _sourceNode.connect(_mixer.inputNode);
       _sourceNode.start(0, _startTime + _position);
-      _timeOffset = WebAudioApiMixer.audioContext.currentTime! - _position;
+      _timeOffset = WebAudioApiMixer.audioContext.currentTime - _position;
     } else {
       _paused = false;
       _sourceNode = WebAudioApiMixer.audioContext.createBufferSource();
       _sourceNode.buffer = _webAudioApiSound._audioBuffer;
       _sourceNode.loop = false;
-      _sourceNode.connectNode(_mixer.inputNode);
+      _sourceNode.connect(_mixer.inputNode);
       _sourceNode.start(0, _startTime + _position, _duration - _position);
-      _sourceNodeEndedSubscription = _sourceNode.onEnded.listen(_onEnded);
-      _timeOffset = WebAudioApiMixer.audioContext.currentTime! - _position;
+      _sourceNodeEndedSubscription = _sourceNode.onEnded.listen(_onEnded) as StreamSubscription<web.Event>?;
+      _timeOffset = WebAudioApiMixer.audioContext.currentTime - _position;
     }
   }
 
@@ -130,7 +130,7 @@ class WebAudioApiSoundChannel extends SoundChannel {
 
   //---------------------------------------------------------------------------
 
-  void _onEnded(html.Event? _) {
+  void _onEnded(web.Event? _) {
     if (_paused == false && _stopped == false && _loop == false) {
       _position = position;
       _stopped = true;

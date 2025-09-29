@@ -53,7 +53,7 @@ enum StageAlign {
 class Stage extends DisplayObjectContainer {
   static StageOptions defaultOptions = StageOptions();
 
-  late CanvasElement _canvas;
+  late HTMLCanvasElement _canvas;
   late final RenderContext _renderContext;
   RenderLoop? _renderLoop;
   late final StageConsole _console;
@@ -140,13 +140,13 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  Stage(CanvasElement canvas,
+  Stage(HTMLCanvasElement canvas,
       {int? width, int? height, StageOptions? options}) {
-    if (canvas.tabIndex! <= 0) canvas.tabIndex = 1;
+    if (canvas.tabIndex <= 0) canvas.tabIndex = 1;
     if (canvas.style.outline == '') canvas.style.outline = 'none';
     options ??= Stage.defaultOptions;
-    width ??= canvas.width!;
-    height ??= canvas.height!;
+    width ??= canvas.width;
+    height ??= canvas.height;
 
     backgroundColor = options.backgroundColor;
     preventDefaultOnTouch = options.preventDefaultOnTouch;
@@ -445,7 +445,7 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
 
   RenderContext _createRenderContext(
-      CanvasElement canvas, StageOptions options) {
+      HTMLCanvasElement canvas, StageOptions options) {
     if (options.renderEngine == RenderEngine.WebGL) {
       try {
         return RenderContextWebGL(canvas,
@@ -485,8 +485,8 @@ class Stage extends DisplayObjectContainer {
     final sourceHeight = _sourceHeight;
 
     final clientRectangle = _canvas.getBoundingClientRect();
-    clientLeft = _canvas.clientLeft! + clientRectangle.left.round();
-    clientTop = _canvas.clientTop! + clientRectangle.top.round();
+    clientLeft = _canvas.clientLeft + clientRectangle.left.round();
+    clientTop = _canvas.clientTop + clientRectangle.top.round();
     clientWidth = _canvas.clientWidth;
     clientHeight = _canvas.clientHeight;
 
@@ -616,7 +616,7 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  void _onMouseEvent(html.MouseEvent event) {
+  void _onMouseEvent(web.MouseEvent event) {
     if (preventDefaultOnMouse) event.preventDefault();
 
     final time = DateTime.now().millisecondsSinceEpoch;
@@ -687,22 +687,25 @@ class Stage extends DisplayObjectContainer {
             mouseButton.buttonDown,
             0,
             null));
+
         if (isDnD) {
+          final dragEvent = event is web.DragEvent ? event : null;
           oldTarget.dispatchEvent(MouseEvent(
-              MouseEvent.DRAG_LEAVE,
-              true,
-              localPoint.x,
-              localPoint.y,
-              stagePoint.x,
-              stagePoint.y,
-              event.altKey,
-              event.ctrlKey,
-              event.shiftKey,
-              0.0,
-              0.0,
-              mouseButton.buttonDown,
-              0,
-              event.dataTransfer));
+            MouseEvent.DRAG_LEAVE,
+            true,
+            localPoint.x,
+            localPoint.y,
+            stagePoint.x,
+            stagePoint.y,
+            event.altKey,
+            event.ctrlKey,
+            event.shiftKey,
+            0.0,
+            0.0,
+            mouseButton.buttonDown,
+            0,
+            dragEvent?.dataTransfer,
+          ));
         }
       }
 
@@ -764,21 +767,23 @@ class Stage extends DisplayObjectContainer {
             0,
             null));
         if (isDnD) {
+          final dragEvent = event is web.DragEvent ? event : null;
           newTarget.dispatchEvent(MouseEvent(
-              MouseEvent.DRAG_ENTER,
-              true,
-              localPoint.x,
-              localPoint.y,
-              stagePoint.x,
-              stagePoint.y,
-              event.altKey,
-              event.ctrlKey,
-              event.shiftKey,
-              0.0,
-              0.0,
-              mouseButton.buttonDown,
-              0,
-              event.dataTransfer));
+            MouseEvent.DRAG_ENTER,
+            true,
+            localPoint.x,
+            localPoint.y,
+            stagePoint.x,
+            stagePoint.y,
+            event.altKey,
+            event.ctrlKey,
+            event.shiftKey,
+            0.0,
+            0.0,
+            mouseButton.buttonDown,
+            0,
+            dragEvent?.dataTransfer,
+          ));
         }
       }
 
@@ -829,6 +834,7 @@ class Stage extends DisplayObjectContainer {
 
     if (mouseEventType != null && target != null) {
       target.globalToLocal(stagePoint, localPoint);
+      final dragEvent = event is web.DragEvent ? event : null;
       target.dispatchEvent(MouseEvent(
           mouseEventType,
           true,
@@ -843,7 +849,7 @@ class Stage extends DisplayObjectContainer {
           0.0,
           mouseButton.buttonDown,
           mouseButton.clickCount,
-          isDnD ? event.dataTransfer : null));
+          isDnD ? dragEvent?.dataTransfer : null));
 
       if (isClick) {
         mouseEventType = isDoubleClick && target.doubleClickEnabled
@@ -871,7 +877,7 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  void _onMouseWheelEvent(html.WheelEvent event) {
+  void _onMouseWheelEvent(web.WheelEvent event) {
     if (preventDefaultOnWheel) event.preventDefault();
 
     final stagePoint = _clientTransformation.transformPoint(event.client);
@@ -913,22 +919,24 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  void _onTouchEvent(html.TouchEvent event) {
-    if (preventDefaultOnTouch && event.cancelable == true) event.preventDefault();
+  void _onTouchEvent(web.TouchEvent event) {
+    if (preventDefaultOnTouch && event.cancelable == true) {
+      event.preventDefault();
+    }
 
     final eventType = event.type;
     final altKey = event.altKey;
     final ctrlKey = event.ctrlKey;
     final shiftKey = event.shiftKey;
 
-    if (event.changedTouches == null) return;
+    final touches = event.changedTouches;
+    for (var i = 0; i < touches.length; i++) {
+      final changedTouch = touches.item(i);
+      if (changedTouch == null) continue;
 
-    final touches =
-        event.changedTouches!.where((touch) => touch.identifier != null);
-    for (var changedTouch in touches) {
-      final identifier = changedTouch.identifier!;
+      final identifier = changedTouch.identifier;
 
-      final clientPoint = changedTouch.client;
+      final clientPoint = Point(changedTouch.clientX, changedTouch.clientY);
       final stagePoint = _clientTransformation.transformPoint(clientPoint);
       final localPoint = Point<num>(0.0, 0.0);
       final target =
@@ -1096,7 +1104,7 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  void _onKeyEvent(html.KeyboardEvent event) {
+  void _onKeyEvent(web.KeyboardEvent event) {
     if (preventDefaultOnKeyboard) event.preventDefault();
     if (focus == null) return;
 
@@ -1130,19 +1138,19 @@ class Stage extends DisplayObjectContainer {
       if (event.type == 'keydown') {
         keyboardEventType = KeyboardEvent.KEY_DOWN;
       }
-      if (event.location == html.KeyLocation.LEFT) {
+      if (event.location == web.KeyLocation.LEFT) {
         keyLocation = KeyLocation.LEFT;
       }
-      if (event.location == html.KeyLocation.RIGHT) {
+      if (event.location == web.KeyLocation.RIGHT) {
         keyLocation = KeyLocation.RIGHT;
       }
-      if (event.location == html.KeyLocation.NUMPAD) {
+      if (event.location == web.KeyLocation.NUMPAD) {
         keyLocation = KeyLocation.NUM_PAD;
       }
-      if (event.location == html.KeyLocation.JOYSTICK) {
+      if (event.location == web.KeyLocation.JOYSTICK) {
         keyLocation = KeyLocation.D_PAD;
       }
-      if (event.location == html.KeyLocation.MOBILE) {
+      if (event.location == web.KeyLocation.MOBILE) {
         keyLocation = KeyLocation.D_PAD;
       }
 

@@ -1,11 +1,11 @@
 @TestOn('browser')
 library;
 
-import 'dart:html' show ImageBitmap;
 import 'dart:math' show pi;
 
 import 'package:stagexl/stagexl.dart';
 import 'package:test/test.dart';
+import 'package:web/web.dart' as web;
 
 void main() {
   late BitmapData spiders;
@@ -21,7 +21,7 @@ void main() {
 
   test('render texture is an ImageBitmap', () {
     final image = spiders.renderTexture.imageBitmap;
-    expect(image is ImageBitmap, StageXL.environment.isImageBitmapSupported);
+    expect(image is web.ImageBitmap, StageXL.environment.isImageBitmapSupported);
   });
 
   test('getImageData works', () {

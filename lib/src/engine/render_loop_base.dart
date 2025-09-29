@@ -4,19 +4,21 @@ final _globalFrameListeners = <void Function(double)>[];
 num _globalFrameTime = double.maxFinite;
 int _globalFrameCallbackId = -1;
 
+void _globalFrameCallback(double frameTime) {
+  final currentFrameTime = frameTime / 1000.0;
+  final deltaTime = currentFrameTime - _globalFrameTime;
+  _globalFrameTime = currentFrameTime;
+  _globalFrameCallbackId = -1;
+  _globalFrameRequest();
+
+  for (var f in _globalFrameListeners.toList()) {
+    f(deltaTime);
+  }
+}
+
 void _globalFrameRequest() {
   if (_globalFrameCallbackId == -1) {
-    _globalFrameCallbackId = window.requestAnimationFrame((frameTime) {
-      final currentFrameTime = frameTime / 1000.0;
-      final deltaTime = currentFrameTime - _globalFrameTime;
-      _globalFrameTime = currentFrameTime;
-      _globalFrameCallbackId = -1;
-      _globalFrameRequest();
-
-      for (var f in _globalFrameListeners.toList()) {
-        f(deltaTime);
-      }
-    });
+    _globalFrameCallbackId = web.window.requestAnimationFrame(_globalFrameCallback.toJS);
   }
 }
 

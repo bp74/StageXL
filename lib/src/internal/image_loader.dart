@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'dart:html';
+import 'package:web/web.dart';
 
 import '../errors.dart';
 import 'environment.dart' as env;
 
 class ImageLoader {
-  final ImageElement image = ImageElement();
-  final Completer<ImageElement> _completer = Completer<ImageElement>();
+  final HTMLImageElement image = HTMLImageElement();
+  final Completer<HTMLImageElement> _completer = Completer<HTMLImageElement>();
 
   final String _url;
   late StreamSubscription<Event> _onLoadSubscription;
@@ -29,7 +29,7 @@ class ImageLoader {
 
   //---------------------------------------------------------------------------
 
-  Future<ImageElement> get done => _completer.future;
+  Future<HTMLImageElement> get done => _completer.future;
 
   //---------------------------------------------------------------------------
 

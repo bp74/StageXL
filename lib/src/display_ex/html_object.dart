@@ -26,16 +26,16 @@ part of '../display_ex.dart';
 ///
 /// Example:
 ///
-///     var element = html.querySelector("#htmlObject");
+///     var element = web.querySelector("#htmlObject");
 ///     var htmlObject = new HtmlObject(element);
 ///     htmlObject.x = 400;
 ///     htmlObject.y = 300;
 ///     stage.addChild(htmlObject);
 
 class HtmlObject extends DisplayObject {
-  final Element element;
+  final web.HTMLElement element;
 
-  late final CssStyleDeclaration _style;
+  late final web.CSSStyleDeclaration _style;
   String _styleOpacity = '';
   String _styleTransform = '';
   String _styleVisibility = '';

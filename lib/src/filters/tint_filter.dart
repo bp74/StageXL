@@ -1,3 +1,5 @@
+
+import 'dart:js_interop';
 import '../display.dart';
 import '../engine.dart';
 import '../geom.dart';
@@ -37,7 +39,7 @@ class TintFilter extends BitmapFilter {
         : bitmapData.renderTextureQuad.cut(rectangle);
 
     final imageData = renderTextureQuad.getImageData();
-    final List<int> data = imageData.data;
+    final List<int> data = imageData.data.toDart;
 
     for (var index = 0; index <= data.length - 4; index += 4) {
       final c0 = data[index + 0];

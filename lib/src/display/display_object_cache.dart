@@ -66,12 +66,12 @@ class _DisplayObjectCache {
 
     if (debugBorder) {
       final context = canvas.context2D;
-      context.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+      context.setTransform(1.0.toJS, 0.0, 0.0, 1.0, 0.0, 0.0);
       context.lineWidth = 1;
       context.lineJoin = 'miter';
       context.lineCap = 'butt';
-      context.strokeStyle = '#FF00FF';
-      context.strokeRect(0.5, 0.5, canvas.width! - 1, canvas.height! - 1);
+      context.strokeStyle = '#FF00FF'.toJS;
+      context.strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
     }
 
     renderTexture!.update();

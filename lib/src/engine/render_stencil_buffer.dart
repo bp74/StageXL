@@ -47,7 +47,7 @@ class RenderStencilBuffer {
 
       _renderContext!.activateRenderStencilBuffer(this);
       _renderingContext!.renderbufferStorage(
-          gl.WebGL.RENDERBUFFER, gl.WebGL.DEPTH_STENCIL, _width, _height);
+          web.WebGL.RENDERBUFFER, gl.WebGL.DEPTH_STENCIL, _width, _height);
     }
   }
 

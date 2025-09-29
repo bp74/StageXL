@@ -10,10 +10,10 @@ library;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html' show HttpRequest;
 import 'dart:typed_data';
 import 'dart:web_gl' as gl;
 
+import 'package:web/web.dart' show HttpRequest;
 import 'package:xml/xml.dart';
 
 import 'display.dart';

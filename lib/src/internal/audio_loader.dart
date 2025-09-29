@@ -1,14 +1,17 @@
+
 import 'dart:async';
-import 'dart:html';
+
+import 'package:http/http.dart' as http;
+import 'package:web/web.dart';
 
 import '../errors.dart';
 
 class AudioLoader {
   static final List<String> supportedTypes = _getSupportedTypes();
 
-  final AudioElement audio = AudioElement();
+  final HTMLAudioElement audio = HTMLAudioElement();
   final AggregateError aggregateError = AggregateError('Error loading sound.');
-  final Completer<AudioElement> _completer = Completer<AudioElement>();
+  final Completer<HTMLAudioElement> _completer = Completer<HTMLAudioElement>();
 
   late StreamSubscription<Event> _onCanPlaySubscription;
   late StreamSubscription<Event> _onErrorSubscription;
@@ -19,7 +22,7 @@ class AudioLoader {
     // we have to add the AudioElement to the document,
     // otherwise some browser won't start loading :(
 
-    document.body!.children.add(audio);
+    document.body!.appendChild(audio);
 
     if (corsEnabled) audio.crossOrigin = 'anonymous';
 
@@ -30,7 +33,7 @@ class AudioLoader {
     _loadNextUrl();
   }
 
-  Future<AudioElement> get done => _completer.future;
+  Future<HTMLAudioElement> get done => _completer.future;
 
   //---------------------------------------------------------------------------
 
@@ -41,7 +44,7 @@ class AudioLoader {
   }
 
   void _onAudioError(Event event) {
-    final ae = event.target as AudioElement;
+    final ae = event.target as HTMLAudioElement;
     final loadError = LoadError('Failed to load ${ae.src}.', ae.error);
     aggregateError.errors.add(loadError);
     _loadNextUrl();
@@ -67,19 +70,17 @@ class AudioLoader {
     _completer.completeError(aggregateError);
   }
 
+
   void _loadAudioData(String url) {
-    HttpRequest.request(url, responseType: 'blob').then((request) {
-      final reader = FileReader();
-      reader.readAsDataUrl(request.response as Blob);
-      reader.onLoadEnd.first
-          .then((e) => _loadAudioSource(reader.result as String));
+    http.get(Uri.parse(url)).then((request) {
+      final url = Uri.dataFromBytes(request.bodyBytes);
+      _loadAudioSource(url.toString());
     }).catchError((Object error) {
       final loadError = LoadError('Failed to load $url.', error);
       aggregateError.errors.add(loadError);
       _loadNextUrl();
     });
   }
-
   void _loadAudioSource(String url) {
     audio.preload = 'auto';
     audio.src = url;
@@ -90,7 +91,7 @@ class AudioLoader {
 
   static List<String> _getSupportedTypes() {
     final supportedTypes = <String>[];
-    final audio = AudioElement();
+    final audio = HTMLAudioElement();
     final valid = ['maybe', 'probably'];
 
     if (valid.contains(audio.canPlayType('audio/ogg; codecs=opus'))) {

@@ -2,7 +2,7 @@ part of '../engine.dart';
 
 class RenderContextWebGL extends RenderContext {
   static int _globalContextIdentifier = 0;
-  final CanvasElement _canvasElement;
+  final web.HTMLCanvasElement _canvasElement;
 
   late final gl.RenderingContext _renderingContext;
   final Matrix3D _projectionMatrix = Matrix3D.fromIdentity();
@@ -31,20 +31,20 @@ class RenderContextWebGL extends RenderContext {
 
   //---------------------------------------------------------------------------
 
-  RenderContextWebGL(CanvasElement canvasElement,
+  RenderContextWebGL(web.HTMLCanvasElement canvasElement,
       {bool alpha = false, bool antialias = false})
       : _canvasElement = canvasElement {
-    _canvasElement.onWebGlContextLost.listen(_onContextLost);
-    _canvasElement.onWebGlContextRestored.listen(_onContextRestored);
+    _canvasElement.onWebGlContextLost.listen(_onContextLost as void Function(web.WebGLContextEvent));
+    _canvasElement.onWebGlContextRestored.listen(_onContextRestored as void Function(web.WebGLContextEvent));
 
     final renderingContext = _canvasElement.getContext3d(
         alpha: alpha, antialias: antialias, depth: false, stencil: true);
 
-    if (renderingContext is! gl.RenderingContext) {
+    if (renderingContext == null || renderingContext is! gl.RenderingContext) {
       throw StateError('Failed to get WebGL context.');
     }
 
-    _renderingContext = renderingContext;
+    _renderingContext = renderingContext as gl.RenderingContext;
     _renderingContext.enable(gl.WebGL.BLEND);
     _renderingContext.disable(gl.WebGL.STENCIL_TEST);
     _renderingContext.disable(gl.WebGL.DEPTH_TEST);
@@ -88,8 +88,8 @@ class RenderContextWebGL extends RenderContext {
 
   @override
   void reset() {
-    final viewportWidth = _canvasElement.width!;
-    final viewportHeight = _canvasElement.height!;
+    final viewportWidth = _canvasElement.width;
+    final viewportHeight = _canvasElement.height;
     _activeRenderFrameBuffer = null;
     _renderingContext.bindFramebuffer(gl.WebGL.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, viewportWidth, viewportHeight);
@@ -443,7 +443,7 @@ class RenderContextWebGL extends RenderContext {
         _activeRenderFrameBuffer = null;
         _renderingContext.bindFramebuffer(gl.WebGL.FRAMEBUFFER, null);
         _renderingContext.viewport(
-            0, 0, _canvasElement.width!, _canvasElement.height!);
+            0, 0, _canvasElement.width, _canvasElement.height);
       }
       _updateScissorTest(_getLastScissorValue());
       _updateStencilTest(_getLastStencilValue());
@@ -545,9 +545,9 @@ class RenderContextWebGL extends RenderContext {
           x1, y1, math.max(x2 - x1, 0), math.max(y2 - y1, 0));
     } else {
       final x1 = value.left.round();
-      final y1 = _canvasElement.height! - value.bottom.round();
+      final y1 = _canvasElement.height - value.bottom.round();
       final x2 = value.right.round();
-      final y2 = _canvasElement.height! - value.top.round();
+      final y2 = _canvasElement.height - value.top.round();
       _renderingContext.enable(gl.WebGL.SCISSOR_TEST);
       _renderingContext.scissor(
           x1, y1, math.max(x2 - x1, 0), math.max(y2 - y1, 0));

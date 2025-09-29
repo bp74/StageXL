@@ -1,3 +1,4 @@
+import 'dart:js_interop';
 import 'dart:math' hide Point, Rectangle;
 
 import '../display.dart';
@@ -89,7 +90,7 @@ class BlurFilter extends BitmapFilter {
         : bitmapData.renderTextureQuad.cut(rectangle);
 
     final imageData = renderTextureQuad.getImageData();
-    final data = imageData.data;
+    final data = imageData.data.toDart;
     final width = imageData.width;
     final height = imageData.height;
 

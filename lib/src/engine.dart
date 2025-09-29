@@ -14,20 +14,11 @@
 library;
 
 import 'dart:async';
-import 'dart:html'
-    show
-        CanvasElement,
-        CanvasImageSource,
-        CanvasRenderingContext2D,
-        ImageBitmap,
-        ImageData,
-        ImageElement,
-        VideoElement,
-        window;
-import 'dart:js_util' as js_util;
+import 'dart:js_interop';
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:web_gl' as gl;
+import 'package:web/web.dart' as web;
 
 import 'geom/matrix.dart';
 import 'geom/matrix_3d.dart';

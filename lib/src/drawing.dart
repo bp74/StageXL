@@ -1,7 +1,12 @@
-import 'dart:html'
-    show CanvasElement, CanvasGradient, CanvasPattern, CanvasRenderingContext2D;
+import 'dart:js_interop';
+
 import 'dart:math' show atan2, cos, pi, pow, sin, sqrt, tan;
 import 'dart:typed_data';
+
+import 'package:js/js_util.dart' as js_util;
+
+import 'package:web/web.dart'
+    show CanvasGradient, CanvasPattern, CanvasRenderingContext2D, HTMLCanvasElement, HTMLCanvasElementGlue;
 
 import 'engine.dart';
 import 'geom.dart';

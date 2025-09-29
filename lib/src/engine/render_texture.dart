@@ -8,7 +8,7 @@ class RenderTexture {
   // https://github.com/dart-lang/sdk/issues/12379#issuecomment-572239799
   // is addressed
   /*CanvasImageSource*/ dynamic _source;
-  CanvasElement? _canvas;
+  web.HTMLCanvasElement? _canvas;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
   RenderTextureWrapping _wrappingX = RenderTextureWrapping.CLAMP;
   RenderTextureWrapping _wrappingY = RenderTextureWrapping.CLAMP;
@@ -30,34 +30,36 @@ class RenderTexture {
 
     _width = width;
     _height = height;
-    _source = _canvas = CanvasElement(width: _width, height: _height);
+    _source = _canvas = web.HTMLCanvasElement()
+      ..width = _width
+      ..height = _height;
 
     if (fillColor != 0) {
       final context = _canvas!.context2D;
-      context.fillStyle = color2rgba(fillColor);
+      context.fillStyle = color2rgba(fillColor).toJS;
       context.fillRect(0, 0, _width, _height);
     }
   }
 
-  RenderTexture.fromImageElement(ImageElement imageElement) {
-    _width = imageElement.width!;
-    _height = imageElement.height!;
+  RenderTexture.fromImageElement(web.HTMLImageElement imageElement) {
+    _width = imageElement.width;
+    _height = imageElement.height;
     _source = imageElement;
   }
 
-  RenderTexture.fromImageBitmap(ImageBitmap image) {
-    _width = image.width!;
-    _height = image.height!;
+  RenderTexture.fromImageBitmap(web.ImageBitmap image) {
+    _width = image.width;
+    _height = image.height;
     _source = image;
   }
 
-  RenderTexture.fromCanvasElement(CanvasElement canvasElement) {
-    _width = canvasElement.width!;
-    _height = canvasElement.height!;
+  RenderTexture.fromCanvasElement(web.HTMLCanvasElement canvasElement) {
+    _width = canvasElement.width;
+    _height = canvasElement.height;
     _source = _canvas = canvasElement;
   }
 
-  RenderTexture.fromVideoElement(VideoElement videoElement) {
+  RenderTexture.fromVideoElement(web.HTMLVideoElement videoElement) {
     if (videoElement.readyState < 3) throw ArgumentError('videoElement');
     _width = videoElement.videoWidth;
     _height = videoElement.videoHeight;
@@ -74,8 +76,8 @@ class RenderTexture {
   int get width => _width;
   int get height => _height;
 
-  CanvasImageSource? get source {
-    if (_source is CanvasImageSource) return _source as CanvasImageSource?;
+  web.CanvasImageSource? get source {
+    if (_source is web.CanvasImageSource) return _source as web.CanvasImageSource?;
     return null;
   }
 
@@ -86,27 +88,31 @@ class RenderTexture {
       0,
       1.0);
 
-  CanvasElement get canvas {
-    if (_source is CanvasElement) {
-      return _source as CanvasElement;
-    } else if (_source is ImageElement) {
-      final imageElement = _source as ImageElement;
-      _canvas = _source = CanvasElement(width: _width, height: _height);
-      _canvas!.context2D.drawImageScaled(imageElement, 0, 0, _width, _height);
+  web.HTMLCanvasElement get canvas {
+    if (_source is web.HTMLCanvasElement) {
+      return _source as web.HTMLCanvasElement;
+    } else if (_source is web.HTMLImageElement) {
+      final imageElement = _source as web.HTMLImageElement;
+      _source = _canvas = web.HTMLCanvasElement()
+        ..width = _width
+        ..height = _height;
+      _canvas!.context2D.drawImage(imageElement, 0, 0, _width, _height);
       return _canvas!;
-    } else if (_source is ImageBitmap) {
-      final image = _source as ImageBitmap;
-      _canvas = _source = CanvasElement(width: _width, height: _height);
+    } else if (_source is web.ImageBitmap) {
+      final image = _source as web.ImageBitmap;
+      _source = _canvas = web.HTMLCanvasElement()
+        ..width = _width
+        ..height = _height;
 
       // Note: We need to use js_util.callMethod, because Dart SDK
       // does not support ImageBitmap as a CanvasImageSource
-      js_util.callMethod<void>(_canvas!.context2D, 'drawImage', [
+      _canvas!.context2D.drawImage(
         image,
         0,
         0,
         _width,
         _height,
-      ]);
+      );
 
       return _canvas!;
     } else {
@@ -114,8 +120,8 @@ class RenderTexture {
     }
   }
 
-  ImageBitmap? get imageBitmap {
-    if (_source is ImageBitmap) return _source as ImageBitmap?;
+  web.ImageBitmap? get imageBitmap {
+    if (_source is web.ImageBitmap) return _source as web.ImageBitmap?;
     return null;
   }
 
@@ -205,8 +211,8 @@ class RenderTexture {
       _renderingContext?.deleteTexture(_texture);
     }
 
-    if (_source is ImageBitmap) {
-      (_source as ImageBitmap).close();
+    if (_source is web.ImageBitmap) {
+      (_source as web.ImageBitmap).close();
     }
 
     _texture = null;
@@ -220,7 +226,7 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   void resize(int width, int height) {
-    if (_source is VideoElement) {
+    if (_source is web.HTMLVideoElement) {
       throw StateError('RenderTexture is not resizeable.');
     } else if (_width == width && _height == height) {
       // there is no need to resize the texture
@@ -231,7 +237,7 @@ class RenderTexture {
       if (_renderContext == null || _texture == null) return;
       if (_renderContext!.contextIdentifier != contextIdentifier) return;
 
-      const target = gl.WebGL.TEXTURE_2D;
+      const target = web.WebGL.TEXTURE_2D;
 
       _renderContext!.activateRenderTexture(this);
       _renderingContext!.texImage2D(
@@ -239,7 +245,9 @@ class RenderTexture {
     } else {
       _width = width;
       _height = height;
-      _canvas = _source = CanvasElement(width: _width, height: _height);
+      _source = _canvas = web.HTMLCanvasElement()
+        ..width = _width
+        ..height = _height;
     }
   }
 
@@ -307,7 +315,9 @@ class RenderTexture {
 
       if (_textureSourceWorkaround) {
         // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
-        _canvas = CanvasElement(width: width, height: height);
+        _canvas = web.HTMLCanvasElement()
+            ..width = width
+            ..height = height;
         _canvas!.context2D.drawImage(source!, 0, 0);
         renderingContext.texImage2D(
             target, 0, pixelFormat, pixelFormat, pixelType, _canvas);
@@ -334,8 +344,8 @@ class RenderTexture {
   num _videoUpdateTime = -1.0;
 
   void _onGlobalFrame(num deltaTime) {
-    if (source is VideoElement) {
-      final videoElement = source as VideoElement;
+    if (source is web.HTMLVideoElement) {
+      final videoElement = source as web.HTMLVideoElement;
       final currentTime = videoElement.currentTime;
       if (_videoUpdateTime != currentTime) {
         _videoUpdateTime = currentTime;

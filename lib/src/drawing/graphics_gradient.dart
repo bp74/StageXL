@@ -174,7 +174,9 @@ class GraphicsGradient {
     }
 
     if (_gradientTexture == null) {
-      final canvas = CanvasElement(width: 1, height: GRADIENT_TEXTURE_SIZE);
+      final canvas = HTMLCanvasElement()
+        ..width = 1
+        ..height = GRADIENT_TEXTURE_SIZE;
       final canvasGradient =
           canvas.context2D.createLinearGradient(0, 0, 0, GRADIENT_TEXTURE_SIZE);
       _colorStops.forEach(

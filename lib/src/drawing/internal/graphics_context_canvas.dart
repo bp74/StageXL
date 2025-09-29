@@ -28,7 +28,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
 
   @override
   void setLineDash(List<num> segments, [num lineDashOffset = 0.0]) {
-    _canvasContext.setLineDash(segments);
+    _canvasContext.setLineDash(js_util.jsify(segments) as JSArray<JSNumber>);
     _canvasContext.lineDashOffset = lineDashOffset;
   }
 
@@ -85,7 +85,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
 
   @override
   void fillColor(int color) {
-    _canvasContext.fillStyle = color2rgba(color);
+    _canvasContext.fillStyle = color2rgba(color).toJS;
     _canvasContext.fill();
   }
 
@@ -116,7 +116,7 @@ class _GraphicsContextCanvas extends GraphicsContext {
   @override
   void strokeColor(
       int color, double width, JointStyle jointStyle, CapsStyle capsStyle) {
-    _canvasContext.strokeStyle = color2rgba(color);
+    _canvasContext.strokeStyle = color2rgba(color).toJS;
     _canvasContext.lineWidth = width;
     _canvasContext.lineJoin = _getLineJoin(jointStyle);
     _canvasContext.lineCap = _getLineCap(capsStyle);
