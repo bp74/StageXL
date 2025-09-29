@@ -7,7 +7,7 @@ class RenderTexture {
   // TODO: Make CanvasImageSource again once
   // https://github.com/dart-lang/sdk/issues/12379#issuecomment-572239799
   // is addressed
-  /*CanvasImageSource*/ dynamic _source;
+  web.CanvasImageSource? _source;
   web.HTMLCanvasElement? _canvas;
   RenderTextureFiltering _filtering = RenderTextureFiltering.LINEAR;
   RenderTextureWrapping _wrappingX = RenderTextureWrapping.CLAMP;
@@ -77,7 +77,7 @@ class RenderTexture {
   int get height => _height;
 
   web.CanvasImageSource? get source {
-    if (_source is web.CanvasImageSource) return _source as web.CanvasImageSource?;
+    if (_source is web.CanvasImageSource) return _source;
     return null;
   }
 
@@ -89,16 +89,17 @@ class RenderTexture {
       1.0);
 
   web.HTMLCanvasElement get canvas {
-    if (_source is web.HTMLCanvasElement) {
+    if (_source.isA<web.HTMLCanvasElement>()) {
       return _source as web.HTMLCanvasElement;
-    } else if (_source is web.HTMLImageElement) {
+    } else if (_source.isA<web.HTMLImageElement>()) {
       final imageElement = _source as web.HTMLImageElement;
       _source = _canvas = web.HTMLCanvasElement()
         ..width = _width
         ..height = _height;
+
       _canvas!.context2D.drawImage(imageElement, 0, 0, _width, _height);
       return _canvas!;
-    } else if (_source is web.ImageBitmap) {
+    } else if (_source.isA<web.ImageBitmap>()) {
       final image = _source as web.ImageBitmap;
       _source = _canvas = web.HTMLCanvasElement()
         ..width = _width
@@ -119,7 +120,6 @@ class RenderTexture {
       throw StateError('RenderTexture is read only.');
     }
   }
-
   web.ImageBitmap? get imageBitmap {
     if (_source is web.ImageBitmap) return _source as web.ImageBitmap?;
     return null;

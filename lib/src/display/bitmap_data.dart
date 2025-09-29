@@ -36,21 +36,21 @@ class BitmapData implements BitmapDrawable {
       : width = renderTextureQuad.targetWidth,
         height = renderTextureQuad.targetHeight;
 
-  factory BitmapData.fromImageElement(HTMLImageElement imageElement,
+  factory BitmapData.fromImageElement(web.HTMLImageElement imageElement,
       [num pixelRatio = 1.0]) {
     final renderTexture = RenderTexture.fromImageElement(imageElement);
     final renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  factory BitmapData.fromImageBitmap(ImageBitmap imageBitmap,
+  factory BitmapData.fromImageBitmap(web.ImageBitmap imageBitmap,
       [num pixelRatio = 1.0]) {
     var renderTexture = RenderTexture.fromImageBitmap(imageBitmap);
     var renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);
     return BitmapData.fromRenderTextureQuad(renderTextureQuad);
   }
 
-  factory BitmapData.fromVideoElement(HTMLVideoElement videoElement,
+  factory BitmapData.fromVideoElement(web.HTMLVideoElement videoElement,
       [num pixelRatio = 1.0]) {
     final renderTexture = RenderTexture.fromVideoElement(videoElement);
     final renderTextureQuad = renderTexture.quad.withPixelRatio(pixelRatio);

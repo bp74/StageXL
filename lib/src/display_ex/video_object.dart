@@ -38,7 +38,7 @@ class VideoObject extends InteractiveObject {
       : _renderTexture = RenderTexture.fromVideoElement(_video.videoElement) {
     _renderTextureQuad = _renderTexture.quad;
 
-    web.HTMLVideoElement videoElement = _video.videoElement;
+    final videoElement = _video.videoElement;
     videoElement.onEnded.listen((e) => dispatchEvent(Event('videoEnded')));
     videoElement.onPause.listen((e) => dispatchEvent(Event('videoPause')));
     videoElement.onError.listen((e) => dispatchEvent(Event('videoError')));

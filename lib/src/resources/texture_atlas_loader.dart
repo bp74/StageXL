@@ -32,7 +32,14 @@ class _TextureAtlasLoaderFile extends TextureAtlasLoader {
   double getPixelRatio() => _loadInfo.pixelRatio;
 
   @override
-  Future<String> getSource() => HttpRequest.getString(_loadInfo.loaderUrl);
+  Future<String> getSource() async {
+    final response = await http.get(Uri.parse(_loadInfo.loaderUrl));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw StateError('Failed to load texture atlas source.');
+    }
+  }
 
   @override
   Future<RenderTextureQuad> getRenderTextureQuad(String filename) async {

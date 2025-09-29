@@ -3,9 +3,7 @@ import 'dart:js_interop';
 import 'dart:math' show atan2, cos, pi, pow, sin, sqrt, tan;
 import 'dart:typed_data';
 
-import 'package:js/js_util.dart' as js_util;
-
-import 'package:web/web.dart'
+import 'package:web/web.dart' as web
     show CanvasGradient, CanvasPattern, CanvasRenderingContext2D, HTMLCanvasElement, HTMLCanvasElementGlue;
 
 import 'engine.dart';

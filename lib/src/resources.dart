@@ -11,9 +11,9 @@ library;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'dart:web_gl' as gl;
 
-import 'package:web/web.dart' show HttpRequest;
+import 'package:http/http.dart' as http;
+import 'package:web/web.dart' as web;
 import 'package:xml/xml.dart';
 
 import 'display.dart';

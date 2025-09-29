@@ -53,7 +53,7 @@ enum StageAlign {
 class Stage extends DisplayObjectContainer {
   static StageOptions defaultOptions = StageOptions();
 
-  late HTMLCanvasElement _canvas;
+  late web.HTMLCanvasElement _canvas;
   late final RenderContext _renderContext;
   RenderLoop? _renderLoop;
   late final StageConsole _console;
@@ -140,7 +140,7 @@ class Stage extends DisplayObjectContainer {
 
   //----------------------------------------------------------------------------
 
-  Stage(HTMLCanvasElement canvas,
+  Stage(web.HTMLCanvasElement canvas,
       {int? width, int? height, StageOptions? options}) {
     if (canvas.tabIndex <= 0) canvas.tabIndex = 1;
     if (canvas.style.outline == '') canvas.style.outline = 'none';
@@ -445,7 +445,7 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
 
   RenderContext _createRenderContext(
-      HTMLCanvasElement canvas, StageOptions options) {
+      web.HTMLCanvasElement canvas, StageOptions options) {
     if (options.renderEngine == RenderEngine.WebGL) {
       try {
         return RenderContextWebGL(canvas,
@@ -623,7 +623,7 @@ class Stage extends DisplayObjectContainer {
     final button = event.button;
 
     InteractiveObject? target;
-    final stagePoint = _clientTransformation.transformPoint(event.client);
+    final stagePoint = _clientTransformation.transformPoint(Point(event.clientX, event.clientY));
     final localPoint = Point<num>(0.0, 0.0);
 
     if (button < 0 || button > 2) return;
@@ -689,7 +689,7 @@ class Stage extends DisplayObjectContainer {
             null));
 
         if (isDnD) {
-          final dragEvent = event is web.DragEvent ? event : null;
+          final dragEvent = event.isA<web.DragEvent>() ? event as web.DragEvent : null;
           oldTarget.dispatchEvent(MouseEvent(
             MouseEvent.DRAG_LEAVE,
             true,

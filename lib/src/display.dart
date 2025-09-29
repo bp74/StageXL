@@ -16,11 +16,11 @@ library;
 import 'dart:async';
 import 'dart:collection';
 import 'dart:js_interop';
+
 import 'dart:math' hide Point, Rectangle;
 import 'dart:typed_data';
 
 import 'package:web/web.dart' as web;
-import 'package:web/web.dart' show HTMLCanvasElement, HTMLImageElement, HTMLVideoElement, ImageBitmap;
 
 import 'animation.dart';
 import 'drawing.dart';

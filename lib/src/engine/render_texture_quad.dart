@@ -327,7 +327,8 @@ class RenderTextureQuad {
 
   web.ImageData getImageData() {
     final rect = sourceRectangle;
-    final context = renderTexture.canvas.context2D;
+    final canvas = renderTexture.canvas;
+    final context = canvas.context2D;
     return context.getImageData(rect.left, rect.top, rect.width, rect.height);
   }
 

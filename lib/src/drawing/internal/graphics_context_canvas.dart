@@ -1,9 +1,28 @@
 part of '../../drawing.dart';
 
+// === JS interop definitions (renamed to avoid conflict) ===
+
+@JS()
+@staticInterop
+class CanvasRenderingContext2DJS {}
+
+extension CanvasRenderingContext2DMethods on CanvasRenderingContext2DJS {
+  external void setLineDash(JSArray<JSNumber> segments);
+  external set lineDashOffset(num value);
+}
+
+extension CanvasRenderingContext2DDart on CanvasRenderingContext2DJS {
+  void setLineDashDart(List<num> segments, [num offset = 0]) {
+    final jsSegments = segments.map((n) => n.toJS).toList().toJS;
+    setLineDash(jsSegments);
+    lineDashOffset = offset;
+  }
+}
+
 class _GraphicsContextCanvas extends GraphicsContext {
   final RenderState renderState;
   final RenderContextCanvas _renderContext;
-  final CanvasRenderingContext2D _canvasContext;
+  final web.CanvasRenderingContext2D _canvasContext;
 
   _GraphicsContextCanvas(this.renderState)
       : _renderContext = renderState.renderContext as RenderContextCanvas,
@@ -28,10 +47,10 @@ class _GraphicsContextCanvas extends GraphicsContext {
 
   @override
   void setLineDash(List<num> segments, [num lineDashOffset = 0.0]) {
-    _canvasContext.setLineDash(js_util.jsify(segments) as JSArray<JSNumber>);
-    _canvasContext.lineDashOffset = lineDashOffset;
+    // Cast to our JS interop type before calling
+    final jsCtx = _canvasContext as CanvasRenderingContext2DJS;
+    jsCtx.setLineDashDart(segments, lineDashOffset);
   }
-
   //---------------------------------------------------------------------------
 
   @override
@@ -169,10 +188,10 @@ class _GraphicsContextCanvas extends GraphicsContext {
     return lineCap;
   }
 
-  CanvasPattern _getCanvasPattern(GraphicsPattern pattern) =>
+  web.CanvasPattern _getCanvasPattern(GraphicsPattern pattern) =>
       pattern.getCanvasPattern(_canvasContext);
 
-  CanvasGradient _getCanvasGradient(GraphicsGradient gradient) =>
+  web.CanvasGradient _getCanvasGradient(GraphicsGradient gradient) =>
       gradient.getCanvasGradient(_canvasContext);
 }
 
