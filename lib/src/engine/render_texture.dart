@@ -121,7 +121,7 @@ class RenderTexture {
     }
   }
   web.ImageBitmap? get imageBitmap {
-    if (_source is web.ImageBitmap) return _source as web.ImageBitmap?;
+    if (_source.isA<web.ImageBitmap>()) return _source as web.ImageBitmap?;
     return null;
   }
 
@@ -211,7 +211,7 @@ class RenderTexture {
       _renderingContext?.deleteTexture(_texture);
     }
 
-    if (_source is web.ImageBitmap) {
+    if (_source.isA<web.ImageBitmap>()) {
       (_source as web.ImageBitmap).close();
     }
 
@@ -226,7 +226,7 @@ class RenderTexture {
   //-----------------------------------------------------------------------------------------------
 
   void resize(int width, int height) {
-    if (_source is web.HTMLVideoElement) {
+    if (_source.isA<web.HTMLVideoElement>()) {
       throw StateError('RenderTexture is not resizeable.');
     } else if (_width == width && _height == height) {
       // there is no need to resize the texture
@@ -344,7 +344,7 @@ class RenderTexture {
   num _videoUpdateTime = -1.0;
 
   void _onGlobalFrame(num deltaTime) {
-    if (source is web.HTMLVideoElement) {
+    if (source.isA<web.HTMLVideoElement>()) {
       final videoElement = source as web.HTMLVideoElement;
       final currentTime = videoElement.currentTime;
       if (_videoUpdateTime != currentTime) {

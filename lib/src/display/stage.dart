@@ -767,7 +767,7 @@ class Stage extends DisplayObjectContainer {
             0,
             null));
         if (isDnD) {
-          final dragEvent = event is web.DragEvent ? event : null;
+          final dragEvent = event.isA<web.DragEvent>() ? event as web.DragEvent: null;
           newTarget.dispatchEvent(MouseEvent(
             MouseEvent.DRAG_ENTER,
             true,
@@ -834,7 +834,7 @@ class Stage extends DisplayObjectContainer {
 
     if (mouseEventType != null && target != null) {
       target.globalToLocal(stagePoint, localPoint);
-      final dragEvent = event is web.DragEvent ? event : null;
+      final dragEvent = event.isA<web.DragEvent>() ? event as web.DragEvent : null;
       target.dispatchEvent(MouseEvent(
           mouseEventType,
           true,

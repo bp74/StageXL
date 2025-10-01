@@ -82,7 +82,7 @@ class AudioElementSound extends Sound {
       }
     }
 
-    final audioElement = _audioElement.clone(true) as web.HTMLAudioElement;
+    final audioElement = _audioElement.cloneNode(true) as web.HTMLAudioElement;
     final audioCanPlay = audioElement.onCanPlay.first;
     if (audioElement.readyState == 0) await audioCanPlay;
     audioElement.onEnded.listen(_onAudioEnded);
@@ -97,7 +97,7 @@ class AudioElementSound extends Sound {
 
   void _onAudioEnded(web.Event event) {
     final audioElement = event.target;
-    if (audioElement is! web.HTMLAudioElement) return;
+    if (!audioElement.isA<web.HTMLAudioElement>()) return;
 
     _soundChannels[audioElement]?._onAudioEnded();
   }
