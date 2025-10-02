@@ -8,6 +8,9 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <https://stackoverflow.com/questions/ask?tags=stagexl>
 
+### 2.3.1-wip
+* Fixed links in `pubspec.yaml`.
+
 ### 2.3.0
 * **Breaking Change:** Migrated from dart:html to package:web
 * Update Dart SDK restraint to ^3.5.0
