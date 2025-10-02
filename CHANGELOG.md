@@ -8,6 +8,10 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
 
+### 2.3.0
+* Change from dart:html to package:web
+* Update Dart SDK restrain to ^3.4.0
+
 ### 2.2.3
 * Add futures for Tweens, DelayedCall, AnimationChains, and AnimationGroups.
 
