@@ -94,7 +94,7 @@ abstract class RenderProgram {
 
     final status =
         rc.getProgramParameter(program, web.WebGLRenderingContext.LINK_STATUS);
-    if (status == true) return program;
+    if (identical(status, true)) return program;
 
     final cl = rc.isContextLost();
     throw StateError(cl ? 'ContextLost' : rc.getProgramInfoLog(program)!);
@@ -113,7 +113,7 @@ abstract class RenderProgram {
 
     final status =
         rc.getShaderParameter(shader, web.WebGLRenderingContext.COMPILE_STATUS);
-    if (status == true) return shader;
+    if (identical(status, true)) return shader;
 
     final cl = rc.isContextLost();
     throw StateError(cl ? 'ContextLost' : rc.getShaderInfoLog(shader)!);
