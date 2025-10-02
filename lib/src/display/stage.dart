@@ -623,7 +623,8 @@ class Stage extends DisplayObjectContainer {
     final button = event.button;
 
     InteractiveObject? target;
-    final stagePoint = _clientTransformation.transformPoint(Point(event.clientX, event.clientY));
+    final stagePoint = _clientTransformation
+        .transformPoint(Point(event.clientX, event.clientY));
     final localPoint = Point<num>(0.0, 0.0);
 
     if (button < 0 || button > 2) return;
@@ -689,7 +690,8 @@ class Stage extends DisplayObjectContainer {
             null));
 
         if (isDnD) {
-          final dragEvent = event.isA<web.DragEvent>() ? event as web.DragEvent : null;
+          final dragEvent =
+              event.isA<web.DragEvent>() ? event as web.DragEvent : null;
           oldTarget.dispatchEvent(MouseEvent(
             MouseEvent.DRAG_LEAVE,
             true,
@@ -767,7 +769,8 @@ class Stage extends DisplayObjectContainer {
             0,
             null));
         if (isDnD) {
-          final dragEvent = event.isA<web.DragEvent>() ? event as web.DragEvent: null;
+          final dragEvent =
+              event.isA<web.DragEvent>() ? event as web.DragEvent : null;
           newTarget.dispatchEvent(MouseEvent(
             MouseEvent.DRAG_ENTER,
             true,
@@ -834,7 +837,8 @@ class Stage extends DisplayObjectContainer {
 
     if (mouseEventType != null && target != null) {
       target.globalToLocal(stagePoint, localPoint);
-      final dragEvent = event.isA<web.DragEvent>() ? event as web.DragEvent : null;
+      final dragEvent =
+          event.isA<web.DragEvent>() ? event as web.DragEvent : null;
       target.dispatchEvent(MouseEvent(
           mouseEventType,
           true,
@@ -880,7 +884,8 @@ class Stage extends DisplayObjectContainer {
   void _onMouseWheelEvent(web.WheelEvent event) {
     if (preventDefaultOnWheel) event.preventDefault();
 
-    final stagePoint = _clientTransformation.transformPoint(Point(event.clientX, event.clientY));
+    final stagePoint = _clientTransformation
+        .transformPoint(Point(event.clientX, event.clientY));
     final localPoint = Point<num>(0.0, 0.0);
 
     final target =

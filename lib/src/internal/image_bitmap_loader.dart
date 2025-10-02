@@ -28,7 +28,9 @@ class ImageBitmapLoader {
       }
       if (response.statusCode == 200) {
         try {
-          final imageBitmap = window.createImageBitmap(Blob([response.bodyBytes.toJS].toJS)).toDart;
+          final imageBitmap = window
+              .createImageBitmap(Blob([response.bodyBytes.toJS].toJS))
+              .toDart;
           _completer.complete(imageBitmap);
         } catch (e) {
           _completer.completeError(e);

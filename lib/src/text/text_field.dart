@@ -381,8 +381,7 @@ class TextField extends InteractiveObject {
           textFormatSize +
           line * (textFormatLeading + textFormatSize + fontStyleMetricsDescent);
 
-      final width =
-          canvasContext.measureText(textLineMetrics._text).width;
+      final width = canvasContext.measureText(textLineMetrics._text).width;
 
       textLineMetrics._x = offsetX;
       textLineMetrics._y = offsetY;
@@ -474,8 +473,7 @@ class TextField extends InteractiveObject {
           final textIndex = _caretIndex - textLineMetrics._textIndex;
           final text = textLineMetrics._text.substring(0, textIndex);
           _caretLine = line;
-          _caretX = textLineMetrics.x +
-              canvasContext.measureText(text).width;
+          _caretX = textLineMetrics.x + canvasContext.measureText(text).width;
           _caretY = textLineMetrics.y - fontStyleMetricsAscent * 0.9;
           _caretWidth = 2.0;
           _caretHeight = textFormatSize;
@@ -787,8 +785,7 @@ class TextField extends InteractiveObject {
         var bestIndex = 0;
 
         for (var c = 0; c <= text.length; c++) {
-          final width =
-              canvasContext.measureText(text.substring(0, c)).width;
+          final width = canvasContext.measureText(text.substring(0, c)).width;
           final distance = (lineX + width - mouseX).abs();
           if (distance < bestDistance) {
             bestDistance = distance;

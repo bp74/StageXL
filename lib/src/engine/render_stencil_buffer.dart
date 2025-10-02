@@ -47,7 +47,10 @@ class RenderStencilBuffer {
 
       _renderContext!.activateRenderStencilBuffer(this);
       _renderingContext!.renderbufferStorage(
-          web.WebGLRenderingContext.RENDERBUFFER, web.WebGLRenderingContext.DEPTH_STENCIL, _width, _height);
+          web.WebGLRenderingContext.RENDERBUFFER,
+          web.WebGLRenderingContext.DEPTH_STENCIL,
+          _width,
+          _height);
     }
   }
 
@@ -59,11 +62,16 @@ class RenderStencilBuffer {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
       _renderbuffer = _renderingContext!.createRenderbuffer();
-      _renderingContext!.bindRenderbuffer(web.WebGLRenderingContext.RENDERBUFFER, _renderbuffer);
+      _renderingContext!.bindRenderbuffer(
+          web.WebGLRenderingContext.RENDERBUFFER, _renderbuffer);
       _renderingContext!.renderbufferStorage(
-          web.WebGLRenderingContext.RENDERBUFFER, web.WebGLRenderingContext.DEPTH_STENCIL, _width, _height);
+          web.WebGLRenderingContext.RENDERBUFFER,
+          web.WebGLRenderingContext.DEPTH_STENCIL,
+          _width,
+          _height);
     } else {
-      _renderingContext!.bindRenderbuffer(web.WebGLRenderingContext.RENDERBUFFER, _renderbuffer);
+      _renderingContext!.bindRenderbuffer(
+          web.WebGLRenderingContext.RENDERBUFFER, _renderbuffer);
     }
   }
 }

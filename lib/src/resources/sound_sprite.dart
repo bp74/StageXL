@@ -35,8 +35,8 @@ class SoundSprite {
           final startTime = segmentList[0] as num;
           final duration = segmentList[1] as num;
           final loop = segmentList.length > 2 && segmentList[2] as bool;
-          final sss =
-              SoundSpriteSegment(soundSprite, segment, startTime, duration, loop);
+          final sss = SoundSpriteSegment(
+              soundSprite, segment, startTime, duration, loop);
           soundSprite._segments.add(sss);
         }
       }

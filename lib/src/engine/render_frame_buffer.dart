@@ -75,7 +75,8 @@ class RenderFrameBuffer {
       _renderingContext!
           .framebufferRenderbuffer(target, stencil, stencilTarget, stencilData);
     } else {
-      _renderingContext!.bindFramebuffer(web.WebGLRenderingContext.FRAMEBUFFER, _framebuffer);
+      _renderingContext!
+          .bindFramebuffer(web.WebGLRenderingContext.FRAMEBUFFER, _framebuffer);
     }
   }
 }

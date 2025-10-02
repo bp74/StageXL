@@ -140,7 +140,6 @@ class Tween implements Animatable {
             _onComplete!();
           }
         }
-
       }
     }
 

@@ -12,7 +12,8 @@ import 'dart:js_interop';
 import 'dart:math' hide Point, Rectangle;
 
 import 'package:web/web.dart' as web;
-import 'package:web/web.dart' show CanvasGradient, CanvasRenderingContext2D, HTMLCanvasElement;
+import 'package:web/web.dart'
+    show CanvasGradient, CanvasRenderingContext2D, HTMLCanvasElement;
 
 import 'display.dart';
 import 'drawing.dart';

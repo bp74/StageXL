@@ -117,6 +117,7 @@ class RenderTexture {
       throw StateError('RenderTexture is read only.');
     }
   }
+
   web.ImageBitmap? get imageBitmap {
     if (_source.isA<web.ImageBitmap>()) return _source as web.ImageBitmap?;
     return null;
@@ -143,10 +144,10 @@ class RenderTexture {
     if (_renderContext!.contextIdentifier != contextIdentifier) return;
 
     _renderContext!.activateRenderTexture(this);
-    _renderingContext!.texParameteri(
-        web.WebGLRenderingContext.TEXTURE_2D, web.WebGLRenderingContext.TEXTURE_MIN_FILTER, _filtering.value);
-    _renderingContext!.texParameteri(
-        web.WebGLRenderingContext.TEXTURE_2D, web.WebGLRenderingContext.TEXTURE_MAG_FILTER, _filtering.value);
+    _renderingContext!.texParameteri(web.WebGLRenderingContext.TEXTURE_2D,
+        web.WebGLRenderingContext.TEXTURE_MIN_FILTER, _filtering.value);
+    _renderingContext!.texParameteri(web.WebGLRenderingContext.TEXTURE_2D,
+        web.WebGLRenderingContext.TEXTURE_MAG_FILTER, _filtering.value);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -161,8 +162,8 @@ class RenderTexture {
     if (_renderContext!.contextIdentifier != contextIdentifier) return;
 
     _renderContext!.activateRenderTexture(this);
-    _renderingContext!.texParameteri(
-        web.WebGLRenderingContext.TEXTURE_2D, web.WebGLRenderingContext.TEXTURE_WRAP_S, _wrappingX.value);
+    _renderingContext!.texParameteri(web.WebGLRenderingContext.TEXTURE_2D,
+        web.WebGLRenderingContext.TEXTURE_WRAP_S, _wrappingX.value);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -177,8 +178,8 @@ class RenderTexture {
     if (_renderContext!.contextIdentifier != contextIdentifier) return;
 
     _renderContext!.activateRenderTexture(this);
-    _renderingContext!.texParameteri(
-        web.WebGLRenderingContext.TEXTURE_2D, web.WebGLRenderingContext.TEXTURE_WRAP_T, _wrappingY.value);
+    _renderingContext!.texParameteri(web.WebGLRenderingContext.TEXTURE_2D,
+        web.WebGLRenderingContext.TEXTURE_WRAP_T, _wrappingY.value);
   }
 
   web.GLint get pixelFormat => _pixelFormat;
@@ -237,8 +238,8 @@ class RenderTexture {
       const target = web.WebGLRenderingContext.TEXTURE_2D;
 
       _renderContext!.activateRenderTexture(this);
-      _renderingContext!.texImage2D(
-          target, 0, pixelFormat, _width.toJS, _height.toJS, 0.toJS, pixelFormat, pixelType);
+      _renderingContext!.texImage2D(target, 0, pixelFormat, _width.toJS,
+          _height.toJS, 0.toJS, pixelFormat, pixelType);
     } else {
       _width = width;
       _height = height;
@@ -266,21 +267,24 @@ class RenderTexture {
     _renderContext!.flush();
     _renderContext!.activateRenderTexture(this);
 
-    final scissors = _renderingContext!.isEnabled(web.WebGLRenderingContext.SCISSOR_TEST);
-    if (scissors) _renderingContext!.disable(web.WebGLRenderingContext.SCISSOR_TEST);
+    final scissors =
+        _renderingContext!.isEnabled(web.WebGLRenderingContext.SCISSOR_TEST);
+    if (scissors)
+      _renderingContext!.disable(web.WebGLRenderingContext.SCISSOR_TEST);
 
     const target = web.WebGLRenderingContext.TEXTURE_2D;
 
     if (_textureSourceWorkaround) {
       _canvas!.context2D.drawImage(source!, 0, 0);
-      _renderingContext!
-          .texImage2D(target, 0, pixelFormat, pixelFormat.toJS, pixelType.toJS, _canvas!);
+      _renderingContext!.texImage2D(
+          target, 0, pixelFormat, pixelFormat.toJS, pixelType.toJS, _canvas!);
     } else {
-      _renderingContext!
-          .texImage2D(target, 0, pixelFormat, pixelFormat.toJS, pixelType.toJS, _source!);
+      _renderingContext!.texImage2D(
+          target, 0, pixelFormat, pixelFormat.toJS, pixelType.toJS, _source!);
     }
 
-    if (scissors) _renderingContext!.enable(web.WebGLRenderingContext.SCISSOR_TEST);
+    if (scissors)
+      _renderingContext!.enable(web.WebGLRenderingContext.SCISSOR_TEST);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -297,42 +301,46 @@ class RenderTexture {
       renderingContext.activeTexture(textureSlot);
       renderingContext.bindTexture(target, _texture);
 
-      final scissors = renderingContext.isEnabled(web.WebGLRenderingContext.SCISSOR_TEST);
-      if (scissors) renderingContext.disable(web.WebGLRenderingContext.SCISSOR_TEST);
+      final scissors =
+          renderingContext.isEnabled(web.WebGLRenderingContext.SCISSOR_TEST);
+      if (scissors)
+        renderingContext.disable(web.WebGLRenderingContext.SCISSOR_TEST);
 
       if (_source != null) {
         renderingContext.texImage2D(
             target, 0, pixelFormat, pixelFormat.toJS, pixelType.toJS, _source!);
-        _textureSourceWorkaround =
-            renderingContext.getError() == web.WebGLRenderingContext.INVALID_VALUE;
+        _textureSourceWorkaround = renderingContext.getError() ==
+            web.WebGLRenderingContext.INVALID_VALUE;
       } else {
-        renderingContext.texImage2D(
-            target, 0, pixelFormat, width.toJS, height.toJS, 0.toJS, pixelFormat, pixelType);
+        renderingContext.texImage2D(target, 0, pixelFormat, width.toJS,
+            height.toJS, 0.toJS, pixelFormat, pixelType);
       }
 
       if (_textureSourceWorkaround) {
         // WEBGL11072: INVALID_VALUE: texImage2D: This texture source is not supported
         _canvas = web.HTMLCanvasElement()
-            ..width = width
-            ..height = height;
+          ..width = width
+          ..height = height;
         _canvas!.context2D.drawImage(source!, 0, 0);
         renderingContext.texImage2D(
             target, 0, pixelFormat, pixelFormat.toJS, pixelType.toJS, _canvas!);
       }
 
-      if (scissors) renderingContext.enable(web.WebGLRenderingContext.SCISSOR_TEST);
+      if (scissors)
+        renderingContext.enable(web.WebGLRenderingContext.SCISSOR_TEST);
 
-      renderingContext.texParameteri(
-          web.WebGLRenderingContext.TEXTURE_2D, web.WebGLRenderingContext.TEXTURE_WRAP_S, _wrappingX.value);
-      renderingContext.texParameteri(
-          web.WebGLRenderingContext.TEXTURE_2D, web.WebGLRenderingContext.TEXTURE_WRAP_T, _wrappingY.value);
-      renderingContext.texParameteri(
-          web.WebGLRenderingContext.TEXTURE_2D, web.WebGLRenderingContext.TEXTURE_MIN_FILTER, _filtering.value);
-      renderingContext.texParameteri(
-          web.WebGLRenderingContext.TEXTURE_2D, web.WebGLRenderingContext.TEXTURE_MAG_FILTER, _filtering.value);
+      renderingContext.texParameteri(web.WebGLRenderingContext.TEXTURE_2D,
+          web.WebGLRenderingContext.TEXTURE_WRAP_S, _wrappingX.value);
+      renderingContext.texParameteri(web.WebGLRenderingContext.TEXTURE_2D,
+          web.WebGLRenderingContext.TEXTURE_WRAP_T, _wrappingY.value);
+      renderingContext.texParameteri(web.WebGLRenderingContext.TEXTURE_2D,
+          web.WebGLRenderingContext.TEXTURE_MIN_FILTER, _filtering.value);
+      renderingContext.texParameteri(web.WebGLRenderingContext.TEXTURE_2D,
+          web.WebGLRenderingContext.TEXTURE_MAG_FILTER, _filtering.value);
     } else {
       _renderingContext!.activeTexture(textureSlot);
-      _renderingContext!.bindTexture(web.WebGLRenderingContext.TEXTURE_2D, _texture);
+      _renderingContext!
+          .bindTexture(web.WebGLRenderingContext.TEXTURE_2D, _texture);
     }
   }
 

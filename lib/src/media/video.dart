@@ -89,7 +89,8 @@ class Video {
   /// the video independantly from this video.
 
   Future<Video> clone() {
-    final videoElement = this.videoElement.cloneNode(true) as web.HTMLVideoElement;
+    final videoElement =
+        this.videoElement.cloneNode(true) as web.HTMLVideoElement;
     final completer = Completer<Video>();
     late StreamSubscription<web.Event> onCanPlaySubscription;
     late StreamSubscription<web.Event> onErrorSubscription;

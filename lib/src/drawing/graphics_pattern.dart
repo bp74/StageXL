@@ -43,7 +43,8 @@ class _CanvasPatternKey {
 
 class GraphicsPattern {
   static final SharedCache<_CanvasPatternKey, web.CanvasPattern?>
-      _canvasPatternCache = SharedCache<_CanvasPatternKey, web.CanvasPattern?>();
+      _canvasPatternCache =
+      SharedCache<_CanvasPatternKey, web.CanvasPattern?>();
 
   static final SharedCache<RenderTextureQuad?, RenderTexture?>
       _patternTextureCache = SharedCache<RenderTextureQuad?, RenderTexture?>()

@@ -21,7 +21,8 @@ void main() {
 
   test('render texture is an ImageBitmap', () {
     final image = spiders.renderTexture.imageBitmap;
-    expect(image is web.ImageBitmap, StageXL.environment.isImageBitmapSupported);
+    expect(
+        image is web.ImageBitmap, StageXL.environment.isImageBitmapSupported);
   });
 
   test('getImageData works', () {

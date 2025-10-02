@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
@@ -70,7 +69,6 @@ class AudioLoader {
     _completer.completeError(aggregateError);
   }
 
-
   void _loadAudioData(String url) {
     http.get(Uri.parse(url)).then((request) {
       final url = Uri.dataFromBytes(request.bodyBytes);
@@ -81,6 +79,7 @@ class AudioLoader {
       _loadNextUrl();
     });
   }
+
   void _loadAudioSource(String url) {
     audio.preload = 'auto';
     audio.src = url;

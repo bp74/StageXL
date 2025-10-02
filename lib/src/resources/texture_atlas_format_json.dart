@@ -51,7 +51,7 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
         break;
 
       case 'RGBA4444':
-        texture.pixelFormat =  web.WebGLRenderingContext.RGBA;
+        texture.pixelFormat = web.WebGLRenderingContext.RGBA;
         texture.pixelType = web.WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
         break;
 

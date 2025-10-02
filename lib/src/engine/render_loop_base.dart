@@ -18,7 +18,8 @@ void _globalFrameCallback(double frameTime) {
 
 void _globalFrameRequest() {
   if (_globalFrameCallbackId == -1) {
-    _globalFrameCallbackId = web.window.requestAnimationFrame(_globalFrameCallback.toJS);
+    _globalFrameCallbackId =
+        web.window.requestAnimationFrame(_globalFrameCallback.toJS);
   }
 }
 

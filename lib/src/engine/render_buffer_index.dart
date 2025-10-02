@@ -37,16 +37,20 @@ class RenderBufferIndex {
       _renderStatistics = renderContext.renderStatistics;
       _renderingContext = renderContext.rawContext;
       _buffer = _renderingContext!.createBuffer();
-      _renderingContext!.bindBuffer(web.WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, _buffer);
-      _renderingContext!.bufferData(web.WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, data.toJS, usage);
+      _renderingContext!
+          .bindBuffer(web.WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, _buffer);
+      _renderingContext!.bufferData(
+          web.WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, data.toJS, usage);
     }
 
-    _renderingContext!.bindBuffer(web.WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, _buffer);
+    _renderingContext!
+        .bindBuffer(web.WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, _buffer);
   }
 
   void update() {
     final update = Int16List.view(data.buffer, 0, position);
-    _renderingContext!.bufferSubData(web.WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, 0, update.toJS);
+    _renderingContext!.bufferSubData(
+        web.WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, 0, update.toJS);
     _renderStatistics.indexCount += count;
   }
 }

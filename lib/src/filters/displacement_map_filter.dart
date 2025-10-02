@@ -69,8 +69,8 @@ class DisplacementMapFilter extends BitmapFilter {
       var mx = dstY * matrix.c + matrix.tx;
       var my = dstY * matrix.d + matrix.ty;
       for (var dstX = 0;
-      dstX < dstWidth;
-      dstX++, mx += matrix.a, my += matrix.b) {
+          dstX < dstWidth;
+          dstX++, mx += matrix.a, my += matrix.b) {
         var mapX = mx.round();
         var mapY = my.round();
         if (mapX < 0) mapX = 0;

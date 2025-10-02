@@ -40,7 +40,8 @@ class RenderContextWebGL extends RenderContext {
     final renderingContext = _canvasElement.getContext3d(
         alpha: alpha, antialias: antialias, depth: false, stencil: true);
 
-    if (renderingContext == null || !renderingContext.isA<web.WebGLRenderingContext>()) {
+    if (renderingContext == null ||
+        !renderingContext.isA<web.WebGLRenderingContext>()) {
       throw StateError('Failed to get WebGL context.');
     }
 
@@ -49,8 +50,10 @@ class RenderContextWebGL extends RenderContext {
     _renderingContext.disable(web.WebGLRenderingContext.STENCIL_TEST);
     _renderingContext.disable(web.WebGLRenderingContext.DEPTH_TEST);
     _renderingContext.disable(web.WebGLRenderingContext.CULL_FACE);
-    _renderingContext.pixelStorei(web.WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-    _renderingContext.blendFunc(web.WebGLRenderingContext.ONE, web.WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
+    _renderingContext.pixelStorei(
+        web.WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+    _renderingContext.blendFunc(web.WebGLRenderingContext.ONE,
+        web.WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
 
     _activeRenderProgram = renderProgramSimple;
     _activeRenderProgram.activate(this);
@@ -69,8 +72,8 @@ class RenderContextWebGL extends RenderContext {
   RenderEngine get renderEngine => RenderEngine.WebGL;
 
   @override
-  Object? get maxTextureSize =>
-      _renderingContext.getParameter(web.WebGLRenderingContext.MAX_TEXTURE_SIZE);
+  Object? get maxTextureSize => _renderingContext
+      .getParameter(web.WebGLRenderingContext.MAX_TEXTURE_SIZE);
 
   RenderTexture? get activeRenderTexture => _activeRenderTextures[0];
   RenderProgram get activeRenderProgram => _activeRenderProgram;
@@ -91,7 +94,8 @@ class RenderContextWebGL extends RenderContext {
     final viewportWidth = _canvasElement.width;
     final viewportHeight = _canvasElement.height;
     _activeRenderFrameBuffer = null;
-    _renderingContext.bindFramebuffer(web.WebGLRenderingContext.FRAMEBUFFER, null);
+    _renderingContext.bindFramebuffer(
+        web.WebGLRenderingContext.FRAMEBUFFER, null);
     _renderingContext.viewport(0, 0, viewportWidth, viewportHeight);
     _projectionMatrix.setIdentity();
     _projectionMatrix.scale(2.0 / viewportWidth, -2.0 / viewportHeight, 1.0);
@@ -110,8 +114,8 @@ class RenderContextWebGL extends RenderContext {
     final num a = colorGetA(color) / 255.0;
     _renderingContext.colorMask(true, true, true, true);
     _renderingContext.clearColor(r * a, g * a, b * a, a);
-    _renderingContext
-        .clear(web.WebGLRenderingContext.COLOR_BUFFER_BIT | web.WebGLRenderingContext.STENCIL_BUFFER_BIT);
+    _renderingContext.clear(web.WebGLRenderingContext.COLOR_BUFFER_BIT |
+        web.WebGLRenderingContext.STENCIL_BUFFER_BIT);
   }
 
   @override
@@ -143,13 +147,16 @@ class RenderContextWebGL extends RenderContext {
     final stencil = _getLastStencilValue() + 1;
 
     _renderingContext.enable(web.WebGLRenderingContext.STENCIL_TEST);
-    _renderingContext.stencilOp(web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.INCR);
-    _renderingContext.stencilFunc(web.WebGLRenderingContext.EQUAL, stencil - 1, 0xFF);
+    _renderingContext.stencilOp(web.WebGLRenderingContext.KEEP,
+        web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.INCR);
+    _renderingContext.stencilFunc(
+        web.WebGLRenderingContext.EQUAL, stencil - 1, 0xFF);
     _renderingContext.colorMask(false, false, false, false);
     mask.renderMask(renderState);
 
     _activeRenderProgram.flush();
-    _renderingContext.stencilOp(web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.KEEP);
+    _renderingContext.stencilOp(web.WebGLRenderingContext.KEEP,
+        web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.KEEP);
     _renderingContext.colorMask(true, true, true, true);
     _getMaskStates().add(_StencilMaskState(mask, stencil));
     _updateStencilTest(stencil);
@@ -164,13 +171,16 @@ class RenderContextWebGL extends RenderContext {
       _updateScissorTest(_getLastScissorValue());
     } else if (maskState is _StencilMaskState) {
       _renderingContext.enable(web.WebGLRenderingContext.STENCIL_TEST);
-      _renderingContext.stencilOp(web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.DECR);
-      _renderingContext.stencilFunc(web.WebGLRenderingContext.EQUAL, maskState.value, 0xFF);
+      _renderingContext.stencilOp(web.WebGLRenderingContext.KEEP,
+          web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.DECR);
+      _renderingContext.stencilFunc(
+          web.WebGLRenderingContext.EQUAL, maskState.value, 0xFF);
       _renderingContext.colorMask(false, false, false, false);
       mask.renderMask(renderState);
 
       _activeRenderProgram.flush();
-      _renderingContext.stencilOp(web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.KEEP);
+      _renderingContext.stencilOp(web.WebGLRenderingContext.KEEP,
+          web.WebGLRenderingContext.KEEP, web.WebGLRenderingContext.KEEP);
       _renderingContext.colorMask(true, true, true, true);
       _updateStencilTest(maskState.value - 1);
     }
@@ -423,7 +433,8 @@ class RenderContextWebGL extends RenderContext {
       if (identical(renderTexture, _activeRenderTextures[i])) {
         _activeRenderTextures[i] = null;
         _renderingContext.activeTexture(web.WebGLRenderingContext.TEXTURE0 + i);
-        _renderingContext.bindTexture(web.WebGLRenderingContext.TEXTURE_2D, null);
+        _renderingContext.bindTexture(
+            web.WebGLRenderingContext.TEXTURE_2D, null);
       }
     }
   }
@@ -441,7 +452,8 @@ class RenderContextWebGL extends RenderContext {
       } else {
         _activeRenderProgram.flush();
         _activeRenderFrameBuffer = null;
-        _renderingContext.bindFramebuffer(web.WebGLRenderingContext.FRAMEBUFFER, null);
+        _renderingContext.bindFramebuffer(
+            web.WebGLRenderingContext.FRAMEBUFFER, null);
         _renderingContext.viewport(
             0, 0, _canvasElement.width, _canvasElement.height);
       }
@@ -528,7 +540,8 @@ class RenderContextWebGL extends RenderContext {
       _renderingContext.disable(web.WebGLRenderingContext.STENCIL_TEST);
     } else {
       _renderingContext.enable(web.WebGLRenderingContext.STENCIL_TEST);
-      _renderingContext.stencilFunc(web.WebGLRenderingContext.EQUAL, value, 0xFF);
+      _renderingContext.stencilFunc(
+          web.WebGLRenderingContext.EQUAL, value, 0xFF);
     }
   }
 

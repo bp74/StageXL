@@ -5,7 +5,12 @@ import 'dart:typed_data';
 
 import 'package:web/web.dart' as web
     // ignore: unused_shown_name
-    show CanvasGradient, CanvasPattern, CanvasRenderingContext2D, HTMLCanvasElement, HTMLCanvasElementGlue;
+    show
+        CanvasGradient,
+        CanvasPattern,
+        CanvasRenderingContext2D,
+        HTMLCanvasElement,
+        HTMLCanvasElementGlue;
 
 import 'engine.dart';
 import 'geom.dart';
