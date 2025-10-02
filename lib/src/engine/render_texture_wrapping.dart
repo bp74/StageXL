@@ -6,7 +6,7 @@ class RenderTextureWrapping {
   const RenderTextureWrapping(this.value);
 
   static const RenderTextureWrapping REPEAT =
-      RenderTextureWrapping(gl.WebGL.REPEAT);
+      RenderTextureWrapping(web.WebGLRenderingContext.REPEAT);
   static const RenderTextureWrapping CLAMP =
-      RenderTextureWrapping(gl.WebGL.CLAMP_TO_EDGE);
+      RenderTextureWrapping(web.WebGLRenderingContext.CLAMP_TO_EDGE);
 }

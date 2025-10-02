@@ -880,7 +880,7 @@ class Stage extends DisplayObjectContainer {
   void _onMouseWheelEvent(web.WheelEvent event) {
     if (preventDefaultOnWheel) event.preventDefault();
 
-    final stagePoint = _clientTransformation.transformPoint(event.client);
+    final stagePoint = _clientTransformation.transformPoint(Point(event.clientX, event.clientY));
     final localPoint = Point<num>(0.0, 0.0);
 
     final target =

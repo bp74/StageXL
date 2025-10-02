@@ -4,18 +4,18 @@ abstract class RenderProgram {
   int _contextIdentifier = -1;
 
   // These assume activate() is called
-  late gl.RenderingContext _renderingContext;
-  late gl.Program _program;
+  late web.WebGLRenderingContext _renderingContext;
+  late web.WebGLProgram _program;
 
   final Map<String, int> _attributes;
-  final Map<String, gl.UniformLocation> _uniforms;
+  final Map<String, web.WebGLUniformLocation> _uniforms;
   RenderBufferIndex _renderBufferIndex;
   RenderBufferVertex _renderBufferVertex;
   RenderStatistics _renderStatistics;
 
   RenderProgram()
       : _attributes = <String, int>{},
-        _uniforms = <String, gl.UniformLocation>{},
+        _uniforms = <String, web.WebGLUniformLocation>{},
         _renderBufferIndex = RenderBufferIndex(0),
         _renderBufferVertex = RenderBufferVertex(0),
         _renderStatistics = RenderStatistics();
@@ -29,17 +29,17 @@ abstract class RenderProgram {
   RenderBufferIndex get renderBufferIndex => _renderBufferIndex;
   RenderBufferVertex get renderBufferVertex => _renderBufferVertex;
   RenderStatistics get renderStatistics => _renderStatistics;
-  gl.RenderingContext get renderingContext => _renderingContext;
-  gl.Program get program => _program;
+  web.WebGLRenderingContext get renderingContext => _renderingContext;
+  web.WebGLProgram get program => _program;
 
   Map<String, int> get attributes => _attributes;
-  Map<String, gl.UniformLocation> get uniforms => _uniforms;
+  Map<String, web.WebGLUniformLocation> get uniforms => _uniforms;
 
   //---------------------------------------------------------------------------
 
   set projectionMatrix(Matrix3D matrix) {
     final location = uniforms['uProjectionMatrix'];
-    renderingContext.uniformMatrix4fv(location, false, matrix.data);
+    renderingContext.uniformMatrix4fv(location, false, matrix.data.toJS);
   }
 
   //---------------------------------------------------------------------------
@@ -72,8 +72,8 @@ abstract class RenderProgram {
       renderBufferVertex.update();
       renderBufferVertex.position = 0;
       renderBufferVertex.count = 0;
-      renderingContext.drawElements(
-          gl.WebGL.TRIANGLES, count, gl.WebGL.UNSIGNED_SHORT, 0);
+      renderingContext.drawElements(web.WebGLRenderingContext.TRIANGLES, count,
+          web.WebGLRenderingContext.UNSIGNED_SHORT, 0);
       renderStatistics.drawCount += 1;
     }
   }
@@ -81,18 +81,19 @@ abstract class RenderProgram {
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
 
-  gl.Program _createProgram(gl.RenderingContext rc) {
+  web.WebGLProgram _createProgram(web.WebGLRenderingContext rc) {
     final program = rc.createProgram();
-    final vShader =
-        _createShader(rc, vertexShaderSource, gl.WebGL.VERTEX_SHADER);
-    final fShader =
-        _createShader(rc, fragmentShaderSource, gl.WebGL.FRAGMENT_SHADER);
+    final vShader = _createShader(
+        rc, vertexShaderSource, web.WebGLRenderingContext.VERTEX_SHADER);
+    final fShader = _createShader(
+        rc, fragmentShaderSource, web.WebGLRenderingContext.FRAGMENT_SHADER);
 
-    rc.attachShader(program, vShader);
+    rc.attachShader(program!, vShader);
     rc.attachShader(program, fShader);
     rc.linkProgram(program);
 
-    final status = rc.getProgramParameter(program, gl.WebGL.LINK_STATUS);
+    final status =
+        rc.getProgramParameter(program, web.WebGLRenderingContext.LINK_STATUS);
     if (status == true) return program;
 
     final cl = rc.isContextLost();
@@ -101,12 +102,17 @@ abstract class RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  gl.Shader _createShader(gl.RenderingContext rc, String source, int type) {
+  web.WebGLShader _createShader(
+      web.WebGLRenderingContext rc, String source, int type) {
     final shader = rc.createShader(type);
+    if (shader == null) {
+      throw StateError('Failed to create shader');
+    }
     rc.shaderSource(shader, source);
     rc.compileShader(shader);
 
-    final status = rc.getShaderParameter(shader, gl.WebGL.COMPILE_STATUS);
+    final status =
+        rc.getShaderParameter(shader, web.WebGLRenderingContext.COMPILE_STATUS);
     if (status == true) return shader;
 
     final cl = rc.isContextLost();
@@ -115,13 +121,17 @@ abstract class RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void _updateAttributes(gl.RenderingContext rc, gl.Program program) {
+  void _updateAttributes(
+      web.WebGLRenderingContext rc, web.WebGLProgram program) {
     _attributes.clear();
-    final count =
-        rc.getProgramParameter(program, gl.WebGL.ACTIVE_ATTRIBUTES) as int;
+    final count = rc.getProgramParameter(
+        program, web.WebGLRenderingContext.ACTIVE_ATTRIBUTES) as int;
 
     for (var i = 0; i < count; i++) {
       final activeInfo = rc.getActiveAttrib(program, i);
+      if (activeInfo == null) {
+        throw StateError('Failed to get WebGLActiveInfo');
+      }
       final location = rc.getAttribLocation(program, activeInfo.name);
       rc.enableVertexAttribArray(location);
       _attributes[activeInfo.name] = location;
@@ -130,14 +140,21 @@ abstract class RenderProgram {
 
   //---------------------------------------------------------------------------
 
-  void _updateUniforms(gl.RenderingContext rc, gl.Program program) {
+  void _updateUniforms(web.WebGLRenderingContext rc, web.WebGLProgram program) {
     _uniforms.clear();
-    final count =
-        rc.getProgramParameter(program, gl.WebGL.ACTIVE_UNIFORMS) as int;
+    final count = rc.getProgramParameter(
+        program, web.WebGLRenderingContext.ACTIVE_UNIFORMS) as int;
 
     for (var i = 0; i < count; i++) {
       final activeInfo = rc.getActiveUniform(program, i);
+      if (activeInfo == null) {
+        throw StateError('Failed to get WebGLActiveInfo');
+      }
       final location = rc.getUniformLocation(program, activeInfo.name);
+      if (location == null) {
+        throw StateError(
+            'Failed to get UniformLocation for ${activeInfo.name}');
+      }
       _uniforms[activeInfo.name] = location;
     }
   }

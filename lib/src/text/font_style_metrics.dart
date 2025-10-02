@@ -23,7 +23,7 @@ class _FontStyleMetrics {
     final div = web.HTMLDivElement();
 
     text.style.font = fontStyle;
-    text.text = 'Hg';
+    text.textContent = 'Hg';
     block.style.display = 'inline-block';
     block.style.width = '1px';
     block.style.height = '0px';

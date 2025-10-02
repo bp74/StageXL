@@ -1,4 +1,5 @@
 import 'dart:js_interop';
+
 import 'dart:typed_data';
 
 import '../display.dart';
@@ -177,8 +178,8 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
     renderingContext.uniform1i(uniforms['uTexSampler'], 0);
     renderingContext.uniform1i(uniforms['uMapSampler'], 1);
     renderingContext.uniformMatrix3fv(
-        uniforms['uMapMatrix'], false, uMapMatrix);
+        uniforms['uMapMatrix'], false, uMapMatrix.toJS);
     renderingContext.uniformMatrix3fv(
-        uniforms['uDisMatrix'], false, uDisMatrix);
+        uniforms['uDisMatrix'], false, uDisMatrix.toJS);
   }
 }

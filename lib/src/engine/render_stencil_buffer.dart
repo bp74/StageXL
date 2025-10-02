@@ -7,8 +7,8 @@ class RenderStencilBuffer {
   RenderContextWebGL? _renderContext;
 
   int _contextIdentifier = -1;
-  gl.RenderingContext? _renderingContext;
-  gl.Renderbuffer? _renderbuffer;
+  web.WebGLRenderingContext? _renderingContext;
+  web.WebGLRenderbuffer? _renderbuffer;
 
   RenderStencilBuffer.rawWebGL(int width, int height)
       : _width = width,
@@ -19,7 +19,7 @@ class RenderStencilBuffer {
   int get width => _width;
   int get height => _height;
 
-  gl.Renderbuffer? get renderbuffer => _renderbuffer;
+  web.WebGLRenderbuffer? get renderbuffer => _renderbuffer;
   int get contextIdentifier => _contextIdentifier;
 
   //-----------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ class RenderStencilBuffer {
 
       _renderContext!.activateRenderStencilBuffer(this);
       _renderingContext!.renderbufferStorage(
-          web.WebGL.RENDERBUFFER, gl.WebGL.DEPTH_STENCIL, _width, _height);
+          web.WebGLRenderingContext.RENDERBUFFER, web.WebGLRenderingContext.DEPTH_STENCIL, _width, _height);
     }
   }
 
@@ -59,11 +59,11 @@ class RenderStencilBuffer {
       _contextIdentifier = renderContext.contextIdentifier;
       _renderingContext = renderContext.rawContext;
       _renderbuffer = _renderingContext!.createRenderbuffer();
-      _renderingContext!.bindRenderbuffer(gl.WebGL.RENDERBUFFER, _renderbuffer);
+      _renderingContext!.bindRenderbuffer(web.WebGLRenderingContext.RENDERBUFFER, _renderbuffer);
       _renderingContext!.renderbufferStorage(
-          gl.WebGL.RENDERBUFFER, gl.WebGL.DEPTH_STENCIL, _width, _height);
+          web.WebGLRenderingContext.RENDERBUFFER, web.WebGLRenderingContext.DEPTH_STENCIL, _width, _height);
     } else {
-      _renderingContext!.bindRenderbuffer(gl.WebGL.RENDERBUFFER, _renderbuffer);
+      _renderingContext!.bindRenderbuffer(web.WebGLRenderingContext.RENDERBUFFER, _renderbuffer);
     }
   }
 }

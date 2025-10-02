@@ -17,7 +17,7 @@ import 'dart:async';
 import 'dart:js_interop';
 import 'dart:math' as math;
 import 'dart:typed_data';
-import 'dart:web_gl' as gl;
+
 import 'package:web/web.dart' as web;
 
 import 'geom/matrix.dart';

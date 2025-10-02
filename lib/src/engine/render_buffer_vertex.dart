@@ -8,15 +8,15 @@ class RenderBufferVertex {
   int count = 0; // count of vertices
 
   int _contextIdentifier = -1;
-  gl.Buffer? _buffer;
-  gl.RenderingContext? _renderingContext;
+  web.WebGLBuffer? _buffer;
+  web.WebGLRenderingContext? _renderingContext;
   late RenderStatistics _renderStatistics;
 
   //---------------------------------------------------------------------------
 
   RenderBufferVertex(int length)
       : data = Float32List(length),
-        usage = gl.WebGL.DYNAMIC_DRAW;
+        usage = web.WebGLRenderingContext.DYNAMIC_DRAW;
 
   //---------------------------------------------------------------------------
 
@@ -37,22 +37,26 @@ class RenderBufferVertex {
       _renderStatistics = renderContext.renderStatistics;
       _renderingContext = renderContext.rawContext;
       _buffer = _renderingContext!.createBuffer();
-      _renderingContext!.bindBuffer(gl.WebGL.ARRAY_BUFFER, _buffer);
-      _renderingContext!.bufferData(gl.WebGL.ARRAY_BUFFER, data, usage);
+      _renderingContext!
+          .bindBuffer(web.WebGLRenderingContext.ARRAY_BUFFER, _buffer);
+      _renderingContext!
+          .bufferData(web.WebGLRenderingContext.ARRAY_BUFFER, data.toJS, usage);
     }
 
-    _renderingContext!.bindBuffer(gl.WebGL.ARRAY_BUFFER, _buffer);
+    _renderingContext!
+        .bindBuffer(web.WebGLRenderingContext.ARRAY_BUFFER, _buffer);
   }
 
   void update() {
     final update = Float32List.view(data.buffer, 0, position);
-    _renderingContext!.bufferSubData(gl.WebGL.ARRAY_BUFFER, 0, update);
+    _renderingContext!
+        .bufferSubData(web.WebGLRenderingContext.ARRAY_BUFFER, 0, update.toJS);
     _renderStatistics.vertexCount += count;
   }
 
   void bindAttribute(int? index, int size, int stride, int offset) {
     if (index == null) return;
     _renderingContext!.vertexAttribPointer(
-        index, size, gl.WebGL.FLOAT, false, stride, offset);
+        index, size, web.WebGLRenderingContext.FLOAT, false, stride, offset);
   }
 }

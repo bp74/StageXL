@@ -12,7 +12,7 @@ class RenderTextureFiltering {
   const RenderTextureFiltering(this.value);
 
   static const RenderTextureFiltering NEAREST =
-      RenderTextureFiltering(gl.WebGL.NEAREST);
+      RenderTextureFiltering(web.WebGLRenderingContext.NEAREST);
   static const RenderTextureFiltering LINEAR =
-      RenderTextureFiltering(gl.WebGL.LINEAR);
+      RenderTextureFiltering(web.WebGLRenderingContext.LINEAR);
 }
