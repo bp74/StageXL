@@ -269,8 +269,9 @@ class RenderTexture {
 
     final scissors =
         _renderingContext!.isEnabled(web.WebGLRenderingContext.SCISSOR_TEST);
-    if (scissors)
+    if (scissors) {
       _renderingContext!.disable(web.WebGLRenderingContext.SCISSOR_TEST);
+    }
 
     const target = web.WebGLRenderingContext.TEXTURE_2D;
 
@@ -283,8 +284,9 @@ class RenderTexture {
           target, 0, pixelFormat, pixelFormat.toJS, pixelType.toJS, _source!);
     }
 
-    if (scissors)
+    if (scissors) {
       _renderingContext!.enable(web.WebGLRenderingContext.SCISSOR_TEST);
+    }
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -303,8 +305,9 @@ class RenderTexture {
 
       final scissors =
           renderingContext.isEnabled(web.WebGLRenderingContext.SCISSOR_TEST);
-      if (scissors)
+      if (scissors) {
         renderingContext.disable(web.WebGLRenderingContext.SCISSOR_TEST);
+      }
 
       if (_source != null) {
         renderingContext.texImage2D(
@@ -326,8 +329,9 @@ class RenderTexture {
             target, 0, pixelFormat, pixelFormat.toJS, pixelType.toJS, _canvas!);
       }
 
-      if (scissors)
+      if (scissors) {
         renderingContext.enable(web.WebGLRenderingContext.SCISSOR_TEST);
+      }
 
       renderingContext.texParameteri(web.WebGLRenderingContext.TEXTURE_2D,
           web.WebGLRenderingContext.TEXTURE_WRAP_S, _wrappingX.value);

@@ -1,10 +1,11 @@
+// ignore_for_file: unused_shown_name
+
 import 'dart:js_interop';
 
 import 'dart:math' show atan2, cos, pi, pow, sin, sqrt, tan;
 import 'dart:typed_data';
 
 import 'package:web/web.dart' as web
-    // ignore: unused_shown_name
     show
         CanvasGradient,
         CanvasPattern,
