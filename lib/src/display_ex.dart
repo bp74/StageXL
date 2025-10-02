@@ -4,9 +4,10 @@
 library;
 
 import 'dart:async';
-import 'dart:html' show CssStyleDeclaration, Element;
 import 'dart:math' hide Point, Rectangle;
 import 'dart:typed_data';
+
+import 'package:web/web.dart' as web;
 
 import 'animation.dart';
 import 'display.dart';

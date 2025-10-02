@@ -1,3 +1,4 @@
+import 'dart:js_interop';
 import 'dart:math' hide Point, Rectangle;
 
 import '../display.dart';
@@ -118,7 +119,7 @@ class DropShadowFilter extends BitmapFilter {
         : null;
 
     final imageData = renderTextureQuad.getImageData();
-    final List<int> data = imageData.data;
+    final List<int> data = imageData.data.toDart;
     final width = imageData.width;
     final height = imageData.height;
     final shiftX = (distance * cos(angle)).round();
@@ -142,11 +143,11 @@ class DropShadowFilter extends BitmapFilter {
     }
 
     if (knockout) {
-      setColorKnockout(data, color, sourceImageData!.data);
+      setColorKnockout(data, color, sourceImageData!.data.toDart);
     } else if (hideObject) {
       setColor(data, color);
     } else {
-      setColorBlend(data, color, sourceImageData!.data);
+      setColorBlend(data, color, sourceImageData!.data.toDart);
     }
 
     renderTextureQuad.putImageData(imageData);

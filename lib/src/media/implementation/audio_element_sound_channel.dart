@@ -3,7 +3,7 @@ part of '../../media.dart';
 class AudioElementSoundChannel extends SoundChannel {
   final AudioElementSound _audioElementSound;
   late SoundTransform _soundTransform;
-  AudioElement? _audioElement;
+  web.HTMLAudioElement? _audioElement;
   StreamSubscription<num>? _volumeChangedSubscription;
   Timer? _completeTimer;
 
@@ -130,7 +130,7 @@ class AudioElementSoundChannel extends SoundChannel {
 
   //---------------------------------------------------------------------------
 
-  void _onAudioElement(AudioElement audioElement) {
+  void _onAudioElement(web.HTMLAudioElement audioElement) {
     final mixer = SoundMixer._audioElementMixer;
 
     if (_stopped) {

@@ -5,11 +5,13 @@ homepage: http://www.stagexl.org
 repository: https://github.com/bp74/StageXL
 
 environment:
-  sdk: ^3.0.0
+  sdk: ^3.4.0
 
 documentation: http://www.stagexl.org/docs/api/index.html
 
 dependencies:
+  http: ^1.2.0
+  web: ^1.1.1
   xml: '>=6.3.0 <7.0.0'
 
 dev_dependencies:

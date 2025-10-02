@@ -317,7 +317,7 @@ class TextField extends InteractiveObject {
     canvasContext.font = fontStyle + ' '; // IE workaround
     canvasContext.textAlign = 'start';
     canvasContext.textBaseline = 'alphabetic';
-    canvasContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    canvasContext.setTransform(1.0.toJS, 0.0, 0.0, 1.0, 0.0, 0.0);
 
     for (var p = 0; p < paragraphs.length; p++) {
       var paragraph = paragraphs[p];
@@ -339,7 +339,7 @@ class TextField extends InteractiveObject {
           validLine = checkLine;
           checkLine = (validLine == null) ? word : '$validLine $word';
           checkLine = _passwordEncoder(checkLine);
-          lineWidth = canvasContext.measureText(checkLine).width!.toDouble();
+          lineWidth = canvasContext.measureText(checkLine).width;
 
           if (lineIndent + lineWidth >= availableWidth) {
             if (validLine == null) {
@@ -382,7 +382,7 @@ class TextField extends InteractiveObject {
           line * (textFormatLeading + textFormatSize + fontStyleMetricsDescent);
 
       final width =
-          canvasContext.measureText(textLineMetrics._text).width!.toDouble();
+          canvasContext.measureText(textLineMetrics._text).width;
 
       textLineMetrics._x = offsetX;
       textLineMetrics._y = offsetY;
@@ -475,7 +475,7 @@ class TextField extends InteractiveObject {
           final text = textLineMetrics._text.substring(0, textIndex);
           _caretLine = line;
           _caretX = textLineMetrics.x +
-              canvasContext.measureText(text).width!.toDouble();
+              canvasContext.measureText(text).width;
           _caretY = textLineMetrics.y - fontStyleMetricsAscent * 0.9;
           _caretWidth = 2.0;
           _caretHeight = textFormatSize;
@@ -537,7 +537,7 @@ class TextField extends InteractiveObject {
     final matrix = _renderTextureQuad!.drawMatrix;
     final context = _renderTexture!.canvas.context2D;
     context.setTransform(
-        matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+        matrix.a.toJS, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     context.clearRect(0, 0, _width, _height);
 
     _renderText(context);
@@ -563,13 +563,13 @@ class TextField extends InteractiveObject {
     context.lineJoin = 'round';
 
     if (_background) {
-      context.fillStyle = color2rgba(_backgroundColor);
+      context.fillStyle = color2rgba(_backgroundColor).toJS;
       context.fillRect(0, 0, _width, _height);
     }
 
     if (textFormat.strokeWidth > 0) {
       context.lineWidth = textFormat.strokeWidth * 2;
-      context.strokeStyle = color2rgb(textFormat.strokeColor);
+      context.strokeStyle = color2rgb(textFormat.strokeColor).toJS;
       for (var i = 0; i < _textLineMetrics.length; i++) {
         final lm = _textLineMetrics[i];
         context.strokeText(lm._text, lm.x, lm.y);
@@ -577,10 +577,10 @@ class TextField extends InteractiveObject {
     }
 
     context.lineWidth = lineWidth;
-    context.strokeStyle = color2rgb(textFormat.color);
+    context.strokeStyle = color2rgb(textFormat.color).toJS;
     context.fillStyle = textFormat.fillGradient != null
         ? _getCanvasGradient(context, textFormat.fillGradient!)
-        : color2rgb(textFormat.color);
+        : color2rgb(textFormat.color).toJS;
 
     for (var i = 0; i < _textLineMetrics.length; i++) {
       final lm = _textLineMetrics[i];
@@ -596,7 +596,7 @@ class TextField extends InteractiveObject {
     }
 
     if (_border) {
-      context.strokeStyle = color2rgba(_borderColor);
+      context.strokeStyle = color2rgba(_borderColor).toJS;
       context.lineWidth = 1;
       context.strokeRect(0, 0, _width, _height);
     }
@@ -662,7 +662,7 @@ class TextField extends InteractiveObject {
       var caretIndexNew = -1;
 
       switch (keyboardEvent.keyCode) {
-        case html.KeyCode.BACKSPACE:
+        case web.KeyCode.BACKSPACE:
           keyboardEvent.preventDefault();
           if (caretIndex > 0) {
             _text =
@@ -671,26 +671,26 @@ class TextField extends InteractiveObject {
           }
           break;
 
-        case html.KeyCode.END:
+        case web.KeyCode.END:
           keyboardEvent.preventDefault();
           final tlm = textLineMetrics[caretLine];
           caretIndexNew = tlm._textIndex + tlm._text.length;
           break;
 
-        case html.KeyCode.HOME:
+        case web.KeyCode.HOME:
           keyboardEvent.preventDefault();
           final tlm = textLineMetrics[caretLine];
           caretIndexNew = tlm._textIndex;
           break;
 
-        case html.KeyCode.LEFT:
+        case web.KeyCode.LEFT:
           keyboardEvent.preventDefault();
           if (caretIndex > 0) {
             caretIndexNew = caretIndex - 1;
           }
           break;
 
-        case html.KeyCode.UP:
+        case web.KeyCode.UP:
           keyboardEvent.preventDefault();
           if (caretLine > 0 && caretLine < textLineMetrics.length) {
             final tlmFrom = textLineMetrics[caretLine];
@@ -703,14 +703,14 @@ class TextField extends InteractiveObject {
           }
           break;
 
-        case html.KeyCode.RIGHT:
+        case web.KeyCode.RIGHT:
           keyboardEvent.preventDefault();
           if (caretIndex < textLength) {
             caretIndexNew = caretIndex + 1;
           }
           break;
 
-        case html.KeyCode.DOWN:
+        case web.KeyCode.DOWN:
           keyboardEvent.preventDefault();
           if (caretLine >= 0 && caretLine < textLineMetrics.length - 1) {
             final tlmFrom = textLineMetrics[caretLine];
@@ -723,7 +723,7 @@ class TextField extends InteractiveObject {
           }
           break;
 
-        case html.KeyCode.DELETE:
+        case web.KeyCode.DELETE:
           keyboardEvent.preventDefault();
           if (caretIndex < textLength) {
             _text =
@@ -772,7 +772,7 @@ class TextField extends InteractiveObject {
     final mouseY = mouseEvent.localY.toDouble();
     final canvasContext = _dummyCanvasContext;
 
-    canvasContext.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    canvasContext.setTransform(1.0.toJS, 0.0, 0.0, 1.0, 0.0, 0.0);
 
     for (var line = 0; line < _textLineMetrics.length; line++) {
       final textLineMetrics = _textLineMetrics[line];
@@ -788,7 +788,7 @@ class TextField extends InteractiveObject {
 
         for (var c = 0; c <= text.length; c++) {
           final width =
-              canvasContext.measureText(text.substring(0, c)).width!.toDouble();
+              canvasContext.measureText(text.substring(0, c)).width;
           final distance = (lineX + width - mouseX).abs();
           if (distance < bestDistance) {
             bestDistance = distance;

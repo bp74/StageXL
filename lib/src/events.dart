@@ -8,7 +8,7 @@
 library;
 
 import 'dart:async';
-import 'dart:html';
+import 'package:web/web.dart';
 
 part 'events/broadcast_event.dart';
 part 'events/event.dart';

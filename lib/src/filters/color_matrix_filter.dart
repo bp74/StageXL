@@ -1,3 +1,4 @@
+import 'dart:js_interop';
 import 'dart:math' hide Point, Rectangle;
 import 'dart:typed_data';
 
@@ -233,7 +234,7 @@ class ColorMatrixFilter extends BitmapFilter {
         : bitmapData.renderTextureQuad.cut(rectangle);
 
     final imageData = renderTextureQuad.getImageData();
-    final List<int> data = imageData.data;
+    final List<int> data = imageData.data.toDart;
 
     for (var i = 0; i <= data.length - 4; i += 4) {
       final c0 = data[i + 0];

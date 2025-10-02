@@ -23,11 +23,12 @@ library;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html' as html;
-import 'dart:html' show AudioElement, HttpRequest, VideoElement;
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'dart:math';
-import 'dart:typed_data';
-import 'dart:web_audio';
+
+import 'package:http/http.dart' as http;
+import 'package:web/web.dart' as web;
 
 import 'errors.dart';
 import 'events.dart';

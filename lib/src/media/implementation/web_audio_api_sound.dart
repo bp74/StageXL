@@ -1,7 +1,7 @@
 part of '../../media.dart';
 
 class WebAudioApiSound extends Sound {
-  final AudioBuffer _audioBuffer;
+  final web.AudioBuffer _audioBuffer;
 
   WebAudioApiSound._(this._audioBuffer);
 
@@ -16,11 +16,16 @@ class WebAudioApiSound extends Sound {
 
     for (var audioUrl in audioUrls) {
       try {
-        final httpRequest =
-            await HttpRequest.request(audioUrl, responseType: 'arraybuffer');
-        final audioData = httpRequest.response as ByteBuffer;
-        final audioBuffer = await audioContext.decodeAudioData(audioData);
-        return WebAudioApiSound._(audioBuffer);
+        final response = await http.get(Uri.parse(audioUrl));
+        if (response.statusCode == 200) {
+          // Convert Dart ByteBuffer to JSArrayBuffer
+          final jsArrayBuffer = response.bodyBytes.buffer.toJS;
+          final jsPromise = audioContext.decodeAudioData(jsArrayBuffer);
+          final audioBuffer = await jsPromise.toDart;
+          return WebAudioApiSound._(audioBuffer);
+        } else {
+          throw Exception('HTTP error: ${response.statusCode}');
+        }
       } catch (e) {
         final loadError = LoadError('Failed to load $audioUrl', e);
         aggregateError.errors.add(loadError);
@@ -44,8 +49,10 @@ class WebAudioApiSound extends Sound {
     final bytes = base64.decoder.convert(dataUrl, start);
 
     try {
-      final audioData = bytes.buffer;
-      final audioBuffer = await audioContext.decodeAudioData(audioData);
+      // Convert Dart ByteBuffer to JSArrayBuffer
+      final jsArrayBuffer = bytes.buffer.toJS;
+      final jsPromise = audioContext.decodeAudioData(jsArrayBuffer);
+      final audioBuffer = await jsPromise.toDart;
       return WebAudioApiSound._(audioBuffer);
     } catch (e) {
       if (options.ignoreErrors) {
@@ -62,7 +69,7 @@ class WebAudioApiSound extends Sound {
   SoundEngine get engine => SoundEngine.WebAudioApi;
 
   @override
-  num get length => _audioBuffer.duration!;
+  num get length => _audioBuffer.duration;
 
   @override
   SoundChannel play([bool loop = false, SoundTransform? soundTransform]) =>

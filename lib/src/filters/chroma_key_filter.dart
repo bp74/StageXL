@@ -6,16 +6,16 @@ import '../internal/tools.dart';
 /// This filter provide a simple ChromaKey solution
 /// that can be applied on bitmap or video
 ///
-/// <int> backgroundColor
+/// int backgroundColor
 /// @represent : the color you want to make transparent
 /// @default : 0xFF00FF00 > pure green
 ///
-/// <int> solidThreshold
+/// int solidThreshold
 /// @represent : this minimal difference for a color to be consider solid
 /// @default : 140
 /// @range : 0 <> 255
 ///
-/// <int> invisibleThreshold
+/// int invisibleThreshold
 /// @represent : this minimal similarity for a color to be consider completely invisible
 /// @default : 15
 /// @range : 0 <> 255

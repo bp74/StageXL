@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:html';
-import 'dart:js' as js;
+import 'dart:js_interop_unsafe';
 import 'dart:typed_data';
+
+import 'package:web/web.dart' as web;
 
 final bool autoHiDPI = _checkAutoHiDPI();
 final num devicePixelRatio = _checkDevicePixelRatio();
@@ -9,16 +10,16 @@ final Future<bool> isWebpSupported = _checkWebpSupport();
 final bool isMobileDevice = _checkMobileDevice();
 final bool isLittleEndianSystem = _checkLittleEndianSystem();
 final bool isTouchEventSupported = _checkTouchEventSupport();
-bool get isImageBitmapSupported => js.context['createImageBitmap'] != null;
+bool get isImageBitmapSupported => web.window.has('createImageBitmap');
 
 //-------------------------------------------------------------------------------------
 
-num _checkDevicePixelRatio() => window.devicePixelRatio;
+num _checkDevicePixelRatio() => web.window.devicePixelRatio;
 
 //-------------------------------------------------------------------------------------
 
 bool _checkMobileDevice() {
-  final ua = window.navigator.userAgent.toLowerCase();
+  final ua = web.window.navigator.userAgent.toLowerCase();
   final identifiers = [
     'iphone',
     'ipad',
@@ -43,12 +44,12 @@ bool _checkLittleEndianSystem() {
 
 bool _checkAutoHiDPI() {
   var autoHiDPI = devicePixelRatio > 1.0;
-  final screen = window.screen;
+  final screen = web.window.screen;
 
   // only recent devices (> iPhone4) and hi-dpi desktops
 
-  if (isMobileDevice && screen != null) {
-    autoHiDPI = autoHiDPI && (screen.width! > 480 || screen.height! > 480);
+  if (isMobileDevice) {
+    autoHiDPI = autoHiDPI && (screen.width > 480 || screen.height > 480);
   }
 
   return autoHiDPI;
@@ -58,7 +59,7 @@ bool _checkAutoHiDPI() {
 
 Future<bool> _checkWebpSupport() {
   final completer = Completer<bool>();
-  final img = ImageElement();
+  final img = web.HTMLImageElement();
 
   img.onLoad
       .listen((e) => completer.complete(img.width == 2 && img.height == 2));
@@ -74,8 +75,9 @@ Future<bool> _checkWebpSupport() {
 
 bool _checkTouchEventSupport() {
   try {
-    return TouchEvent.supported;
-  } catch (e) {
+    final _ = web.TouchEvent('touches');
+    return true;
+  } catch (_) {
     return false;
   }
 }

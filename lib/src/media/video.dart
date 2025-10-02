@@ -38,7 +38,7 @@ part of '../media.dart';
 /// codecs are webm, mp4 and ogg.
 
 class Video {
-  final VideoElement videoElement;
+  final web.HTMLVideoElement videoElement;
   bool loop = false;
 
   final _endedEvent = StreamController<Video>.broadcast();
@@ -89,12 +89,12 @@ class Video {
   /// the video independantly from this video.
 
   Future<Video> clone() {
-    final videoElement = this.videoElement.clone(true) as VideoElement;
+    final videoElement = this.videoElement.cloneNode(true) as web.HTMLVideoElement;
     final completer = Completer<Video>();
-    late StreamSubscription<html.Event> onCanPlaySubscription;
-    late StreamSubscription<html.Event> onErrorSubscription;
+    late StreamSubscription<web.Event> onCanPlaySubscription;
+    late StreamSubscription<web.Event> onErrorSubscription;
 
-    void onCanPlay(html.Event e) {
+    void onCanPlay(web.Event e) {
       final video = Video._(videoElement);
       video.volume = volume;
       video.muted = muted;
@@ -103,7 +103,7 @@ class Video {
       completer.complete(video);
     }
 
-    void onError(html.Event e) {
+    void onError(web.Event e) {
       onCanPlaySubscription.cancel();
       onErrorSubscription.cancel();
       final error = videoElement.error;
@@ -162,7 +162,7 @@ class Video {
 
   //---------------------------------------------------------------------------
 
-  void _onEnded(html.Event event) {
+  void _onEnded(web.Event event) {
     _endedEvent.add(this);
 
     // we autoloop manualy to avoid a bug in some browser :
@@ -181,15 +181,15 @@ class Video {
     }
   }
 
-  void _onPause(html.Event event) {
+  void _onPause(web.Event event) {
     _pauseEvent.add(this);
   }
 
-  void _onError(html.Event event) {
+  void _onError(web.Event event) {
     _errorEvent.add(this);
   }
 
-  void _onPlay(html.Event event) {
+  void _onPlay(web.Event event) {
     _playEvent.add(this);
   }
 }

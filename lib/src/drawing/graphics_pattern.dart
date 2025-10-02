@@ -42,15 +42,15 @@ class _CanvasPatternKey {
 //------------------------------------------------------------------------------
 
 class GraphicsPattern {
-  static final SharedCache<_CanvasPatternKey, CanvasPattern?>
-      _canvasPatternCache = SharedCache<_CanvasPatternKey, CanvasPattern?>();
+  static final SharedCache<_CanvasPatternKey, web.CanvasPattern?>
+      _canvasPatternCache = SharedCache<_CanvasPatternKey, web.CanvasPattern?>();
 
   static final SharedCache<RenderTextureQuad?, RenderTexture?>
       _patternTextureCache = SharedCache<RenderTextureQuad?, RenderTexture?>()
         ..onObjectReleased.listen((e) => e.object!.dispose());
 
   /// cached by the canvas2D renderer
-  CanvasPattern? _canvasPattern;
+  web.CanvasPattern? _canvasPattern;
 
   /// cached by both the canvas2D and the webgl renderer
   RenderTexture? _patternTexture;
@@ -110,7 +110,7 @@ class GraphicsPattern {
     }
   }
 
-  CanvasPattern getCanvasPattern(CanvasRenderingContext2D context) {
+  web.CanvasPattern getCanvasPattern(web.CanvasRenderingContext2D context) {
     // try to get the canvasPattern from the cache
     if (_canvasPattern == null) {
       final cacheKey = _CanvasPatternKey(_renderTextureQuad, _type);

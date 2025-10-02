@@ -13,15 +13,15 @@ enum GraphicsGradientType { Linear, Radial }
 class GraphicsGradient {
   static const int GRADIENT_TEXTURE_SIZE = 512;
 
-  static final SharedCache<String, CanvasGradient> _canvasGradientCache =
-      SharedCache<String, CanvasGradient>();
+  static final SharedCache<String, web.CanvasGradient> _canvasGradientCache =
+      SharedCache<String, web.CanvasGradient>();
 
   static final SharedCache<String, RenderTexture> _gradientTextureCache =
       SharedCache<String, RenderTexture>()
         ..onObjectReleased.listen((e) => e.object.dispose());
 
   /// cached by the Canvas2D renderer
-  CanvasGradient? _canvasGradient;
+  web.CanvasGradient? _canvasGradient;
   String? _canvasCacheKey;
 
   /// cached by the WebGL renderer
@@ -142,7 +142,7 @@ class GraphicsGradient {
     }
   }
 
-  CanvasGradient getCanvasGradient(CanvasRenderingContext2D context) {
+  web.CanvasGradient getCanvasGradient(web.CanvasRenderingContext2D context) {
     if (_canvasGradient == null) {
       _canvasCacheKey = _createCanvasCacheKey();
       _canvasGradient = _canvasGradientCache.getObject(_canvasCacheKey!);
@@ -174,7 +174,9 @@ class GraphicsGradient {
     }
 
     if (_gradientTexture == null) {
-      final canvas = CanvasElement(width: 1, height: GRADIENT_TEXTURE_SIZE);
+      final canvas = web.HTMLCanvasElement()
+        ..width = 1
+        ..height = GRADIENT_TEXTURE_SIZE;
       final canvasGradient =
           canvas.context2D.createLinearGradient(0, 0, 0, GRADIENT_TEXTURE_SIZE);
       _colorStops.forEach(

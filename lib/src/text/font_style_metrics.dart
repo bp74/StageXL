@@ -18,19 +18,19 @@ class _FontStyleMetrics {
 
   _FontStyleMetrics(TextFormat textFormat) {
     final fontStyle = textFormat._cssFontStyle;
-    final text = html.Element.tag('span');
-    final block = html.Element.tag('div');
-    final div = html.Element.tag('div');
+    final text = web.HTMLSpanElement();
+    final block = web.HTMLDivElement();
+    final div = web.HTMLDivElement();
 
     text.style.font = fontStyle;
-    text.text = 'Hg';
+    text.textContent = 'Hg';
     block.style.display = 'inline-block';
     block.style.width = '1px';
     block.style.height = '0px';
     div.append(block);
     div.append(text);
 
-    html.document.body!.append(div);
+    web.document.body!.append(div);
 
     try {
       block.style.verticalAlign = 'baseline';

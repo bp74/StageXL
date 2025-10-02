@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'dart:typed_data';
 
 import '../display.dart';
@@ -45,9 +47,9 @@ class DisplacementMapFilter extends BitmapFilter {
     final dstWidth = dstImageData.width;
     final dstHeight = dstImageData.height;
 
-    final mapData = mapImageData.data;
-    final srcData = srcImageData.data;
-    final dstData = dstImageData.data;
+    final mapData = mapImageData.data.toDart;
+    final srcData = srcImageData.data.toDart;
+    final dstData = dstImageData.data.toDart;
 
     final vxList = renderTextureQuad.vxListQuad;
     final pixelRatio = renderTextureQuad.pixelRatio;
@@ -67,8 +69,8 @@ class DisplacementMapFilter extends BitmapFilter {
       var mx = dstY * matrix.c + matrix.tx;
       var my = dstY * matrix.d + matrix.ty;
       for (var dstX = 0;
-          dstX < dstWidth;
-          dstX++, mx += matrix.a, my += matrix.b) {
+      dstX < dstWidth;
+      dstX++, mx += matrix.a, my += matrix.b) {
         var mapX = mx.round();
         var mapY = my.round();
         if (mapX < 0) mapX = 0;
@@ -176,8 +178,8 @@ class DisplacementMapFilterProgram extends RenderProgramSimple {
     renderingContext.uniform1i(uniforms['uTexSampler'], 0);
     renderingContext.uniform1i(uniforms['uMapSampler'], 1);
     renderingContext.uniformMatrix3fv(
-        uniforms['uMapMatrix'], false, uMapMatrix);
+        uniforms['uMapMatrix'], false, uMapMatrix.toJS);
     renderingContext.uniformMatrix3fv(
-        uniforms['uDisMatrix'], false, uDisMatrix);
+        uniforms['uDisMatrix'], false, uDisMatrix.toJS);
   }
 }

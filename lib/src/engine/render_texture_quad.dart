@@ -319,19 +319,20 @@ class RenderTextureQuad {
 
   //---------------------------------------------------------------------------
 
-  ImageData createImageData() {
+  web.ImageData createImageData() {
     final rect = sourceRectangle;
     final context = renderTexture.canvas.context2D;
-    return context.createImageData(rect.width, rect.height);
+    return context.createImageData(rect.width.toJS, rect.height);
   }
 
-  ImageData getImageData() {
+  web.ImageData getImageData() {
     final rect = sourceRectangle;
-    final context = renderTexture.canvas.context2D;
+    final canvas = renderTexture.canvas;
+    final context = canvas.context2D;
     return context.getImageData(rect.left, rect.top, rect.width, rect.height);
   }
 
-  void putImageData(ImageData imageData) {
+  void putImageData(web.ImageData imageData) {
     final rect = sourceRectangle;
     final context = renderTexture.canvas.context2D;
     context.putImageData(imageData, rect.left, rect.top);

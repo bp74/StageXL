@@ -46,38 +46,38 @@ class _TextureAtlasFormatJson extends TextureAtlasFormat {
   void _setTextureFormat(RenderTexture texture, String format) {
     switch (format) {
       case 'RGBA8888':
-        texture.pixelFormat = gl.WebGL.RGBA;
-        texture.pixelType = gl.WebGL.UNSIGNED_BYTE;
+        texture.pixelFormat = web.WebGLRenderingContext.RGBA;
+        texture.pixelType = web.WebGLRenderingContext.UNSIGNED_BYTE;
         break;
 
       case 'RGBA4444':
-        texture.pixelFormat = gl.WebGL.RGBA;
-        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_4_4_4_4;
+        texture.pixelFormat =  web.WebGLRenderingContext.RGBA;
+        texture.pixelType = web.WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
         break;
 
       case 'RGBA5551':
-        texture.pixelFormat = gl.WebGL.RGBA;
-        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_5_5_5_1;
+        texture.pixelFormat = web.WebGLRenderingContext.RGBA;
+        texture.pixelType = web.WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1;
         break;
 
       case 'RGB888':
-        texture.pixelFormat = gl.WebGL.RGB;
-        texture.pixelType = gl.WebGL.UNSIGNED_BYTE;
+        texture.pixelFormat = web.WebGLRenderingContext.RGB;
+        texture.pixelType = web.WebGLRenderingContext.UNSIGNED_BYTE;
         break;
 
       case 'RGB565':
-        texture.pixelFormat = gl.WebGL.RGB;
-        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_5_6_5;
+        texture.pixelFormat = web.WebGLRenderingContext.RGB;
+        texture.pixelType = web.WebGLRenderingContext.UNSIGNED_SHORT_5_6_5;
         break;
 
       case 'ALPHA':
-        texture.pixelFormat = gl.WebGL.ALPHA;
-        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_4_4_4_4;
+        texture.pixelFormat = web.WebGLRenderingContext.ALPHA;
+        texture.pixelType = web.WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
         break;
 
       case 'ALPHA_INTENSITY':
-        texture.pixelFormat = gl.WebGL.LUMINANCE_ALPHA;
-        texture.pixelType = gl.WebGL.UNSIGNED_SHORT_4_4_4_4;
+        texture.pixelFormat = web.WebGLRenderingContext.LUMINANCE_ALPHA;
+        texture.pixelType = web.WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
         break;
     }
   }

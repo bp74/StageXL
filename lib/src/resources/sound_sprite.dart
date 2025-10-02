@@ -21,29 +21,34 @@ class SoundSprite {
       [SoundLoadOptions? soundLoadOptions]) async {
     final soundSprite = SoundSprite();
 
-    final soundSpriteJson = await HttpRequest.getString(url);
-    final data = json.decode(soundSpriteJson) as Map;
-    final urls = (data['urls'] as List).cast<String>();
-    final segments = data['sprite'];
-    final soundUrls = <String>[];
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final soundSpriteJson = response.body;
+      final data = json.decode(soundSpriteJson) as Map;
+      final urls = (data['urls'] as List).cast<String>();
+      final segments = data['sprite'];
+      final soundUrls = <String>[];
 
-    if (segments is Map) {
-      for (var segment in segments.keys as Iterable<String>) {
-        final segmentList = segments[segment] as List;
-        final startTime = segmentList[0] as num;
-        final duration = segmentList[1] as num;
-        final loop = segmentList.length > 2 && segmentList[2] as bool;
-        final sss =
-            SoundSpriteSegment(soundSprite, segment, startTime, duration, loop);
-        soundSprite._segments.add(sss);
+      if (segments is Map) {
+        for (var segment in segments.keys as Iterable<String>) {
+          final segmentList = segments[segment] as List;
+          final startTime = segmentList[0] as num;
+          final duration = segmentList[1] as num;
+          final loop = segmentList.length > 2 && segmentList[2] as bool;
+          final sss =
+              SoundSpriteSegment(soundSprite, segment, startTime, duration, loop);
+          soundSprite._segments.add(sss);
+        }
       }
-    }
 
-    soundUrls.addAll(urls.map((u) => replaceFilename(url, u)));
-    soundLoadOptions = (soundLoadOptions ?? Sound.defaultLoadOptions).clone();
-    soundLoadOptions.alternativeUrls = soundUrls.skip(1).toList();
-    soundSprite._sound = await Sound.load(soundUrls[0], soundLoadOptions);
-    return soundSprite;
+      soundUrls.addAll(urls.map((u) => replaceFilename(url, u)));
+      soundLoadOptions = (soundLoadOptions ?? Sound.defaultLoadOptions).clone();
+      soundLoadOptions.alternativeUrls = soundUrls.skip(1).toList();
+      soundSprite._sound = await Sound.load(soundUrls[0], soundLoadOptions);
+      return soundSprite;
+    } else {
+      throw StateError('Failed to load sound sprite JSON.');
+    }
   }
 
   //----------------------------------------------------------------------------

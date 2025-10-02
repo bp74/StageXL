@@ -1,10 +1,10 @@
 part of '../../media.dart';
 
 class AudioElementSound extends Sound {
-  final AudioElement _audioElement;
-  final Map<AudioElement, AudioElementSoundChannel?> _soundChannels = {};
+  final web.HTMLAudioElement _audioElement;
+  final Map<web.HTMLAudioElement, AudioElementSoundChannel?> _soundChannels = {};
 
-  AudioElementSound._(AudioElement audioElement)
+  AudioElementSound._(web.HTMLAudioElement audioElement)
       : _audioElement = audioElement {
     _audioElement.onEnded.listen(_onAudioEnded);
     _soundChannels[audioElement] = null;
@@ -73,7 +73,7 @@ class AudioElementSound extends Sound {
 
   //---------------------------------------------------------------------------
 
-  Future<AudioElement> _requestAudioElement(
+  Future<web.HTMLAudioElement> _requestAudioElement(
       AudioElementSoundChannel soundChannel) async {
     for (var audioElement in _soundChannels.keys) {
       if (_soundChannels[audioElement] == null) {
@@ -82,7 +82,7 @@ class AudioElementSound extends Sound {
       }
     }
 
-    final audioElement = _audioElement.clone(true) as AudioElement;
+    final audioElement = _audioElement.cloneNode(true) as web.HTMLAudioElement;
     final audioCanPlay = audioElement.onCanPlay.first;
     if (audioElement.readyState == 0) await audioCanPlay;
     audioElement.onEnded.listen(_onAudioEnded);
@@ -91,13 +91,13 @@ class AudioElementSound extends Sound {
     return audioElement;
   }
 
-  void _releaseAudioElement(AudioElement audioElement) {
+  void _releaseAudioElement(web.HTMLAudioElement audioElement) {
     _soundChannels[audioElement] = null;
   }
 
-  void _onAudioEnded(html.Event event) {
+  void _onAudioEnded(web.Event event) {
     final audioElement = event.target;
-    if (audioElement is! AudioElement) return;
+    if (!audioElement.isA<web.HTMLAudioElement>()) return;
 
     _soundChannels[audioElement]?._onAudioEnded();
   }

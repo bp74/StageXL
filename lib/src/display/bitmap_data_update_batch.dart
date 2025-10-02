@@ -54,7 +54,7 @@ class BitmapDataUpdateBatch {
 
     final renderTextureQuad = bitmapData.renderTextureQuad.cut(rectangle);
     final imageData = renderTextureQuad.getImageData();
-    final data = imageData.data;
+    final data = imageData.data.toDart;
 
     for (var i = 0; i <= data.length - 4; i += 4) {
       final c0 = data[i + 0];
@@ -85,7 +85,7 @@ class BitmapDataUpdateBatch {
 
   void fillRect(Rectangle<num> rectangle, int color) {
     _renderContext.setTransform(_drawMatrix);
-    _renderContext.rawContext.fillStyle = color2rgba(color);
+    _renderContext.rawContext.fillStyle = color2rgba(color).toJS;
     _renderContext.rawContext.fillRect(
         rectangle.left, rectangle.top, rectangle.width, rectangle.height);
   }
@@ -141,7 +141,7 @@ class BitmapDataUpdateBatch {
     final isLittleEndianSystem = env.isLittleEndianSystem;
     final imageData = renderTextureQuad.getImageData();
     final pixels = imageData.width * imageData.height;
-    final data = imageData.data;
+    final data = imageData.data.toDart;
 
     for (var i = 0; i <= data.length - 4; i += 4) {
       r += isLittleEndianSystem ? data[i + 0] : data[i + 3];
@@ -164,7 +164,7 @@ class BitmapDataUpdateBatch {
 
   void setPixel32(num x, num y, int color) {
     _renderContext.setTransform(_drawMatrix);
-    _renderContext.rawContext.fillStyle = color2rgba(color);
+    _renderContext.rawContext.fillStyle = color2rgba(color).toJS;
     _renderContext.rawContext.clearRect(x, y, 1, 1);
     _renderContext.rawContext.fillRect(x, y, 1, 1);
   }

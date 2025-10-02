@@ -163,9 +163,12 @@ class ResourceManager {
   bool containsTextFile(String name) => _containsResource('TextFile', name);
 
   void addTextFile(String name, String url) {
-    final loader =
-        HttpRequest.getString(url).then((text) => text, onError: (error) {
-      throw StateError('Failed to load text file.');
+    final loader = http.get(Uri.parse(url)).then((response) {
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        throw StateError('Failed to load text file.');
+      }
     });
     _addResource('TextFile', name, url, loader);
   }
