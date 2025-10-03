@@ -92,9 +92,11 @@ abstract class RenderProgram {
     rc.attachShader(program, fShader);
     rc.linkProgram(program);
 
-    final status =
-        rc.getProgramParameter(program, web.WebGLRenderingContext.LINK_STATUS);
-    if (identical(status, true)) return program;
+    if ((rc.getProgramParameter(program, web.WebGLRenderingContext.LINK_STATUS)
+            as JSBoolean)
+        .toDart) {
+      return program;
+    }
 
     final cl = rc.isContextLost();
     throw StateError(cl ? 'ContextLost' : rc.getProgramInfoLog(program)!);
@@ -106,14 +108,16 @@ abstract class RenderProgram {
       web.WebGLRenderingContext rc, String source, int type) {
     final shader = rc.createShader(type);
     if (shader == null) {
-      throw StateError('Failed to create shader');
+      throw StateError('Failed to create shader (type $type)');
     }
     rc.shaderSource(shader, source);
     rc.compileShader(shader);
 
-    final status =
-        rc.getShaderParameter(shader, web.WebGLRenderingContext.COMPILE_STATUS);
-    if (identical(status, true)) return shader;
+    if ((rc.getShaderParameter(shader, web.WebGLRenderingContext.COMPILE_STATUS)
+            as JSBoolean)
+        .toDart) {
+      return shader;
+    }
 
     final cl = rc.isContextLost();
     throw StateError(cl ? 'ContextLost' : rc.getShaderInfoLog(shader)!);
@@ -124,8 +128,9 @@ abstract class RenderProgram {
   void _updateAttributes(
       web.WebGLRenderingContext rc, web.WebGLProgram program) {
     _attributes.clear();
-    final count = rc.getProgramParameter(
-        program, web.WebGLRenderingContext.ACTIVE_ATTRIBUTES) as int;
+    final count = (rc.getProgramParameter(
+            program, web.WebGLRenderingContext.ACTIVE_ATTRIBUTES) as JSNumber)
+        .toDartInt;
 
     for (var i = 0; i < count; i++) {
       final activeInfo = rc.getActiveAttrib(program, i);
@@ -142,8 +147,9 @@ abstract class RenderProgram {
 
   void _updateUniforms(web.WebGLRenderingContext rc, web.WebGLProgram program) {
     _uniforms.clear();
-    final count = rc.getProgramParameter(
-        program, web.WebGLRenderingContext.ACTIVE_UNIFORMS) as int;
+    final count = (rc.getProgramParameter(
+            program, web.WebGLRenderingContext.ACTIVE_UNIFORMS) as JSNumber)
+        .toDartInt;
 
     for (var i = 0; i < count; i++) {
       final activeInfo = rc.getActiveUniform(program, i);
