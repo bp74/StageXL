@@ -8,7 +8,8 @@ announcements on the StageXL forum or use one of the support links below:
   * StageXL GitHub <https://github.com/bp74/StageXL/issues>
   * StageXL StackOverflow: <https://stackoverflow.com/questions/ask?tags=stagexl>
 
-### 2.3.1-wip
+### 2.3.1
+* Fixed JavaScript type casting problems that affected WebAssembly.
 * Fixed links in `pubspec.yaml`.
 
 ### 2.3.0
