@@ -40,8 +40,8 @@ questions on StackOverflow.
 
 * StageXL Forum: <https://groups.google.com/forum/#!forum/stagexl>
 * StageXL GitHub Issues: <https://github.com/bp74/StageXL/issues>
-* StageXL StackOverflow: <http://stackoverflow.com/questions/ask?tags=stagexl>
-* StageXL API Reference: <http://www.stagexl.org/docs/api/index.html>
+* StageXL StackOverflow: <https://stackoverflow.com/questions/ask?tags=stagexl>
+* StageXL API Reference: <https://www.stagexl.org/docs/api/index.html>
 
 ## Examples
 
@@ -51,7 +51,7 @@ Don't hesitate to send example requests that would help you to learn about
 a particular feature.
 
 * GitHub repository: <https://github.com/bp74/StageXL_Samples>
-* StageXL homepage: <http://www.stagexl.org/samples> 
+* StageXL homepage: <https://www.stagexl.org/samples> 
 
 ## Support StageXL
 
@@ -77,9 +77,9 @@ products to HTML5. Therefore StageXL provides the same display list API you
 may have used in Flash for many years. Furthermore the Dart programming
 language is easy to use for everyone who is familiar with ActionScript. 
 
-* Toolkit for Dart: <http://toolkitfordart.github.io>
+* Toolkit for Dart: <https://toolkitfordart.github.io>
 * ActionScript to Dart converter: <https://github.com/blockforest/stagexl-converter-pubglobal>
-* ActionScript to Dart comparison: <http://www.stagexl.org/docs/actionscript-dart.html>
+* ActionScript to Dart comparison: <https://www.stagexl.org/docs/actionscript-dart.html>
 
 ## Browser Support
 

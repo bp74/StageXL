@@ -1,7 +1,7 @@
 name: stagexl
 version: 2.3.2
 description: A fast and universal 2D rendering engine for HTML5 and Dart.
-homepage: http://www.stagexl.org
+homepage: https://www.stagexl.org
 repository: https://github.com/bp74/StageXL
 
 environment:
