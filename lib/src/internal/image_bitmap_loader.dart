@@ -50,6 +50,8 @@ class ImageBitmapLoader {
   void _onWebpSupported(bool webpSupported) {
     var match = RegExp(r'(png|jpg|jpeg)$').firstMatch(_url);
     if (webpSupported && match != null) {
+      _load('${_url.substring(0, match.start)}webp');
+    } else {
       _load(_url);
     }
   }
