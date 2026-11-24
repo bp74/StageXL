@@ -9,6 +9,44 @@ part of '../display.dart';
 /// class, extend one of the subclasses that do have APIs for rendering content
 /// onscreen, such as the [Sprite], [SimpleButton], or [TextField] classes.
 abstract class InteractiveObject extends DisplayObject {
+  bool _focusable = false;
+  bool _accessibilityDisabled = false;
+  bool _mouseEnabled = true;
+  bool _tabEnabled = true;
+
+  /// Whether this object can receive focus through the accessibility tree.
+  bool get focusable => _focusable;
+  set focusable(bool value) {
+    if (_focusable == value) return;
+    _focusable = value;
+    invalidateAccessibility();
+  }
+
+  /// Whether assistive technology should expose this control as disabled.
+  bool get accessibilityDisabled => _accessibilityDisabled;
+  set accessibilityDisabled(bool value) {
+    if (_accessibilityDisabled == value) return;
+    _accessibilityDisabled = value;
+    invalidateAccessibility();
+  }
+
+  /// Invoked by the native control for keyboard or assistive activation.
+  /// The default dispatches a bubbling [MouseEvent.CLICK].
+  void accessibilityActivate() {
+    final stage = this.stage;
+    if (stage == null || !_isAccessibilityActionEnabled) return;
+    final localBounds = bounds;
+    final localX = localBounds.left + localBounds.width / 2;
+    final localY = localBounds.top + localBounds.height / 2;
+    final position = getTransformationMatrix3D(stage)
+        .transformPoint(Point<num>(localX, localY));
+    dispatchEvent(MouseEvent(MouseEvent.CLICK, true, localX, localY, position.x,
+        position.y, false, false, false, 0, 0, false, 1, null));
+  }
+
+  bool get _isAccessibilityActionEnabled =>
+      mouseEnabled && !accessibilityDisabled;
+
   /// Specifies whether the object receives doubleClick events.
   ///
   /// The default value is false, which means that by default an
@@ -34,7 +72,12 @@ abstract class InteractiveObject extends DisplayObject {
   /// [DisplayObjectContainer.mouseChildren].
   ///
   /// No event is dispatched by setting this property.
-  bool mouseEnabled = true;
+  bool get mouseEnabled => _mouseEnabled;
+  set mouseEnabled(bool value) {
+    if (_mouseEnabled == value) return;
+    _mouseEnabled = value;
+    invalidateAccessibility();
+  }
 
   /// Defines the mouse cursor that is displayed on this interactive object.
   String mouseCursor = MouseCursor.AUTO;
@@ -43,7 +86,12 @@ abstract class InteractiveObject extends DisplayObject {
   ///
   /// If this object is in the tab order, the value is true; otherwise, the
   /// value is false. By default, the value is true.
-  bool tabEnabled = true;
+  bool get tabEnabled => _tabEnabled;
+  set tabEnabled(bool value) {
+    if (_tabEnabled == value) return;
+    _tabEnabled = value;
+    invalidateAccessibility();
+  }
 
   /// Specifies the tab ordering of objects.
   ///

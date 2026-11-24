@@ -57,6 +57,10 @@ class Stage extends DisplayObjectContainer {
   late final RenderContext _renderContext;
   RenderLoop? _renderLoop;
   late final StageConsole _console;
+  final List<StreamSubscription<Object?>> _inputSubscriptions = [];
+  AccessibilityManager? _accessibility;
+  InteractiveObject? _focus;
+  bool _disposed = false;
 
   int _sourceWidth = 0;
   int _sourceHeight = 0;
@@ -104,7 +108,16 @@ class Stage extends DisplayObjectContainer {
 
   /// The interactive object with keyboard focus or null if focus is not set.
 
-  InteractiveObject? focus;
+  InteractiveObject? get focus => _focus;
+  set focus(InteractiveObject? value) {
+    if (_disposed) return;
+    _focus = value;
+    _accessibility?._syncFocus();
+  }
+
+  /// The stage's semantic HTML tree and assistive technology controls.
+  AccessibilityManager get accessibility =>
+      _accessibility ??= AccessibilityManager._(this, enabled: false);
 
   /// Gets and sets the background color of this Stage.
 
@@ -169,43 +182,69 @@ class Stage extends DisplayObjectContainer {
 
     print('StageXL render engine : ${_renderContext.renderEngine}');
 
-    canvas.onKeyDown.listen(_onKeyEvent);
-    canvas.onKeyUp.listen(_onKeyEvent);
-    canvas.onKeyPress.listen(_onKeyEvent);
+    _inputSubscriptions.addAll([
+      canvas.onKeyDown.listen(_onKeyEvent),
+      canvas.onKeyUp.listen(_onKeyEvent),
+      canvas.onKeyPress.listen(_onKeyEvent),
+    ]);
 
     final listenToMouseEvents = _inputEventMode == InputEventMode.MouseOnly ||
         _inputEventMode == InputEventMode.MouseAndTouch;
 
     if (listenToMouseEvents) {
-      canvas.onMouseDown.listen(_onMouseEvent);
-      canvas.onMouseUp.listen(_onMouseEvent);
-      canvas.onMouseMove.listen(_onMouseEvent);
-      canvas.onMouseOut.listen(_onMouseEvent);
-      canvas.onContextMenu.listen(_onMouseEvent);
-      canvas.onMouseWheel.listen(_onMouseWheelEvent);
-      canvas.onDragEnter.listen(_onMouseEvent);
-      canvas.onDragLeave.listen(_onMouseEvent);
-      canvas.onDragOver.listen(_onMouseEvent);
-      canvas.onDrop.listen(_onMouseEvent);
+      _inputSubscriptions.addAll([
+        canvas.onMouseDown.listen(_onMouseEvent),
+        canvas.onMouseUp.listen(_onMouseEvent),
+        canvas.onMouseMove.listen(_onMouseEvent),
+        canvas.onMouseOut.listen(_onMouseEvent),
+        canvas.onContextMenu.listen(_onMouseEvent),
+        canvas.onMouseWheel.listen(_onMouseWheelEvent),
+        canvas.onDragEnter.listen(_onMouseEvent),
+        canvas.onDragLeave.listen(_onMouseEvent),
+        canvas.onDragOver.listen(_onMouseEvent),
+        canvas.onDrop.listen(_onMouseEvent),
+      ]);
     }
 
     final listenToTouchEvents = _inputEventMode == InputEventMode.TouchOnly ||
         _inputEventMode == InputEventMode.MouseAndTouch;
 
     if (listenToTouchEvents && env.isTouchEventSupported) {
-      canvas.onTouchStart.listen(_onTouchEvent);
-      canvas.onTouchEnd.listen(_onTouchEvent);
-      canvas.onTouchMove.listen(_onTouchEvent);
-      canvas.onTouchEnter.listen(_onTouchEvent);
-      canvas.onTouchLeave.listen(_onTouchEvent);
-      canvas.onTouchCancel.listen(_onTouchEvent);
+      _inputSubscriptions.addAll([
+        canvas.onTouchStart.listen(_onTouchEvent),
+        canvas.onTouchEnd.listen(_onTouchEvent),
+        canvas.onTouchMove.listen(_onTouchEvent),
+        canvas.onTouchEnter.listen(_onTouchEvent),
+        canvas.onTouchLeave.listen(_onTouchEvent),
+        canvas.onTouchCancel.listen(_onTouchEvent),
+      ]);
     }
 
-    Mouse.onCursorChanged.listen((cursorName) => _updateMouseCursor());
+    _inputSubscriptions.add(
+        Mouse.onCursorChanged.listen((cursorName) => _updateMouseCursor()));
 
     _updateMouseCursor();
     _updateCanvasSize();
     _renderContext.clear(backgroundColor);
+
+    if (options.accessibilityEnabled) {
+      _accessibility = AccessibilityManager._(this, enabled: true)
+        .._markDirty();
+    }
+  }
+
+  /// Detaches the stage from its render loop and releases input and
+  /// accessibility listeners. The caller continues to own the canvas.
+  void dispose() {
+    if (_disposed) return;
+    _disposed = true;
+    _renderLoop?.removeStage(this);
+    _accessibility?._dispose();
+    for (final subscription in _inputSubscriptions) {
+      unawaited(subscription.cancel());
+    }
+    _inputSubscriptions.clear();
+    _focus = null;
   }
 
   //----------------------------------------------------------------------------
@@ -397,6 +436,7 @@ class Stage extends DisplayObjectContainer {
   /// on your own and therefore get full control of the rendering of this Stage.
 
   void materialize(num currentTime, num deltaTime) {
+    if (_disposed) return;
     if (renderMode == StageRenderMode.AUTO ||
         renderMode == StageRenderMode.AUTO_INVALID && _invalid ||
         renderMode == StageRenderMode.ONCE) {
@@ -439,6 +479,7 @@ class Stage extends DisplayObjectContainer {
     if (renderMode == StageRenderMode.ONCE) {
       renderMode = StageRenderMode.STOP;
     }
+    _accessibility?._update();
   }
 
   //----------------------------------------------------------------------------
@@ -1110,6 +1151,7 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
 
   void _onKeyEvent(web.KeyboardEvent event) {
+    if (_accessibility?.enabled == true && event.key == 'Tab') return;
     if (preventDefaultOnKeyboard) event.preventDefault();
     if (focus == null) return;
 

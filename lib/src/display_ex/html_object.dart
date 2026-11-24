@@ -35,6 +35,9 @@ part of '../display_ex.dart';
 class HtmlObject extends DisplayObject {
   final web.HTMLElement element;
 
+  @override
+  bool get hasNativeAccessibility => true;
+
   late final web.CSSStyleDeclaration _style;
   String _styleOpacity = '';
   String _styleTransform = '';

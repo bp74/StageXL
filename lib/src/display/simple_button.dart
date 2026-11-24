@@ -9,7 +9,14 @@ class SimpleButton extends InteractiveObject {
   /// button up state — the state that the button is in when the pointer is not
   /// positioned over the button.
 
-  DisplayObject? upState;
+  DisplayObject? get upState => _upState;
+  set upState(DisplayObject? value) {
+    if (identical(_upState, value)) return;
+    _upState = value;
+    invalidateAccessibility();
+  }
+
+  DisplayObject? _upState;
 
   /// Specifies a display object that is used as the visual object for the
   /// button over state — the state that the button is in when the pointer is
@@ -37,9 +44,19 @@ class SimpleButton extends InteractiveObject {
   ///
   /// Any or all of the display objects that represent the various button states
   /// can be set as parameters in the constructor.
+  ///
+  /// On an accessible stage, the native button takes its name from text in
+  /// [upState] or from [accessibilityLabel] when a label is provided.
 
   SimpleButton(
-      [this.upState, this.overState, this.downState, this.hitTestState]) {
+      [DisplayObject? upState,
+      this.overState,
+      this.downState,
+      this.hitTestState])
+      : _upState = upState {
+    accessible = true;
+    focusable = true;
+    accessibilityRole = AccessibilityRole.button;
     useHandCursor = true;
 
     onMouseOver.listen(_onMouseEvent);
@@ -72,10 +89,15 @@ class SimpleButton extends InteractiveObject {
     if (_enabled != value) {
       _enabled = value;
       _state = SimpleButtonState.Up;
+      invalidateAccessibility();
     }
   }
 
   bool _enabled = true;
+
+  @override
+  bool get _isAccessibilityActionEnabled =>
+      super._isAccessibilityActionEnabled && enabled;
 
   /// The current state of the button (Up, Over, Down).
   ///

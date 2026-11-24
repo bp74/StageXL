@@ -42,6 +42,8 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   TextField([String text = '', TextFormat? textFormat]) : _text = text {
+    accessible = true;
+    accessibilityRole = AccessibilityRole.text;
     defaultTextFormat = textFormat ?? TextFormat('Arial', 12, 0x000000);
 
     onKeyDown.listen(_onKeyDown);
@@ -54,6 +56,15 @@ class TextField extends InteractiveObject {
   RenderTexture? get renderTexture => _renderTexture;
 
   String get text => _text;
+
+  /// Static text fields contribute semantics by default.
+  @override
+  bool get accessible => _type == TextFieldType.DYNAMIC && super.accessible;
+
+  @override
+  String? get accessibilityText =>
+      _type == TextFieldType.DYNAMIC && !_displayAsPassword ? _text : null;
+
   int get textColor => _defaultTextFormat.color;
   TextFormat get defaultTextFormat => _defaultTextFormat;
 
@@ -88,6 +99,9 @@ class TextField extends InteractiveObject {
   }
 
   set text(String value) {
+    if (_text != value && _type == TextFieldType.DYNAMIC) {
+      invalidateAccessibility();
+    }
     _text = value;
     _caretIndex = _text.length;
     _refreshPending |= 3;
@@ -109,6 +123,7 @@ class TextField extends InteractiveObject {
   }
 
   set type(String value) {
+    if (_type != value) invalidateAccessibility();
     _type = value;
     _refreshPending |= 3;
   }
@@ -124,6 +139,7 @@ class TextField extends InteractiveObject {
   }
 
   set displayAsPassword(bool value) {
+    if (_displayAsPassword != value) invalidateAccessibility();
     _displayAsPassword = value;
     _refreshPending |= 3;
   }

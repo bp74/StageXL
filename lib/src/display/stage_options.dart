@@ -3,6 +3,13 @@ part of '../display.dart';
 /// The options used by the [Stage] constructor to setup the stage.
 
 class StageOptions {
+  /// Builds a semantic HTML tree for the stage's accessible display objects.
+  ///
+  /// [SimpleButton] and static text fields contribute semantics automatically.
+  /// Custom controls can set [DisplayObject.accessible] and
+  /// [InteractiveObject.focusable]. Defaults to false.
+  bool accessibilityEnabled = false;
+
   /// The [RenderEngine] used to render the [Stage].
   ///
   /// Setting the render engine to WebGL will automatically fallback
@@ -117,6 +124,7 @@ class StageOptions {
 
   StageOptions clone() {
     final options = StageOptions();
+    options.accessibilityEnabled = accessibilityEnabled;
     options.renderEngine = renderEngine;
     options.inputEventMode = inputEventMode;
     options.stageRenderMode = stageRenderMode;

@@ -55,6 +55,7 @@ class BitmapContainer extends DisplayObject
       _children.add(child);
       child._parent = this;
     }
+    invalidateAccessibility();
   }
 
   @override
@@ -68,6 +69,7 @@ class BitmapContainer extends DisplayObject
       _children.insert(index, child);
       child._parent = this;
     }
+    invalidateAccessibility();
   }
 
   @override
@@ -78,6 +80,7 @@ class BitmapContainer extends DisplayObject
       final index = _children.indexOf(child);
       child._parent = null;
       _children.removeAt(index);
+      invalidateAccessibility();
     }
   }
 
@@ -89,6 +92,7 @@ class BitmapContainer extends DisplayObject
       final child = _children[index];
       child._parent = null;
       _children.removeAt(index);
+      invalidateAccessibility();
     }
   }
 
@@ -122,6 +126,7 @@ class BitmapContainer extends DisplayObject
       oldChild._parent = null;
       newChild._parent = this;
       _children[index] = newChild;
+      invalidateAccessibility();
     }
   }
 

@@ -15,6 +15,7 @@ class RenderLoop extends RenderLoopBase {
   Juggler get juggler => _juggler;
 
   void addStage(Stage stage) {
+    if (stage._disposed) throw StateError('Cannot add a disposed stage.');
     stage._renderLoop?.removeStage(stage);
     stage._renderLoop = this;
     _stages.add(stage);
@@ -32,8 +33,13 @@ class RenderLoop extends RenderLoopBase {
     _enterFrameEvent.passedTime = deltaTime;
     _enterFrameEvent.dispatch();
     _juggler.advanceTime(deltaTime);
-    _stages.forEach((s) => s.juggler.advanceTime(deltaTime));
-    _stages.forEach((s) => s.materialize(_currentTime, deltaTime));
+    final stages = List<Stage>.of(_stages);
+    for (final stage in stages) {
+      if (stage._renderLoop == this) stage.juggler.advanceTime(deltaTime);
+    }
+    for (final stage in stages) {
+      if (stage._renderLoop == this) stage.materialize(_currentTime, deltaTime);
+    }
     _exitFrameEvent.dispatch();
   }
 }

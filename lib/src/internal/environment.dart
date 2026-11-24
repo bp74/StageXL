@@ -11,6 +11,7 @@ final bool isMobileDevice = _checkMobileDevice();
 final bool isLittleEndianSystem = _checkLittleEndianSystem();
 final bool isTouchEventSupported = _checkTouchEventSupport();
 bool get isImageBitmapSupported => web.window.has('createImageBitmap');
+bool get isResizeObserverSupported => web.window.has('ResizeObserver');
 
 //-------------------------------------------------------------------------------------
 

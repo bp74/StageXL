@@ -44,12 +44,63 @@ abstract class DisplayObject extends EventDispatcher
   num _rotation = 0.0;
 
   num _alpha = 1.0;
+  bool _visible = true;
+  bool _off = false;
+
+  AccessibilityProperties? _accessibilityProperties;
+
+  /// Semantic information used when the stage enables accessibility.
+  AccessibilityProperties get accessibilityProperties =>
+      _accessibilityProperties ??= AccessibilityProperties._(this);
+
+  /// Whether the object contributes its own semantic node.
+  bool get accessible => _accessibilityProperties?.accessible ?? false;
+  set accessible(bool value) => accessibilityProperties.accessible = value;
+
+  /// The name read by assistive technology.
+  String? get accessibilityLabel => _accessibilityProperties?.label;
+  set accessibilityLabel(String? value) =>
+      accessibilityProperties.label = value;
+
+  /// Additional information read after the name.
+  String? get accessibilityDescription => _accessibilityProperties?.description;
+  set accessibilityDescription(String? value) =>
+      accessibilityProperties.description = value;
+
+  AccessibilityRole? get accessibilityRole => _accessibilityProperties?.role;
+  set accessibilityRole(AccessibilityRole? value) =>
+      accessibilityProperties.role = value;
+
+  /// Whether descendants may contribute semantic nodes. Buttons combine their
+  /// descriptive text into a single node.
+  bool get accessibilityChildren =>
+      _accessibilityProperties?.includeChildren ?? true;
+  set accessibilityChildren(bool value) =>
+      accessibilityProperties.includeChildren = value;
+
+  /// The reading order among siblings. The display list breaks ties.
+  int? get accessibilityOrder => _accessibilityProperties?.order;
+  set accessibilityOrder(int? value) => accessibilityProperties.order = value;
+
+  /// Text provided by the object when no explicit label is available.
+  String? get accessibilityText => null;
+
+  /// Whether the object already supplies its own native DOM semantics.
+  bool get hasNativeAccessibility => false;
+
+  /// Schedules a semantic update after a change to derived accessibility data.
+  void invalidateAccessibility() => stage?._accessibility?._markDirty();
 
   /// The visibility and availability of the display object.
   ///
   /// Display objects that are not visible are disabled. For example, if
   /// visible=false for an [InteractiveObject] instance, it cannot be clicked.
-  bool visible = true;
+  bool get visible => _visible;
+  set visible(bool value) {
+    if (_visible == value) return;
+    _visible = value;
+    invalidateAccessibility();
+  }
 
   /// The availability and visibility of the display object.
   ///
@@ -58,7 +109,12 @@ abstract class DisplayObject extends EventDispatcher
   /// StageXL_Toolkit to disable a DisplayObject without changing the [visible]
   /// state or removing it from the container. It's recommended that users
   /// do not use [off] but [visible] instead.
-  bool off = false;
+  bool get off => _off;
+  set off(bool value) {
+    if (_off == value) return;
+    _off = value;
+    invalidateAccessibility();
+  }
 
   Mask? _mask;
   BlendMode? _blendMode;
@@ -338,7 +394,9 @@ abstract class DisplayObject extends EventDispatcher
 
   @override
   set alpha(num value) {
+    final wasTransparent = _alpha == 0;
     _alpha = value.clamp(0.0, 1.0);
+    if (wasTransparent != (_alpha == 0)) invalidateAccessibility();
   }
 
   /// The calling display object is masked by the specified mask object.

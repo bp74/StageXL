@@ -283,6 +283,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
     final child2 = getChildAt(index2);
     _children[index1] = child2;
     _children[index2] = child1;
+    invalidateAccessibility();
   }
 
   //----------------------------------------------------------------------------
@@ -292,6 +293,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
 
   void sortChildren(int Function(DisplayObject a, DisplayObject b) compare) {
     _children.sort(compare);
+    invalidateAccessibility();
   }
 
   /// Determines whether the specified [DisplayObject] is a child of this
@@ -441,6 +443,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
       newChild = oldChild;
       if (child == newChild) break;
     }
+    invalidateAccessibility();
   }
 
   void _addLocalChildAt(DisplayObject child, int index) {
@@ -448,10 +451,12 @@ abstract class DisplayObjectContainer extends InteractiveObject
     children.remove(child);
     if (index > _children.length) index -= 1;
     children.insert(index, child);
+    invalidateAccessibility();
   }
 
   void _setChildParent(DisplayObject child) {
     child._parent = this;
+    invalidateAccessibility();
     child.dispatchEvent(Event(Event.ADDED, true));
     if (stage != null) _dispatchStageEvents(child, Event.ADDED_TO_STAGE);
   }
@@ -460,6 +465,7 @@ abstract class DisplayObjectContainer extends InteractiveObject
     child.dispatchEvent(Event(Event.REMOVED, true));
     if (stage != null) _dispatchStageEvents(child, Event.REMOVED_FROM_STAGE);
     child._parent = null;
+    invalidateAccessibility();
   }
 
   //----------------------------------------------------------------------------
