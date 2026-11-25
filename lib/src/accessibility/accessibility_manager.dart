@@ -19,9 +19,13 @@ class AccessibilityManager {
       ..style.pointerEvents = 'none';
     final style = web.HTMLStyleElement()
       ..textContent = '''
-[data-stagexl-accessibility] button:focus {
+[data-stagexl-accessibility] :is(button, input, textarea):focus {
   outline: 2px solid black;
   box-shadow: 0 0 0 4px white;
+}
+[data-stagexl-accessibility] :is(input, textarea)::selection {
+  background: transparent;
+  color: transparent;
 }
 ''';
     _root
@@ -53,6 +57,17 @@ class AccessibilityManager {
   late final web.HTMLDivElement _status = _liveRegion('status');
   late final web.HTMLDivElement _alert = _liveRegion('alert');
   final Map<DisplayObject, AccessibilityNode> _nodes = Map.identity();
+  final List<AccessibilityNode> _orderedNodes = [];
+  final List<_AccessibilityModal> _modals = [];
+  final Set<web.Element> _inertElements = {};
+  web.Document? _modalDocument;
+  web.MutationObserver? _modalObserver;
+
+  /// Whether the field currently uses the browser's native editing behavior.
+  bool hasNativeTextFocus(TextField field) {
+    final node = _nodes[field];
+    return node?._textInput != null && node!._element == _activeElement;
+  }
 
   /// Whether the stage has an active accessibility manager.
   bool get enabled => _enabled;
@@ -72,10 +87,48 @@ class AccessibilityManager {
     _update();
     final node = _nodes[object];
     if (!_canFocus(node)) return false;
-    _stage._focus = object;
     node!._element.focus();
-    return node._element == _activeElement;
+    if (node._element != _activeElement) return false;
+    _stage._focus = object;
+    return true;
   }
+
+  /// Opens a semantic modal for an accessible [AccessibilityRole.dialog].
+  /// [initialFocus] may specify a control within it. Otherwise the first tab
+  /// stop, or the dialog itself, receives focus. Call [closeModal] when the
+  /// activity dismisses the dialog.
+  bool openModal(DisplayObjectContainer dialog,
+      {InteractiveObject? initialFocus}) {
+    if (!enabled || _modals.any((modal) => modal.dialog == dialog)) {
+      return false;
+    }
+    _update();
+    final node = _nodes[dialog];
+    if (node == null || !_isAvailableDialog(node)) return false;
+    _modals.add(_AccessibilityModal(dialog, _activeElement, _stage._focus));
+    _refreshTabStops();
+    _isolateModal(node);
+    final initial = _nodes[initialFocus];
+    if (_canFocus(initial)) initial!._element.focus();
+    if (!node._element.contains(_activeElement)) _focusModal();
+    return true;
+  }
+
+  /// Closes the active modal and restores focus to its opener when available.
+  bool closeModal(DisplayObjectContainer dialog) {
+    if (!enabled || _modals.lastOrNull?.dialog != dialog) return false;
+    final modal = _modals.removeLast();
+    _nodes[dialog]?._setAttribute('aria-modal', null);
+    _clearModalIsolation();
+    _refreshTabStops();
+    if (_modalNode case final node?) _isolateModal(node);
+    _restoreModalFocus(modal);
+    if (_modalNode?._element.contains(_activeElement) == false) _focusModal();
+    return true;
+  }
+
+  late final JSFunction _modalKeyListener = _handleModalTab.toJS;
+  late final JSFunction _modalFocusListener = _keepModalFocus.toJS;
 
   /// Sends a message to assistive technology. Use [assertive] for messages
   /// that should interrupt the current announcement.
@@ -117,7 +170,7 @@ class AccessibilityManager {
     });
   }
 
-  void _update() {
+  void _update({bool modalDomChanged = false}) {
     if (!enabled || _updating) return;
     _updating = true;
     final canvas = _stage._canvas;
@@ -125,6 +178,7 @@ class AccessibilityManager {
     final focusedObject = _stage._focus;
     final hadDomFocus =
         active != null && _nodes[focusedObject]?._element == active;
+    var semanticsChanged = false;
     try {
       if (!canvas.isConnected) {
         _root.remove();
@@ -143,15 +197,23 @@ class AccessibilityManager {
           canvas.clientWidth == 0 ||
           canvas.clientHeight == 0 ||
           web.window.getComputedStyle(canvas).visibility != 'visible';
-      _root.toggleAttribute('hidden', hide);
+      final visibilityChanged = _root.hasAttribute('hidden') != hide;
+      if (visibilityChanged) _root.toggleAttribute('hidden', hide);
 
-      if (_dirty) {
+      semanticsChanged = _dirty;
+      if (semanticsChanged) {
         _dirty = false;
         _reconcile();
       }
-      if (!hide && _nodes.isNotEmpty) _updateBounds(canvas);
+      // Animated objects can cross the viewport without a display tree change.
+      final controlVisibilityChanged =
+          !hide && _nodes.isNotEmpty && _updateBounds(canvas);
+      if (semanticsChanged || visibilityChanged || controlVisibilityChanged) {
+        _refreshTabStops();
+      }
     } finally {
       _updating = false;
+      // Reparenting or replacing an element can blur it during reconciliation.
       if (hadDomFocus && identical(_stage._focus, focusedObject)) {
         final focused = _nodes[focusedObject];
         if (_canFocus(focused)) {
@@ -160,6 +222,9 @@ class AccessibilityManager {
           (active as web.HTMLElement).blur();
           _stage._focus = null;
         }
+      }
+      if (_modals.isNotEmpty) {
+        _syncModal(recheckIsolation: semanticsChanged || modalDomChanged);
       }
     }
   }
@@ -172,6 +237,7 @@ class AccessibilityManager {
     _setStageAttribute('aria-description',
         stage.accessible ? stage.accessibilityDescription : null);
 
+    _orderedNodes.clear();
     final visited = Set<DisplayObject>.identity();
     final children = <AccessibilityNode>[];
     if (stage.accessibilityChildren && _isVisible(stage)) {
@@ -195,11 +261,12 @@ class AccessibilityManager {
   }
 
   void _collectChildren(DisplayObjectParent<DisplayObject> parent,
-      Set<DisplayObject> visited, List<AccessibilityNode> siblings) {
+      Set<DisplayObject> visited, List<AccessibilityNode> siblings,
+      [AccessibilityNode? composite]) {
     final children = parent.children;
     if (!children.any((child) => child.accessibilityOrder != null)) {
       for (final child in children) {
-        _collect(child, visited, siblings);
+        _collect(child, visited, siblings, composite);
       }
       return;
     }
@@ -212,12 +279,12 @@ class AccessibilityManager {
       return order != 0 ? order : a.compareTo(b);
     });
     for (final index in indices) {
-      _collect(parent.getChildAt(index), visited, siblings);
+      _collect(parent.getChildAt(index), visited, siblings, composite);
     }
   }
 
   void _collect(DisplayObject object, Set<DisplayObject> visited,
-      List<AccessibilityNode> siblings) {
+      List<AccessibilityNode> siblings, AccessibilityNode? composite) {
     if (!_isVisible(object) || object.hasNativeAccessibility) return;
     final interactive = object is InteractiveObject ? object : null;
     final role = object.accessibilityRole ??
@@ -225,26 +292,44 @@ class AccessibilityManager {
             ? AccessibilityRole.button
             : AccessibilityRole.text);
     final label = object.accessible ? _labelFor(object, role) : null;
-    final expose =
-        object.accessible && (role != AccessibilityRole.text || label != null);
+    final expose = object.accessible &&
+        (role != AccessibilityRole.text || label != null) &&
+        (role != AccessibilityRole.textInput || object is TextField);
     AccessibilityNode? group;
     if (expose) {
       visited.add(object);
       var node = _nodes[object];
-      if (node == null || node.role != role) {
+      if (node == null ||
+          node.role != role ||
+          node._textInput?._needsReplacement == true) {
         node?._dispose();
-        node = _nodes[object] = AccessibilityNode._(object, role, this);
+        final input = role == AccessibilityRole.textInput
+            ? _AccessibilityTextInput(object as TextField)
+            : null;
+        node = _nodes[object] = AccessibilityNode._(object, role, this, input);
       }
+      node._group = switch (composite?.role) {
+        AccessibilityRole.radioGroup when role == AccessibilityRole.radio =>
+          composite,
+        AccessibilityRole.listBox when role == AccessibilityRole.option =>
+          composite,
+        _ => null,
+      };
+      _orderedNodes.add(node);
       node._update(label, _nonEmpty(object.accessibilityDescription));
       siblings.add(node);
-      if (role == AccessibilityRole.button) return;
-      if (role == AccessibilityRole.group) group = node;
+      if (node._isControl) return;
+      if (role._isGroup) group = node;
+      if (role == AccessibilityRole.radioGroup ||
+          role == AccessibilityRole.listBox) {
+        composite = node;
+      }
     }
 
     final children = group == null ? siblings : <AccessibilityNode>[];
     if (object.accessibilityChildren &&
         object is DisplayObjectParent<DisplayObject>) {
-      _collectChildren(object, visited, children);
+      _collectChildren(object, visited, children, composite);
     }
     if (group != null) _placeChildren(group._element, children);
   }
@@ -285,7 +370,7 @@ class AccessibilityManager {
   static String? _labelFor(DisplayObject object, AccessibilityRole role) =>
       _nonEmpty(object.accessibilityLabel) ??
       _nonEmpty(object.accessibilityText) ??
-      (role == AccessibilityRole.button ? _buttonLabel(object) : null);
+      (role._isAction ? _buttonLabel(object) : null);
 
   static void _collectButtonText(DisplayObject object, List<String> text) {
     if (!_isVisible(object) || object.hasNativeAccessibility) return;
@@ -302,7 +387,8 @@ class AccessibilityManager {
     }
   }
 
-  void _updateBounds(web.HTMLCanvasElement canvas) {
+  // Returns whether a control crossed the edge of the visible stage.
+  bool _updateBounds(web.HTMLCanvasElement canvas) {
     final rect = canvas.getBoundingClientRect();
     final root = _root.getBoundingClientRect();
     final content = _stage._contentRectangle;
@@ -313,9 +399,10 @@ class AccessibilityManager {
         content.isEmpty ||
         canvas.offsetWidth == 0 ||
         canvas.offsetHeight == 0) {
-      return;
+      return false;
     }
 
+    // Account for CSS scaling on the canvas and its ancestors.
     final canvasScaleX = rect.width / canvas.offsetWidth;
     final canvasScaleY = rect.height / canvas.offsetHeight;
     final scaleX =
@@ -328,21 +415,24 @@ class AccessibilityManager {
         (rect.top + canvas.clientTop * canvasScaleY - root.top) / root.height;
     final toCss = Matrix(scaleX, 0, 0, scaleY, left - content.left * scaleX,
         top - content.top * scaleY);
+    var visibilityChanged = false;
     for (final node in _nodes.values) {
       final object = node.displayObject;
-      if (object is SimpleButton && node.role == AccessibilityRole.button) {
+      if (object is SimpleButton && node.role._isAction) {
         // Button artwork is outside the display list and may change on its own.
         node._setLabel(_labelFor(object, node.role));
       }
-      node._updateBounds(_stage, content, toCss);
+      if (node._updateBounds(_stage, content, toCss)) visibilityChanged = true;
     }
+    return visibilityChanged;
   }
 
   bool _isExposed(AccessibilityNode? node) =>
       node != null &&
       _root.isConnected &&
       !_root.hasAttribute('hidden') &&
-      !node._element.hasAttribute('hidden');
+      !node._outsideViewport &&
+      _isInModal(node.displayObject);
 
   bool _canFocus(AccessibilityNode? node) =>
       _isExposed(node) && node!._focusable;
@@ -351,6 +441,10 @@ class AccessibilityManager {
     if (!enabled || _updating) return;
     _update();
     final target = _stage._focus;
+    if (_modals.isNotEmpty && (target == null || !_isInModal(target))) {
+      _focusModal();
+      return;
+    }
     final node = _nodes[target];
     final active = _activeElement;
     if (_canFocus(node)) {
@@ -368,19 +462,86 @@ class AccessibilityManager {
   void _onFocus(AccessibilityNode node) {
     if (_canFocus(node)) {
       _stage._focus = node.displayObject as InteractiveObject;
+      if (node._group != null) _refreshTabStops();
     }
   }
 
   void _onBlur(AccessibilityNode node) {
     if (!_updating && identical(_stage._focus, node.displayObject)) {
       _stage._focus = null;
+      if (node._group != null) _refreshTabStops();
     }
   }
 
-  void _onKeyEvent(web.KeyboardEvent event) {
-    // Native button activation and tab traversal have their own browser defaults.
-    if (event.key == 'Enter' || event.key == ' ' || event.key == 'Tab') return;
-    _stage._onKeyEvent(event);
+  void _refreshTabStops() {
+    final groups = <AccessibilityNode, List<AccessibilityNode>>{};
+    for (final node in _orderedNodes) {
+      if (!node._isControl) continue;
+      final group = node._group;
+      final tabStop = node._tabEnabled && _isExposed(node);
+      if (group == null || !tabStop) {
+        node._setTabStop(tabStop);
+      } else {
+        (groups[group] ??= []).add(node);
+      }
+    }
+    // Each composite has one tab stop. Arrow keys move focus within it.
+    final active = _activeElement;
+    for (final entries in groups.values) {
+      final focused = entries.where((node) => node._element == active);
+      final selected = entries.where((node) {
+        final control = node.displayObject as InteractiveObject;
+        return node.role == AccessibilityRole.radio
+            ? control.accessibilityChecked == true
+            : control.accessibilitySelected == true;
+      });
+      final current =
+          focused.firstOrNull ?? selected.firstOrNull ?? entries.first;
+      for (final node in entries) {
+        node._setTabStop(node == current);
+      }
+    }
+  }
+
+  void _onKeyEvent(AccessibilityNode node, web.KeyboardEvent event) {
+    if (event.type == 'keydown' &&
+        node._group != null &&
+        _navigateGroup(node, event.key)) {
+      event.preventDefault();
+      return;
+    }
+    if (event.key == 'Tab') return;
+    if (node._textInput case final input?) {
+      if (event.type == 'keyup') input._readSelection();
+      _stage._onKeyEvent(event, nativeEditing: true);
+    } else if (event.key != 'Enter' && event.key != ' ') {
+      // Native buttons already turn Enter and Space into a click.
+      _stage._onKeyEvent(event);
+    }
+  }
+
+  bool _navigateGroup(AccessibilityNode node, String key) {
+    final delta = switch (key) {
+      'ArrowLeft' || 'ArrowUp' => -1,
+      'ArrowRight' || 'ArrowDown' => 1,
+      'Home' || 'End' => 0,
+      _ => null,
+    };
+    if (delta == null) return false;
+    final candidates = _orderedNodes
+        .where((item) =>
+            item._group == node._group && item._tabEnabled && _isExposed(item))
+        .toList();
+    if (candidates.isEmpty) return true;
+    final index = candidates.indexOf(node);
+    final next = switch (key) {
+      'Home' => candidates.first,
+      'End' => candidates.last,
+      _ => candidates[(max(index, 0) + delta) % candidates.length],
+    };
+    next._element.focus();
+    if (next != node && node.role == AccessibilityRole.radio) _activate(next);
+    return true;
   }
 
   void _activate(AccessibilityNode node) {
@@ -398,6 +559,8 @@ class AccessibilityManager {
     if (!enabled) return;
     _enabled = false;
     _dirty = false;
+    _modals.clear();
+    _clearModalIsolation();
     _politeAnnouncement?.cancel();
     _assertiveAnnouncement?.cancel();
     _resizeObserver?.disconnect();
@@ -407,6 +570,7 @@ class AccessibilityManager {
       node._dispose();
     }
     _nodes.clear();
+    _orderedNodes.clear();
     _root.remove();
 
     final canvas = _stage._canvas;

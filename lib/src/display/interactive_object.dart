@@ -30,6 +30,34 @@ abstract class InteractiveObject extends DisplayObject {
     invalidateAccessibility();
   }
 
+  bool? _accessibilityChecked;
+  bool? _accessibilitySelected;
+  bool? _accessibilityPressed;
+
+  /// Checked state for a checkbox or radio control.
+  bool? get accessibilityChecked => _accessibilityChecked;
+  set accessibilityChecked(bool? value) {
+    if (_accessibilityChecked == value) return;
+    _accessibilityChecked = value;
+    invalidateAccessibility();
+  }
+
+  /// Selected state for an option in a list box.
+  bool? get accessibilitySelected => _accessibilitySelected;
+  set accessibilitySelected(bool? value) {
+    if (_accessibilitySelected == value) return;
+    _accessibilitySelected = value;
+    invalidateAccessibility();
+  }
+
+  /// Pressed state for a toggle button. Null describes an ordinary button.
+  bool? get accessibilityPressed => _accessibilityPressed;
+  set accessibilityPressed(bool? value) {
+    if (_accessibilityPressed == value) return;
+    _accessibilityPressed = value;
+    invalidateAccessibility();
+  }
+
   /// Invoked by the native control for keyboard or assistive activation.
   /// The default dispatches a bubbling [MouseEvent.CLICK].
   void accessibilityActivate() {

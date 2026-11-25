@@ -417,6 +417,9 @@ class Stage extends DisplayObjectContainer {
   @override
   DisplayObject hitTestInput(num localX, num localY) {
     final target = super.hitTestInput(localX, localY);
+    if (target != null && _accessibility?._isInModal(target) == false) {
+      return this;
+    }
     return target ?? this;
   }
 
@@ -1150,9 +1153,9 @@ class Stage extends DisplayObjectContainer {
   //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
 
-  void _onKeyEvent(web.KeyboardEvent event) {
+  void _onKeyEvent(web.KeyboardEvent event, {bool nativeEditing = false}) {
     if (_accessibility?.enabled == true && event.key == 'Tab') return;
-    if (preventDefaultOnKeyboard) event.preventDefault();
+    if (preventDefaultOnKeyboard && !nativeEditing) event.preventDefault();
     if (focus == null) return;
 
     if (event.type == 'keypress') {

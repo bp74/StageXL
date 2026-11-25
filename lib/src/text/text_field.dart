@@ -2,6 +2,10 @@
 
 part of '../text.dart';
 
+/// Displays formatted text and supports editing in [TextFieldType.INPUT] mode.
+///
+/// With stage accessibility enabled, native edits dispatch a bubbling
+/// [Event.CHANGE] after updating [text] and the selection.
 class TextField extends InteractiveObject {
   String _text = '';
   late TextFormat _defaultTextFormat;
@@ -10,12 +14,14 @@ class TextField extends InteractiveObject {
   String _type = TextFieldType.DYNAMIC;
 
   int _caretIndex = 0;
+  int _selectionAnchor = 0;
   int _caretLine = 0;
   num _caretTime = 0.0;
   num _caretX = 0.0;
   num _caretY = 0.0;
   num _caretWidth = 0.0;
   num _caretHeight = 0.0;
+  final List<Rectangle<num>> _selectionBounds = [];
 
   bool _wordWrap = false;
   bool _multiline = false;
@@ -25,7 +31,16 @@ class TextField extends InteractiveObject {
   String _passwordChar = '•';
   int _backgroundColor = Color.White;
   int _borderColor = Color.Black;
-  int maxChars = 0;
+  int _maxChars = 0;
+
+  /// Maximum length of user-entered text. Zero allows any length.
+  int get maxChars => _maxChars;
+  set maxChars(int value) {
+    if (_maxChars == value) return;
+    _maxChars = value;
+    invalidateAccessibility();
+  }
+
   num _width = 100;
   num _height = 100;
 
@@ -49,6 +64,7 @@ class TextField extends InteractiveObject {
     onKeyDown.listen(_onKeyDown);
     onTextInput.listen(_onTextInput);
     onMouseDown.listen(_onMouseDown);
+    onTouchTap.listen(_onTouchTap);
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -57,9 +73,27 @@ class TextField extends InteractiveObject {
 
   String get text => _text;
 
-  /// Static text fields contribute semantics by default.
   @override
-  bool get accessible => _type == TextFieldType.DYNAMIC && super.accessible;
+  bool get accessible =>
+      (_type == TextFieldType.INPUT || _type == TextFieldType.DYNAMIC) &&
+      super.accessible;
+
+  @override
+  AccessibilityRole? get accessibilityRole => _type == TextFieldType.INPUT
+      ? AccessibilityRole.textInput
+      : super.accessibilityRole ?? AccessibilityRole.text;
+
+  bool? _inputFocusable;
+
+  @override
+  bool get focusable => _inputFocusable ?? (_type == TextFieldType.INPUT);
+
+  @override
+  set focusable(bool value) {
+    if (_inputFocusable == value) return;
+    _inputFocusable = value;
+    invalidateAccessibility();
+  }
 
   @override
   String? get accessibilityText =>
@@ -69,6 +103,28 @@ class TextField extends InteractiveObject {
   TextFormat get defaultTextFormat => _defaultTextFormat;
 
   int get caretIndex => _caretIndex;
+
+  /// The beginning of the selection, in UTF-16 code units.
+  int get selectionStart => min(_selectionAnchor, _caretIndex);
+
+  /// The end of the selection, in UTF-16 code units.
+  int get selectionEnd => max(_selectionAnchor, _caretIndex);
+
+  /// Selects text from [anchor] to [caret], clamping offsets to the text.
+  void setSelection(int anchor, int caret) {
+    anchor = anchor.clamp(0, _text.length);
+    caret = caret.clamp(0, _text.length);
+    if (_selectionAnchor == anchor && _caretIndex == caret) return;
+    _selectionAnchor = anchor;
+    _caretIndex = caret;
+    _caretTime = 0.0;
+    _refreshPending |= 3;
+    stage?.invalidate();
+    invalidateAccessibility();
+  }
+
+  bool get _hasNativeTextFocus =>
+      stage?.accessibility.hasNativeTextFocus(this) ?? false;
 
   String get autoSize => _autoSize;
   String get type => _type;
@@ -99,11 +155,12 @@ class TextField extends InteractiveObject {
   }
 
   set text(String value) {
-    if (_text != value && _type == TextFieldType.DYNAMIC) {
+    if (_text != value) {
+      stage?.invalidate();
       invalidateAccessibility();
     }
     _text = value;
-    _caretIndex = _text.length;
+    setSelection(_text.length, _text.length);
     _refreshPending |= 3;
   }
 
@@ -134,6 +191,7 @@ class TextField extends InteractiveObject {
   }
 
   set multiline(bool value) {
+    if (_multiline != value) invalidateAccessibility();
     _multiline = value;
     _refreshPending |= 3;
   }
@@ -260,7 +318,11 @@ class TextField extends InteractiveObject {
       final stage = this.stage;
       if (stage != null &&
           stage.focus == this &&
-          _caretTime.remainder(0.8) < 0.4) {
+          (selectionStart != selectionEnd || _caretTime.remainder(0.8) < 0.4)) {
+        if (selectionStart != selectionEnd) {
+          _renderSelection(renderState);
+          return;
+        }
         final x1 = _caretX;
         final y1 = _caretY;
         final x3 = _caretX + _caretWidth;
@@ -268,6 +330,44 @@ class TextField extends InteractiveObject {
         final color = _defaultTextFormat.color;
         renderState.renderTriangle(x1, y1, x3, y1, x3, y3, color);
         renderState.renderTriangle(x1, y1, x3, y3, x1, y3, color);
+      }
+    }
+  }
+
+  void _renderSelection(RenderState renderState) {
+    const color = 0x663B82F6;
+    for (final rect in _selectionBounds) {
+      final left = rect.left;
+      final top = rect.top;
+      final right = rect.right;
+      final bottom = rect.bottom;
+      renderState.renderTriangle(left, top, right, top, right, bottom, color);
+      renderState.renderTriangle(left, top, right, bottom, left, bottom, color);
+    }
+  }
+
+  void _measureSelection(CanvasRenderingContext2D context) {
+    _selectionBounds.clear();
+    final startOffset = selectionStart;
+    final endOffset = selectionEnd;
+    if (startOffset == endOffset) return;
+
+    // The native selection supplies offsets. Use the laid-out canvas lines
+    // to draw the highlight at the correct position after wrapping and scrolling.
+    for (final line in _textLineMetrics) {
+      if (line._textIndex >= endOffset) break;
+      final start = max(startOffset - line._textIndex, 0);
+      final end = min(endOffset - line._textIndex, line._text.length);
+      if (end <= start) continue;
+      final left = max(0,
+          line.x + context.measureText(line._text.substring(0, start)).width);
+      final right = min(_width,
+          line.x + context.measureText(line._text.substring(0, end)).width);
+      final top = max(0, line.y - line.ascent);
+      final bottom = min(_height, line.y + line.descent);
+      if (right > left && bottom > top) {
+        _selectionBounds
+            .add(Rectangle<num>(left, top, right - left, bottom - top));
       }
     }
   }
@@ -329,6 +429,7 @@ class TextField extends InteractiveObject {
     final paragraphLines = <int>[];
     final paragraphSplit = RegExp(r'\r\n|\r|\n');
     final paragraphs = _text.split(paragraphSplit);
+    final separators = paragraphSplit.allMatches(_text).iterator;
 
     canvasContext.font = fontStyle + ' '; // IE workaround
     canvasContext.textAlign = 'start';
@@ -379,6 +480,9 @@ class TextField extends InteractiveObject {
               .add(TextLineMetrics._internal(checkLine, startIndex));
           startIndex += checkLine.length + 1;
         }
+      }
+      if (separators.moveNext()) {
+        startIndex += separators.current.end - separators.current.start - 1;
       }
     }
 
@@ -486,7 +590,8 @@ class TextField extends InteractiveObject {
         final textLineMetrics = _textLineMetrics[line];
 
         if (_caretIndex >= textLineMetrics._textIndex) {
-          final textIndex = _caretIndex - textLineMetrics._textIndex;
+          final textIndex = min(_caretIndex - textLineMetrics._textIndex,
+              textLineMetrics._text.length);
           final text = textLineMetrics._text.substring(0, textIndex);
           _caretLine = line;
           _caretX = textLineMetrics.x + canvasContext.measureText(text).width;
@@ -500,17 +605,22 @@ class TextField extends InteractiveObject {
       var shiftX = 0.0;
       var shiftY = 0.0;
 
-      while (shiftX + _caretX > _width) {
-        shiftX -= _width * 0.2;
+      // Measure layout even for empty fields, where scrolling has no step.
+      if (_width > 0) {
+        while (shiftX + _caretX > _width) {
+          shiftX -= _width * 0.2;
+        }
+        while (shiftX + _caretX < 0) {
+          shiftX += _width * 0.2;
+        }
       }
-      while (shiftX + _caretX < 0) {
-        shiftX += _width * 0.2;
-      }
-      while (shiftY + _caretY + _caretHeight > _height) {
-        shiftY -= textFormatSize;
-      }
-      while (shiftY + _caretY < 0) {
-        shiftY += textFormatSize;
+      if (textFormatSize > 0) {
+        while (shiftY + _caretY + _caretHeight > _height) {
+          shiftY -= textFormatSize;
+        }
+        while (shiftY + _caretY < 0) {
+          shiftY += textFormatSize;
+        }
       }
 
       _caretX += shiftX;
@@ -521,6 +631,7 @@ class TextField extends InteractiveObject {
         textLineMetrics._x += shiftX;
         textLineMetrics._y += shiftY;
       }
+      _measureSelection(canvasContext);
     }
   }
 
@@ -665,7 +776,7 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void _onKeyDown(KeyboardEvent keyboardEvent) {
-    if (_type == TextFieldType.INPUT) {
+    if (_type == TextFieldType.INPUT && !_hasNativeTextFocus) {
       _refreshTextLineMetrics();
 
       final text = _text;
@@ -673,15 +784,16 @@ class TextField extends InteractiveObject {
       final textLineMetrics = _textLineMetrics;
       final caretIndex = _caretIndex;
       final caretLine = _caretLine;
+      final hasSelection = selectionStart != selectionEnd;
       var caretIndexNew = -1;
 
       switch (keyboardEvent.keyCode) {
         case web.KeyCode.BACKSPACE:
           keyboardEvent.preventDefault();
-          if (caretIndex > 0) {
-            _text =
-                text.substring(0, caretIndex - 1) + text.substring(caretIndex);
-            caretIndexNew = caretIndex - 1;
+          if (hasSelection || caretIndex > 0) {
+            final start = hasSelection ? selectionStart : caretIndex - 1;
+            _text = text.replaceRange(start, selectionEnd, '');
+            caretIndexNew = start;
           }
           break;
 
@@ -699,9 +811,9 @@ class TextField extends InteractiveObject {
 
         case web.KeyCode.LEFT:
           keyboardEvent.preventDefault();
-          if (caretIndex > 0) {
-            caretIndexNew = caretIndex - 1;
-          }
+          caretIndexNew = hasSelection && !keyboardEvent.shiftKey
+              ? selectionStart
+              : max(0, caretIndex - 1);
           break;
 
         case web.KeyCode.UP:
@@ -719,9 +831,9 @@ class TextField extends InteractiveObject {
 
         case web.KeyCode.RIGHT:
           keyboardEvent.preventDefault();
-          if (caretIndex < textLength) {
-            caretIndexNew = caretIndex + 1;
-          }
+          caretIndexNew = hasSelection && !keyboardEvent.shiftKey
+              ? selectionEnd
+              : min(textLength, caretIndex + 1);
           break;
 
         case web.KeyCode.DOWN:
@@ -739,18 +851,22 @@ class TextField extends InteractiveObject {
 
         case web.KeyCode.DELETE:
           keyboardEvent.preventDefault();
-          if (caretIndex < textLength) {
-            _text =
-                text.substring(0, caretIndex) + text.substring(caretIndex + 1);
-            caretIndexNew = caretIndex;
+          if (hasSelection || caretIndex < textLength) {
+            final end = hasSelection ? selectionEnd : caretIndex + 1;
+            caretIndexNew = selectionStart;
+            _text = text.replaceRange(caretIndexNew, end, '');
           }
           break;
       }
 
       if (caretIndexNew != -1) {
-        _caretIndex = caretIndexNew;
-        _caretTime = 0.0;
-        _refreshPending |= 3;
+        final extendsSelection = keyboardEvent.shiftKey && text == _text;
+        setSelection(
+            extendsSelection ? _selectionAnchor : caretIndexNew, caretIndexNew);
+        if (text != _text) {
+          _refreshPending |= 3;
+          invalidateAccessibility();
+        }
       }
     }
   }
@@ -758,11 +874,12 @@ class TextField extends InteractiveObject {
   //-------------------------------------------------------------------------------------------------
 
   void _onTextInput(TextEvent textEvent) {
-    if (_type == TextFieldType.INPUT) {
+    if (_type == TextFieldType.INPUT && !_hasNativeTextFocus) {
       textEvent.preventDefault();
 
-      final textLength = _text.length;
-      final caretIndex = _caretIndex;
+      final start = selectionStart;
+      final end = selectionEnd;
+      final textLength = _text.length - (end - start);
       var newText = textEvent.text;
 
       if (newText == '\r') newText = '\n';
@@ -770,22 +887,43 @@ class TextField extends InteractiveObject {
       if (newText == '') return;
       if (maxChars != 0 && textLength >= maxChars) return;
 
-      _text = _text.substring(0, caretIndex) +
-          newText +
-          _text.substring(caretIndex);
-      _caretIndex = _caretIndex + newText.length;
-      _caretTime = 0.0;
+      _text = _text.replaceRange(start, end, newText);
+      final caret = start + newText.length;
+      setSelection(caret, caret);
       _refreshPending |= 3;
+      invalidateAccessibility();
     }
   }
 
   //-------------------------------------------------------------------------------------------------
 
   void _onMouseDown(MouseEvent mouseEvent) {
-    final mouseX = mouseEvent.localX.toDouble();
-    final mouseY = mouseEvent.localY.toDouble();
+    _placeCaret(mouseEvent.localX, mouseEvent.localY, mouseEvent.shiftKey);
+    _focusNativeEditor();
+  }
+
+  void _onTouchTap(TouchEvent event) {
+    if (_type != TextFieldType.INPUT ||
+        !accessible ||
+        !event.isPrimaryTouchPoint ||
+        stage?.accessibility.enabled != true) {
+      return;
+    }
+    _placeCaret(event.localX, event.localY, event.shiftKey);
+    _focusNativeEditor();
+  }
+
+  void _focusNativeEditor() {
+    if (_type == TextFieldType.INPUT && accessible) {
+      stage?.accessibility.focus(this);
+    }
+  }
+
+  void _placeCaret(num mouseX, num mouseY, bool? extendSelection) {
+    _refreshTextLineMetrics();
     final canvasContext = _dummyCanvasContext;
 
+    canvasContext.font = '${_defaultTextFormat._cssFontStyle} ';
     canvasContext.setTransform(1.0.toJS, 0.0, 0.0, 1.0, 0.0, 0.0);
 
     for (var line = 0; line < _textLineMetrics.length; line++) {
@@ -809,9 +947,9 @@ class TextField extends InteractiveObject {
           }
         }
 
-        _caretIndex = textLineMetrics._textIndex + bestIndex;
-        _caretTime = 0.0;
-        _refreshPending |= 3;
+        final caret = textLineMetrics._textIndex + bestIndex;
+        setSelection(extendSelection == true ? _selectionAnchor : caret, caret);
+        break;
       }
     }
   }

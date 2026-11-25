@@ -31,12 +31,15 @@ import 'internal/environment.dart' as env;
 import 'internal/image_bitmap_loader.dart';
 import 'internal/image_loader.dart';
 import 'internal/tools.dart';
+import 'text.dart' show TextField;
 import 'ui.dart';
 
 part 'accessibility/accessibility_manager.dart';
+part 'accessibility/accessibility_modal.dart';
 part 'accessibility/accessibility_node.dart';
 part 'accessibility/accessibility_properties.dart';
 part 'accessibility/accessibility_role.dart';
+part 'accessibility/accessibility_text_input.dart';
 part 'display/bitmap.dart';
 part 'display/bitmap_container.dart';
 part 'display/bitmap_data.dart';

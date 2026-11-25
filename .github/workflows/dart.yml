@@ -13,23 +13,17 @@ on:
 
 jobs:
   build:
+    name: Dart ${{ matrix.sdk }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        sdk: [stable,3.9, 3.6, 3.5]
+        # Test the minimum SDK from pubspec.yaml and the moving release channels.
+        sdk: ['3.5', stable, beta]
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup XVFB
-        if: matrix.os == 'ubuntu-latest'
-        run: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-
-      # Note: This workflow uses the latest stable version of the Dart SDK.
-      # You can specify other versions if desired, see documentation here:
-      # https://github.com/dart-lang/setup-dart/blob/main/README.md
-      # - uses: dart-lang/setup-dart@v1
-      - uses: dart-lang/setup-dart@v1.6.4
+      - uses: actions/checkout@v7
+      - uses: dart-lang/setup-dart@v1
         with:
           sdk: ${{ matrix.sdk }}
 
@@ -44,8 +38,9 @@ jobs:
       - name: Analyze project source
         run: dart analyze
 
-      # Your project will need to have tests in test/ and a dependency on
-      # package:test for this step to succeed. Note that Flutter projects will
-      # want to change this to 'flutter test'.
-      - name: Run tests
-        run: dart test -p chrome
+      - name: Run Chrome tests with JavaScript
+        run: dart test -p chrome -c dart2js
+
+      - name: Run Chrome tests with WebAssembly
+        if: matrix.sdk != '3.5'
+        run: dart test -p chrome -c dart2wasm

@@ -5,7 +5,8 @@ part of '../display.dart';
 class StageOptions {
   /// Builds a semantic HTML tree for the stage's accessible display objects.
   ///
-  /// [SimpleButton] and static text fields contribute semantics automatically.
+  /// [SimpleButton] and text fields contribute semantics automatically.
+  /// Editable text fields use native browser editing.
   /// Custom controls can set [DisplayObject.accessible] and
   /// [InteractiveObject.focusable]. Defaults to false.
   bool accessibilityEnabled = false;
